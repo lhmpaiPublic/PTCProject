@@ -688,8 +688,10 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			// 22.03.24 Ahn Add Start
 			// 22.07.26 Ahn Modify Start
 			bLotStartSigIn = pSigProc->SigInLotStart(); 
-			if( (bLotStartSigIn == TRUE) || (m_bLotStartFlag==TRUE) ){
-				if (bLotStartSigIn ==  TRUE) {
+			if( (bLotStartSigIn == TRUE) || (m_bLotStartFlag==TRUE) )
+			{
+				if (bLotStartSigIn ==  TRUE)
+				{
 			// 22.07.26 Ahn Modify Start
 					AprData.SaveLotLog(_T("1.Lot Start Signal ON "));
 				}
@@ -698,7 +700,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				// 22.07.07 Ahn Add End
 
 				// 22.07.26 Ahn Modify Start
-				if (AprData.LotStartProcess( bLotStartSigIn) < 0) { // 22.04.13 Ahn Modify
+				if (AprData.LotStartProcess( bLotStartSigIn) < 0)
+				{ // 22.04.13 Ahn Modify
 				// 22.07.26 Ahn Modify End
 					m_nStatus = en_Initialize;
 				}
@@ -1303,7 +1306,8 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 		// 22.07.06 Ahn Add End
 		// 22.02.23 Ahn Add Start
 		Sleep(100); // 22.03.29 Ahn Modify 10 -> 100 
-		if (pSigProc->SigInTabZeroReset() == TRUE) {
+		if (pSigProc->SigInTabZeroReset() == TRUE)
+		{
 			AprData.SaveLotLog(_T("Tab Zero Reset 신호 ON"));
 			pSigProc->SigOutTabZeroReset(TRUE);
 

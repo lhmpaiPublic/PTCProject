@@ -128,6 +128,7 @@ BOOL CIoMonitorDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();	
 
+
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	int nMaxBit = en_In_Max;
 	int i;
@@ -155,6 +156,8 @@ BOOL CIoMonitorDlg::OnInitDialog()
 
 	MakeGridCtrl();
 	UpdateGridCtrl();
+
+//	::SetWindowPos(GetSafeHwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -324,7 +327,7 @@ int CIoMonitorDlg::RefreshAll()
 	memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_OUT);
 	// 23.03.03 Ahn Modify End
 	pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
-//	pSigProc->ReadAllPort_BitOut(m_bSigBitOut); //pyjtest
+	pSigProc->ReadAllPort_BitOut(m_bSigBitOut); //pyjtest
 
 
 // 	CString strMsg;

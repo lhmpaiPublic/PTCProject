@@ -5185,6 +5185,11 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 	}
 
 	// Edge Find 
+	if (nLevel < 0) {
+		AfxMessageBox(_T("Level 이상 !!"));
+		return -1;
+	}
+
 
 	int nOffset = 50;
 
@@ -5595,6 +5600,11 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	// 23.02.24 Ahn Mod End
 
 	// Edge Find 
+	if (nLevel < 0) {
+		AfxMessageBox(_T("Level 이상 !!"));
+		return -1;
+	}
+
 
 	int nOffset = 50;
 

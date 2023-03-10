@@ -467,16 +467,18 @@ void CModeDlg::OnBnClickedBtnLog()
 //	CDIOTestDlg dlg;
 //	dlg.DoModal();
 
-	CIoMonitorDlg dlg(this);
-	dlg.DoModal();
+// 	CIoMonitorDlg dlg(this);
+// 	dlg.DoModal();
+
+
 
 	// 22.08.03 Ahn Add Start
-	//if (m_pIoMonitDlg == nullptr) {
-	//	m_pIoMonitDlg = new CIoMonitorDlg(this);
-	//	m_pIoMonitDlg->Create(IDD_DLG_IO_MONITOR, this);
-	//}
+	if (m_pIoMonitDlg == nullptr) {
+		m_pIoMonitDlg = new CIoMonitorDlg(this);
+		m_pIoMonitDlg->Create(IDD_DLG_IO_MONITOR, this);
+	}
 
-	//m_pIoMonitDlg->ShowWindow(SW_SHOW);
+	m_pIoMonitDlg->ShowWindow(SW_SHOW);
 
 	// 22.08.03 Ahn Add End
 
