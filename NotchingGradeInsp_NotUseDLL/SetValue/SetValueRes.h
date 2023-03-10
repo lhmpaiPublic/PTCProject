@@ -1,0 +1,125 @@
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ generated include file.
+// Used by SetValueRes.rc
+//
+#define IDD_SETSTRING                   21000
+#define IDD_SETVALUE                    21001
+#define IDD_SETXYVALUE                  21002
+#define IDC_BTN_0                       22000
+#define IDC_BTN_1                       22001
+#define IDC_BTN_2                       22002
+#define IDC_BTN_3                       22003
+#define IDC_BTN_4                       22004
+#define IDC_BTN_5                       22005
+#define IDC_BTN_6                       22006
+#define IDC_BTN_7                       22007
+#define IDC_BTN_8                       22008
+#define IDC_BTN_9                       22009
+#define IDC_BTN_A                       22010
+#define IDC_BTN_A1                      22011
+#define IDC_BTN_SETPATH                 22012
+#define IDC_BTN_B                       22013
+#define IDC_BTN_B2                      22014
+#define IDC_BTN_BS                      22015
+#define IDC_BTN_C                       22016
+#define IDC_BTN_C2                      22017
+#define IDC_BTN_CODE1                   22018
+#define IDC_BTN_CODE2                   22019
+#define IDC_BTN_CODE3                   22020
+#define IDC_BTN_CODE4                   22021
+#define IDC_BTN_CODE5                   22022
+#define IDC_BTN_CODE6                   22023
+#define IDC_BTN_CODE7                   22024
+#define IDC_BTN_CODE8                   22025
+#define IDC_BTN_CODE9                   22026
+#define IDC_BTN_CODE10                  22027
+#define IDC_BTN_CODE11                  22028
+#define IDC_BTN_CODE12                  22029
+#define IDC_BTN_CODE13                  22030
+#define IDC_BTN_CODE14                  22031
+#define IDC_BTN_CODE15                  22032
+#define IDC_BTN_CODE16                  22033
+#define IDC_BTN_CODE17                  22034
+#define IDC_BTN_CODE18                  22035
+#define IDC_BTN_CODE19                  22036
+#define IDC_BTN_CODE20                  22037
+#define IDC_BTN_CODE21                  22038
+#define IDC_BTN_CODE22                  22039
+#define IDC_BTN_CODE23                  22040
+#define IDC_BTN_CODE24                  22041
+#define IDC_BTN_CODE25                  22042
+#define IDC_BTN_CODE26                  22043
+#define IDC_BTN_D                       22044
+#define IDC_BTN_D2                      22045
+#define IDC_BTN_DEL                     22046
+#define IDC_BTN_DOT                     22047
+#define IDC_BTN_E                       22048
+#define IDC_BTN_E2                      22049
+#define IDC_BTN_F                       22050
+#define IDC_BTN_F2                      22051
+#define IDC_BTN_G                       22052
+#define IDC_BTN_G2                      22053
+#define IDC_BTN_GOLEFT                  22054
+#define IDC_BTN_GORIGHT                 22055
+#define IDC_BTN_H                       22056
+#define IDC_BTN_H2                      22057
+#define IDC_BTN_I                       22058
+#define IDC_BTN_I2                      22059
+#define IDC_BTN_J                       22060
+#define IDC_BTN_J2                      22061
+#define IDC_BTN_K                       22062
+#define IDC_BTN_K2                      22063
+#define IDC_BTN_L                       22064
+#define IDC_BTN_L2                      22065
+#define IDC_BTN_M                       22066
+#define IDC_BTN_M2                      22067
+#define IDC_BTN_MINUS                   22068
+#define IDC_BTN_N                       22069
+#define IDC_BTN_N2                      22070
+#define IDC_BTN_O                       22071
+#define IDC_BTN_O2                      22072
+#define IDC_BTN_P                       22073
+#define IDC_BTN_P2                      22074
+#define IDC_BTN_PLUS                    22075
+#define IDC_BTN_Q                       22076
+#define IDC_BTN_Q2                      22077
+#define IDC_BTN_R                       22078
+#define IDC_BTN_R2                      22079
+#define IDC_BTN_S                       22080
+#define IDC_BTN_S2                      22081
+#define IDC_BTN_T                       22082
+#define IDC_BTN_T2                      22083
+#define IDC_BTN_U                       22084
+#define IDC_BTN_U2                      22085
+#define IDC_BTN_V                       22086
+#define IDC_BTN_V2                      22087
+#define IDC_BTN_W                       22088
+#define IDC_BTN_W2                      22089
+#define IDC_BTN_X                       22090
+#define IDC_BTN_X2                      22091
+#define IDC_BTN_Y                       22092
+#define IDC_BTN_Y2                      22093
+#define IDC_BTN_Z                       22094
+#define IDC_BTN_Z2                      22095
+#define IDC_CAP_TEXT                    22096
+#define IDC_CAP_TEXTX                   22097
+#define IDC_CAP_TEXTY                   22098
+#define IDC_CHK_INSERT                  22099
+#define IDC_ED_INPUTTEXT                22100
+#define IDC_ED_INPUTTEXTX               22101
+#define IDC_ED_INPUTTEXTY               22102
+#define IDC_ST_CAPTION                  22103
+#define IDC_ST_TEXT                     22104
+#define IDC_BTN_PASTEXY                 22105
+#define IDC_BTN_SELECTLIST              22106
+
+// Next default values for new objects
+//
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NEXT_RESOURCE_VALUE        21003
+#define _APS_NEXT_COMMAND_VALUE         51000
+#define _APS_NEXT_CONTROL_VALUE         22107
+#define _APS_NEXT_SYMED_VALUE           23000
+#endif
+#endif

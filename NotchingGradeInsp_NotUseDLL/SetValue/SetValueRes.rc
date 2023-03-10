@@ -1,0 +1,269 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "SetValueRes.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// ÀÏº»¾î(ÀÏº») resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
+LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
+#pragma code_page(932)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "SetValueRes.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // ÀÏº»¾î(ÀÏº») resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// ÇÑ±¹¾î(´ëÇÑ¹Î±¹) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SETXYVALUE DIALOGEX 0, 0, 269, 165
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "«Ñ«é«á?«¿àâïÒ"
+FONT 9, "£Í£Ó £Ð«´«·«Ã«¯", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_ED_INPUTTEXTX,5,40,130,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ED_INPUTTEXTY,135,40,130,15,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,50,140,50,14
+    PUSHBUTTON      "?????",IDCANCEL,155,140,50,14
+    LTEXT           "Static",IDC_ST_CAPTION,5,5,260,15,NOT WS_GROUP,WS_EX_TRANSPARENT
+    LTEXT           "X:??????????¢¦??????????",IDC_CAP_TEXTX,5,25,130,10,NOT WS_GROUP,WS_EX_TRANSPARENT
+    LTEXT           "Y:??????????¢¦??????????",IDC_CAP_TEXTY,135,25,130,9,NOT WS_GROUP,WS_EX_TRANSPARENT
+    PUSHBUTTON      "1",IDC_BTN_1,5,70,20,20
+    PUSHBUTTON      "2",IDC_BTN_2,25,70,20,20
+    PUSHBUTTON      "3",IDC_BTN_3,45,70,20,20
+    PUSHBUTTON      "4",IDC_BTN_4,65,70,20,20
+    PUSHBUTTON      "5",IDC_BTN_5,85,70,20,20
+    PUSHBUTTON      "6",IDC_BTN_6,105,70,20,20
+    PUSHBUTTON      "7",IDC_BTN_7,125,70,20,20
+    PUSHBUTTON      "8",IDC_BTN_8,145,70,20,20
+    PUSHBUTTON      "9",IDC_BTN_9,165,70,20,20
+    PUSHBUTTON      "0",IDC_BTN_0,185,70,20,20
+    PUSHBUTTON      ".",IDC_BTN_DOT,5,100,20,20
+    PUSHBUTTON      "+",IDC_BTN_PLUS,25,100,20,20
+    PUSHBUTTON      "-",IDC_BTN_MINUS,45,100,20,20
+    PUSHBUTTON      "BS",IDC_BTN_BS,85,100,20,20
+    PUSHBUTTON      "DEL",IDC_BTN_DEL,105,100,20,20
+    PUSHBUTTON      "¡ç",IDC_BTN_GOLEFT,145,100,20,20
+    PUSHBUTTON      "¡æ",IDC_BTN_GORIGHT,165,100,20,20
+    CONTROL         "INS",IDC_CHK_INSERT,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,205,100,20,20
+    PUSHBUTTON      "Paste",IDC_BTN_PASTEXY,209,70,33,20
+    PUSHBUTTON      "...",IDC_BTN_SELECTLIST,245,70,20,20
+END
+
+IDD_SETVALUE DIALOGEX 0, 0, 269, 165
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "«Ñ«é«á?«¿àâïÒ"
+FONT 9, "£Í£Ó £Ð«´«·«Ã«¯", 0, 0, 0x1
+BEGIN
+    LTEXT           "Static",IDC_ST_CAPTION,5,5,260,15,NOT WS_GROUP,WS_EX_TRANSPARENT
+    LTEXT           "??????????¢¦??????????",IDC_CAP_TEXT,5,25,260,10,NOT WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_ED_INPUTTEXT,5,40,260,15,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,50,140,50,14
+    PUSHBUTTON      "?????",IDCANCEL,155,140,50,14
+    PUSHBUTTON      "1",IDC_BTN_1,5,70,20,20
+    PUSHBUTTON      "2",IDC_BTN_2,25,70,20,20
+    PUSHBUTTON      "3",IDC_BTN_3,45,70,20,20
+    PUSHBUTTON      "4",IDC_BTN_4,65,70,20,20
+    PUSHBUTTON      "5",IDC_BTN_5,85,70,20,20
+    PUSHBUTTON      "6",IDC_BTN_6,105,70,20,20
+    PUSHBUTTON      "7",IDC_BTN_7,125,70,20,20
+    PUSHBUTTON      "8",IDC_BTN_8,145,70,20,20
+    PUSHBUTTON      "9",IDC_BTN_9,165,70,20,20
+    PUSHBUTTON      "0",IDC_BTN_0,185,70,20,20
+    PUSHBUTTON      ".",IDC_BTN_DOT,5,100,20,20
+    PUSHBUTTON      "+",IDC_BTN_PLUS,25,100,20,20
+    PUSHBUTTON      "-",IDC_BTN_MINUS,45,100,20,20
+    PUSHBUTTON      "BS",IDC_BTN_BS,85,100,20,20
+    PUSHBUTTON      "DEL",IDC_BTN_DEL,105,100,20,20
+    PUSHBUTTON      "¡ç",IDC_BTN_GOLEFT,145,100,20,20
+    PUSHBUTTON      "¡æ",IDC_BTN_GORIGHT,165,100,20,20
+    CONTROL         "INS",IDC_CHK_INSERT,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,205,100,20,20
+END
+
+IDD_SETSTRING DIALOGEX 0, 0, 269, 305
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Ùþí®ÖªìýÕô"
+FONT 9, "£Í£Ó £Ð«´«·«Ã«¯", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_ED_INPUTTEXT,5,40,260,15,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,50,280,50,14
+    PUSHBUTTON      "?????",IDCANCEL,155,280,50,14
+    LTEXT           "Static",IDC_ST_TEXT,5,5,260,15,NOT WS_GROUP
+    LTEXT           "Static",IDC_CAP_TEXT,5,25,260,10,NOT WS_GROUP
+    PUSHBUTTON      "1",IDC_BTN_1,5,65,20,20
+    PUSHBUTTON      "2",IDC_BTN_2,25,65,20,20
+    PUSHBUTTON      "3",IDC_BTN_3,45,65,20,20
+    PUSHBUTTON      "4",IDC_BTN_4,65,65,20,20
+    PUSHBUTTON      "5",IDC_BTN_5,85,65,20,20
+    PUSHBUTTON      "6",IDC_BTN_6,105,65,20,20
+    PUSHBUTTON      "7",IDC_BTN_7,125,65,20,20
+    PUSHBUTTON      "8",IDC_BTN_8,145,65,20,20
+    PUSHBUTTON      "9",IDC_BTN_9,165,65,20,20
+    PUSHBUTTON      "0",IDC_BTN_0,185,65,20,20
+    PUSHBUTTON      ".",IDC_BTN_DOT,5,90,20,20
+    PUSHBUTTON      "+",IDC_BTN_PLUS,25,90,20,20
+    PUSHBUTTON      "-",IDC_BTN_MINUS,45,90,20,20
+    PUSHBUTTON      "BS",IDC_BTN_BS,85,90,20,20
+    PUSHBUTTON      "DEL",IDC_BTN_DEL,105,90,20,20
+    PUSHBUTTON      "¡ç",IDC_BTN_GOLEFT,145,90,20,20
+    PUSHBUTTON      "¡æ",IDC_BTN_GORIGHT,165,90,20,20
+    PUSHBUTTON      "A",IDC_BTN_A,5,115,20,20
+    PUSHBUTTON      "B",IDC_BTN_B,25,115,20,20
+    PUSHBUTTON      "C",IDC_BTN_C,45,115,20,20
+    PUSHBUTTON      "D",IDC_BTN_D,65,115,20,20
+    PUSHBUTTON      "E",IDC_BTN_E,85,115,20,20
+    PUSHBUTTON      "F",IDC_BTN_F,105,115,20,20
+    PUSHBUTTON      "G",IDC_BTN_G,125,115,20,20
+    PUSHBUTTON      "H",IDC_BTN_H,145,115,20,20
+    PUSHBUTTON      "I",IDC_BTN_I,165,115,20,20
+    PUSHBUTTON      "J",IDC_BTN_J,185,115,20,20
+    PUSHBUTTON      "K",IDC_BTN_K,205,115,20,20
+    PUSHBUTTON      "L",IDC_BTN_L,225,115,20,20
+    PUSHBUTTON      "M",IDC_BTN_M,245,115,20,20
+    PUSHBUTTON      "N",IDC_BTN_N,5,135,20,20
+    PUSHBUTTON      "O",IDC_BTN_O,25,135,20,20
+    PUSHBUTTON      "P",IDC_BTN_P,45,135,20,20
+    PUSHBUTTON      "Q",IDC_BTN_Q,65,135,20,20
+    PUSHBUTTON      "R",IDC_BTN_R,85,135,20,20
+    PUSHBUTTON      "S",IDC_BTN_S,105,135,20,20
+    PUSHBUTTON      "T",IDC_BTN_T,125,135,20,20
+    PUSHBUTTON      "U",IDC_BTN_U,145,135,20,20
+    PUSHBUTTON      "V",IDC_BTN_V,165,135,20,20
+    PUSHBUTTON      "W",IDC_BTN_W,185,135,20,20
+    PUSHBUTTON      "X",IDC_BTN_X,205,135,20,20
+    PUSHBUTTON      "Y",IDC_BTN_Y,225,135,20,20
+    PUSHBUTTON      "Z",IDC_BTN_Z,245,135,20,20
+    PUSHBUTTON      "a",IDC_BTN_A1,5,160,20,20
+    PUSHBUTTON      "b",IDC_BTN_B2,25,160,20,20
+    PUSHBUTTON      "c",IDC_BTN_C2,45,160,20,20
+    PUSHBUTTON      "d",IDC_BTN_D2,65,160,20,20
+    PUSHBUTTON      "e",IDC_BTN_E2,85,160,20,20
+    PUSHBUTTON      "f",IDC_BTN_F2,105,160,20,20
+    PUSHBUTTON      "g",IDC_BTN_G2,125,160,20,20
+    PUSHBUTTON      "h",IDC_BTN_H2,145,160,20,20
+    PUSHBUTTON      "i",IDC_BTN_I2,165,160,20,20
+    PUSHBUTTON      "j",IDC_BTN_J2,185,160,20,20
+    PUSHBUTTON      "k",IDC_BTN_K2,205,160,20,20
+    PUSHBUTTON      "l",IDC_BTN_L2,225,160,20,20
+    PUSHBUTTON      "m",IDC_BTN_M2,245,160,20,20
+    PUSHBUTTON      "n",IDC_BTN_N2,5,180,20,20
+    PUSHBUTTON      "o",IDC_BTN_O2,25,180,20,20
+    PUSHBUTTON      "p",IDC_BTN_P2,45,180,20,20
+    PUSHBUTTON      "q",IDC_BTN_Q2,65,180,20,20
+    PUSHBUTTON      "r",IDC_BTN_R2,85,180,20,20
+    PUSHBUTTON      "s",IDC_BTN_S2,105,180,20,20
+    PUSHBUTTON      "t",IDC_BTN_T2,125,180,20,20
+    PUSHBUTTON      "u",IDC_BTN_U2,145,180,20,20
+    PUSHBUTTON      "v",IDC_BTN_V2,165,180,20,20
+    PUSHBUTTON      "w",IDC_BTN_W2,185,180,20,20
+    PUSHBUTTON      "x",IDC_BTN_X2,205,180,20,20
+    PUSHBUTTON      "y",IDC_BTN_Y2,225,180,20,20
+    PUSHBUTTON      "z",IDC_BTN_Z2,245,180,20,20
+    PUSHBUTTON      "!",IDC_BTN_CODE1,5,205,20,20
+    PUSHBUTTON      """",IDC_BTN_CODE2,25,205,20,20
+    PUSHBUTTON      "#",IDC_BTN_CODE3,45,205,20,20
+    PUSHBUTTON      "$",IDC_BTN_CODE4,65,205,20,20
+    PUSHBUTTON      "%",IDC_BTN_CODE5,85,205,20,20
+    PUSHBUTTON      "&&",IDC_BTN_CODE6,105,205,20,20
+    PUSHBUTTON      "'",IDC_BTN_CODE7,125,205,20,20
+    PUSHBUTTON      "(",IDC_BTN_CODE8,145,205,20,20
+    PUSHBUTTON      ")",IDC_BTN_CODE9,165,205,20,20
+    PUSHBUTTON      "*",IDC_BTN_CODE10,185,205,20,20
+    PUSHBUTTON      ",",IDC_BTN_CODE11,5,225,20,20
+    PUSHBUTTON      "/",IDC_BTN_CODE12,25,225,20,20
+    PUSHBUTTON      ":",IDC_BTN_CODE13,45,225,20,20
+    PUSHBUTTON      ";",IDC_BTN_CODE14,65,225,20,20
+    PUSHBUTTON      "<",IDC_BTN_CODE15,85,225,20,20
+    PUSHBUTTON      ">",IDC_BTN_CODE16,105,225,20,20
+    PUSHBUTTON      "?",IDC_BTN_CODE17,125,225,20,20
+    PUSHBUTTON      "@",IDC_BTN_CODE18,145,225,20,20
+    PUSHBUTTON      "[",IDC_BTN_CODE19,165,225,20,20
+    PUSHBUTTON      "]",IDC_BTN_CODE20,185,225,20,20
+    PUSHBUTTON      "\\",IDC_BTN_CODE21,5,245,20,20
+    PUSHBUTTON      "~",IDC_BTN_CODE22,25,245,20,20
+    PUSHBUTTON      "_",IDC_BTN_CODE23,45,245,20,20
+    PUSHBUTTON      "{",IDC_BTN_CODE24,65,245,20,20
+    PUSHBUTTON      "}",IDC_BTN_CODE25,85,245,20,20
+    PUSHBUTTON      "|",IDC_BTN_CODE26,105,245,20,20
+    CONTROL         "INS",IDC_CHK_INSERT,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,205,90,20,20
+    PUSHBUTTON      "...",IDC_BTN_SETPATH,245,65,20,20
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_SETXYVALUE, DIALOG
+    BEGIN
+    END
+
+    IDD_SETVALUE, DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // ÇÑ±¹¾î(´ëÇÑ¹Î±¹) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

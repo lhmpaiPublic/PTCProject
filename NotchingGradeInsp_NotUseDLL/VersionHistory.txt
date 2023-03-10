@@ -1,0 +1,171 @@
+Version : 1.0.0.2
+Comment : 21.12.23 Ahn
+Detail  : Camera Grab Start & End 시점을 PLC RUN ON/OFF 시점이 었던 것을 
+          화면의 Start/Stop 버튼을 눌렀을 때로 변경. 
+          ( Stop 시점에 이전에 Scan되어 Buffer에 남아 있는 이미지가 넘어 오는 문제 대응.)
+          RUN ON/OFF 시점에 조명과 기타 동작만 실행.
+
+
+Version : 1.0.0.3
+Comment : 21.12.27 Ahn
+Detail  : Marking 관련 수정. ( 마킹버스 수정 )
+          - Counter Queue Max Size 지정 오버시 선두 제거
+         결과 저장시에 Judge Size가 아닌 SizeX 값을 Result List및 결과 파일에 저장 되던 버그 수정.
+         NG Stop 사용 유무 시스템 설정에 추가.( 시스템 설정 우선 적용 )
+
+
+Version : 1.0.0.3
+Comment : 21.12.27 Ahn
+Detail  : Counter Queue MaxSize를 설정하도록 변경.( !!!! 설정시점 추가 필요 !!!! )
+          DivisionTab_FromImageToTabInfo() 에서 Tab 못찾으면 Return 되지 않도록 삭제.( Tab 없어도 화면에 표시 도도록. )
+          자동시작기능 추가.( Soft 시작후 5초후 자동 Run상태로 변경됨.)
+
+Version : 1.0.0.4
+Comment : 22.01.04~06 Ahn
+Detail  : 1. Camera 간 Grab Start 시점에 Delay 최소화.
+          2. Bottom Camera Debug 상태로 동작 가능하도록 수정.
+          3. 음극 처리 관련 Algorithm 수정.
+          4. 음극처리시 System Setting 값으로 판단.
+
+Version : 1.0.1.0
+Comment : KANG 22.01.07
+Detail  : 1. History Mode 추가 
+
+Version : 1.0.1.1
+Comment : 22.01.10~11 Ahn
+Detail  : 1. Wave Monitor M/L 수정. 
+          2. Wave Dlg에서 GrabStart 변경부 적용.
+          3. Reciep Threshold 값의 이름을 변경.상한 미사용으로 원화상 휘도에 값의 의미로 Origin으로 변경.
+          4. ThreadQueue 소멸자에서 생기는 문제 수정.
+          5. Crop Image 함수에서 이미지 크기가 영역을 벗어나는 문제 관련 수정.
+          6. Counter Board Input TabID Queue Size 2 -> 3 
+
+Version : 1.0.1.2
+Comment : 22.01.11 Ahn
+Detail  : 1. Grabber CallbackInfo에 RUN 상태 추가하여 Stop시에 들어오는 마지막 이미지 버리도록 수정.
+            Buffer에 남아있던 쓰레기 이미지 넘어오는 현상 대응.
+          2. PLC 에서 연결구간 신호 추가. (B63CA)
+
+Version : 1.0.1.3   
+Comment : 22.01.17 Ahn
+Detail  : 1. Image 처리 함수를 음극/양극 으로 나눔.
+        22.01.18 Ahn
+          3. Edge 인식 수정 ( Smooth 2차 처리 )
+        22.01.19 Ahn
+          2. 음극 관련 Test함수 추가
+        22.01.20 Ahn
+          4. Labeling 시점에 삭제되는 결함의 Pixel 정보도 같이 삭제 되도록 수정.
+          5. 결함 크기 측정 함수 추가.
+
+Version : 1.0.1.4   
+Comment : 22.02.07 Ahn
+Detail  : 1.
+
+
+Version : 1.0.1.5   
+Comment : 22.02.22 ~ 23 Ahn
+Detail  : 1. GrabStart / Stop 위치 변경.
+          2. 디버그용 노이즈 발생관련 더미 데이미지 추가.
+          3. 라운드부 드로스 결함 크기 이상 관련 버그 수정.
+
+
+Version : 1.0.1.6   
+Comment : 22.02.24 ~ 25 Ahn
+Detail  : 1. Crop Image 변경 - 축소 이미지에 판정/결함 사이즈 추가.
+          2. Edge Line에서 설정 사이즈 이상 떨어진 결함 판정 제외.
+
+Comment : 22.03.02 Ahn
+Detail  : 1. 결과 저장 경로에 연도 추가.
+
+
+Version : 1.0.1.7   
+Comment : 22.03.03 Ahn
+Detail  : 1. Image 저장 경로 관련 디버깅 및 달력 버그 수정.
+          2. NG Bit출력 다발시 BSOD 발생하여 NG 출력한 경우만 리셋 하도록 수정함.(클리어 플래그 추가)
+          3. NG 판정 관련 수정. (결함정보 수집 시점에서 판정.)
+
+Version : 1.0.1.8   
+Comment : 22.03.21~24 Ahn
+Detail  : 1. Melsec Ethernet 추가 및 디버깅
+          2. I/O 를 OnTimer에서 감시하고, 신호 확인 시 내부 변수의 비트를 참조 하도록 수정.
+
+Comment : 22.03.25 Ahn
+Detail  : 1. Recipe Change 
+          2. Lot Start Timming Change
+
+Version : 1.0.1.9   
+Comment : 22.03.28 Ahn / 22.03.29 Ahn
+Detail  : 1. Recipe Change Timming Change
+          2. CounterQueue 
+          3. Modify Alarm Bug 
+ 
+Comment : 22.03.30 Ahn
+Detail  : 1. 검출시간단축 - Diff 처리 영역 줄임
+          2. 검출시간단축 - Edge검출용 Mean처리 제거 Proc 용 Mean 이미지로 대체. 
+          3. 라운드 영역 결함 사이즈 계산 오류 수정.
+          4. 라운드 검출 튀는값 제거
+           
+Comment : 22.04.01~04 Ahn
+Detail  : 1. Melsec Net-G 관련 BSOD 발생 수정.
+          2. 
+
+Version : 1.0.1.13  
+Comment : 22.04.21 Ahn
+Detail  : 1. 검사 개시 시점에 Lot ID 비교하여 강제 Lot Change 실행 하도록 수정.
+             Lot Change 신호 들어오지 않음 관련.
+
+Version : 1.0.1.14  
+Comment : 22.04.26 Ahn
+Detail  : 1. Bug 수정 - Tab Level 검출 이상 등.
+
+Version : 1.0.1.15
+Comment : 22.05.02 Ahn
+Detail  : 1. Bug 수정 - Tab Level 검출 이상.
+        : 2. Tab_Info.bin 및 DefectInfo.Bin 파일에 NG Tab 정보만 저장하도록 수정.
+
+Version : 1.0.1.16
+Comment : 22.05.25 Son
+Detail  : 1. Font 변경
+        : 2. Mode 추가
+        : 3. 
+
+Version : 1.0.1.17
+Comment : 22.05.25 Ahn
+Detail  : 1. Camera Reset 기능 - Camera 1, 2의 Frame Count가 차이나는 경우 Camera Reset 하도록 수정.
+        : 2. Melsec 연결해제되어 연결 재시도 할경우, 검사중이면 WorkingSizeSet 하지 않도록 변경
+             ( BSOD 발생 문제 관련 대응. )
+        : 3. 
+
+Version : 1.0.2.17
+Comment : 22.05.31 Ahn / son / Kang
+Detail  : 1. Excel 추가
+        : 2. File 저장 경로 변경             
+        : 3. Crop Image 저장 추가
+        : 4. 모드 추가.
+
+Version : 1.0.2.18
+Comment : 22.06.02 Ahn
+Detail  : 1. project 제거
+
+
+Version : 1.0.2.19
+Comment : 22.06.03 Ahn
+Detail  : 1. 검사이상 버그 수정. 라운드 값이 커서 검사영역의 범위가 벗어나는 문제 관련 수정.
+          2. 시뮬레이션에 이미지 크롭버튼 추가.(선택영역의 크롭 저장)
+
+Version : 1.0.3.19
+Comment : 22.06.2? Ahn
+Detail  : 1. U/I 변경 및 관련 Data 변경 및 삭제
+          2. 
+
+Version : 1.0.4.24
+Comment : 23.02.28 Son
+Detail  : 1. CSiemense PLC 기능 추가
+
+Version : 1.0.4.25
+Comment : 23.03.02 Ahn, 23.03.03 Ahn, 23.03.03 Son 
+Detail  : 1. Siemense Address 변경 관련 수정.
+          2. Siemens Bit 처리 관련 추가.
+          3. I/O Monitor 관련 수정.
+          4. 일부 미사용 함수 제거.
+          5. 기타....

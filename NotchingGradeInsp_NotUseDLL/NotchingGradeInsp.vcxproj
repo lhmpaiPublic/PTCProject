@@ -1,0 +1,728 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_NegativeVersion|Win32">
+      <Configuration>Debug_NegativeVersion</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_NegativeVersion|x64">
+      <Configuration>Debug_NegativeVersion</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_NegativeVersion|Win32">
+      <Configuration>Release_NegativeVersion</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_NegativeVersion|x64">
+      <Configuration>Release_NegativeVersion</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{46B42411-4D33-45B4-A871-CB4950916DFD}</ProjectGuid>
+    <Keyword>MFCProj</Keyword>
+    <RootNamespace>NotchingGradeInsp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;_WINSOCK_DEPRECATED_NO_WARNINGS; _DEBUG;%(PreprocessorDefinitions);GRAB_CAMERA_LINK;</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Control;$(ProjectDir)Dalsa;$(ProjectDir)Melsec;$(ProjectDir)SetValue;$(ProjectDir)AXL;$(ProjectDir)Dalsa$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>$(SAPERADIR)\Lib\Win64\SapClassBasic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;_WINSOCK_DEPRECATED_NO_WARNINGS; _DEBUG;%(PreprocessorDefinitions);GRAB_CAMERA_LINK;NEGATIVE_VERSION;</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\NotchingGradeInsp;..\NotchingGradeInsp\Control;..\NotchingGradeInsp\Dalsa;..\NotchingGradeInsp\Melsec;..\NotchingGradeInsp\SetValue;..\NotchingGradeInsp\AXL;..\NotchingGradeInsp\Dalsa$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>$(SAPERADIR)\Lib\Win64\SapClassBasic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;_WINSOCK_DEPRECATED_NO_WARNINGS; NDEBUG;%(PreprocessorDefinitions);GRAB_CAMERA_LINK;</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Control;$(ProjectDir)Dalsa;$(ProjectDir)Melsec;$(ProjectDir)SetValue;$(ProjectDir)AXL;$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;$(ProjectDir)LGIS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>$(SAPERADIR)\Lib\Win64\SapClassBasic.lib;$(ProjectDir)LGIS\lib\LGISD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;_WINSOCK_DEPRECATED_NO_WARNINGS; NDEBUG;%(PreprocessorDefinitions);GRAB_CAMERA_LINK;NEGATIVE_VERSION</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\NotchingGradeInsp;..\NotchingGradeInsp\Control;..\NotchingGradeInsp\Dalsa;..\NotchingGradeInsp\Melsec;..\NotchingGradeInsp\SetValue;..\NotchingGradeInsp\AXL;..\NotchingGradeInsp\Dalsa..\NotchingGradeInsp;..\NotchingGradeInsp\Control;$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;%(AdditionalIncludeDirectories);$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>$(SAPERADIR)\Lib\Win64\SapClassBasic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)_Negative$(TargetExt)</OutputFile>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="AppDIO.h" />
+    <ClInclude Include="AXL\AXA.h" />
+    <ClInclude Include="AXL\AXC.h" />
+    <ClInclude Include="AXL\AXD.h" />
+    <ClInclude Include="AXL\AXDev.h" />
+    <ClInclude Include="AXL\AXHD.h" />
+    <ClInclude Include="AXL\AXHS.h" />
+    <ClInclude Include="AXL\AXL.h" />
+    <ClInclude Include="AXL\AXM.h" />
+    <ClInclude Include="BitmapStd.h" />
+    <ClInclude Include="BottomPanel.h" />
+    <ClInclude Include="CAlarmProcess.h" />
+    <ClInclude Include="CAprHash.h" />
+    <ClInclude Include="CCropImageView.h" />
+    <ClInclude Include="CCropImageViewDlg.h" />
+    <ClInclude Include="CCropImgQueueCtrl.h" />
+    <ClInclude Include="CDebugLotCtrlDlg.h" />
+    <ClInclude Include="CDefectMapDlg.h" />
+    <ClInclude Include="CDeleteResultFileThread.h" />
+    <ClInclude Include="CDispErrorDlg.h" />
+    <ClInclude Include="CHistoryLotCtrl.h" />
+    <ClInclude Include="CHistoryLotDlg.h" />
+    <ClInclude Include="CHistoryLotView.h" />
+    <ClInclude Include="CImgDisplayDlg.h" />
+    <ClInclude Include="CIoMonitorDlg.h" />
+    <ClInclude Include="CJoinImageDlg.h" />
+    <ClInclude Include="CCameraSettingDlg.h" />
+    <ClInclude Include="CCameraViewDlg.h" />
+    <ClInclude Include="CCameraWaveDlg.h" />
+    <ClInclude Include="CCounterQueueCtrl.h" />
+    <ClInclude Include="CCounterThread.h" />
+    <ClInclude Include="CDebugImageAcqDlg.h" />
+    <ClInclude Include="CDebugSet.h" />
+    <ClInclude Include="CDebugSetDlg.h" />
+    <ClInclude Include="CDefectDataCtrl.h" />
+    <ClInclude Include="CDefectInfo.h" />
+    <ClInclude Include="CDeleteSetting.h" />
+    <ClInclude Include="CDeleteSettingDlg.h" />
+    <ClInclude Include="CExcelFileSaveDlg.h" />
+    <ClInclude Include="CExcelResultFileCtrl.h" />
+    <ClInclude Include="CHistogramDlg.h" />
+    <ClInclude Include="CImageDispDlg.h" />
+    <ClInclude Include="CImageProcess.h" />
+    <ClInclude Include="CImageProcSimDlg.h" />
+    <ClInclude Include="CImageProcThreadUnit.h" />
+    <ClInclude Include="CImageSaveQueueCtrl.h" />
+    <ClInclude Include="CImageSaveThread.h" />
+    <ClInclude Include="CImageViewerDlg.h" />
+    <ClInclude Include="CJudgeResultCtrl.h" />
+    <ClInclude Include="CLightControl.h" />
+    <ClInclude Include="CLightManualCtrlDlg.h" />
+    <ClInclude Include="CMathFunc.h" />
+    <ClInclude Include="CMelsecBase.h" />
+    <ClInclude Include="CMelsecEthenet.h" />
+    <ClInclude Include="CMelsecEthernetSock.h" />
+    <ClInclude Include="CondDlg.h" />
+    <ClInclude Include="Contec\Caio.h" />
+    <ClInclude Include="Contec\CCnt.h" />
+    <ClInclude Include="Contec\CDio.h" />
+    <ClInclude Include="Control\CalendarCell.h" />
+    <ClInclude Include="Control\CalendarCellItem.h" />
+    <ClInclude Include="Control\CalenderCtrl.h" />
+    <ClInclude Include="Control\ColorControl.h" />
+    <ClInclude Include="Control\GraphCtrl.h" />
+    <ClInclude Include="Control\GridCell.h" />
+    <ClInclude Include="Control\GridCellBase.h" />
+    <ClInclude Include="Control\GridCellCheck.h" />
+    <ClInclude Include="Control\GridCellClick.h" />
+    <ClInclude Include="Control\GridCellCombo.h" />
+    <ClInclude Include="Control\GridCellRange.h" />
+    <ClInclude Include="Control\GridCellSpinCtrl.h" />
+    <ClInclude Include="Control\GridCtrl.h" />
+    <ClInclude Include="Control\GridDropTarget.h" />
+    <ClInclude Include="Control\GridInPlaceEdit.h" />
+    <ClInclude Include="Control\GridMemoryDC.hpp" />
+    <ClInclude Include="Control\GridTitleTip.h" />
+    <ClInclude Include="Control\ThumbnailCtrl.h" />
+    <ClInclude Include="CRecipeCtrl.h" />
+    <ClInclude Include="CRecipeSelectDlg.h" />
+    <ClInclude Include="CRecipeSettingDlg.h" />
+    <ClInclude Include="CRecipeTableCtrl.h" />
+    <ClInclude Include="CResultDirectoryDlg.h" />
+    <ClInclude Include="CResultFileManager.h" />
+    <ClInclude Include="CResultThread.h" />
+    <ClInclude Include="CSectorNgJudge.h" />
+    <ClInclude Include="CSiemensPlc.h" />
+    <ClInclude Include="CStartDlg.h" />
+    <ClInclude Include="CTabRsltInfo.h" />
+    <ClInclude Include="CTacTimeDataCtrl.h" />
+    <ClInclude Include="CTactTImeGraphDlg.h" />
+    <ClInclude Include="CThreadQueueCtrl.h" />
+    <ClInclude Include="CUserChangeDlg.h" />
+    <ClInclude Include="DIOTestDlg.h" />
+    <ClInclude Include="excel.h" />
+    <ClInclude Include="ExcelConst.h" />
+    <ClInclude Include="FrameInfo.h" />
+    <ClInclude Include="FrameRsltInfo.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="GlobalData.h" />
+    <ClInclude Include="GlobalDef.h" />
+    <ClInclude Include="GrabberCtrl.h" />
+    <ClInclude Include="GrabDalsaCameraLink.h" />
+    <ClInclude Include="GraphDlg.h" />
+    <ClInclude Include="HistoryDlg.h" />
+    <ClInclude Include="ImageProcessCtrl.h" />
+    <ClInclude Include="ImageProcThread.h" />
+    <ClInclude Include="ImgClipedBmp.h" />
+    <ClInclude Include="InspDlg.h" />
+    <ClInclude Include="InspInfoDlg.h" />
+    <ClInclude Include="KExcel.h" />
+    <ClInclude Include="LanguageCode.h" />
+    <ClInclude Include="LeftPanel.h" />
+    <ClInclude Include="LGIS\LGIS_Plc.h" />
+    <ClInclude Include="LightSocket.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Melsec\MelsecDataLink.h" />
+    <ClInclude Include="ModeDlg.h" />
+    <ClInclude Include="NotchingGradeInsp.h" />
+    <ClInclude Include="NotchingGradeInspDoc.h" />
+    <ClInclude Include="NotchingGradeInspView.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Ping.h" />
+    <ClInclude Include="PioCtrl.h" />
+    <ClInclude Include="QueueCtrl.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ResultView.h" />
+    <ClInclude Include="ResultViewDlg.h" />
+    <ClInclude Include="RightPanel.h" />
+    <ClInclude Include="SetValue\SetValue.h" />
+    <ClInclude Include="SetValue\SetValueDlg.h" />
+    <ClInclude Include="SetValue\SetValueEdit.h" />
+    <ClInclude Include="SetValue\SetValueFunc.h" />
+    <ClInclude Include="SetValue\SetValueRes.h" />
+    <ClInclude Include="SigProc.h" />
+    <ClInclude Include="StdIoApi.h" />
+    <ClInclude Include="StdIoAXL.h" />
+    <ClInclude Include="StdIoCCLink.h" />
+    <ClInclude Include="StdIoCtrl.h" />
+    <ClInclude Include="SystemSetting.h" />
+    <ClInclude Include="SystemSettingDlg.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TimeAnalyzer.h" />
+    <ClInclude Include="TopPanel.h" />
+    <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="Win32File.h" />
+    <ClInclude Include="WinTool.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AppDIO.cpp" />
+    <ClCompile Include="BitmapStd.cpp" />
+    <ClCompile Include="BottomPanel.cpp" />
+    <ClCompile Include="CAlarmProcess.cpp" />
+    <ClCompile Include="CAprHash.cpp" />
+    <ClCompile Include="CCropImageView.cpp" />
+    <ClCompile Include="CCropImageViewDlg.cpp" />
+    <ClCompile Include="CCropImgQueueCtrl.cpp" />
+    <ClCompile Include="CDebugLotCtrlDlg.cpp" />
+    <ClCompile Include="CDefectMapDlg.cpp" />
+    <ClCompile Include="CDeleteResultFileThread.cpp" />
+    <ClCompile Include="CDispErrorDlg.cpp" />
+    <ClCompile Include="CHistoryLotCtrl.cpp" />
+    <ClCompile Include="CHistoryLotDlg.cpp" />
+    <ClCompile Include="CHistoryLotView.cpp" />
+    <ClCompile Include="CImgDisplayDlg.cpp" />
+    <ClCompile Include="CIoMonitorDlg.cpp" />
+    <ClCompile Include="CJoinImageDlg.cpp" />
+    <ClCompile Include="CCameraSettingDlg.cpp" />
+    <ClCompile Include="CCameraViewDlg.cpp" />
+    <ClCompile Include="CCameraWaveDlg.cpp" />
+    <ClCompile Include="CCounterQueueCtrl.cpp" />
+    <ClCompile Include="CCounterThread.cpp" />
+    <ClCompile Include="CDebugImageAcqDlg.cpp" />
+    <ClCompile Include="CDebugSet.cpp" />
+    <ClCompile Include="CDebugSetDlg.cpp" />
+    <ClCompile Include="CDefectDataCtrl.cpp" />
+    <ClCompile Include="CDefectInfo.cpp" />
+    <ClCompile Include="CDeleteSetting.cpp" />
+    <ClCompile Include="CDeleteSettingDlg.cpp" />
+    <ClCompile Include="CExcelFileSaveDlg.cpp" />
+    <ClCompile Include="CExcelResultFileCtrl.cpp" />
+    <ClCompile Include="CHistogramDlg.cpp" />
+    <ClCompile Include="CImageDispDlg.cpp" />
+    <ClCompile Include="CImageProcess.cpp" />
+    <ClCompile Include="CImageProcSimDlg.cpp" />
+    <ClCompile Include="CImageProcThreadUnit.cpp" />
+    <ClCompile Include="CImageSaveQueueCtrl.cpp" />
+    <ClCompile Include="CImageSaveThread.cpp" />
+    <ClCompile Include="CImageViewerDlg.cpp" />
+    <ClCompile Include="CJudgeResultCtrl.cpp" />
+    <ClCompile Include="CLightControl.cpp" />
+    <ClCompile Include="CLightManualCtrlDlg.cpp" />
+    <ClCompile Include="CMathFunc.cpp" />
+    <ClCompile Include="CMelsecBase.cpp" />
+    <ClCompile Include="CMelsecEthenet.cpp" />
+    <ClCompile Include="CMelsecEthernetSock.cpp" />
+    <ClCompile Include="CondDlg.cpp" />
+    <ClCompile Include="Control\CalendarCell.cpp" />
+    <ClCompile Include="Control\CalendarCellItem.cpp" />
+    <ClCompile Include="Control\CalenderCtrl.cpp" />
+    <ClCompile Include="Control\ColorControl.cpp" />
+    <ClCompile Include="Control\GraphCtrl.cpp" />
+    <ClCompile Include="Control\GridCell.cpp" />
+    <ClCompile Include="Control\GridCellBase.cpp" />
+    <ClCompile Include="Control\GridCellCheck.cpp" />
+    <ClCompile Include="Control\GridCellClick.cpp" />
+    <ClCompile Include="Control\GridCellCombo.cpp" />
+    <ClCompile Include="Control\GridCellSpinCtrl.cpp" />
+    <ClCompile Include="Control\GridCtrl.cpp" />
+    <ClCompile Include="Control\GridDropTarget.cpp" />
+    <ClCompile Include="Control\GridInPlaceEdit.cpp" />
+    <ClCompile Include="Control\GridTitleTip.cpp" />
+    <ClCompile Include="Control\ThumbnailCtrl.cpp" />
+    <ClCompile Include="CRecipeCtrl.cpp" />
+    <ClCompile Include="CRecipeSelectDlg.cpp" />
+    <ClCompile Include="CRecipeSettingDlg.cpp" />
+    <ClCompile Include="CRecipeTableCtrl.cpp" />
+    <ClCompile Include="CResultDirectoryDlg.cpp" />
+    <ClCompile Include="CResultFileManager.cpp" />
+    <ClCompile Include="CResultThread.cpp" />
+    <ClCompile Include="CSectorNgJudge.cpp" />
+    <ClCompile Include="CSiemensPlc.cpp" />
+    <ClCompile Include="CStartDlg.cpp" />
+    <ClCompile Include="CTabRsltInfo.cpp" />
+    <ClCompile Include="CTacTimeDataCtrl.cpp" />
+    <ClCompile Include="CTactTImeGraphDlg.cpp" />
+    <ClCompile Include="CThreadQueueCtrl.cpp" />
+    <ClCompile Include="CUserChangeDlg.cpp" />
+    <ClCompile Include="DIOTestDlg.cpp" />
+    <ClCompile Include="excel.cpp" />
+    <ClCompile Include="FrameInfo.cpp" />
+    <ClCompile Include="FrameRsltInfo.cpp" />
+    <ClCompile Include="GlobalData.cpp" />
+    <ClCompile Include="GrabberCtrl.cpp" />
+    <ClCompile Include="GrabDalsaCameraLink.cpp" />
+    <ClCompile Include="GraphDlg.cpp" />
+    <ClCompile Include="HistoryDlg.cpp" />
+    <ClCompile Include="ImageProcessCtrl.cpp" />
+    <ClCompile Include="ImageProcThread.cpp" />
+    <ClCompile Include="ImgClipedBmp.cpp" />
+    <ClCompile Include="InspDlg.cpp" />
+    <ClCompile Include="InspInfoDlg.cpp" />
+    <ClCompile Include="KExcel.cpp" />
+    <ClCompile Include="LanguageCode.cpp" />
+    <ClCompile Include="LeftPanel.cpp" />
+    <ClCompile Include="LightSocket.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Melsec\MelsecDataLink.cpp" />
+    <ClCompile Include="ModeDlg.cpp" />
+    <ClCompile Include="NotchingGradeInsp.cpp" />
+    <ClCompile Include="NotchingGradeInspDoc.cpp" />
+    <ClCompile Include="NotchingGradeInspView.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Ping.cpp" />
+    <ClCompile Include="PioCtrl.cpp" />
+    <ClCompile Include="QueueCtrl.cpp" />
+    <ClCompile Include="ResultView.cpp" />
+    <ClCompile Include="ResultViewDlg.cpp" />
+    <ClCompile Include="RightPanel.cpp" />
+    <ClCompile Include="SetValue\SetValue.cpp" />
+    <ClCompile Include="SetValue\SetValueDlg.cpp" />
+    <ClCompile Include="SetValue\SetValueEdit.cpp" />
+    <ClCompile Include="SetValue\SetValueFunc.cpp" />
+    <ClCompile Include="SigProc.cpp" />
+    <ClCompile Include="StdIoApi.cpp" />
+    <ClCompile Include="StdIoAXL.cpp" />
+    <ClCompile Include="StdIoCCLink.cpp" />
+    <ClCompile Include="StdIoCtrl.cpp" />
+    <ClCompile Include="SystemSetting.cpp" />
+    <ClCompile Include="SystemSettingDlg.cpp" />
+    <ClCompile Include="TimeAnalyzer.cpp" />
+    <ClCompile Include="TopPanel.cpp" />
+    <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="Win32File.cpp" />
+    <ClCompile Include="WinTool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NotchingGradeInsp.rc" />
+    <ResourceCompile Include="SetValue\SetValueRes.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\UltiumCells.bmp" />
+    <Image Include="C:\Users\94000_9k1\Desktop\Lenz.ico" />
+    <Image Include="res\AppClose.bmp" />
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\bmp00002.bmp" />
+    <Image Include="res\bmpremin.bmp" />
+    <Image Include="res\classview.bmp" />
+    <Image Include="res\classview_hc.bmp" />
+    <Image Include="res\class_view.ico" />
+    <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\explorer.bmp" />
+    <Image Include="res\explorer_hc.bmp" />
+    <Image Include="res\fileview.bmp" />
+    <Image Include="res\fileview_hc.bmp" />
+    <Image Include="res\file_view.ico" />
+    <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\HLI_LOGO.bmp" />
+    <Image Include="res\Insp_Pause.bmp" />
+    <Image Include="res\Insp_Run.bmp" />
+    <Image Include="res\Insp_Stop.bmp" />
+    <Image Include="res\Led_Off_Green_Focus.bmp" />
+    <Image Include="res\Led_On_Green.bmp" />
+    <Image Include="res\LGES_Logo.bmp" />
+    <Image Include="res\menuimages.bmp" />
+    <Image Include="res\menuimages_hc.bmp" />
+    <Image Include="res\NotchingGradeInsp.ico" />
+    <Image Include="res\NotchingGradeInsp11.ico" />
+    <Image Include="res\NotchingGradeInspDoc.ico" />
+    <Image Include="res\output_wnd.ico" />
+    <Image Include="res\output_wnd_hc.ico" />
+    <Image Include="res\properties.bmp" />
+    <Image Include="res\properties_hc.bmp" />
+    <Image Include="res\properties_wnd.ico" />
+    <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\radio_of.bmp" />
+    <Image Include="res\radio_of32.bmp" />
+    <Image Include="res\radio_on.bmp" />
+    <Image Include="res\radio_on32.bmp" />
+    <Image Include="res\sort.bmp" />
+    <Image Include="res\sort_hc.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar256.bmp" />
+    <Image Include="res\UltiumCells.bmp" />
+    <Image Include="res\userimages.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\NotchingGradeInsp.rc2" />
+    <None Include="SetValue\SetValueRes.aps" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="AXL\AXL.lib" />
+    <Library Include="Contec\Win32\caio.lib" />
+    <Library Include="Contec\Win32\CCNT.lib" />
+    <Library Include="Contec\Win32\CDIO.lib" />
+    <Library Include="Contec\x64\caio.lib" />
+    <Library Include="Contec\x64\CCNT.lib" />
+    <Library Include="Contec\x64\CDIO.lib" />
+    <Library Include="Dalsa\corapi.lib" />
+    <Library Include="Dalsa\SapClassBasic.lib" />
+    <Library Include="Dalsa\SapClassGui.lib" />
+    <Library Include="LGIS\lib\LGIS.lib" />
+    <Library Include="LGIS\lib\LGISD.lib" />
+    <Library Include="Melsec\x64\MdFunc32.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ModPlanList.txt" />
+    <Text Include="VersionHistory.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

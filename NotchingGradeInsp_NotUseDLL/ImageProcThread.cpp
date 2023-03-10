@@ -1,0 +1,892 @@
+#include "pch.h"
+#include "ImageProcThread.h"
+#include "ImageProcessCtrl.h"
+#include "Bitmapstd.h"
+#include "QueueCtrl.h"
+#include "FrameInfo.h"
+#include "FrameRsltInfo.h"
+#include "Win32File.h"
+#include "TimeAnalyzer.h"
+#include "CImageProcess.h"
+#include "GlobalData.h"
+#include "GlobalDef.h"
+#include "CRecipeCtrl.h"
+#include "CCounterQueueCtrl.h" 
+#include "SigProc.h"
+#include "NotchingGradeInsp.h" // 22.04.01 Ahn Add 
+
+#include "CThreadQueueCtrl.h"
+#include "CImageProcThreadUnit.h"
+#include "AppDIO.h"
+
+// 22.05.31 Ahn Add Start
+#include "CImageSaveQueueCtrl.h"
+// 22.05.31 Ahn Add End
+// 22.12.09 Ahn Add Start
+#include "CTacTimeDataCtrl.h"
+// 22.12.09 Ahn Add End
+
+//using namespace HalconCpp;
+
+CImageProcThread::CImageProcThread(CImageProcessCtrl *pParent)
+{
+	m_pParent = pParent ;
+	m_pThread = NULL ;
+}
+
+CImageProcThread::~CImageProcThread(void)
+{
+}
+
+void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : Image Proc Mode 
+{
+	m_bKill = FALSE ;
+
+//	m_DisphWnd = NULL ;
+	if ( m_pThread == NULL ) {
+		if (nMode == 0) {
+			m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlThreadImgCuttingTab,
+				(LPVOID)this,
+				THREAD_PRIORITY_HIGHEST,
+				0,
+				CREATE_SUSPENDED,
+				NULL);
+		}
+		else {
+			m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlThreadImgProc,
+				(LPVOID)this,
+				THREAD_PRIORITY_HIGHEST,
+				0,
+				CREATE_SUSPENDED,
+				NULL);
+		}
+		if ( m_pThread != NULL ) {
+			m_pThread->m_bAutoDelete = FALSE ;
+			m_pThread->ResumeThread() ;
+		}
+	}
+}
+void CImageProcThread::Kill( void ) 
+{
+	DWORD	dwCode ;
+	LONG	ret ;
+
+	if ( m_pThread != NULL ) {
+		ret = ::GetExitCodeThread( m_pThread->m_hThread, &dwCode ) ;
+		if ( ret && dwCode == STILL_ACTIVE ) {
+			m_bKill = TRUE ;
+			WaitForSingleObject( m_pThread->m_hThread, INFINITE ) ;
+		}
+		delete m_pThread ;
+		m_pThread = NULL ;
+	}
+
+}
+
+
+// Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
+UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
+{
+	CImageProcThread* pThis = (CImageProcThread*)Param;
+	CQueueCtrl* pQueueFrame_Top = pThis->m_pParent->GetQueueFrmPtr(0);
+	CQueueCtrl* pQueueFrame_Bottom = pThis->m_pParent->GetQueueFrmPtr(1);
+	CCounterQueueCtrl* pCntQueueInCtrl = pThis->m_pParent->GetCounterQueInPtr(); // 탭 카운터 용 큐
+	CThreadQueueCtrl* pThreadQue[MAX_CAMERA_NO];
+	pThreadQue[CAM_POS_TOP] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_TOP);
+	pThreadQue[CAM_POS_BOTTOM] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_BOTTOM);
+
+	BOOL bReserved = FALSE; // 크기가 작아서 보내지 못한 부분이 있음 다음 이미지 받아서 처리 할 것인지에 대한 Flag.
+	BOOL bReservFrmNo = -1;
+	int nLastLengh = 0;
+	int nLastWidth = 0;
+	CTabInfo reservTabInfo;
+	CString strMsg;
+	CString strTemp;
+	CTabInfo RsvTabInfo;
+
+	int nFindPos = 0;
+	BOOL bHeadFlag = FALSE;
+	BOOL bTailFlag = FALSE;
+	BOOL bStopFlag = FALSE;
+
+	// 22.02.22 Ahn Add Start
+#if defined( DEBUG_NOISE_COUNTERMEASURE )
+	BYTE* btLastBtmImg = NULL;
+#endif
+	// 22.02.22 Ahn Add End
+
+	// 22.04.06 Ahn Add Start - 첫 탭 버림
+	BOOL bFirstTab = TRUE;
+	// 22.04.06 Ahn Add End
+
+	while (1) {
+		if (pThis == NULL) {
+			break;
+		}
+		if (pThis->m_bKill == TRUE) {
+#if !defined( BOTTOM_CAMERA_DEBUG )
+			if ((pQueueFrame_Top != NULL) && (pQueueFrame_Bottom != NULL)) {
+				if ((pQueueFrame_Top->GetSize() <= 0) || (pQueueFrame_Bottom->GetSize() <= 0)) {
+					break;
+				}
+			}
+#else
+			if ((pQueueFrame_Top != NULL)) {
+				if ((pQueueFrame_Top->GetSize() <= 0)) {
+					break;
+				}
+			}
+#endif
+		}
+
+		int nSizeFrmL = pQueueFrame_Top->GetSize();
+		int nSizeFrmR = pQueueFrame_Bottom->GetSize();
+		bHeadFlag = !pQueueFrame_Top->IsEmpty();
+		bTailFlag = !pQueueFrame_Bottom->IsEmpty();
+
+		if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) {
+			// 에러 처리 
+		//	pThis->SetFameSizeError(); // 
+			CString strErrMsg;
+			strErrMsg.Format(_T("프레임 사이즈 이상 : Top [%d], Bottom[%d], 검사 상태 [%d], 종료 처리!!!!"), nSizeFrmL, nSizeFrmR , pThis->m_pParent->IsInspection() );
+		//	AprData.SaveErrorLog(strErrMsg);
+			AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
+		}
+#if defined( BOTTOM_CAMERA_DEBUG )
+		bTailFlag = TRUE;
+#endif
+		// 22.02.22 Ahn Add Start
+#if defined( DEBUG_NOISE_COUNTERMEASURE )
+		BOOL bMakeDummyBtm;
+		//if ((bHeadFlag == TRUE) && (bTailFlag == FALSE)) {
+		if (((nSizeFrmL - nSizeFrmR) > 0) && (btLastBtmImg != NULL)) {
+			bMakeDummyBtm = TRUE;
+			AprData.SaveDebugLog(_T("!!!! MAKE Dummy Data -- 00 !!!!"));
+		}
+		else {
+			bMakeDummyBtm = FALSE;
+		}
+#endif
+		// 22.02.22 Ahn Add End
+
+				// 22.02.22 Ahn Modify Start
+#if defined( DEBUG_NOISE_COUNTERMEASURE )
+		if ((bHeadFlag && bTailFlag) || (bMakeDummyBtm == TRUE)) {
+#else
+		if (bHeadFlag && bTailFlag) {
+#endif
+			// 22.02.22 Ahn Modify End
+			CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
+
+			int nHeight = pFrmInfo_Top->m_nHeight;
+			int nFrmWIdth = pFrmInfo_Top->m_nWidth;
+			int nWidth = nFrmWIdth;
+			// 22.02.22 Ahn Add Start
+#if defined( DEBUG_NOISE_COUNTERMEASURE )
+			CFrameInfo* pFrmInfo_Bottom;
+			if (bMakeDummyBtm == TRUE) {
+				pFrmInfo_Bottom = new CFrameInfo;
+				pFrmInfo_Bottom->m_nFrameCount = pFrmInfo_Top->m_nFrameCount;
+				pFrmInfo_Bottom->m_nWidth = pFrmInfo_Top->m_nWidth;
+				pFrmInfo_Bottom->m_nHeight = pFrmInfo_Top->m_nHeight;
+				pFrmInfo_Bottom->m_nHeadNo = CAM_POS_BOTTOM;
+				pFrmInfo_Bottom->m_nBand = 1;
+				BYTE* pDummyImgPtr = new BYTE[nWidth * nHeight];
+				//memset(pDummyImgPtr, 0x00, sizeof(BYTE)nWidth * nHeight);
+				//if (btLastBtmImg != NULL) {
+				AprData.SaveDebugLog(_T("!!!! Last bottom frame copy start !!!!"));
+				memcpy(pDummyImgPtr, btLastBtmImg, sizeof(BYTE) * nWidth * nHeight);
+				AprData.SaveDebugLog(_T("!!!! Last bottom frame copy end !!!!"));
+				//}
+				//else {
+				//	memset(pDummyImgPtr, 0x00, sizeof(BYTE)* nWidth * nHeight);
+				//}
+				pFrmInfo_Bottom->SetImgPtr(pDummyImgPtr);
+				AprData.SaveDebugLog(_T("!!!! MAKE Dummy Data !!!!"));
+				pFrmInfo_Bottom->m_bErrorFlag = TRUE;
+			}
+			else {
+				pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
+			}
+
+#else
+// 22.02.22 Ahn Add End
+// 22.01.04 Ahn Modify Start
+#if !defined( BOTTOM_CAMERA_DEBUG )
+			CFrameInfo* pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
+#else
+			CFrameInfo* pFrmInfo_Bottom = new CFrameInfo();
+			BYTE* pImg = new BYTE[nWidth * nHeight];
+			memset(pImg, 0x00, sizeof(BYTE) * nWidth * nHeight);
+
+			BOOL bSend = FALSE;
+			pFrmInfo_Bottom = new CFrameInfo;
+			pFrmInfo_Bottom->SetImgPtr(pImg);
+			pFrmInfo_Bottom->m_nHeight = nHeight;
+			pFrmInfo_Bottom->m_nWidth = nWidth;
+			pFrmInfo_Bottom->m_nFrameCount = pFrmInfo_Top->m_nFrameCount;
+			pFrmInfo_Bottom->m_nBand = 1;
+			pFrmInfo_Bottom->m_nHeadNo = CAM_POS_BOTTOM;
+#endif 
+			// 22.01.04 Ahn Modify End
+			// 22.02.22 Ahn Add Start
+#endif
+// 22.02.22 Ahn Add End
+
+			int nFrameCountL = pFrmInfo_Top->m_nFrameCount;
+			int nFrameCountR = pFrmInfo_Bottom->m_nFrameCount;
+
+			// 22.11.30 Ahn Modify Start
+			AprData.m_NowLotData.m_nFrameCount = pFrmInfo_Top->m_nFrameCount ;
+			// 22.11.30 Ahn Modify End
+
+			BYTE* pHeadPtr = pFrmInfo_Top->GetImagePtr();
+			BYTE* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
+
+			// 22.02.22 Ahn Add Start
+#if defined( DEBUG_NOISE_COUNTERMEASURE )
+			if (btLastBtmImg == NULL) {
+				btLastBtmImg = new BYTE[nWidth * nHeight];
+			}
+			memcpy(btLastBtmImg, pTailPtr, sizeof(BYTE) * nWidth * nHeight);
+#endif
+			// 22.02.22 Ahn Add End
+
+			CTimeAnalyzer ctAna;
+			ctAna.Clear();
+			ctAna.StopWatchStart();
+
+			// Tab으로 잘라 보냄
+			// Projection 사용 
+			{
+				CTimeAnalyzer ctAna;
+				ctAna.StopWatchStart();
+				// 22.05.09 Ahn Add Start
+				int nBndElectrode = 0;
+				int nBneElectrodeBtm = 0;
+#if defined( ANODE_MODE )
+				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
+#endif
+				// 22.05.09 Ahn Add End
+				CImageProcess::_VEC_TAB_INFO vecTabInfo;
+				int nLevel = 0;
+				int nBtmLevel = 0;
+				int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight ;
+				// 22.11.18 Ahn Modify Start
+				//int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo );
+				int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo( pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
+				// 22.11.18 Ahn Modify End
+				// 21.12.28 Ahn Modify Start
+				//int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
+
+				int nVecSize = (int)vecTabInfo.size();
+				BOOL bErrorAll = FALSE;
+				if (nVecSize <= 0) {
+					AprData.SaveDebugLog(_T("!!!!Tab Find Faile!!!!"));
+					// 강제 분할 
+					bErrorAll = TRUE;
+				}
+#if defined( ANODE_MODE )
+				nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom( pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo );
+#else
+				int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
+#endif
+				// 21.12.28 Ahn Modify End
+				
+				double dTime = ctAna.WhatTimeIsIt_Double();
+				CString strLog;
+				strLog.Format(_T("TabCutting Time [%.2lf]msec, 전극경계Top[%d], Bottom[%d] BtmLevel[%d]"), dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
+				AprData.SaveTactLog(strLog);
+
+				for (int i = 0; i < nVecSize; i++) {
+					CCounterInfo cntInfo;
+					CTabInfo* pTabInfo = &vecTabInfo[i];
+					cntInfo = pCntQueueInCtrl->Pop();
+
+					int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
+					int nRight = pTabInfo->nRight - pTabInfo->nTabRight;
+					// 22.05.03 Ahn Modify Start
+					int nErrorNo = 0;
+					//if ((nLeft < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2)) || (nRight < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2))) {
+					if ((nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW) || (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW)) {
+					// 22.05.03 Ahn Modify End
+						pTabInfo->m_bErrorFlag = TRUE;
+						nErrorNo = 1;
+					}
+
+					if ((AprData.m_NowLotData.m_bProcError == TRUE) && (AprData.m_System.m_bFirstTabDoNotProc == TRUE)) {
+						pTabInfo->m_bErrorFlag = TRUE;
+						AprData.m_NowLotData.m_bProcError = FALSE;
+						nErrorNo = 2;
+					}
+					// 21.12.28 Ahn Add Start
+					if (bErrorAll == TRUE) {
+						pTabInfo->m_bErrorFlag = TRUE;
+						nErrorNo = 3;
+					}
+					// 21.12.28 Ahn Add End
+					// 22.06.22 Ahn Add Start
+					if (nLevel <= 0 ) {
+						pTabInfo->m_bErrorFlag = TRUE;
+						nErrorNo = 4;
+					}
+					// 22.06.22 Ahn Add End
+
+					// 22.09.30 Ahn Add Start
+					if( nLevel >= (nWidth - 100 )){
+						pTabInfo->m_bErrorFlag = TRUE;
+						nErrorNo = 5;
+					}
+					// 22.09.30 Ahn Add End
+
+					CFrameInfo* pInfo;
+					pInfo = new CFrameInfo;
+					pInfo->SetImgPtr(pTabInfo->pImgPtr);
+					pInfo->m_nHeight = pTabInfo->nImageLength;
+					pInfo->m_nHeadNo = pFrmInfo_Top->m_nHeadNo;
+					pInfo->m_nWidth = nWidth;
+					// 22.11.18 Ahn Modify Start
+					//pBtmInfo->m_nFrameCount = nFrameCountL;
+					pInfo->m_nFrameCount = pTabInfo->nFrameCount;
+					// 22.11.18 Ahn Modify End
+					pInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
+					pInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
+					pInfo->m_nTabLevel = nLevel;
+					pInfo->m_nInspMode = CFrameInfo::en_TopFrame;
+					pInfo->m_nTabLeft = pTabInfo->nTabLeft;
+					pInfo->m_nTabRight = pTabInfo->nTabRight;
+					pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
+					pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
+					pInfo->m_nBndElectrode = nBndElectrode;
+
+					CString strMsg;
+					// 22.05.03 Ahn Modify Start
+					strMsg.Format(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
+						, pInfo->nTabNo, nErrorNo, pInfo->m_nTabLevel, pInfo->m_nTabLeft, pInfo->m_nTabRight, pInfo->m_nHeight, pInfo->m_nTabId_CntBoard);
+					// 22.05.03 Ahn Modify End
+					AprData.SaveDebugLog(strMsg);
+
+					CFrameInfo* pBtmInfo;
+					pBtmInfo = new CFrameInfo;
+					pBtmInfo->SetImgPtr(pTabInfo->pImgBtmPtr);
+					pBtmInfo->m_nHeight = pTabInfo->nImageLength;
+					pBtmInfo->m_nHeadNo = pFrmInfo_Bottom->m_nHeadNo;
+					pBtmInfo->m_nWidth = nWidth;
+					// 22.11.18 Ahn Modify Start
+					//pBtmInfo->m_nFrameCount = nFrameCountL;
+					pBtmInfo->m_nFrameCount = pTabInfo->nFrameCount ;
+					// 22.11.18 Ahn Modify End
+					pBtmInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
+					pBtmInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
+					pBtmInfo->m_nTabLevel = nBtmLevel;
+					pBtmInfo->m_nInspMode = CFrameInfo::en_BottomFrame;
+					pBtmInfo->m_nTabId_CntBoard = cntInfo.nTabID;
+					pBtmInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
+
+					pBtmInfo->m_nBndElectrode = nBneElectrodeBtm;// 22.05.11 Ahn Add 
+					// 22.02.22 Ahn Add Start
+#if defined( DEBUG_NOISE_COUNTERMEASURE )
+					if (bMakeDummyBtm == TRUE) {
+						pBtmInfo->m_bErrorFlag = pFrmInfo_Bottom->m_bErrorFlag;
+					}
+#endif
+					// 22.02.22 Ahn Add End
+
+#if defined( BOTTOM_CAMERA_DEBUG )
+					pBtmInfo->m_bErrorFlag = TRUE;
+#endif
+
+					// 22.05.18 Ahn Add Start
+					int nTopQueCnt = pThreadQue[CAM_POS_TOP]->GetSize();
+					int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
+					if ((nTopQueCnt > IMAGE_PROC_SKIP_COUNT) && (nBtmQueCnt > IMAGE_PROC_SKIP_COUNT) 
+						|| ( (nSizeFrmL > IMAGE_PROC_SKIP_COUNT ) && (nSizeFrmR > IMAGE_PROC_SKIP_COUNT) ) ){
+						pInfo->m_bErrorFlag = TRUE;
+						pBtmInfo->m_bErrorFlag = TRUE ;
+					}
+					// 22.05.18 Ahn Add Start
+
+					// 22.12.09 Ahn Add Start
+					LARGE_INTEGER tmp;
+					LARGE_INTEGER start;
+					QueryPerformanceFrequency(&tmp);
+					double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
+					QueryPerformanceCounter(&start);
+
+					pInfo->m_stTime = start;
+					pInfo->m_dFrecuency = dFrequency;
+					pBtmInfo->m_stTime = start;
+					pBtmInfo->m_dFrecuency = dFrequency;
+					// 22.12.09 Ahn Add End
+
+					pThreadQue[CAM_POS_TOP]->push(pInfo) ;
+					pThreadQue[CAM_POS_BOTTOM]->push(pBtmInfo) ;
+
+					AprData.m_NowLotData.m_nTabCount++;
+				}
+				vecTabInfo.clear();
+			}
+
+			delete pFrmInfo_Top;
+			pFrmInfo_Top = NULL;
+			delete pFrmInfo_Bottom;
+			pFrmInfo_Bottom = NULL;
+
+			double dSecond = ctAna.WhatTimeIsIt_Double();
+			AprData.SetTactTime_1(dSecond);
+		}
+		::Sleep(AprData.m_nSleep);
+		}
+
+	// 22.02.22 Ahn Add Start
+#if defined( DEBUG_NOISE_COUNTERMEASURE )
+	if (btLastBtmImg != NULL) {
+		delete[] btLastBtmImg;
+		btLastBtmImg = NULL;
+	}
+#endif
+
+	if (RsvTabInfo.pImgPtr != NULL) {
+		delete[] RsvTabInfo.pImgPtr;
+	}
+	if (RsvTabInfo.pImgBtmPtr != NULL) {
+		delete[] RsvTabInfo.pImgBtmPtr;
+	}
+
+	AfxEndThread(0);
+	pThis->m_bKill = FALSE;
+
+	return 0;
+}
+
+UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
+{
+	CImageProcThread* pThis = (CImageProcThread*)Param;
+	// 22.08.10 Ahn Delete Start
+	//CQueueCtrl* pQueueCtrl = pThis->m_pParent->GetQueuePtr();
+	// 22.08.10 Ahn Delete End
+	// 22.05.31 Ahn Add Start
+	CImageSaveQueueCtrl* pImgSaveQueueCtrl = pThis->m_pParent->GetImageSaveQueuePtr();
+	// 22.05.31 Ahn Add End
+	// 22.12.09 Ahn Add Start
+	CTacTimeDataCtrl* pTactCtrl = pThis->m_pParent->GetTactDataCtrlPtr();
+	// 22.12.09 Ahn Add End
+
+	CQueueCtrl* pRsltQueueCtrl[GRABBER_COUNT];
+	for (int i = 0; i < GRABBER_COUNT; i++) {
+		pRsltQueueCtrl[i] = pThis->m_pParent->GetResultPtr(i);
+	}
+
+	//CFrameRsltInfo* pFrmRsltInfo;
+	CThreadQueueCtrl* pThdQue[MAX_CAMERA_NO];
+	for (int i = 0; i < MAX_CAMERA_NO; i++) {
+		pThdQue[i] = pThis->m_pParent->GetThreadQueuePtr(i);
+	}
+
+	CImageProcThreadUnit* pUnitTop = NULL ;
+	CImageProcThreadUnit* pUnitBtm = NULL ;
+	BOOL bBitmapSave = FALSE;
+	BOOL bJudgeNG = FALSE;
+	char szJudge[2][4] = { "OK", "NG" };
+	char szPos[2][8] = { "TOP","BTM" };
+
+	BOOL bMarkingActive = FALSE;
+	BOOL bClearFlag = FALSE;
+
+	while (1) {
+		if (pThis == NULL) {
+			break;
+		}
+		if (pThis->m_bKill == TRUE) {
+			break;
+		}
+
+		if (!pThdQue[CAM_POS_TOP]->IsEmpty() && !pThdQue[CAM_POS_BOTTOM]->IsEmpty()) {
+			pUnitTop = pThdQue[CAM_POS_TOP]->pop();
+			pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
+
+			while (1) 
+			{
+				if (pThis->m_bKill == TRUE) {
+					break;
+				}
+
+				// 22.12.09 Ahn Add Start
+				LARGE_INTEGER stTime ;
+				// 22.12.09 Ahn Add End
+				if ( (pUnitTop->IsProcEnd() == TRUE) && (pUnitBtm->IsProcEnd() == TRUE) ){
+					CFrameRsltInfo *pTopInfo = pUnitTop->GetResultPtr();
+					CFrameRsltInfo *pBtmInfo = pUnitBtm->GetResultPtr();
+
+					int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;			
+					int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
+
+					// 22.12.09 Ahn Add Start 
+					stTime = pTopInfo->m_stTime;
+					// 22.12.09 Ahn Add End
+
+					// NG Tab 보고
+					if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG)) {
+						WORD wAlarmCode = 0x0000;
+						bJudgeNG = TRUE;
+						if (nTopJudge == JUDGE_NG) {
+							wAlarmCode = pTopInfo->m_pTabRsltInfo->m_wNgReason;
+							AprData.m_NowLotData.m_nTopNG++;
+						}
+						if (nBtmJudge == JUDGE_NG) {
+							wAlarmCode |= pBtmInfo->m_pTabRsltInfo->m_wNgReason;
+							AprData.m_NowLotData.m_nBottomNG++ ;
+						}
+						AprData.m_NowLotData.m_nTabCountNG++ ;
+		
+						// 22.08.09 Ahn Add Start
+						AprData.m_NowLotData.m_nContinueCount++ ;
+						CTabJudge tab ;
+						tab.nJudge = JUDGE_NG ;
+						tab.nReason = wAlarmCode ;
+						tab.nTabNo = pTopInfo->nTabNo ;
+						// 22.08.10 Ahn Modify Start
+						//int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_pRecipeInfo->nSectorCount) ;
+						//if ( (AprData.m_NowLotData.m_nContinueCount >= AprData.m_pRecipeInfo->nContinousNgCount)
+						//	&& (AprData.m_pRecipeInfo->nContinousNgCount > 2) ) {
+						if ((AprData.m_NowLotData.m_nContinueCount >= AprData.m_nCoutinuouCount)
+							// 22.09.22 Ahn Modify Start
+							&& (AprData.m_nCoutinuouCount >= 2)) {
+							// 22.09.22 Ahn Modify End
+						// 22.08.10 Ahn Modify End
+							wAlarmCode |= CSigProc::en_Alarm_ContinueNg;
+							CString strMessage;
+							strMessage.Format(_T("연속 NG Alarm 발생. %d Tab연속 NG 발생"), AprData.m_NowLotData.m_nContinueCount);
+							AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
+						}
+
+						// 22.08.10 Ahn Modify End
+						//if ((AprData.m_pRecipeInfo->nSectorCount > 0) && (AprData.m_pRecipeInfo->nAlarmCount > 0)) {
+						//	if (nSecterNgCount >= AprData.m_pRecipeInfo->nAlarmCount) {
+						int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_nSectorBaseCount);
+						if ((AprData.m_nSectorNgCount > 0) && (AprData.m_nSectorBaseCount> 0)) {
+							// 22.09.22 Ahn Modify Start
+							if (nSecterNgCount >= AprData.m_nSectorNgCount) {
+							// 22.09.22 Ahn Modify End
+						// 22.08.10 Ahn Modify End
+								wAlarmCode |= CSigProc::en_Alarm_SectorNg;
+								CString strMessage;
+								strMessage.Format(_T("구간 NG Alarm 발생. %d / %d Tab NG 발생"), nSecterNgCount, AprData.m_pRecipeInfo->nSectorCount);
+								AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
+							}
+						}
+						// 22.08.09 Ahn Add End
+
+						if (AprData.m_System.m_bEnableNgStop == TRUE) {
+							if (AprData.m_pRecipeInfo->bNgStop == TRUE) {
+								bClearFlag = TRUE;; // 22.03.03 Ahn Add 
+								CSigProc* pSigProc = theApp.m_pSigProc;
+								pSigProc->WriteAlarmCode(wAlarmCode);
+								// 22.08.09 Ahn Add Start
+								CString strLog;
+								strLog.Format(_T("!!!! NG_STOP Signal Output [0x%x]!!!!"), wAlarmCode) ;
+								AprData.SaveMemoryLog( strLog ) ;
+								// 22.08.09 Ahn Add End
+								// 22.12.12 Ahn Add Start
+								int nId, nJudge, nCode ;
+								nId = pTopInfo->m_nTabId_CntBoard ;
+								nJudge = tab.nJudge ;
+								nCode = wAlarmCode ;
+								pSigProc->ReportJudge(nId, nJudge, nCode);
+								// 22.12.12 Ahn Add End
+							}
+						}
+					} else {
+						AprData.m_NowLotData.m_nTabCountOK++ ;
+						AprData.m_NowLotData.m_nContinueCount = 0 ; // 22.08.09 Ahn Add
+						AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_pRecipeInfo->nSectorCount);
+					}
+					// 결과 Queue에 보냄
+
+					// Counter 신호 출력
+					WORD wOutPut;	
+					CString strMarking = _T("OFF");
+					{
+						CAppDIO dio;
+						int nMarkSel1 = 0 ;
+						int nMarkSel2 = 0 ;
+
+						// 22.07.19 Ahn Modify Start
+						GetMarkingFlag(AprData.m_pRecipeInfo, nTopJudge, nBtmJudge, pTopInfo->m_pTabRsltInfo->m_wNgReason, pBtmInfo->m_pTabRsltInfo->m_wNgReason, nMarkSel1, nMarkSel2 );
+						// 22.07.19 Ahn Modify End
+
+						CSigProc* pSigProc = theApp.m_pSigProc;
+						bMarkingActive = pSigProc->SigInInkMarkingActive(); 				
+						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) ) {
+							nMarkSel1 = 0;
+							nMarkSel2 = 0; 
+						}
+
+						wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
+						dio.OutputWord(wOutPut);
+						Sleep(20);
+						dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+						CString strMsg;
+						strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d]"), pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo ); // 22.04.06 Ahn Modify
+						AprData.SaveMemoryLog(strMsg);
+
+						if ( (wOutPut & CAppDIO::eOut_MARK_SEL_01 ) || (wOutPut & CAppDIO::eOut_MARK_SEL_02) ) {
+							strMarking = _T("ON");
+							pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
+							pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
+							AprData.m_NowLotData.m_nMarkingCount++; // 22.06.29 Ahn Add 
+						} else {
+							strMarking = _T("OFF");
+							pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
+							pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
+						}
+					}
+
+					{ // CSV 파일 작성
+						CString strCsvFileName;
+						CString strFilePath;
+						strFilePath.Format(_T("%s\\"), AprData.m_strNowCsvPath);
+
+						strCsvFileName.Format(_T("%s.csv"), AprData.m_NowLotData.m_strLotNo);
+						CString strResult;
+						SYSTEMTIME* pSysTime;
+						pSysTime = &(pTopInfo->m_pTabRsltInfo->sysTime);	
+
+						int nSurfaceNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_NG];
+						int nFoilExpNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_NG]
+							+ pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_NG];
+						double 	dTopMaxSize = pTopInfo->m_pTabRsltInfo->m_dMaxSizeDef;
+						double 	dBtmMaxSize = pBtmInfo->m_pTabRsltInfo->m_dMaxSizeDef;
+
+						int nSurfaceGrayCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_GRAY];
+						int nFoilExpGrayCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_GRAY]
+							+ pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_GRAY];
+
+						CString strMarking;
+						CString strMarkReason = _T("") ;
+						if (pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag || pTopInfo->m_pTabRsltInfo->m_bMarkingFlag) {
+							strMarking.Format(_T("○"));
+						}
+						else {
+							strMarking.Format(_T("Χ"));
+						}
+						CString strTime;
+						CString strJudge = _T("OK") ;
+						CString strBtmJudge = _T("OK");
+						CString strTopJudge = _T("OK");
+						strTime.Format(_T("%02d:%02d:%02d(%03d)"), pSysTime->wHour, pSysTime->wMinute, pSysTime->wSecond, pSysTime->wMilliseconds );
+						if (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
+							strJudge = _T("NG");
+							strTopJudge = _T("NG");
+						}
+						if (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
+							strJudge = _T("NG");
+							strBtmJudge = _T("NG");
+						}
+						// LotID, /*Total Count*/, Cell_No, Time, Pos(Top,Bottom),Top Judge,Bottom Judge,Surface Exposure, DefR, DefTheta, Top DefectSize, BTM Def Size
+						//,  Top Surface max Size, Btm Surface Max Size, InkMarking, InkMarkingReason
+						// 23.01.06 Ahn Modify Start
+						//strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s\r\n")
+						strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%d,%d\r\n")
+							// 23.01.06 Ahn Modify End
+							, AprData.m_NowLotData.m_strLotNo
+							, pTopInfo->nTabNo + 1
+							, strTime
+							, strJudge
+							, strTopJudge
+							, strBtmJudge
+							, nSurfaceNgCnt
+							, nFoilExpNgCnt
+							, dTopMaxSize
+							, dBtmMaxSize
+							, strMarking
+							, strMarkReason
+							// 23.01.06 Ahn Add Start
+							, nSurfaceGrayCnt
+							, nFoilExpGrayCnt
+							// 23.01.06 Ahn Add End
+						);
+						CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE) ;
+					}
+
+					// 22.05.31 Ahn Add Start - Image Save Thread 
+					for (int i = 0; i < MAX_CAMERA_NO; i++) {
+						CFrameRsltInfo* pFrmRsltInfo;
+						if (i == CAM_POS_TOP) {
+							pFrmRsltInfo = pTopInfo;
+						}
+						else {
+							pFrmRsltInfo = pBtmInfo;
+						}
+						// 22.08.09 Ahn Move Start
+						int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
+						// 22.08.09 Ahn Move End
+						if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE) {
+							if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE) {
+								pFrmRsltInfo->m_nWidth;
+								CImgSaveInfo *pSaveInfo = new CImgSaveInfo ;
+								BYTE* pImgSavePtr;
+								pImgSavePtr = new BYTE[nImgSize];
+								memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE)* nImgSize);
+								pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+								pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+								pImgSaveQueueCtrl->PushBack(pSaveInfo);
+							}
+						}
+					}
+					// 22.05.31 Ahn Add End
+
+					pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
+					pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
+
+					// 22.12.09 Ahn Add Start
+					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
+					CTactTimeData data;
+					data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo ;
+					data.dTactTime = dTactTime ;
+					pTactCtrl->AddNewTactData(data) ;
+					// 22.12.09 Ahn Add End
+
+					delete pUnitTop;
+					delete pUnitBtm;
+
+					AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
+
+					// 22.04.06 Ahn Modify Start
+					Sleep(10);
+					CAppDIO dio;
+					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
+					// 22.02.17 Ahn Modify End
+
+					// 22.02.17 Ahn Modify Start
+					if (bClearFlag == TRUE){
+						CSigProc *pSigProc = theApp.m_pSigProc;
+						WORD wResetCode = 0x00;
+						pSigProc->WriteAlarmCode(wResetCode);
+
+						AprData.SaveMemoryLog(_T("------ NG_STOP Signal OFF ------"));
+						bJudgeNG = FALSE;
+						bClearFlag = FALSE;// 22.03.28 Ahn Add
+						Sleep(5);
+					}
+
+					break;
+				}
+				Sleep(AprData.m_nSleep);
+			}
+		}
+		Sleep(AprData.m_nSleep);
+	}
+
+	AfxEndThread(0);
+	pThis->m_bKill = FALSE;
+
+	return 0;
+}
+
+// 22.12.09 Ahn Add Start
+double CImageProcThread::GetDiffTime(LARGE_INTEGER stTime, double dFrequency)
+{
+	LARGE_INTEGER edTime;
+	QueryPerformanceCounter(&edTime);
+
+	double	dv0, dv1;
+	dv0 = (double)stTime.LowPart + ((double)stTime.HighPart * (double)0xffffffff);
+	dv1 = (double)edTime.LowPart + ((double)edTime.HighPart * (double)0xffffffff);
+	double	dtimev;
+	dtimev = (dv1 - dv0) / dFrequency * (double)1000.0;
+	return (dtimev);
+}
+// 22.12.09 Ahn Add End
+
+
+WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2)
+{
+	WORD wOutput = 0x00;
+
+	// 22.01.11 Ahn Add Start
+	// 마킹 테스트용 모든 탭 마킹 신호 출력.
+	if (AprData.m_System.m_bMarkingAllTab == TRUE) {
+		nJudge1 = JUDGE_NG;
+		nJudge2 = JUDGE_NG;
+		// 22.08.11 Ahn Add Start
+		nMarkSel1 = 1;
+		nMarkSel2 = 0;
+		// 22.08.11 Ahn Add Start
+	}
+	// 22.01.11 Ahn Add End
+
+	if ( ( nJudge1 == JUDGE_NG )  || ( nJudge2 == JUDGE_NG ) ) {
+		wOutput |= CAppDIO::eOut_TAB_JUDGE_SURFACE;	
+		//wOutput |= CAppDIO::eOut_TAB_JUDGE_SIZE ; // 22.08.11 Ahn Test
+		//22.07.26 Ahn Modify Start
+		//int nMarkSel = (nMarkSel1 || nMarkSel2 );
+		int nMarkSel = ( nMarkSel1 | (nMarkSel2 << 1));
+		//22.07.26 Ahn Modify End
+		switch (nMarkSel) {
+		case	0:
+			break;
+		case	1:
+			wOutput |= CAppDIO::eOut_MARK_SEL_01;
+			break;
+		case	2 :
+		case	3 :
+			wOutput |= CAppDIO::eOut_MARK_SEL_01;
+			wOutput |= CAppDIO::eOut_MARK_SEL_02;
+			break;
+		}
+	}
+
+	//wOutput |= CAppDIO::eOut_PULSE; // 22.04.07 Ahn Delete 
+	wOutput |= (nTabId << 2) & CAppDIO::eInOut_ID_Mask; // 3F = 111 11100
+	return wOutput;
+}
+
+// 22.07.19 Ahn Modify Start
+int CImageProcThread::GetMarkingFlag(CRecipeInfo* pRecipeInfo, int nTopJudge, int nBtmJudge, WORD wTopReson, WORD wBtmReson, int& nMarkSel1, int& nMarkSel2 )
+{
+	int nRet = 0 ; 
+	ASSERT(pRecipeInfo);
+
+	// 판정결과 적용
+	pRecipeInfo = AprData.m_pRecipeInfo;
+	if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG)) {
+		WORD wReason = wTopReson | wBtmReson ;
+		if ( ( wReason & CTabRsltBase::en_Reason_Surface_Top ) || ( wReason & CTabRsltBase::en_Reason_Surface_Btm ) ) {
+			if (pRecipeInfo->nMarkingUse[en_ModeSurface] == TRUE) {
+				if (pRecipeInfo->nMarkingType[en_ModeSurface] == 0) {
+					nMarkSel1 = 1;
+				} else {
+					nMarkSel1 = 1;
+					nMarkSel2 = 1;
+				}
+			}
+		}
+		if ((wReason & CTabRsltBase::en_Reason_FoilExp_Top) || (wReason & CTabRsltBase::en_Reason_FoilExp_Btm)) {
+			if (pRecipeInfo->nMarkingUse[en_ModeFoilExp] == TRUE) {
+				if (pRecipeInfo->nMarkingType[en_ModeFoilExp] == 0) {
+					nMarkSel1 = 1;
+				} else {
+					nMarkSel1 = 1;
+					nMarkSel2 = 1;
+				}
+			}
+		}
+		if ((wReason & CTabRsltBase::en_Reason_FoilExpOut_Top) || (wReason & CTabRsltBase::en_Reason_FoilExp_Btm)) {
+			if (pRecipeInfo->nMarkingUse[en_ModeFoilExpOut] == TRUE) {
+				if (pRecipeInfo->nMarkingType[en_ModeFoilExpOut] == 0) {
+					nMarkSel1 = 1;
+				}
+				else {
+					nMarkSel1 = 1;
+					nMarkSel2 = 1;
+				}
+			}
+		}
+		//}
+	}
+
+	nRet = ( nMarkSel1 | ( nMarkSel2 << 1 ) );
+	return nRet;
+}
+// 22.07.19 Ahn Modify End

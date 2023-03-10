@@ -1,0 +1,58 @@
+#pragma once
+
+#include <vector>
+
+class CImageProcessCtrl;
+class CFrameRsltInfo;
+class CDefectDataCtrl;
+// 22.06.10 Ahn Add Start
+class CCropImgQueueCtrl;
+// 22.06.10 Ahn Add End
+// 22.06.23 Ahn Add Start
+class CDefectQueueCtrl;
+// 22.06.23 Ahn Add End
+// 23.02.06 Ahn Add Start
+class CBitmapStd;
+// 23.02.06 Ahn Add End
+
+class CResultThread
+{
+public:
+	CResultThread( CImageProcessCtrl* pParent, int nHeadNo );
+	~CResultThread();
+
+	void Begin();
+	void Kill(void);
+	void SetDispWnd(HWND hwnd);
+	void SetDefectDataCtrl(CDefectDataCtrl *pDefDataCtrl);
+	CImageProcessCtrl* m_pParent;
+	HWND m_DisphWnd;//[GRABBER_COUNT];
+	typedef std::vector< CFrameRsltInfo* > _VEC_RSLT_INFO;
+
+protected:
+	BOOL	m_bKill;
+	int		m_nThreadId;
+	CWinThread* m_pThread;				//!< ƒXƒŒƒbƒh(CWinThread *)x1
+	int		m_nHeadNo;
+	CDefectDataCtrl* m_pDefDataCtrl;
+
+protected:
+	static UINT CtrlThreadResultProc(LPVOID pParam);
+
+public :
+	static void DrawImage(HWND hwnd, CFrameRsltInfo* pFrameInfo, BYTE* pImgPtr, int nWidth, int nHeight, int nMagnif);
+	static void DrawDefectRect(CDC* pDC, CRect rcDef, COLORREF color);
+	// 22.02.25 Ahn Add Start
+	static void DrawString(CDC* pDC, int x, int y, COLORREF color, CString strLine);
+	static void CaptureImage(HWND hWnd, CString strPath);
+	// 22.02.25 Ahn Add End 
+	// 22.06.10 Ahn Add Start
+	static void SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl *pQueueCtrl, CDefectQueueCtrl* pDefectQueue);
+	// 22.06.10 Ahn Add End
+
+	// 23.02.03 Ahn Add Start
+	static void SaveResultImage(HWND hwnd, CFrameRsltInfo* pFrameInfo, BYTE* pImgPtr, int nWidth, int nHeight, int nMagnif, CBitmapStd *pBmpStd);
+	static void DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWidth, int nHeight, int nMagnif); 
+	// 23.02.03 Ahn Add End
+};
+
