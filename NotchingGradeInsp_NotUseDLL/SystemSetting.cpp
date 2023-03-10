@@ -204,6 +204,12 @@ int CSystemSetting::FileCtrl(int nMode)
 			strKey = _T("WORD_OUT");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			m_nWordOut = atoi(buff);
+
+			strKey = _T("SLAVE_ID");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_nSlaveID = atoi(buff);
+
+
 		}
 		// 23.02.17 Son Add End
     }
@@ -378,6 +384,11 @@ int CSystemSetting::FileCtrl(int nMode)
 			strKey = _T("WORD_OUT");
 			strData.Format("%d", m_nWordOut);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+//			strKey = _T("SLAVE_ID");
+// 			strData.Format("%d", );
+// 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
 		}
 		// 23.02.17 Son Add End
     }

@@ -40,6 +40,9 @@
     <Filter Include="Contec\Win32">
       <UniqueIdentifier>{8a4587e4-4175-4c61-8682-6473294312f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImgProcDll">
+      <UniqueIdentifier>{2c01b2c0-3874-40db-abf8-c9602b23cb12}</UniqueIdentifier>
+    </Filter>
     <Filter Include="LGIS">
       <UniqueIdentifier>{65a8ed92-955f-4633-b7f7-71ccad045486}</UniqueIdentifier>
     </Filter>
@@ -479,6 +482,9 @@
     </ClInclude>
     <ClInclude Include="CImgDisplayDlg.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ImgProcDll\ImgProcDll.h">
+      <Filter>ImgProcDll</Filter>
     </ClInclude>
     <ClInclude Include="LGIS\LGIS_Plc.h">
       <Filter>LGIS</Filter>
@@ -1056,6 +1062,12 @@
     </Library>
     <Library Include="Contec\Win32\CDIO.lib">
       <Filter>Contec\Win32</Filter>
+    </Library>
+    <Library Include="ImgProcDll\ImgProcDll.lib">
+      <Filter>ImgProcDll</Filter>
+    </Library>
+    <Library Include="ImgProcDll\ImgProcDlld.lib">
+      <Filter>ImgProcDll</Filter>
     </Library>
     <Library Include="LGIS\lib\LGIS.lib">
       <Filter>LGIS\lib</Filter>

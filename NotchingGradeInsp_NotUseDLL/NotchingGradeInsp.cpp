@@ -359,6 +359,8 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 		}
 	}
 
+
+
 	return (0);
 }
 

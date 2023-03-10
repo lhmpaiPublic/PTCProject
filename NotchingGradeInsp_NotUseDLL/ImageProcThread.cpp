@@ -522,7 +522,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
 
 					// 22.12.09 Ahn Add Start 
-					stTime = pTopInfo->m_stTime;
+					stTime = pTopInfo->m_stTime ;
 					// 22.12.09 Ahn Add End
 
 					// NG Tab º¸°í

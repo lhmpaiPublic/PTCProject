@@ -64,6 +64,7 @@ public:
 	int m_nBitOut;
 	int m_nWordIn;
 	int m_nWordOut;
+	int m_nSlaveID;
 	// 23.02.17 Son Add End
 	// 23.02.27 Son Add Start
 	int m_nLogo;

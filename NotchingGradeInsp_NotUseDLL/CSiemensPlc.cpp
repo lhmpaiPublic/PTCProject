@@ -20,7 +20,7 @@ CSiemensPlc::CSiemensPlc(CString strIPAddress, int nPort /*= 4000*/, int nOffset
 	// 23.03.03 Ahn Add End
 	OpenPio();
 
-	SetSlaveId(10); // 23.03.02 pyj add
+	SetSlaveId(AprData.m_System.m_nSlaveID); // 23.03.02 pyj add
 }
 
 
