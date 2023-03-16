@@ -62,6 +62,8 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 		int nPort = AprData.m_System.m_nPLCPort;
 		pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut );
+
+		PioTheadRun(); //pyjtest
 	}
 	// 23.02.28 Son Mod End
 #endif
@@ -101,7 +103,6 @@ int CPioCtrl::ReadAllPort_BitIn( BYTE *data, short size)
 
 
 
-	// pyjtest
 	int	nRet = 0;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{		
@@ -127,10 +128,15 @@ int CPioCtrl::ReadAllPort_BitOut( BYTE *data, short size)
 // 		nRet = pAprPio->ReadPortAllBitOut(data, size);
 // 	}
 
-	// pyjtest
+
 	int	nRet = 0;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		int nAddress = AprData.m_System.m_nBitOut;
+
+// 		CString strMsg;
+// 		strMsg.Format(_T("nAddress = %d"), nAddress);
+// 		AprData.SaveDebugLog(strMsg); //pyjtest
+
 		nRet = ReadPLC_Block_device(nAddress, (short*)data, size);
 
 	}
@@ -337,7 +343,6 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 
 	ctrl = (CPioCtrl*)Param;
 
-
 	data = &(ctrl->PioDataIF);
 
 	data->BusyFlag = TRUE;
@@ -358,7 +363,35 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 			if (data->CheckPortFlag[i] != TRUE) {
 				continue;
 			}
-			ctrl->pAprPio->InPort(i, &buff[i]);
+// 			ctrl->pAprPio->InPort(i, &buff[i]);
+
+
+			if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+			{
+				DWORD dwStart = GetTickCount();
+
+				short data[MAX_SMS_IO_IN] = { 0, };
+				if (ctrl->ReadPLC_Block_device(AprData.m_System.m_nBitIn, (short*)data, MAX_SMS_IO_IN) != -1)
+				{
+// 					if (data == 1)
+// 					{
+// 						return (1);
+// 					}
+				}
+
+				DWORD dwEnd = GetTickCount() - dwStart;
+
+				CString strMsg;
+				strMsg.Format(_T("[ThreadProc_InPortCheck] ReadPLC_Block_device = %d ms"), dwEnd);
+				AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+			}
+			else
+			{
+				ctrl->pAprPio->InPort(i, &buff[i]);
+			}
+
 		}
 		{
 			CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);

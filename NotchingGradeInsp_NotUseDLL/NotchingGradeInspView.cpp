@@ -435,54 +435,6 @@ void CNotchingGradeInspView::SigInitialize()
 {
 	CSigProc *pSigProc = theApp.m_pSigProc ;
 
-	//pyjtest
-// 	short nData = 1;
-// 	short* pData = (short*)(&nData);
-// 	int nSize = sizeof(int) / sizeof(int);
-// 	pSigProc->WritePLC_Block_device(0, pData, nSize);
-
-	
-//	pSigProc->SigOutReady(TRUE); //pyjtest
-
-
-	//pyjtest
-// 	AprData.m_NowLotData.m_SeqDataOut.dwDataReportV1 = (DWORD)AprData.m_NowLotData.m_nTabCount;
-// 	AprData.m_NowLotData.m_SeqDataOut.dwDataReportV2 = (DWORD)(AprData.m_NowLotData.m_nTabCount - AprData.m_NowLotData.m_nTabCountNG);
-// 	AprData.m_NowLotData.m_SeqDataOut.dwDataReportV3 = (DWORD)AprData.m_NowLotData.m_nTabCountNG;
-// 	if (AprData.m_NowLotData.m_nTabCount > 0) {
-// 		AprData.m_NowLotData.m_SeqDataOut.dwDataReportV4 = (DWORD)(((double)AprData.m_NowLotData.m_nTabCountOK / (double)AprData.m_NowLotData.m_nTabCount) * 100.0);
-// 	}
-// 	AprData.m_NowLotData.m_SeqDataOut.dwTopNgRealTimeCount = (DWORD)AprData.m_NowLotData.m_nTopNG; // 22.07.13 Ahn Modify  TabNG -> TopNG
-// 	AprData.m_NowLotData.m_SeqDataOut.dwBottomNgRealTimeCount = (DWORD)AprData.m_NowLotData.m_nBottomNG;
-// 	// 23.03.03 Ahn Modify Start
-// 	//int nAddress = CSigProc::enWordWrite_DataReportV1_Ea;
-// 	int nAddress;
-// 	nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
-// 	// 23.03.03 Ahn Modify End
-// 
-// 
-// 	_SEQ_OUT_DATA_SMS stTest;
-// 	stTest.wDataReportV1 = AprData.m_NowLotData.m_nTabCount;
-// 
-// 
-// 	short* pData = (short*)(&stTest);
-// 	int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
-// 
-// 	CString strMsg;
-// 	strMsg.Format(_T("enWordWrite_DataReportV1_Ea Addr:%d, data:%d, nSize:%d"), nAddress, stTest.wDataReportV1, nSize);
-// 	AprData.SaveDebugLog(strMsg); //pyjtest
-// 
-// 	pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
-	//////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
 	pSigProc->SigOutEncoderZeroSet(FALSE);
 	pSigProc->SigOutRecipeChangeAck(FALSE);
 	pSigProc->sigOutLotEndAck(FALSE);
@@ -673,7 +625,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			break;
 		case	en_PrepareRun:
-			AprData.SaveDebugLog(_T("en_PrepareRun start")); //pyjtest
+//			AprData.SaveDebugLog(_T("en_PrepareRun start")); //pyjtest
 
 			// 22.07.11 Ahn Add Start
 			if (m_pDeleteThread != nullptr) {
@@ -773,7 +725,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 		case	en_Run:
 
-			AprData.SaveDebugLog(_T("en_Run start")); //pyjtest
+//			AprData.SaveDebugLog(_T("en_Run start")); //pyjtest
 
 			if (IsInspReady() == FALSE) { 
 				// Stop 버튼을 누른경우.
@@ -821,9 +773,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 // 				pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 
 
-				CString strMsg;
-				strMsg.Format(_T("enWordWrite_DataReportV1_Ea Addr:%d, data:%d"), nAddress, AprData.m_NowLotData.m_SeqDataOut.dwDataReportV1);
-				AprData.SaveDebugLog(strMsg); //pyjtest
+// 				CString strMsg;
+// 				strMsg.Format(_T("enWordWrite_DataReportV1_Ea Addr:%d, data:%d"), nAddress, AprData.m_NowLotData.m_SeqDataOut.dwDataReportV1);
+// 				AprData.SaveDebugLog(strMsg); //pyjtest
 
 
 				if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
@@ -907,15 +859,18 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		//CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		//pFrame->ReflashAll();
 		// 22.12.06 Ahn Delete End
-		CSigProc* pSigProc = theApp.m_pSigProc;
-		if (pSigProc->SigInAlarmReset() == TRUE)
-		{
-			pSigProc->SigOutAlarmResetAck(TRUE);
 
-			Sleep(200);
 
-			pSigProc->SigOutAlarmResetAck(FALSE);
-		}
+		//pyjtest
+// 		CSigProc* pSigProc = theApp.m_pSigProc;
+// 		if (pSigProc->SigInAlarmReset() == TRUE)
+// 		{
+// 			pSigProc->SigOutAlarmResetAck(TRUE);
+// 
+// 			Sleep(200);
+// 
+// 			pSigProc->SigOutAlarmResetAck(FALSE);
+// 		}
 
 		Set_I0Timer();
 	}
@@ -982,10 +937,8 @@ void CNotchingGradeInspView::CheckDiskSpace()
 
 BOOL CNotchingGradeInspView::SetSignalCheckTimer()
 {
-	// 22.03.31 Ahn Test Start
-	//m_TID_IO_Check = SetTimer(T_ID_IO_CHECK, 700, NULL);
 	m_TID_IO_Check = SetTimer(T_ID_IO_CHECK, 10, NULL);
-	// 22.03.31 Ahn Test End
+//	m_TID_IO_Check = SetTimer(T_ID_IO_CHECK, 500, NULL); //pyjtest
 	return FALSE;
 }
 BOOL CNotchingGradeInspView::KillSignalCheckTimer()

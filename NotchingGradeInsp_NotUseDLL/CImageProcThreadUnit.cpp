@@ -198,8 +198,15 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						// 22.05.10 Ahn Add Start 
 					}
 				// 23.02.20 Ahn Add Start
-				} else {
+				}
+				else
+				{
 					 pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
+
+					 CString strMsg;
+					 strMsg.Format(_T("[Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"), pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
+					 AprData.SaveDebugLog(strMsg); //pyjtest
+
 				}
 				// 23.02.20 Ahn Add End
 				CString strTactLog;

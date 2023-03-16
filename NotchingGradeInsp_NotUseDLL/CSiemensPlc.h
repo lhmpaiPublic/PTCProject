@@ -46,54 +46,17 @@ public:
 
 	// Coils 미사용
 public:
-	// 23.03.02 Ahn Modify Start
-// 	//// Port에 신호 관련 값을 한번에 취득 함수
-// 	//int InPort(WORD port, BYTE* data, BOOL bExtSt = FALSE) { return -1; };
-// 	//// 해당 Port에 data 값을 한번에 작성 함수
-// 	//int OutPort(WORD port, BYTE data, BOOL bLockCtrl = TRUE, BOOL bGetBit = FALSE) { return -1; };
-// 	//// Port에 해당 bit 위치 신호를 ON/OFF하는 함수
-// 	//int Out_Port_Bit(int nPort, BYTE bBitPos, int nMode) { return -1; };
-// 	int InPort(WORD port, BYTE* data, BOOL bExtSt = FALSE) ;
-// 	int OutPort(WORD port, BYTE data, BOOL bLockCtrl = TRUE, BOOL bGetBit = FALSE) ;
-// 	int Out_Port_Bit(int nPort, BYTE bBitPos, int nMode);
-	// 23.03.02 Ahn Modify End
-
-
-
-	// Port에 신호 관련 값을 한번에 취득 함수
 	int InPort(WORD port, BYTE* data, BOOL bExtSt = FALSE) { return -1; };
-	// 해당 Port에 data 값을 한번에 작성 함수
 	int OutPort(WORD port, BYTE data, BOOL bLockCtrl = TRUE, BOOL bGetBit = FALSE) { return -1; };
-	// Port에 해당 bit 위치 신호를 ON/OFF하는 함수
 	int Out_Port_Bit(int nPort, BYTE bBitPos, int nMode) { return -1; };
 
 
-	int InPort2(WORD port, BYTE* data, BOOL bExtSt = FALSE);
-	int OutPort2(WORD port, BYTE data, BOOL bLockCtrl = TRUE, BOOL bGetBit = FALSE);
-	int Out_Port_Bit2(int nPort, BYTE bBitPos, int nMode);
-
 	// DataLink용
 public:
-// 	int ReadDataReg(int offset, int data[], int num) { return -1; };
-// 	// 23.03.02 Ahn Modify Start
-// 	//int WriteDataReg(int offset, int data[], int num) { return -1; };
-// 	//int ReadPortAllBitIn(BYTE* data, short size) { return -1; };
-// 	//int ReadPortAllBitOut(BYTE* data, short size) { return -1; };
-// 	int ReadPortAllBitIn(BYTE* data, short size) ;
-// 	int ReadPortAllBitOut(BYTE* data, short size) ;
-// 
-// 	int WriteDataReg(int offset, int data[], int num);
-// 	// 23.03.02 Ahn Modify End
-
 	int ReadDataReg(int offset, int data[], int num) { return -1; };
 	int WriteDataReg(int offset, int data[], int num) { return -1; };
 	int ReadPortAllBitIn(BYTE* data, short size) { return -1; };
 	int ReadPortAllBitOut(BYTE* data, short size) { return -1; };
-	int ReadPortAllBitIn2(BYTE* data, short size);
-	int ReadPortAllBitOut2(BYTE* data, short size);
-
-	int WriteDataReg2(int offset, int data[], int num);
-
 
 
 private:

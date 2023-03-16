@@ -20,6 +20,7 @@ CSigProc::CSigProc()
 	//memset(m_sIOBitIN, 0x00, sizeof(m_sIOBitIN));
 	//memset(m_sIOBitOUT, 0x00, sizeof(m_sIOBitOUT) );
 
+	m_bSmsAlive = FALSE;
 }
 
 CSigProc::~CSigProc()
@@ -70,15 +71,15 @@ int CSigProc::SignalPortCheck(int iInput, BOOL bExtSt /*= FALSE*/, BOOL bLocal /
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		AprData.SaveDebugLog(_T("SignalPortCheck start")); //pyjtest
+//		AprData.SaveDebugLog(_T("SignalPortCheck start")); //pyjtest
 
 		short data = 0;
 		int nSize = sizeof(short) / sizeof(short);
 		if (ReadPLC_Block_device(iPort + AprData.m_System.m_nBitIn, &data, nSize) != -1)
 		{
-			CString strMsg;
-			strMsg.Format(_T("SignalPortCheck Addr:%d, nSize:%d, data:%d"), iPort + AprData.m_System.m_nBitIn, nSize, data  );
-			AprData.SaveDebugLog(strMsg); //pyjtest
+// 			CString strMsg;
+// 			strMsg.Format(_T("SignalPortCheck Addr:%d, nSize:%d, data:%d"), iPort + AprData.m_System.m_nBitIn, nSize, data  );
+// 			AprData.SaveDebugLog(strMsg); //pyjtest
 
 
 			if(data == 1)
@@ -129,7 +130,6 @@ int CSigProc::SignalBitOut(int nIntegration, int nMode, BOOL bLocal /*= FALSE*/)
 // 	}
 
 
-	//pyjtest
 // 	CString strMsg;
 // 	strMsg.Format(_T("%d, %d, %d"), nIntegration, iPort, cByte);
 // 	AprData.SaveDebugLog(strMsg); //pyjtest
@@ -300,11 +300,12 @@ int CSigProc::ReadAllPort_BitOut( BOOL* pSigBitOut )
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
+//		memset(m_sSmsSigBItOut, 0x00, sizeof(short) * MAX_SMS_IO_OUT);
 		m_pPioCtrl->ReadAllPort_BitOut((BYTE*)m_sSmsSigBItOut, MAX_SMS_IO_OUT);
 		for (int i = 0; i < MAX_SMS_IO_OUT; i++)
 		{
 // 			CString strMsg;
-// 			strMsg.Format(_T("m_btSmsSigBItOut[%d] = %d"), i, m_btSmsSigBItOut[i]);
+// 			strMsg.Format(_T("m_sSmsSigBItOut[%d] = %d"), i, m_sSmsSigBItOut[i]);
 // 			AprData.SaveDebugLog(strMsg); //pyjtest
 
 			if (m_sSmsSigBItOut[i] == 0x01)
@@ -570,7 +571,17 @@ int CSigProc::SigInRun()
 		nAddress = enBitIn_Run;
 	}
 	// 23.02.02 Ahn Add End
+
+	DWORD dwTickStart = GetTickCount();
+
 	int nRet = SignalPortCheck(nAddress);
+
+
+	DWORD dwTickEnd = GetTickCount() - dwTickStart;
+
+	CString strMsg;
+	strMsg.Format(_T("SigInRun = %.3f"), dwTickEnd/1000.f );
+	AprData.SaveDebugLog(strMsg); //pyjtest
 
 	return nRet;
 }
@@ -694,35 +705,57 @@ int CSigProc::SigOutAlivePulse(int nInMode)
 {
 	// 23.02.02 Ahn Add Start
 	//int nAddress = enBitOut_Alive;
+
+	int nMode = 0;
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		nAddress = enSmsBitOut_Alive;
-	}
-	else {
-		nAddress = enBitOut_Alive;
-	}
-	// 23.02.02 Ahn Add End
-	int nLocalRet = SignalBitOut(nAddress, -1 );
-	int nMode = 0;
-	if (nInMode == FALSE) {
-		nMode = FALSE;
-	}
-	else {
-		if (nLocalRet == TRUE) {
+		
+		if(m_bSmsAlive == TRUE )
+		{
+			m_bSmsAlive = FALSE;
 			nMode = FALSE;
 		}
-		else {
+		else
+		{
+			m_bSmsAlive = TRUE;
 			nMode = TRUE;
 		}
 	}
+	else {
+		nAddress = enBitOut_Alive;
+
+		// 23.02.02 Ahn Add End
+		int nLocalRet = SignalBitOut(nAddress, -1);
+		if (nInMode == FALSE) {
+			nMode = FALSE;
+		}
+		else {
+			if (nLocalRet == TRUE) {
+				nMode = FALSE;
+			}
+			else {
+				nMode = TRUE;
+			}
+		}
+	}
+
 	int nRet = SignalBitOut(nAddress, nMode);
+
+// 	CString strMsg;
+// 	strMsg.Format(_T("Alive : Addr %d, Mode %d"), nAddress, nMode);
+// 	AprData.SaveDebugLog(strMsg); //pyjtest
 
 
 	return nRet;
 }
 int CSigProc::SigOutReady(int nMode)
 {
-	AprData.SaveDebugLog(_T("SigOutReady")); //pyjtest
+//	AprData.SaveDebugLog(_T("SigOutReady")); //pyjtest
+
+	CString strMsg;
+	strMsg.Format(_T("SigOutReady %d"), nMode);
+	AprData.SaveDebugLog(strMsg); //pyjtest
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -759,6 +792,8 @@ int CSigProc::SigOutEncoderZeroSet(int nMode)
 }
 int CSigProc::SigOutRecipeChangeAck(int nMode)
 {
+	AprData.SaveDebugLog(_T("SigOutRecipeChangeAck")); //pyjtest
+
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
 	//int nAddress = enBitOut_RecipeChangeAck;
@@ -812,6 +847,8 @@ int CSigProc::sigOutLotEndAck(int nMode)
 // 22.02.23 Ahn Add Start
 int CSigProc::SigOutTabZeroReset(int nMode)
 {
+	AprData.SaveDebugLog(_T("SigOutTabZeroReset")); //pyjtest
+
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
 	//int nAddress = enBitOut_TabZeroReset;
@@ -830,6 +867,8 @@ int CSigProc::SigOutTabZeroReset(int nMode)
 
 int CSigProc::SigOutAlarmResetAck(int nMode)
 {
+	AprData.SaveDebugLog(_T("SigOutAlarmResetAck")); //pyjtest
+
 	int nRet = 0;
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
