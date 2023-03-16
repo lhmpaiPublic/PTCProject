@@ -4353,7 +4353,8 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 	int i;
 	int nLevel = 0 ;
 	// 23.02.24 Ahn Add Start
-	if (bFindDark == FALSE) {
+//	if (bFindDark == FALSE) {
+	if (bFindDark == TRUE) {
 	// 23.02.24 Ahn Add End
 		if (nMode == en_FindFromRight) {
 			for (i = nLength - 1; i > 0; i--) {
@@ -4394,6 +4395,33 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 	// 23.02.24 Ahn Add End
 
 	return nLevel;
+
+
+// 	ASSERT(pnPrjData);
+// 
+// 	int i;
+// 	int nLevel = 0;
+// 	if (nMode == en_FindFromRight) {
+// 		for (i = nLength - 1; i > 0; i--) {
+// 			if (pnPrjData[i] > nTargetBright) {
+// 				nLevel = i;
+// 				break;
+// 			}
+// 		}
+// 	}
+// 	else {
+// 		for (i = 0; i < nLength; i++) {
+// 			if (pnPrjData[i] > nTargetBright) {
+// 				nLevel = i;
+// 				break;
+// 			}
+// 		}
+// 	}
+// 
+// 	return nLevel;
+
+
+
 }
 // 22.04.14 Ahn Add End
 
@@ -4486,8 +4514,11 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 		// 22.06.03 Ahn Modify Start
 		//*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], en_FindFromLeft);
 		//int nUpperBright = nCount * pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; 
+
+		BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+
 		int nUpperBright = nCount * ( (pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP] ) / 2  ); 
-		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight);
+		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 		// 22.06.24 Ahn Moidyf End
 
 		if ((*pnLevel == 0) || (*pnLevel == (nWidth - 1))) {
@@ -5702,6 +5733,11 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				pDefInfo->nRank = JUDGE_NG;
 				pTabRsltInfo->m_nJudge = JUDGE_NG;
 				pTabRsltInfo->m_wNgReason |= ( ( pDefInfo->nHeadNo == CAM_POS_TOP ) ? CTabRsltBase::en_Reason_Surface_Top : CTabRsltBase::en_Reason_Surface_Btm ); // 22.07.08 Ahn Add
+
+				CString strMsg;
+				strMsg.Format(_T("[NG] Surface : Head No %d"), pDefInfo->nHeadNo);
+				AprData.SaveDebugLog(strMsg); //pyjtest
+
 			}
 			// 22.05.24 Ahn Add End
 			// 22.11.21 Ahn Modify Start - JUDGE_GRAY
@@ -5763,11 +5799,21 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				}
 				if ( bNg == TRUE ) {
 					pTabRsltInfo->m_nJudge = JUDGE_NG;
-					if (pDefInfo->nType == en_ModeFoilExp) {
+					if (pDefInfo->nType == en_ModeFoilExp)
+					{
 						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm); // 22.07.08 Ahn Add
+
+						CString strMsg;
+						strMsg.Format(_T("[NG] en_ModeFoilExp : Head No = %d"));
+						AprData.SaveDebugLog(strMsg); //pyjtest
 					}
-					else {
+					else
+					{
 						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpOut_Top : CTabRsltBase::en_Reason_FoilExpOut_Btm); // 22.07.08 Ahn Add
+
+						CString strMsg;
+						strMsg.Format(_T("[NG] en_ModeFoilExp Out : Head No = %d"));
+						AprData.SaveDebugLog(strMsg); //pyjtest
 					}
 				}
 			}
@@ -8744,8 +8790,10 @@ int CImageProcess::GetBoundaryOfElectorde(BYTE* pImgPtr, int nWidth, int nHeight
 	int nSamplingSize = nHeight / 100;
 	int* pnPrj = new int[nPrjWidth];
 
+	BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+
 	CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-	int nBndElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], nFindDir) ;
+	int nBndElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], nFindDir, bUseDarkRoll ) ;
 
 	if (nFindDir == en_FindFromLeft) {
 		nBndElectrode += (nWidth - nPrjWidth);
@@ -8776,8 +8824,11 @@ int CImageProcess::GetBoundaryOfElectordeBottom(BYTE* pImgPtr, int nWidth, int n
 	//int nBndElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromRight);
 	//
 	//*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromLeft);
-	int nBndElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromRight, TRUE);
-	*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromLeft, TRUE);
+	
+	BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) ? FALSE : TRUE;
+
+	int nBndElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromRight, bUseDarkRoll);
+	*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromLeft, bUseDarkRoll);
 	// 23.02.24 Ahn Modify End
 
 	//int nBndElectrode = *pnLevel + pRecipeInfo->TabCond.nCeramicTailHeight;

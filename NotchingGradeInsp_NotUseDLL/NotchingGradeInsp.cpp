@@ -321,14 +321,18 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 		delete m_pPioCtrl;
 		m_pPioCtrl = NULL;
 	}
-	if (m_pPioCtrl == NULL) {
-		if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == FALSE) {
+	if (m_pPioCtrl == NULL)
+	{
+		if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == FALSE)
+		{
 			m_pPioCtrl = new CPioCtrl(CHN_NO_NETG1, 2, 1);
-
 		}
+
 		// 22.04.01 Ahn Add Start
 		m_pSigProc = new CSigProc();
 		// 22.04.01 Ahn Add End
+
+
 	}
 
 	CStdIoCtrl::eIOTYPE ioType = CStdIoCtrl::eIO_AXL;

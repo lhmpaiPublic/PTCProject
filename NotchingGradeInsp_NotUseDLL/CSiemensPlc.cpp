@@ -18,7 +18,7 @@ CSiemensPlc::CSiemensPlc(CString strIPAddress, int nPort /*= 4000*/, int nOffset
 	m_wOffsetWord_In = nWordIn ;
 	m_wOffsetWord_Out = nWordOut ;
 	// 23.03.03 Ahn Add End
-	OpenPio();
+	OpenPio(); //pyjtest
 
 	SetSlaveId(AprData.m_System.m_nSlaveID); // 23.03.02 pyj add
 }
@@ -56,11 +56,28 @@ int CSiemensPlc::WriteDataReg(int offset, short data[], int num)
 
 	int nRet = 0;
 	int nAdd = offset;// +m_wOffset_Out; //+ m_wOffsetWord_Out;
-	{		
-		nRet = m_pLGIS_Plc->WriteMultipleRegisters(nAdd, num, (uint16_t*)data);
+	{	
+		if (m_pLGIS_Plc)
+		{
+			nRet = m_pLGIS_Plc->WriteMultipleRegisters(nAdd, num, (uint16_t*)data);
 
-		strMsg.Format(_T("WriteDataReg nAdd:%d, num:%d, data:%d "), nAdd, num, data[0]);
-		AprData.SaveDebugLog(strMsg); //pyjtest
+			if (nRet < 0)
+			{
+				strMsg.Format("Siemens Write Error");
+				AprData.SaveErrorLog(strMsg);
+				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
+			}
+
+		}
+		else
+		{
+			strMsg.Format("Siemens Open Error");
+			AprData.SaveErrorLog(strMsg);
+			AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
+		}
+
+// 		strMsg.Format(_T("WriteDataReg nAdd:%d, num:%d, data:%d "), nAdd, num, data[0]);
+// 		AprData.SaveDebugLog(strMsg); //pyjtest
 
 	}
 
@@ -79,11 +96,35 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 	int nAdd = offset;// +m_wOffsetWord_In;
 	{
 
-		CString strMsg;
-		strMsg.Format(_T("ReadDataReg Addr:%d, num:%d"), nAdd, num);
-		AprData.SaveDebugLog(strMsg); //pyjtest
+ 		CString strMsg;
+// 		strMsg.Format(_T("ReadDataReg Addr:%d, num:%d"), nAdd, num);
+// 		AprData.SaveDebugLog(strMsg); //pyjtest
 
-		nRet = m_pLGIS_Plc->ReadHoldingRegisters(nAdd, num, (uint16_t*)data);
+// 		DWORD dwStart = GetTickCount();
+		if (m_pLGIS_Plc)
+		{
+			nRet = m_pLGIS_Plc->ReadHoldingRegisters(nAdd, num, (uint16_t*)data);
+
+			if( nRet < 0)
+			{
+				strMsg.Format("Siemens Read Error");
+				AprData.SaveErrorLog(strMsg);
+				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
+			}
+		}
+		else
+		{
+			strMsg.Format("Siemens Open Error");
+			AprData.SaveErrorLog(strMsg);
+			AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
+		}
+
+// 		DWORD dwEnd = GetTickCount() - dwStart;
+// 
+// 		CString strMsg;
+// 		strMsg.Format(_T("ReadDataReg = %d ms"), dwEnd);
+// 		AprData.SaveDebugLog(strMsg); //pyjtest
+
 
 // 		strMsg.Format(_T("ReadDataReg data:%d"), data[0]);
 // 		AprData.SaveDebugLog(strMsg); //pyjtest
@@ -118,7 +159,7 @@ int CSiemensPlc::OpenPio(void)
 		ClosePio();
 	}
 
-	AprData.SaveDebugLog(_T("OpenPio end")); //pyjtest
+	AprData.SaveDebugLog(_T("OpenPio OK")); //pyjtest
 
 
 
@@ -136,147 +177,3 @@ int CSiemensPlc::ClosePio(void)
 
 	return 0;
 }
-
-// 23.03.02 Ahn Modify Star
-int CSiemensPlc::InPort2(WORD port, BYTE* data, BOOL bExtSt /*= FALSE*/)
-{
-	int nRet = 0; 
-	int offset = (int)port + m_wOffset_In ;
-
-	nRet =  m_pLGIS_Plc->ReadHoldingRegisters(offset, 1, (uint16_t*)data);
-
-	return nRet;
-}
-
-int CSiemensPlc::OutPort2(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BOOL bGetBit /*= FALSE */ )
-{
-	int nRet = 0;
-	int offset = (int)port + (int)m_wOffset_Out;
-
-//	AprData.SaveDebugLog(_T("OutPort start")); //pyjtest
-
-	if (bGetBit == FALSE) {
-		nRet = m_pLGIS_Plc->WriteMultipleRegisters(offset, 1, (uint16_t*)data);
-	}
-	else {
-		m_pLGIS_Plc->ReadHoldingRegisters(offset, 1, (uint16_t*)data);
-		nRet = (int)data;
-	}
-
-//	AprData.SaveDebugLog(_T("OutPort end")); //pyjtest
-
-	return nRet;
-}
-
-int CSiemensPlc::Out_Port_Bit2(int nPort, BYTE bBitPos, int nMode)
-{
-	int nRet = 0; 
-
-	if (nPort > 16) return -1;
-
-	BYTE	data = btOutPortData[nPort];
-	BOOL bGetBit = FALSE;
-
-	switch (nMode) {
-	case	FALSE:
-		data &= ~bBitPos;
-		break;
-	case	TRUE:
-		data |= bBitPos;
-		break;
-	case	-1:
-	{
-		int	iOutState = FALSE;
-		if ((data & bBitPos) != 0x00) {
-			iOutState = TRUE;
-		}
-		return (iOutState);
-	}
-	case	-2:
-		bGetBit = TRUE;
-		break;
-	default:
-		{
-			//에러로그
-		}
-		return (-1);
-	}
-
-	nRet = OutPort2(nPort, data, TRUE, bGetBit);
-
-	if (nRet < 0) {
-		nRet = -1;
-		//에러로그
-	}
-
-	return nRet ;
-}
-// 23.03.02 Ahn Modify End
-
-// 23.03.02 Ahn Modify Start
-int CSiemensPlc::ReadPortAllBitIn2(BYTE* data, short size)
-{ 
-	int nRet = 0;
-	int offset = (int)m_wOffset_In;
-
-	uint16_t usData[32];
-	memset(usData, 0x00, sizeof(uint16_t) * 32);
-
-	int nPortSize = 20 ;
-
-	nRet = m_pLGIS_Plc->ReadHoldingRegisters(offset, nPortSize, usData);
-
-	int nCount = 0 ;
-	for( int nPort = 0 ; nPort < MAX_USE_PORT; nPort++ ){
-		for (int nBit = 0; nBit < MAX_PORT_BIT; nBit++) {
-			nCount = (nPort * MAX_PORT_BIT) + nBit;
-			if (usData[nCount] == 0x0001) {
-				data[nPort] = (0x0001) << nBit;
-			}
-		}
-	}
-
-	return nRet;
-}
-
-int CSiemensPlc::ReadPortAllBitOut2(BYTE* data, short size)
-{ 
-	int nRet = 0;
-	int offset = (int)m_wOffset_Out;
-
-	uint16_t usData[32];
-	memset(usData, 0x00, sizeof(uint16_t) * 32);
-
-	nRet = m_pLGIS_Plc->ReadHoldingRegisters(offset, size, usData);
-
-	int nCount = 0;
-	for (int nPort = 0; nPort < MAX_USE_PORT; nPort++) {
-		for (int nBit = 0; nBit < MAX_PORT_BIT; nBit++) {
-			nCount = (nPort * MAX_PORT_BIT) + nBit ;
-			if (usData[nCount] == 0x0001) {
-				data[nPort] = (0x01) << nBit;
-			}
-		}
-	}
-
-	return nRet;
-}
-
-int CSiemensPlc::WriteDataReg2(int offset, int data[], int num)
-{
-	int nRet = 0;
-	short* pData = new short[num];
-	
-	for (int i = 0; i < num; i++) {
-		pData[i] = (short)(data[i] & 0xffff) ;
-	}
-
-	nRet = WriteDataReg(offset, pData, num);
-
-	delete pData;
-	pData = nullptr;
-
-	return nRet;
-}
-
-// 23.03.02 Ahn Modify End

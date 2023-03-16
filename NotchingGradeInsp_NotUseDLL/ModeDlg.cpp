@@ -477,7 +477,6 @@ void CModeDlg::OnBnClickedBtnLog()
 		m_pIoMonitDlg = new CIoMonitorDlg(this);
 		m_pIoMonitDlg->Create(IDD_DLG_IO_MONITOR, this);
 	}
-
 	m_pIoMonitDlg->ShowWindow(SW_SHOW);
 
 	// 22.08.03 Ahn Add End

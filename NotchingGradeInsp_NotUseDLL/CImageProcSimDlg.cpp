@@ -808,8 +808,11 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 			return -3;
 		}
 
+		BOOL bUseDarkRoll = (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+
 		CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-		nLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], CImageProcess::en_FindFromRight) + rect.left;
+		nLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], CImageProcess::en_FindFromRight, bUseDarkRoll);
+		nLevel += rect.left;
 		// 22.05.09 Ahn Add End
 
 		delete[] pnPrj;
@@ -3823,8 +3826,11 @@ void CImageProcSimDlg::OnBnClickedBtnInspSpeter()
 		rect.bottom = nHeight - 1 ;
 		int nSamplingSize = nHeight / 100;
 
+		BOOL bUseDarkRoll = (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+
 		CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-		nLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], CImageProcess::en_FindFromLeft) + rect.left ;
+		nLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], CImageProcess::en_FindFromLeft, bUseDarkRoll);
+		nLevel += rect.left;
 
 		rcProc.left = 0;
 		rcProc.right = nLevel - m_pRecipeInfo->nSurfaceMaskOffset[CAM_POS_TOP];
@@ -3853,8 +3859,12 @@ void CImageProcSimDlg::OnBnClickedBtnInspSpeter()
 		rect.bottom = nHeight - 1;
 		int nSamplingSize = nHeight / 100;
 
+		BOOL bUseDarkRoll = (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) ? FALSE : TRUE;
+
 		CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-		nLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromRight) + rect.left ;
+		nLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromRight, bUseDarkRoll);
+		nLevel += rect.left;
+
 
 		rcProc.left = nLevel + m_pRecipeInfo->nSurfaceMaskOffset[CAM_POS_BOTTOM] ;
 		rcProc.right = nWidth;

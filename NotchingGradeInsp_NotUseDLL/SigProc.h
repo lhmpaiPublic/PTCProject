@@ -454,6 +454,7 @@ private:
 	short	m_sSmsSigBItIN[MAX_SMS_IO_IN];
 	short	m_sSmsSigBItOut[MAX_SMS_IO_OUT];
 
+	BOOL	m_bSmsAlive;
 
 	static CCriticalSection	m_cs;
 

@@ -20,10 +20,10 @@ CLightControl::CLightControl(void)
 	////if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
 	//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
 	//// 22.09.15 Ahn Modify End
-	if (AprData.m_System.m_nMachineMode == ANODE_MODE) {  // 
-	// 23.02.07 Ahn Modify Start
-		m_nMaxLight = 1 ;
-	}
+// 	if (AprData.m_System.m_nMachineMode == ANODE_MODE) {  // 
+// 	// 23.02.07 Ahn Modify Start
+// 		m_nMaxLight = 1 ;
+// 	} //pyjtest
 }
 CLightControl::~CLightControl()
 {

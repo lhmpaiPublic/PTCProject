@@ -314,7 +314,7 @@ int CIoMonitorDlg::GetAddressAndBitPos( int nMode, int nSigNo, int &nBitPos  )
 
 int CIoMonitorDlg::RefreshAll()
 {
-// 	AprData.SaveDebugLog(_T("RefreshAll")); //pyjtest
+ //	AprData.SaveDebugLog(_T("RefreshAll")); //pyjtest
 
 
 	int nRet = 0;
@@ -322,16 +322,16 @@ int CIoMonitorDlg::RefreshAll()
 	CSigProc* pSigProc = theApp.m_pSigProc;;
 	// 23.03.03 Ahn Modify Start
 	//memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * en_In_Max);
-	//memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * en_Out_Max);
+	//memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * en_Out_Max);	
 	memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_IN);
 	memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_OUT);
 	// 23.03.03 Ahn Modify End
 	pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
-	pSigProc->ReadAllPort_BitOut(m_bSigBitOut); //pyjtest
+	pSigProc->ReadAllPort_BitOut(m_bSigBitOut);
 
 
 // 	CString strMsg;
-// 	strMsg.Format(_T("SigIn = %d"), m_bSigBitIn[0] );
+// 	strMsg.Format(_T("m_bSigBitOut = %d"), m_bSigBitOut[0] );
 // 	AprData.SaveDebugLog(strMsg); //pyjtest
 
 
@@ -373,6 +373,8 @@ int CIoMonitorDlg::RefreshAll()
 			}
 		}
 	}
+
+
 
 	nMaxBit = en_Out_Max;
 	for (i = 0; i < nMaxBit; i++) {
