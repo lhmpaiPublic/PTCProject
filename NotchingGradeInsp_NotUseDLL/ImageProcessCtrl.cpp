@@ -62,6 +62,7 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 
 
 	// 21.11.11 Ahn Add Start
+	//grabber 갯수 만큼 스래드큐를 제어할 객체를 생성한다.
 	for (i = 0; i < GRABBER_COUNT; i++) {
 		m_pThreadQueueCtrl[i] = new  CThreadQueueCtrl(this);
 	}
@@ -91,6 +92,7 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 	m_pQueueCounterIn = new CCounterQueueCtrl();
 	m_pQueueCounterIn->ResetQueue();
 
+	//이미지 Cut 스래드 객체 생성
 	m_pImgCutTabThread = new CImageProcThread(this);
 	if (m_pImgCutTabThread != NULL) {
 		m_pImgCutTabThread->Begin(THREAD_MODE_CUT_TAB);
@@ -103,6 +105,8 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 	//	m_vecThread.push_back(pThread);
 	//	pThread->Begin(THREAD_MODE_PROC);
 	//}
+	
+	//이미지 처리 대기 스래드 객체 생성
 	m_pImgProcWaitThread = new CImageProcThread(this);
 	m_pImgProcWaitThread->Begin(THREAD_MODE_PROC);
 	// 21.11.11 Ahn Delete End
@@ -143,6 +147,8 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 int CImageProcessCtrl::ResetCamera()
 {
 	int nRet = 0; 
+	//Grabber 갯수 만큼 돌면서객체를 삭제
+	//Grabber 객체 삭제
 	for (int i = 0; i < GRABBER_COUNT; i++) {
 		if (m_pGrabCtrl[i] != NULL) {
 			m_pGrabCtrl[i]->Close();
@@ -151,18 +157,24 @@ int CImageProcessCtrl::ResetCamera()
 		}
 	}
 
+	// 이미지 Cut 스래드 객체 종료 후 다시 생성 카메라가 Reset 될 경우
 	if (m_pImgCutTabThread != NULL) {
+		//이미지 Cut 스래드 Kill
 		m_pImgCutTabThread->Kill();
 		delete m_pImgCutTabThread;
 
+		//이미지 Cut 객체 재 생성
 		m_pImgCutTabThread = new CImageProcThread(this);
 		if (m_pImgCutTabThread != NULL) {
 			m_pImgCutTabThread->Begin(THREAD_MODE_CUT_TAB);
 		}
 	}
 
+	//Grabber 숫자 만큼 Frame 큐를 Reset
 	for (int i = 0; i < GRABBER_COUNT; i++) {
 		m_pQueueFrmCtrl[i]->ResetQueue();	// 22.05.19 Ahn Add 
+
+		//Grabber 객체를 생성 하고  Dalsa 카메라 연결
 		nRet |= Initialize( NULL, i);
 	}
 	return nRet;
@@ -224,6 +236,7 @@ int CImageProcessCtrl::Destroy()
 		m_pGrabCtrl[i] = NULL;
 	}
 
+	//이미지 Cut 스래드 살아 있다면 Kill 후 개게 삭제
 	if (m_pImgCutTabThread != NULL) {
 		m_pImgCutTabThread->Kill();
 		delete m_pImgCutTabThread;
@@ -240,6 +253,8 @@ int CImageProcessCtrl::Destroy()
 	//	pThread = NULL;
 	//	m_vecThread.erase(m_vecThread.begin());
 	//}
+	
+	//이미지 처리 대기 스래드
 	if (m_pImgProcWaitThread != NULL) {
 		m_pImgProcWaitThread->Kill();
 		delete m_pImgProcWaitThread;

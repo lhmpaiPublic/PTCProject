@@ -46,13 +46,23 @@ private :
 	CDefectQueueCtrl *m_pDefectQueueCtrl ;
 	// 22.06.23 Ahn Add End
 
+	//카운터 큐 제어 객체
 	CCounterQueueCtrl* m_pQueueCounterIn;
 
+	//이미지 처리 스래드 (대기 스래드)
 	CImageProcThread* m_pImgProcWaitThread;
+
+	//이미지 Cut Tab 스래드
 	CImageProcThread* m_pImgCutTabThread;
+
+	//결과 스래드 카메라 댓수 만큼
 	CResultThread* m_pResultThread[GRABBER_COUNT];
+
+	//카운터 스래드 객체
 	CCounterThread* m_pCounterThread;
 
+	//스래드 큐를 제어할 객체
+	//Grabber 객수
 	CThreadQueueCtrl* m_pThreadQueueCtrl[GRABBER_COUNT];
 	CDefectDataCtrl m_DefDataCtrl;
 	BOOL m_bReserveClear ;

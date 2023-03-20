@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CThreadQueueCtrl.h"
 #include "CImageProcThreadUnit.h"
 #include "FrameInfo.h"
@@ -21,9 +21,13 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 	::EnterCriticalSection(&m_csQueue);
 	ASSERT(pFrmInfo);
 
+	//스래드 저장큐의 갯수를 가져와서 MAX_THREAD_QUEUE_SIZE 작을 때 저장한다.
 	int nSize = (int)m_pThradQue.size();
+	// 큐가 오버되었으면
 	if (MAX_THREAD_QUEUE_SIZE <= nSize) {
 		// 23.02.10 Ahn Add Start
+		
+		//예외 처리 로그를 출력한다.
 		CString strLog;
 		strLog.Format(_T("TabNo[%d]-Delete data due to queue size exceeded."), pFrmInfo->nTabNo );
 		AprData.SaveDebugLog( strLog ) ;
@@ -33,14 +37,21 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 		//pFrmInfo = NULL;
 		//::LeaveCriticalSection(&m_csQueue);
 		//return nSize;
+
+		//저장큐가 Over Flow 값 설정
 		pFrmInfo->m_bOverFlow = TRUE;
 		// 23.02.20 Ahn Modify End
 	}
 
+	//이미지 유닛에 대한 처리 스래드 생성
+	//이미지 저장을 위한 프로세스 Frame 프로세서 처리
 	CImageProcThreadUnit* pThread = new CImageProcThreadUnit( pFrmInfo );
 	pThread->Begin();
 
+	//스래드객체 저장큐에 저장
 	m_pThradQue.push(pThread);
+
+	//스래드 저장큐 객수를 가져온다.
 	nSize = (int)m_pThradQue.size();
 	::LeaveCriticalSection(&m_csQueue);
 

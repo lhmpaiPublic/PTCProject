@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define	HASHFS_MAX_LAYER_COUNT			2
 #define HASHFS_MAX_LAYER_THLETHHOLD		157

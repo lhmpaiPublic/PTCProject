@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include <vector>
 #include <queue>
 //class CDefectInfo;
@@ -21,7 +21,7 @@ public :
 	CDefectDataCtrl();
 	~CDefectDataCtrl();
 
-	// ±‚∫ª
+	// Í∏∞Î≥∏
 	//CTabRsltInfo* GetTabRsltInfoPtr(int nDefIndex) ;
 	int GetSize();
 	int DeleteDefect(int nIndex);
@@ -38,7 +38,7 @@ public :
 	//CString GetErrorSavePath(CString strDate, CString strLotNo);
 	// 22.06.30 Ahn Delete End
 
-	// ∞·∞˙ ¿˙¿Â¿¸¿« Data 
+	// Í≤∞Í≥º Ï†ÄÏû•Ï†ÑÏùò Data 
 	typedef std::queue< CTabRsltInfo *>QUE_TAB_RSLT_INFO ;
 	QUE_TAB_RSLT_INFO m_queTabRsltInfo ;
 	void PushBackTabQueue(CTabRsltInfo *pTabRsltInfo);
@@ -75,7 +75,7 @@ public :
 	//enum {
 	//	en_InspType		= 0, // FOIL-EXP
 	//	en_InspTime		= 1, // 202212....
-	//	en_EqpType		= 2, // ¿Â∫Ò∏Ì
+	//	en_EqpType		= 2, // Ïû•ÎπÑÎ™Ö
 	//	en_Electrode	= 3, // 
 	//	en_LotID		= 4, 
 	//	en_TabNo		= 5,
@@ -87,7 +87,7 @@ public :
 	//	en_FilePathMax  = 11,
 	//};
 
-	//∆«¡§ ¡§∫∏
+	//ÌåêÏ†ï Ï†ïÎ≥¥
 	int AddJudgeNG(int nTabNo, int nCamNo);
 	int GetNgTabCount();
 

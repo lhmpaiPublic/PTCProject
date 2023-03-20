@@ -44,6 +44,7 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 
 //	m_DisphWnd = NULL ;
 	if ( m_pThread == NULL ) {
+		//이미지 Cut 스래드 생성
 		if (nMode == 0) {
 			m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlThreadImgCuttingTab,
 				(LPVOID)this,
@@ -52,6 +53,7 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 				CREATE_SUSPENDED,
 				NULL);
 		}
+		//
 		else {
 			m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlThreadImgProc,
 				(LPVOID)this,
@@ -87,23 +89,42 @@ void CImageProcThread::Kill( void )
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 {
+	//이미지 처리 스래드 객체 최상위 오브젝트 포인터
 	CImageProcThread* pThis = (CImageProcThread*)Param;
+
+	//Fram Top 큐 오브젝트 포인터
 	CQueueCtrl* pQueueFrame_Top = pThis->m_pParent->GetQueueFrmPtr(0);
+
+	//Fram Bottom 큐 오브텍트 포인터
 	CQueueCtrl* pQueueFrame_Bottom = pThis->m_pParent->GetQueueFrmPtr(1);
+
+	//Counter큐 오브젝트 포인터
 	CCounterQueueCtrl* pCntQueueInCtrl = pThis->m_pParent->GetCounterQueInPtr(); // 탭 카운터 용 큐
+
+	//스래드큐 관리 객체 Top/Bottom  객체를 저장할 임시 변수 생성
 	CThreadQueueCtrl* pThreadQue[MAX_CAMERA_NO];
+
+	//스래드큐 관리 객체에서 Top에 대한 스래드큐 객체를 가져온다.
 	pThreadQue[CAM_POS_TOP] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_TOP);
+
+	//스래드큐 관리객체에서 Bottom에 대한 스래드큐 객체를 가져온다.
 	pThreadQue[CAM_POS_BOTTOM] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_BOTTOM);
 
 	BOOL bReserved = FALSE; // 크기가 작아서 보내지 못한 부분이 있음 다음 이미지 받아서 처리 할 것인지에 대한 Flag.
+	//예약된 프레임 번호
 	BOOL bReservFrmNo = -1;
+	//마지막 길이
 	int nLastLengh = 0;
+	//마지막 넓이
 	int nLastWidth = 0;
+
+	//예약 Tab 정보 생성
 	CTabInfo reservTabInfo;
 	CString strMsg;
 	CString strTemp;
 	CTabInfo RsvTabInfo;
 
+	//처리 플래그 초기화
 	int nFindPos = 0;
 	BOOL bHeadFlag = FALSE;
 	BOOL bTailFlag = FALSE;
@@ -116,6 +137,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	// 22.02.22 Ahn Add End
 
 	// 22.04.06 Ahn Add Start - 첫 탭 버림
+	//First Tab을 처리하는가를 TRUE 로 초기화하낟.
 	BOOL bFirstTab = TRUE;
 	// 22.04.06 Ahn Add End
 
@@ -123,13 +145,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		if (pThis == NULL) {
 			break;
 		}
+		//이미지 처리 최상위 객체가 Kill이면
 		if (pThis->m_bKill == TRUE) {
+			//Bottom 카메라 디버그가 아니경우
 #if !defined( BOTTOM_CAMERA_DEBUG )
 			if ((pQueueFrame_Top != NULL) && (pQueueFrame_Bottom != NULL)) {
 				if ((pQueueFrame_Top->GetSize() <= 0) || (pQueueFrame_Bottom->GetSize() <= 0)) {
 					break;
 				}
 			}
+			//Bottom 카메라 디버그 일 경우
 #else
 			if ((pQueueFrame_Top != NULL)) {
 				if ((pQueueFrame_Top->GetSize() <= 0)) {
@@ -139,23 +164,36 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #endif
 		}
 
+		//크기
+		//Frame 큐 top 크기
 		int nSizeFrmL = pQueueFrame_Top->GetSize();
+		//Frame 큐 bottom 크기
 		int nSizeFrmR = pQueueFrame_Bottom->GetSize();
+
+		//Head, Tail 플래그 생성
+		//Frame 큐 top이 객체가 있으면 Head가 TRUE
 		bHeadFlag = !pQueueFrame_Top->IsEmpty();
+		//Frame 큐 bottom 객체가 있으면 Tail TRUE
 		bTailFlag = !pQueueFrame_Bottom->IsEmpty();
 
+		//Top - Bottom 사이즈 차이 값이 FRAME_ACQ_ERROR_CHK_CNT 이상일경우
 		if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) {
 			// 에러 처리 
 		//	pThis->SetFameSizeError(); // 
+		
+			//.프레임 사이즈 이상 로그를 출력한다.
 			CString strErrMsg;
 			strErrMsg.Format(_T("프레임 사이즈 이상 : Top [%d], Bottom[%d], 검사 상태 [%d], 종료 처리!!!!"), nSizeFrmL, nSizeFrmR , pThis->m_pParent->IsInspection() );
 		//	AprData.SaveErrorLog(strErrMsg);
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
 		}
+
+		//Bottom 카메라 디버그 일때
 #if defined( BOTTOM_CAMERA_DEBUG )
 		bTailFlag = TRUE;
 #endif
 		// 22.02.22 Ahn Add Start
+		//디버그 노이즈카운터 
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 		BOOL bMakeDummyBtm;
 		//if ((bHeadFlag == TRUE) && (bTailFlag == FALSE)) {
@@ -170,18 +208,23 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		// 22.02.22 Ahn Add End
 
 				// 22.02.22 Ahn Modify Start
+		//디버그 노이즈 카운터
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 		if ((bHeadFlag && bTailFlag) || (bMakeDummyBtm == TRUE)) {
 #else
 		if (bHeadFlag && bTailFlag) {
 #endif
 			// 22.02.22 Ahn Modify End
+			//Frame To 정보객체를 가져온다.
 			CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
 
+			//Top 프레임정보 높이 넓이 정보를 가져온다.
 			int nHeight = pFrmInfo_Top->m_nHeight;
 			int nFrmWIdth = pFrmInfo_Top->m_nWidth;
 			int nWidth = nFrmWIdth;
+
 			// 22.02.22 Ahn Add Start
+			//디버그 노이즈 카운터
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 			CFrameInfo* pFrmInfo_Bottom;
 			if (bMakeDummyBtm == TRUE) {
@@ -212,6 +255,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #else
 // 22.02.22 Ahn Add End
 // 22.01.04 Ahn Modify Start
+			//BOTTOM 카메라 디버그가 아닐 경우
 #if !defined( BOTTOM_CAMERA_DEBUG )
 			CFrameInfo* pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
 #else
@@ -233,17 +277,24 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #endif
 // 22.02.22 Ahn Add End
 
+			//Top 프레임 카운트 
 			int nFrameCountL = pFrmInfo_Top->m_nFrameCount;
+			//Bottom 프레임 카운트
 			int nFrameCountR = pFrmInfo_Bottom->m_nFrameCount;
 
 			// 22.11.30 Ahn Modify Start
+			//글로벌 Lot Data Top 카운터 설정
+			//이유는 ? :
 			AprData.m_NowLotData.m_nFrameCount = pFrmInfo_Top->m_nFrameCount ;
 			// 22.11.30 Ahn Modify End
 
+			//Head 이미지 데이터 : Top 프레임 정보에서 가져온다.
 			BYTE* pHeadPtr = pFrmInfo_Top->GetImagePtr();
+			// Tail 이미지 데이터 : Bottom 프레임 정보에서 가져온다.
 			BYTE* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
 
 			// 22.02.22 Ahn Add Start
+			//디버그 노이즈 카운터
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 			if (btLastBtmImg == NULL) {
 				btLastBtmImg = new BYTE[nWidth * nHeight];
@@ -252,113 +303,207 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #endif
 			// 22.02.22 Ahn Add End
 
+			//처리 시간 체크를 위한 객체 생성 및 초기화
 			CTimeAnalyzer ctAna;
 			ctAna.Clear();
+			//처리시간 체크 시작
 			ctAna.StopWatchStart();
 
 			// Tab으로 잘라 보냄
 			// Projection 사용 
 			{
+				//처리 시간 체크를 위한 객체 생성 및 체크 시작
 				CTimeAnalyzer ctAna;
 				ctAna.StopWatchStart();
+
 				// 22.05.09 Ahn Add Start
+				//내부 설정 변수 초기화
 				int nBndElectrode = 0;
 				int nBneElectrodeBtm = 0;
+
+				//양극일 경우 이미지 프로세싱 처리한다. GetBoundaryOfElectorde
 #if defined( ANODE_MODE )
+
 				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
 #endif
 				// 22.05.09 Ahn Add End
+				//이미지 프로세싱 vector Tab 정보 객체 생성
 				CImageProcess::_VEC_TAB_INFO vecTabInfo;
+
+				//레벨 변수 초기화
 				int nLevel = 0;
+
+				//Btm 레벨 변수 초기화
 				int nBtmLevel = 0;
+
+				//Tab 위치 값 양극일 경우 추가
 				int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight ;
+
 				// 22.11.18 Ahn Modify Start
 				//int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo );
+				
+				//Tab 분해 이미지 정보에서 Tab 정보
 				int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo( pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
 				// 22.11.18 Ahn Modify End
 				// 21.12.28 Ahn Modify Start
 				//int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 
+				//가져온 vector Tab 정보 크기 vector 사이즈
 				int nVecSize = (int)vecTabInfo.size();
+
+				//Error 플래그 초기화
 				BOOL bErrorAll = FALSE;
+
+				//Tab 정보 사이즈가 없다면
 				if (nVecSize <= 0) {
+					//Tab 정보 찾기 실패 로그 출력
 					AprData.SaveDebugLog(_T("!!!!Tab Find Faile!!!!"));
 					// 강제 분할 
 					bErrorAll = TRUE;
 				}
+				//모드가 양극일 경우
 #if defined( ANODE_MODE )
 				nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom( pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo );
 #else
+				//음극일 경우
 				int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 #endif
 				// 21.12.28 Ahn Modify End
-				
+				//이미지 프로세싱 처리시간을 가져운다.
 				double dTime = ctAna.WhatTimeIsIt_Double();
+
+				//Tab Cutting 시간 정보를 로그 출력한다.
 				CString strLog;
 				strLog.Format(_T("TabCutting Time [%.2lf]msec, 전극경계Top[%d], Bottom[%d] BtmLevel[%d]"), dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
 				AprData.SaveTactLog(strLog);
 
+				//가져온 vector Tab 정보 크기 vector 사이즈 만큼 루프 돌면서 처리한다.
 				for (int i = 0; i < nVecSize; i++) {
+					//카운터 정보 객체 생성
 					CCounterInfo cntInfo;
+
+					//Tab 정보 객체 포인터 접근
 					CTabInfo* pTabInfo = &vecTabInfo[i];
+
+					//Tab 정보에서 Counter 정보를 가져온다.
 					cntInfo = pCntQueueInCtrl->Pop();
 
+					//Tab 정보에서 왼쪽 값
 					int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
+					//Tab 정보에서 오른쪽 값
 					int nRight = pTabInfo->nRight - pTabInfo->nTabRight;
+
 					// 22.05.03 Ahn Modify Start
+					// 에러 번호
 					int nErrorNo = 0;
 					//if ((nLeft < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2)) || (nRight < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2))) {
+					
+					//왼쪽 값이 레시피 정보의 Tob  비율보다 작거나, 오를쪽 값이 레시피 Tab 비율 작으면
 					if ((nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW) || (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW)) {
+
 					// 22.05.03 Ahn Modify End
+						//에러 플래그를 설정한다.
 						pTabInfo->m_bErrorFlag = TRUE;
+						//에러번호 1 세팅
 						nErrorNo = 1;
 					}
 
+					//지금 Lot Data의 처리 에러이면서 시스템 첫 Tab 처리가 TRUE이면
 					if ((AprData.m_NowLotData.m_bProcError == TRUE) && (AprData.m_System.m_bFirstTabDoNotProc == TRUE)) {
+
+						//에러플레그 설정
 						pTabInfo->m_bErrorFlag = TRUE;
+
+						//지금  Lot Data 처리 에러는 FALSE로 변경한다.
 						AprData.m_NowLotData.m_bProcError = FALSE;
+
+						//에러 번호는 2 세팅
 						nErrorNo = 2;
 					}
+
 					// 21.12.28 Ahn Add Start
+					//에러 ALL이면
 					if (bErrorAll == TRUE) {
+						//에러 플레그 설정
 						pTabInfo->m_bErrorFlag = TRUE;
+						//에러 번호 3
 						nErrorNo = 3;
 					}
+
 					// 21.12.28 Ahn Add End
 					// 22.06.22 Ahn Add Start
+					//레벨 값이 o보다 작으면
 					if (nLevel <= 0 ) {
+						//에러플레그 설정
 						pTabInfo->m_bErrorFlag = TRUE;
+
+						//에러번호 4 
 						nErrorNo = 4;
 					}
 					// 22.06.22 Ahn Add End
 
 					// 22.09.30 Ahn Add Start
+					//레벨이 Top 프레임 정보 넓이에서 - 100 한 값 보다 크면
 					if( nLevel >= (nWidth - 100 )){
+						//에러 플래그 설정
 						pTabInfo->m_bErrorFlag = TRUE;
+
+						//에러 번호 5
 						nErrorNo = 5;
 					}
-					// 22.09.30 Ahn Add End
 
+					// 22.09.30 Ahn Add End
+					//프레임 정보 객체 생성
 					CFrameInfo* pInfo;
 					pInfo = new CFrameInfo;
+
+					//Tab 정보에서 Fram 정보 값에 세팅한다.
+					//Tab 정보에서 이미지 데이터 값을  세팅한다.
 					pInfo->SetImgPtr(pTabInfo->pImgPtr);
+
+					//높이값을 가져온다.
 					pInfo->m_nHeight = pTabInfo->nImageLength;
+
+					//Head 번호를 가져온다.
 					pInfo->m_nHeadNo = pFrmInfo_Top->m_nHeadNo;
+
+					//Fram Top 넓이 정보 세팅
 					pInfo->m_nWidth = nWidth;
+
 					// 22.11.18 Ahn Modify Start
 					//pBtmInfo->m_nFrameCount = nFrameCountL;
+					//Tab 정보에서 가져와  Frame 카운트 값을 세팅한다.
 					pInfo->m_nFrameCount = pTabInfo->nFrameCount;
+
 					// 22.11.18 Ahn Modify End
+					//지금 Lot Data Tab Count를 Fram TabNo 번호 로 세팅
 					pInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
+
+					//Tab 정보에서 Tab Start 위치 In Frame을 Frame 정보에 세팅
 					pInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
+
+					//Fram 정보에 Level 정보 세팅
 					pInfo->m_nTabLevel = nLevel;
+
+					//Fram 정보에 TopFrame 세팅
 					pInfo->m_nInspMode = CFrameInfo::en_TopFrame;
+
+					//Left Tab 세팅
 					pInfo->m_nTabLeft = pTabInfo->nTabLeft;
+					//Right Tab 세팅
 					pInfo->m_nTabRight = pTabInfo->nTabRight;
+
+					//카운터 정보에서 TabID를 가져온다
 					pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
+
+					//에러 플래그 값을 Tab정보 에서 가져온다.
 					pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
+
+					//?
 					pInfo->m_nBndElectrode = nBndElectrode;
 
+					//디버그 로그출력
+					//Tab 번호, Error값, Level 값, Tab Left 값, Tab Right 값, 길이, 카운터 ID  값 출력
 					CString strMsg;
 					// 22.05.03 Ahn Modify Start
 					strMsg.Format(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
@@ -366,73 +511,122 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					// 22.05.03 Ahn Modify End
 					AprData.SaveDebugLog(strMsg);
 
+					//프레임 정보
+					//Bottom 이미지 정보 처리 객체 생성
 					CFrameInfo* pBtmInfo;
 					pBtmInfo = new CFrameInfo;
+
+					//Tab 정보에서 Bottom 이미지 데이터를 가져온다.
 					pBtmInfo->SetImgPtr(pTabInfo->pImgBtmPtr);
+
+					//이미지 높이 정보
 					pBtmInfo->m_nHeight = pTabInfo->nImageLength;
+
+					//Fram Bottom정보에서 헤더번호를 가져와 세팅
 					pBtmInfo->m_nHeadNo = pFrmInfo_Bottom->m_nHeadNo;
+
+					//이미지 넓이
 					pBtmInfo->m_nWidth = nWidth;
+
 					// 22.11.18 Ahn Modify Start
 					//pBtmInfo->m_nFrameCount = nFrameCountL;
+					//Tab 정보에서 프레임 카운터를 가져온다.
 					pBtmInfo->m_nFrameCount = pTabInfo->nFrameCount ;
+
 					// 22.11.18 Ahn Modify End
+					//Tab 번호를 가져온다.
 					pBtmInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
+
+					//Tab Start 위치 In Frame
 					pBtmInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
+
+					//Bottom 레벨
 					pBtmInfo->m_nTabLevel = nBtmLevel;
+
+					//Bottom Frame 플래스 설정
 					pBtmInfo->m_nInspMode = CFrameInfo::en_BottomFrame;
+
+					//Tab ID 가져온다.
 					pBtmInfo->m_nTabId_CntBoard = cntInfo.nTabID;
+
+					//에러 플래그 설정
 					pBtmInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 
+					//?
 					pBtmInfo->m_nBndElectrode = nBneElectrodeBtm;// 22.05.11 Ahn Add 
+
 					// 22.02.22 Ahn Add Start
+					//디버그 노이즈 카운터
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 					if (bMakeDummyBtm == TRUE) {
 						pBtmInfo->m_bErrorFlag = pFrmInfo_Bottom->m_bErrorFlag;
 					}
 #endif
 					// 22.02.22 Ahn Add End
-
+					//Bottom 카메라 디버그 일때
 #if defined( BOTTOM_CAMERA_DEBUG )
 					pBtmInfo->m_bErrorFlag = TRUE;
 #endif
 
 					// 22.05.18 Ahn Add Start
+					//Top 큐 스래드 갯수
 					int nTopQueCnt = pThreadQue[CAM_POS_TOP]->GetSize();
+
+					//Bottom 큐 스래드 갯수
 					int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
+
+					//Top 큐 갯수가 IMAGE_PROC_SKIP_COUNT 보다 크고, Bottom 큐 갯수 가 IMAGE_PROC_SKIP_COUNT 보다 크다
 					if ((nTopQueCnt > IMAGE_PROC_SKIP_COUNT) && (nBtmQueCnt > IMAGE_PROC_SKIP_COUNT) 
+						//Top/Bottom Size가 IMAGE_PROC_SKIP_COUNT 보다 클 때 
 						|| ( (nSizeFrmL > IMAGE_PROC_SKIP_COUNT ) && (nSizeFrmR > IMAGE_PROC_SKIP_COUNT) ) ){
+						//프레임 정보 에러 세팅
 						pInfo->m_bErrorFlag = TRUE;
+						//Bottom 에러 플래그 세팅
 						pBtmInfo->m_bErrorFlag = TRUE ;
 					}
 					// 22.05.18 Ahn Add Start
 
 					// 22.12.09 Ahn Add Start
+					//시간 측정함수  세팅
 					LARGE_INTEGER tmp;
 					LARGE_INTEGER start;
 					QueryPerformanceFrequency(&tmp);
 					double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
 					QueryPerformanceCounter(&start);
 
+					//Fram 정보에 측정값 세팅
 					pInfo->m_stTime = start;
 					pInfo->m_dFrecuency = dFrequency;
+
+					//Bottom 정보에 측정값 세팅
 					pBtmInfo->m_stTime = start;
 					pBtmInfo->m_dFrecuency = dFrequency;
-					// 22.12.09 Ahn Add End
 
+					// 22.12.09 Ahn Add End
+					//스래드 큐 카메라 Top에 정보 생성된 정보를 저장
 					pThreadQue[CAM_POS_TOP]->push(pInfo) ;
+
+					//스래드 큐 카메라 Bottom  정보에 생성되 정보를 저장
 					pThreadQue[CAM_POS_BOTTOM]->push(pBtmInfo) ;
 
+					//지금 Lot Data Tab Count를 증가 시킨다
 					AprData.m_NowLotData.m_nTabCount++;
 				}
+				//Tab 정보 리스트를 삭제
 				vecTabInfo.clear();
 			}
 
+			//Fram Top 정보 객체 삭제
 			delete pFrmInfo_Top;
 			pFrmInfo_Top = NULL;
+
+			//Fram Bottom 정보 객체  삭제
 			delete pFrmInfo_Bottom;
 			pFrmInfo_Bottom = NULL;
 
+			//처리에 걸린 시간을  가져온다.
 			double dSecond = ctAna.WhatTimeIsIt_Double();
+			//Tact Time에 세팅한다.
 			AprData.SetTactTime_1(dSecond);
 		}
 		::Sleep(AprData.m_nSleep);
@@ -461,36 +655,59 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {
+	//이미지 처리 스래드 객체
 	CImageProcThread* pThis = (CImageProcThread*)Param;
+
 	// 22.08.10 Ahn Delete Start
 	//CQueueCtrl* pQueueCtrl = pThis->m_pParent->GetQueuePtr();
 	// 22.08.10 Ahn Delete End
+	
 	// 22.05.31 Ahn Add Start
+	//이미지 저장 큐 제어 객체를 가져온다.
 	CImageSaveQueueCtrl* pImgSaveQueueCtrl = pThis->m_pParent->GetImageSaveQueuePtr();
+
 	// 22.05.31 Ahn Add End
 	// 22.12.09 Ahn Add Start
+	//TacTime 데이터 제어 객체를 가져온다.
 	CTacTimeDataCtrl* pTactCtrl = pThis->m_pParent->GetTactDataCtrlPtr();
 	// 22.12.09 Ahn Add End
 
+	//임시변수 : 결과 큐 컨트롤 저장 객체
 	CQueueCtrl* pRsltQueueCtrl[GRABBER_COUNT];
+	//Grabber 갯수 만큼 결과 큐 객체를 가져온다.
 	for (int i = 0; i < GRABBER_COUNT; i++) {
 		pRsltQueueCtrl[i] = pThis->m_pParent->GetResultPtr(i);
 	}
 
 	//CFrameRsltInfo* pFrmRsltInfo;
+	//스래드 큐 제어 객체 : 카메라 댓수 만큼 생성
 	CThreadQueueCtrl* pThdQue[MAX_CAMERA_NO];
 	for (int i = 0; i < MAX_CAMERA_NO; i++) {
 		pThdQue[i] = pThis->m_pParent->GetThreadQueuePtr(i);
 	}
 
+	//이미지 처리 스래드 유닛 Top(카메라 연결 장비)
 	CImageProcThreadUnit* pUnitTop = NULL ;
+
+	//이미지 처리 스래드 유닛 Bottom(카메라 연결 장비)
 	CImageProcThreadUnit* pUnitBtm = NULL ;
+
+	//비트맵 저장 여부
 	BOOL bBitmapSave = FALSE;
+
+	//Judge NG  여부
 	BOOL bJudgeNG = FALSE;
+
+	//Judge 구분
 	char szJudge[2][4] = { "OK", "NG" };
+
+	//Top Botton 구분
 	char szPos[2][8] = { "TOP","BTM" };
 
+	//Marking 여부
 	BOOL bMarkingActive = FALSE;
+
+	//clear 여부
 	BOOL bClearFlag = FALSE;
 
 	while (1) {
@@ -501,8 +718,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			break;
 		}
 
+		//카메라 스래드큐 Top Bottom 객체 검사
 		if (!pThdQue[CAM_POS_TOP]->IsEmpty() && !pThdQue[CAM_POS_BOTTOM]->IsEmpty()) {
+
+			//TOP 카메라 유닛 정보를 가져온다.
 			pUnitTop = pThdQue[CAM_POS_TOP]->pop();
+			//BOTTOM 유닛 정보를 가져온다.
 			pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
 
 			while (1) 
@@ -512,39 +733,68 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				}
 
 				// 22.12.09 Ahn Add Start
+				//수행시간 시작 시간
 				LARGE_INTEGER stTime ;
 				// 22.12.09 Ahn Add End
+				//Top 유닛 처리가 End 이면서 Bottom 처리가 End 이면
 				if ( (pUnitTop->IsProcEnd() == TRUE) && (pUnitBtm->IsProcEnd() == TRUE) ){
+
+					//유닛Top 처리 객체에서 Fram 결과 정보를 가져온다.
 					CFrameRsltInfo *pTopInfo = pUnitTop->GetResultPtr();
+
+					//유닛 Bottom 처리 객체에서 Fram 결과 정보를 가져온다.
 					CFrameRsltInfo *pBtmInfo = pUnitBtm->GetResultPtr();
 
-					int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;			
+					//Bottom Judge 값
+					int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;		
+					//Top Judge 값
 					int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
 
 					// 22.12.09 Ahn Add Start 
+					//Top 결과 정보에서 시작 시간을 가져온다.
 					stTime = pTopInfo->m_stTime ;
 					// 22.12.09 Ahn Add End
 
 					// NG Tab 보고
 					if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG)) {
+
+						//Alarm Code 초기화
 						WORD wAlarmCode = 0x0000;
+
+						//Judge NG 플래그 초기화
 						bJudgeNG = TRUE;
+
+						//Top 가 NG이면
 						if (nTopJudge == JUDGE_NG) {
+							//알람 코드 
 							wAlarmCode = pTopInfo->m_pTabRsltInfo->m_wNgReason;
+							//지금 Lot Data Top NG 값을 증가 시킨다.
 							AprData.m_NowLotData.m_nTopNG++;
 						}
+
+						//Bottom Judge NG 이면
 						if (nBtmJudge == JUDGE_NG) {
+
+							//알람코드 | 연산 추가
 							wAlarmCode |= pBtmInfo->m_pTabRsltInfo->m_wNgReason;
+
+							//지금 Lot Data  Bottom NG 값 증가 시킨다.
 							AprData.m_NowLotData.m_nBottomNG++ ;
 						}
+
+						//Tab Count  NG 증가
 						AprData.m_NowLotData.m_nTabCountNG++ ;
 		
 						// 22.08.09 Ahn Add Start
+						//지금 Lot 데이터 Contiue 카운트 증가
 						AprData.m_NowLotData.m_nContinueCount++ ;
+
+						//Tab Judge 객체
 						CTabJudge tab ;
 						tab.nJudge = JUDGE_NG ;
 						tab.nReason = wAlarmCode ;
 						tab.nTabNo = pTopInfo->nTabNo ;
+
 						// 22.08.10 Ahn Modify Start
 						//int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_pRecipeInfo->nSectorCount) ;
 						//if ( (AprData.m_NowLotData.m_nContinueCount >= AprData.m_pRecipeInfo->nContinousNgCount)
@@ -772,13 +1022,16 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					break;
 				}
+				//1 밀리 세컨트 잠들다.(스래드 제어권 넘김)
 				Sleep(AprData.m_nSleep);
 			}
 		}
+		//1 밀리 세컨트 잠들다(스래드 제어권 넘기기)
 		Sleep(AprData.m_nSleep);
 	}
-
+	// 스래드 종료
 	AfxEndThread(0);
+	//스래드 Kill 플래그 FALSE 세팅
 	pThis->m_bKill = FALSE;
 
 	return 0;

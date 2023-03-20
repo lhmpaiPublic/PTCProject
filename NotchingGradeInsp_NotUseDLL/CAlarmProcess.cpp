@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CAlarmProcess.h"
 #include "SigProc.h"
 

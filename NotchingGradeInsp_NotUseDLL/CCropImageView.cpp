@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "NotchingGradeInsp.h"
 #include "MainFrm.h"
 #include "NotchingGradeInspDoc.h"
@@ -45,7 +45,7 @@ int CCropImageView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	// TODO:  ¿©±â¿¡ Æ¯¼öÈ­µÈ ÀÛ¼º ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO:  ì—¬ê¸°ì— íŠ¹ìˆ˜í™”ëœ ìž‘ì„± ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 	if (m_pCropImgViewDlg == nullptr) {
 		m_pCropImgViewDlg = new CCropImageViewDlg(this, m_pView);
 		if (m_pCropImgViewDlg != nullptr) {
@@ -68,7 +68,7 @@ void CCropImageView::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
 
-	// TODO: ¿©±â¿¡ ¸Þ½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 	RecalcLayout();
 	if (m_pCropImgViewDlg->GetSafeHwnd()) {
 		m_pCropImgViewDlg->SetWindowPos(NULL, 5, 5, cx - 10, cy - 10, SWP_NOZORDER);
@@ -82,8 +82,8 @@ void CCropImageView::OnSize(UINT nType, int cx, int cy)
 void CCropImageView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-					   // TODO: ¿©±â¿¡ ¸Þ½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
-					   // ±×¸®±â ¸Þ½ÃÁö¿¡ ´ëÇØ¼­´Â CDockablePane::OnPaint()À»(¸¦) È£ÃâÇÏÁö ¸¶½Ê½Ã¿À.
+					   // TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+					   // ê·¸ë¦¬ê¸° ë©”ì‹œì§€ì— ëŒ€í•´ì„œëŠ” CDockablePane::OnPaint()ì„(ë¥¼) í˜¸ì¶œí•˜ì§€ ë§ˆì‹­ì‹œì˜¤.
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	CRect rect;
 	GetClientRect(&rect);
@@ -92,7 +92,7 @@ void CCropImageView::OnPaint()
 
 int CCropImageView::OnRefresh()
 {
-	// TODO: ¿©±â¿¡ ±¸Çö ÄÚµå Ãß°¡.
+	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int nRet = 0;
 	//nRet = m_pCropImgViewDlg->ImageReflesh;
 	return nRet;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class CImageProcessCtrl;
 class CCounterThread
@@ -18,7 +18,7 @@ public:
 protected:
 	BOOL	m_bKill;
 	int		m_nThreadId;
-	CWinThread* m_pThread;				//!< ƒXƒŒƒbƒh(CWinThread *)x1
+	CWinThread* m_pThread;				//!< ê¸šê¹’ê¸žê¸¤(CWinThread *)x1
 	BOOL	m_bFreeRunn;
 // 22.04.06 Ahn Add Start
 	BOOL	m_bRunFlag;
