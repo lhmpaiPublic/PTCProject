@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 #include <vector>
@@ -11,12 +11,12 @@
 //	int nTabNo;		//
 //	int nLeft;			//
 //	int nRight;		//
-//	int nHeadLeft;		// ÅÇ ¸Ó¸® ¿ŞÂÊ
-//	int nHeadRight;	// ÅÇ ¸Ó¸® ¿À¸¥ÂÊ
+//	int nHeadLeft;		// íƒ­ ë¨¸ë¦¬ ì™¼ìª½
+//	int nHeadRight;	// íƒ­ ë¨¸ë¦¬ ì˜¤ë¥¸ìª½
 //	int nCenter;
 //	int nWidth;
 //	int nHeadWidth;
-//	QWORD qwHeadStPos;	// °Ë»ç ½ÃÀÛ Frame À» ±âÁØÀ¸·Î Tab HeadÀÇ Pixel À§Ä¡ 
+//	QWORD qwHeadStPos;	// ê²€ì‚¬ ì‹œì‘ Frame ì„ ê¸°ì¤€ìœ¼ë¡œ Tab Headì˜ Pixel ìœ„ì¹˜ 
 //
 //};
 
@@ -35,7 +35,7 @@ public:
 
 	CImageProcessCtrl *m_pParent ;
 	typedef std::vector< CTabInfo > _VEC_TAB_INFO;
-	// Tab±¸ºĞ ÀúÀå None Halcon Version
+	// Tabêµ¬ë¶„ ì €ì¥ None Halcon Version
 
 	typedef struct Sector {
 		int nStartPos;
@@ -55,7 +55,7 @@ public:
 protected :
 	BOOL	m_bKill ;
 	int		m_nThreadId ;
-	CWinThread* m_pThread ;				//!< ƒXƒŒƒbƒh(CWinThread *)x1
+	CWinThread* m_pThread ;				//!< ê¸šê¹’ê¸ê¸¤(CWinThread *)x1
 
 protected:
 	static UINT CtrlThreadImgProc( LPVOID pParam ) ;

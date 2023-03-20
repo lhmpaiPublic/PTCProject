@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 //#if defined( POSITIVE_VRESION )
 //#elif defined( NEGATIVE_VERSION )
@@ -74,7 +74,7 @@ enum {
 //#define		DEBUG_NOISE_COUNTERMEASURE
 
 //#define		MELSEC_ETHERNET 
-//#define		DEBUG_MELSEC_ETHERNET // ∏·ºΩ ªÁøÎΩ√ ƒø∏«µÂ »Æ¿ŒøÎ µπˆ±◊ µ∆ƒ¿Œ
+//#define		DEBUG_MELSEC_ETHERNET // Î©úÏÑπ ÏÇ¨Ïö©Ïãú Ïª§Îß®Îìú ÌôïÏù∏Ïö© ÎîîÎ≤ÑÍ∑∏ ÎîîÌååÏù∏
 
 // 22.06.26 Ahn Add Start
 #define		MAX_CROP_IMAGE_QUEUE_SIZE	198 // 22.12.06 Ahn Modify 15 -> 200
@@ -92,7 +92,7 @@ enum {
 
 #define		MAX_SAVE_IMAGE_QUEUE		20		// 
 
-// ¿Â∫Ò ∞Ì¿Ø º≥¡§
+// Ïû•ÎπÑ Í≥†Ïú† ÏÑ§Ï†ï
 // 22.03.25 Ahn Add Start
 #define		MIN_FRAME_SIZE		2000
 #define		MAX_FRAME_SIZE		16384
@@ -119,10 +119,10 @@ enum {
 #define		MEAN_SIZE_HOR_NEGATIVE	50
 
 // 22.09.15 Ahn Modify Start
-//#define		ANODE_MODE			0 // ¿Ω±ÿ 
-//#define		CATHODE_MODE		1 // æÁ±ÿ
-#define		CATHODE_MODE		0 // ¿Ω±ÿ
-#define		ANODE_MODE			1 // æÁ±ÿ 
+//#define		ANODE_MODE			0 // ÏùåÍ∑π 
+//#define		CATHODE_MODE		1 // ÏñëÍ∑π
+#define		CATHODE_MODE		0 // ÏùåÍ∑π
+#define		ANODE_MODE			1 // ÏñëÍ∑π 
 // 22.09.15 Ahn Modify End
 
 #define		TEST_LOG
@@ -130,25 +130,25 @@ enum {
 #define		MODE_READ			0
 #define		MODE_WRITE			1
 
-#define		GRABBER_COUNT		2		// Grabber Board ºˆ	
+#define		GRABBER_COUNT		2		// Grabber Board Ïàò	
 // 22.07.08 Son Add Start
 #define		IMAGE_SAVE_THREAD	4
 // 22.07.08 Son Add End
 
 #define		CAM_POS_TOP			0
 #define		CAM_POS_BOTTOM		1
-#define		MAX_CAMERA_NO		2		// ƒ´∏ﬁ∂Û ¥Îºˆ
+#define		MAX_CAMERA_NO		2		// Ïπ¥Î©îÎùº ÎåÄÏàò
 
 #define		MAX_LIGHT_CHANEL	2
 #define		MAX_LIGHT_UNIT		2
 
-#define		DIR_HOR				0	// ∞°∑ŒπÊ«‚
-#define		DIR_VER				1	// ºº∑ŒπÊ«‚
+#define		DIR_HOR				0	// Í∞ÄÎ°úÎ∞©Ìñ•
+#define		DIR_VER				1	// ÏÑ∏Î°úÎ∞©Ìñ•
 
 #define		DEFAULT_IMG_SIZE_W		2000
 #define		DEFAULT_IMG_SIZE_H		7500
 
-// Overflow ¡∂∞«
+// Overflow Ï°∞Í±¥
 #define		OVERFLOW_OCCURED	4
 #define		MAX_BLOCK_PIXEL		32768
 #define		MAX_DEFECT_COUNT	128
@@ -182,7 +182,7 @@ enum {
 };
 
 
-// DebugøÎ Log
+// DebugÏö© Log
 #define	SAVE_TACT_LOG 
 
 //#define IMAGE_DRAW_NOTIFY_VERSION 
@@ -195,7 +195,7 @@ enum {
 #define		TYPE_FOILEXP			0
 #define		TYPE_FOILEXP_OUT		1
 #define		TYPE_SURFACE			2
-#define		MAX_INSP_TYPE			3 // ∞·«‘ ∞À√‚ ∏µÂ Dross / Foil ≥Î√‚
+#define		MAX_INSP_TYPE			3 // Í≤∞Ìï® Í≤ÄÏ∂ú Î™®Îìú Dross / Foil ÎÖ∏Ï∂ú
 
 #define		RANK_OK			0
 #define     RANK_GRAY		1
@@ -211,7 +211,7 @@ enum {
 #define		RANK_COND_BRIGHT	1
 #define		MAX_RANK_COND		2 
 
-// ∞À√‚∑¬ ∞¸∑√ Define
+// Í≤ÄÏ∂úÎ†• Í¥ÄÎ†® Define
 
 #define		THRESHOLD_MIN_VALUE		100
 

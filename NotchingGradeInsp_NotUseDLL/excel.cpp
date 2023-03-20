@@ -1,4 +1,4 @@
-// Machine generated IDispatch wrapper class(es) created with ClassWizard
+﻿// Machine generated IDispatch wrapper class(es) created with ClassWizard
 
 #include "pch.h"
 #include "excel.h"

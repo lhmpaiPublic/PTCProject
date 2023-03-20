@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CImageSaveThread.h"
 #include "ImageProcessCtrl.h"
 #include "CImageSaveQueueCtrl.h"
@@ -71,7 +71,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 		}
 
 		if (pQueuePtr->IsEmpty() == FALSE ) {
-			// Image ÇÏ³ª °¡Áö°í ¿À°í »èÁ¦ÇÔ.
+			// Image í•˜ë‚˜ ê°€ì§€ê³  ì˜¤ê³  ì‚­ì œí•¨.
 			CImgSaveInfo* pSaveInfo = pQueuePtr->Pop() ;
 			if( pSaveInfo == NULL ) continue ;
 
@@ -90,7 +90,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 				CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
 				bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr() );
-				// Debug½Ã¿¡ ÀÌ¹ÌÁö Ä÷¸®Æ¼°¡ °è¼Ó ÀúÇÏ µÇ´Â °ÍÀ» ¹æÁö.
+				// Debugì‹œì— ì´ë¯¸ì§€ í€„ë¦¬í‹°ê°€ ê³„ì† ì €í•˜ ë˜ëŠ” ê²ƒì„ ë°©ì§€.
 
 				int nJpgQuality; 
 				if (pQueuePtr->GetSize() > 2) {

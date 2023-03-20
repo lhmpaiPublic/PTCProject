@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "SystemSetting.h"
 #include "Win32File.h"
 #include "GlobalData.h"
@@ -12,7 +12,7 @@ CSystemSetting::CSystemSetting()
 
 int CSystemSetting::FileCtrl(int nMode)
 {
-    // TODO: ¿©±â¿¡ ±¸Çö ÄÚµå Ãß°¡.
+    // TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 
 	//CWin32File winFile;
 	CString strFileName;
@@ -27,7 +27,7 @@ int CSystemSetting::FileCtrl(int nMode)
 		
 		{
 			strSection = _T("EQP_SETTING");
-			strKey = _T("MACHINE_MODE"); // 0 : ¾ç±Ø , 1 : À½±Ø
+			strKey = _T("MACHINE_MODE"); // 0 : ì–‘ê·¹ , 1 : ìŒê·¹
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			m_nMachineMode = atoi(buff);
 
@@ -283,7 +283,7 @@ int CSystemSetting::FileCtrl(int nMode)
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			// 22.07.04 Ahn Add End
 		}
-		// Ä«¸Ş¶ó ¼¼ÆÃ
+		// ì¹´ë©”ë¼ ì„¸íŒ…
 		{
 			strSection = _T("CAMERA_SETTING");
 			strKey.Format(_T("TRIGGER_MODE"));

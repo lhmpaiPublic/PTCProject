@@ -1,4 +1,4 @@
-#if	!defined( AFX_EXCELCONST_H__INCLUDED_ )
+ï»¿#if	!defined( AFX_EXCELCONST_H__INCLUDED_ )
 #define	AFX_EXCELCONST_H__INCLUDED_
 
 //Constants
@@ -195,7 +195,7 @@
 #define xlSplitByValue						2
 
 
-//ÅØ½ºÆ® ¹ØÁÙ ½ºÅ¸ÀÏ
+//í…ìŠ¤íŠ¸ ë°‘ì¤„ ìŠ¤íƒ€ì¼
 #define xlTextUnderLineNone					-4142
 #define xlTextUnderLineSingle				4
 #define xlTextUnderLineDouble				5
@@ -210,7 +210,7 @@
 #define xlAlignVCenter						-4108
 #define xlAlignVBottom						-4107
 
-//Line¼Ó¼º
+//Lineì†ì„±
 #define xlLineDiagonalDown					5
 #define xlLineDiagonalUp					6
 #define xlLineLeft							7
@@ -221,20 +221,20 @@
 #define xlLineInsideHorizontal				12
 #define xlLineNone							-4142
 
-//°æ°è¼± ±½±â
+//ê²½ê³„ì„  êµµê¸°
 #define xlHairline							1
 #define xlMedium							0xffffefd6
 #define xlThick								4
 #define xlThin								2
 
-//°æ°è¼± ½ºÅ¸ÀÏ
+//ê²½ê³„ì„  ìŠ¤íƒ€ì¼
 #define xlLineStyle_Continuous				1
 #define xlLineStyle_Dot						-4118
 #define xlLineStyle_Dash					-4115
 #define xlLineStyle_Double					-4119
 #define xlLineStyle_None					-4142
 
-//Â÷Æ® Å¸ÀÔ
+//ì°¨íŠ¸ íƒ€ì…
 #define xlBubble							15
 #define xlColumnClustered					51
 #define xlColumnStacked						52
@@ -516,7 +516,7 @@
 #define xlRows								1
 #define xlColumns							2
 
-//¸¶Ä¿ ½ºÅ¸ÀÏ
+//ë§ˆì»¤ ìŠ¤íƒ€ì¼
 #define xlMarkerStyleAutomatic				0xffffeff7
 #define xlMarkerStyleCircle					8
 #define xlMarkerStyleDash					0xffffefed

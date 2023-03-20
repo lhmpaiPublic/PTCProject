@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <vector>
 
@@ -8,11 +8,11 @@ class CExpandViewImage : public CStatic
 {
 	DECLARE_DYNAMIC(CExpandViewImage)
 
-	// »ı¼ºÀÔ´Ï´Ù.
+	// ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CExpandViewImage(LPCTSTR lpszImageFileName = _T(""));
 
-	// Æ¯¼ºÀÔ´Ï´Ù.
+	// íŠ¹ì„±ì…ë‹ˆë‹¤.
 protected:
 	CImage m_Image;
 	CString m_strImageFileName;
@@ -28,7 +28,7 @@ public:
 	void SetRClickClose(BOOL bSet);
 //KANG 22.07.08 Add End
 
-	// ±¸ÇöÀÔ´Ï´Ù.
+	// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CExpandViewImage();
 

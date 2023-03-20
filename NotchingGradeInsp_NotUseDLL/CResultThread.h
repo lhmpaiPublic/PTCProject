@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <vector>
 
@@ -32,7 +32,7 @@ public:
 protected:
 	BOOL	m_bKill;
 	int		m_nThreadId;
-	CWinThread* m_pThread;				//!< ƒXƒŒƒbƒh(CWinThread *)x1
+	CWinThread* m_pThread;				//!< ê¸šê¹’ê¸žê¸¤(CWinThread *)x1
 	int		m_nHeadNo;
 	CDefectDataCtrl* m_pDefDataCtrl;
 

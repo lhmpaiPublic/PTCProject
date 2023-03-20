@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CSiemensPlc.h"
 #include "GlobalData.h"
 
@@ -13,8 +13,8 @@ CSiemensPlc::CSiemensPlc(CString strIPAddress, int nPort /*= 4000*/, int nOffset
 {
 
 	// 23.03.03 Ahn Add Start
-	m_wOffset_In = nOffsetIn ;	//!< ÀÔ·Â ½ÅÈ£ Offset
-	m_wOffset_Out = nOffsetOut;	//!< Ãâ·Â ½ÅÈ£ Offset
+	m_wOffset_In = nOffsetIn ;	//!< ìž…ë ¥ ì‹ í˜¸ Offset
+	m_wOffset_Out = nOffsetOut;	//!< ì¶œë ¥ ì‹ í˜¸ Offset
 	m_wOffsetWord_In = nWordIn ;
 	m_wOffsetWord_Out = nWordOut ;
 	// 23.03.03 Ahn Add End

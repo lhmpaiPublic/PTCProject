@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 
 
@@ -11,9 +11,9 @@
 
 	
 
-	CMD «• 
+	CMD Ìëú 
 	0x12 : Request / Response
-	0x13 ∞≥∫∞ Segment Bright Write Requset / Response 
+	0x13 Í∞úÎ≥Ñ Segment Bright Write Requset / Response 
 */
 //#define MAX_LIGHT_CH 2 
 //#define MAX_LIGHT_UNIT 2
@@ -32,7 +32,7 @@ public :
 		en_CMD_CH_MODE			= 0x12,
 		en_CMD_SEG_BRI			= 0x13,
 		en_CMD_ALL_SEG_WRRITE	= 0x14,
-		en_CMD_ALL_SEG_READ		= 0x15, // All Segment Read Request/Response ∞∞¿∫ CMDªÁøÎ
+		en_CMD_ALL_SEG_READ		= 0x15, // All Segment Read Request/Response Í∞ôÏùÄ CMDÏÇ¨Ïö©
 		en_CMD_CH_WRITE			= 0x16,
 		en_CMD_ALL_CH_WRITE		= 0x17,
 		en_CMD_ALL_CH_READ		= 0x18, // 
@@ -49,8 +49,8 @@ public :
 	};
 
 	enum {
-		en_CH_MODE_Length				= 3, // Request/Response Command¿« ±Ê¿Ã cmd, channel, check-sum 
-		en_SEG_BRI_Length				= 4, // Set Bright One Chennel CMD¿« ±Ê¿Ã cmd, chennel No, BrightLv, checksum
+		en_CH_MODE_Length				= 3, // Request/Response CommandÏùò Í∏∏Ïù¥ cmd, channel, check-sum 
+		en_SEG_BRI_Length				= 4, // Set Bright One Chennel CMDÏùò Í∏∏Ïù¥ cmd, chennel No, BrightLv, checksum
 		en_ALL_SEG_BRI_W_Length			= 10,
 		en_ALL_SEG_BRI_R_Length			= 2,
 		en_ALL_SEG_BRI_R_RESP_Length	= 10,

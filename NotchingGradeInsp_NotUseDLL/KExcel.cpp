@@ -1,4 +1,4 @@
-// KExcel.cpp: implementation of the KExcel class.
+ï»¿// KExcel.cpp: implementation of the KExcel class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -38,7 +38,7 @@ int KExcel::Init()
 
 	m_pApp=new _Application;
 	if(!m_pApp->CreateDispatch(_T("Excel.Application"))) {
-		AfxMessageBox( _T("¿¢¼¿À» ½ÃÀÛÇÒ ¼ö ¾ø½À´Ï´Ù!!\n\r¿¢¼¿ ÇÁ·Î±×·¥ÀÌ ¼³Ä¡ µÇÁö ¾Ê¾Ò°Å³ª\n\r¿¢¼¿ ÇÁ·Î±×·¥¿¡ ¹®Á¦°¡ ÀÖÀ» ¼ö ÀÖ½À´Ï´Ù." ) ) ;
+		AfxMessageBox( _T("ì—‘ì…€ì„ ì‹œì‘í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤!!\n\rì—‘ì…€ í”„ë¡œê·¸ë¨ì´ ì„¤ì¹˜ ë˜ì§€ ì•Šì•˜ê±°ë‚˜\n\rì—‘ì…€ í”„ë¡œê·¸ë¨ì— ë¬¸ì œê°€ ìˆì„ ìˆ˜ ìˆìŠµë‹ˆë‹¤." ) ) ;
 		delete m_pApp;
 		return -1;
 	}
@@ -117,9 +117,9 @@ int KExcel::CopySheet( BOOL bAfter /*= TRUE*/ )
 	val.pdispVal = m_sheet.m_lpDispatch ;
 	val.pdispVal->AddRef() ;
 	if( bAfter == TRUE ) {			
-		m_sheet.Copy( covOptional, val ) ;		//CopyµÈ Sheet¸¦ µÚ·Î »ğÀÔ
+		m_sheet.Copy( covOptional, val ) ;		//Copyëœ Sheetë¥¼ ë’¤ë¡œ ì‚½ì…
 	}else {
-		m_sheet.Copy( val, covOptional ) ;		//CopyµÈ Sheet¸¦ ¾ÕÀ¸·Î »ğÀÔ
+		m_sheet.Copy( val, covOptional ) ;		//Copyëœ Sheetë¥¼ ì•ìœ¼ë¡œ ì‚½ì…
 	}
 
 	m_sheet.Activate() ;
@@ -162,7 +162,7 @@ int KExcel::Open( CString strFileName /* = _T( "" )*/ )
 			SetActiveSheet(1);
 			return 0 ;
 		}else {
-			AfxMessageBox( _T( "¿¢¼¿ÀÌ ÃÊ±âÈ­ µÇ¾î ÀÖÁö ¾Ê½À´Ï´Ù." ) ) ;
+			AfxMessageBox( _T( "ì—‘ì…€ì´ ì´ˆê¸°í™” ë˜ì–´ ìˆì§€ ì•ŠìŠµë‹ˆë‹¤." ) ) ;
 			return -1 ;
 		}
 
@@ -195,7 +195,7 @@ int KExcel::Save()
 			m_book.Save();
 			return 0 ;
 		}else {
-			AfxMessageBox( _T( "ExcelÆÄÀÏÀÇ ÀúÀåÀ» ½ÇÆĞÇÏ¿´½À´Ï´Ù." ) ) ;
+			AfxMessageBox( _T( "ExcelíŒŒì¼ì˜ ì €ì¥ì„ ì‹¤íŒ¨í•˜ì˜€ìŠµë‹ˆë‹¤." ) ) ;
 			return -1 ;
 		}
 	}catch(COleException *e) {
@@ -270,14 +270,14 @@ int KExcel::SetSheetName( int nSheetIndex, CString strSheetName )
 
 	int nTemp = ( int)m_sheets.GetCount() ;
 	if( nSheetIndex > nTemp ) {
-		AfxMessageBox( _T( "ÁöÁ¤µÈ Sheet°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù." ) ) ;
+		AfxMessageBox( _T( "ì§€ì •ëœ Sheetê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤." ) ) ;
 		return -1 ;
 	}
 
 	for( int i = 0 ; i < nTemp  ; i++ ) {
 		m_sheet = m_sheets.GetItem( COleVariant( ( short)( i + 1 ) ) ) ;
 		if( _tcscmp( m_sheet.GetName(), strSheetName ) == 0  ) {
-			AfxMessageBox( _T( "°°Àº ÀÌ¸§ÀÇ Sheet°¡ ÀÌ¹Ì Á¸ÀçÇÕ´Ï´Ù." ) ) ;
+			AfxMessageBox( _T( "ê°™ì€ ì´ë¦„ì˜ Sheetê°€ ì´ë¯¸ ì¡´ì¬í•©ë‹ˆë‹¤." ) ) ;
 			return -1 ;
 		}
 	}
@@ -1213,7 +1213,7 @@ int KExcel::SetActiveChart( int nSheetIndex, int nChartIndex )
 	int nCount = ( int)m_chartobjects.GetCount() ;
 	if( nChartIndex > nCount ) {
 		CString strMsg ;
-		strMsg.Format( _T( "ÇØ´ç ÀÎµ¦½ºÀÇ Chart°¡ ¾ø½À´Ï´Ù.\n½ÃÆ®¸í:%s, Â÷Æ®ÀÎµ¦½º:%d" ), GetSheetName(), nChartIndex ) ;  
+		strMsg.Format( _T( "í•´ë‹¹ ì¸ë±ìŠ¤ì˜ Chartê°€ ì—†ìŠµë‹ˆë‹¤.\nì‹œíŠ¸ëª…:%s, ì°¨íŠ¸ì¸ë±ìŠ¤:%d" ), GetSheetName(), nChartIndex ) ;  
 		AfxMessageBox( strMsg ) ;
 		m_chartobject.DetachDispatch() ;
 		return -1 ;
@@ -1361,7 +1361,7 @@ int KExcel::SetChart_BorderStyle( long lBorderStyle )
 {
 	if( m_chartobject == NULL ) {
 		CString strMsg ;
-		AfxMessageBox( _T( "StyleÀ» Àû¿ëÇÒ Chart°¡ ¾ø½À´Ï´Ù." ) ) ;
+		AfxMessageBox( _T( "Styleì„ ì ìš©í•  Chartê°€ ì—†ìŠµë‹ˆë‹¤." ) ) ;
 		return -1 ;
 	}
 

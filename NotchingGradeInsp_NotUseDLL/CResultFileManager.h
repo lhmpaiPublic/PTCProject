@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <vector> 
 
@@ -64,20 +64,20 @@ public :
 	_VEC_DIR_DATA m_VecBackupDirData;
 
 private :
-	BOOL m_bBackup_RunFlag;	// »èÁ¦Áß
-	BOOL m_bDelete_RunFlag;	// »èÁ¦Áß
+	BOOL m_bBackup_RunFlag;	// ì‚­ì œì¤‘
+	BOOL m_bDelete_RunFlag;	// ì‚­ì œì¤‘
 	BOOL m_bComplete;	// 22.04.21 Ahn Add
 
 protected:
 	BOOL	m_bBackupRun;
 	BOOL	m_bBackup_Kill;
 	int		m_nBackup_ThreadId;
-	CWinThread* m_pBackup_Thread;				//!< ƒXƒŒƒbƒh(CWinThread *)x1
+	CWinThread* m_pBackup_Thread;				//!< ê¸šê¹’ê¸žê¸¤(CWinThread *)x1
 
 	BOOL	m_bDeleteRun;
 	BOOL	m_bDelete_Kill;
 	int		m_nDelete_ThreadId;
-	CWinThread* m_pDelete_Thread;				//!< ƒXƒŒƒbƒh(CWinThread *)x1
+	CWinThread* m_pDelete_Thread;				//!< ê¸šê¹’ê¸žê¸¤(CWinThread *)x1
 
 protected:
 	static UINT CtrlRsltFileDeleteThread(LPVOID pParam);

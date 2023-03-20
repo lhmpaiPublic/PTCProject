@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "StdIoCtrl.h"
 
@@ -34,9 +34,9 @@ private:
 
 	virtual int ChangeWorkingSetSize(void);
 
-	WORD	m_MaxPort;	// »ç¿ëÇÏ´Â ÃÖ´ë Æ÷Æ® ¼ö
-	WORD	m_SeqStNo;	// ½ÃÄö½º ±¹¹ø
-	long	m_pPath;	// ¿ÀÇÂÇÏ´Â È¸¼±ÀÇ °æ·Î Æ÷ÀÎÅÍ
+	WORD	m_MaxPort;	// ì‚¬ìš©í•˜ëŠ” ìµœëŒ€ í¬íŠ¸ ìˆ˜
+	WORD	m_SeqStNo;	// ì‹œí€€ìŠ¤ êµ­ë²ˆ
+	long	m_pPath;	// ì˜¤í”ˆí•˜ëŠ” íšŒì„ ì˜ ê²½ë¡œ í¬ì¸í„°
 	int		m_MyPort;
 
 };

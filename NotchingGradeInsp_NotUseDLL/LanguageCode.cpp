@@ -1,6 +1,6 @@
-//	$Id: $
+ï»¿//	$Id: $
 //!	@file	LanguageCode.cpp
-//!	@brief	GetLanguageCode ŠÖ”‚ÌÀ‘•
+//!	@brief	GetLanguageCode ë“«ë¦¶ê¶»ë ³ëª§
 //!	@author	
 //!	@date	
 //!	@note	

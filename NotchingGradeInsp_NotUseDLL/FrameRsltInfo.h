@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 
 #include <vector>
 #include "FrameInfo.h"
@@ -18,7 +18,7 @@ public:
 	double dStartPosX;
 	double dStartPosY;
 
-	// ∞·«‘ ∞À√‚ 
+	// Í≤∞Ìï® Í≤ÄÏ∂ú 
 	int nDefCount;
 	int nMeasureCount;
 	CTabRsltInfo *m_pTabRsltInfo;

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CResultFileManager.h"
 #include "Win32File.h"
 #include "GlobalData.h"
@@ -78,7 +78,7 @@ int CResultFileManager::MakeFolderList(_VEC_DIR_DATA * pVecDirData, CString strP
 				nDirDay = atoi(strDay);
 				
 				if( (nDirDay > nDay) && (nDirMonth == nMonth) )continue;
-				// »èÁ¦ ´ë»ó ³¯Â¥¸¦ ¸®½ºÆ®¿¡ Ãß°¡ÇÔ.
+				// ì‚­ì œ ëŒ€ìƒ ë‚ ì§œë¥¼ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€í•¨.
 			//	data.SetDirectory(strPathD);
 			//	CStringList* pListPtr = data.GetFolderListPtr() ;
 			//	pListPtr->RemoveAll();
@@ -104,7 +104,7 @@ UINT CResultFileManager::CtrlRsltFileBackupThread(LPVOID Param)
 	CString strPath; 
 	strPath.Format( _T("%s"), AprData.m_strFeederPath ) ;
 	_VEC_DIR_DATA vecDirData;
-	// ³â/¿ù/ÀÏ Æú´õ ¼öÁı
+	// ë…„/ì›”/ì¼ í´ë” ìˆ˜ì§‘
 	rsltManager.MakeFolderList(&vecDirData, strPath, 90);
 
 	while (1) {
@@ -120,15 +120,15 @@ UINT CResultFileManager::CtrlRsltFileBackupThread(LPVOID Param)
 		//for (int i = 0; i < nSize; i++) {
 		_VEC_DIR_DATA::iterator iter;
 		for( iter = vecDirData.begin() ; iter != vecDirData.end() ; iter++){
-		// Æú´õ ¸®½ºÆ® 
+		// í´ë” ë¦¬ìŠ¤íŠ¸ 
 			CString strFilePath;
 			strFilePath = iter->GetDirectory() ;
 			CStringList strList;
 			CWin32File::GetFileList(strFilePath, strList, _T("*"), 0, TRUE);
 			// strFilePath.Format( _T("%s")) ;
-			// ÆÄÀÏ °Ë»ö
-			// º¹»ç°æ·Î »ı¼º
-			// ÆÄÀÏ º¹»ç
+			// íŒŒì¼ ê²€ìƒ‰
+			// ë³µì‚¬ê²½ë¡œ ìƒì„±
+			// íŒŒì¼ ë³µì‚¬
 
 		}
 	}
@@ -154,12 +154,12 @@ UINT CResultFileManager::CtrlRsltFileDeleteThread(LPVOID Param)
 		}
 
 		// 22.04.19 Ahn Add Start
-		// Æú´õ ¸®½ºÆ® 
+		// í´ë” ë¦¬ìŠ¤íŠ¸ 
 		CWin32File wFile;
 		_VEC_DIR_DATA::iterator iter;
 		iter = pThis->m_VecDelDirData.begin();
 		for (; iter != pThis->m_VecDelDirData.end() ;  ) {
-			// ÆÄÀÏ °Ë»ö
+			// íŒŒì¼ ê²€ìƒ‰
 			CString strPath;
 			CStringList strFileList;
 			strPath.Format(_T("%s"), iter->GetDirectory());
@@ -168,7 +168,7 @@ UINT CResultFileManager::CtrlRsltFileDeleteThread(LPVOID Param)
 				continue;
 			}
 			wFile.GetFileList(strPath, strFileList);
-			// ÆÄÀÏ»èÁ¦
+			// íŒŒì¼ì‚­ì œ
 			pThis->m_VecDelDirData.erase(iter++);
 			int nSize = (int) strFileList.GetSize();
 			CString strFile;

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "StdIoApi.h"
 #include "CONTEC/CDio.h"
 
@@ -85,8 +85,8 @@ int CStdIoApi::OutPort(WORD port, BYTE value)
 
 	if (__super::IsPortEorror(port) == TRUE) {
 		CString strError;
-		strError.Format( _T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d "), port, m_nPortMax);
-		//¿¡·¯Ãâ·Â
+		strError.Format( _T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d "), port, m_nPortMax);
+		//ì—ëŸ¬ì¶œë ¥
 		return (-1);
 	}
 
@@ -115,8 +115,8 @@ int CStdIoApi::ReadOutport(WORD port, BYTE* value)
 
 	if (__super::IsPortEorror(port) == TRUE) {
 		CString strError;
-		strError.Format( _T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d) "), port, m_nPortMax );
-		//¿¡·¯ Ãâ·Â
+		strError.Format( _T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d) "), port, m_nPortMax );
+		//ì—ëŸ¬ ì¶œë ¥
 		return(-1);
 	}
 
@@ -148,8 +148,8 @@ int CStdIoApi::Inport(WORD port, BYTE* value)
 
 	if (__super::IsPortEorror(port) == TRUE) {
 		CString strError;
-		strError.Format( _T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d) "), port, m_nPortMax);
-		//¿¡·¯ Ãâ·Â
+		strError.Format( _T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d) "), port, m_nPortMax);
+		//ì—ëŸ¬ ì¶œë ¥
 		return (-1);
 	}
 

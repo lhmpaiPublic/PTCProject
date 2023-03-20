@@ -305,7 +305,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				else
 				{
 					// Top 결과 정보  m_pTabRsltInfo  /NG 설정
-					 pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
+					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
+					pFrameRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((pFrameRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm);
 
 					 //NG 로그 출력한다.
 					 CString strMsg;

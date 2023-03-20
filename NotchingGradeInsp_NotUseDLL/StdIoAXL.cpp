@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "StdIoAXL.h"
 #include "CONTEC/CDio.h"
 
@@ -68,19 +68,19 @@ int CStdIoAXL::Open(BOOL debug /*=FALSE*/)
 				}
 			}
 			if (!bFindBoard) {
-				AfxMessageBox("DIO¸ğµâÀ» Ã£Áö ¸øÇß½À´Ï´Ù.");
+				AfxMessageBox("DIOëª¨ë“ˆì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
 				return FALSE;
 			}
 		}
 		else
 		{
-			AfxMessageBox("DIO¸ğµâÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+			AfxMessageBox("DIOëª¨ë“ˆì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 			return FALSE;
 		}
 	}
 	else
 	{
-		AfxMessageBox("DIO ÃÊ±âÈ­¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù.");
+		AfxMessageBox("DIO ì´ˆê¸°í™”ì— ì‹¤íŒ¨í•˜ì˜€ìŠµë‹ˆë‹¤.");
 		return FALSE;
 	}
 //TEST
@@ -158,8 +158,8 @@ int CStdIoAXL::OutPort(WORD port, BYTE value)
 
 	if (__super::IsPortEorror(port) == TRUE) {
 		CString strError;
-		strError.Format(_T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d "), port, m_nPortMax);
-		//¿¡·¯Ãâ·Â
+		strError.Format(_T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d "), port, m_nPortMax);
+		//ì—ëŸ¬ì¶œë ¥
 		return (-1);
 	}
 
@@ -205,8 +205,8 @@ int CStdIoAXL::ReadOutport(WORD port, BYTE* value)
 
 	if (__super::IsPortEorror(port) == TRUE) {
 		CString strError;
-		strError.Format(_T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d) "), port, m_nPortMax);
-		//¿¡·¯ Ãâ·Â
+		strError.Format(_T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d) "), port, m_nPortMax);
+		//ì—ëŸ¬ ì¶œë ¥
 		return(-1);
 	}
 
@@ -265,8 +265,8 @@ int CStdIoAXL::Inport(WORD port, BYTE* value)
 
 	if (__super::IsPortEorror(port) == TRUE) {
 		CString strError;
-		strError.Format(_T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d) "), port, m_nPortMax);
-		//¿¡·¯ Ãâ·Â
+		strError.Format(_T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d) "), port, m_nPortMax);
+		//ì—ëŸ¬ ì¶œë ¥
 		return (-1);
 	}
 
@@ -324,8 +324,8 @@ int CStdIoAXL::OutPortWord(WORD value)
 
 	if (__super::IsPortEorror(0) == TRUE) {
 		CString strError;
-		strError.Format(_T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d "), 0, m_nPortMax);
-		//¿¡·¯Ãâ·Â
+		strError.Format(_T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d "), 0, m_nPortMax);
+		//ì—ëŸ¬ì¶œë ¥
 		return (-1);
 	}
 	::EnterCriticalSection(&m_csDio);
@@ -366,8 +366,8 @@ int CStdIoAXL::ReadOutportWord(WORD* value)
 
 	if (__super::IsPortEorror(0) == TRUE) {
 		CString strError;
-		strError.Format(_T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d) "), 0, m_nPortMax);
-		//¿¡·¯ Ãâ·Â
+		strError.Format(_T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d) "), 0, m_nPortMax);
+		//ì—ëŸ¬ ì¶œë ¥
 		return(-1);
 	}
 	::EnterCriticalSection(&m_csDio);
@@ -416,8 +416,8 @@ int CStdIoAXL::InportWord(WORD* value)
 
 	if (__super::IsPortEorror(0) == TRUE) {
 		CString strError;
-		strError.Format(_T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d) "), 0, m_nPortMax);
-		//¿¡·¯ Ãâ·Â
+		strError.Format(_T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d) "), 0, m_nPortMax);
+		//ì—ëŸ¬ ì¶œë ¥
 		return (-1);
 	}
 	::EnterCriticalSection(&m_csDio);
@@ -464,8 +464,8 @@ int CStdIoAXL::OutPortBit(WORD port, int nIndex, BOOL bit)
 
 	if (__super::IsPortEorror(port) == TRUE) {
 		CString strError;
-		strError.Format(_T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d "), port, m_nPortMax);
-		//¿¡·¯Ãâ·Â
+		strError.Format(_T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d "), port, m_nPortMax);
+		//ì—ëŸ¬ì¶œë ¥
 		return (-1);
 	}
 
@@ -503,8 +503,8 @@ int CStdIoAXL::InportBit(WORD port, int nIndex, BOOL* bit)
 
 	if (__super::IsPortEorror(port) == TRUE) {
 		CString strError;
-		strError.Format(_T("ÀÔÃâ·Â ¿¡·¯ ( Æ÷Æ®°¡ ¿À¹öµÇ¾ú½À´Ï´Ù. : %d, MaxPort : %d) "), port, m_nPortMax);
-		//¿¡·¯ Ãâ·Â
+		strError.Format(_T("ì…ì¶œë ¥ ì—ëŸ¬ ( í¬íŠ¸ê°€ ì˜¤ë²„ë˜ì—ˆìŠµë‹ˆë‹¤. : %d, MaxPort : %d) "), port, m_nPortMax);
+		//ì—ëŸ¬ ì¶œë ¥
 		return (-1);
 	}
 

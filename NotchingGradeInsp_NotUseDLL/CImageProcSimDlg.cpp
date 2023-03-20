@@ -3889,6 +3889,10 @@ void CImageProcSimDlg::OnBnClickedBtnInspSpeter()
 		timeAna.Clear();
 	}
 
+	CString strMsg;
+	strMsg.Format(_T("nLevel = %d"), nLevel);
+	AfxMessageBox(strMsg);
+
 	m_strProcTime = _T("Proc Time[msec], ");
 	m_strProcTime += strThresTime;
 	m_strProcTime += strLabelTime;

@@ -1,4 +1,4 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "CRecipeCtrl.h"
 #include "Win32File.h"
 #include "GlobalData.h"
@@ -18,7 +18,7 @@ BOOL CRecipeCtrl::SaveModifyedRecipePramLog(CString strRecipeName, CString strPa
 	SYSTEMTIME sysTime;
 	::GetLocalTime(&sysTime);
 
-	CString strLogPath; // D:/DAT/RECIPELOG/≥‚ø˘/¿œ/
+	CString strLogPath; // D:/DAT/RECIPELOG/ÎÖÑÏõî/Ïùº/
 	CString strLogFileName = _T("RecipeParamLog.txt");
 	CString strLogMsg;
 

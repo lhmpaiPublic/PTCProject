@@ -1,12 +1,12 @@
-//	$Id: $
+ï»¿//	$Id: $
 //!	@file	ImgClipedBmp.h
 //!	@brief	
 //!	@author	
 //!	@date	2005.08.05
-//!	@note	2005.08.05	doxygen—p‚ÌƒR?ƒh‚ğ’Ç‰ÁB©“®¶¬B
+//!	@note	2005.08.05	doxygenë¾­ê¶»ê¸“?ê¸¤ê·©ë¯ë¿ê°ƒë ”ë²ë§¯ë§Ÿê°ƒ
 
 
-// ImgClipedBmp.h: CImgClipedBmp ƒNƒ‰ƒX‚ÌƒCƒ“??ƒtƒFƒCƒX
+// ImgClipedBmp.h: CImgClipedBmp ê¸ê¹‹ê¸šê¶»ê·½ê¹›??ê¸²ê¸ƒê·½ê¸š
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -26,13 +26,13 @@ class CImgClipedBmp
 {
 public:
 	typedef struct tagClipInfo {
-		int	xs ;		//!< n?‚w[PIX](int)x1
-		int	ys ;		//!< n?‚x[PIX](int)x1
-		int	xpitch ;	//!< ƒNƒŠƒbƒvƒsƒb?‚w[PIX](int)x1
-		int ypitch ;	//!< ƒNƒŠƒbƒvƒsƒb?‚x[PIX](int)x1
-		int xpixel ;	//!< ƒNƒŠƒbƒv‚µ‚½‰æ‘f”‚w[PIX](int)x1
-		int ypixel ;	//!< ƒNƒŠƒbƒv‚µ‚½‰æ‘f”‚x[PIX](int)x1
-		int	bitcount ;	//!< ƒrƒbƒg”(int)x1
+		int	xs ;		//!< ëŸ‘?êµ“[PIX](int)x1
+		int	ys ;		//!< ëŸ‘?êµ•[PIX](int)x1
+		int	xpitch ;	//!< ê¸ê¹ê¸ê¸µê¸¯ê¸?êµ“[PIX](int)x1
+		int ypitch ;	//!< ê¸ê¹ê¸ê¸µê¸¯ê¸?êµ•[PIX](int)x1
+		int xpixel ;	//!< ê¸ê¹ê¸ê¸µê¶¢ê¶«ëªë©¹ë¦¶êµ“[PIX](int)x1
+		int ypixel ;	//!< ê¸ê¹ê¸ê¸µê¶¢ê¶«ëªë©¹ë¦¶êµ•[PIX](int)x1
+		int	bitcount ;	//!< ê¸®ê¸ê¸£ë¦¶(int)x1
 	} _CLIPINFO ;
 
 	int	GetValidXsize( void ) ;
@@ -55,8 +55,8 @@ protected :
 	void Copy( const CImgClipedBmp& src ) ;
 
 protected :
-	CBitmapStd* m_pBitmap ;		//!< ƒrƒbƒg?ƒbƒv‚Ö‚Ì?ƒCƒ“?(CBitmapStd *)x1
-	_CLIPINFO m_Clipinfo ;		//!< ƒNƒŠƒbƒvî•ñ(_CLIPINFO)x1
+	CBitmapStd* m_pBitmap ;		//!< ê¸®ê¸ê¸£?ê¸ê¸µê·‰ê¶»?ê·½ê¹›?(CBitmapStd *)x1
+	_CLIPINFO m_Clipinfo ;		//!< ê¸ê¹ê¸ê¸µë¥ƒëºª(_CLIPINFO)x1
 
 };
 

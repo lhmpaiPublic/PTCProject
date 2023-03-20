@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <vector> 
 
@@ -42,7 +42,7 @@ public:
 
 	};
 	int nIndex;
-	int nType;			// 0.Foil³ëÃâ , 1.Dross
+	int nType;			// 0.Foilë…¸ì¶œ , 1.Dross
 	int nPixelCnt;
 	int nWidth;
 	int nHeight;
@@ -66,7 +66,7 @@ public:
 	//int nBottom;
 	CRect rcRect;
 	// 22.07.20 Ahn Modify End
-	//int nExtPixCnt; // ¿Ü°ûÀÇ Pixel ¼ö
+	//int nExtPixCnt; // ì™¸ê³½ì˜ Pixel ìˆ˜
 	int nMaxPosY;
 	BOOL bDeleteFlag;
 	// 22.02.23 Ahn Add Start
@@ -87,12 +87,12 @@ public:
 	int nLeft;			//
 	int nRight;		//
 	int nCenter;
-	int nTabLeft;		// ÅÇ ¸Ó¸® ¿ŞÂÊ
-	int nTabRight;		// ÅÇ ¸Ó¸® ¿À¸¥ÂÊ
+	int nTabLeft;		// íƒ­ ë¨¸ë¦¬ ì™¼ìª½
+	int nTabRight;		// íƒ­ ë¨¸ë¦¬ ì˜¤ë¥¸ìª½
 	int nTabWidth;
 	BOOL m_bErrorFlag;
-	//QWORD qwHeadStPos;	// °Ë»ç ½ÃÀÛ Frame À» ±âÁØÀ¸·Î Tab HeadÀÇ Pixel À§Ä¡
-	int	nTabStartPosInFrame ; // Frame¿¡¼­ TabÀÇ ½ÃÀÛÀ§Ä¡ (°Å¸®°è»ê¿ë)
+	//QWORD qwHeadStPos;	// ê²€ì‚¬ ì‹œì‘ Frame ì„ ê¸°ì¤€ìœ¼ë¡œ Tab Headì˜ Pixel ìœ„ì¹˜
+	int	nTabStartPosInFrame ; // Frameì—ì„œ Tabì˜ ì‹œì‘ìœ„ì¹˜ (ê±°ë¦¬ê³„ì‚°ìš©)
 // 21.08.31 Ahn Add Start
 //	int nWidth;
 	int nImageLength;
@@ -102,9 +102,9 @@ public:
 };
 
 class CRegionInfo {
-	// °ü½É¿µ¿ªÀÇ Pixel Info
+	// ê´€ì‹¬ì˜ì—­ì˜ Pixel Info
 	BYTE* pRoiPtr;
-	// °ü½É ¿µ¿ªÀÇ ¿ÜÁ¢»ç°¢ 
+	// ê´€ì‹¬ ì˜ì—­ì˜ ì™¸ì ‘ì‚¬ê° 
 
 public:
 	int	m_nLeft;
@@ -162,14 +162,14 @@ public:
 
 	typedef std::vector< _LINE_DATA > VEC_LINE_DATA;
 
-	// >>>>>>>>>>>>>>>>>>>> ¿©±âºÎÅÍ Á¦ÀÛ ÇÊ¿ä >>>>>>>>>>>>>>>>>>>>>>>
-	//Filter Ã³¸®
+	// >>>>>>>>>>>>>>>>>>>> ì—¬ê¸°ë¶€í„° ì œì‘ í•„ìš” >>>>>>>>>>>>>>>>>>>>>>>
+	//Filter ì²˜ë¦¬
 	static int FilterProc(BYTE* pImgae, BYTE* pResultPtr, int nFilterNo) { return 0; };
 
-	//°áÇÔ °ËÃâÃ³¸® 
+	//ê²°í•¨ ê²€ì¶œì²˜ë¦¬ 
 
 	static BOOL GetOrgImageBright(BYTE* pImgPtr, int nWidth, int nHeight, CRegionInfo::VEC_FIFO* pVecFifo);
-	static BOOL MergeLineData(_LINE_DATA* pNewData, _LINE_DATA* pPreData); // pSrcData ¿¡ pTarData¸¦ Merge ÇÏ°í pTarData¸¦ Á¦°ÅÇÔ.
+	static BOOL MergeLineData(_LINE_DATA* pNewData, _LINE_DATA* pPreData); // pSrcData ì— pTarDataë¥¼ Merge í•˜ê³  pTarDataë¥¼ ì œê±°í•¨.
 	static BOOL LoopLabeling(CRegionInfo* pRoiInfo, int nWidth, int nHeight, _VEC_BLOCK* pVecBlock, BYTE btBit, int MinSize, double dResolX, double ResolY);
 	static BOOL IsLinked(_LINE_DATA* pCurData, _LINE_DATA* pPreData);
 	static int GetOneLineFromFifo(VEC_LINE_DATA* pOneLine, CRegionInfo::VEC_FIFO* pVecFifo, int nStartPos);
@@ -189,7 +189,7 @@ public:
 		en_Filter_MAX
 	};
 
-	enum { // Image Ã³¸® Á¤º¸ 8 bit Á¤º¸
+	enum { // Image ì²˜ë¦¬ ì •ë³´ 8 bit ì •ë³´
 		en_Black_Bit = 0x80,
 		en_White_Bit = 0x40,
 		en_FoilExp_Bit = 0x80,
@@ -217,10 +217,10 @@ public:
 	static int Exptention(BYTE* pImgPtr, BYTE* pRsltPtr, int nWindth, int nHeight, int nMode, CRect rcRange, BYTE btBit);
 	// 22.01.19 Ahn Add End
 
-	// <<<<<<<<<<<<<<<<<<< ¿©±â±îÁö Á¦ÀÛ ÇÊ¿ä <<<<<<<<<<<<<<<<<<<<<<<<<
-	// ÀüÃ¼ ¿µ¿ª
+	// <<<<<<<<<<<<<<<<<<< ì—¬ê¸°ê¹Œì§€ ì œì‘ í•„ìš” <<<<<<<<<<<<<<<<<<<<<<<<<
+	// ì „ì²´ ì˜ì—­
 	static int Threshold(BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHeight, int nMin, int nMax);
-	// ROI »ç¿ë 
+	// ROI ì‚¬ìš© 
 	static int Threshold(BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, int nHeight, int nMin, BOOL bClearRslt, BOOL bModeDark = FALSE );
 	static int Threshold_RoundMask(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMin, int nMaskOffset, int nLimitRight, int nMode, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_HeadSide );
 	static int Threshold_RoundMask_Negative(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nStartX, int nEndX, int nMin, int nLimitRight, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_HeadSide);
@@ -235,13 +235,13 @@ public:
 	static int Threshold_ByEdgeLine(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMinThres, int nMaxThres, int nMaskOffset, int nMode, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_LeftSide);
 	// 22.07.14 Ahn Add End
 	
-	// Projection Ã³¸® 
+	// Projection ì²˜ë¦¬ 
 	static int GetProjection(BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum = TRUE);
 	static int GetProjection(BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, int nStartX, int nEndX, int nStartY, int nEndY, int nDir, int nSampling, BOOL bModeSum = TRUE);
 	//static int GetAverageFromPrjData(int* pPrjData, int* pAveData, int nLength, int nAveRage);
 	static int GetBundary_FromPrjData(int* pnPrjData, int nLength, int nCompWidth, int nMode);
 
-	// Æò±ÕÈ­ Ã³¸® 
+	// í‰ê· í™” ì²˜ë¦¬ 
 	static int MeanImageDirection_Round(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nThresLevel);
 	static int MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nDir);
 	static int MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, int nMeanSize, int nDir);
@@ -262,7 +262,7 @@ public:
 		en_Edge_MaxDiff = 0,
 		en_Edge_SetBright = 1,
 	};
-	// Edge °ËÃâÃ³¸® 
+	// Edge ê²€ì¶œì²˜ë¦¬ 
 	enum {
 		en_sobel_Hor=0,
 		en_sobel_Ver=1,
@@ -279,7 +279,7 @@ public:
 	static int EdgeDetectImageToBoth_BaseBright(BYTE* pImgPtr, BYTE* pProcImg, CImageProcess::VEC_ROUND_INFO* pVecRndInfo, int nWidth, int nHeight, CRect rectProc, int nThresMin, int nThresMax, int nPosition, int nDefaultLv, int nSide);
 	// 23.01.20 Ahn Add End
 
-	// ¿ø Ã£±â
+	// ì› ì°¾ê¸°
 	static int CalcCirclePos(CPoint point1, CPoint point2, int nRadius, CPoint* pntCenter, int nDir);
 	static int CalcCirclePosFrom3Point(CPoint p1, CPoint p2, CPoint p3, int nDir, CPoint* pntCenter, int* pnRadius);
 	static double CalcRoundDef_Size(BYTE* pImgPtr, int nWidth, int nHeight, int nType, CRect rcRnd, CBlockData *defInfo, CImageProcess::VEC_ROUND_INFO* pVecRndInfo, int nPosition, double dResoX, double dResoY);
@@ -311,7 +311,7 @@ public:
 	static int SearchEdgeLine( BYTE *pMeanPtr, int nWidth, int nHeight, CRect rcRect, CImageProcess::VEC_ROUND_INFO* vecEdgeInfo, int &nAveLine, int nEdgeThreshold, int nDir );
 	// 22.07.14 Ahn Add End
 
-	// Tab °ü·Ã ÇÔ¼öµé
+	// Tab ê´€ë ¨ í•¨ìˆ˜ë“¤
 	typedef struct Sector {
 		int nStartPos;
 		int nEndPos;
@@ -353,7 +353,7 @@ public:
 	static long GetAreaSum_BetweenThreshold(BYTE* pImage, int nWidth, int nHeight, CRect rectPrj, int nMin, int nMax, int nSampling, BOOL bModeSum);
 	static int FindTabLevel(BYTE* pImagePtr, int nWidth, int nHeight, int* nLevel, CTabCondition tabCond, int nMode, int nDir);
 	static int FindTabLevel_Deitail(BYTE* pImagePtr, int nWidth, int nHeight, CTabCondition tabCond, int nFindPos, int* nLevel, int nMode, int nDir);
-	static int FindTabLevel_FromProjection(int* pnPrjData, int nLength, int nCompWidth); // CompWidthÀ¸·Î ÁÂ¿ì ºñ±³ÇÏ¿© Â÷ÀÌ°¡ °¡Àå ¸¹ÀÌ³ª´Â À§Ä¡¸¦ Ã£´Â ÇÔ¼ö.
+	static int FindTabLevel_FromProjection(int* pnPrjData, int nLength, int nCompWidth); // CompWidthìœ¼ë¡œ ì¢Œìš° ë¹„êµí•˜ì—¬ ì°¨ì´ê°€ ê°€ì¥ ë§ì´ë‚˜ëŠ” ìœ„ì¹˜ë¥¼ ì°¾ëŠ” í•¨ìˆ˜.
 
 	// 22.04.13 Ahn Add Start
 	static int FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel);
@@ -379,12 +379,12 @@ public:
 	//static int ImageProcessTailSide_New(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl,BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL , int nArrCnt = 0 );
 
 	//// 22.05.13 Ahn Add Start
-	//// ¾ç±Ø °Ë»ç Foil ³ëÃâ¸¸ °ËÃâ (DrossÁ¦°Å)
+	//// ì–‘ê·¹ ê²€ì‚¬ Foil ë…¸ì¶œë§Œ ê²€ì¶œ (Drossì œê±°)
 	//static int ImageProcessFoilExpTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	//static int ImageProcessFoilExpBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	//// 22.05.13 Ahn Add End
 
-	// ¾ç±Ø °Ë»ç Dross & Foil ³ëÃâ ±¸ºĞ °ËÃâ
+	// ì–‘ê·¹ ê²€ì‚¬ Dross & Foil ë…¸ì¶œ êµ¬ë¶„ ê²€ì¶œ
 	static int ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	static int ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 
@@ -433,7 +433,7 @@ public:
 	static BOOL IsLinkedBlock(CRect rcPtr, CRect rcTar, CPoint cpRange );
 	static int MergeAndLink_BlockInfo(_VEC_BLOCK* pDestVlock, _VEC_BLOCK vecFirst, _VEC_BLOCK vecSecond, CRecipeInfo* pRecipeInfo, int nCamPos );
 	// 22.07.20 Ahn Add End
-	// Tab ºĞÇÒ¿ë ÇÔ¼ö Á¤ÀÇ 
+	// Tab ë¶„í• ìš© í•¨ìˆ˜ ì •ì˜ 
 
 	static int DivideSectionBetweenThreshold(int* pnPrjData, int nPrjLength, int nThresMin, int nThresMax, int nMinLength, VEC_SECTOR* pVecSector);
 	static int FindTabPos(BYTE* pImagePtr, int nWidth, int nHeight, int nStartPos, int nEndPos, int nThresMin, int nThresMax, VEC_SECTOR* pVecSector);

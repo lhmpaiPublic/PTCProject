@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "CMelsecBase.h"
 #include "..\LGIS\LGIS_Plc.h"
 
@@ -23,8 +23,8 @@ private:
 
 	CLGIS_Plc* m_pLGIS_Plc;
 	// 23.03.03 Ahn Add Start
-	WORD	m_wOffset_In;	//!< ÀÔ·Â ½ÅÈ£ Offset
-	WORD	m_wOffset_Out;	//!< Ãâ·Â ½ÅÈ£ Offset
+	WORD	m_wOffset_In;	//!< ìž…ë ¥ ì‹ í˜¸ Offset
+	WORD	m_wOffset_Out;	//!< ì¶œë ¥ ì‹ í˜¸ Offset
 	WORD	m_wOffsetWord_In;
 	WORD	m_wOffsetWord_Out;
 	// 23.03.03 Ahn Add End
@@ -44,14 +44,14 @@ public:
 	// get network state
 	BOOL IsOpened();
 
-	// Coils ¹Ì»ç¿ë
+	// Coils ë¯¸ì‚¬ìš©
 public:
 	int InPort(WORD port, BYTE* data, BOOL bExtSt = FALSE) { return -1; };
 	int OutPort(WORD port, BYTE data, BOOL bLockCtrl = TRUE, BOOL bGetBit = FALSE) { return -1; };
 	int Out_Port_Bit(int nPort, BYTE bBitPos, int nMode) { return -1; };
 
 
-	// DataLink¿ë
+	// DataLinkìš©
 public:
 	int ReadDataReg(int offset, int data[], int num) { return -1; };
 	int WriteDataReg(int offset, int data[], int num) { return -1; };

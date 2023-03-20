@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CExcelResultFileCtrl.h"
 #include "Win32File.h"
 #include "CExcelFileSaveDlg.h"
@@ -50,7 +50,7 @@ int CExcelResultFileCtrl::SaveTitleLine( KExcel *pExcel )
 			nWidth = 10;
 			break;
 		case	en_colInspTime:
-			strDisc = _T("°Ë»ç½Ã°£");
+			strDisc = _T("ê²€ì‚¬ì‹œê°„");
 			nWidth = 25;
 			break;
 		case	en_colPosition:
@@ -81,16 +81,16 @@ int CExcelResultFileCtrl::SaveTitleLine( KExcel *pExcel )
 #if defined(_DEBUG)
 			strDisc = _T("Pos Y(Pix)");
 #else
-			strDisc = _T("Defect ¥è");
+			strDisc = _T("Defect Î¸");
 #endif
 			nWidth = 15;
 			break;
 		case	en_colDefSizeX:
-			strDisc = _T("Defect Size X(§­)");
+			strDisc = _T("Defect Size X(ãŽ›)");
 			nWidth = 15;
 			break;
 		case	en_colDefSizeY:
-			strDisc = _T("Defect Size Y(§­)");
+			strDisc = _T("Defect Size Y(ãŽ›)");
 			nWidth = 15;
 			break;
 		case	en_colDefImage:
@@ -115,7 +115,7 @@ int CExcelResultFileCtrl::SaveTitleLine( KExcel *pExcel )
 	pExcel->SetBkColor(1, 1, 1, en_MaxCols, RGB(50, 250, 250));
 	pExcel->SetLineWeight(xlThin);
 	pExcel->SetLineStyle(xlLineStyle_Continuous);
-	pExcel->SetFreezePanes(2, 1, TRUE); // Æ² °íÁ¤
+	pExcel->SetFreezePanes(2, 1, TRUE); // í‹€ ê³ ì •
 	pExcel->SetRange(1, 1, 2, en_MaxCols);
 	pExcel->SetFont(_T("Gulim"), 11);
 	pExcel->SetTextAlign(xlAlignHCenter, xlAlignVCenter);
@@ -185,7 +185,7 @@ int CExcelResultFileCtrl::SaveExcelOneLine(KExcel* pExcel, int nRow, int nTotalC
 		pExcel->SetValue(nRow, en_colDefImage + 1, _T("No Image"));
 	}
 
-	pExcel->SetValue(nRow, en_colInkMarking + 1, (defInfo.bMarking == TRUE) ? _T("¡Û") : _T("¥Ö"));
+	pExcel->SetValue(nRow, en_colInkMarking + 1, (defInfo.bMarking == TRUE) ? _T("â—‹") : _T("Î§"));
 	//	m_Excel.SetValue(nRow, en_colReason + 1	, iter->strMarkReason );
 	//if (defInfo.strImageFileName.GetLength() > 3) {
 	//	pExcel->InsertPicture(nRow, en_colDefImage + 1, (defInfo.strImageFileName));
@@ -241,10 +241,10 @@ int CExcelResultFileCtrl::MakeDefectListSheet(KExcel* pExcel, VEC_DEF_SEARCH_LIS
 
 	VEC_DEF_SEARCH_LIST::iterator iter;
 
-	pExcel->SetSheetName(1, _T("°Ë»ç°á°ú"));
+	pExcel->SetSheetName(1, _T("ê²€ì‚¬ê²°ê³¼"));
 
 	if (SaveTitleLine(pExcel) < 0) {
-		AfxMessageBox(_T("Excel ÆÄÀÏ ÀúÀå ½ÇÆÐ"));
+		AfxMessageBox(_T("Excel íŒŒì¼ ì €ìž¥ ì‹¤íŒ¨"));
 		return -1 ;
 	}
 
@@ -281,7 +281,7 @@ int CExcelResultFileCtrl::MakeChartSheet(KExcel* pExcel, VEC_DEF_SEARCH_LIST* pL
 	ASSERT(pList);
 	ASSERT(pThis);
 	pExcel->SetActiveSheet(1);
-	pExcel->SetSheetName(1, _T("Â÷Æ®"));
+	pExcel->SetSheetName(1, _T("ì°¨íŠ¸"));
 
 	pExcel->SetColWidth(1, 50, 1);
 	pExcel->SetRowHeight(1, 7);
@@ -330,14 +330,14 @@ UINT CExcelResultFileCtrl::CtrlExcelFileSaveThread(LPVOID Param)
 		CoInitialize(NULL);
 
 		if (InitExcelFile(&Excel) < 0) {
-			AfxMessageBox(_T("ÃÊ±âÈ­ ½ÇÆÐ"));
+			AfxMessageBox(_T("ì´ˆê¸°í™” ì‹¤íŒ¨"));
 			pThis->m_bComplet = TRUE;
 			AfxEndThread(0);
 			pThis->m_bKill = TRUE;
 		}
 
 		if (MakeDefectListSheet(&Excel, pList, pThis) < 0) {
-			AfxMessageBox(_T("°Ë»çÀÌ·Â ÀúÀå ½ÇÆÐ"));
+			AfxMessageBox(_T("ê²€ì‚¬ì´ë ¥ ì €ìž¥ ì‹¤íŒ¨"));
 			pThis->m_bComplet = TRUE;
 			AfxEndThread(0);
 			pThis->m_bKill = TRUE;

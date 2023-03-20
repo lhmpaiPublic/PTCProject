@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class CStdIoCtrl
 {
@@ -70,12 +70,12 @@ protected:
 		enMaxMapPort = 256,
 		enMaxMapReg = 256,
 	};
-	BYTE	m_OutMap[enMaxMapPort];			// µğ¹ö±×¿ë
-	BYTE	m_InMap[enMaxMapPort];			// µğ¹ö±×¿ë
-	DWORD	m_RegMap[enMaxMapReg];			// µğ¹ö±×¿ë
-	static int		m_nPortMax;				// »ç¿ë Æ÷Æ® ¼ö
-	static int		m_nRegistMin;			// ÃÖ¼Ò ·¹Áö½ºÅÍ
-	static int		m_nRegistMax;			// ÃÖ´ë ·¹Áö½ºÅÍ
+	BYTE	m_OutMap[enMaxMapPort];			// ë””ë²„ê·¸ìš©
+	BYTE	m_InMap[enMaxMapPort];			// ë””ë²„ê·¸ìš©
+	DWORD	m_RegMap[enMaxMapReg];			// ë””ë²„ê·¸ìš©
+	static int		m_nPortMax;				// ì‚¬ìš© í¬íŠ¸ ìˆ˜
+	static int		m_nRegistMin;			// ìµœì†Œ ë ˆì§€ìŠ¤í„°
+	static int		m_nRegistMax;			// ìµœëŒ€ ë ˆì§€ìŠ¤í„°
 
 };
 

@@ -1,4 +1,4 @@
-// KExcel.h: interface for the KExcel class.
+ï»¿// KExcel.h: interface for the KExcel class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -112,17 +112,17 @@ public:
 	void	SetTextVAlign( long lVAlign = xlAlignVCenter ) ;
 	void	SetTextAlign( long lHAligh = xlAlignHLeft, long lVAlign = xlAlignVCenter ) ;
 
-	// Edge -> Color -> Weight -> Style ¼ø¼­·Î...
+	// Edge -> Color -> Weight -> Style ìˆœì„œë¡œ...
 	void	SetLineEdge( long lEdge ) ;
 	void	SetLineColor( long lColor ) ;
 	void	SetLineWeight( long lWeight ) ;
 	void	SetLineStyle( long lType);
 
-	//¸ÕÀú º´ÇÕ ÈÄ µ¥ÀÌÅÍ ÀÔ·Â..
+	//ë¨¼ì € ë³‘í•© í›„ ë°ì´í„° ì…ë ¥..
 	void	SetMergeCell( BOOL bMerge = FALSE ) ;
  	void	SetMergeCell( long lRowStart, long lColStart, long lRowEnd, long lColEnd, BOOL bMerge = FALSE ) ;
 
-	void	SetAutoFitColumn( long lCol ) ;				//¿­ °£°İ ÀÚµ¿ ¸ÂÃß±â
+	void	SetAutoFitColumn( long lCol ) ;				//ì—´ ê°„ê²© ìë™ ë§ì¶”ê¸°
 	void	SetAutoFitColumn( long lColStart, long lColEnd ) ;
 
 	void	SetFormula( long lRow, long lCol, CString strFormula ) ;

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "StdIoCtrl.h"
 #include "StdIoCCLink.h"
 #include "StdIoApi.h"
@@ -73,8 +73,8 @@ void CStdIoCtrl::ErrorProc(int nRet, char* cap)
 	}
 
 	CString	cstr;
-	cstr.Format( _T("ÀÔÃâ·Â ¿¡·¯ : ÄÚµå : %d, %xH ) %s "), nRet, nRet & 0xffff, cap);
-	//¿¡·¯ Ãâ·Â
+	cstr.Format( _T("ì…ì¶œë ¥ ì—ëŸ¬ : ì½”ë“œ : %d, %xH ) %s "), nRet, nRet & 0xffff, cap);
+	//ì—ëŸ¬ ì¶œë ¥
 	return;
 }
 

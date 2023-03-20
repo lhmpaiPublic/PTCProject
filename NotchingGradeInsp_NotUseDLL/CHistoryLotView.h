@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 //#include <afxdockablepane.h>
 
 class CHistoryLotDlg;
@@ -10,11 +10,11 @@ class CHistoryLotView : public CDockablePane
 	DECLARE_DYNAMIC(CHistoryLotView)
 
 
-	//»ı¼ºÀÔ´Ï´Ù.
+	//ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CHistoryLotView(CWnd* pParent = NULL, CNotchingGradeInspView* pView = NULL);
 
-	// Æ¯¼ºÀÔ´Ï´Ù.
+	// íŠ¹ì„±ì…ë‹ˆë‹¤.
 protected:
 	CWnd* m_pParent;
 	CNotchingGradeInspDoc* m_pDoc;
@@ -25,7 +25,7 @@ public:
 	CHistoryLotDlg* GetResultViewDlgPtr() { return m_pHistoryLotDlg; }
 
 	void RefreshAll();
-	// ±¸ÇöÀÔ´Ï´Ù.
+	// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CHistoryLotView();
 	virtual BOOL CanAutoHide() const { return FALSE; }

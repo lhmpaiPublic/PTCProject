@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "NotchingGradeInsp.h"
 #include "SigProc.h"
 #include "TimeAnalyzer.h"
@@ -53,7 +53,7 @@ int CSigProc::SignalPortIn(WORD port, BYTE* data, BOOL bExtSt /*= FALSE*/, BOOL 
 {
 	CPioCtrl* pPioCtrl = m_pPioCtrl;
 	if ((pPioCtrl == NULL) || (data == NULL)) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (pPioCtrl->InPortByte(port, data, bExtSt));
@@ -64,7 +64,7 @@ int CSigProc::SignalPortCheck(int iInput, BOOL bExtSt /*= FALSE*/, BOOL bLocal /
 	int		iPort = 0x00;
 	BYTE	cByte = 0x00;
 	if (GetPortBit(iInput, &iPort, &cByte) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -94,7 +94,7 @@ int CSigProc::SignalPortCheck(int iInput, BOOL bExtSt /*= FALSE*/, BOOL bLocal /
 	{
 		BYTE	data = 0x00;
 		if (SignalPortIn(iPort, &data, bExtSt, bLocal) != 0) {
-			//¿¡·¯·Î±×
+			//ì—ëŸ¬ë¡œê·¸
 			return (-1);
 		}
 
@@ -111,21 +111,21 @@ int CSigProc::SignalBitOut(int nIntegration, int nMode, BOOL bLocal /*= FALSE*/)
 	CPioCtrl* pPioCtrl = m_pPioCtrl;
 
 	if (pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	int	iPort = 0x00;
 	BYTE	cByte = 0x00;
 	if (GetPortBit(nIntegration, &iPort, &cByte) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 
 // 	int	nRet = pPioCtrl->Out_Port_Bit(iPort, cByte, nMode);
 // 	if (nRet < 0) {
-// 		//¿¡·¯·Î±×
+// 		//ì—ëŸ¬ë¡œê·¸
 // 		return (-1);
 // 	}
 
@@ -149,7 +149,7 @@ int CSigProc::SignalBitOut(int nIntegration, int nMode, BOOL bLocal /*= FALSE*/)
 
 
 	if (nRet < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -162,7 +162,7 @@ int CSigProc::SignalBitOut(int nIntegration, int nMode, BOOL bLocal /*= FALSE*/)
 BYTE CSigProc::SignalPortGetOut(WORD port)
 {
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (0x00);
 	}
 	return (m_pPioCtrl->GetOutData(port));
@@ -173,7 +173,7 @@ int CSigProc::CheckPortOut(int sig)
 	int iPort = 0x00;
 	BYTE cByte = 0x00;
 	if (GetPortBit(sig, &iPort, &cByte) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if ((cByte & SignalPortGetOut(iPort)) != 0x00) {
@@ -187,12 +187,12 @@ int CSigProc::CheckPortOut(int sig)
 int CSigProc::WritePLC_device(int address, short data)
 {
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (m_pPioCtrl->WritePLC_device(address, data) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (0);
@@ -202,16 +202,16 @@ int CSigProc::ReadPLC_device(int address, short* data)
 {
 	ASSERT(data != NULL);
 	if (data == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (m_pPioCtrl->ReadPLC_device(address, data) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (0);
@@ -362,12 +362,12 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 // 	pData = (short*)&nAlarmCode;
 // 
 // 	if (m_pPioCtrl == NULL) {
-// 		//¿¡·¯·Î±×
+// 		//ì—ëŸ¬ë¡œê·¸
 // 		return (-1);
 // 	}
 // 
 // 	if (m_pPioCtrl->WritePLC_Block_device(address, pData, nNumOfData) < 0) {
-// 		//¿¡·¯·Î±×
+// 		//ì—ëŸ¬ë¡œê·¸
 // 		return (-1);
 // 	}
 
@@ -375,7 +375,7 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 	int nNumOfData = 1;
 
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -396,14 +396,14 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 
 
 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)&pData, nNumOfData) < 0) {
-			//¿¡·¯·Î±×
+			//ì—ëŸ¬ë¡œê·¸
 			return (-1);
 		}
 	}
 	else
 	{
 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)&nAlarmCode, nNumOfData) < 0) {
-			//¿¡·¯·Î±×
+			//ì—ëŸ¬ë¡œê·¸
 			return (-1);
 		}
 	}
@@ -423,12 +423,12 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 ////	pData = (short*)&nAlarmCode;
 //
 //	if (m_pPioCtrl == NULL) {
-//		//¿¡·¯·Î±×
+//		//ì—ëŸ¬ë¡œê·¸
 //		return (-1);
 //	}
 ////	if (m_pPioCtrl->WritePLC_Block_device(address, NULL, nNumOfData) < 0) {
 //	if( m_pPioCtrl->WriteAlarmCode(address) < 0 ) {
-//		//¿¡·¯·Î±×
+//		//ì—ëŸ¬ë¡œê·¸
 //		return (-1);
 //	}
 //	return (0);
@@ -439,11 +439,11 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 int CSigProc::WritePLC_Block_device(int address, short* pData, int nNumOfData)
 {
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (m_pPioCtrl->WritePLC_Block_device(address, pData, nNumOfData) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (0);
@@ -453,11 +453,11 @@ int CSigProc::WritePLC_Block_device(int address, short* pData, int nNumOfData)
 int CSigProc::WritePLC_Block_device(int address, int* pData, int nNumOfData)
 {
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (m_pPioCtrl->WritePLC_Block_device(address, pData, nNumOfData) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (0);
@@ -468,11 +468,11 @@ int CSigProc::WritePLC_Block_device(int address, int* pData, int nNumOfData)
 int CSigProc::ReadPLC_Block_device(int address, short* pData, int nNumOfData)
 {
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (m_pPioCtrl->ReadPLC_Block_device(address, pData, nNumOfData) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (0);
@@ -481,12 +481,12 @@ int CSigProc::ReadPLC_Block_device(int address, short* pData, int nNumOfData)
 int CSigProc::ReadPLC_Block_deviceR(int address, short* pData, int nNumOfData)
 {
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (m_pPioCtrl->ReadPLC_device(address, pData, nNumOfData, 0x16, 0x00) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (0);
@@ -514,10 +514,10 @@ int CSigProc::WaitSignal(int nIntegration, BOOL mode, int timeout /*= 1000*/, BO
 		::PumpMessages();
 		if (timeout > 0) {
 			if (ct.WhatTimeIsIt() > timeout) {
-				//¿¡·¯·Î±×
+				//ì—ëŸ¬ë¡œê·¸
 				nRet = -3;
 				if (bErrorProcess == TRUE) {
-					//¿¡·¯·Î±×
+					//ì—ëŸ¬ë¡œê·¸
 				}
 				break;
 			}
@@ -572,16 +572,16 @@ int CSigProc::SigInRun()
 	}
 	// 23.02.02 Ahn Add End
 
-	DWORD dwTickStart = GetTickCount();
+// 	DWORD dwTickStart = GetTickCount();
 
 	int nRet = SignalPortCheck(nAddress);
 
 
-	DWORD dwTickEnd = GetTickCount() - dwTickStart;
-
-	CString strMsg;
-	strMsg.Format(_T("SigInRun = %.3f"), dwTickEnd/1000.f );
-	AprData.SaveDebugLog(strMsg); //pyjtest
+// 	DWORD dwTickEnd = GetTickCount() - dwTickStart;
+// 
+// 	CString strMsg;
+// 	strMsg.Format(_T("SigInRun = %.3f"), dwTickEnd/1000.f );
+// 	AprData.SaveDebugLog(strMsg); //pyjtest
 
 	return nRet;
 }
@@ -947,7 +947,7 @@ int CSigProc::SigOutAlarmExist(int nMode)
 	int nNumOfData = 1;
 
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -956,14 +956,14 @@ int CSigProc::SigOutAlarmExist(int nMode)
 	{
 		short pData = (nMode==1) ? 0x01 : 0x00;
 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& pData, nNumOfData) < 0) {
-			//¿¡·¯·Î±×
+			//ì—ëŸ¬ë¡œê·¸
 			return (-1);
 		}
 	}
 	else
 	{
 // 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& nAlarmCode, nNumOfData) < 0) {
-// 			//¿¡·¯·Î±×
+// 			//ì—ëŸ¬ë¡œê·¸
 // 			return (-1);
 // 		}
 	}
@@ -1061,8 +1061,8 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 
 	// RecipeName
 	// Cell ID
-	// Speed ³ª´©±â 100 ÇÒ°Í(¼Ò¼öÁ¡ 2ÀÚ¸®)
-	// Dross Top ¸ñÇ¥°ª
+	// Speed ë‚˜ëˆ„ê¸° 100 í• ê²ƒ(ì†Œìˆ˜ì  2ìžë¦¬)
+	// Dross Top ëª©í‘œê°’
 	// 23.02.17 Son Mod Start
 	//pwData = &btData[enWordRead_DrossTopTarget - nAddress];
 	pwData = &btData[enWordRead_DrossTopTarget];
@@ -1072,7 +1072,7 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	pSeqData->wDrossTopTarget = *pwData;
 	// 22.08.04 Ahn Modify End
 
-	// Dross Bottom ¸ñÇ¥°ª
+	// Dross Bottom ëª©í‘œê°’
 	// 23.02.17 Son Mod Start
 	//pwData = &btData[enWordRead_DrossBtmTarget - nAddress];
 	pwData = &btData[enWordRead_DrossBtmTarget];
@@ -1081,7 +1081,7 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	//AprData.m_SeqDataIN.wDrossBottomTarget = *pwData;
 	pSeqData->wDrossBottomTarget = *pwData;
 	// 22.08.04 Ahn Modify End
-	// FoilExp Top ¸ñÇ¥°ª
+	// FoilExp Top ëª©í‘œê°’
 	// 23.02.17 Son Mod Start
 	//pwData = &btData[enWordRead_FoilExpTopTarget - nAddress];
 	pwData = &btData[enWordRead_FoilExpTopTarget];
@@ -1090,7 +1090,7 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	//AprData.m_SeqDataIN.wFoilExpTopTarget = *pwData;
 	pSeqData->wFoilExpTopTarget = *pwData;
 	// 22.08.04 Ahn Modify End
-	// FoilExp Bottom ¸ñÇ¥°ª
+	// FoilExp Bottom ëª©í‘œê°’
 	// 23.02.17 Son Mod Start
 	//pwData = &btData[enWordRead_FoilExpBtmTarget - nAddress];
 	pwData = &btData[enWordRead_FoilExpBtmTarget];
@@ -1099,7 +1099,7 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	//AprData.m_SeqDataIN.wFoilExpBottomTarget = *pwData;
 	pSeqData->wFoilExpBottomTarget = *pwData;
 	// 22.08.04 Ahn Modify End
-	// Spatter Top ¸ñÇ¥°ª
+	// Spatter Top ëª©í‘œê°’
 	// 23.02.17 Son Mod Start
 	//pwData = &btData[enWordRead_SpeterTopTarget - nAddress];
 	pwData = &btData[enWordRead_SpeterTopTarget];
@@ -1108,7 +1108,7 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	//AprData.m_SeqDataIN.wSpeterTopTarget = *pwData;
 	pSeqData->wSpeterTopTarget = *pwData;
 	// 22.08.04 Ahn Modify End
-	// Spatter Bottom ¸ñÇ¥°ª
+	// Spatter Bottom ëª©í‘œê°’
 	// 23.02.17 Son Mod Start
 	//pwData = &btData[enWordRead_SpeterBtmTarget - nAddress];
 	pwData = &btData[enWordRead_SpeterBtmTarget];
@@ -1395,11 +1395,11 @@ int CSigProc::ReportJudge(int nID, int nJudge, int nCode)
 
 
 	if (m_pPioCtrl == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (m_pPioCtrl->WritePLC_Block_device(address, pData, nNumOfData) < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (0);
@@ -1550,12 +1550,12 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 
 	// RecipeName
 	// Cell ID
-	// Speed ³ª´©±â 100 ÇÒ°Í(¼Ò¼öÁ¡ 2ÀÚ¸®)
-	// Dross Top ¸ñÇ¥°ª
+	// Speed ë‚˜ëˆ„ê¸° 100 í• ê²ƒ(ì†Œìˆ˜ì  2ìžë¦¬)
+	// Dross Top ëª©í‘œê°’
 	pwData = &btData[enSmsWordRead_DrossTopTarget];
 	pSeqData->wDrossTopTarget = *pwData;
 
-	// Dross Bottom ¸ñÇ¥°ª
+	// Dross Bottom ëª©í‘œê°’
 	pwData = &btData[enSmsWordRead_DrossBtmTarget];
 	pSeqData->wDrossBottomTarget = *pwData;
 	pwData = &btData[enSmsWordRead_FoilExpTopTarget];

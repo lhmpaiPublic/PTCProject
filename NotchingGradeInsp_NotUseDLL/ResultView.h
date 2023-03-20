@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 //#include "GridCtrl.h"
 #include "ResultViewDlg.h"
@@ -9,11 +9,11 @@ class CResultView : public CDockablePane
 {
 	DECLARE_DYNAMIC(CResultView)
 
-//»ı¼ºÀÔ´Ï´Ù.
+//ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CResultView(CWnd* pParent = NULL, CNotchingGradeInspView* pView = NULL);
 
-// Æ¯¼ºÀÔ´Ï´Ù.
+// íŠ¹ì„±ì…ë‹ˆë‹¤.
 protected:
 	CWnd* m_pParent;
 	CNotchingGradeInspDoc* m_pDoc;
@@ -25,7 +25,7 @@ public:
 	CResultViewDlg* GetResultViewDlgPtr() { return m_pResultViewDlg; }
 //KANG 22.01.07 Add End
 
-// ±¸ÇöÀÔ´Ï´Ù.
+// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CResultView();
 	virtual BOOL CanAutoHide() const { return FALSE; }

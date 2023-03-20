@@ -1,12 +1,12 @@
-//	$Id: $
+ï»¿//	$Id: $
 //!	@file	ImgClipedBmp.cpp
 //!	@brief	
 //!	@author	
 //!	@date	2005.08.05
-//!	@note	2005.08.05	doxygen—p‚ÌƒR?ƒh‚ğ’Ç‰ÁB©“®¶¬B
+//!	@note	2005.08.05	doxygenë¾­ê¶»ê¸“?ê¸¤ê·©ë¯ë¿ê°ƒë ”ë²ë§¯ë§Ÿê°ƒ
 
 
-// ImgClipedBmp.cpp: CImgClipedBmp ƒNƒ‰ƒX‚ÌƒCƒ“ƒvƒŠƒƒ“ƒe?ƒVƒ‡ƒ“
+// ImgClipedBmp.cpp: CImgClipedBmp ê¸ê¹‹ê¸šê¶»ê·½ê¹›ê¸µê¹ê¸½ê¹›ê¸¡?ê¸˜ê¹ˆê¹›
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -23,18 +23,18 @@ static char THIS_FILE[]=__FILE__;
 
 
 //////////////////////////////////////////////////////////////////////
-// ?’z/Á–Å
+// ?ë­±/ë¤‘ë½…
 //////////////////////////////////////////////////////////////////////
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::CImgClipedBmp
-//!	@brief	??:	ƒRƒ“ƒXƒgƒ‰ƒN?
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	‚È‚µ
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::CImgClipedBmp
+//!	@brief	??:	ê¸“ê¹›ê¸šê¸£ê¹‹ê¸?
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	ê¶¶ê¶¢
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 CImgClipedBmp::CImgClipedBmp()
 {
@@ -44,14 +44,14 @@ CImgClipedBmp::CImgClipedBmp()
 
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::~CImgClipedBmp
-//!	@brief	??:	ƒfƒXƒgƒ‰ƒN?
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	‚È‚µ
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::~CImgClipedBmp
+//!	@brief	??:	ê¸¢ê¸šê¸£ê¹‹ê¸?
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	ê¶¶ê¶¢
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 CImgClipedBmp::~CImgClipedBmp()
 {
@@ -63,14 +63,14 @@ CImgClipedBmp::~CImgClipedBmp()
 
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::operator=
-//!	@brief	??:	‘ã“ü‰‰Zq
-//!	@param	ˆø”:	const	CImgClipedBmp&	src	: ‘ã“üŒ³‚Ö‚ÌQÆ
-//!	@return	ŠÖ”’l:	CImgClipedBmp	&	: ‘ã“üæ‚Ö‚ÌQÆ
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::operator=
+//!	@brief	??:	ë¬†ë³ºë¶ëŸëŸ”
+//!	@param	ë™ë¦¶:	const	CImgClipedBmp&	src	: ë¬†ë³ºë™°ê·‰ê¶»ë·ë¤–
+//!	@return	ë“«ë¦¶ë­ :	CImgClipedBmp	&	: ë¬†ë³ºë¨©ê·‰ê¶»ë·ë¤–
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 CImgClipedBmp& CImgClipedBmp::operator= ( const CImgClipedBmp& src )
 {
@@ -85,14 +85,14 @@ CImgClipedBmp& CImgClipedBmp::operator= ( const CImgClipedBmp& src )
 
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::CImgClipedBmp
-//!	@brief	??:	ƒRƒs?ƒRƒ“ƒXƒgƒ‰ƒN?
-//!	@param	ˆø”:	const	CImgClipedBmp&	src	: ƒRƒs?Œ³‚Ö‚ÌQÆ
-//!	@return	ŠÖ”’l:	‚È‚µ
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::CImgClipedBmp
+//!	@brief	??:	ê¸“ê¸¯?ê¸“ê¹›ê¸šê¸£ê¹‹ê¸?
+//!	@param	ë™ë¦¶:	const	CImgClipedBmp&	src	: ê¸“ê¸¯?ë™°ê·‰ê¶»ë·ë¤–
+//!	@return	ë“«ë¦¶ë­ :	ê¶¶ê¶¢
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 CImgClipedBmp::CImgClipedBmp( const CImgClipedBmp& src )
 {
@@ -102,14 +102,14 @@ CImgClipedBmp::CImgClipedBmp( const CImgClipedBmp& src )
 
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::Init
-//!	@brief	??:	‰Šúˆ—
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	‚È‚µ
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::Init
+//!	@brief	??:	ë£Šë”–ë£‰ë¿š
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	ê¶¶ê¶¢
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 void CImgClipedBmp::Init( void )
 {
@@ -129,14 +129,14 @@ void CImgClipedBmp::Init( void )
 
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::Copy
-//!	@brief	??:	ƒRƒs?
-//!	@param	ˆø”:	const	CImgClipedBmp&	src	: ƒRƒs?Œ³‚Ö‚ÌQÆ
-//!	@return	ŠÖ”’l:	‚È‚µ
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::Copy
+//!	@brief	??:	ê¸“ê¸¯?
+//!	@param	ë™ë¦¶:	const	CImgClipedBmp&	src	: ê¸“ê¸¯?ë™°ê·‰ê¶»ë·ë¤–
+//!	@return	ë“«ë¦¶ë­ :	ê¶¶ê¶¢
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 void CImgClipedBmp::Copy( const CImgClipedBmp& src )
 {
@@ -146,14 +146,14 @@ void CImgClipedBmp::Copy( const CImgClipedBmp& src )
 
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::SetClipInfo
-//!	@brief	??:	ƒNƒŠƒbƒvî•ñ‚ğƒZƒbƒg‚·‚é
-//!	@param	ˆø”:	_CLIPINFO&	info	: ƒNƒŠƒbƒvî•ñ‚Ö‚ÌQÆ
-//!	@return	ŠÖ”’l:	‚È‚µ
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::SetClipInfo
+//!	@brief	??:	ê¸ê¹ê¸ê¸µë¥ƒëºªê·©ê¸œê¸ê¸£ê¶¥ê·¡
+//!	@param	ë™ë¦¶:	_CLIPINFO&	info	: ê¸ê¹ê¸ê¸µë¥ƒëºªê·‰ê¶»ë·ë¤–
+//!	@return	ë“«ë¦¶ë­ :	ê¶¶ê¶¢
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 void CImgClipedBmp::SetClipInfo( _CLIPINFO& info )
 {
@@ -168,14 +168,14 @@ void CImgClipedBmp::SetClipInfo( _CLIPINFO& info )
 
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::GetClipInfo
-//!	@brief	??:	ƒNƒŠƒbƒvî•ñ‚ğæ“¾‚·‚é
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	CImgClipedBmp::_CLIPINFO	: ƒNƒŠƒbƒvî•ñ
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::GetClipInfo
+//!	@brief	??:	ê¸ê¹ê¸ê¸µë¥ƒëºªê·©ë¡¦ë²¦ê¶¥ê·¡
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	CImgClipedBmp::_CLIPINFO	: ê¸ê¹ê¸ê¸µë¥ƒëºª
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 CImgClipedBmp::_CLIPINFO CImgClipedBmp::GetClipInfo( void )
 {
@@ -184,14 +184,14 @@ CImgClipedBmp::_CLIPINFO CImgClipedBmp::GetClipInfo( void )
 
 
 //!
-//!			ŠÖ”–¼:	CImgClipedBmp::GetBitmap
-//!	@brief	??:	ƒrƒbƒg?ƒbƒv‚Ö‚Ì?ƒCƒ“?‚ğæ“¾‚·‚é
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	CBitmapStd	*	: ƒrƒbƒg?ƒbƒv‚Ö‚Ì?ƒCƒ“?
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	CImgClipedBmp::GetBitmap
+//!	@brief	??:	ê¸®ê¸ê¸£?ê¸ê¸µê·‰ê¶»?ê·½ê¹›?ê·©ë¡¦ë²¦ê¶¥ê·¡
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	CBitmapStd	*	: ê¸®ê¸ê¸£?ê¸ê¸µê·‰ê¶»?ê·½ê¹›?
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 CBitmapStd* CImgClipedBmp::GetBitmap( void )
 {
@@ -200,14 +200,14 @@ CBitmapStd* CImgClipedBmp::GetBitmap( void )
 
 
 //!
-//!			ŠÖ”–¼:	int	CImgClipedBmp::GetValidXsize
-//!	@brief	??:	‰æ‘œ‚w—LŒøƒTƒCƒY[PIX]‚ğæ“¾‚·‚é
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	int	: ‰æ‘œ‚w—LŒøƒTƒCƒY[PIX]
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	int	CImgClipedBmp::GetValidXsize
+//!	@brief	??:	ëªëª´êµ“ë¾ëš¼ê¸–ê·½ê¸›[PIX]ê·©ë¡¦ë²¦ê¶¥ê·¡
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	int	: ëªëª´êµ“ë¾ëš¼ê¸–ê·½ê¸›[PIX]
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 int	CImgClipedBmp::GetValidXsize( void )
 {
@@ -216,14 +216,14 @@ int	CImgClipedBmp::GetValidXsize( void )
 
 
 //!
-//!			ŠÖ”–¼:	int	CImgClipedBmp::GetValidYsize
-//!	@brief	??:	‰æ‘œ‚x—LŒøƒTƒCƒY[PIX]‚ğæ“¾‚·‚é
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	int	:‰æ‘œ‚x—LŒøƒTƒCƒY[PIX]
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	int	CImgClipedBmp::GetValidYsize
+//!	@brief	??:	ëªëª´êµ•ë¾ëš¼ê¸–ê·½ê¸›[PIX]ê·©ë¡¦ë²¦ê¶¥ê·¡
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	int	:ëªëª´êµ•ë¾ëš¼ê¸–ê·½ê¸›[PIX]
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 int	CImgClipedBmp::GetValidYsize( void )
 {
@@ -232,14 +232,14 @@ int	CImgClipedBmp::GetValidYsize( void )
 
 
 //!
-//!			ŠÖ”–¼:	int	CImgClipedBmp::GetPitchX
-//!	@brief	??:	Ø‚èo‚µƒsƒb?‚w[PIX]‚ğæ“¾‚·‚é
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	int	: Ø‚èo‚µƒsƒb?‚w[PIX]
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	int	CImgClipedBmp::GetPitchX
+//!	@brief	??:	ë¨›ê·Ÿë¢¯ê¶¢ê¸¯ê¸?êµ“[PIX]ê·©ë¡¦ë²¦ê¶¥ê·¡
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	int	: ë¨›ê·Ÿë¢¯ê¶¢ê¸¯ê¸?êµ“[PIX]
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 int	CImgClipedBmp::GetPitchX( void )
 {
@@ -248,14 +248,14 @@ int	CImgClipedBmp::GetPitchX( void )
 
 
 //!
-//!			ŠÖ”–¼:	int	CImgClipedBmp::GetPitchY
-//!	@brief	??:	Ø‚èo‚µƒsƒb?‚x[PIX]‚ğæ“¾‚·‚é
-//!	@param	ˆø”:	‚È‚µ
-//!	@return	ŠÖ”’l:	int	: Ø‚èo‚µƒsƒb?‚x[PIX]
-//!	@date	XV:
-//!	@note	‰ğà:
-//!	@note	g—p—á:
-//!	@note	”õl:
+//!			ë“«ë¦¶ë¼¹:	int	CImgClipedBmp::GetPitchY
+//!	@brief	??:	ë¨›ê·Ÿë¢¯ê¶¢ê¸¯ê¸?êµ•[PIX]ê·©ë¡¦ë²¦ê¶¥ê·¡
+//!	@param	ë™ë¦¶:	ê¶¶ê¶¢
+//!	@return	ë“«ë¦¶ë­ :	int	: ë¨›ê·Ÿë¢¯ê¶¢ê¸¯ê¸?êµ•[PIX]
+//!	@date	ë››ë¥·:
+//!	@note	ë¶ë¨£:
+//!	@note	ëŸŠë¾­ì€¡:
+//!	@note	ë·ˆë›©:
 //!
 int	CImgClipedBmp::GetPitchY( void )
 {

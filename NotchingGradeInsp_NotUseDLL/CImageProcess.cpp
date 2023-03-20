@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GlobalDef.h"
 #include "CImageProcess.h"
 #include "GlobalData.h" 
@@ -50,8 +50,8 @@ void CRegionInfo::SetRect(CRect rect) {
 	m_nBottom = rect.bottom;
 }
 
-// Round ºÎºĞÀÇ Æò±ÕÈ­ Ã³¸®´Â ³»ºÎ ¿ÜºÎ º°µµ·Î Ã³¸®.
-// ÁÂ¿ì ÈÖµµ Â÷ÀÌ°¡ ÀÖ´Â ºÎºĞÀº Áß½ÉºÎ¿Í Threslevel°úÀÇ °ü°è·Î »ó/ÇÏ Æò±Õ°ªÀ» Àû¿ë
+// Round ë¶€ë¶„ì˜ í‰ê· í™” ì²˜ë¦¬ëŠ” ë‚´ë¶€ ì™¸ë¶€ ë³„ë„ë¡œ ì²˜ë¦¬.
+// ì¢Œìš° íœ˜ë„ ì°¨ì´ê°€ ìˆëŠ” ë¶€ë¶„ì€ ì¤‘ì‹¬ë¶€ì™€ Threslevelê³¼ì˜ ê´€ê³„ë¡œ ìƒ/í•˜ í‰ê· ê°’ì„ ì ìš©
 int CImageProcess::MeanImageDirection_Round(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nThresLevel)
 {
 	int nRet = 0;
@@ -441,8 +441,8 @@ int CImageProcess::ImageMean_Part(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int 
 		}
 	}
 
-	// 0 ~ HalfSize±îÁö´Â HalfSize + 1ÀÇ °ªÀ¸·Î ¸ğµÎ Copy
-	// (nHeight - HalfSize) ~ nHeight±îÁö´Â (nHeight - HalfSize - 1)1ÀÇ °ªÀ¸·Î ¸ğµÎ Copy
+	// 0 ~ HalfSizeê¹Œì§€ëŠ” HalfSize + 1ì˜ ê°’ìœ¼ë¡œ ëª¨ë‘ Copy
+	// (nHeight - HalfSize) ~ nHeightê¹Œì§€ëŠ” (nHeight - HalfSize - 1)1ì˜ ê°’ìœ¼ë¡œ ëª¨ë‘ Copy
 	BYTE* pSrcPtr = pTarPtr + ( nWidth  * ( nStartY + nHalfH + 1 ) ) + nStartX ;
 
 	if (nMode & en_FillTop) {
@@ -902,7 +902,7 @@ int CImageProcess::Threshold_RoundMask(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC
 }
 
 // 22.01.17 Ahn Add Start
-// À½±Ø¿ë Threshold¸¦ ±âÁØÀ¸·Î Image¿Í Fifo¸¦ ÀÛ¼º.
+// ìŒê·¹ìš© Thresholdë¥¼ ê¸°ì¤€ìœ¼ë¡œ Imageì™€ Fifoë¥¼ ì‘ì„±.
 int CImageProcess::Threshold_RoundMask_Negative(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nStartOffset, int nEndOffset, int nMin, int nLimitRight, BOOL bClearRslt, BOOL bModeSide /* = CImageProcess::en_TopSide */ )
 {
 	ASSERT(pImgPtr);
@@ -1630,7 +1630,7 @@ int CImageProcess::GetOneLineFromFifo(VEC_LINE_DATA* pOneLine, CRegionInfo::VEC_
 
 }
 
-BOOL CImageProcess::MergeLineData(_LINE_DATA* pSrcData, _LINE_DATA* pTarData) // pSrcData ¿¡ pTarData¸¦ Merge ÇÏ°í pTarData¸¦ Á¦°ÅÇÔ.
+BOOL CImageProcess::MergeLineData(_LINE_DATA* pSrcData, _LINE_DATA* pTarData) // pSrcData ì— pTarDataë¥¼ Merge í•˜ê³  pTarDataë¥¼ ì œê±°í•¨.
 {
 	BOOL bRet = TRUE;
 
@@ -1736,7 +1736,7 @@ BOOL CImageProcess::LoopLabeling(CRegionInfo* pRoiInfo, int nWidth, int nHeight,
 						//	if (pPreData->pPtr->bDeleteFlag == TRUE) continue;
 						if (IsLinked(pNewData, pPreData) == TRUE) {
 							if (pPreData->pPtr == NULL) continue;
-							if (pNewData->pPtr == NULL) { // »õ°áÇÔ
+							if (pNewData->pPtr == NULL) { // ìƒˆê²°í•¨
 								//MergeLineData(pPreData, pNewData);
 								pNewData->pPtr = pPreData->pPtr;
 								if (pPreData->pPtr->rcRect.left > pNewData->start){
@@ -1766,7 +1766,7 @@ BOOL CImageProcess::LoopLabeling(CRegionInfo* pRoiInfo, int nWidth, int nHeight,
 									pPreData->pPtr->nOrgBriMin = pNewData->btOrgBriMin;
 								}
 							}
-							else { // NewData¿¡ ÀÌ¹Ì ¿¬°áµÈ PreData°¡ ÀÖ´Â °æ¿ì PreData->pPtr°ªÀ» ÇÕÄ¡°í Á¦°ÅÇÔ.
+							else { // NewDataì— ì´ë¯¸ ì—°ê²°ëœ PreDataê°€ ìˆëŠ” ê²½ìš° PreData->pPtrê°’ì„ í•©ì¹˜ê³  ì œê±°í•¨.
 								if (pPreData->pPtr == pNewData->pPtr) {
 									continue;
 								}
@@ -1815,7 +1815,7 @@ BOOL CImageProcess::LoopLabeling(CRegionInfo* pRoiInfo, int nWidth, int nHeight,
 			}
 		}
 		if (nCrntSize > 0) {
-			// nVecPreLine °ªÀº ¸ğµÎ BlockData·Î ÀúÀå
+			// nVecPreLine ê°’ì€ ëª¨ë‘ BlockDataë¡œ ì €ì¥
 			for (int j = 0; j < nCrntSize; j++) {
 				_LINE_DATA* pData = &(*pVecNewLine)[j];
 				if (pData->pPtr == NULL) {
@@ -2014,7 +2014,7 @@ int CImageProcess::Edge_Sobel(BYTE* pImgPtr, BYTE* pProcImg, int nWidth, int nHe
 //		nMagnif = 3;
 //	}
 //
-//	if (nDir == DIR_VER) { // ¼¼·Î ¿§Ä¡ Ã£±â
+//	if (nDir == DIR_VER) { // ì„¸ë¡œ ì—£ì¹˜ ì°¾ê¸°
 //		int nSumLeft, nSumRight;
 //		nXStart = rectProc.left + nSumCnt;
 //		nXEnd = rectProc.right - nSumCnt;
@@ -2039,7 +2039,7 @@ int CImageProcess::Edge_Sobel(BYTE* pImgPtr, BYTE* pProcImg, int nWidth, int nHe
 //			}
 //		}
 //	}
-//	else {// °¡·Î ¿§Áö Ã£±â
+//	else {// ê°€ë¡œ ì—£ì§€ ì°¾ê¸°
 //		int nSumUpper, nSumLower;
 //		nXStart = rectProc.left;
 //		nXEnd = rectProc.right;
@@ -2090,7 +2090,7 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo(BYTE* pImgPtr, BYTE* pProcImg, 
 
 	if (pProcImg == NULL) {
 
-		if (nDir == DIR_VER) { // ¼¼·Î ¿§Ä¡ Ã£±â
+		if (nDir == DIR_VER) { // ì„¸ë¡œ ì—£ì¹˜ ì°¾ê¸°
 			int nSumLeft, nSumRight;
 			nXStart = rectProc.left + nSumCnt;
 			nXEnd = rectProc.right - nSumCnt;
@@ -2158,7 +2158,7 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo(BYTE* pImgPtr, BYTE* pProcImg, 
 				}
 			}
 		}
-		else {// °¡·Î ¿§Áö Ã£±â
+		else {// ê°€ë¡œ ì—£ì§€ ì°¾ê¸°
 			int nSumUpper, nSumLower;
 			nXStart = rectProc.left;
 			nXEnd = rectProc.right;
@@ -2188,7 +2188,7 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo(BYTE* pImgPtr, BYTE* pProcImg, 
 	}
 	else {
 
-		if (nDir == DIR_VER) { // ¼¼·Î ¿§Ä¡ Ã£±â
+		if (nDir == DIR_VER) { // ì„¸ë¡œ ì—£ì¹˜ ì°¾ê¸°
 			int nSumLeft, nSumRight;
 			nXStart = rectProc.left + nSumCnt;
 			nXEnd = rectProc.right - nSumCnt;
@@ -2256,7 +2256,7 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo(BYTE* pImgPtr, BYTE* pProcImg, 
 				}
 			}
 		}
-		else {// °¡·Î ¿§Áö Ã£±â
+		else {// ê°€ë¡œ ì—£ì§€ ì°¾ê¸°
 			int nSumUpper, nSumLower;
 			nXStart = rectProc.left;
 			nXEnd = rectProc.right;
@@ -2339,7 +2339,7 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 	int nCnt = 0;
 
 	if (pProcImg != NULL) {
-		if (nPosition == CImageProcess::en_TopSide) { // Å¾
+		if (nPosition == CImageProcess::en_TopSide) { // íƒ‘
 
 			int nLastPosX = nDefaultLv;
 			for (y = nYStart; y < nYEnd; y++) {
@@ -2434,7 +2434,7 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 		}
 	}
 	else {
-		if (nPosition == CImageProcess::en_TopSide) { // Å¾
+		if (nPosition == CImageProcess::en_TopSide) { // íƒ‘
 	
 			int nLastPosX = nDefaultLv;
 			for (y = nYStart; y < nYEnd; y++) {
@@ -2560,8 +2560,8 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(BYTE* pImgPtr, BYTE* 
 
 
 	if (pProcImg == NULL) {
-		if (nPosition == CImageProcess::en_TopSide) { // Å¾
-			if (nSide == CImageProcess::en_FindLeft) { // ÅÇ ±âÁØ ¿ŞÂÊ Edge °ËÃâ
+		if (nPosition == CImageProcess::en_TopSide) { // íƒ‘
+			if (nSide == CImageProcess::en_FindLeft) { // íƒ­ ê¸°ì¤€ ì™¼ìª½ Edge ê²€ì¶œ
 				for (y = nYStart, nCnt = 0; nCnt < 10; y += nPitch, nCnt++) {
 					BYTE* pLinePtr = pImgPtr + (y * nWidth);
 					int nMax = 0;
@@ -2575,7 +2575,7 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(BYTE* pImgPtr, BYTE* 
 					}
 				}
 			}
-			else { // ÅÇ ±âÁØ ¿À¸¥ÂÊ ¿§Áö °ËÃâ
+			else { // íƒ­ ê¸°ì¤€ ì˜¤ë¥¸ìª½ ì—£ì§€ ê²€ì¶œ
 				for (y = nYEnd - 1, nCnt = 0; nCnt < 10; y -= nPitch, nCnt++) {
 					BYTE* pLinePtr = pImgPtr + (y * nWidth);
 					int nMax = 0;
@@ -2847,7 +2847,7 @@ int CImageProcess::EdgeDetectImageToArray(BYTE* pImgPtr, int* pnResltArr, int nW
 		nMagnif = 3;
 	}
 
-	if (nDir == DIR_VER) { // ¼¼·Î ¿§Ä¡ Ã£±â
+	if (nDir == DIR_VER) { // ì„¸ë¡œ ì—£ì¹˜ ì°¾ê¸°
 		memset(pnResltArr, 0, sizeof(int) * nHeight);
 
 		int nSumLeft, nSumRight;
@@ -2877,7 +2877,7 @@ int CImageProcess::EdgeDetectImageToArray(BYTE* pImgPtr, int* pnResltArr, int nW
 			}
 		}
 	}
-	else {// °¡·Î ¿§Áö Ã£±â
+	else {// ê°€ë¡œ ì—£ì§€ ì°¾ê¸°
 		int nSumUpper, nSumLower;
 		nXStart = rectProc.left;
 		nXEnd = rectProc.right;
@@ -2991,7 +2991,7 @@ int CImageProcess::EdgeDetectImageToBoth_CropArea(BYTE* pImgPtr, BYTE* pProcImg,
 	memset(pProcImg, 0, sizeof(BYTE) * nCropHeight * nCropWidth);
 	int cx, cy;
 
-	if (nDir == DIR_VER) { // ¼¼·Î ¿§Ä¡ Ã£±â
+	if (nDir == DIR_VER) { // ì„¸ë¡œ ì—£ì¹˜ ì°¾ê¸°
 		memset(pnResltArr, 0, sizeof(int) * nHeight);
 
 		int nSumLeft, nSumRight;
@@ -3023,7 +3023,7 @@ int CImageProcess::EdgeDetectImageToBoth_CropArea(BYTE* pImgPtr, BYTE* pProcImg,
 			}
 		}
 	}
-	else {// °¡·Î ¿§Áö Ã£±â
+	else {// ê°€ë¡œ ì—£ì§€ ì°¾ê¸°
 		int nSumUpper, nSumLower;
 		nXStart = rectProc.left;
 		nXEnd = rectProc.right;
@@ -3054,8 +3054,8 @@ int CImageProcess::EdgeDetectImageToBoth_CropArea(BYTE* pImgPtr, BYTE* pProcImg,
 	return 0;
 }
 
-// 2Á¡°ú ¹İÁö¸§À¸·Î ¿øÀÇ Áß½ÉÀ» °è»êÇÏ´Â ÇÔ¼ö.
-int CImageProcess::CalcCirclePos(CPoint point1, CPoint point2, int nRadius, CPoint* pntCenter, int nDir)// nDir 1»çºĞ¸é 1, 2»çºĞ¸é -1 
+// 2ì ê³¼ ë°˜ì§€ë¦„ìœ¼ë¡œ ì›ì˜ ì¤‘ì‹¬ì„ ê³„ì‚°í•˜ëŠ” í•¨ìˆ˜.
+int CImageProcess::CalcCirclePos(CPoint point1, CPoint point2, int nRadius, CPoint* pntCenter, int nDir)// nDir 1ì‚¬ë¶„ë©´ 1, 2ì‚¬ë¶„ë©´ -1 
 {
 	double dPi = 3.14195;
 	double r = nRadius;
@@ -3091,7 +3091,7 @@ int CImageProcess::CalcCirclePos(CPoint point1, CPoint point2, int nRadius, CPoi
 	return 0;
 }
 
-// 3Á¡À¸·Î ¿øÀÇ Áß½ÉÁ¡°ú ¿øÀº ¹İÁö¸§À» °è»êÇÏ´Â ÇÔ¼ö
+// 3ì ìœ¼ë¡œ ì›ì˜ ì¤‘ì‹¬ì ê³¼ ì›ì€ ë°˜ì§€ë¦„ì„ ê³„ì‚°í•˜ëŠ” í•¨ìˆ˜
 int CImageProcess::CalcCirclePosFrom3Point(CPoint p1, CPoint p2, CPoint p3, int nDir, CPoint* pntCenter, int* pnRadius)
 {
 	int nRet = 0;
@@ -3123,8 +3123,8 @@ double CImageProcess::CalcRoundDef_Size(BYTE* pImgPtr, int nWidth, int nHeight, 
 	double dRet = 0.0;
 	//CImageProcess::CalcCirclePos( ptFirst, ptSecond,  )
 
-	// ¸ÕÀú °áÇÔ ¼¾ÅÍ¿Í ÀÏÄ¡ÇÏ´Â ¶ó¿îµå x, y ÁÂÇ¥¸¦ Ã£¾Æ¼­ ±â¿ï±â¸¦ ±¸ÇÔ.
-	// y¸¦ ¸ÕÀú Ã£°í °Å±â¼­ ºÎÅÍ x ¸¦ Ã£´Â°Ô ºü¸§.
+	// ë¨¼ì € ê²°í•¨ ì„¼í„°ì™€ ì¼ì¹˜í•˜ëŠ” ë¼ìš´ë“œ x, y ì¢Œí‘œë¥¼ ì°¾ì•„ì„œ ê¸°ìš¸ê¸°ë¥¼ êµ¬í•¨.
+	// yë¥¼ ë¨¼ì € ì°¾ê³  ê±°ê¸°ì„œ ë¶€í„° x ë¥¼ ì°¾ëŠ”ê²Œ ë¹ ë¦„.
 	CPoint cpDefCenter;
 	// 22.07.20 Ahn Modify Start
 	//CRect rcDefect( pBlockData->rcRect.left, pBlockData->rcRect.top, pBlockData->rcRect.right, pBlockData->rcRect.bottom );
@@ -3133,7 +3133,7 @@ double CImageProcess::CalcRoundDef_Size(BYTE* pImgPtr, int nWidth, int nHeight, 
 	cpDefCenter.x = (pBlockData->rcRect.left + pBlockData->rcRect.right) / 2;
 	cpDefCenter.y = (pBlockData->rcRect.top + pBlockData->rcRect.bottom) / 2;
 
-	// ¼¾ÅÍ ÁÂÇ¥¿¡¼­ °¡Àå °¡±î¿î Round ÁöÁ¡À» Ã£À½.
+	// ì„¼í„° ì¢Œí‘œì—ì„œ ê°€ì¥ ê°€ê¹Œìš´ Round ì§€ì ì„ ì°¾ìŒ.
 	int nSize = (int)pVecRndInfo->size() - 1;
 	double dDist, dDistMin = 9999.9;
 	int nMinPos = nSize - 1;
@@ -3194,7 +3194,7 @@ double CImageProcess::CalcRoundDef_Size(BYTE* pImgPtr, int nWidth, int nHeight, 
 		double dMaxDistH = 0.0 , dMinDistH = 999.0;
 		double dMaxDistV = 0.0, dMinDistV = 999.0;
 		double dDist;
-		// °áÇÔÀÇ Áß½É¿¡¼­ ºÎÅÍ x¹æÇâ y ¹æÇâÀ¸·Î 1¾¿ Áõ°¡ÇÏ¸ç 
+		// ê²°í•¨ì˜ ì¤‘ì‹¬ì—ì„œ ë¶€í„° xë°©í–¥ y ë°©í–¥ìœ¼ë¡œ 1ì”© ì¦ê°€í•˜ë©° 
 		for (int x = pBlockData->rcRect.left; x <= pBlockData->rcRect.right; x++) {
 			if (*(pImgPtr + (nWidth * cpDefCenter.y) + x) != 128)continue;
 			dDist = abs((a * x) + (b * cpDefCenter.y) + c) / sqrt(pow(a, 2) + pow(b, 2));
@@ -3257,7 +3257,7 @@ double CImageProcess::CalcRoundDef_Size_LeftFoilExp(BYTE* pImgPtr, int nWidth, i
 	BYTE* pLinePtr;
 	CImageProcess::VEC_ROUND_INFO vecLine;
 
-	// ¹Ù±ùÂÊ ¿ÜÁ¢Á¡ ¼öÁı
+	// ë°”ê¹¥ìª½ ì™¸ì ‘ì  ìˆ˜ì§‘
 	// 22.02.17 Ahn Add Start
 	if (nDefType == TYPE_FOILEXP_OUT) {
 		// Dross 
@@ -3335,7 +3335,7 @@ double CImageProcess::CalcRoundDef_FindMin(int nMode, CBlockData* defInfo, doubl
 {
 	double dRet = 0; 
 
-	// ±â¿ï±â
+	// ê¸°ìš¸ê¸°
 	if (nMode == en_FindLeft) {
 
 	}
@@ -3355,12 +3355,12 @@ double CImageProcess::CalcInclination_FromRoundInfo(CRect rcRnd, CBlockData* pBl
 	CPoint cpDefCenter;
 	cpDefCenter = rcDefect.CenterPoint();
 
-	// Round°¡ ¾Æ´Ï¸é Pass
+	// Roundê°€ ì•„ë‹ˆë©´ Pass
 	if ((pBlockData->nDefPos & 0x01) != 0x01) {
 		return dRet;
 	}
 
-	// ±â¿ï±â °è»ê (±â¿ï±â °è»ê½Ã¿¡ °¡·Î¼¼·Î ºñÀ²µµ Æ÷ÇÔÇØ¾ßÇÔ) 
+	// ê¸°ìš¸ê¸° ê³„ì‚° (ê¸°ìš¸ê¸° ê³„ì‚°ì‹œì— ê°€ë¡œì„¸ë¡œ ë¹„ìœ¨ë„ í¬í•¨í•´ì•¼í•¨) 
 	// 
 	CImageProcess::VEC_ROUND_INFO::iterator iter;
 
@@ -3383,7 +3383,7 @@ double CImageProcess::CalcInclination_FromRoundInfo(CRect rcRnd, CBlockData* pBl
 			bFound = TRUE;
 		}
 	}
-	// ±â¿ï±â 
+	// ê¸°ìš¸ê¸° 
 
 
 
@@ -3456,7 +3456,7 @@ double CImageProcess::CalcRoundDef_SizeRightOnlyBright(BYTE* pImgPtr, int nWidth
 	BYTE* pLinePtr;
 	CImageProcess::VEC_ROUND_INFO vecLine;
 
-	// ¹Ù±ùÂÊ ¿ÜÁ¢Á¡ ¼öÁı
+	// ë°”ê¹¥ìª½ ì™¸ì ‘ì  ìˆ˜ì§‘
 	// 22.02.17 Ahn Add Start
 	if (nDefType == TYPE_FOILEXP_OUT) {
 		for (y = nStartY; y <= nEndY; y++) {
@@ -3840,7 +3840,7 @@ double CImageProcess::CalcRoundDef_Size_RightFoilExp(BYTE* pImgPtr, int nWidth, 
 	BYTE* pLinePtr;
 	CImageProcess::VEC_ROUND_INFO vecLine;
 
-	// ¹Ù±ùÂÊ ¿ÜÁ¢Á¡ ¼öÁı
+	// ë°”ê¹¥ìª½ ì™¸ì ‘ì  ìˆ˜ì§‘
 	// 22.02.17 Ahn Add Start
 	if (nDefType == TYPE_FOILEXP_OUT) {
 		for (y = nStartY; y <= nEndY; y++) {
@@ -3908,7 +3908,7 @@ double CImageProcess::CalcRoundDef_Size_RightFoilExp(BYTE* pImgPtr, int nWidth, 
 }
 
 
-// °áÇÔ Size¸¦ Edge¿¡¼­ ºÎÅÍ ÃøÁ¤ÇÔ.
+// ê²°í•¨ Sizeë¥¼ Edgeì—ì„œ ë¶€í„° ì¸¡ì •í•¨.
 int CImageProcess::CalcSizeToEdgeLine(CBlockData* pData, CImageProcess::VEC_ROUND_INFO* pVecRndInfo, double dResoX, int nMode )
 {
 	ASSERT(pData);
@@ -4027,11 +4027,11 @@ double CImageProcess::CalcDefectMaxSize(BYTE* pImgPtr, int nWidth, int nHeight, 
 
 	int nLength = pBlock->nHeight; 
 	int nSizeW = pBlock->nWidth;
-	if (nSizeW >= 10) { // ÃøÁ¤ ´ë»ó
+	if (nSizeW >= 10) { // ì¸¡ì • ëŒ€ìƒ
 		
 	}
 
-	// ¿À¸¥ÂÊ¿¡¼­ ¿ŞÂÊÀ¸·Î °Ë»ö
+	// ì˜¤ë¥¸ìª½ì—ì„œ ì™¼ìª½ìœ¼ë¡œ ê²€ìƒ‰
 	int nPitch = 1 ;
 	int x, y;
 	BYTE* pLinePtr;
@@ -4141,7 +4141,7 @@ double CImageProcess::CalcDefectMaxSize_Round(BYTE* pImgPtr, int nWidth, int nHe
 		double dyp;
 		for (x = rcDefArea.left; x < rcDefArea.right; x++) {
 			int nCount = 0;
-			dyp = rcDefArea.bottom - ( dSlopeRate * x )  ; // y ÀıÆí
+			dyp = rcDefArea.bottom - ( dSlopeRate * x )  ; // y ì ˆí¸
 			for (int x1 = x; x1 >= rcDefArea.left; x1--) {
 				double dy = ((double)x1 * dSlopeRate) + dyp;
 				if ((int)dy < rcDefArea.top) break;
@@ -4155,7 +4155,7 @@ double CImageProcess::CalcDefectMaxSize_Round(BYTE* pImgPtr, int nWidth, int nHe
 		}
 		for (y = rcDefArea.bottom; y > rcDefArea.top; y--) {
 			int nCount = 0;
-			dyp = y - (dSlopeRate * rcDefArea.right); // y ÀıÆí
+			dyp = y - (dSlopeRate * rcDefArea.right); // y ì ˆí¸
 			for (int x1 = rcDefArea.right; x1 >= rcDefArea.left; x1--) {
 				double dy = ((double)x1 * dSlopeRate) + dyp;
 				if ((int)dy < rcDefArea.top) break;
@@ -4174,7 +4174,7 @@ double CImageProcess::CalcDefectMaxSize_Round(BYTE* pImgPtr, int nWidth, int nHe
 	return dRet;
 }
 
-// Tab Find °ü·Ã ÇÔ¼ö
+// Tab Find ê´€ë ¨ í•¨ìˆ˜
 int CImageProcess::DivideSectionBetweenThreshold(int* pnPrjData, int nPrjLength, int nThresMin, int nThresMax, int nMinLength, VEC_SECTOR* pVecSector)
 {
 	int i;
@@ -4186,12 +4186,16 @@ int CImageProcess::DivideSectionBetweenThreshold(int* pnPrjData, int nPrjLength,
 	int nStartPos = 0;
 	ST_SECTOR sect;
 
-	for (i = 0; i < nPrjLength; i++) {
-		if ((pnPrjData[i] >= nThresMin) && (pnPrjData[i] <= nThresMax)) {
+	for (i = 0; i < nPrjLength; i++)
+	{
+		if ((pnPrjData[i] >= nThresMin) && (pnPrjData[i] <= nThresMax))
+		{
 			nCount++;
 		}
-		else {
-			if (nCount >= nMinLength) {
+		else
+		{
+			if (nCount >= nMinLength)
+			{
 				sect.nStartPos = nStartPos;
 				sect.nEndPos = i - 1;
 				sect.bDelete = FALSE;
@@ -4202,7 +4206,8 @@ int CImageProcess::DivideSectionBetweenThreshold(int* pnPrjData, int nPrjLength,
 		}
 	}
 
-	if (nCount >= nMinLength) {
+	if (nCount >= nMinLength)
+	{
 		sect.nStartPos = nStartPos;
 		sect.nEndPos = i - 1;
 		sect.bDelete = FALSE;
@@ -4289,7 +4294,7 @@ long CImageProcess::GetAreaSum(BYTE* pImage, int nWidth, int nHeight, CRect rect
 	return lRet;
 }
 
-// ÀÌ¹ÌÁöÀÇ ¼±ÅÃµÈ ¿µ¿ªÁß Min Max »çÀÌÀÎ ÈÖµµÀÇ ÇÕÀ» ±¸ÇÏ´Â ÇÔ¼ö.
+// ì´ë¯¸ì§€ì˜ ì„ íƒëœ ì˜ì—­ì¤‘ Min Max ì‚¬ì´ì¸ íœ˜ë„ì˜ í•©ì„ êµ¬í•˜ëŠ” í•¨ìˆ˜.
 long CImageProcess::GetAreaSum_BetweenThreshold(BYTE* pImage, int nWidth, int nHeight, CRect rectPrj, int nMin, int nMax, int nSampling, BOOL bModeSum)
 {
 	ASSERT(pImage);
@@ -4471,7 +4476,7 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 	}
 
 	if (pstSector == NULL) {
-		AprData.SaveDebugLog(_T("Tab ÆøÀÌ ³Ê¹« ÀÛ½À´Ï´Ù."));
+		AprData.SaveDebugLog(_T("Tab í­ì´ ë„ˆë¬´ ì‘ìŠµë‹ˆë‹¤."));
 		return -3;
 	}
 
@@ -4536,7 +4541,7 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 }
 // 22.04.13 Ahn Add End
 
-// À½±Ø TabÀ» Ã£°í Tab Áß½É¿¡¼­ °Ë»ç ¶óÀÎÀ» À¯ÃßÇÔ.
+// ìŒê·¹ Tabì„ ì°¾ê³  Tab ì¤‘ì‹¬ì—ì„œ ê²€ì‚¬ ë¼ì¸ì„ ìœ ì¶”í•¨.
 int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel )
 {
 	ASSERT(pImgPtr);
@@ -4582,7 +4587,7 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 	}
 
 	if (pstSector == NULL) {
-		AprData.SaveDebugLog(_T("Tab ÆøÀÌ ³Ê¹« ÀÛ½À´Ï´Ù."));
+		AprData.SaveDebugLog(_T("Tab í­ì´ ë„ˆë¬´ ì‘ìŠµë‹ˆë‹¤."));
 		return -3;
 	}
 
@@ -4600,7 +4605,7 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 	//CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
 	//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nStartPos, 20, 0);
 	int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
-	// °æ°è °ËÃâ
+	// ê²½ê³„ ê²€ì¶œ
 	int nUpper = 20 * nCount;
 	// 22.07.13 Ahn Modify Start
 	//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nStartPos, 20, 0);
@@ -4643,7 +4648,7 @@ int CImageProcess::FindLevelBottom_Negative(BYTE* pImgPtr, int nWidth, int nHeig
 	int i ;
 	BOOL bFound = FALSE;
 	if (nFindDir == CImageProcess::en_FindFromLeft) {
-		// ³ôÀº ÈÖµµ °¨Áö
+		// ë†’ì€ íœ˜ë„ ê°ì§€
 		for (i = 0; i < nWidth; i++) {
 			if (pnPrjData[i] <= pRecipeInfo->TabCond.nCeramicBrightHigh[ CAM_POS_BOTTOM ]) { 
 				*pnLevel = i;
@@ -4652,7 +4657,7 @@ int CImageProcess::FindLevelBottom_Negative(BYTE* pImgPtr, int nWidth, int nHeig
 			}
 		}
 	}else{
-		// ³·Àº ÈÖµµ °¨Áö
+		// ë‚®ì€ íœ˜ë„ ê°ì§€
 		for (i = nWidth - 1; i > 0; i--) {
 			if (pnPrjData[i] <= pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM]) {
 				*pnLevel = i;
@@ -4700,7 +4705,7 @@ int CImageProcess::FindLevelBottom_BrightRoll(BYTE* pImgPtr, int nWidth, int nHe
 	int i;
 	BOOL bFound = FALSE;
 	if (nFindDir == CImageProcess::en_FindFromLeft) {
-		// ³ôÀº ÈÖµµ °¨Áö
+		// ë†’ì€ íœ˜ë„ ê°ì§€
 		for (i = 0; i < nWidth; i++) {
 			if (pnPrjData[i] <= pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]) {
 				*pnLevel = i;
@@ -4710,7 +4715,7 @@ int CImageProcess::FindLevelBottom_BrightRoll(BYTE* pImgPtr, int nWidth, int nHe
 		}
 	}
 	else {
-		// ³·Àº ÈÖµµ °¨Áö
+		// ë‚®ì€ íœ˜ë„ ê°ì§€
 		for (i = nWidth - 1; i > 0; i--) {
 			if (pnPrjData[i] <= pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]) {
 				*pnLevel = i;
@@ -4796,7 +4801,7 @@ int CImageProcess::FindTabLevel(BYTE* pImagePtr, int nWidth, int nHeight, int* p
 			rect.bottom = rect.top + 100;
 
 			//	lSum[i][0] = GetAreaSum(pImagePtr, nWidth, nHeight, rect, 10, FALSE);
-				// Ceramic Coating ºÎÀÇ ¹à±â°ª Min MaxÀÎ ÈÖµµÀÇ ÇÕÀ» ±¸ÀÌ¿© ¿À´Â ÇÔ¼ö.
+				// Ceramic Coating ë¶€ì˜ ë°ê¸°ê°’ Min Maxì¸ íœ˜ë„ì˜ í•©ì„ êµ¬ì´ì—¬ ì˜¤ëŠ” í•¨ìˆ˜.
 			lSum[i][0] = GetAreaSum_BetweenThreshold(pImagePtr, nWidth, nHeight, rect, tabCond.nCeramicBrightLow[nDir], tabCond.nCeramicBrightHigh[nDir], 10, TRUE);
 			lSum[i][1] = nLine;
 		}
@@ -4809,7 +4814,7 @@ int CImageProcess::FindTabLevel(BYTE* pImagePtr, int nWidth, int nHeight, int* p
 				}
 			}
 		}
-		int nFindPos = lSum[1][1]; // ÃÖ¼Ò°ª º¸´Ù ÇÏ³ª Å« °ª ¼±ÅÃ.
+		int nFindPos = lSum[1][1]; // ìµœì†Œê°’ ë³´ë‹¤ í•˜ë‚˜ í° ê°’ ì„ íƒ.
 		nRet = FindTabLevel_Deitail(pImagePtr, nWidth, nHeight, tabCond, nFindPos, pnLevel, nMode, nDir);
 	} else {
 		int* pnLeft = new int[nWidth];
@@ -4911,7 +4916,7 @@ int CImageProcess::FindTabLevel_Deitail(BYTE* pImagePtr, int nWidth, int nHeight
 				}
 			}
 			else {
-				// Á¶°Ç 
+				// ì¡°ê±´ 
 				int nMinDist = 999;
 				int nMinPos = nCount -1 ;
 
@@ -4975,7 +4980,7 @@ int CImageProcess::FindTabPos_New(BYTE* pImagePtr, int nWidth, int nHeight, int 
 }
 // 23.01.20 Ahn Modify End
 
-// ImageÀÇ ÁÖ¾îÁø rect À§Ä¡ÀÇ Projection°ªÀ» ¾ò¾î¿Í Threshold Min~Max »çÀÌÀÇ ¿¬¼ÓµÈ VectorµéÀ» ¾ò¾î¿À´Â ÇÔ¼ö.
+// Imageì˜ ì£¼ì–´ì§„ rect ìœ„ì¹˜ì˜ Projectionê°’ì„ ì–»ì–´ì™€ Threshold Min~Max ì‚¬ì´ì˜ ì—°ì†ëœ Vectorë“¤ì„ ì–»ì–´ì˜¤ëŠ” í•¨ìˆ˜.
 int CImageProcess::FindTabPos(BYTE* pImagePtr, int nWidth, int nHeight, int nStartPos, int nEndPos, int nThresMin, int nThresMax, VEC_SECTOR* pVecSector)
 {
 	CRect rect;
@@ -5031,7 +5036,7 @@ int CImageProcess::CombineTabSector(VEC_SECTOR* pVecSector, CRecipeInfo& RecipeI
 	return 0;
 }
 
-// TabÀÌ ÀÌ¹°ÀÌ³ª ÈÖµµÂ÷·Î ÀÎÇÏ¿© ºĞÇÒµÇ¾î ÀÖ´Â °æ¿ì Tab ÆøÀÌ³»ÀÌ¸é ÇÕÄ§.
+// Tabì´ ì´ë¬¼ì´ë‚˜ íœ˜ë„ì°¨ë¡œ ì¸í•˜ì—¬ ë¶„í• ë˜ì–´ ìˆëŠ” ê²½ìš° Tab í­ì´ë‚´ì´ë©´ í•©ì¹¨.
 int CImageProcess::ConvertSectToTabInfo(VEC_SECTOR vecSector, _VEC_TAB_INFO* VecTabInfo, int nFrameCount, CTabCondition tabCond)
 {
 	int i, j, nSize;
@@ -5112,7 +5117,7 @@ int CImageProcess::GetBoundaryLineFromEdgeArray(int* pnEdgeArr, int nLength, int
 	return 0;
 }
 
-// ¹Ş¾Æ¿Â Boundary Arrary¿¡¼­ Peek °ªÀÇ À§Ä¡¸¦ °¡Áö°í
+// ë°›ì•„ì˜¨ Boundary Arraryì—ì„œ Peek ê°’ì˜ ìœ„ì¹˜ë¥¼ ê°€ì§€ê³ 
 int CImageProcess::GetBoundaryLineFromEdgeArray(int* pnEdgeArr, int nLength, int* nBoundaryLine)
 {
 	ASSERT(pnEdgeArr);
@@ -5566,7 +5571,7 @@ int CImageProcess::GetBoundaryRoundInfo_ByBriDist(BYTE* pOrgImg, BYTE* pRsltImg,
 			pRear = &(*pVecRoundInfo)[y + 1];
 			int nDiff = pRear->x - pFront->x;
 			if (abs(nDiff) > 2) {
-				// ±â¿ï±â ÃÖÀú°ª Ã£±â
+				// ê¸°ìš¸ê¸° ìµœì €ê°’ ì°¾ê¸°
 				int nFindStart = y;
 				int nOldSlope = (pRear->x - pFront->x) / (pRear->y - pFront->y);
 				for (y = y + 2; y < nEdPosY; y++) {
@@ -5602,7 +5607,7 @@ int CImageProcess::GetBoundaryRoundInfo_ByBriDist(BYTE* pOrgImg, BYTE* pRsltImg,
 			pRear = &(*pVecRoundInfo)[y - 1];
 			int nDiff = pRear->x - pFront->x;
 			if (abs(nDiff) > 1) {
-				// ±â¿ï±â ÃÖÀú°ª Ã£±â
+				// ê¸°ìš¸ê¸° ìµœì €ê°’ ì°¾ê¸°
 				int nFindStart = y;
 				int nOldSlope = (pRear->x - pFront->x) / (pFront->y - pRear->y);
 				//for (y = y + 2; y < nEdPosY; y++) {
@@ -5710,7 +5715,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 		pDefInfo->dJudgeSize = pData->dJudgeSize;
 		pDefInfo->dDistance = pData->dDistance;
 		pDefInfo->bDeleteFlag = FALSE;
-		// ÆÇÁ¤ ÇÊ¿ä
+		// íŒì • í•„ìš”
 		// // 22.11.21 Ahn Add Start
 		CPoint cpCenter = pData->rcRect.CenterPoint();
 		int nDefPosY = cpCenter.y ;
@@ -5944,8 +5949,8 @@ int CImageProcess::CheckRect(CRect* pRect, int nWidth, int nHeight)
 	return nRet;
 }
 
-// Mean Ã³¸®µÈ Image Point¸¦ ¹Ş¾Æ¼­ °æ°è¼± °ËÃâ
-// Ã£Áö ¸øÇÏ¸é rcRangeÀÇ ¿À¸¥ÂÊ °ªÀ» µ¹·ÁÁÜ.
+// Mean ì²˜ë¦¬ëœ Image Pointë¥¼ ë°›ì•„ì„œ ê²½ê³„ì„  ê²€ì¶œ
+// ì°¾ì§€ ëª»í•˜ë©´ rcRangeì˜ ì˜¤ë¥¸ìª½ ê°’ì„ ëŒë ¤ì¤Œ.
 int CImageProcess::FindTabHeadCeramicBoundary(BYTE *pImagePtr, int nWidth, int nHeight, CRect rcRange )
 {
 	int nRet = 0;
@@ -6041,8 +6046,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) { // 22.01.06 Ahn Modify Start
 	if (AprData.m_System.m_nMachineMode == ANODE_MODE) { 
 	//22.09.15 Ahn Modify End
-		// 2/3 ÁöÁ¡¿¡¼­ ¼öÁ÷¼±À» ³»·Á TabÀ» ¸ÕÀú Ã£À½.
-		// Tab Áß½É¿¡¼­ ¼öÆò¼±À» ±×¾î Èæ¿¬ ÄÚÆÃ ³¡À» È®ÀÎÇÏ°í, ¾î±ú¼± ·¹º§À» Ã£À½.
+		// 2/3 ì§€ì ì—ì„œ ìˆ˜ì§ì„ ì„ ë‚´ë ¤ Tabì„ ë¨¼ì € ì°¾ìŒ.
+		// Tab ì¤‘ì‹¬ì—ì„œ ìˆ˜í‰ì„ ì„ ê·¸ì–´ í‘ì—° ì½”íŒ… ëì„ í™•ì¸í•˜ê³ , ì–´ê¹¨ì„  ë ˆë²¨ì„ ì°¾ìŒ.
 		//int nTabFindPos = (nWidth / 3) * 2;	// 22.05.30 Ahn Delete 
 		nLocalRet = CImageProcess::FindTab_Negative(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
 		if (nLocalRet < 0) {
@@ -6069,46 +6074,46 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nSize = (int)vecSector.size();
 
 	if( pResvTabInfo->pImgPtr != NULL ){
-		// Áö³­ Frame¿¡¼­ º¸³»Áö ¸øÇÏ°í ³²Àº Image°¡ ÀÖÀ½.
+		// ì§€ë‚œ Frameì—ì„œ ë³´ë‚´ì§€ ëª»í•˜ê³  ë‚¨ì€ Imageê°€ ìˆìŒ.
 		CTabInfo tabInfo;		
 		BYTE *pTempPtr = pResvTabInfo->pImgPtr;
 		BYTE *pTempBtmPtr = pResvTabInfo->pImgBtmPtr;
 
-		// ¿¹¾à Tab°ú Ã¹¹øÂ° TabÀÌ ºÙÀº TabÀÎ°¡??
-		// ¿¹¾à Á¤º¸¿¡ TabÀÌ Á¸ÀçÇÏ´Â°¡?
+		// ì˜ˆì•½ Tabê³¼ ì²«ë²ˆì§¸ Tabì´ ë¶™ì€ Tabì¸ê°€??
+		// ì˜ˆì•½ ì •ë³´ì— Tabì´ ì¡´ì¬í•˜ëŠ”ê°€?
 
 		int nCase = 0;
 		int nSendLength = 0;
 
 		if (nSize <= 0) {
-			// case 2,3,4´Â ÇØ´çµÇÁö ¾ÊÀ½
+			// case 2,3,4ëŠ” í•´ë‹¹ë˜ì§€ ì•ŠìŒ
 			if (pResvTabInfo->nImageLength > nBaseTabPitch) {
-				nCase = 0; // ÅëÀ¸·Î º¸³¿.
+				nCase = 0; // í†µìœ¼ë¡œ ë³´ëƒ„.
 			}
 			else if (pResvTabInfo->nTabWidth <= 0) {
-				nCase = 1; // »çÀÌÁî·Î Àß¶óº¸³¿
+				nCase = 1; // ì‚¬ì´ì¦ˆë¡œ ì˜ë¼ë³´ëƒ„
 			}
 		}
-		else { // »õ Frame¿¡ ÅÇ Á¤º¸ ÀÖÀ½.
+		else { // ìƒˆ Frameì— íƒ­ ì •ë³´ ìˆìŒ.
 			// 22.10.06 Ahn Add Start
 			int nDistance = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nStartPos ;
 			//int n
 			// 22.10.06 Ahn Add End
-			if (pResvTabInfo->nTabWidth > 0) { // ¿¹¾à Tab¿¡ TabÁ¤º¸ ÀÖÀ½. // 2¶Ç´Â 3
+			if (pResvTabInfo->nTabWidth > 0) { // ì˜ˆì•½ Tabì— Tabì •ë³´ ìˆìŒ. // 2ë˜ëŠ” 3
 				// 22.09.06 Ahn Modify Start
 				//int nTabWidth = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nEndPos;
 				int nTabWidth = (pResvTabInfo->nImageLength - pResvTabInfo->nTabLeft) + vecSector[0].nEndPos;
 				// 22.09.06 Ahn Modify End
 				if (nTabWidth <= (int)((double)nBaseTabWidth * 1.2)) { // 22.06.22 Ahn Modify 1.2 -> 1.4
-					//ÇÑÅÇÀ¸·Î ÆÇ´Ü.
+					//í•œíƒ­ìœ¼ë¡œ íŒë‹¨.
 					nCase = 3;
 				}
-				else { // ¾Õ¿¡²¨¸¸ º¸³»¸é µÊ.	
+				else { // ì•ì—êº¼ë§Œ ë³´ë‚´ë©´ ë¨.	
 					nCase = 2;
 				}
 			}
-			else { // ¾Õ¿¡ ÅÇ Á¤º¸ ¾øÀ½.
-				// µû·Î º¸³¾±î?
+			else { // ì•ì— íƒ­ ì •ë³´ ì—†ìŒ.
+				// ë”°ë¡œ ë³´ë‚¼ê¹Œ?
 				if ((pResvTabInfo->nImageLength + vecSector[0].nEndPos) > (int)((double)nBaseTabPitch * 1.2)) { // 22.06.22 Ahn Modify 1.2 -> 1.4
 				// 22.10.06 Ahn Modify Start
 				//	nCase = 1;
@@ -6122,7 +6127,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		BOOL bResvSend = FALSE;
 		switch (nCase) {
-		case	0 : // ÅëÀ¸·Î º¸³¿
+		case	0 : // í†µìœ¼ë¡œ ë³´ëƒ„
 			tabInfo.nLeft = 0;
 			tabInfo.nRight = pResvTabInfo->nImageLength;
 			tabInfo.nImageLength = pResvTabInfo->nImageLength;
@@ -6137,7 +6142,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			memcpy(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			nLastSavePos = 0 ; 
 			break;
-		case	1: // ¾ÕµÚ ´Ù ¾ø¾î°Å³ª, ±×³É »çÀÌÁî¿¡ ¸ÂÃç Àß¶óº¸³¿.
+		case	1: // ì•ë’¤ ë‹¤ ì—†ì–´ê±°ë‚˜, ê·¸ëƒ¥ ì‚¬ì´ì¦ˆì— ë§ì¶° ì˜ë¼ë³´ëƒ„.
 			tabInfo.nLeft = 0;
 			nSendLength = nBaseTabPitch - pResvTabInfo->nImageLength ;
 			tabInfo.nRight = pResvTabInfo->nImageLength + nSendLength ;
@@ -6155,7 +6160,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			memcpy(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
 			break;
-		case	2 : // ¿¹¾àTab Á¤º¸¿¡ TabÀÌ ÀÖ¾î¼­ µÚ¿¡ ²¨ ºÙ¿©º¸³¿.
+		case	2 : // ì˜ˆì•½Tab ì •ë³´ì— Tabì´ ìˆì–´ì„œ ë’¤ì— êº¼ ë¶™ì—¬ë³´ëƒ„.
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
 			tabInfo.nTabRight = pResvTabInfo->nTabRight;
 			// 22.11.18 Ahn Add Start
@@ -6164,7 +6169,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.11.18 Ahn Add End
 			bResvSend = TRUE;
 			break;
-		case	3 :	// ¾ÕµÚ Tab Á¤º¸°¡ ÇÏ³ª·Î ÆÇ´Ü ºÙ¿©¼­ º¸³¿
+		case	3 :	// ì•ë’¤ Tab ì •ë³´ê°€ í•˜ë‚˜ë¡œ íŒë‹¨ ë¶™ì—¬ì„œ ë³´ëƒ„
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
 			tabInfo.nTabRight = pResvTabInfo->nImageLength + vecSector[0].nEndPos ;
 			// 22.11.18 Ahn Add Start
@@ -6174,7 +6179,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			vecSector.erase(vecSector.begin());
 			bResvSend = TRUE;
 			break;
-		case	4 :	// ¾Õ¿¡ Tab Á¤º¸°¡ ¾ø¾î ±×³É µÚ¿¡²¨ ¾Õ¿¡ ºÙ¿©¼­ º¸³¿.
+		case	4 :	// ì•ì— Tab ì •ë³´ê°€ ì—†ì–´ ê·¸ëƒ¥ ë’¤ì—êº¼ ì•ì— ë¶™ì—¬ì„œ ë³´ëƒ„.
 			tabInfo.nTabLeft = pResvTabInfo->nImageLength + vecSector[0].nStartPos;
 			tabInfo.nTabRight = pResvTabInfo->nImageLength + vecSector[0].nEndPos;
 			// 22.11.18 Ahn Add Start
@@ -6190,7 +6195,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		if (bResvSend == TRUE) {
 			tabInfo.nCenter = (tabInfo.nTabRight + tabInfo.nTabLeft) / 2;
-			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;			// ¼¾ÅÍ±âÁØÀ¸·Î ÇÒÁö ¿À¸¥ÂÊ ±âÁØÀ¸·Î ÀÚ¸¦Áö....
+			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;			// ì„¼í„°ê¸°ì¤€ìœ¼ë¡œ í• ì§€ ì˜¤ë¥¸ìª½ ê¸°ì¤€ìœ¼ë¡œ ìë¥¼ì§€....
 			nSendLength = tabInfo.nRight - pResvTabInfo->nImageLength;
 			// 22.03.30 Ahn Add Start
 			if (nSendLength > nHeight) {
@@ -6234,7 +6239,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	nSize = (int)vecSector.size();
 
 	if (nSize <= 0) {
-	 // TabÀ» Ã£Áö ¸øÇÏ¿© ±æÀÌ ¿ì¼±À¸·Î Àß¶ó¼­ º¸³¿.
+	 // Tabì„ ì°¾ì§€ ëª»í•˜ì—¬ ê¸¸ì´ ìš°ì„ ìœ¼ë¡œ ì˜ë¼ì„œ ë³´ëƒ„.
 		int nSendAbleLeng = (nHeight - nLastSavePos);
 		int nSendAbleCount = nSendAbleLeng / nBaseTabPitch ;
 
@@ -6263,7 +6268,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			tabInfo.nLeft = 0;
 			tabInfo.nCenter = (tabInfo.nTabRight + tabInfo.nTabLeft) / 2;
 			// 21.09.02 Ahn Add Start
-			// Tab Width  ¹Ì´ŞÀÎ °æ¿ì, ¼¾ÅÍ±âÁØÀÌ ¾Æ´Ñ ¿À¸¥ÂÊ ±âÁØÀ¸·Î ÀÚ¸§.
+			// Tab Width  ë¯¸ë‹¬ì¸ ê²½ìš°, ì„¼í„°ê¸°ì¤€ì´ ì•„ë‹Œ ì˜¤ë¥¸ìª½ ê¸°ì¤€ìœ¼ë¡œ ìë¦„.
 			if (vecSector[i].nStartPos == 0) {
 				tabInfo.nRight = tabInfo.nTabRight + nPairSholderLength;
 			}
@@ -6275,7 +6280,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			tabInfo.nImageLength = tabInfo.nRight ;
 
 			if ((tabInfo.nImageLength + nLastSavePos) > nHeight) { 
-				// º¸³¾ ÀÌ¹ÌÁö »çÀÌÁî°¡ ³²Àº ÀÌ¹ÌÁö »çÀÌÁî º¸´Ù Å«°æ¿ì 
+				// ë³´ë‚¼ ì´ë¯¸ì§€ ì‚¬ì´ì¦ˆê°€ ë‚¨ì€ ì´ë¯¸ì§€ ì‚¬ì´ì¦ˆ ë³´ë‹¤ í°ê²½ìš° 
 				int nBackupSize = tabInfo.nImageLength -( (tabInfo.nImageLength + nLastSavePos) - nHeight ) ;
 				*pResvTabInfo = tabInfo;
 				if (pResvTabInfo->pImgPtr != NULL) {
@@ -6584,12 +6589,12 @@ int CImageProcess::MergeAndLink_BlockInfo(_VEC_BLOCK* pDestVlock, _VEC_BLOCK vec
 
 	for (; (iterF != vecFirst.end()) || ((iterS != vecSecond.end())); ) {
 		if ((iterF != vecFirst.end()) && ((iterS != vecSecond.end()))) {
-			// µÎ °áÇÔÀÌ ºÙ¾î ÀÖ´Â°¡? 			
+			// ë‘ ê²°í•¨ì´ ë¶™ì–´ ìˆëŠ”ê°€? 			
 			if( IsLinkedBlock(iterF->rcRect, iterS->rcRect, cpRange) == TRUE ){
 				MergeBlockInfo(*iterF, *iterS, nCamPos);
 				iterS = vecSecond.erase(iterS);
 			} else {
-				// ¸µÅ©µÇÁö ¾ÊÀº°æ¿ì BottomÀÌ ÀÛÀº °áÇÔ Merge ÇÏ°í »èÁ¦. 
+				// ë§í¬ë˜ì§€ ì•Šì€ê²½ìš° Bottomì´ ì‘ì€ ê²°í•¨ Merge í•˜ê³  ì‚­ì œ. 
 				if (iterF->rcRect.bottom > iterS->rcRect.bottom) {
 					pDestVlock->push_back(*iterS);
 					iterS = vecSecond.erase(iterS);
@@ -6801,10 +6806,10 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	CImageProcess::GetMaxImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcLeft);
 	CImageProcess::GetMaxImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcRight);
 
-	int nRoundOffset = 50;	// ¶ó¿îµå ºÎºĞÀÌ Slip ¹ß»ıÀ¸·Î ´Ã¾îÁú°æ¿ì¸¦ ´ëºñÇÑ Offset°ª
-	int nEdgeCompWidth = 10;	//	Edge °ËÃâ Parameter »óÇÏ ºñ±³ Æø
+	int nRoundOffset = 50;	// ë¼ìš´ë“œ ë¶€ë¶„ì´ Slip ë°œìƒìœ¼ë¡œ ëŠ˜ì–´ì§ˆê²½ìš°ë¥¼ ëŒ€ë¹„í•œ Offsetê°’
+	int nEdgeCompWidth = 10;	//	Edge ê²€ì¶œ Parameter ìƒí•˜ ë¹„êµ í­
 
-	// Tab ¿ŞÂÊ(À§) ºÎºĞÀÇ Edge °ËÃâ
+	// Tab ì™¼ìª½(ìœ„) ë¶€ë¶„ì˜ Edge ê²€ì¶œ
 	CRect rcTemp;
 	rcTemp = rcLeft;
 	int nLocalRet = 0;
@@ -6856,7 +6861,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 		strMsg.Format(_T("nLeftSize = %d"), nLeftSize);
 		AprData.SaveErrorLog(strMsg);
 
-		return -2; // Ã³¸® ºÒ°¡.
+		return -2; // ì²˜ë¦¬ ë¶ˆê°€.
 	}
 
 #if defined( SAVE_TACT_LOG ) 
@@ -6864,7 +6869,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	ctAna.Clear();
 	ctAna.StopWatchStart();
 #endif
-	// Tab ¿À¸¥ÂÊ(¾Æ·¡) ºÎºĞÀÇ Edge °ËÃâ
+	// Tab ì˜¤ë¥¸ìª½(ì•„ë˜) ë¶€ë¶„ì˜ Edge ê²€ì¶œ
 
 	nLocalRet = CImageProcess::EdgeDetectImageToBoth_BaseBright(pEdgePtr, NULL, &vecRightRndInfo, nWidth, nHeight, rcRight, nThresBnd, nThresMax, CImageProcess::en_TopSide, nLineLevel, CImageProcess::en_FindRight);
 
@@ -7062,7 +7067,7 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	rcAll.bottom = nHeight;
 
 	if (nLineLevel < 0) {
-		AprData.SaveDebugLog(_T("!!! Tab Level ÀÌ»ó !!!"));
+		AprData.SaveDebugLog(_T("!!! Tab Level ì´ìƒ !!!"));
 		return -1;
 	}
 	if (rcAll.left < 0) {
@@ -7080,7 +7085,7 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	vecAllRndInfo.clear();
 	int nEdgeWidth = 10;
 
-	// Æò±ÕÈ­ Ã³¸® 
+	// í‰ê· í™” ì²˜ë¦¬ 
 	BYTE* pMeanPtr = pTempPtr;
 #if defined( SAVE_TACT_LOG )
 	CTimeAnalyzer ctAna;
@@ -7178,7 +7183,7 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 
 	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiFoilExp.GetFifoPtr());
 
-	// Overflow ´Â 4¹ø Bit»ì·Á¼­ º¸³¿
+	// Overflow ëŠ” 4ë²ˆ Bitì‚´ë ¤ì„œ ë³´ëƒ„
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, AprData.m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
 #if defined( SAVE_TACT_LOG )
@@ -7250,7 +7255,7 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 }
 // 23.02.10 Ahn Add End
 
-// HeadºÎ °Ë»ç Ã³¸® ÇÔ¼ö.
+// Headë¶€ ê²€ì‚¬ ì²˜ë¦¬ í•¨ìˆ˜.
 int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
@@ -7315,7 +7320,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	CRect rcRightRnd;
 	rcLeftRnd = rcLeft;
 	rcRightRnd = rcRight;
-	rcLeftRnd.right = rcRightRnd.right = nLineLevel + pRecipeInfo->TabCond.nRadiusW;// Tab Level ÇÊ¿ä 
+	rcLeftRnd.right = rcRightRnd.right = nLineLevel + pRecipeInfo->TabCond.nRadiusW;// Tab Level í•„ìš” 
 	rcLeftRnd.top = rcLeft.bottom - pRecipeInfo->TabCond.nRadiusH;
 	rcRightRnd.bottom = rcRightRnd.top + pRecipeInfo->TabCond.nRadiusH;
 
@@ -7384,11 +7389,11 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	CImageProcess::GetMinImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcRight);
 	// 22.04.26 Ahn Add End
 
-	// MeanÃ³¸®ÇÑ Image·Î TabÀÇ Center ¿¡¼­ TabÀÇ ³ôÀÌ¸¦ ±¸ÇÔ.
-	int nRoundOffset = 50;	// ¶ó¿îµå ºÎºĞÀÌ Slip ¹ß»ıÀ¸·Î ´Ã¾îÁú°æ¿ì¸¦ ´ëºñÇÑ Offset°ª
-	int nEdgeCompWidth = 10;	//	Edge °ËÃâ Parameter »óÇÏ ºñ±³ Æø
+	// Meanì²˜ë¦¬í•œ Imageë¡œ Tabì˜ Center ì—ì„œ Tabì˜ ë†’ì´ë¥¼ êµ¬í•¨.
+	int nRoundOffset = 50;	// ë¼ìš´ë“œ ë¶€ë¶„ì´ Slip ë°œìƒìœ¼ë¡œ ëŠ˜ì–´ì§ˆê²½ìš°ë¥¼ ëŒ€ë¹„í•œ Offsetê°’
+	int nEdgeCompWidth = 10;	//	Edge ê²€ì¶œ Parameter ìƒí•˜ ë¹„êµ í­
 
-	// Tab ¿ŞÂÊ(À§) ºÎºĞÀÇ Edge °ËÃâ
+	// Tab ì™¼ìª½(ìœ„) ë¶€ë¶„ì˜ Edge ê²€ì¶œ
 	CRect rcTemp;
 	rcTemp = rcLeft;
 	rcTemp.bottom = rcLeftRnd.top;
@@ -7432,7 +7437,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	ctAna.StopWatchStart();
 #endif
 
-	// Round´Â °¡·Î ¼¼·Î 2¹øÀÇ Edge °ËÃâÀÌ ÇÊ¿äÇÔ.
+	// RoundëŠ” ê°€ë¡œ ì„¸ë¡œ 2ë²ˆì˜ Edge ê²€ì¶œì´ í•„ìš”í•¨.
 	rcLeftRnd.right = nMaskRight;
 	CImageProcess::GetBoundaryRoundInfo_ByBriDist(pEdgePtr, NULL, nWidth, nHeight, rcLeftRnd, nThresBnd, nMaskRight, &vecLeftRndInfo, CImageProcess::en_FindLeft);
 	CImageProcess::SmoothVecRoundData(&vecLeftRndInfo, CImageProcess::en_FindLeft);
@@ -7456,7 +7461,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 		AprData.SaveErrorLog(strMsg);
 		// 22.05.02 Ahn Add End
 
-		return -2; // Ã³¸® ºÒ°¡.
+		return -2; // ì²˜ë¦¬ ë¶ˆê°€.
 	}
 
 #if defined( SAVE_TACT_LOG ) 
@@ -7464,11 +7469,11 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	ctAna.Clear();
 	ctAna.StopWatchStart();
 #endif
-	// Tab ¿À¸¥ÂÊ(¾Æ·¡) ºÎºĞÀÇ Edge °ËÃâ
+	// Tab ì˜¤ë¥¸ìª½(ì•„ë˜) ë¶€ë¶„ì˜ Edge ê²€ì¶œ
 
 	nCropWidth = rcRightRnd.Width();
 	nCropHeight = rcRightRnd.Height();
-	// Round´Â °¡·Î ¼¼·Î 2¹øÀÇ Edge °ËÃâÀÌ ÇÊ¿äÇÔ.
+	// RoundëŠ” ê°€ë¡œ ì„¸ë¡œ 2ë²ˆì˜ Edge ê²€ì¶œì´ í•„ìš”í•¨.
 	rcRightRnd.right = nMaskRight;
 	CImageProcess::GetBoundaryRoundInfo_ByBriDist(pEdgePtr, NULL, nWidth, nHeight, rcRightRnd, nThresBnd, nMaskRight, &vecRightRndInfo, CImageProcess::en_FindRight);
 
@@ -7616,7 +7621,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	//	CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
 	// 22.07.20 Ahn Move End
 
-	//// ¶ó¿îµå °áÇÔÀÎ °æ¿ì ÆÇÁ¤¿ë »çÀÌÁî °è»ê.
+	//// ë¼ìš´ë“œ ê²°í•¨ì¸ ê²½ìš° íŒì •ìš© ì‚¬ì´ì¦ˆ ê³„ì‚°.
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
 	CBlockData* pData;
 	for (int nMode = 0; nMode < MAX_INSP_TYPE; nMode++) {
@@ -7648,7 +7653,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 				pData->nDefPos = en_RightRound; // 22.08.25 Ahn Add
 				CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
 			} else {
-				// Round °áÇÔÀÌ ¾Æ´Ñ °æ¿ì, Edge¿¡¼­ °Å¸®¸¦ °è»ê, 3 Á¡ÀÇ À§Ä¡¸¦ ÃøÁ¤ÇÏ¿© °¡Àå Å« °ªÀ» ÃëµæÇÔ.
+				// Round ê²°í•¨ì´ ì•„ë‹Œ ê²½ìš°, Edgeì—ì„œ ê±°ë¦¬ë¥¼ ê³„ì‚°, 3 ì ì˜ ìœ„ì¹˜ë¥¼ ì¸¡ì •í•˜ì—¬ ê°€ì¥ í° ê°’ì„ ì·¨ë“í•¨.
 				//22.09.15 Ahn Modify End
 				//if (AprData.m_System.m_nMachineMode == ANODE_MODE) { // 22.01.06 Ahn Add Start
 				if (AprData.m_System.m_nMachineMode == CATHODE_MODE) { // 22.01.06 Ahn Add Start
@@ -7667,7 +7672,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	}
 
 	// 22.05.24 Ahn Modify Start
-	// °áÇÔ MergeÈÄ ¼³Á¤ °³¼ö ÀÌÇÏ Á¦°Å Ã³¸® Ãß°¡
+	// ê²°í•¨ Mergeí›„ ì„¤ì • ê°œìˆ˜ ì´í•˜ ì œê±° ì²˜ë¦¬ ì¶”ê°€
 	//CImageProcess::AddDefectInfoByBlockInfo(&vecBlockFoilExp, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP);
 	//CImageProcess::AddDefectInfoByBlockInfo(&vecBlockDross, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP);
 
@@ -7749,7 +7754,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	rcAll.bottom = nHeight;
 
 	if (nLineLevel < 0) {
-		AprData.SaveDebugLog(_T("!!! Tab Level ÀÌ»ó !!!"));
+		AprData.SaveDebugLog(_T("!!! Tab Level ì´ìƒ !!!"));
 		return -1;
 	}
 	if (rcAll.left < 0) {
@@ -7767,7 +7772,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	vecAllRndInfo.clear();
 	int nEdgeWidth = 10;
 
-	// Æò±ÕÈ­ Ã³¸® 
+	// í‰ê· í™” ì²˜ë¦¬ 
 #if defined( SAVE_TACT_LOG )
 	CTimeAnalyzer ctAna;
 	ctAna.Clear();
@@ -7876,7 +7881,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiFoilExp.GetFifoPtr());
 	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiDross.GetFifoPtr());
 
-	// Overflow ´Â 4¹ø Bit»ì·Á¼­ º¸³¿
+	// Overflow ëŠ” 4ë²ˆ Bitì‚´ë ¤ì„œ ë³´ëƒ„
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, AprData.m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, AprData.m_pRecipeInfo->nFoilExpOutMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
@@ -7990,7 +7995,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 
 }
 
-// HeadºÎ °Ë»ç Ã³¸® ÇÔ¼ö.
+// Headë¶€ ê²€ì‚¬ ì²˜ë¦¬ í•¨ìˆ˜.
 // 22.02.08 Ahn Add Start
 int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
 {
@@ -8048,7 +8053,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	CRect rcRightRnd;
 	rcLeftRnd = rcLeft;
 	rcRightRnd = rcRight;
-	rcLeftRnd.right = rcRightRnd.right = nLineLevel + nTabRoundOffsetR; //pRecipeInfo->TabCond.nRadiusW;// Tab Level ÇÊ¿ä 
+	rcLeftRnd.right = rcRightRnd.right = nLineLevel + nTabRoundOffsetR; //pRecipeInfo->TabCond.nRadiusW;// Tab Level í•„ìš” 
 	rcLeftRnd.top = rcLeft.bottom - pRecipeInfo->TabCond.nRadiusH;
 	rcRightRnd.bottom = rcRightRnd.top + pRecipeInfo->TabCond.nRadiusH;
 
@@ -8117,7 +8122,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	//CImageProcess::GetMaxImage(pMaxnPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcRight);
 	// 22.05.30 Ahn Add End
 
-	// MeanÃ³¸®ÇÑ Image·Î TabÀÇ Center ¿¡¼­ TabÀÇ ³ôÀÌ¸¦ ±¸ÇÔ.
+	// Meanì²˜ë¦¬í•œ Imageë¡œ Tabì˜ Center ì—ì„œ Tabì˜ ë†’ì´ë¥¼ êµ¬í•¨.
 
 #if defined( SAVE_TACT_LOG ) 
 	double dMeanProc = ctAna.WhatTimeIsIt_Double();
@@ -8125,10 +8130,10 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	ctAna.StopWatchStart();
 #endif
 
-	int nRoundOffset = 50;	// ¶ó¿îµå ºÎºĞÀÌ Slip ¹ß»ıÀ¸·Î ´Ã¾îÁú°æ¿ì¸¦ ´ëºñÇÑ Offset°ª
-	int nEdgeCompWidth = 10;	//	Edge °ËÃâ Parameter »óÇÏ ºñ±³ Æø
+	int nRoundOffset = 50;	// ë¼ìš´ë“œ ë¶€ë¶„ì´ Slip ë°œìƒìœ¼ë¡œ ëŠ˜ì–´ì§ˆê²½ìš°ë¥¼ ëŒ€ë¹„í•œ Offsetê°’
+	int nEdgeCompWidth = 10;	//	Edge ê²€ì¶œ Parameter ìƒí•˜ ë¹„êµ í­
 
-	// Tab ¿ŞÂÊ(À§) ºÎºĞÀÇ Edge °ËÃâ
+	// Tab ì™¼ìª½(ìœ„) ë¶€ë¶„ì˜ Edge ê²€ì¶œ
 	CRect rcTemp;
 	rcTemp = rcLeft;
 	rcTemp.bottom = rcLeftRnd.top;
@@ -8172,7 +8177,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	ctAna.StopWatchStart();
 #endif
 
-	// Round´Â °¡·Î ¼¼·Î 2¹øÀÇ Edge °ËÃâÀÌ ÇÊ¿äÇÔ.
+	// RoundëŠ” ê°€ë¡œ ì„¸ë¡œ 2ë²ˆì˜ Edge ê²€ì¶œì´ í•„ìš”í•¨.
 	rcLeftRnd.right = nMaskRight;
 	CImageProcess::GetBoundaryRoundInfo_ByBriDist(pProcPtr, NULL, nWidth, nHeight, rcLeftRnd, nThresBnd, nMaskRight, &vecLeftRndInfo, CImageProcess::en_FindLeft, CImageProcess::en_FindFromLeft);
 	CImageProcess::SmoothVecRoundData(&vecLeftRndInfo, CImageProcess::en_FindLeft);
@@ -8190,7 +8195,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 		delete[] pProcPtr;
 		delete[]pnResultArr;
 		// 22.04.18 Ahn Add End
-		return -2; // Ã³¸® ºÒ°¡.
+		return -2; // ì²˜ë¦¬ ë¶ˆê°€.
 	}
 
 #if defined( SAVE_TACT_LOG ) 
@@ -8198,11 +8203,11 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	ctAna.Clear();
 	ctAna.StopWatchStart();
 #endif
-	// Tab ¿À¸¥ÂÊ(¾Æ·¡) ºÎºĞÀÇ Edge °ËÃâ
+	// Tab ì˜¤ë¥¸ìª½(ì•„ë˜) ë¶€ë¶„ì˜ Edge ê²€ì¶œ
 
 	nCropWidth = rcRightRnd.Width();
 	nCropHeight = rcRightRnd.Height();
-	// Round´Â °¡·Î ¼¼·Î 2¹øÀÇ Edge °ËÃâÀÌ ÇÊ¿äÇÔ.
+	// RoundëŠ” ê°€ë¡œ ì„¸ë¡œ 2ë²ˆì˜ Edge ê²€ì¶œì´ í•„ìš”í•¨.
 	rcRightRnd.right = nMaskRight;
 	//CImageProcess::GetBoundaryRoundInfo_ByBriDist(pProcPtr, NULL, nWidth, nHeight, rcRightRnd, nThresBnd, nMaskRight, &vecRightRndInfo, CImageProcess::en_FindRight);
 	CImageProcess::GetBoundaryRoundInfo_ByBriDist(pProcPtr, NULL, nWidth, nHeight, rcRightRnd, nThresBnd, nMaskRight, &vecRightRndInfo, CImageProcess::en_FindRight, CImageProcess::en_FindFromLeft);
@@ -8330,7 +8335,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	//	CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);	// 
 	}
 
-	//// ¶ó¿îµå °áÇÔÀÎ °æ¿ì ÆÇÁ¤¿ë »çÀÌÁî °è»ê.
+	//// ë¼ìš´ë“œ ê²°í•¨ì¸ ê²½ìš° íŒì •ìš© ì‚¬ì´ì¦ˆ ê³„ì‚°.
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
 	CBlockData* pData;
 	//for (int nMode = 0; nMode < MAX_INSP_TYPE; nMode++) 
@@ -8454,7 +8459,7 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 	rcAll.bottom = nHeight;
 
 	if (nLineLevel < 0) {
-		AprData.SaveDebugLog(_T("!!! Tab Level ÀÌ»ó !!!"));
+		AprData.SaveDebugLog(_T("!!! Tab Level ì´ìƒ !!!"));
 		return -1;
 	}
 	if (rcAll.left < 0) {
@@ -8472,7 +8477,7 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 	vecAllRndInfo.clear();
 	int nEdgeWidth = 10;
 
-	// Æò±ÕÈ­ Ã³¸® 
+	// í‰ê· í™” ì²˜ë¦¬ 
 	BYTE* pMeanPtr = pTempPtr;
 #if defined( SAVE_TACT_LOG )
 	CTimeAnalyzer ctAna;
@@ -8586,7 +8591,7 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiFoilExp.GetFifoPtr());
 	//CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiDross.GetFifoPtr());
 
-	// Overflow ´Â 4¹ø Bit»ì·Á¼­ º¸³¿
+	// Overflow ëŠ” 4ë²ˆ Bitì‚´ë ¤ì„œ ë³´ëƒ„
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, AprData.m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 	//CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, AprData.m_pRecipeInfo->nFoilOutMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
@@ -9094,7 +9099,7 @@ int CImageProcess::EdgeDetectImageToBoth_BaseBright(BYTE* pImgPtr, BYTE* pProcIm
 	int nCnt = 0;
 
 	if (pProcImg != NULL) {
-		if (nPosition == CImageProcess::en_TopSide) { // Å¾
+		if (nPosition == CImageProcess::en_TopSide) { // íƒ‘
 
 			int nLastPosX = nDefaultLv;
 			for (y = nYStart; y < nYEnd; y++) {
@@ -9153,7 +9158,7 @@ int CImageProcess::EdgeDetectImageToBoth_BaseBright(BYTE* pImgPtr, BYTE* pProcIm
 		}
 	}
 	else {
-		if (nPosition == CImageProcess::en_TopSide) { // Å¾
+		if (nPosition == CImageProcess::en_TopSide) { // íƒ‘
 
 			int nLastPosX = nDefaultLv;
 			for (y = nYStart; y < nYEnd; y++) {

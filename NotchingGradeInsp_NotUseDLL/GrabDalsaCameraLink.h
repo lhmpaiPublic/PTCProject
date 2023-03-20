@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "sapclassbasic.h"
 #include "GrabberCtrl.h"
