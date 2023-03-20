@@ -1,4 +1,4 @@
-// Machine generated IDispatch wrapper class(es) created with ClassWizard
+﻿// Machine generated IDispatch wrapper class(es) created with ClassWizard
 /////////////////////////////////////////////////////////////////////////////
 // Adjustments wrapper class
 

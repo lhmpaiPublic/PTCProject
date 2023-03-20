@@ -1,11 +1,11 @@
-#pragma once
+ï»¿#pragma once
 
 class CSystemSetting {
 
 public :
 	CSystemSetting();
 public:
-	int m_nMachineMode;// 0 : ¾ç±Ø, 1 : À½±Ø
+	int m_nMachineMode;// 0 : ì–‘ê·¹, 1 : ìŒê·¹
 
 	CString m_strFeederPath;
 	CString	m_strSamplePath;
@@ -18,7 +18,7 @@ public:
 	// Camera Parameter 
 	double	m_dCamLineRate[MAX_CAMERA_NO]; // Acquisition Rate 
 	double	m_dCamGain[MAX_CAMERA_NO];
-	double	m_dExposureTime[MAX_CAMERA_NO];	// Line Rat¿¡ ¼³Á¤°ª¿¡ µû¶ó º¯µ¿.
+	double	m_dExposureTime[MAX_CAMERA_NO];	// Line Ratì— ì„¤ì •ê°’ì— ë”°ë¼ ë³€ë™.
 	BOOL	m_bTriggerMode;					// TRUE : External Trigger , FALSE : Internal Trigger
 
 	int		m_nCamViewWidth;
@@ -28,7 +28,7 @@ public:
 	int		m_nCamImageFlip[MAX_CAMERA_NO];
 	// 22.07.25 Ahn Add End
 
-	int		m_nEdgeSearchMean;		// ¿§Áö °ËÃâ¿ë Mean Æø
+	int		m_nEdgeSearchMean;		// ì—£ì§€ ê²€ì¶œìš© Mean í­
 
 	int		m_nGridFontSize;
 	BOOL	m_bChkEnableMarker;

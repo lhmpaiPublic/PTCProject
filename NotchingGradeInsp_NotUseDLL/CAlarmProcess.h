@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <queue>
 #include "GlobalDef.h"
 #include "GlobalData.h"
@@ -20,15 +20,15 @@ public:
 	//	en_Alarm_Spatter_Top	= 0x0080,
 	//	en_Alarm_Spatter_Btm	= 0x0100,
 	//};
-	////Wxxx.0 ¿¬¼Ó ºÒ·® ¾Ë¶÷
-	////Wxxx.1 ½É°¢ ºÒ·® ¾Ë¶÷
-	////Wxxx.2 ¿¬¼Ó ºÒ·® ¾Ë¶÷
-	////Wxxx.3 Dross Top - ºÒ·® ¾Ë¶÷
-	////Wxxx.4 Dross Bot - ºÒ·® ¾Ë¶÷
-	////Wxxx.5 Foil exposure Top - ºÒ·® ¾Ë¶÷
-	////Wxxx.6 Foil exposure Bot - ºÒ·® ¾Ë¶÷
-	////Wxxx.7 Spatter Top - ºÒ·® ¾Ë¶÷
-	////Wxxx.8 Spatter Bot - ºÒ·® ¾Ë¶÷
+	////Wxxx.0 ì—°ì† ë¶ˆëŸ‰ ì•ŒëŒ
+	////Wxxx.1 ì‹¬ê° ë¶ˆëŸ‰ ì•ŒëŒ
+	////Wxxx.2 ì—°ì† ë¶ˆëŸ‰ ì•ŒëŒ
+	////Wxxx.3 Dross Top - ë¶ˆëŸ‰ ì•ŒëŒ
+	////Wxxx.4 Dross Bot - ë¶ˆëŸ‰ ì•ŒëŒ
+	////Wxxx.5 Foil exposure Top - ë¶ˆëŸ‰ ì•ŒëŒ
+	////Wxxx.6 Foil exposure Bot - ë¶ˆëŸ‰ ì•ŒëŒ
+	////Wxxx.7 Spatter Top - ë¶ˆëŸ‰ ì•ŒëŒ
+	////Wxxx.8 Spatter Bot - ë¶ˆëŸ‰ ì•ŒëŒ
 	
 	void ResetAlarmAll();
 	int SetAlarm();

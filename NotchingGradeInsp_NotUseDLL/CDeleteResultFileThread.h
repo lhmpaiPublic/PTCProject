@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 
@@ -31,7 +31,7 @@ protected:
 	int		m_nThreadId;
 	BOOL	m_bDeleteRun;
 	BOOL	m_bComplet;					// 22.07.11 Ahn Add Start 
-	CWinThread* m_pThread;				//!< ƒXƒŒƒbƒh(CWinThread *)x1
+	CWinThread* m_pThread;				//!< ê¸šê¹’ê¸žê¸¤(CWinThread *)x1
 
 	int		m_nTarYear;
 	int		m_nTarMonth;

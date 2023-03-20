@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <vector>
 #include "excel.h"
@@ -94,7 +94,7 @@ protected:
 	BOOL	m_bComplet;
 	BOOL	m_bKill;
 	int		m_nThreadId;
-	CWinThread* m_pThread;				//!< ƒXƒŒƒbƒh(CWinThread *)x1
+	CWinThread* m_pThread;				//!< ê¸šê¹’ê¸žê¸¤(CWinThread *)x1
 
 public :
 	void Begin();

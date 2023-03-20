@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CHistoryLotCtrl.h"
 #include "Win32File.h"
 #include "GlobalData.h"
@@ -23,7 +23,7 @@ CHistoryLotCtrl::~CHistoryLotCtrl()
 }
 
 
-// ÆÄÀÏ 
+// íŒŒì¼ 
 BOOL CHistoryLotCtrl::IsFileSizeNormal(CString strFileName)
 {
 	BOOL bRet = FALSE;
@@ -33,15 +33,15 @@ BOOL CHistoryLotCtrl::IsFileSizeNormal(CString strFileName)
 
 	if (nSize < 0) {
 		CString strMsg;
-		strMsg.Format(_T("ÆÄÀÏ »çÀÌÁî°¡ 0 º¸´Ù ÀÛ½À´Ï´Ù."));
+		strMsg.Format(_T("íŒŒì¼ ì‚¬ì´ì¦ˆê°€ 0 ë³´ë‹¤ ì‘ìŠµë‹ˆë‹¤."));
 		AprData.SaveErrorLog(strMsg);
 		return FALSE;
 	}
 
 	if ((nSize % nSizeBase) > 0) {
-		//ÆÄÀÏ ³»¿ë ÀÌ»ó.
+		//íŒŒì¼ ë‚´ìš© ì´ìƒ.
 		CString strMsg;
-		strMsg.Format(_T("ÆÄÀÏ »çÀÌÁî°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù. FileSize[%d], ´ÜÀ§[%d]"), nSize, nSizeBase);
+		strMsg.Format(_T("íŒŒì¼ ì‚¬ì´ì¦ˆê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤. FileSize[%d], ë‹¨ìœ„[%d]"), nSize, nSizeBase);
 		AprData.SaveErrorLog(strMsg);
 		return FALSE;
 	}
@@ -58,10 +58,10 @@ int CHistoryLotCtrl::AddLotFileList(_LOT_INFO& LotInfo)
 	int nBaseSize = sizeof(_LOT_INFO);
 
 	if (file.ExistFile(m_strFullPath) == TRUE) {
-		// ÆÄÀÏ Á¸Àç½Ã Size È®ÀÎ
+		// íŒŒì¼ ì¡´ì¬ì‹œ Size í™•ì¸
 
 		if (IsFileSizeNormal(m_strFullPath) == FALSE) {
-			//ÆÄÀÏ ³»¿ë ÀÌ»ó.
+			//íŒŒì¼ ë‚´ìš© ì´ìƒ.
 			return -1;
 		}
 	}

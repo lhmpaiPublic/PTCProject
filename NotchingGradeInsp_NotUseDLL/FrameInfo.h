@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <vector>
 
@@ -17,34 +17,34 @@ protected :
 	BYTE	*m_pImagePtr ;
 	
 public :
-	BOOL	m_bErrorFlag ;	// Image Ã³¸® Pass
-	long	m_nFrameCount; // Frame ¹øÈ£
+	BOOL	m_bErrorFlag ;	// Image ì²˜ë¦¬ Pass
+	long	m_nFrameCount; // Frame ë²ˆí˜¸
 	int		m_nHeadNo;
-	int		m_nHeight;		// Image ±æÀÌ
-	int		m_nWidth;		// Image Æø
+	int		m_nHeight;		// Image ê¸¸ì´
+	int		m_nWidth;		// Image í­
 	int		m_nBand;		// 1 : Mono, 3 : Color
-	int		nOverlapSize;	// ¿À¹ö·¾µÈ Å©±â
-	int		m_nTabLevel;	// TabÀÇ Ceramic ¾î±ú¼±/³¡¼± À§Ä¡
-	int		m_nInspMode;	// en_HeadFrame/ en_TailFrame °Ë»ç ¸ğµå
+	int		nOverlapSize;	// ì˜¤ë²„ë ™ëœ í¬ê¸°
+	int		m_nTabLevel;	// Tabì˜ Ceramic ì–´ê¹¨ì„ /ëì„  ìœ„ì¹˜
+	int		m_nInspMode;	// en_HeadFrame/ en_TailFrame ê²€ì‚¬ ëª¨ë“œ
 
 	int		m_nTabLeft;
 	int		m_nTabRight;
 
-	double  m_dTopPosY;	// FrameÀÇ ½ÃÀÛ PixelÀÇ Y ÁÂÇ¥
+	double  m_dTopPosY;	// Frameì˜ ì‹œì‘ Pixelì˜ Y ì¢Œí‘œ
 	BYTE* GetImagePtr();
 	void SetImgPtr(BYTE* pImgPtr);
 	int		nTabNo;				// 
-	int		m_nTabId_CntBoard;	// Ä«¿îÅÍ º¸µå¿¡¼­ ºÎ¿©¹ŞÀº Marking¿ë Tab ID
+	int		m_nTabId_CntBoard;	// ì¹´ìš´í„° ë³´ë“œì—ì„œ ë¶€ì—¬ë°›ì€ Markingìš© Tab ID
 	int		nTopPosYInFrame;
 
-	// Tab À§Ä¡  
+	// Tab ìœ„ì¹˜  
 	int nTabStartHor;
 	int nTabEndHor;
 	int nTabStartPosInFrame; // 
 
-	int m_nBndElectrode; // Àü±Ø °æ°èÀ§Ä¡ // 22.05.10 Ahn Add 
+	int m_nBndElectrode; // ì „ê·¹ ê²½ê³„ìœ„ì¹˜ // 22.05.10 Ahn Add 
 
-	BOOL	m_bDummyData; // Debug Mode¿ë Data Ã³¸® ºÒ¿ä.
+	BOOL	m_bDummyData; // Debug Modeìš© Data ì²˜ë¦¬ ë¶ˆìš”.
 	
 	virtual void Copy(CFrameInfo* pFrmInfo) {};
 

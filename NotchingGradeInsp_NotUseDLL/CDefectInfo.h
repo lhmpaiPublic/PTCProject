@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 #include <queue>
 
 class CDefectInfo
 {
 public:
-	int nType;				// °áÇÔ Á¾·ù 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
-	int nHeadNo;			// Camera ¹øÈ£
-	int nTabNo;				// Cell ¹øÈ£
-	int nDefNo;				// °áÇÔ ¹øÈ£.
-	int nDefectMode;		// °áÇÔ
+	int nType;				// ê²°í•¨ ì¢…ë¥˜ 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
+	int nHeadNo;			// Camera ë²ˆí˜¸
+	int nTabNo;				// Cell ë²ˆí˜¸
+	int nDefNo;				// ê²°í•¨ ë²ˆí˜¸.
+	int nDefectMode;		// ê²°í•¨
 	int nSize;				// 
 	int nSizeX;
 	int nSizeY;
@@ -18,7 +18,7 @@ public:
 	int nAveOrgBir;
 	int nMinOrgBir;
 	int nMaxOrgBir;
-	int nRank;				// °áÇÔ ÆÇÁ¤. JUDGE_OK / JUDGE_NG
+	int nRank;				// ê²°í•¨ íŒì •. JUDGE_OK / JUDGE_NG
 	double dSizeX;
 	double dSizeY;
 	double dJudgeSize;

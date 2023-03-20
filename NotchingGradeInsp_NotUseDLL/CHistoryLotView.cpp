@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CHistoryLotView.h"
 #include "CHistoryLotDlg.h"
 #include "NotchingGradeInsp.h"
@@ -40,14 +40,14 @@ END_MESSAGE_MAP()
 
 
 
-// CResultView ¸Þ½ÃÁö Ã³¸®±â
+// CResultView ë©”ì‹œì§€ ì²˜ë¦¬ê¸°
 
 int CHistoryLotView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CDockablePane::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	// TODO:  ¿©±â¿¡ Æ¯¼öÈ­µÈ ÀÛ¼º ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO:  ì—¬ê¸°ì— íŠ¹ìˆ˜í™”ëœ ìž‘ì„± ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 	if (m_pHistoryLotDlg == nullptr) {
 		m_pHistoryLotDlg = new CHistoryLotDlg(this, m_pView);
 		if (m_pHistoryLotDlg != nullptr) {
@@ -70,7 +70,7 @@ void CHistoryLotView::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
 
-	// TODO: ¿©±â¿¡ ¸Þ½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 	RecalcLayout();
 	if (m_pHistoryLotDlg->GetSafeHwnd()) {
 		m_pHistoryLotDlg->SetWindowPos(NULL, 5, 5, cx - 10, cy - 10, SWP_NOZORDER);
@@ -85,8 +85,8 @@ void CHistoryLotView::OnSize(UINT nType, int cx, int cy)
 void CHistoryLotView::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
-					   // TODO: ¿©±â¿¡ ¸Þ½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
-					   // ±×¸®±â ¸Þ½ÃÁö¿¡ ´ëÇØ¼­´Â CDockablePane::OnPaint()À»(¸¦) È£ÃâÇÏÁö ¸¶½Ê½Ã¿À.
+					   // TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+					   // ê·¸ë¦¬ê¸° ë©”ì‹œì§€ì— ëŒ€í•´ì„œëŠ” CDockablePane::OnPaint()ì„(ë¥¼) í˜¸ì¶œí•˜ì§€ ë§ˆì‹­ì‹œì˜¤.
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	CRect rect;
 	GetClientRect(&rect);
@@ -95,7 +95,7 @@ void CHistoryLotView::OnPaint()
 
 int CHistoryLotView::OnRefresh()
 {
-	// TODO: ¿©±â¿¡ ±¸Çö ÄÚµå Ãß°¡.
+	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int nRet = 0;
 //	nRet = m_pHistoryLotDlg->UpdateGrid();
 	return nRet;

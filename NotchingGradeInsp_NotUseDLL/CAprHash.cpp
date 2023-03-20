@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CAprHash.h"
 
 CAprHash::CAprHash(int prSeed /*= HASH_SEED*/)

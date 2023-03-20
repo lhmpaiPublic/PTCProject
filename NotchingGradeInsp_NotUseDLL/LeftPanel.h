@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "InspInfoDlg.h"
 
@@ -8,18 +8,18 @@ class CLeftPanel : public CDockablePane
 {
 	DECLARE_DYNAMIC(CLeftPanel)
 
-//»ı¼ºÀÔ´Ï´Ù.
+//ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CLeftPanel(CWnd* pParent = NULL, CNotchingGradeInspView* pView = NULL);
 
-// Æ¯¼ºÀÔ´Ï´Ù.
+// íŠ¹ì„±ì…ë‹ˆë‹¤.
 protected:
 	CWnd* m_pParent;
 	CNotchingGradeInspDoc* m_pDoc;
 	CNotchingGradeInspView* m_pView;
 	CInspInfoDlg* m_pInspInfoDlg ;
 
-// ±¸ÇöÀÔ´Ï´Ù.
+// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CLeftPanel();
 	virtual BOOL CanAutoHide() const { return FALSE; }

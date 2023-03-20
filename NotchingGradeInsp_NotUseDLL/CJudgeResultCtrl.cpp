@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CJudgeResultCtrl.h"
 
 
@@ -26,7 +26,7 @@ BOOL CJudgeResultCtrl::SetJudgeNG(int nTabNo, int nCamPos)
 	::LeaveCriticalSection(&m_csJudge);
 
 	if (bNewFlag == TRUE) {
-		// °»½Å ...
+		// ê°±ì‹  ...
 	}
 
 	return bNewFlag;

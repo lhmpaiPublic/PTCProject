@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GlobalData.h"
 #include "Win32File.h"
 #include "CDeleteResultFileThread.h"
@@ -98,13 +98,13 @@ BOOL CDeleteResultFileThread::GetMostOlderDateOfResult(int& nYearMonth, int& nDa
 {
 	int nRet = 0 ;
 
-	// ¿ë·®ÀÌ Å« Image Folder¿¡¼­ Ã£À½.
+	// ìš©ëŸ‰ì´ í° Image Folderì—ì„œ ì°¾ìŒ.
 	CString strPath ;
 	CWin32File winFile;
 
 	CStringList strYmList;
 	CStringList strDateList;
-	// ¿¬¿ù Æú´õ °Ë»ö
+	// ì—°ì›” í´ë” ê²€ìƒ‰
 	int nMinYm = 999999;
 	BOOL bFoundYm = FALSE;
 
@@ -145,7 +145,7 @@ BOOL CDeleteResultFileThread::GetMostOlderDateOfResult(int& nYearMonth, int& nDa
 				bFoundYm = TRUE;
 			}
 		}
-		// ÀÏ Æú´õ °Ë»ö
+		// ì¼ í´ë” ê²€ìƒ‰
 		CString strDatePath;
 		CString strDate;
 		if (bFoundYm == TRUE) {
@@ -166,7 +166,7 @@ BOOL CDeleteResultFileThread::GetMostOlderDateOfResult(int& nYearMonth, int& nDa
 			nYearMonth = nMinYm;
 		}
 		else if ((bFoundYm == TRUE) && (bFoundDay == FALSE)) {
-			// ³¯Â¥ ¾øÀÌ ¿¬¿ù ¸¸ ÀÖ´Â °æ¿ì ÇØ´ç µð·ºÅä¸® »èÁ¦.
+			// ë‚ ì§œ ì—†ì´ ì—°ì›” ë§Œ ìžˆëŠ” ê²½ìš° í•´ë‹¹ ë””ë ‰í† ë¦¬ ì‚­ì œ.
 			::RemoveDirectory(strPath);
 		}
 	}
@@ -248,12 +248,12 @@ UINT CDeleteResultFileThread::CtrlDeleteRsltFileThread(LPVOID pParam)
 	sysTime.wMonth = time.GetMonth();
 	sysTime.wDay = time.GetDay();
 
-	// ¿ë·®ÀÌ 80%¸¦ ÃÊ°úÇÏ¸é ¿À·¡µÈ ³¯Â¥ ¼øÀ¸·Î »èÁ¦ÇÔ.
+	// ìš©ëŸ‰ì´ 80%ë¥¼ ì´ˆê³¼í•˜ë©´ ì˜¤ëž˜ëœ ë‚ ì§œ ìˆœìœ¼ë¡œ ì‚­ì œí•¨.
 	BOOL bDiskCapaOver = FALSE;
 	double dSize = 80.0 ;
 	bDiskCapaOver = CheckDiskCapacityOver( dSize ) ;
 	if( bDiskCapaOver == TRUE ){
-		// °¡Àå ¿À·¡µÈ ³¯Â¥¸¦ Ã£¾Æ ÇØ´ç ³¯Â¥¸¦ »èÁ¦ÇÔ.
+		// ê°€ìž¥ ì˜¤ëž˜ëœ ë‚ ì§œë¥¼ ì°¾ì•„ í•´ë‹¹ ë‚ ì§œë¥¼ ì‚­ì œí•¨.
 		int nYearMonth;
 		int nDay ;
 		while ( bDiskCapaOver ){
@@ -311,7 +311,7 @@ UINT CDeleteResultFileThread::CtrlDeleteRsltFileThread(LPVOID pParam)
 	bDiskCapaOver = CheckDiskCapacityOver(dSize);
 
 	if ( (nRet >= 0) && (bDiskCapaOver == FALSE)){
-		// °á°ú ÀúÀå.
+		// ê²°ê³¼ ì €ìž¥.
 		pThis->m_bComplet = TRUE;
 	}
 	else {
@@ -376,7 +376,7 @@ int CDeleteResultFileThread::DeleteTargetDirectory(CString strTarPath, BOOL* pbS
 int CDeleteResultFileThread::DeleteDir_byDay(CString strTarPath, SYSTEMTIME stDelTime, BOOL bSameMonth, BOOL* pbStop)
 {
 	ASSERT(pbStop);
-	// °æ·Î´Â YYYYMM/DD ÇüÅÂ·Î ·Î ÀÌ·ç¾î Á®ÀÖ¾î¾ßÇÔ.
+	// ê²½ë¡œëŠ” YYYYMM/DD í˜•íƒœë¡œ ë¡œ ì´ë£¨ì–´ ì ¸ìžˆì–´ì•¼í•¨.
 
 	int nRet = 0 ; 
 
@@ -472,12 +472,12 @@ int CDeleteResultFileThread::DeleteDir_byMonth(CString strTarPath, SYSTEMTIME st
 			if (GetYearAndMonthFromPath(strDeleteFile, nYear, nMonth) == TRUE) {
 				if ((stDelTime.wYear >= nYear) && (stDelTime.wMonth > nMonth)) {
 					DeleteDir_byDay(strDeleteFile, stDelTime, FALSE, pStop);
-					// ºó Directory »èÁ¦
+					// ë¹ˆ Directory ì‚­ì œ
 					DeleteEmptyDir(strDeleteFile);
 				}
 				else if ((stDelTime.wYear == nYear) && (stDelTime.wMonth == nMonth)) {
 					DeleteDir_byDay(strDeleteFile, stDelTime, TRUE, pStop);
-					// ºó Directory »èÁ¦
+					// ë¹ˆ Directory ì‚­ì œ
 					DeleteEmptyDir(strDeleteFile);
 				}
 			}
@@ -488,7 +488,7 @@ int CDeleteResultFileThread::DeleteDir_byMonth(CString strTarPath, SYSTEMTIME st
 	}
 	find.Close();
 
-	// ³ª°¡¸é¼­ °æ·Î »èÁ¦.
+	// ë‚˜ê°€ë©´ì„œ ê²½ë¡œ ì‚­ì œ.
 
 	return 0;
 }

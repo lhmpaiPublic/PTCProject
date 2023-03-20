@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GlobalData.h"
 #include "Win32File.h"
 #include "CImageProcess.h"
@@ -64,7 +64,7 @@ CGlobalData::CGlobalData(void)
 #else
 	UserMode = UserModeDefine::enMaker; // 22.09.15 Ahn Modify
 #endif
-	m_font.CreateFontA(15, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("±¼¸²"));
+	m_font.CreateFontA(15, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("êµ´ë¦¼"));
 // 22.05.25 Son Add End
 
 	// 22.06.08 Ahn Add Start
@@ -582,12 +582,12 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 
 	CString strLine;
 	// 22.07.01 Ahn Add Start
-	//strLine.Format(_T("LOT ID,Cell No,°Ë»ç½Ã°¢,Judge,Top,Btm,Top Defect Size X,Top Defect Size Y, BTM Defect Size X, BTM Defect Size Y,Ink Marking,Marking Reason\r\n"));
-	strLine.Format(_T("LOT ID,Cell No,°Ë»ç½Ã°¢,Judge,Top,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason\r\n"));
+	//strLine.Format(_T("LOT ID,Cell No,ê²€ì‚¬ì‹œê°,Judge,Top,Btm,Top Defect Size X,Top Defect Size Y, BTM Defect Size X, BTM Defect Size Y,Ink Marking,Marking Reason\r\n"));
+	strLine.Format(_T("LOT ID,Cell No,ê²€ì‚¬ì‹œê°,Judge,Top,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason\r\n"));
 	// 22.07.01 Ahn Add End
 	CString strFileName;
 	strFileName.Format( _T("%s.csv"), AprData.m_NowLotData.m_strLotNo ) ;
-	// ÆÄÀÏ Á¸ÀçÇÏ¸é ±â·ÏÇÏÁö ¾Ê¾Æµµ µÊ.
+	// íŒŒì¼ ì¡´ì¬í•˜ë©´ ê¸°ë¡í•˜ì§€ ì•Šì•„ë„ ë¨.
 	//22.06.28 Ahn Modify Start
 	//CWin32File::TextSave1Line(AprData.m_strNowCsvPath, strFileName, strLine, _T("at"), FALSE);
 	CString strCsvFileName;
@@ -633,7 +633,7 @@ int CGlobalData::AddHistoryLot(CHistoryLotCtrl::_LOT_INFO& lotInfo)
 
 int CGlobalData::LotEndProcess()
 {
-	// °áÇÔ¼ö Áı°è ¹× º¸°í.
+	// ê²°í•¨ìˆ˜ ì§‘ê³„ ë° ë³´ê³ .
 
 	//// 22.06.27 Ahn Add Start
 	CHistoryLotCtrl::_LOT_INFO LotInfo;
@@ -659,7 +659,7 @@ int CGlobalData::LotEndProcess()
 }
 
 
-//// Lot Á¤º¸¸¦ Lot Change ½ÃÁ¡¿¡ ÀúÀåÇÔ.
+//// Lot ì •ë³´ë¥¼ Lot Change ì‹œì ì— ì €ì¥í•¨.
 //int CGlobalData::SaveLotInfo( int nMode, BOOL bSignalMode )
 //{
 //	CString strSaveFile;
@@ -724,7 +724,7 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 	char buff[256];
 
 	switch (nMode) {
-	case	en_mode_Initial : // Data ÀĞ¾î¿È( ÃÊ±âÈ­ )
+	case	en_mode_Initial : // Data ì½ì–´ì˜´( ì´ˆê¸°í™” )
 		strSection = _T("LOT_INFO");
 		strKey = _T("LOT_NO");
 		::GetPrivateProfileString(strSection, strKey, "LOT_ID_0000", buff, 256, strSaveFile);
@@ -814,7 +814,7 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		// 22.07.27 Ahn Modify End
 
 		break;
-	case	en_mode_LotStart : // Lot Change ½ÃÁ¡
+	case	en_mode_LotStart : // Lot Change ì‹œì 
 		strSection = _T("LOT_INFO");
 		strKey = _T("LOT_NO");
 		strData.Format("%s", AprData.m_NowLotData.m_strLotNo);
@@ -892,7 +892,7 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		break;
 	case en_mode_LotEnd :
 		{
-		// º¸°í ¹× ÆÄÀÏ »èÁ¦
+		// ë³´ê³  ë° íŒŒì¼ ì‚­ì œ
 		// 22.07.26 Ahn Modify Start
 		//	CWin32File file;
 		//	file.DeleteFile(strSaveFile);
@@ -1037,7 +1037,7 @@ CString CGlobalData::GetBinaryFileName(CString strLotId)
 			catch (CFileException& e) {
 				CHAR	szChar[256];
 				e.GetErrorMessage(szChar, 255);
-				strMsg.Format(_T("¿¡·¯ - %s"), szChar);
+				strMsg.Format(_T("ì—ëŸ¬ - %s"), szChar);
 				//MessageBox(strMsg);
 				cf.Close();
 				return _T("") ;

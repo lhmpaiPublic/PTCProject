@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CCounterThread.h"
 #include "ImageProcessCtrl.h"
 #include "AppDIO.h"
@@ -37,10 +37,10 @@ void CCounterThread::Kill(void)
 	LONG	ret;
 
 	if (m_pThread != NULL) {
-		// ƒXƒŒƒbƒhó‘ÔŽæ“¾
+		// ê¸šê¹’ê¸žê¸¤ë¥‰ë«´ë¡¦ë²¦
 		ret = ::GetExitCodeThread(m_pThread->m_hThread, &dwCode);
 		if (ret && dwCode == STILL_ACTIVE) {
-			// -----ƒXƒŒƒbƒh“®ì’†-----
+			// -----ê¸šê¹’ê¸žê¸¤ë²ë¿ë­·-----
 			m_bKill = TRUE;
 			WaitForSingleObject(m_pThread->m_hThread, INFINITE);
 		}
@@ -114,7 +114,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 		{
 		//	dio.OutputBit(CAppDIO::eOut_PULSE, FALSE); // 22.04.06 Ahn Delete 
-			// ÀÔ·Â Ãëµæ
+			// ìž…ë ¥ ì·¨ë“
 			if (pThis->m_pParent->IsInspection() == TRUE) {
 				BOOL bTriggerBit;
 				dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
@@ -140,7 +140,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						AprData.SaveMemoryLog(strMsg);
 						::Sleep(5);
 					}
-					// Cell ÃßÀû Queue Data -> Local Queue 
+					// Cell ì¶”ì  Queue Data -> Local Queue 
 					//if(....)
 				}
 			}

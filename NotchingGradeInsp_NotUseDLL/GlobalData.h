@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "GlobalDef.h"
 #include "SystemSetting.h"
@@ -90,15 +90,15 @@ public :
 // 22.07.06 Ahn Add Start
 typedef struct stSeqDataOut {
 public:
-	DWORD dwDataReportV1;				// °Ë»ç ¼ö·®
-	DWORD dwDataReportV2;				// OK ¼ö·®
-	DWORD dwDataReportV3;				// NG ¼ö·®
-	DWORD dwDataReportV4;				// ¾çÇ°·ü
-	DWORD dwDataReportV5;				// ºÒ·®·ü
-	DWORD dwDataReportV6;				// °¡µ¿·ü
+	DWORD dwDataReportV1;				// ê²€ì‚¬ ìˆ˜ëŸ‰
+	DWORD dwDataReportV2;				// OK ìˆ˜ëŸ‰
+	DWORD dwDataReportV3;				// NG ìˆ˜ëŸ‰
+	DWORD dwDataReportV4;				// ì–‘í’ˆë¥ 
+	DWORD dwDataReportV5;				// ë¶ˆëŸ‰ë¥ 
+	DWORD dwDataReportV6;				// ê°€ë™ë¥ 
 
-	DWORD dwContinueAlarmCount;			// ¿¬¼Ó ¾Ë¶÷ ¹ß»ı ¼ö·®
-	DWORD dwHeavyAlarmCount;			// Áß¾Ë¶÷ ¹ß»ı ¼ö·®
+	DWORD dwContinueAlarmCount;			// ì—°ì† ì•ŒëŒ ë°œìƒ ìˆ˜ëŸ‰
+	DWORD dwHeavyAlarmCount;			// ì¤‘ì•ŒëŒ ë°œìƒ ìˆ˜ëŸ‰
 	DWORD dwDrossTopCount;			
 	DWORD dwDrossBottomCount;
 	DWORD dwFoilExpTopCount;
@@ -107,8 +107,8 @@ public:
 	DWORD dwSpeterBottomCount;
 
 	// 22.07.06 Ahn Add Start
-	DWORD dwTopNgRealTimeCount;			// ½Ç½Ã°£ Tob NG Count
-	DWORD dwBottomNgRealTimeCount;		// ½Ç½Ã°£ Bottom NG Count
+	DWORD dwTopNgRealTimeCount;			// ì‹¤ì‹œê°„ Tob NG Count
+	DWORD dwBottomNgRealTimeCount;		// ì‹¤ì‹œê°„ Bottom NG Count
 	// 22.07.06 Ahn Add End
 
 	//DWORD dwDrossTopTarget;
@@ -135,8 +135,8 @@ public:
 // 22.08.19 Ahn Add Start
 typedef struct stSeqDataOutLotEnd {
 public:
-	DWORD dwTopNgLotEndCount;			// Lot End½Ã Top NG Count 
-	DWORD dwBottomNgLotEndCount;		// Lot End½Ã Bottom NG Count  18 °³
+	DWORD dwTopNgLotEndCount;			// Lot Endì‹œ Top NG Count 
+	DWORD dwBottomNgLotEndCount;		// Lot Endì‹œ Bottom NG Count  18 ê°œ
 } _SEQ_OUT_DATA_LOT_END;
 
 
@@ -144,15 +144,15 @@ public:
 // Siemens
 typedef struct stSeqDataOutSms {
 public:
-	WORD wDataReportV1;				// °Ë»ç ¼ö·®
-	WORD wDataReportV2;				// OK ¼ö·®
-	WORD wDataReportV3;				// NG ¼ö·®
-	WORD wDataReportV4;				// ¾çÇ°·ü
-	WORD wDataReportV5;				// ºÒ·®·ü
-	WORD wDataReportV6;				// °¡µ¿·ü
+	WORD wDataReportV1;				// ê²€ì‚¬ ìˆ˜ëŸ‰
+	WORD wDataReportV2;				// OK ìˆ˜ëŸ‰
+	WORD wDataReportV3;				// NG ìˆ˜ëŸ‰
+	WORD wDataReportV4;				// ì–‘í’ˆë¥ 
+	WORD wDataReportV5;				// ë¶ˆëŸ‰ë¥ 
+	WORD wDataReportV6;				// ê°€ë™ë¥ 
 
-	WORD wContinueAlarmCount;			// ¿¬¼Ó ¾Ë¶÷ ¹ß»ı ¼ö·®
-	WORD wHeavyAlarmCount;			// Áß¾Ë¶÷ ¹ß»ı ¼ö·®
+	WORD wContinueAlarmCount;			// ì—°ì† ì•ŒëŒ ë°œìƒ ìˆ˜ëŸ‰
+	WORD wHeavyAlarmCount;			// ì¤‘ì•ŒëŒ ë°œìƒ ìˆ˜ëŸ‰
 	WORD wDrossTopCount;
 	WORD wDrossBottomCount;
 	WORD wFoilExpTopCount;
@@ -160,8 +160,8 @@ public:
 	WORD wSpeterTopCount;
 	WORD wSpeterBottomCount;
 
-	WORD wTopNgRealTimeCount;			// ½Ç½Ã°£ Tob NG Count
-	WORD wBottomNgRealTimeCount;		// ½Ç½Ã°£ Bottom NG Count
+	WORD wTopNgRealTimeCount;			// ì‹¤ì‹œê°„ Tob NG Count
+	WORD wBottomNgRealTimeCount;		// ì‹¤ì‹œê°„ Bottom NG Count
 
 } _SEQ_OUT_DATA_SMS;
 
@@ -179,8 +179,8 @@ public:
 
 typedef struct stSeqDataOutLotEndSms {
 public:
-	WORD dwTopNgLotEndCount;			// Lot End½Ã Top NG Count 
-	WORD dwBottomNgLotEndCount;			// Lot End½Ã Bottom NG Count  18 °³
+	WORD dwTopNgLotEndCount;			// Lot Endì‹œ Top NG Count 
+	WORD dwBottomNgLotEndCount;			// Lot Endì‹œ Bottom NG Count  18 ê°œ
 } _SEQ_OUT_DATA_LOT_END_SMS;
 
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <vector>
 
@@ -19,7 +19,7 @@ private :
 	BOOL IsNewJudgeNG(int nTabNo, int nCamPos);
 
 public :
-	// ÆÇÁ¤ Á¾ÇÕ.
+	// íŒì • ì¢…í•©.
 	int GetNgTabCount();
 	int SetJudgeNG(int nTabNo, int nCamPos);
 	void ResetAll();

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "ModeDlg.h"
 
@@ -8,11 +8,11 @@ class CTopPanel : public CDockablePane
 {
 	DECLARE_DYNAMIC(CTopPanel)
 
-// »ı¼ºÀÔ´Ï´Ù.
+// ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CTopPanel(CWnd* pParent = NULL, CNotchingGradeInspView* pView = NULL);
 
-// Æ¯¼ºÀÔ´Ï´Ù.
+// íŠ¹ì„±ì…ë‹ˆë‹¤.
 protected:
 	CWnd*		m_pParent;
 	CNotchingGradeInspView* m_pView;
@@ -21,7 +21,7 @@ protected:
 public:
 	int			m_nTitleHeight;
 
-// ±¸ÇöÀÔ´Ï´Ù.
+// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CTopPanel();
 	virtual BOOL CanAutoHide() const { return FALSE; }

@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "CRecipeTableCtrl.h"
 #include "Win32File.h"
 #include "GlobalData.h"

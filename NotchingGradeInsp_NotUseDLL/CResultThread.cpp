@@ -1,4 +1,4 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "CResultThread.h"
 #include "QueueCtrl.h"
 #include "ImageProcessCtrl.h"
@@ -52,10 +52,10 @@ void CResultThread::Kill(void)
 	LONG	ret;
 
 	if (m_pThread != NULL) {
-		// ÉXÉåÉbÉhèÛë‘éÊìæ
+		// Í∏öÍπíÍ∏ûÍ∏§Î•âÎ´¥Î°¶Î≤¶
 		ret = ::GetExitCodeThread(m_pThread->m_hThread, &dwCode);
 		if (ret && dwCode == STILL_ACTIVE) {
-			// -----ÉXÉåÉbÉhìÆçÏíÜ-----
+			// -----Í∏öÍπíÍ∏ûÍ∏§Î≤çÎùøÎ≠∑-----
 			m_bKill = TRUE;
 			WaitForSingleObject(m_pThread->m_hThread, INFINITE);
 		}
@@ -173,10 +173,10 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 	COLORREF color;
 	if (pRsltInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
 		color = RGB(255, 0, 0);
-		strLine = _T("∆«¡§ : NG");
+		strLine = _T("ÌåêÏ†ï : NG");
 	}else{
 		color = RGB(0, 255, 0);
-		strLine = _T("∆«¡§ : OK");
+		strLine = _T("ÌåêÏ†ï : OK");
 	}
 
 	if (pRsltInfo->m_nHeadNo == CAM_POS_TOP) {
@@ -247,7 +247,7 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 			col = RGB(50, 230, 50);
 		}
 
-		// Spetter ∞·«‘ ªÁ¿Ã¡Ó «•Ω√
+		// Spetter Í≤∞Ìï® ÏÇ¨Ïù¥Ï¶à ÌëúÏãú
 		if (nIdx < MAX_DISP_DEF_COUNT) {
 			strLine.Format(_T("Size_S %d:%.1lf um"), (nIdx + nDispCnt  ), pDefInfo->dJudgeSize);
 			DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt ) * yPitch), col, strLine);
@@ -303,11 +303,11 @@ void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWid
 	COLORREF color;
 	if (pRsltInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
 		color = RGB(255, 0, 0);
-		strLine = _T("∆«¡§ : NG");
+		strLine = _T("ÌåêÏ†ï : NG");
 	}
 	else {
 		color = RGB(0, 255, 0);
-		strLine = _T("∆«¡§ : OK");
+		strLine = _T("ÌåêÏ†ï : OK");
 	}
 
 	if (pRsltInfo->m_nHeadNo == CAM_POS_TOP) {
@@ -371,7 +371,7 @@ void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWid
 			col = RGB(50, 230, 50);
 		}
 
-		// Spetter ∞·«‘ ªÁ¿Ã¡Ó «•Ω√
+		// Spetter Í≤∞Ìï® ÏÇ¨Ïù¥Ï¶à ÌëúÏãú
 		if (nIdx < MAX_DISP_DEF_COUNT) {
 			strLine.Format(_T("Size_S %d:%.1lf um"), (nIdx + nDispCnt), pDefInfo->dJudgeSize);
 			DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine);
@@ -449,7 +449,7 @@ void CResultThread::SaveResultImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* 
 	bmpAll->DrawImageFunction(pDC, &rcClient, &rcImg, SRCCOPY, FALSE);
 	// 23.02.09 Ahn Add End
 
-	// âï˙
+	// Îê∂Î∫≥
 	::SelectObject(cdcSave.m_hDC, hBmpSaveOld);
 	::DeleteObject(pDC->m_hDC);
 	::DeleteObject(cdcSave);
@@ -479,15 +479,15 @@ void CResultThread::CaptureImage(HWND HWnd, CString strPath)
 	::GetClientRect(HWnd, &rect);
 
 	memhDC = CreateCompatibleDC(hdc); // Memory Device Context 
-	// Window Device Context »£»Ø BITMAP ¿€º∫
+	// Window Device Context Ìò∏Ìôò BITMAP ÏûëÏÑ±
 	hBitmap = CreateCompatibleBitmap(hdc, rect.Width(), rect.Height());
 	SelectObject(memhDC, hBitmap);
-	// BITMAPø° ¿©µµøÏ¿« ≈¨∂Û¿Ãæ∆Æ øµø™¿ª ∫πªÁ
+	// BITMAPÏóê ÏúàÎèÑÏö∞Ïùò ÌÅ¥ÎùºÏù¥Ïñ∏Ìä∏ ÏòÅÏó≠ÏùÑ Î≥µÏÇ¨
 	BitBlt(memhDC, 0, 0, rect.Width(), rect.Height(), hdc, 0, 0, SRCCOPY);
-	// Graphic Object¿« ¡§∫∏ √ÎµÊ
+	// Graphic ObjectÏùò Ï†ïÎ≥¥ Ï∑®Îìù
 	GetObject(hBitmap, sizeof(BITMAP), (LPSTR)&bm);
 	bmp.MakeImageArea(bm.bmWidth, bm.bmHeight, 24); 
-	//Image øµø™ ∫πªÁ
+	//Image ÏòÅÏó≠ Î≥µÏÇ¨
 	pBmpInfo = bmp.GetBitmapinfoPtr();
 	pImg = bmp.GetImgPtr();
 	GetDIBits(hdc, hBitmap, 0, bm.bmHeight, pImg, pBmpInfo, DIB_RGB_COLORS);
@@ -729,7 +729,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 
 					// 22.05.25 Ahn Add Start
-					// ¿œ¥‹ ¥Ÿ≥≤∞‹
+					// ÏùºÎã® Îã§ÎÇ®Í≤®
 					SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue) ; // 22.06.23 Ahn Modify
 					// 22.05.25 Ahn Add End
 					delete[] pResizePtr ;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 /*				---------------------
@@ -16,7 +16,7 @@
  *
  *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *						»ı·«
+ *						ìƒëµ
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
  * -------------------------------------------------------
@@ -27,26 +27,26 @@
 class CTabCondition {
 public:
 
-	int nTabWidth;			// Tab HeadÀÇ Æø
-	int nTabPitch;			// Tab°£ Pitch
-	int nRadiusH;			// Tab ¾çÂÊ ¶ó¿îµåÀÇ ¹İÁö¸§. ¼¼·Î ¹æÇâ Pixel¼ö
-	int nRadiusW;			// Tab ¶ó¿îµå °¡·Î ¹æÇâ Pixel¼ö 
-	int nCeramicHeight;		// Top ºÎ ¾î±úÂÊ ÄÚÆÃ µÎ²².
-	int nTabCeramicHeight;	// Tab Head ÂÊ Ceramic ÄÚÆÃ µÎ²²
-	int nCeramicTailHeight; // TabÀÌ ¾ø´Â ²¿¸®ºÎºĞÀÇ Ceramic ÄÚÆÃ µÎ²²
+	int nTabWidth;			// Tab Headì˜ í­
+	int nTabPitch;			// Tabê°„ Pitch
+	int nRadiusH;			// Tab ì–‘ìª½ ë¼ìš´ë“œì˜ ë°˜ì§€ë¦„. ì„¸ë¡œ ë°©í–¥ Pixelìˆ˜
+	int nRadiusW;			// Tab ë¼ìš´ë“œ ê°€ë¡œ ë°©í–¥ Pixelìˆ˜ 
+	int nCeramicHeight;		// Top ë¶€ ì–´ê¹¨ìª½ ì½”íŒ… ë‘ê»˜.
+	int nTabCeramicHeight;	// Tab Head ìª½ Ceramic ì½”íŒ… ë‘ê»˜
+	int nCeramicTailHeight; // Tabì´ ì—†ëŠ” ê¼¬ë¦¬ë¶€ë¶„ì˜ Ceramic ì½”íŒ… ë‘ê»˜
 
 	// 22.06.08 Ahn Modify Start
-	double dTabWidth;			// Tab HeadÀÇ Æø
-	double dTabPitch;			// Tab°£ Pitch
-	double dRadius;			// Tab ¾çÂÊ ¶ó¿îµåÀÇ ¹İÁö¸§. ¼¼·Î ¹æÇâ Pixel¼ö
-	double dCeramicHeight;		// Tab Head ÂÊ Ceramic ÄÚÆÃ µÎ²²
+	double dTabWidth;			// Tab Headì˜ í­
+	double dTabPitch;			// Tabê°„ Pitch
+	double dRadius;			// Tab ì–‘ìª½ ë¼ìš´ë“œì˜ ë°˜ì§€ë¦„. ì„¸ë¡œ ë°©í–¥ Pixelìˆ˜
+	double dCeramicHeight;		// Tab Head ìª½ Ceramic ì½”íŒ… ë‘ê»˜
 	double dTabCeramicHeight;
-	double dCeramicTailHeight; // TabÀÌ ¾ø´Â ²¿¸®ºÎºĞÀÇ Ceramic ÄÚÆÃ µÎ²²
+	double dCeramicTailHeight; // Tabì´ ì—†ëŠ” ê¼¬ë¦¬ë¶€ë¶„ì˜ Ceramic ì½”íŒ… ë‘ê»˜
 	// 22.06.08 Ahn Modify End
-	//int nMeanWidth;			// Mean Ã³¸® Æø
+	//int nMeanWidth;			// Mean ì²˜ë¦¬ í­
 
 	// 23.02.14 Ahn Add Start
-	int nTabMinBright;		// Tab °Ë»ö¿ë ÃÖÀúÈÖµµ
+	int nTabMinBright;		// Tab ê²€ìƒ‰ìš© ìµœì €íœ˜ë„
 	int nRollBrightMode[MAX_CAMERA_NO];
 	// 23.02.14 Ahn Add End
 
@@ -54,20 +54,20 @@ public:
 	int nCeramicBrightHigh[MAX_CAMERA_NO];
 	int nRollBrightLow[MAX_CAMERA_NO];
 	int nRollBrightHigh[MAX_CAMERA_NO];
-	int nEdgeFindMode[MAX_CAMERA_NO];		// en_FindThresMode(Min~Max) Threshold »çÀÌÀÇ °ªÀ» ±âÁØÀ¸·Î Edge ÀÎ½Ä  // en_FineMaxDiffMode ÁÂ¿ì ÈÖµµÂ÷°¡ ÃÖ´ëÀÎ °÷ÀÇ À§Ä¡¸¦ Edge·Î ÀÎ½Ä.
-	// Test¿ë 
-	//int nCompWidth;			// Tab Ã£±â ¸ğµå°¡ ¼³Á¤°ª ¸¸Å­ÀÇ ÁÂ¿ì Â÷¸¦ »ç¿ëÇÏ´Â ModeÀÎ °æ¿ì »ç¿ë.
+	int nEdgeFindMode[MAX_CAMERA_NO];		// en_FindThresMode(Min~Max) Threshold ì‚¬ì´ì˜ ê°’ì„ ê¸°ì¤€ìœ¼ë¡œ Edge ì¸ì‹  // en_FineMaxDiffMode ì¢Œìš° íœ˜ë„ì°¨ê°€ ìµœëŒ€ì¸ ê³³ì˜ ìœ„ì¹˜ë¥¼ Edgeë¡œ ì¸ì‹.
+	// Testìš© 
+	//int nCompWidth;			// Tab ì°¾ê¸° ëª¨ë“œê°€ ì„¤ì •ê°’ ë§Œí¼ì˜ ì¢Œìš° ì°¨ë¥¼ ì‚¬ìš©í•˜ëŠ” Modeì¸ ê²½ìš° ì‚¬ìš©.
 
 	// 22.01.05 Ahn Add Start
-	int nNegCoatHeight;		// À½±Ø TabºÎÀÇ Èæ¿¬ ÄÚÆÃ³ôÀÌ
-	int nNegVGrooveHeight;	// À½±Ø V È¨ÀÇ ±íÀÌ. 
+	int nNegCoatHeight;		// ìŒê·¹ Tabë¶€ì˜ í‘ì—° ì½”íŒ…ë†’ì´
+	int nNegVGrooveHeight;	// ìŒê·¹ V í™ˆì˜ ê¹Šì´. 
 	// 22.01.05 Ahn Add End
 };
 
 class CRecipeInfo {
 	// Tab Condition
 public:
-	// Tab ºĞÇÒ ¹× TabÀ§Ä¡ È®ÀÎ¿ë Recipe
+	// Tab ë¶„í•  ë° Tabìœ„ì¹˜ í™•ì¸ìš© Recipe
 	CString m_strRecipeName;
 	CTabCondition TabCond;
 
@@ -78,23 +78,23 @@ public:
 	int nFoilExpThresOrigin[MAX_CAMERA_NO];
 
 	int nFoilExpThresLower[MAX_CAMERA_NO];
-	// ÃÖ¼Ò °ËÃâ »çÀÌÁî
+	// ìµœì†Œ ê²€ì¶œ ì‚¬ì´ì¦ˆ
 	// 22.07.19 Ahn Modify Start
 	int nFoilExpInMinSize[MAX_CAMERA_NO];
 	int nFoilExpOutMinSize[MAX_CAMERA_NO];
 	// 22.07.19 Ahn Modify Start
 
-	// °Ë»ç Æø(³ôÀÌ) 
+	// ê²€ì‚¬ í­(ë†’ì´) 
 	double dFoilOutInspWidth[MAX_CAMERA_NO];
 	double dFoilExpInspWidth[MAX_CAMERA_NO];
-	int nFoilOutInspWidth[MAX_CAMERA_NO];			// Dross °ËÃâ ¹üÀ§ - Threshold Ã³¸® ¿µ¿ª ÁöÁ¤¿ë
-	int nFoilExpInspWidth[MAX_CAMERA_NO];		// Foil ³ëÃâ °ËÃâ ¹üÀ§ - Threshold Ã³¸® ¿µ¿ª ÁöÁ¤¿ë
-	int nFoilOutMaskOffset[MAX_CAMERA_NO];		// °ËÃâ Line ±âÁØÀ¸·Î ºñ°Ë»ç ¿µ¿ª ¼³Á¤. 
-	int nFoilExpMaskOffset[MAX_CAMERA_NO];		// °ËÃâ LineÀ» ±âÁØÀ¸·Î ºñ°Ë»ç ¿µ¿ª ¼³Á¤.
-	double dMagnification[MAX_CAMERA_NO];		// °ËÃâ °¨µµ
+	int nFoilOutInspWidth[MAX_CAMERA_NO];			// Dross ê²€ì¶œ ë²”ìœ„ - Threshold ì²˜ë¦¬ ì˜ì—­ ì§€ì •ìš©
+	int nFoilExpInspWidth[MAX_CAMERA_NO];		// Foil ë…¸ì¶œ ê²€ì¶œ ë²”ìœ„ - Threshold ì²˜ë¦¬ ì˜ì—­ ì§€ì •ìš©
+	int nFoilOutMaskOffset[MAX_CAMERA_NO];		// ê²€ì¶œ Line ê¸°ì¤€ìœ¼ë¡œ ë¹„ê²€ì‚¬ ì˜ì—­ ì„¤ì •. 
+	int nFoilExpMaskOffset[MAX_CAMERA_NO];		// ê²€ì¶œ Lineì„ ê¸°ì¤€ìœ¼ë¡œ ë¹„ê²€ì‚¬ ì˜ì—­ ì„¤ì •.
+	double dMagnification[MAX_CAMERA_NO];		// ê²€ì¶œ ê°ë„
 	CPoint pntLinkRange[MAX_CAMERA_NO][MAX_INSP_TYPE];
 
-	//Light ±¤·®
+	//Light ê´‘ëŸ‰
 	int nLightLevel[MAX_LIGHT_UNIT][MAX_LIGHT_CHANEL];
 
 	// 22.07.15 Ahn Add Start
@@ -102,11 +102,11 @@ public:
 	int nMarkingType[MAX_INSP_TYPE];
 	// 22.07.15 Ahn Add End
 
-	// ÆÇÁ¤ Á¤º¸
+	// íŒì • ì •ë³´
 	int nJudgeMode;		// 0 : AND , 1 : OR
 	// 22.07.19 Ahn Modify Start
 	//double dDefJudgeWidth;
-	double dDefJudgeHeight; // »èÁ¦¿ä...
+	double dDefJudgeHeight; // ì‚­ì œìš”...
 
 	double dFoilExpInNgSize;
 	double dFoilExpOutNgSize;

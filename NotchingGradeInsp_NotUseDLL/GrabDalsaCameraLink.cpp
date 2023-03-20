@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GrabDalsaCameraLink.h"
 #include "QueueCtrl.h"
 #include "FrameInfo.h"
@@ -205,7 +205,7 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	CString strLabel;
 	strLabel.Format( _T("%s"), m_pAcq->GetLabel() );
 	if (strLabel.Find(_T("CameraLink HS Mono")) >= 0){
-		// Camera ¿¬°á ¿Ï·á.
+		// Camera ì—°ê²° ì™„ë£Œ.
 		m_bCameraLInkComplet = TRUE;
 	}
 	else {
@@ -213,7 +213,7 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	}
 	// 22.05.20 Ahn Add End
 
-	//// º¸µå ½Ã¸®¾ó ³Ñ¹ö Ãëµæ
+	//// ë³´ë“œ ì‹œë¦¬ì–¼ ë„˜ë²„ ì·¨ë“
 	//char szSerialNo[MAX_PATH];
 	//SapManager::GetServerSerialNumber(nServerIdx+1, szSerialNo);
 
@@ -243,7 +243,7 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 int CGrabDalsaCameraLink::GrabberInit()
 {
 	m_pAcqDevice->Create();
-	// Ä«¸Þ¶ó ÃÊ±âÈ­ ½ÃÁ¡¿¡ ºñ´×ÀÌ³ª ±âÅ¸ Ä«¸Þ¶ó ÆÄ¶ó¸ÞÅÍ¸¦ º¯°æÇÒ °æ¿ì Ç®¾î¼­ »ç¿ë.
+	// ì¹´ë©”ë¼ ì´ˆê¸°í™” ì‹œì ì— ë¹„ë‹ì´ë‚˜ ê¸°íƒ€ ì¹´ë©”ë¼ íŒŒë¼ë©”í„°ë¥¼ ë³€ê²½í•  ê²½ìš° í’€ì–´ì„œ ì‚¬ìš©.
 	double dLineRate = AprData.m_System.m_dCamLineRate[0];
 	double dExposureTime = AprData.m_System.m_dExposureTime[0];
 
@@ -275,7 +275,7 @@ int CGrabDalsaCameraLink::GrabberInit()
 void CGrabDalsaCameraLink::SetTriggerMode(int nMode)
 {
 	if ((nMode > 1) || (nMode < 0)) {
-		AfxMessageBox(_T("ÀÔ·Â¹üÀ§ ÃÊ°ú 0~1"));
+		AfxMessageBox(_T("ìž…ë ¥ë²”ìœ„ ì´ˆê³¼ 0~1"));
 		return;
 	}
 	m_pAcqDevice->SetFeatureValue("TriggerMode", nMode); // 0 : Internal, 1 : External 

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GlobalData.h"
 #include "CDefectDataCtrl.h"
 #include "CTabRsltInfo.h"
@@ -139,13 +139,13 @@ int CDefectDataCtrl::SaveErrorData()
 	int nTabSize = (int)m_queTabRsltInfo.size();
 	BOOL bFileOpen = FALSE;
 
-	// LotInfo ÀúÀå
-	//// Lot ID, Recipe ¸í, ÃÑ Tab¼ö NG Tab¼ö OK Tab¼ö, 
+	// LotInfo ì €ì¥
+	//// Lot ID, Recipe ëª…, ì´ Tabìˆ˜ NG Tabìˆ˜ OK Tabìˆ˜, 
 	//{
 	//	AprData.SaveLotInfo(CGlobalData::en_Mode_Run);
 	//}
 
-	//TabInfo ÀúÀå
+	//TabInfo ì €ì¥
 	if( (AprData.m_strNowBinPath.GetLength() > 0 ) && (AprData.m_NowLotData.m_nTabCount > AprData.m_NowLotData.m_nLastTotalCnt ) )
 	{
 		AprData.FileCtrl_LotInfo(CGlobalData::en_mode_Countting);
@@ -159,7 +159,7 @@ int CDefectDataCtrl::SaveErrorData()
 
 		int nSize = pTabRsltInfo->GetSize();
 
-		// Defect ¼ö ¸¸Å­ Loop
+		// Defect ìˆ˜ ë§Œí¼ Loop
 		for (int i = 0; i < nSize; i++) {
 			// 22.06.09 Ahn Add Start
 			CDefectInfo* pDefInfo;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 //#include <afxdockablepane.h>
 #include "CCropImageViewDlg.h"
 
@@ -22,7 +22,7 @@ public:
 	void ClearAllData();
 	CCropImageViewDlg* GetCropImageViewDlgPtr() { return m_pCropImgViewDlg; }
 
-	// ±¸ÇöÀÔ´Ï´Ù.
+	// êµ¬í˜„ìž…ë‹ˆë‹¤.
 public:
 	virtual ~CCropImageView();
 	virtual BOOL CanAutoHide() const { return FALSE; }

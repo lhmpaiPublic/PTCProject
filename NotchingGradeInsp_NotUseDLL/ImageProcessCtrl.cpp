@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ImageProcessCtrl.h"
 #include "FrameInfo.h"
 #include "QueueCtrl.h"
@@ -463,7 +463,7 @@ int CImageProcessCtrl::InspectionEnd()
 
 int CImageProcessCtrl::GrabStart(BOOL bMode)
 {
-	// Camera ¿¬°á»óÅÂ È®ÀÎ.
+	// Camera ì—°ê²°ìƒíƒœ í™•ì¸.
 	int i = 0;
 	BOOL bConnected[MAX_CAMERA_NO] = {FALSE, FALSE};
 	BOOL bError = FALSE ;
@@ -478,7 +478,7 @@ int CImageProcessCtrl::GrabStart(BOOL bMode)
 
 	if (bError == TRUE) {
 		CString strMsg;
-		strMsg.Format(_T("Ä«¸Ş¶ó°¡ ÀÌ¹Ì ¿¬°áÁß ÀÔ´Ï´Ù."));
+		strMsg.Format(_T("ì¹´ë©”ë¼ê°€ ì´ë¯¸ ì—°ê²°ì¤‘ ì…ë‹ˆë‹¤."));
 		AprData.SaveErrorLog(strMsg);
 	}
 	// 22.01.04 Ahn Add Start
@@ -507,7 +507,7 @@ int CImageProcessCtrl::GrabStart(BOOL bMode)
 int CImageProcessCtrl::GrabStart_Monitoring()
 {
 	if (m_bInspFlag == TRUE) {
-		AfxMessageBox(_T("°Ë»çÁß ÀÔ´Ï´Ù."));
+		AfxMessageBox(_T("ê²€ì‚¬ì¤‘ ì…ë‹ˆë‹¤."));
 		return 1;
 	}
 

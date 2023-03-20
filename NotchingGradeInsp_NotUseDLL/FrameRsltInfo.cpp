@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "FrameRsltInfo.h"
 #include "CDefectDataCtrl.h"
 
@@ -27,26 +27,26 @@ CFrameRsltInfo::~CFrameRsltInfo(void)
 void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 {
 	m_pImagePtr = pFrmInfo->GetImagePtr();
-	pFrmInfo->SetImgPtr(NULL); // ¾ÈÇÏ¸é Á×À½.
+	pFrmInfo->SetImgPtr(NULL); // ì•ˆí•˜ë©´ ì£½ìŒ.
 
 	m_nFrameCount = pFrmInfo->m_nFrameCount;
 	m_nHeadNo = pFrmInfo->m_nHeadNo;
-	m_nHeight = pFrmInfo->m_nHeight;		// Image ±æÀÌ
-	m_nWidth = pFrmInfo->m_nWidth;		// Image Æø
+	m_nHeight = pFrmInfo->m_nHeight;		// Image ê¸¸ì´
+	m_nWidth = pFrmInfo->m_nWidth;		// Image í­
 	m_nBand = pFrmInfo->m_nBand;		// 1 : Mono, 3 : Color
-	nOverlapSize = pFrmInfo->nOverlapSize;	// ¿À¹ö·¾µÈ Å©±â
-	m_nTabLevel = pFrmInfo->m_nTabLevel;	// TabÀÇ Ceramic ¾î±ú¼±/³¡¼± À§Ä¡
-	m_nInspMode = pFrmInfo->m_nInspMode;	// en_HeadFrame/ en_TailFrame °Ë»ç ¸ðµå
+	nOverlapSize = pFrmInfo->nOverlapSize;	// ì˜¤ë²„ë ™ëœ í¬ê¸°
+	m_nTabLevel = pFrmInfo->m_nTabLevel;	// Tabì˜ Ceramic ì–´ê¹¨ì„ /ëì„  ìœ„ì¹˜
+	m_nInspMode = pFrmInfo->m_nInspMode;	// en_HeadFrame/ en_TailFrame ê²€ì‚¬ ëª¨ë“œ
 
 	m_nTabLeft = pFrmInfo->m_nTabLeft;
 	m_nTabRight = pFrmInfo->m_nTabRight;
 
-	m_dTopPosY = pFrmInfo->m_dTopPosY;	// FrameÀÇ ½ÃÀÛ PixelÀÇ Y ÁÂÇ¥
+	m_dTopPosY = pFrmInfo->m_dTopPosY;	// Frameì˜ ì‹œìž‘ Pixelì˜ Y ì¢Œí‘œ
 
 	nTabNo = pFrmInfo->nTabNo;		// 
 	nTopPosYInFrame = pFrmInfo->nTopPosYInFrame;
 
-	// Tab À§Ä¡  
+	// Tab ìœ„ì¹˜  
 	nTabStartHor = pFrmInfo->nTabStartHor;
 	nTabEndHor = pFrmInfo->nTabEndHor;
 	nTabStartPosInFrame = pFrmInfo->nTabStartPosInFrame; // 
