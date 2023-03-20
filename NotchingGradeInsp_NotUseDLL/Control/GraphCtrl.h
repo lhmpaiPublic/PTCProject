@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // CGraphCtrl
 #define MAX_GRAPH_DATA_NUM		30000

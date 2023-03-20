@@ -1,4 +1,4 @@
-
+ï»¿
 #include "pch.h"
 #include "SetValueDlg.h"
 #include "SetValueFunc.h"
@@ -166,7 +166,7 @@ void CSetValueDlg::OnOK()
 
 	nowlength = m_InputValueText.GetWindowTextLength() ;
 	if ( ( nowlength <= 0 ) || ( nowlength >= 64 ) ) {
-		AfxMessageBox( _T("ÀÔ·Â°ªÀ» È®ÀÎÇØ ÁÖ¼¼¿ä..")
+		AfxMessageBox( _T("ì…ë ¥ê°’ì„ í™•ì¸í•´ ì£¼ì„¸ìš”..")
 			, ( MB_OK | MB_ICONEXCLAMATION ) ) ;
 		m_InputValueText.SetFocus() ;
 		return ;
@@ -204,7 +204,7 @@ void CSetValueDlg::OnOK()
 		case	_T( ')' ) :
 			continue ;
 		default :
-			AfxMessageBox( _T( "ÀÔ·Â¹®ÀÚ¸¦ È®ÀÎÇØ ÁÖ¼¼¿ä..") 
+			AfxMessageBox( _T( "ì…ë ¥ë¬¸ìë¥¼ í™•ì¸í•´ ì£¼ì„¸ìš”..") 
 				, ( MB_OK | MB_ICONEXCLAMATION ) ) ;
 			m_InputValueText.SetFocus() ;
 			return ;
@@ -212,7 +212,7 @@ void CSetValueDlg::OnOK()
 	}
 
 	if ( CalclateExpressionString( str ) < 0 ) {
-		AfxMessageBox( _T( "ÀÔ·Â ¼ö½ÄÀ» È®ÀÎÇØ ÁÖ¼¼¿ä.." ) 
+		AfxMessageBox( _T( "ì…ë ¥ ìˆ˜ì‹ì„ í™•ì¸í•´ ì£¼ì„¸ìš”.." ) 
 			, ( MB_OK | MB_ICONEXCLAMATION ) ) ;
 		m_InputValueText.SetFocus() ;
 		return ;
@@ -296,7 +296,7 @@ void CSetValueDlg::OnOK()
 		CDialog::OnOK() ;
 	} else {
 		CString	warnmsg = _T( "" ) ;
-		warnmsg.Format( _LANG( "Please confirm the input.(%lf?%lf)", "“ü—Í‚ğŠm”F‚µ‚Ä‰º‚³‚¢I(%lf?%lf)" )
+		warnmsg.Format( _LANG( "Please confirm the input.(%lf?%lf)", "ë³ºì€ê·©ë‘´ë´ƒê¶¢ê¶²ë·ê¶ ê¶‹ê°(%lf?%lf)" )
 			, ( double)m_MinValue, ( double)m_MaxValue ) ;
 		AfxMessageBox( warnmsg, ( MB_OK | MB_ICONEXCLAMATION ) ) ;
 		m_InputValueText.SetFocus() ;
@@ -427,7 +427,7 @@ void CSetValueDlg::OnBtnDel()
 
 void CSetValueDlg::OnBtnGoleft()
 {
-	GotoSelectPosition( _T( "¡ç" ) ) ;
+	GotoSelectPosition( _T( "â†" ) ) ;
 
 	return ;
 }
@@ -435,7 +435,7 @@ void CSetValueDlg::OnBtnGoleft()
 
 void CSetValueDlg::OnBtnGoright()
 {
-	GotoSelectPosition( _T( "¡æ" ) ) ;
+	GotoSelectPosition( _T( "â†’" ) ) ;
 
 	return ;
 }
@@ -543,7 +543,7 @@ int CSetValueDlg::GotoSelectPosition( CString movemsg )
 
 		m_InputValueText.GetWindowText( temptext ) ;
 
-		if ( movemsg == _T( "¡ç" ) ) {
+		if ( movemsg == _T( "â†" ) ) {
 			if ( select_start >= 1 ) {
 				if ( select_start >= 2 ) {
 					if ( IsMyMbcLegal( temptext, ( select_start - 2 ) ) == TRUE ) {
@@ -553,7 +553,7 @@ int CSetValueDlg::GotoSelectPosition( CString movemsg )
 				select_start -= 1 ;
 				select_end = select_start ;
 			}
-		} else if ( movemsg == _T( "¡æ" ) ) {
+		} else if ( movemsg == _T( "â†’" ) ) {
 			if ( select_start < temptext.GetLength() ) {
 				if ( ( select_start + 1 ) < temptext.GetLength() ) {
 					if ( IsMyMbcLegal( temptext, ( select_start ) ) == TRUE ) {

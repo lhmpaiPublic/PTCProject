@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 // CColorStatic
 
@@ -6,15 +6,15 @@ class CColorStatic : public CStatic
 {
 	DECLARE_DYNAMIC(CColorStatic)
 
-// »ı¼ºÀÔ´Ï´Ù.
+// ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CColorStatic();
 
-// Æ¯¼ºÀÔ´Ï´Ù.
+// íŠ¹ì„±ì…ë‹ˆë‹¤.
 protected:
-	COLORREF		m_rgbText;				//ÅØ½ºÆ®»ö»ó(COLORREF)x1
-	COLORREF		m_rgbBackground;		//¹è°æ»ö»ó(COLORREF)x1
-	CBrush			m_Brush;				//¹è°æ»ö ºê·¯½¬(CBrush*)x1
+	COLORREF		m_rgbText;				//í…ìŠ¤íŠ¸ìƒ‰ìƒ(COLORREF)x1
+	COLORREF		m_rgbBackground;		//ë°°ê²½ìƒ‰ìƒ(COLORREF)x1
+	CBrush			m_Brush;				//ë°°ê²½ìƒ‰ ë¸ŒëŸ¬ì‰¬(CBrush*)x1
 	CFont			m_font;
 	BOOL			m_bBold;
 
@@ -24,7 +24,7 @@ public:
 	COLORREF GetTextColor() { return (m_rgbText); }
 	COLORREF GetBackGroundColor() { return (m_rgbBackground); }
 
-// ±¸ÇöÀÔ´Ï´Ù.
+// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CColorStatic();
 
@@ -40,11 +40,11 @@ class CBmpStatic : public CStatic
 {
 	DECLARE_DYNAMIC(CBmpStatic)
 
-	// »ı¼ºÀÔ´Ï´Ù.
+	// ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CBmpStatic();
 
-	// Æ¯¼ºÀÔ´Ï´Ù.
+	// íŠ¹ì„±ì…ë‹ˆë‹¤.
 protected:
 	BOOL			m_bBitmap;
 	HBITMAP			hBmp;
@@ -53,7 +53,7 @@ public:
 	int SetBitmap(UINT nID);
 	UINT GetBitmapID(); // 22.08.03 Ahn Add 
 
-	// ±¸ÇöÀÔ´Ï´Ù.
+	// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CBmpStatic();
 
@@ -72,15 +72,15 @@ class CColorEdit : public CEdit
 {
 	DECLARE_DYNAMIC(CColorEdit)
 
-	// »ı¼ºÀÔ´Ï´Ù.
+	// ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CColorEdit();
 
-	// Æ¯¼ºÀÔ´Ï´Ù.
+	// íŠ¹ì„±ì…ë‹ˆë‹¤.
 protected:
-	COLORREF		m_rgbText;				//ÅØ½ºÆ®»ö»ó(COLORREF)x1
-	COLORREF		m_rgbBackground;		//¹è°æ»ö»ó(COLORREF)x1
-	CBrush			m_Brush;				//¹è°æ»ö ºê·¯½¬(CBrush*)x1
+	COLORREF		m_rgbText;				//í…ìŠ¤íŠ¸ìƒ‰ìƒ(COLORREF)x1
+	COLORREF		m_rgbBackground;		//ë°°ê²½ìƒ‰ìƒ(COLORREF)x1
+	CBrush			m_Brush;				//ë°°ê²½ìƒ‰ ë¸ŒëŸ¬ì‰¬(CBrush*)x1
 
 public:
 	int SetTextColor(COLORREF color);
@@ -88,7 +88,7 @@ public:
 	COLORREF GetTextColor() { return (m_rgbText); }
 	COLORREF GetBackGroundColor() { return (m_rgbBackground); }
 
-	// ±¸ÇöÀÔ´Ï´Ù.
+	// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CColorEdit();
 
@@ -106,11 +106,11 @@ class CBmpButton : public CBitmapButton
 {
 	DECLARE_DYNAMIC(CBmpButton)
 
-	// »ı¼ºÀÔ´Ï´Ù.
+	// ìƒì„±ì…ë‹ˆë‹¤.
 public:
 	CBmpButton();
 
-	// ±¸ÇöÀÔ´Ï´Ù.
+	// êµ¬í˜„ì…ë‹ˆë‹¤.
 public:
 	virtual ~CBmpButton();
 
