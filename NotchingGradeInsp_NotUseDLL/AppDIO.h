@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 class CAppDIO
 {
 public:
@@ -34,12 +34,12 @@ public:
 		eOut_BCD_ID_02			= 0x00000008,
 		eOut_BCD_ID_04			= 0x00000010,
 		eOut_BCD_ID_08			= 0x00000020,
-		eOut_BCD_ID_16			= 0x00000040,	// √‚∑¬
+		eOut_BCD_ID_16			= 0x00000040,	// Ï∂úÎ†•
 		eOut_BCD_ID_32			= 0x00000080,
 		eOut_08					= 0x00000100,	// 8		
-		eOut_PULSE				= 0x00000200,	// 9
-		eOut_MARK_SEL_01		= 0x00000400,	// 10 	// 0 1 : mark √‚∑¬ Tab¿Ã æ¯¿ª ∂ß 00
-		eOut_MARK_SEL_02		= 0x00000800,	// 11	// 1 1 : 3 Tab √‚∑¬
+		eOut_MARK_SEL_01		= 0x00000200,	// 10 	// 0 1 : mark Ï∂úÎ†• TabÏù¥ ÏóÜÏùÑ Îïå 00
+		eOut_MARK_SEL_02		= 0x00000400,	// 11	// 1 1 : 3 Tab Ï∂úÎ†•
+		eOut_PULSE				= 0x00000800,	// 9
 		eOut_12					= 0x00001000,
 		eOut_13					= 0x00002000,
 		eOut_14					= 0x00004000,

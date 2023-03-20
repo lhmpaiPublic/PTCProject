@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ImageProcThread.h"
 #include "ImageProcessCtrl.h"
 #include "Bitmapstd.h"
@@ -84,18 +84,18 @@ void CImageProcThread::Kill( void )
 }
 
 
-// Queue¿¡¼­ ¹Ş¾Æ¿Â Frame Image¸¦ Tab À¸·Î ±¸ºĞÇØ¼­ Ã³¸®¿ë Queue·Î ÀúÀå ÇÏ´Â Thread
+// Queueì—ì„œ ë°›ì•„ì˜¨ Frame Imageë¥¼ Tab ìœ¼ë¡œ êµ¬ë¶„í•´ì„œ ì²˜ë¦¬ìš© Queueë¡œ ì €ì¥ í•˜ëŠ” Thread
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 {
 	CImageProcThread* pThis = (CImageProcThread*)Param;
 	CQueueCtrl* pQueueFrame_Top = pThis->m_pParent->GetQueueFrmPtr(0);
 	CQueueCtrl* pQueueFrame_Bottom = pThis->m_pParent->GetQueueFrmPtr(1);
-	CCounterQueueCtrl* pCntQueueInCtrl = pThis->m_pParent->GetCounterQueInPtr(); // ÅÇ Ä«¿îÅÍ ¿ë Å¥
+	CCounterQueueCtrl* pCntQueueInCtrl = pThis->m_pParent->GetCounterQueInPtr(); // íƒ­ ì¹´ìš´í„° ìš© í
 	CThreadQueueCtrl* pThreadQue[MAX_CAMERA_NO];
 	pThreadQue[CAM_POS_TOP] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_TOP);
 	pThreadQue[CAM_POS_BOTTOM] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_BOTTOM);
 
-	BOOL bReserved = FALSE; // Å©±â°¡ ÀÛ¾Æ¼­ º¸³»Áö ¸øÇÑ ºÎºĞÀÌ ÀÖÀ½ ´ÙÀ½ ÀÌ¹ÌÁö ¹Ş¾Æ¼­ Ã³¸® ÇÒ °ÍÀÎÁö¿¡ ´ëÇÑ Flag.
+	BOOL bReserved = FALSE; // í¬ê¸°ê°€ ì‘ì•„ì„œ ë³´ë‚´ì§€ ëª»í•œ ë¶€ë¶„ì´ ìˆìŒ ë‹¤ìŒ ì´ë¯¸ì§€ ë°›ì•„ì„œ ì²˜ë¦¬ í•  ê²ƒì¸ì§€ì— ëŒ€í•œ Flag.
 	BOOL bReservFrmNo = -1;
 	int nLastLengh = 0;
 	int nLastWidth = 0;
@@ -115,7 +115,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #endif
 	// 22.02.22 Ahn Add End
 
-	// 22.04.06 Ahn Add Start - Ã¹ ÅÇ ¹ö¸²
+	// 22.04.06 Ahn Add Start - ì²« íƒ­ ë²„ë¦¼
 	BOOL bFirstTab = TRUE;
 	// 22.04.06 Ahn Add End
 
@@ -145,10 +145,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		bTailFlag = !pQueueFrame_Bottom->IsEmpty();
 
 		if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) {
-			// ¿¡·¯ Ã³¸® 
+			// ì—ëŸ¬ ì²˜ë¦¬ 
 		//	pThis->SetFameSizeError(); // 
 			CString strErrMsg;
-			strErrMsg.Format(_T("ÇÁ·¹ÀÓ »çÀÌÁî ÀÌ»ó : Top [%d], Bottom[%d], °Ë»ç »óÅÂ [%d], Á¾·á Ã³¸®!!!!"), nSizeFrmL, nSizeFrmR , pThis->m_pParent->IsInspection() );
+			strErrMsg.Format(_T("í”„ë ˆì„ ì‚¬ì´ì¦ˆ ì´ìƒ : Top [%d], Bottom[%d], ê²€ì‚¬ ìƒíƒœ [%d], ì¢…ë£Œ ì²˜ë¦¬!!!!"), nSizeFrmL, nSizeFrmR , pThis->m_pParent->IsInspection() );
 		//	AprData.SaveErrorLog(strErrMsg);
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
 		}
@@ -256,8 +256,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			ctAna.Clear();
 			ctAna.StopWatchStart();
 
-			// TabÀ¸·Î Àß¶ó º¸³¿
-			// Projection »ç¿ë 
+			// Tabìœ¼ë¡œ ì˜ë¼ ë³´ëƒ„
+			// Projection ì‚¬ìš© 
 			{
 				CTimeAnalyzer ctAna;
 				ctAna.StopWatchStart();
@@ -265,7 +265,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				int nBndElectrode = 0;
 				int nBneElectrodeBtm = 0;
 #if defined( ANODE_MODE )
-				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
+				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
 #endif
 				// 22.05.09 Ahn Add End
 				CImageProcess::_VEC_TAB_INFO vecTabInfo;
@@ -283,7 +283,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				BOOL bErrorAll = FALSE;
 				if (nVecSize <= 0) {
 					AprData.SaveDebugLog(_T("!!!!Tab Find Faile!!!!"));
-					// °­Á¦ ºĞÇÒ 
+					// ê°•ì œ ë¶„í•  
 					bErrorAll = TRUE;
 				}
 #if defined( ANODE_MODE )
@@ -295,7 +295,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				
 				double dTime = ctAna.WhatTimeIsIt_Double();
 				CString strLog;
-				strLog.Format(_T("TabCutting Time [%.2lf]msec, Àü±Ø°æ°èTop[%d], Bottom[%d] BtmLevel[%d]"), dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
+				strLog.Format(_T("TabCutting Time [%.2lf]msec, ì „ê·¹ê²½ê³„Top[%d], Bottom[%d] BtmLevel[%d]"), dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
 				AprData.SaveTactLog(strLog);
 
 				for (int i = 0; i < nVecSize; i++) {
@@ -525,7 +525,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					stTime = pTopInfo->m_stTime ;
 					// 22.12.09 Ahn Add End
 
-					// NG Tab º¸°í
+					// NG Tab ë³´ê³ 
 					if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG)) {
 						WORD wAlarmCode = 0x0000;
 						bJudgeNG = TRUE;
@@ -556,7 +556,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 22.08.10 Ahn Modify End
 							wAlarmCode |= CSigProc::en_Alarm_ContinueNg;
 							CString strMessage;
-							strMessage.Format(_T("¿¬¼Ó NG Alarm ¹ß»ı. %d Tab¿¬¼Ó NG ¹ß»ı"), AprData.m_NowLotData.m_nContinueCount);
+							strMessage.Format(_T("ì—°ì† NG Alarm ë°œìƒ. %d Tabì—°ì† NG ë°œìƒ"), AprData.m_NowLotData.m_nContinueCount);
 							AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
 						}
 
@@ -571,7 +571,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 22.08.10 Ahn Modify End
 								wAlarmCode |= CSigProc::en_Alarm_SectorNg;
 								CString strMessage;
-								strMessage.Format(_T("±¸°£ NG Alarm ¹ß»ı. %d / %d Tab NG ¹ß»ı"), nSecterNgCount, AprData.m_pRecipeInfo->nSectorCount);
+								strMessage.Format(_T("êµ¬ê°„ NG Alarm ë°œìƒ. %d / %d Tab NG ë°œìƒ"), nSecterNgCount, AprData.m_pRecipeInfo->nSectorCount);
 								AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
 							}
 						}
@@ -601,9 +601,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						AprData.m_NowLotData.m_nContinueCount = 0 ; // 22.08.09 Ahn Add
 						AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_pRecipeInfo->nSectorCount);
 					}
-					// °á°ú Queue¿¡ º¸³¿
+					// ê²°ê³¼ Queueì— ë³´ëƒ„
 
-					// Counter ½ÅÈ£ Ãâ·Â
+					// Counter ì‹ í˜¸ ì¶œë ¥
 					WORD wOutPut;	
 					CString strMarking = _T("OFF");
 					{
@@ -616,7 +616,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 22.07.19 Ahn Modify End
 
 						CSigProc* pSigProc = theApp.m_pSigProc;
-						bMarkingActive = pSigProc->SigInInkMarkingActive(); 				
+						bMarkingActive = TRUE; //pSigProc->SigInInkMarkingActive(); //ì‹ í˜¸ ì‚¬ìš© ì•ˆí•¨
 						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) ) {
 							nMarkSel1 = 0;
 							nMarkSel2 = 0; 
@@ -642,7 +642,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 					}
 
-					{ // CSV ÆÄÀÏ ÀÛ¼º
+					{ // CSV íŒŒì¼ ì‘ì„±
 						CString strCsvFileName;
 						CString strFilePath;
 						strFilePath.Format(_T("%s\\"), AprData.m_strNowCsvPath);
@@ -665,10 +665,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CString strMarking;
 						CString strMarkReason = _T("") ;
 						if (pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag || pTopInfo->m_pTabRsltInfo->m_bMarkingFlag) {
-							strMarking.Format(_T("¡Û"));
+							strMarking.Format(_T("â—‹"));
 						}
 						else {
-							strMarking.Format(_T("¥Ö"));
+							strMarking.Format(_T("Î§"));
 						}
 						CString strTime;
 						CString strJudge = _T("OK") ;
@@ -805,7 +805,7 @@ WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, in
 	WORD wOutput = 0x00;
 
 	// 22.01.11 Ahn Add Start
-	// ¸¶Å· Å×½ºÆ®¿ë ¸ğµç ÅÇ ¸¶Å· ½ÅÈ£ Ãâ·Â.
+	// ë§ˆí‚¹ í…ŒìŠ¤íŠ¸ìš© ëª¨ë“  íƒ­ ë§ˆí‚¹ ì‹ í˜¸ ì¶œë ¥.
 	if (AprData.m_System.m_bMarkingAllTab == TRUE) {
 		nJudge1 = JUDGE_NG;
 		nJudge2 = JUDGE_NG;
@@ -848,7 +848,7 @@ int CImageProcThread::GetMarkingFlag(CRecipeInfo* pRecipeInfo, int nTopJudge, in
 	int nRet = 0 ; 
 	ASSERT(pRecipeInfo);
 
-	// ÆÇÁ¤°á°ú Àû¿ë
+	// íŒì •ê²°ê³¼ ì ìš©
 	pRecipeInfo = AprData.m_pRecipeInfo;
 	if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG)) {
 		WORD wReason = wTopReson | wBtmReson ;

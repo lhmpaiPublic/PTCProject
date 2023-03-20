@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "PioCtrl.h"
 #include "WinTool.h"
 #include "GlobalData.h"		// 23.02.17 Son Add
@@ -63,7 +63,7 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		int nPort = AprData.m_System.m_nPLCPort;
 		pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut );
 
-		PioTheadRun(); //pyjtest
+//		PioTheadRun(); //pyjtest
 	}
 	// 23.02.28 Son Mod End
 #endif
@@ -231,12 +231,12 @@ int CPioCtrl::OutPortByte(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/)
 
 	if (pAprPio != NULL) {
 		if (pAprPio->OutPort(port, data, bLockCtrl) != 0) {
-			//¿¡·¯·Î±×
+			//ì—ëŸ¬ë¡œê·¸
 			ret = -1;
 		}
 	}
 	else {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		ret = -1;
 	}
 
@@ -280,7 +280,7 @@ int CPioCtrl::InPortByte(WORD port, BYTE* data, BOOL bExtSt /*= FALSE*/)
 		int iIndex;
 		for (iIndex = 0; iIndex < iMaxIndex; iIndex++) {
 			if (pAprPio->InPort(port, &Indata, bExtSt) != 0) {
-				//¿¡·¯·Î±×
+				//ì—ëŸ¬ë¡œê·¸
 			}
 			else {
 				bReadOk = TRUE;
@@ -288,13 +288,13 @@ int CPioCtrl::InPortByte(WORD port, BYTE* data, BOOL bExtSt /*= FALSE*/)
 			}
 		}
 		if (bReadOk != TRUE) {
-			//¿¡·¯·Î±×
+			//ì—ëŸ¬ë¡œê·¸
 			ret = -1;
 		}
 		*data = Indata;
 	}
 	else {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		ret = -1;
 	}
 
@@ -335,6 +335,8 @@ bool CPioCtrl::PioPortProcess(int port, BYTE data, int stus)
 
 UINT ThreadProc_InPortCheck(LPVOID Param)
 {
+	AprData.SaveDebugLog(_T("ThreadProc_InPortCheck")); //pyjtest
+
 
 	int	i;
 	PIOTHREAD_DATAIF* data;
@@ -417,12 +419,12 @@ int CPioCtrl::WritePLC_device(int address, short data)
 {
 
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio->WriteDataReg(address, &data, 1) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -435,17 +437,17 @@ int CPioCtrl::ReadPLC_device(int address, short* data)
 {
 
 	if (data == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio->ReadDataReg(address, data, 1) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -457,7 +459,7 @@ int CPioCtrl::ReadPLC_device(int address, short* data)
 int CPioCtrl::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 {
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -475,7 +477,7 @@ int CPioCtrl::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 
 //	int	nRet = pAprPio->Out_Port_Bit(nPort, bBitPos, nMode);
 	if (nRet < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (nRet);
@@ -485,12 +487,12 @@ int CPioCtrl::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 int CPioCtrl::Lock_Ctrl(BOOL bLockMode)
 {
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	int	nRet = pAprPio->Lock_Ctrl(bLockMode);
 	if (nRet < 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	return (nRet);
@@ -503,21 +505,21 @@ int CPioCtrl::WritePLC_Block_device(int address, int* pData, int nNumOfData)
 	ASSERT(nNumOfData > 0);
 
 	if (pData == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (nNumOfData <= 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	int	nRet = 0;
 
 	if (pAprPio->WriteDataReg(address, pData, nNumOfData) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -532,21 +534,21 @@ int CPioCtrl::WritePLC_Block_device(int address, short* pData, int nNumOfData)
 	ASSERT(pData != NULL);
 	ASSERT(nNumOfData > 0);
 	if (pData == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (nNumOfData <= 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	int	nRet = 0;
 
 	if (pAprPio->WriteDataReg(address, pData, nNumOfData) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -559,21 +561,21 @@ int CPioCtrl::ReadPLC_Block_device(int address, short* pData, int nNumOfData)
 	ASSERT(pData != NULL);
 	ASSERT(nNumOfData > 0);
 	if (pData == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (nNumOfData <= 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	int	nRet = 0;
 
 	if (pAprPio->ReadDataReg(address, pData, nNumOfData) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -584,12 +586,12 @@ int CPioCtrl::ReadPLC_Block_device(int address, short* pData, int nNumOfData)
 int CPioCtrl::WritePLC_device(int address, short data, int num, short device, short stno)
 {
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio->WriteDataReg(address, &data, 1, device, stno) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -601,22 +603,22 @@ int CPioCtrl::WritePLC_device(int address, short data, int num, short device, sh
 int CPioCtrl::ReadPLC_device(int address, short* data, int num, short device, short stno)
 {
 	if (data == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (num <= 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio->ReadDataReg(address, data, num, device, stno) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -658,12 +660,12 @@ int CPioCtrl::InPortAnotherDeviceBit(short stno, CString device, int adrs)
 		}
 
 		if (bReadOk != TRUE) {
-			//¿¡·¯·Î±×
+			//ì—ëŸ¬ë¡œê·¸
 			ret = -1;
 		}
 	}
 	else {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		ret = -1;
 	}
 
@@ -676,17 +678,17 @@ int CPioCtrl::WritePLC_Block_device(int address, short* pData, int nNumOfData, s
 {
 
 	if (pData == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio->WriteDataReg(address, pData, nNumOfData, device, stno) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
@@ -699,17 +701,17 @@ int CPioCtrl::ReadPLC_Block_device(int address, short* pData, int nNumOfData, sh
 {
 
 	if (pData == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio == NULL) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 
 	if (pAprPio->ReadDataReg(address, pData, nNumOfData, device, stno) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 

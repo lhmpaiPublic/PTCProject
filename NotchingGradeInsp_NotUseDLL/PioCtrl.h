@@ -1,14 +1,14 @@
-#pragma once
+ï»¿#pragma once
 
 #define	LIO_STATION_NO			(1)
 #define	MAIN_STATION_NO			(2)
 #define	EX_STATION_NO			(7)
 // 22.03.23 Ahn Modify Start
-//#define MAX_PORT	16			//»ç¿ëÆ÷Æ®¼ö	
-#define MAX_PORT	4			//»ç¿ëÆ÷Æ®¼ö	
+//#define MAX_PORT	16			//ì‚¬ìš©í¬íŠ¸ìˆ˜	
+#define MAX_PORT	4			//ì‚¬ìš©í¬íŠ¸ìˆ˜	
 // 22.03.23 Ahn Modify End
-#define	OFFSET_IN	0x63A0		//ÀÔ·Âµğ¹ÙÀÌ½º ¹øÈ£ ¿ÀÇÁ¼Â
-#define	OFFSET_OUT	0x6B20		//Ãâ·Âµğ¹ÙÀÌ½º ¹øÈ£ ¿ÀÇÁ¼Â
+#define	OFFSET_IN	0x63A0		//ì…ë ¥ë””ë°”ì´ìŠ¤ ë²ˆí˜¸ ì˜¤í”„ì…‹
+#define	OFFSET_OUT	0x6B20		//ì¶œë ¥ë””ë°”ì´ìŠ¤ ë²ˆí˜¸ ì˜¤í”„ì…‹
 
 #include "MelsecDataLink.h"
 #include "CMelsecEthenet.h"
@@ -19,8 +19,8 @@
 typedef struct {
 	BOOL CheckPortFlag[MAX_PORT];
 	BYTE InputData[MAX_PORT];
-	BOOL EndFlag;	// ½º·¹µå Á¤Áö
-	BOOL BusyFlag;	// ½º·¹µå ÀÛ¾÷Áß
+	BOOL EndFlag;	// ìŠ¤ë ˆë“œ ì •ì§€
+	BOOL BusyFlag;	// ìŠ¤ë ˆë“œ ì‘ì—…ì¤‘
 } PIOTHREAD_DATAIF;
 
 class CMelsecBase;

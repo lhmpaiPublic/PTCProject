@@ -201,7 +201,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				}
 				else
 				{
-					 pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
+					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
+					pFrameRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((pFrameRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm);
 
 					 CString strMsg;
 					 strMsg.Format(_T("[Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"), pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);

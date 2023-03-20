@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "PioCtrl.h"
 #include "GlobalData.h" // 22.08.18 Ahn Add 
@@ -26,7 +26,7 @@ public:
 
 		enBitIn_Dummy9			= 0x00000101,	// B63C8	
 		enBitIn_InkMarkingActive= 0x00000102,	// B63C9
-		enBitIn_ConnectZone		= 0x00000104,	// B63CA  // 22.01.12 Ahn ¿¬°á±¸°£ ºñ°Ë»ç±¸°£. 
+		enBitIn_ConnectZone		= 0x00000104,	// B63CA  // 22.01.12 Ahn ì—°ê²°êµ¬ê°„ ë¹„ê²€ì‚¬êµ¬ê°„. 
 		enBitIn_Dummy12			= 0x00000108,	// B63CB
 		enBitIn_Dummy13			= 0x00000110,	// B63CC
 		enBitIn_Dummy14			= 0x00000120,	// B63CD
@@ -304,15 +304,15 @@ public:
 		en_Alarm_Spatter_Top	= 0x0080,
 		en_Alarm_Spatter_Btm	= 0x0100,
 	};
-	//Wxxx.0 ¿¬¼Ó ºÒ·® ¾Ë¶÷
-	//Wxxx.1 ½É°¢ ºÒ·® ¾Ë¶÷
-	//Wxxx.2 ±¸°£ ºÒ·® ¾Ë¶÷
-	//Wxxx.3 Dross Top - ºÒ·® ¾Ë¶÷
-	//Wxxx.4 Dross Bot - ºÒ·® ¾Ë¶÷
-	//Wxxx.5 Foil exposure Top - ºÒ·® ¾Ë¶÷
-	//Wxxx.6 Foil exposure Bot - ºÒ·® ¾Ë¶÷
-	//Wxxx.7 Spatter Top - ºÒ·® ¾Ë¶÷
-	//Wxxx.8 Spatter Bot - ºÒ·® ¾Ë¶÷
+	//Wxxx.0 ì—°ì† ë¶ˆëŸ‰ ì•ŒëŒ
+	//Wxxx.1 ì‹¬ê° ë¶ˆëŸ‰ ì•ŒëŒ
+	//Wxxx.2 êµ¬ê°„ ë¶ˆëŸ‰ ì•ŒëŒ
+	//Wxxx.3 Dross Top - ë¶ˆëŸ‰ ì•ŒëŒ
+	//Wxxx.4 Dross Bot - ë¶ˆëŸ‰ ì•ŒëŒ
+	//Wxxx.5 Foil exposure Top - ë¶ˆëŸ‰ ì•ŒëŒ
+	//Wxxx.6 Foil exposure Bot - ë¶ˆëŸ‰ ì•ŒëŒ
+	//Wxxx.7 Spatter Top - ë¶ˆëŸ‰ ì•ŒëŒ
+	//Wxxx.8 Spatter Bot - ë¶ˆëŸ‰ ì•ŒëŒ
 
 	// Melsec Address End
 
@@ -345,8 +345,8 @@ public:
 		enSmsBitOut_LotEndReqAck		= 5,	// 
 		enSmsBitOut_TabZeroReset		= 6,	// 
 		enSmsBitOut_AlarmResetAck		= 7,	// 
-		enSmsBitOut_DiskSpaceWarning	= 8,	// Address Map¿¡ ¾øÀ½
-		enSmsBitOut_DiskSpaceAlarm		= 9,	// Address Map¿¡ ¾øÀ½
+		enSmsBitOut_DiskSpaceWarning	= 8,	// Address Mapì— ì—†ìŒ
+		enSmsBitOut_DiskSpaceAlarm		= 9,	// Address Mapì— ì—†ìŒ
 	};
 	// Siemens Address End
 	// Siemens Word Address Start
@@ -569,7 +569,7 @@ public :
 	// 22.05.26 Ahn Add Start
 
 protected:
-	CPioCtrl* m_pPioCtrl;			// ‚h?‚n§ŒäƒIƒuƒWƒFƒNƒg‚Ö‚Ì?ƒCƒ“?iƒRƒ“ƒxƒA‘•’u‚Æ‚Ì‚h?‚e—pj(CAprPioCtrl *)x1
+	CPioCtrl* m_pPioCtrl;			// ê´¿?êµˆë§•ëš¥ê¸†ê¸³ê¸™ê¸ƒê¸ê¸£ê·‰ê¶»?ê·½ê¹›?ê±ê¸“ê¹›ê¸¹ê·ºëª§ë­«ê¶´ê¶»ê´¿?ê´»ë¾­ê±‚(CAprPioCtrl *)x1
 	BOOL	m_bDebugIO;
 };
 

@@ -845,9 +845,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 	
 	if (nIDEvent == m_TID_Alive_Pulse) {
 		KillAlivePulseTimer();
-		CSigProc *pSigProc = theApp.m_pSigProc;
-		pSigProc->SigOutAlivePulse(TRUE);
-		SetAlivePulseTimer();
+//		CSigProc *pSigProc = theApp.m_pSigProc;
+//		pSigProc->SigOutAlivePulse(TRUE);
+//		SetAlivePulseTimer(); //pyjtest
 
 	}	
 
