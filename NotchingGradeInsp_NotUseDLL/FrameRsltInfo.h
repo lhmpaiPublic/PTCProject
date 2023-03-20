@@ -7,7 +7,6 @@
 
 #include  "CTabRsltInfo.h"
 
-//Top Frame, Bottom Frame °´Ã¼ »ó¼Ó
 class CFrameRsltInfo : public CFrameInfo
 {
 public:
