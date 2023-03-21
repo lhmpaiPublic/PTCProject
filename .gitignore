@@ -2,6 +2,8 @@
 
 # no .a files
 *.a
+*.zip
+*.ini
 
 # but do track lib.a, even though you're ignoring .a files above
 !lib.a
@@ -12,6 +14,7 @@
 # ignore all files in the build/ directory
 build/
 x64/
+NotchingGradeInsp_NotUseDLL_Test/
 NotchingGradeInsp_NotUseDLL/.vs/
 NotchingGradeInsp_NotUseDLL/Data/INDEX/
 
