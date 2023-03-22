@@ -6044,6 +6044,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 	//22.09.15 Ahn Modify Start
 	//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) { // 22.01.06 Ahn Modify Start
+
+	//모드가 양극일 경우 처리
 	if (AprData.m_System.m_nMachineMode == ANODE_MODE) { 
 	//22.09.15 Ahn Modify End
 		// 2/3 지점에서 수직선을 내려 Tab을 먼저 찾음.
@@ -6055,6 +6057,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		}
 		*pnLevel = nLevel;
 	}
+	//모드가 음극일 경우 처리
 	else {
 		nLocalRet = CImageProcess::FindTabLevel_Simple(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
 		*pnLevel = nLevel;
@@ -8795,11 +8798,16 @@ int CImageProcess::GetBoundaryOfElectorde(BYTE* pImgPtr, int nWidth, int nHeight
 	int nSamplingSize = nHeight / 100;
 	int* pnPrj = new int[nPrjWidth];
 
+	//DarkRoll  사용여부 체크
+	//레시피 정보에 Tab Condition Roll Bright Mode Top
 	BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 
+	//프로젝션 이미지 데이터 생성 샘플링 값 높이/100
 	CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
+	//프로젝션 데이터로 바운드리 크기를 찾는다.
 	int nBndElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], nFindDir, bUseDarkRoll ) ;
 
+	//찾는 위치가 Left
 	if (nFindDir == en_FindFromLeft) {
 		nBndElectrode += (nWidth - nPrjWidth);
 	}

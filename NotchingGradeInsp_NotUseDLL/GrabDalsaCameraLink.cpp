@@ -115,9 +115,13 @@ int CGrabDalsaCameraLink::Close()
 
 int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServerIdx )
 {
+	//Dalsa index 는 저장객체 index +1 1부터 시작
 	m_nServerIndex = nServerIdx + 1;
 	m_DispHwnd = hWnd;
+
+	//메모리가 할당된 저장개체의 포인터
 	m_pQueueFrmPtr = pQueueFrmPtr;
+
 	char acqServerName[CORSERVER_MAX_STRLEN];
 	char configFilename[MAX_PATH];
 	BOOL isNotSupported = FALSE, status = FALSE, acquisitionCreated = TRUE, acqDeviceCreated = TRUE;
@@ -125,7 +129,9 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	BOOL serverFound = FALSE;
 	CString strMsg;
 
+	//Dalsa 서버 갯수를 가졍돈다.
 	int serverCount = SapManager::GetServerCount();
+	//서버의 갯수가 없으면 에러 
 	if (serverCount == 0)
 	{
 	//	printf("No device found!\n");
@@ -135,18 +141,27 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 
 //	for (int serverIndex = 0; serverIndex < serverCount; serverIndex++){
 	if( m_nServerIndex > -1 ){
+		//Server index 1 : Top, 2 : Bottom
+		//해당 인덱스 리소스  가져온다.
 		if (SapManager::GetResourceCount(m_nServerIndex, SapManager::ResourceAcq) != 0)
 		{
+			//인덱스 리소스 서버 명을 가져온다.
 			char serverName[CORSERVER_MAX_STRLEN];
 			SapManager::GetServerName(m_nServerIndex, serverName, sizeof(serverName));
+
 		//	printf("%d: %s\n", serverIndex, serverName);
 			strMsg.Format("%d: %s\n", m_nServerIndex, serverName);
+
+			//서버명 복사
 			CorStrncpy(acqServerName, serverName, MAX_PATH);
+
+			//디버그 출력
 			TRACE(strMsg);
 			serverFound = TRUE;
 		}
 	}
 
+	//서버를 못찾았으면 실패 에러출력
 	if (!serverFound)
 	{
 	//	printf("No acquisition server found!\n");
@@ -156,12 +171,15 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 		return -2;
 	}
 
+	//찾은 서버의 디바이스 리소스 갯수 가져온다.
 	int deviceCount = SapManager::GetResourceCount(acqServerName, SapManager::ResourceAcq);
-	int cameraCount = 0;
 
+	//device 의 이름을 가져와서 출력한다.
 	for (int deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++)
 	{
+		//디바이스 명을 받을 객체
 		char deviceName[CORPRM_GETSIZE(CORACQ_PRM_LABEL)];
+		//디버이스명을 가져온다.
 		SapManager::GetResourceName(acqServerName, SapManager::ResourceAcq, deviceIndex, deviceName, sizeof(deviceName));
 		strMsg.Format("%d: %s\n", deviceIndex + 1, deviceName);
 		TRACE(strMsg);
@@ -170,44 +188,72 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	// List all files in the config directory
 	char configPath[MAX_PATH];
 	configPath[0] = '\0';
+
+	//환경변수의 SAPERADIR 경로를 가져온다.
 	GetEnvironmentVariable("SAPERADIR", configPath, sizeof(configPath));
 	configPath[sizeof(configPath) - 1] = '\0';
 
+	//환경변수의 경로에 \\CamFiles\\User\\ 붙인다. configPath 버퍼크기 오버되지 않게 한다.
 	CorStrncat(configPath, "\\CamFiles\\User\\", sizeof(configPath));
 
+	//찾은 경로에 CameraSetting.ccf 을 붙인다.
+	//C:\Program Files\Teledyne DALSA\Sapera\CamFiles\user\CameraSetting.ccf
 	char findPath[MAX_PATH];
 	CorStrncpy(findPath, configPath, MAX_PATH);
 	CorStrncat(findPath, "CameraSetting.ccf", sizeof(findPath));
+
+	//CameraSetting.ccf 명을 붙인 경로 복사
 	CorStrncpy(configFilename, findPath, sizeof(findPath));
 
+	//Device Numver
 	m_acqDeviceNumber = 0;
+	//Sap 위치, 버서명과 디버이스 번호 0 세팅 SapLocation 임시변수
 	SapLocation loc(acqServerName, m_acqDeviceNumber);
 
+	//서버명에 해당하는 리소스가 있으면 ?
 	if (SapManager::GetResourceCount(acqServerName, SapManager::ResourceAcq) > 0)
 	{
+		//위치에 해당하는 객체 생성
+		//Camera Settting 파일 경로로 객체 생성 CameraSetting.ccf 파일을 읽어서 생성
 		m_pAcq = new SapAcquisition(loc, configFilename);
+
+		//디바이스 저장 객체 생성
 		m_pAcqDevice = new SapAcqDevice(acqServerName, 0);
 
+		//버퍼 객체 생성
 		m_pBuffers = new SapBuffer(2, m_pAcq); 
+
+		//View 객체 생성
 		m_pView = new SapView(m_pBuffers, m_DispHwnd);
 
+		//찾은 디버이스에 해당하는 객체를 초기화
 		GrabberInit();
 
+		//콜백을 위한 객채생성
+		//View 객체, 큐 저장 버퍼, pbt Wave, 서버인덱스, Wave 넓이
+		//콜백함수 AcqCallback 의 SapXferCallbackInfo 포인터 pContext을 받는다.
 		m_pCallbackInfo = new CCallBackInfo(m_pView, m_pQueueFrmPtr, m_pbtWave, m_nServerIndex, m_nWaveWidth );
+
+		//콜백함수 : AcqCallback
+		//m_pCallbackInfo 콜백 정보
 		m_pXfer = new SapAcqToBuf(m_pAcq, m_pBuffers, AcqCallback, m_pCallbackInfo);
 		// Create acquisition object
 
+		//SapAcquisition 객체 포인터와 값 Create(생성) 중 하나라도 실했으면 생성 실패
 		if (m_pAcq && !*m_pAcq && !m_pAcq->Create())
 			acquisitionCreated = FALSE;
 	}
 
 	// 22.05.20 Ahn Add Start
+	//SapAcquisition Label 이름을 비교해서 성공여부 확인
 	CString strLabel;
 	strLabel.Format( _T("%s"), m_pAcq->GetLabel() );
+	//CameraLink HS Mono 텍스트을 가지고 왔으면 성공
 	if (strLabel.Find(_T("CameraLink HS Mono")) >= 0){
 		// Camera 연결 완료.
 		m_bCameraLInkComplet = TRUE;
 	}
+	//아니면 실패
 	else {
 		m_bCameraLInkComplet = FALSE;
 	}
@@ -220,22 +266,34 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	// 22.05.17 Ahn Add Start
 	int nDrop = 1;
 	//m_pAcq->SetParameter(CORACQ_PRM_EXT_LINE_TRIGGER_ENABLE, TRUE);
+	
+	//파라메타 설정 CORACQ_PRM_SHAFT_ENCODER_ENABLE TRUE
 	m_pAcq->SetParameter(CORACQ_PRM_SHAFT_ENCODER_ENABLE, TRUE);
+	//파라메타 CORVIC_PRM_SHAFT_ENCODER_DROP Drop 1
 	m_pAcq->SetParameter(CORVIC_PRM_SHAFT_ENCODER_DROP, nDrop);
 	// 22.05.17 Ahn Add End
 
 	// 21.09.29 Ahn Add Start
+	// COR ACQ 번호에 해당하는 파라미터 정의 B.2 VIC Related Parameters
+	//파라메터 CORACQ_PRM_CROP_WIDTH 넓이 TRUE
 	m_pAcq->SetParameter(CORACQ_PRM_CROP_WIDTH, m_nImgWidth, TRUE);
+	//파라메터 CORACQ_PRM_CROP_WIDTH 높이 TRUE
 	m_pAcq->SetParameter(CORACQ_PRM_CROP_HEIGHT, m_nImgHeight, TRUE);
+
+	//파라메타 LEFT 카메라 OFFSET 설정
 	m_pAcq->SetParameter(CORACQ_PRM_CROP_LEFT, AprData.m_System.m_nCamViewOffset[m_nServerIndex-1], TRUE);
 	//m_pAcq->SetParameter(CORACQ_PRM_SHAFT_ENCODER_SOURCE, 3, TRUE);
 	// 21.09.29 Ahn Add End
 
 	// 22.07.25 Ahn Add Start
+	//FLIP  파라메터 설정
 	m_pAcq->SetParameter(CORACQ_PRM_FLIP, AprData.m_System.m_nCamImageFlip[m_nServerIndex - 1], TRUE);
 	// 22.07.25 Ahn Add End
 
+	//파라메타를 모두 설정하고 OPEN 성공
 	m_bOpen = TRUE;
+
+	//초기화 완료 여부 확인
 	m_bInitComplet = TRUE;
 	return 0;
 }
@@ -412,6 +470,7 @@ int CGrabDalsaCameraLink::FreeHandle()
 		return 2;
 	}
 
+	//객체 메모리 해제 시 초기화 초기화
 	m_bInitComplet = FALSE;
 
 	// Destroy view object

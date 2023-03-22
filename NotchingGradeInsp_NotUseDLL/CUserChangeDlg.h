@@ -36,4 +36,5 @@ public:
 	void ChangePassword(int nMode);
 	CFont	m_font;
 	afx_msg void OnCbnSelchangeCbUserlist();
+	afx_msg void OnBnClickedCancel();
 };

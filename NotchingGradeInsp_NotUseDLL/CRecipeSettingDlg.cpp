@@ -2497,7 +2497,7 @@ void CRecipeSettingDlg::DisplayLanguage()
 	}
 	pWnd = GetDlgItem(IDC_ST_INPUT_MM);
 	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("입력단위[um]"), _T("Input[pix]")));
+		pWnd->SetWindowTextA(_LANG(_T("입력단위[mm]"), _T("Input[pix]")));
 	}
 	pWnd = GetDlgItem(IDC_ST_INPUT_PIX);
 	if (pWnd != nullptr) {

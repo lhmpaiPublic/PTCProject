@@ -45,6 +45,7 @@ BEGIN_MESSAGE_MAP(CUserChangeDlg, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CUserChangeDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDC_CHK_PASSWORD_CHANGE, &CUserChangeDlg::OnBnClickedChkPasswordChange)
 	ON_CBN_SELCHANGE(IDC_CB_USERLIST, &CUserChangeDlg::OnCbnSelchangeCbUserlist)
+	ON_BN_CLICKED(IDCANCEL, &CUserChangeDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
@@ -110,6 +111,16 @@ BOOL CUserChangeDlg::OnInitDialog()
 	LoadPassword();
 
 	m_ChkChangePassword = FALSE;
+	if (m_CbUserList.GetCurSel() == 0)
+	{
+		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
+		pWnd->ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
+		pWnd->ShowWindow(SW_SHOW);
+	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -150,66 +161,11 @@ void CUserChangeDlg::LoadPassword()
 void CUserChangeDlg::OnBnClickedOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(TRUE);
-	if (m_ChkChangePassword == TRUE) {
-		return;
-	}
 	int nSel = m_CbUserList.GetCurSel();
-
-	// 22.09.20 Ahn Modify Start
-	if (nSel == UserModeDefine::enMaker) {
-		if (m_EdPassword.Compare(_T("ptc8873")) == 0) {
-			AprData.UserMode = UserModeDefine::enMaker;
-			CDialogEx::OnOK();
-		}
-		else {
-			AfxMessageBox( _LANG(_T("패스워드가 잘못 되었습니다."), _T("Entered Password is worng") ) );
-		}
-	}
-	else 
-	// 22.09.20 Ahn Modify End
+	if (m_ChkChangePassword == TRUE)
 	{
-		if ((m_EdPassword == strPassword[nSel]) || (nSel == 0)) {
-			AprData.UserMode = (UserModeDefine::eMode)nSel;
-			CDialogEx::OnOK();
-		}
-		else {
-			AfxMessageBox(_LANG( _T("패스워드가 잘못 되었습니다."), _T("Entered Password is worng") ) );
-		}
-	}
-
-}
-
-
-void CUserChangeDlg::OnBnClickedChkPasswordChange()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	int nSel = m_CbUserList.GetCurSel();
-	CWnd* pWnd;
-	if ( UserModeDefine::enMaker == nSel ){
-		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
-		pWnd->SetWindowTextA(_T("비밀번호 변경"));
-		m_ChkChangePassword = FALSE;
-		UpdateData(FALSE);
-		return;
-	}
-	m_ChkChangePassword = !m_ChkChangePassword;
-	UpdateData(TRUE);
-
-
-	if (m_ChkChangePassword == TRUE) {
-		m_StaticPassword.SetWindowText(_T("현재 비밀번호"));
-		pWnd = GetDlgItem(IDOK);
-		pWnd->ShowWindow(SW_HIDE);
-		pWnd = GetDlgItem(IDC_ST_PASSWORD2);
-		pWnd->ShowWindow(SW_SHOW);
-		pWnd = GetDlgItem(IDC_ED_PASSWORD2);
-		pWnd->ShowWindow(SW_SHOW);
-		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
-		pWnd->SetWindowTextA(_T("변경 완료"));
-
-	}
-	else {
+		CWnd* pWnd;
+		UpdateData(TRUE);
 		if ((m_EdChangePassword.GetLength() > 0) && (m_EdPassword.Compare(strPassword[nSel]) == 0)) {
 			if (AfxMessageBox(_T("패스워드를 변경하시겠습니까?"), MB_YESNO) != IDYES) {
 				return;
@@ -219,18 +175,21 @@ void CUserChangeDlg::OnBnClickedChkPasswordChange()
 			}
 			pWnd = GetDlgItem(IDOK);
 			pWnd->ShowWindow(SW_SHOW);
+			pWnd->SetWindowTextA(_T("확인"));
 			pWnd = GetDlgItem(IDC_ST_PASSWORD2);
 			pWnd->ShowWindow(SW_HIDE);
 			pWnd = GetDlgItem(IDC_ED_PASSWORD2);
 			pWnd->ShowWindow(SW_HIDE);
 			m_StaticPassword.SetWindowText(_T("비밀번호"));
 			pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
+			pWnd->ShowWindow(SW_SHOW);
 			pWnd->SetWindowTextA(_T("비밀번호 변경"));
 		}
 		else {
 			AfxMessageBox(_T("현재 비밀번호와 변경하고자하는 비밀번호를 확인해주세요"));
 			pWnd = GetDlgItem(IDOK);
 			pWnd->ShowWindow(SW_SHOW);
+			pWnd->SetWindowTextA(_T("확인"));
 			pWnd = GetDlgItem(IDC_ST_PASSWORD2);
 			pWnd->ShowWindow(SW_HIDE);
 			pWnd = GetDlgItem(IDC_ED_PASSWORD2);
@@ -238,7 +197,56 @@ void CUserChangeDlg::OnBnClickedChkPasswordChange()
 			m_StaticPassword.SetWindowText(_T("비밀번호"));
 			pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
 			pWnd->SetWindowTextA(_T("비밀번호 변경"));
+			pWnd->ShowWindow(SW_SHOW);
 		}
+		m_ChkChangePassword = FALSE;
+	}
+	else
+	{
+		UpdateData(TRUE);
+		// 22.09.20 Ahn Modify Start
+		if (nSel == UserModeDefine::enMaker) {
+			if ((m_EdPassword == strPassword[nSel])) {
+				AprData.UserMode = UserModeDefine::enMaker;
+				CDialogEx::OnOK();
+			}
+			else {
+				AfxMessageBox(_LANG(_T("패스워드가 잘못 되었습니다."), _T("Entered Password is worng")));
+			}
+		}
+		else
+		{
+			if ((m_EdPassword == strPassword[nSel]) || (nSel == 0)) {
+				AprData.UserMode = (UserModeDefine::eMode)nSel;
+				CDialogEx::OnOK();
+			}
+			else {
+				AfxMessageBox(_LANG(_T("패스워드가 잘못 되었습니다."), _T("Entered Password is worng")));
+			}
+		}
+	}
+}
+
+
+void CUserChangeDlg::OnBnClickedChkPasswordChange()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int nSel = m_CbUserList.GetCurSel();
+	CWnd* pWnd;
+
+	if (m_ChkChangePassword == FALSE && (nSel != 0)) {
+		m_StaticPassword.SetWindowText(_T("현재 비밀번호"));
+		pWnd = GetDlgItem(IDOK);
+		pWnd->ShowWindow(SW_SHOW);
+		pWnd->SetWindowTextA(_T("변경"));
+		pWnd = GetDlgItem(IDC_ST_PASSWORD2);
+		pWnd->ShowWindow(SW_SHOW);
+		pWnd = GetDlgItem(IDC_ED_PASSWORD2);
+		pWnd->ShowWindow(SW_SHOW);
+		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
+		pWnd->ShowWindow(SW_HIDE);
+		m_ChkChangePassword = TRUE;
+
 	}
 }
 
@@ -265,32 +273,35 @@ void CUserChangeDlg::ChangePassword(int nMode)
 void CUserChangeDlg::OnCbnSelchangeCbUserlist()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	int nSel = m_CbUserList.GetCurSel();
 	CWnd* pWnd = nullptr;
-
-	switch (nSel) {
-	case	UserModeDefine::enOperator:
-	case	UserModeDefine::enEngineer:
-		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
-		pWnd->SetWindowTextA(_T("비밀번호 변경"));
-		//pWnd = GetDlgItem(IDOK);
-		pWnd->ShowWindow(SW_SHOW);
-		break;
-	case	UserModeDefine::enMaker :
-		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
-		pWnd->ShowWindow(SW_HIDE);
-		//pWnd->SetWindowTextA(_T("비밀번호 변경"));
-		break;
-	}
+	pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
+	pWnd->ShowWindow(SW_SHOW);
+	pWnd->SetWindowTextA(_T("비밀번호 변경"));
 	pWnd = GetDlgItem(IDC_ST_PASSWORD2);
 	pWnd->ShowWindow(SW_HIDE);
 	pWnd = GetDlgItem(IDC_ED_PASSWORD2);
 	pWnd->ShowWindow(SW_HIDE);
 	m_StaticPassword.SetWindowText(_T("비밀번호"));
-	pWnd = GetDlgItem(IDOK);
-	pWnd->ShowWindow(SW_SHOW);
-
 
 	m_ChkChangePassword = FALSE;
+
+	if (m_CbUserList.GetCurSel() == 0)
+	{
+		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
+		pWnd->ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
+		pWnd->ShowWindow(SW_SHOW);
+	}
 	UpdateData(FALSE);
+}
+
+
+void CUserChangeDlg::OnBnClickedCancel()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CDialogEx::OnCancel();
+	m_ChkChangePassword = FALSE;
 }

@@ -62,7 +62,7 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 
 
 	// 21.11.11 Ahn Add Start
-	//grabber °¹¼ö ¸¸Å­ ½º·¡µåÅ¥¸¦ Á¦¾îÇÒ °´Ã¼¸¦ »ı¼ºÇÑ´Ù.
+	//grabber ê°¯ìˆ˜ ë§Œí¼ ìŠ¤ë˜ë“œíë¥¼ ì œì–´í•  ê°ì²´ë¥¼ ìƒì„±í•œë‹¤.
 	for (i = 0; i < GRABBER_COUNT; i++) {
 		m_pThreadQueueCtrl[i] = new  CThreadQueueCtrl(this);
 	}
@@ -92,7 +92,7 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 	m_pQueueCounterIn = new CCounterQueueCtrl();
 	m_pQueueCounterIn->ResetQueue();
 
-	//ÀÌ¹ÌÁö Cut ½º·¡µå °´Ã¼ »ı¼º
+	//ì´ë¯¸ì§€ Cut ìŠ¤ë˜ë“œ ê°ì²´ ìƒì„±
 	m_pImgCutTabThread = new CImageProcThread(this);
 	if (m_pImgCutTabThread != NULL) {
 		m_pImgCutTabThread->Begin(THREAD_MODE_CUT_TAB);
@@ -106,7 +106,7 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 	//	pThread->Begin(THREAD_MODE_PROC);
 	//}
 	
-	//ÀÌ¹ÌÁö Ã³¸® ´ë±â ½º·¡µå °´Ã¼ »ı¼º
+	//ì´ë¯¸ì§€ ì²˜ë¦¬ ëŒ€ê¸° ìŠ¤ë˜ë“œ ê°ì²´ ìƒì„±
 	m_pImgProcWaitThread = new CImageProcThread(this);
 	m_pImgProcWaitThread->Begin(THREAD_MODE_PROC);
 	// 21.11.11 Ahn Delete End
@@ -147,8 +147,8 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 int CImageProcessCtrl::ResetCamera()
 {
 	int nRet = 0; 
-	//Grabber °¹¼ö ¸¸Å­ µ¹¸é¼­°´Ã¼¸¦ »èÁ¦
-	//Grabber °´Ã¼ »èÁ¦
+	//Grabber ê°¯ìˆ˜ ë§Œí¼ ëŒë©´ì„œê°ì²´ë¥¼ ì‚­ì œ
+	//Grabber ê°ì²´ ì‚­ì œ
 	for (int i = 0; i < GRABBER_COUNT; i++) {
 		if (m_pGrabCtrl[i] != NULL) {
 			m_pGrabCtrl[i]->Close();
@@ -157,25 +157,25 @@ int CImageProcessCtrl::ResetCamera()
 		}
 	}
 
-	// ÀÌ¹ÌÁö Cut ½º·¡µå °´Ã¼ Á¾·á ÈÄ ´Ù½Ã »ı¼º Ä«¸Ş¶ó°¡ Reset µÉ °æ¿ì
+	// ì´ë¯¸ì§€ Cut ìŠ¤ë˜ë“œ ê°ì²´ ì¢…ë£Œ í›„ ë‹¤ì‹œ ìƒì„± ì¹´ë©”ë¼ê°€ Reset ë  ê²½ìš°
 	if (m_pImgCutTabThread != NULL) {
-		//ÀÌ¹ÌÁö Cut ½º·¡µå Kill
+		//ì´ë¯¸ì§€ Cut ìŠ¤ë˜ë“œ Kill
 		m_pImgCutTabThread->Kill();
 		delete m_pImgCutTabThread;
 
-		//ÀÌ¹ÌÁö Cut °´Ã¼ Àç »ı¼º
+		//ì´ë¯¸ì§€ Cut ê°ì²´ ì¬ ìƒì„±
 		m_pImgCutTabThread = new CImageProcThread(this);
 		if (m_pImgCutTabThread != NULL) {
 			m_pImgCutTabThread->Begin(THREAD_MODE_CUT_TAB);
 		}
 	}
 
-	//Grabber ¼ıÀÚ ¸¸Å­ Frame Å¥¸¦ Reset
+	//Grabber ìˆ«ì ë§Œí¼ Frame íë¥¼ Reset
 	for (int i = 0; i < GRABBER_COUNT; i++) {
 		m_pQueueFrmCtrl[i]->ResetQueue();	// 22.05.19 Ahn Add 
 
-		//Grabber °´Ã¼¸¦ »ı¼º ÇÏ°í  Dalsa Ä«¸Ş¶ó ¿¬°á
-		nRet |= Initialize( NULL, i);
+		//Grabber ê°ì²´ë¥¼ ìƒì„± í•˜ê³   Dalsa ì¹´ë©”ë¼ ì—°ê²°
+		nRet |= Initialize(NULL, i);
 	}
 	return nRet;
 }
@@ -216,11 +216,18 @@ void CImageProcessCtrl::SetFrameCount(long lFrameCount)
 
 int CImageProcessCtrl::Initialize(HWND hWnd, int nIndex )
 {
+	//ì´ˆê¸°í™” ì‹œ Dalsa Grabber  ì—°ê²° í´ë˜ìŠ¤ ìƒì„±
+	// ì¹´ë©”ë¼ ì¥ë¹„ ì´ë²¤íŠ¸ ì—°ê²°í•˜ì—¬ ì´ë¯¸ì§€ë¥¼ ë°›ê¸°
+	//nIndex 0 : Top , 1 : Bottom
 	if (m_pGrabCtrl[ nIndex ] == NULL) {
 		m_pGrabCtrl[nIndex] = new CGrabDalsaCameraLink();
 	}
 	
+	//ì´ë¯¸ì§€ ì¸í…ìŠ¤
 	m_nImgProcIdx[nIndex] = nIndex;
+
+	//Grabber index 0 Top ì—´ê¸°, 1 Bottom  ì—´ê¸°
+	//ë©”ëª¨ë¦¬ í• ë‹¹ëœ CQueueCtrl í¬ì¸í„° ê°ì²´ì„ ë³€ìˆ˜ë¡œ ë„˜ê¸´ë‹¤.
 	m_pGrabCtrl[nIndex]->Open( hWnd, m_pQueueFrmCtrl[ nIndex ], nIndex );
 	// Check SerialNo And Swap 
 	//if( AprData.m_System.m_nCamViewHeight)
@@ -236,7 +243,7 @@ int CImageProcessCtrl::Destroy()
 		m_pGrabCtrl[i] = NULL;
 	}
 
-	//ÀÌ¹ÌÁö Cut ½º·¡µå »ì¾Æ ÀÖ´Ù¸é Kill ÈÄ °³°Ô »èÁ¦
+	//ì´ë¯¸ì§€ Cut ìŠ¤ë˜ë“œ ì‚´ì•„ ìˆë‹¤ë©´ Kill í›„ ê°œê²Œ ì‚­ì œ
 	if (m_pImgCutTabThread != NULL) {
 		m_pImgCutTabThread->Kill();
 		delete m_pImgCutTabThread;
@@ -254,7 +261,7 @@ int CImageProcessCtrl::Destroy()
 	//	m_vecThread.erase(m_vecThread.begin());
 	//}
 	
-	//ÀÌ¹ÌÁö Ã³¸® ´ë±â ½º·¡µå
+	//ì´ë¯¸ì§€ ì²˜ë¦¬ ëŒ€ê¸° ìŠ¤ë˜ë“œ
 	if (m_pImgProcWaitThread != NULL) {
 		m_pImgProcWaitThread->Kill();
 		delete m_pImgProcWaitThread;

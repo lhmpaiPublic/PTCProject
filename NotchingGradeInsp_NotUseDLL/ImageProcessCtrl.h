@@ -46,26 +46,26 @@ private :
 	CDefectQueueCtrl *m_pDefectQueueCtrl ;
 	// 22.06.23 Ahn Add End
 
-	//Ä«¿îÅÍ Å¥ Á¦¾î °´Ã¼
+	//ì¹´ìš´í„° í ì œì–´ ê°ì²´
 	CCounterQueueCtrl* m_pQueueCounterIn;
 
-	//ÀÌ¹ÌÁö Ã³¸® ½º·¡µå (´ë±â ½º·¡µå)
+	//ì´ë¯¸ì§€ ì²˜ë¦¬ ìŠ¤ë˜ë“œ (ëŒ€ê¸° ìŠ¤ë˜ë“œ)
 	CImageProcThread* m_pImgProcWaitThread;
 
-	//ÀÌ¹ÌÁö Cut Tab ½º·¡µå
+	//ì´ë¯¸ì§€ Cut Tab ìŠ¤ë˜ë“œ
 	CImageProcThread* m_pImgCutTabThread;
 
-	//°á°ú ½º·¡µå Ä«¸Ş¶ó ´ñ¼ö ¸¸Å­
+	//ê²°ê³¼ ìŠ¤ë˜ë“œ ì¹´ë©”ë¼ ëŒ“ìˆ˜ ë§Œí¼
 	CResultThread* m_pResultThread[GRABBER_COUNT];
 
-	//Ä«¿îÅÍ ½º·¡µå °´Ã¼
+	//ì¹´ìš´í„° ìŠ¤ë˜ë“œ ê°ì²´
 	CCounterThread* m_pCounterThread;
 
-	//½º·¡µå Å¥¸¦ Á¦¾îÇÒ °´Ã¼
-	//Grabber °´¼ö
+	//ìŠ¤ë˜ë“œ íë¥¼ ì œì–´í•  ê°ì²´
+	//Grabber ê°ìˆ˜
 	CThreadQueueCtrl* m_pThreadQueueCtrl[GRABBER_COUNT];
 	CDefectDataCtrl m_DefDataCtrl;
-	BOOL m_bReserveClear ;
+	BOOL m_bReserveClear;
 
 	// 22.05.31 Ahn Add Start
 	CImageSaveQueueCtrl* m_pImgSaveQueueCtrl;

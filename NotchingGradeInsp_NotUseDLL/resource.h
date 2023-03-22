@@ -2,6 +2,7 @@
 // Microsoft Visual C++에서 생성한 포함 파일입니다.
 // NotchingGradeInsp.rc에서 사용되고 있습니다.
 //
+#define IDCANCEL2                       3
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDS_RESULT_VIEW                 101

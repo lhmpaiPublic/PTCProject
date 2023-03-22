@@ -139,17 +139,25 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #endif
 		}
 
+		//프레임 크기
+		//Top Frame 크기
 		int nSizeFrmL = pQueueFrame_Top->GetSize();
+		//Bottom Frame 크기
 		int nSizeFrmR = pQueueFrame_Bottom->GetSize();
+
+		//프레임 정보가 Top1개 이상, Bottom 1개 이상
 		bHeadFlag = !pQueueFrame_Top->IsEmpty();
 		bTailFlag = !pQueueFrame_Bottom->IsEmpty();
 
+		//Top과 Bottom Frame 크기의 차가 FRAME_ACQ_ERROR_CHK_CNT 이상이면 에러 출력한다.
 		if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) {
 			// 에러 처리 
 		//	pThis->SetFameSizeError(); // 
 			CString strErrMsg;
 			strErrMsg.Format(_T("프레임 사이즈 이상 : Top [%d], Bottom[%d], 검사 상태 [%d], 종료 처리!!!!"), nSizeFrmL, nSizeFrmR , pThis->m_pParent->IsInspection() );
 		//	AprData.SaveErrorLog(strErrMsg);
+
+			//카메라의 에러를 세팅한다.
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
 		}
 #if defined( BOTTOM_CAMERA_DEBUG )
@@ -173,14 +181,18 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 		if ((bHeadFlag && bTailFlag) || (bMakeDummyBtm == TRUE)) {
 #else
+		//Top과 Bottom  정보가 1개씩 이상이 되어야 한다.
 		if (bHeadFlag && bTailFlag) {
 #endif
 			// 22.02.22 Ahn Modify End
+			//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Top 객체를 가져온다.
 			CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
 
+			//Top 이미지의 크기 값
 			int nHeight = pFrmInfo_Top->m_nHeight;
 			int nFrmWIdth = pFrmInfo_Top->m_nWidth;
 			int nWidth = nFrmWIdth;
+
 			// 22.02.22 Ahn Add Start
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 			CFrameInfo* pFrmInfo_Bottom;
@@ -213,6 +225,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 // 22.02.22 Ahn Add End
 // 22.01.04 Ahn Modify Start
 #if !defined( BOTTOM_CAMERA_DEBUG )
+
+			//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Bottom 객체를 가져온다.
 			CFrameInfo* pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
 #else
 			CFrameInfo* pFrmInfo_Bottom = new CFrameInfo();
@@ -232,8 +246,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			// 22.02.22 Ahn Add Start
 #endif
 // 22.02.22 Ahn Add End
-
+			//Top Frame 번호
 			int nFrameCountL = pFrmInfo_Top->m_nFrameCount;
+			//Bottom Frame 번호
 			int nFrameCountR = pFrmInfo_Bottom->m_nFrameCount;
 
 			// 22.11.30 Ahn Modify Start
@@ -252,6 +267,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #endif
 			// 22.02.22 Ahn Add End
 
+			//처리시간 체크 객체 생성 및 시간 진행
 			CTimeAnalyzer ctAna;
 			ctAna.Clear();
 			ctAna.StopWatchStart();
@@ -259,26 +275,32 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			// Tab으로 잘라 보냄
 			// Projection 사용 
 			{
-				CTimeAnalyzer ctAna;
-				ctAna.StopWatchStart();
 				// 22.05.09 Ahn Add Start
 				int nBndElectrode = 0;
 				int nBneElectrodeBtm = 0;
 #if defined( ANODE_MODE )
+				//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
 #endif
 				// 22.05.09 Ahn Add End
+				//Tab 정보를 저장할 vector 임시 객체
 				CImageProcess::_VEC_TAB_INFO vecTabInfo;
 				int nLevel = 0;
 				int nBtmLevel = 0;
+
+				//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
 				int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight ;
 				// 22.11.18 Ahn Modify Start
 				//int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo );
+				
+				//이미지 프로세싱을 위한 클래스 
+				//이미지 Tab 정보에서 Tab을 그룹으로 나누기
 				int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo( pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
 				// 22.11.18 Ahn Modify End
 				// 21.12.28 Ahn Modify Start
 				//int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 
+				//Tab 정보 크기, Tab 정보가 없다면 에러처리
 				int nVecSize = (int)vecTabInfo.size();
 				BOOL bErrorAll = FALSE;
 				if (nVecSize <= 0) {
@@ -287,45 +309,62 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					bErrorAll = TRUE;
 				}
 #if defined( ANODE_MODE )
+				//양극일 경우 Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 				nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom( pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo );
 #else
 				int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 #endif
 				// 21.12.28 Ahn Modify End
-				
+				//Top Bottom 프로젝션 바운드리 처리 시간 체크 및 로그 출력
 				double dTime = ctAna.WhatTimeIsIt_Double();
 				CString strLog;
 				strLog.Format(_T("TabCutting Time [%.2lf]msec, 전극경계Top[%d], Bottom[%d] BtmLevel[%d]"), dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
 				AprData.SaveTactLog(strLog);
 
+				//Tab 정보 크기 만큼 루프 돌다.
 				for (int i = 0; i < nVecSize; i++) {
+
+					//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 					CCounterInfo cntInfo;
+
+					//Tab  정보 접근 임시 포인터 변수
 					CTabInfo* pTabInfo = &vecTabInfo[i];
+
+					//Tab Counter 갯수 2개
 					cntInfo = pCntQueueInCtrl->Pop();
 
+					//Tab 정보에서 Left 크기, Right 크기
 					int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
 					int nRight = pTabInfo->nRight - pTabInfo->nTabRight;
+
 					// 22.05.03 Ahn Modify Start
 					int nErrorNo = 0;
 					//if ((nLeft < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2)) || (nRight < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2))) {
+					//레시피 텝컨디션 영역(Tab 라운드 가로 방향 Pixel수 ) 검사
 					if ((nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW) || (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW)) {
 					// 22.05.03 Ahn Modify End
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 1;
 					}
 
+					//에레 체크 : 
 					if ((AprData.m_NowLotData.m_bProcError == TRUE) && (AprData.m_System.m_bFirstTabDoNotProc == TRUE)) {
 						pTabInfo->m_bErrorFlag = TRUE;
 						AprData.m_NowLotData.m_bProcError = FALSE;
 						nErrorNo = 2;
 					}
+
 					// 21.12.28 Ahn Add Start
+					//Tab 정보 크기, Tab 정보가 없을 때
 					if (bErrorAll == TRUE) {
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 3;
 					}
+
 					// 21.12.28 Ahn Add End
 					// 22.06.22 Ahn Add Start
+					
+					//Tab부의 흑연 코팅높이 에러
 					if (nLevel <= 0 ) {
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 4;
@@ -333,25 +372,38 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					// 22.06.22 Ahn Add End
 
 					// 22.09.30 Ahn Add Start
+					
+					//Tab부의 흑연 코팅높이 에러
 					if( nLevel >= (nWidth - 100 )){
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 5;
 					}
 					// 22.09.30 Ahn Add End
 
+					//프레임 정보 임시 객체(Top 프레임 정보 처리)
 					CFrameInfo* pInfo;
 					pInfo = new CFrameInfo;
+
+					//Tab정보에서 Top 이미지 데이터 세팅
 					pInfo->SetImgPtr(pTabInfo->pImgPtr);
+					//이미지 데이터 높이
 					pInfo->m_nHeight = pTabInfo->nImageLength;
+					//Top 번호
 					pInfo->m_nHeadNo = pFrmInfo_Top->m_nHeadNo;
+					//데이터 넓이
 					pInfo->m_nWidth = nWidth;
+
 					// 22.11.18 Ahn Modify Start
 					//pBtmInfo->m_nFrameCount = nFrameCountL;
+					//프레임 번호
 					pInfo->m_nFrameCount = pTabInfo->nFrameCount;
 					// 22.11.18 Ahn Modify End
+					// Tab  번호
 					pInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
+					//Tab 시작위치 프레임
 					pInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
 					pInfo->m_nTabLevel = nLevel;
+					//검사 모드 : TopFrame
 					pInfo->m_nInspMode = CFrameInfo::en_TopFrame;
 					pInfo->m_nTabLeft = pTabInfo->nTabLeft;
 					pInfo->m_nTabRight = pTabInfo->nTabRight;
@@ -359,6 +411,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 					pInfo->m_nBndElectrode = nBndElectrode;
 
+					//프레임 정보 출력
+					//Tab 번호, 에러번호, Tab left, Tab right, Tab ID
 					CString strMsg;
 					// 22.05.03 Ahn Modify Start
 					strMsg.Format(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
@@ -366,23 +420,34 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					// 22.05.03 Ahn Modify End
 					AprData.SaveDebugLog(strMsg);
 
+					//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
 					CFrameInfo* pBtmInfo;
 					pBtmInfo = new CFrameInfo;
+
+					//Tab정보에서 Bottom 이미지 데이터 세팅
 					pBtmInfo->SetImgPtr(pTabInfo->pImgBtmPtr);
 					pBtmInfo->m_nHeight = pTabInfo->nImageLength;
 					pBtmInfo->m_nHeadNo = pFrmInfo_Bottom->m_nHeadNo;
 					pBtmInfo->m_nWidth = nWidth;
+
 					// 22.11.18 Ahn Modify Start
 					//pBtmInfo->m_nFrameCount = nFrameCountL;
+					//Frame 번호
 					pBtmInfo->m_nFrameCount = pTabInfo->nFrameCount ;
+
 					// 22.11.18 Ahn Modify End
+					//Lot Data에서 Tab 번호
 					pBtmInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
+					//Tab  시작위치 프레임
 					pBtmInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
 					pBtmInfo->m_nTabLevel = nBtmLevel;
+
+					//검사모드  BottomFrame
 					pBtmInfo->m_nInspMode = CFrameInfo::en_BottomFrame;
 					pBtmInfo->m_nTabId_CntBoard = cntInfo.nTabID;
 					pBtmInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 
+					//Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 					pBtmInfo->m_nBndElectrode = nBneElectrodeBtm;// 22.05.11 Ahn Add 
 					// 22.02.22 Ahn Add Start
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
@@ -397,9 +462,15 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #endif
 
 					// 22.05.18 Ahn Add Start
+					
+					//처리할  Top 프레임 정보 갯수
 					int nTopQueCnt = pThreadQue[CAM_POS_TOP]->GetSize();
+					//처리할 Bottom  프레임 정보 갯수
 					int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
+
+					//처리할 정보가 스킵 숫자보다 크다면
 					if ((nTopQueCnt > IMAGE_PROC_SKIP_COUNT) && (nBtmQueCnt > IMAGE_PROC_SKIP_COUNT) 
+						//Top, Bottom 이미지 처리 프레임 정보가 스킵 숫자보다 크다면
 						|| ( (nSizeFrmL > IMAGE_PROC_SKIP_COUNT ) && (nSizeFrmR > IMAGE_PROC_SKIP_COUNT) ) ){
 						pInfo->m_bErrorFlag = TRUE;
 						pBtmInfo->m_bErrorFlag = TRUE ;
@@ -407,23 +478,28 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					// 22.05.18 Ahn Add Start
 
 					// 22.12.09 Ahn Add Start
+					//프레임 처리 시간 세팅
 					LARGE_INTEGER tmp;
 					LARGE_INTEGER start;
 					QueryPerformanceFrequency(&tmp);
 					double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
 					QueryPerformanceCounter(&start);
 
+					//프레임 처리시간 객체를 세팅한다.
 					pInfo->m_stTime = start;
 					pInfo->m_dFrecuency = dFrequency;
 					pBtmInfo->m_stTime = start;
 					pBtmInfo->m_dFrecuency = dFrequency;
 					// 22.12.09 Ahn Add End
 
+					//스래드에 처리할 정보를 저장 TOP, BOTTOM
 					pThreadQue[CAM_POS_TOP]->push(pInfo) ;
 					pThreadQue[CAM_POS_BOTTOM]->push(pBtmInfo) ;
 
+					//Lot Data Tab 번호를 증가 시킨다.
 					AprData.m_NowLotData.m_nTabCount++;
 				}
+				//처리한 Tab 정보를 삭제한다.
 				vecTabInfo.clear();
 			}
 
