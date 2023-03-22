@@ -3,6 +3,9 @@
 
 #include "pch.h"
 #include "NotchingGradeInsp.h"
+#include "MainFrm.h"
+// #include "NotchingGradeInspDoc.h"
+
 #include "CImageProcSimDlg.h"
 #include "afxdialogex.h"
 #include "CImageDispDlg.h"
@@ -26,6 +29,8 @@
 #include "SetValue.h" //  22.09.16 Ahn Add
 
 #include "CResultThread.h" // 23.02.06 Ahn Test 
+
+
 
 // CImageProcSimDlg 대화 상자
 
@@ -151,6 +156,7 @@ BEGIN_MESSAGE_MAP(CImageProcSimDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_CMB_RECIPE_SELECT, &CImageProcSimDlg::OnCbnSelchangeCmbRecipeSelect)
 	ON_WM_SHOWWINDOW()
 	ON_CBN_DROPDOWN(IDC_CMB_RECIPE_SELECT, &CImageProcSimDlg::OnCbnDropdownCmbRecipeSelect)
+	ON_BN_CLICKED(IDC_BTN_RESET_COUNT, &CImageProcSimDlg::OnBnClickedBtnResetCount)
 END_MESSAGE_MAP()
 
 
@@ -440,7 +446,13 @@ void CImageProcSimDlg::ResizeDlg(int cx, int cy)
 		pWnd = (CWnd*)GetDlgItem(IDC_BTN_HISTOGRAM);
 		if (pWnd != nullptr) {
 			pWnd->GetWindowRect(rect);
-			pWnd->SetWindowPos(NULL, nImageLeft + nImageWidth + 10, nRecipeGrpuHeight + 150 , rect.Width(), rect.Height(), SWP_NOZORDER);
+			pWnd->SetWindowPos(NULL, nImageLeft + nImageWidth + 10, nRecipeGrpuHeight + 140 , rect.Width(), rect.Height(), SWP_NOZORDER);
+		}
+
+		pWnd = (CWnd*)GetDlgItem(IDC_BTN_RESET_COUNT);
+		if (pWnd != nullptr) {
+			pWnd->GetWindowRect(rect);
+			pWnd->SetWindowPos(NULL, nImageLeft + nImageWidth + 10, nRecipeGrpuHeight + 170, rect.Width(), rect.Height(), SWP_NOZORDER);
 		}
 	}
 
@@ -557,45 +569,57 @@ void CImageProcSimDlg::OnBnClickedBtnProcAll()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 
-	if ((m_pRecipeInfo == NULL) || (m_pRecipeInfo->m_strRecipeName.GetLength() <= 0)) {
+	if ((m_pRecipeInfo == NULL) || (m_pRecipeInfo->m_strRecipeName.GetLength() <= 0))
+	{
 		MessageBox(_T("레시피를 선택해 주세요."));
 		return ;
 	}
 
-	if (m_bModeTop == TRUE) {
+
+	if (m_bModeTop == TRUE)
+	{
 		// 22.01.17 Ahn Modify Start
 		// 22.09.15 Ahn Modify End
 		//if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
-		if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
+		if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+		{
 		// 22.09.15 Ahn Modify End
 			ProceTopAll_AreaDiff();
 		}
-		else { // Negative Mode
+		else
+		{ // Negative Mode
 			// 23.02.16 Ahn Modify Start
-			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) {
+			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1)
+			{
 				ProcTopAll_BrightRoll();
 			}
-			else {
+			else
+			{
 				ProceTopAll_Negative();
 			}
 			// 23.02.16 Ahn Modify End
 		}
 		// 22.01.17 Ahn Modify End
 	}
-	else {
+	else
+	{
 		// 22.01.17 Ahn Modify Start
 		// 22.09.15 Ahn Modify End
 		//if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
-		if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
+		if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+		{
 		// 22.09.15 Ahn Modify End
 			ProceBottomAll_AreaDiff();
 		}
-		else {// Negative Mode
+		else
+		{// Negative Mode
 			// 23.02.16 Ahn Modify Start
-			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) {
+			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1)
+			{
 				ProcBottomAll_BrightRoll();
 			}
-			else {
+			else
+			{
 				ProceBottomAll_Negative();
 			}
 			// 23.02.16 Ahn Modify End
@@ -5888,3 +5912,27 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	return nRet;
 }
 // 23.02.15 Ahn Add End
+
+void CImageProcSimDlg::OnBnClickedBtnResetCount()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	AprData.LotEndProcess();
+
+// 	theApp.m_pImgProcCtrl->TabCountReset();
+
+	AprData.m_NowLotData.ClearAllCount();
+	AprData.FileCtrl_LotInfo(CGlobalData::en_mode_LotEnd);
+
+// 	CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)pView->GetDocument;
+// 	pDoc->SetReqCounterReset(TRUE);
+
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	pFrame->ResetAndRefreshAll();
+	pFrame->ReflashAll();
+	pFrame->ResetResultViewDlg();
+
+
+	AprData.SaveDebugLog(_T("[Manual] Tab Count Reset"));
+
+}

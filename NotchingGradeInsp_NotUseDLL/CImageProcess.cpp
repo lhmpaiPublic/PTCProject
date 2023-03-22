@@ -567,20 +567,24 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 	int nDestHeight = nEndY - nStartY;
 
 	int nTemp;
-	if (nEndY > nHeight) {
+	if (nEndY > nHeight)
+	{
 		nTemp = nEndY - nHeight;
 		nEndY = nHeight;
 		nStartY -= nTemp;
 	}
 
-	if (nStartY <= 0) {
+	if (nStartY < 0)
+	{
 		nStartY = 0;
 	}
 
-	if (nStartX < 0)  {
+	if (nStartX < 0)
+	{
 		nStartX = 0;
 	}
-	if (nEndX > nWidth) {
+	if (nEndX > nWidth)
+	{
 		nEndX = nWidth;
 	}
 

@@ -18,7 +18,8 @@ CSiemensPlc::CSiemensPlc(CString strIPAddress, int nPort /*= 4000*/, int nOffset
 	m_wOffsetWord_In = nWordIn ;
 	m_wOffsetWord_Out = nWordOut ;
 	// 23.03.03 Ahn Add End
-	OpenPio(); //pyjtest
+
+	OpenPio();
 
 	SetSlaveId(AprData.m_System.m_nSlaveID); // 23.03.02 pyj add
 }
@@ -76,12 +77,7 @@ int CSiemensPlc::WriteDataReg(int offset, short data[], int num)
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
 		}
 
-// 		strMsg.Format(_T("WriteDataReg nAdd:%d, num:%d, data:%d "), nAdd, num, data[0]);
-// 		AprData.SaveDebugLog(strMsg); //pyjtest
-
 	}
-
-//	AprData.SaveDebugLog(_T("WriteDataReg end")); //pyjtest
 
 	return nRet ;
 	//23.03.02 Ahn Add End
@@ -97,10 +93,6 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 	{
 
  		CString strMsg;
-// 		strMsg.Format(_T("ReadDataReg Addr:%d, num:%d"), nAdd, num);
-// 		AprData.SaveDebugLog(strMsg); //pyjtest
-
-// 		DWORD dwStart = GetTickCount();
 		if (m_pLGIS_Plc)
 		{
 			nRet = m_pLGIS_Plc->ReadHoldingRegisters(nAdd, num, (uint16_t*)data);
@@ -119,16 +111,6 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
 		}
 
-// 		DWORD dwEnd = GetTickCount() - dwStart;
-// 
-// 		CString strMsg;
-// 		strMsg.Format(_T("ReadDataReg = %d ms"), dwEnd);
-// 		AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-// 		strMsg.Format(_T("ReadDataReg data:%d"), data[0]);
-// 		AprData.SaveDebugLog(strMsg); //pyjtest
-
 	}
 	return nRet;
 	//23.03.02 Ahn Add End
@@ -146,8 +128,7 @@ int CSiemensPlc::OpenPio(void)
 {
 	CString strMsg;
 	strMsg.Format(_T("OpenPio start IP:%s, Port:%d"), m_strIPAddress, m_nPort);
-
-	AprData.SaveDebugLog(strMsg); //pyjtest
+	AprData.SaveDebugLog(strMsg);
 
 
 	ClosePio();
@@ -155,11 +136,11 @@ int CSiemensPlc::OpenPio(void)
 	
 	if (!m_pLGIS_Plc->Connect())
 	{
-		AprData.SaveDebugLog(_T("Siemens Plc Connect Fail")); //pyjtest
+		AprData.SaveDebugLog(_T("Siemens Plc Connect Fail"));
 		ClosePio();
 	}
 
-	AprData.SaveDebugLog(_T("OpenPio OK")); //pyjtest
+	AprData.SaveDebugLog(_T("OpenPio OK"));
 
 
 

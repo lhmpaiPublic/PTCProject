@@ -62,7 +62,7 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 
 
 	// 21.11.11 Ahn Add Start
-	//grabber °¹¼ö ¸¸Å­ ½º·¡µåÅ¥¸¦ Á¦¾îÇÒ °´Ã¼¸¦ »ý¼ºÇÑ´Ù.
+	//grabber ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	for (i = 0; i < GRABBER_COUNT; i++) {
 		m_pThreadQueueCtrl[i] = new  CThreadQueueCtrl(this);
 	}
@@ -92,7 +92,7 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 	m_pQueueCounterIn = new CCounterQueueCtrl();
 	m_pQueueCounterIn->ResetQueue();
 
-	//ÀÌ¹ÌÁö Cut ½º·¡µå °´Ã¼ »ý¼º
+	//ï¿½Ì¹ï¿½ï¿½ï¿½ Cut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
 	m_pImgCutTabThread = new CImageProcThread(this);
 	if (m_pImgCutTabThread != NULL) {
 		m_pImgCutTabThread->Begin(THREAD_MODE_CUT_TAB);
@@ -106,7 +106,7 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 	//	pThread->Begin(THREAD_MODE_PROC);
 	//}
 	
-	//ÀÌ¹ÌÁö Ã³¸® ´ë±â ½º·¡µå °´Ã¼ »ý¼º
+	//ï¿½Ì¹ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
 	m_pImgProcWaitThread = new CImageProcThread(this);
 	m_pImgProcWaitThread->Begin(THREAD_MODE_PROC);
 	// 21.11.11 Ahn Delete End
@@ -147,8 +147,8 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 int CImageProcessCtrl::ResetCamera()
 {
 	int nRet = 0; 
-	//Grabber °¹¼ö ¸¸Å­ µ¹¸é¼­°´Ã¼¸¦ »èÁ¦
-	//Grabber °´Ã¼ »èÁ¦
+	//Grabber ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å­ ï¿½ï¿½ï¿½é¼­ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	//Grabber ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
 	for (int i = 0; i < GRABBER_COUNT; i++) {
 		if (m_pGrabCtrl[i] != NULL) {
 			m_pGrabCtrl[i]->Close();
@@ -157,24 +157,24 @@ int CImageProcessCtrl::ResetCamera()
 		}
 	}
 
-	// ÀÌ¹ÌÁö Cut ½º·¡µå °´Ã¼ Á¾·á ÈÄ ´Ù½Ã »ý¼º Ä«¸Þ¶ó°¡ Reset µÉ °æ¿ì
+	// ï¿½Ì¹ï¿½ï¿½ï¿½ Cut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Þ¶ï¿½ Reset ï¿½ï¿½ ï¿½ï¿½ï¿½
 	if (m_pImgCutTabThread != NULL) {
-		//ÀÌ¹ÌÁö Cut ½º·¡µå Kill
+		//ï¿½Ì¹ï¿½ï¿½ï¿½ Cut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Kill
 		m_pImgCutTabThread->Kill();
 		delete m_pImgCutTabThread;
 
-		//ÀÌ¹ÌÁö Cut °´Ã¼ Àç »ý¼º
+		//ï¿½Ì¹ï¿½ï¿½ï¿½ Cut ï¿½ï¿½Ã¼ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		m_pImgCutTabThread = new CImageProcThread(this);
 		if (m_pImgCutTabThread != NULL) {
 			m_pImgCutTabThread->Begin(THREAD_MODE_CUT_TAB);
 		}
 	}
 
-	//Grabber ¼ýÀÚ ¸¸Å­ Frame Å¥¸¦ Reset
+	//Grabber ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å­ Frame Å¥ï¿½ï¿½ Reset
 	for (int i = 0; i < GRABBER_COUNT; i++) {
 		m_pQueueFrmCtrl[i]->ResetQueue();	// 22.05.19 Ahn Add 
 
-		//Grabber °´Ã¼¸¦ »ý¼º ÇÏ°í  Dalsa Ä«¸Þ¶ó ¿¬°á
+		//Grabber ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½  Dalsa Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½
 		nRet |= Initialize( NULL, i);
 	}
 	return nRet;
@@ -236,7 +236,7 @@ int CImageProcessCtrl::Destroy()
 		m_pGrabCtrl[i] = NULL;
 	}
 
-	//ÀÌ¹ÌÁö Cut ½º·¡µå »ì¾Æ ÀÖ´Ù¸é Kill ÈÄ °³°Ô »èÁ¦
+	//ï¿½Ì¹ï¿½ï¿½ï¿½ Cut ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ Kill ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (m_pImgCutTabThread != NULL) {
 		m_pImgCutTabThread->Kill();
 		delete m_pImgCutTabThread;
@@ -254,7 +254,7 @@ int CImageProcessCtrl::Destroy()
 	//	m_vecThread.erase(m_vecThread.begin());
 	//}
 	
-	//ÀÌ¹ÌÁö Ã³¸® ´ë±â ½º·¡µå
+	//ï¿½Ì¹ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (m_pImgProcWaitThread != NULL) {
 		m_pImgProcWaitThread->Kill();
 		delete m_pImgProcWaitThread;

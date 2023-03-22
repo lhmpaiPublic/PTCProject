@@ -458,6 +458,7 @@
 #define IDC_CHK_STOP_DURING_RUN         1138
 #define IDC_CHK_PASSWORD_CHANGE         1138
 #define IDC_CHK_SWITCH_DISP             1138
+#define IDC_BTN_RESET_COUNT             1138
 #define IDC_CUST_CAM_WAVE               1139
 #define IDC_CHK_TRG_MODE                1140
 #define IDC_BTN_SELECT_FOLDER           1141

@@ -530,177 +530,287 @@ int CSigProc::WaitSignal(int nIntegration, BOOL mode, int timeout /*= 1000*/, BO
 
 
 
+
+//////////////////////////////////////////////////////////////////////////
+// [ PLC SIGNAL INPUT ]
+
 int CSigProc::SigInAlivePulse()
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_Alive;
-	int nAddress ;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+	int nRet = 0;
+	int nAddress;
+
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
 		nAddress = enSmsBitIn_Alive;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread( nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	else {
+	else
+	{
 		nAddress = enBitIn_Alive;
+		nRet = SignalPortCheck(nAddress);
 	}
-	// 23.02.02 Ahn Add End
-	int nRet = SignalPortCheck(nAddress);
+
+
+
 	return nRet;
 }
+
 int CSigProc::SigInReady()
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_Ready;
+	int nRet = 0;
 	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
 		nAddress = enSmsBitIn_Ready;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	else {
+	else
+	{
 		nAddress = enBitIn_Ready;
+		nRet = SignalPortCheck(nAddress);
+
 	}
-	// 23.02.02 Ahn Add End
-	int nRet = SignalPortCheck(nAddress);
+
 	return nRet;
 }
+
 int CSigProc::SigInRun()
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_Run;
+	int nRet = 0;
 	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
 		nAddress = enSmsBitIn_Run;
-	} else {
-		nAddress = enBitIn_Run;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	// 23.02.02 Ahn Add End
-
-// 	DWORD dwTickStart = GetTickCount();
-
-	int nRet = SignalPortCheck(nAddress);
-
-
-// 	DWORD dwTickEnd = GetTickCount() - dwTickStart;
-// 
-// 	CString strMsg;
-// 	strMsg.Format(_T("SigInRun = %.3f"), dwTickEnd/1000.f );
-// 	AprData.SaveDebugLog(strMsg); //pyjtest
+	else
+	{
+		nAddress = enBitIn_Run;
+		nRet = SignalPortCheck(nAddress);
+	}
 
 	return nRet;
 }
+
 int CSigProc::SigInEncoderZeroReset()
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_EncoderReset;
+	int nRet = 0;
 	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
 		nAddress = enSmsBitIn_EncoderReset;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	else {
+	else
+	{
 		nAddress = enBitIn_EncoderReset;
+		nRet = SignalPortCheck(nAddress);
 	}
-	// 23.02.02 Ahn Add End
-	int nRet = SignalPortCheck(nAddress);
+
 	return nRet;
 }
+
 int CSigProc::SigInTabZeroReset()
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_TabZeroReset;
+	int nRet = 0;
 	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
 		nAddress = enSmsBitIn_TabZeroReset;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	else {
+	else
+	{
 		nAddress = enBitIn_TabZeroReset;
+		nRet = SignalPortCheck(nAddress);
 	}
-	// 23.02.02 Ahn Add End
-	int nRet = SignalPortCheck(nAddress);
+
 	return nRet;
 }
+
 int CSigProc::SigInRecipeChange()
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_RecipeChange;
+	int nRet = 0;
 	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
 		nAddress = enSmsBitIn_RecipeChange;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	else {
+	else
+	{
 		nAddress = enBitIn_RecipeChange;
+		nRet = SignalPortCheck(nAddress);
 	}
-	// 23.02.02 Ahn Add End
-	int nRet = SignalPortCheck(nAddress);
+
 	return nRet;
 }
+
 int CSigProc::SigInLotStart()
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_LotStartReq;
+	int nRet = 0;
 	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
-		nAddress = enSmsBitIn_LotStartReq ;
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		nAddress = enSmsBitIn_LotStartReq;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	else {
+	else
+	{
 		nAddress = enBitIn_LotStartReq;
+		nRet = SignalPortCheck(nAddress);
 	}
-	// 23.02.02 Ahn Add End
-	int nRet = SignalPortCheck(nAddress);
+
 	return nRet;
 }
+
 int CSigProc::SigInLotEnd()
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_LotEndReq;
+	int nRet = 0;
 	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
 		nAddress = enSmsBitIn_LotEndReq;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	else {
+	else
+	{
 		nAddress = enBitIn_LotEndReq;
+		nRet = SignalPortCheck(nAddress);
 	}
-	// 23.02.02 Ahn Add End
-	int nRet = SignalPortCheck(nAddress);
+
 	return nRet;
 }
 
-// 22.02.17 Ahn Add Start
-int CSigProc::SigInInkMarkingActive()
-{
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_InkMarkingActive ;
-	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
-		nAddress = enSmsBitIn_InkMarkingActive;
-	}
-	else {
-		nAddress = enBitIn_InkMarkingActive;
-	}
-	// 23.02.02 Ahn Add End
-	int nRet = SignalPortCheck(nAddress);
-	return nRet;
-}
-// 22.02.17 Ahn Add End
 
-// 22.10.04 Ahn Add Start
 int CSigProc::SigInAlarmReset()
 {
-	int nRet = 0; 
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitIn_AlarmResetReq; 
+	int nRet = 0;
 	int nAddress;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
-		nAddress = enSmsBitIn_AlarmResetReq ;
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		nAddress = enSmsBitIn_AlarmResetReq;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
 	}
-	else {
+	else
+	{
 		nAddress = enBitIn_AlarmResetReq;
+		nRet = SignalPortCheck(nAddress);
 	}
-	// 23.02.02 Ahn Add End
-	nRet = SignalPortCheck(nAddress);
 
 	return nRet;
 }
-// 22.10.04 Ahn Add End
 
 
-// CSigProc::Signal Out
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
+// [ PLC SIGNAL OUTPUT ]
 int CSigProc::SigOutAlivePulse(int nInMode)
 {
 	// 23.02.02 Ahn Add Start

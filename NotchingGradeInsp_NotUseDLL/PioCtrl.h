@@ -19,6 +19,9 @@
 typedef struct {
 	BOOL CheckPortFlag[MAX_PORT];
 	BYTE InputData[MAX_PORT];
+
+	short InputDataSms[MAX_SMS_IO_IN];
+
 	BOOL EndFlag;	// 스레드 정지
 	BOOL BusyFlag;	// 스레드 작업중
 } PIOTHREAD_DATAIF;
@@ -67,7 +70,7 @@ public:
 	bool PioThreadCheck();
 	void PioTheadStop();
 	void PioTheadRun();
-	int InPortByteThread(WORD port, BYTE* data);
+	int InPortByteThread(int nAddress, OUT short& data);
 
 	void AddReadAddrForIO2(int dev, int addr);
 	void AddWriteAddrForIO2(int dev, int addr);
