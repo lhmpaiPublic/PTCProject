@@ -512,12 +512,7 @@ public :
 	int SigInRecipeChange();
 	int SigInLotStart();
 	int SigInLotEnd();
-	// 22.02.17 Ahn Add Start
-	int SigInInkMarkingActive();
-	// 22.02.17 Ahn Add End
-	// 22.10.04 Ahn Add Start
 	int SigInAlarmReset();
-	// 22.10.04 Ahn Add End
 
 	// Signal Out
 	int SigOutAlivePulse(int nMode);

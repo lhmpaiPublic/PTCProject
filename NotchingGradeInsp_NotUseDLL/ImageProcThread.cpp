@@ -692,7 +692,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 22.07.19 Ahn Modify End
 
 						CSigProc* pSigProc = theApp.m_pSigProc;
-						bMarkingActive = TRUE; //pSigProc->SigInInkMarkingActive(); //신호 사용 안함
+						bMarkingActive = TRUE;
 						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) ) {
 							nMarkSel1 = 0;
 							nMarkSel2 = 0; 

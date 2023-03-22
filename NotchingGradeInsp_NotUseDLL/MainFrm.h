@@ -55,6 +55,9 @@ public:
 	int OnRefresh_CropImageView();
 	int ShowResultPanel(BOOL bShow);
 	// 22.07.21 Ahn Modify Start
+	void ResetResultViewDlg();
+
+
 
 	void LoadHistoryData();
 // 22.07.21 Ahn Delete Start

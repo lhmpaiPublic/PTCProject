@@ -63,7 +63,7 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		int nPort = AprData.m_System.m_nPLCPort;
 		pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut );
 
-//		PioTheadRun(); //pyjtest
+		PioTheadRun();
 	}
 	// 23.02.28 Son Mod End
 #endif
@@ -133,12 +133,7 @@ int CPioCtrl::ReadAllPort_BitOut( BYTE *data, short size)
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		int nAddress = AprData.m_System.m_nBitOut;
 
-// 		CString strMsg;
-// 		strMsg.Format(_T("nAddress = %d"), nAddress);
-// 		AprData.SaveDebugLog(strMsg); //pyjtest
-
 		nRet = ReadPLC_Block_device(nAddress, (short*)data, size);
-
 	}
 	else
 	{
@@ -177,10 +172,12 @@ void CPioCtrl::PioTheadRun()
 		THREAD_PRIORITY_LOWEST,
 		0,
 		CREATE_SUSPENDED,
-		NULL))) {
+		NULL)))
+	{
 
 		m_pThread->m_bAutoDelete = FALSE;
 		m_pThread->ResumeThread();
+
 	}
 }
 
@@ -201,25 +198,34 @@ void CPioCtrl::PioTheadStop()
 		m_pThread = NULL;
 	}
 
+
 	return;
 
 }
 
 
-int CPioCtrl::InPortByteThread(WORD port, BYTE* data)
+int CPioCtrl::InPortByteThread(int nAddress , OUT short& data )
 {
-	int	ret;
-
-	if (m_pThread != NULL) {
-		CSingleLock	cs(&m_csPioThread, TRUE);
-		*data = PioDataIF.InputData[port];
-		ret = 0;
-	}
-	else {
-		ret = -1;
+	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE)
+	{
+		return 0;
 	}
 
-	return (ret);
+	CSingleLock	cs(&m_csPioThread, TRUE);
+	data = PioDataIF.InputDataSms[nAddress];
+
+
+	if (data < 0 || data > 1)
+	{
+		return -1;
+	}
+
+// 	CString strMsg;
+// 	strMsg.Format(_T("data = %d, PioDataIF.InputDataSms[0] = %d"), data, PioDataIF.InputDataSms[nAddress]);
+// 	AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+	return 0;
 
 }
 
@@ -341,6 +347,7 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 	int	i;
 	PIOTHREAD_DATAIF* data;
 	BYTE buff[MAX_PORT];
+	short nBuffSms[MAX_SMS_IO_IN];
 	CPioCtrl* ctrl;
 
 	ctrl = (CPioCtrl*)Param;
@@ -353,52 +360,66 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 		buff[i] = 0x00;
 	}
 
-	while (1) {
+	for (i = 0; i < MAX_SMS_IO_IN; i++)
+	{
+		data->InputDataSms[i] = 0;
+		nBuffSms[i] = 0;
+	}
 
-		if (ctrl->pAprPio == NULL) {
+	while (TRUE)
+	{
+
+		if (ctrl->pAprPio == NULL)
+		{
 			break;
 		}
-		if (data->EndFlag == TRUE) {
+	
+		if (data->EndFlag == TRUE)
+		{
 			break;
 		}
-		for (i = 0; i < MAX_PORT; i++) {
-			if (data->CheckPortFlag[i] != TRUE) {
-				continue;
-			}
-// 			ctrl->pAprPio->InPort(i, &buff[i]);
+		
+		if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+		{
+//			DWORD dwStart = GetTickCount();
 
 
-			if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+			if (ctrl->ReadPLC_Block_device(AprData.m_System.m_nBitIn, (short*)nBuffSms, MAX_SMS_IO_IN) != -1)
 			{
-				DWORD dwStart = GetTickCount();
+				CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
+				memcpy(data->InputDataSms, nBuffSms, sizeof(data->InputDataSms));
+			}
 
-				short data[MAX_SMS_IO_IN] = { 0, };
-				if (ctrl->ReadPLC_Block_device(AprData.m_System.m_nBitIn, (short*)data, MAX_SMS_IO_IN) != -1)
+
+
+// 			DWORD dwEnd = GetTickCount() - dwStart;
+// 
+// 			CString strMsg;
+// 			strMsg.Format(_T("[ThreadProc_InPortCheck] ReadPLC_Block_device = %d ms, PLC Alive = %d"), dwEnd, data->InputDataSms[0]);
+// 			AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+
+
+
+		}
+		else
+		{
+			for (i = 0; i < MAX_PORT; i++)
+			{
+				if (data->CheckPortFlag[i] != TRUE)
 				{
-// 					if (data == 1)
-// 					{
-// 						return (1);
-// 					}
+					continue;
 				}
-
-				DWORD dwEnd = GetTickCount() - dwStart;
-
-				CString strMsg;
-				strMsg.Format(_T("[ThreadProc_InPortCheck] ReadPLC_Block_device = %d ms"), dwEnd);
-				AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-			}
-			else
-			{
 				ctrl->pAprPio->InPort(i, &buff[i]);
 			}
 
+			{
+				CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
+				memcpy(data->InputData, buff, sizeof(data->InputData));
+			}
 		}
-		{
-			CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
-			memcpy(data->InputData, buff, sizeof(data->InputData));
-		}
+
 
 		::PumpMessages();
 

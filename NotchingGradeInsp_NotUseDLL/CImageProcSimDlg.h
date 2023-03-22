@@ -238,4 +238,5 @@ public:
 	afx_msg void OnCbnSelchangeCmbRecipeSelect();
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	afx_msg void OnCbnDropdownCmbRecipeSelect();
+	afx_msg void OnBnClickedBtnResetCount();
 };

@@ -681,6 +681,10 @@ void CMainFrame::ResetAndRefreshAll()
 	// 22.07.21 Ahn Modify End
 }
 
+void CMainFrame::ResetResultViewDlg()
+{
+	m_pResultDlg->CounterReset();
+}
 
 
 void CMainFrame::OnSize(UINT nType, int cx, int cy)

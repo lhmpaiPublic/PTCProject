@@ -314,9 +314,6 @@ int CIoMonitorDlg::GetAddressAndBitPos( int nMode, int nSigNo, int &nBitPos  )
 
 int CIoMonitorDlg::RefreshAll()
 {
- //	AprData.SaveDebugLog(_T("RefreshAll")); //pyjtest
-
-
 	int nRet = 0;
 
 	CSigProc* pSigProc = theApp.m_pSigProc;;
@@ -328,11 +325,6 @@ int CIoMonitorDlg::RefreshAll()
 	// 23.03.03 Ahn Modify End
 	pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
 	pSigProc->ReadAllPort_BitOut(m_bSigBitOut);
-
-
-// 	CString strMsg;
-// 	strMsg.Format(_T("m_bSigBitOut = %d"), m_bSigBitOut[0] );
-// 	AprData.SaveDebugLog(strMsg); //pyjtest
 
 
 	//int nIdOnOff[2] = { IDB_GREEN_LED_OFF , IDB_GREEN_LED_ON };

@@ -63,6 +63,7 @@ private :
 
 	//스래드 큐를 제어할 객체
 	//Grabber 객수
+
 	CThreadQueueCtrl* m_pThreadQueueCtrl[GRABBER_COUNT];
 	CDefectDataCtrl m_DefDataCtrl;
 	BOOL m_bReserveClear;
