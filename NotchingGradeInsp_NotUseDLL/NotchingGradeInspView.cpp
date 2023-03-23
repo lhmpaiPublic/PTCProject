@@ -512,11 +512,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			AprData.m_NowLotData.m_bProcError = TRUE;
 
 			break;
-
-
-
-
-
 		case	en_InspStop:
 			if (IsInspReady() == TRUE)
 			{
@@ -543,10 +538,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				CameraGrabStop(); // 22.07.07 Ahn Add - Stop Button이 Click 되어 있는 상태.
 			}
 			break;
-
-
-
-
 
 		case	en_WaitReady:
 			if (IsInspReady() == FALSE)
@@ -628,11 +619,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			CheckLotEndProcess();
 			break ;
-
-
-
-
-
 
 		case	en_Ready:
 			//Melsec 디버그 세팅 되었나 
@@ -734,7 +720,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 				pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName);
 			}
-			
 
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE) {
 				CString strNextRcp;
@@ -746,8 +731,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				strLog.Format(_T("5.Recipe Change : RcipeNo[%d], RecipeName[%s]"), nRecipeNo, AprData.m_SeqDataIN.strRecipeName);
 				AprData.SaveLotLog(strLog);
 			}
-
-
 			//pSigProc->SigOutLotStartAck(TRUE);
 			pSigProc->SigOutLotStartAck(FALSE);
 			pSigProc->sigOutLotEndAck(FALSE);
@@ -759,11 +742,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			InspectionStart();
 			break;
-
-
-
-
-
 		case	en_Run:
 			if (IsInspReady() == FALSE)
 			{ 
@@ -864,20 +842,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			}
 			break ;
 
-
-
-
-
-
-
 		case	en_LotChange :
 			m_nStatus = en_Initialize;
 			break;
-
-
-
-
-
 		case	en_ErrorStop :
 			break;
 
@@ -886,9 +853,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		SetSignalCheckTimer();
 	}
 	
-
-
-
 	//////////////////////////////////////////////////////////////////////////
 	// [ Alive ]
 	if (nIDEvent == m_TID_Alive_Pulse)
@@ -899,11 +863,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		SetAlivePulseTimer(); //pyjtest
 
 	}	
-
-
-
-
-
 
 	if (m_TID_IO == nIDEvent)
 	{
@@ -928,11 +887,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 		Set_I0Timer();
 	}
-
-
-
-
-
 
 	if (m_TID_Long_Term == nIDEvent)
 	{
