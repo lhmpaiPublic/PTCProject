@@ -472,7 +472,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		BOOL bLotStartSigIn ; // 22.07.26 Ahn Add
 
 		switch (m_nStatus) {
-		// 22.05.19 Ahn Add Start
+		// 카메라 Reset 설정 처리
 		case	en_CameraReset :
 			m_nCamErrorResetCnt++;
 			if (GrabberResetReqest() == 0) {
@@ -499,7 +499,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			m_nStatus = en_Initialize ;
 			break;
-		// 22.05.19 Ahn Add End
+		//초기화 작업
 		case	en_Initialize:
 			pSigProc->SigOutReady(FALSE);
 			pSigProc->SigOutEncoderZeroSet(FALSE);
@@ -572,23 +572,30 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				SYSTEMTIME *pLastTIme = &AprData.m_NowLotData.m_LastDeleteCompletTime ;
 				::GetSystemTime(&sysTime);
 				long lNowTime;
+				//지금시간
 				lNowTime = (sysTime.wYear * 100000000) + (sysTime.wMonth * 1000000) + (sysTime.wDay * 10000) + ( sysTime.wHour + 100 ) + sysTime.wMinute ;
+				//마지막 시간
 				long lLastDelCompletTime = (pLastTIme->wYear * 100000000) + (pLastTIme->wMonth * 1000000) + (pLastTIme->wDay * 10000 ) + (pLastTIme->wHour * 100 ) + pLastTIme->wMinute ;
 				
-				//
+				//디스크 사용량 체크
 				double dDiskUse = AprData.m_dDiskTotal - AprData.m_dDiskFree;
+				//디스크 남은 용량
 				double dPercent = (dDiskUse / AprData.m_dDiskTotal) * 100.0 ;
+
 				BOOL bDeleteStart = FALSE ;
 				BOOL bDeleteCapa = FALSE;
 
+				//마지막 완료시간이 60이상 지났으면
 				if ((lNowTime - lLastDelCompletTime) > 60) {
 					bDeleteStart = TRUE;
 				}
 
+				//디스크 용량이 80이상일 경우
 				if (dPercent > 80.0) {
 					bDeleteCapa = TRUE;
 				}
 
+				//삭제 스래드 생성 조건
 				if( ( bDeleteStart == TRUE ) || ( bDeleteCapa == TRUE ) ) {
 					if (m_pDeleteThread == nullptr) {
 						m_pDeleteThread = new CDeleteResultFileThread();
@@ -611,87 +618,107 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			// 22.07.26 Ahn Modify End
 			break ;
 		case	en_Ready:
+			//Melsec 디버그 세팅 되었나 
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE) {
 				m_nStatus = en_PrepareRun;
 			}
+			//PLC enSmsBitIn_Run(Run 신호) 보내기 성공 했을 때
 			else if (pSigProc->SigInRun() == TRUE) {
+				//Run에 필요한 조건을 세팅하기 위해서 
 				m_nStatus = en_PrepareRun;
 			}
-			// 22.07.27 Ahn Modify Start
+			// Run 성공하지 못했을 경우 처리
 			else {
+				//log End 신호 보내기, 카메라 Stop, enSmsBitOut_LotEndReqAck 신호 보내기
 				CheckLotEndProcess();
 			}
 			// 22.07.27 Ahn Modify End
 
 			break;
+			//PLC Run 이벤트에서 처리할 로직
 		case	en_PrepareRun:
 //			AprData.SaveDebugLog(_T("en_PrepareRun start")); //pyjtest
 
 			// 22.07.11 Ahn Add Start
-			if (m_pDeleteThread != nullptr) {
+			if (m_pDeleteThread != nullptr) 
+			{
 				m_pDeleteThread->Kill();
 				delete m_pDeleteThread;
 				m_pDeleteThread = nullptr;
 			}
-			// 22.07.11 Ahn Add End
-			// 22.07.27 Ahn Modify Start
+			
+			//PLC통신 End 상태 체크
+			//Lot 상태를 읽어서 체크한다.
 			CheckLotEndProcess();
-			// 22.07.27 Ahn Modify End
-			// 22.03.24 Ahn Add Start
-			// 22.07.26 Ahn Modify Start
+			
+			//PLC 스타트 데이터 기록
+			//enSmsBitIn_LotStartReq 응답 값이 성공이면 처리
 			bLotStartSigIn = pSigProc->SigInLotStart(); 
 			if( (bLotStartSigIn == TRUE) || (m_bLotStartFlag==TRUE) )
 			{
 				if (bLotStartSigIn ==  TRUE)
 				{
-			// 22.07.26 Ahn Modify Start
+					//Lot Start On 로그 출력
 					AprData.SaveLotLog(_T("1.Lot Start Signal ON "));
 				}
-				// 22.07.07 Ahn Add Start
+				//카메라 작동 시작
+				//Camera Grabber Start
 				CameraGrabStart();
 				// 22.07.07 Ahn Add End
 
-				// 22.07.26 Ahn Modify Start
+				//LotStartReqAck 신호를 보낸다.
+				//신호처리가 실패했으면 초기화 설정으로 
 				if (AprData.LotStartProcess( bLotStartSigIn) < 0)
-				{ // 22.04.13 Ahn Modify
-				// 22.07.26 Ahn Modify End
+				{ 
+					//신호처리가 실패했으면 초기화 설정으로 
 					m_nStatus = en_Initialize;
 				}
+				//
+				m_bLotStartFlag = FALSE;
 
-				m_bLotStartFlag = FALSE;  // 22.04.13 Ahn Move
-
+				//MainFram 객체를 Reflash
 				CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 				pFrame->ReflashAll();
 			}
-			// 22.04.21 Ahn Add Start
-			else {
-				// 22.07.07 Ahn Add Start
-				if (theApp.m_pImgProcCtrl->IsGrabberRun() == FALSE) {
+
+			//PLC에 enSmsBitIn_LotStartReq 응답 실패 처리
+			else 
+			{
+				// Image Process Grabber Run이 아니면
+				if (theApp.m_pImgProcCtrl->IsGrabberRun() == FALSE) 
+				{
+					//카메라 작동 시작
+					//Camera Grabber Start
 					CameraGrabStart();
 				}
-				// 22.07.07 Ahn Add End
 
+				//안쓰고 있음
+				//Old Lot ID
 				CString strOldLotID ;
+				//Old Recipe Name
 				CString strOldRecipeName;
+				//Global Data에서 Cell ID
 				strOldLotID.Format(_T("%s"), AprData.m_SeqDataIN.strCell_ID);
 				strOldRecipeName.Format(_T("%s"), AprData.m_SeqDataIN.strRecipeName );
+
+				//PLC Read Block All 읽어서 전역 CSequenceData 객체에 저장한다.
 				pSigProc->ReadBlockAllData(&AprData.m_SeqDataIN);
+
+				//안쓰고 있음
 				CString strNewLotID;
 				strNewLotID = AprData.m_SeqDataIN.strCell_ID;
 				strNewLotID.TrimRight() ; 
 				strOldLotID.TrimRight() ;
 
 			}
-			// 22.04.21 Ahn Add End
 
-			// 22.08.05 Ahn Add Start
+			// 다음 레시피 명을 현재 명으로
 			{
 				int nRecipeNo = 0;
 				AprData.m_NowLotData.m_strRecipeName = AprData.m_NowLotData.m_strNextRecipeName;
 				CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 				pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName);
 			}
-			// 22.08.05 Ahn Add End
 			
 			// 22.04.15 Ahn Add Start
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE) {
@@ -845,9 +872,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 	
 	if (nIDEvent == m_TID_Alive_Pulse) {
 		KillAlivePulseTimer();
-//		CSigProc *pSigProc = theApp.m_pSigProc;
-//		pSigProc->SigOutAlivePulse(TRUE);
-//		SetAlivePulseTimer(); //pyjtest
+		CSigProc *pSigProc = theApp.m_pSigProc;
+		pSigProc->SigOutAlivePulse(TRUE);
+		SetAlivePulseTimer(); //pyjtest
 
 	}	
 
@@ -1062,6 +1089,7 @@ int CNotchingGradeInspView::GrabberResetReqest()
 int CNotchingGradeInspView::CameraGrabStart()
 {
 	int nRet = 0;
+	//카메라 Image Processing Start
 	if (theApp.m_pImgProcCtrl != nullptr) {
 		nRet = theApp.m_pImgProcCtrl->GrabStart();
 	}
