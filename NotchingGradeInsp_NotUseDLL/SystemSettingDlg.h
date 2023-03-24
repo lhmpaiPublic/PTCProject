@@ -45,6 +45,7 @@ private :
 
 	BOOL m_bStartMode; // 22.08.05 Ahn Add 
 
+	CComboBox m_ImageFormat;
 // 구현입니다.
 public:
 	virtual ~CSystemSettingDlg();
@@ -155,5 +156,5 @@ public:
 	CString m_EdBitOut_16;
 	CString m_EdWordIn_16;
 	CString m_EdWordOut_16;
-	// 23.03.03 Son Add End
+	afx_msg void OnCbnSelchangeComImageoutformat();
 };

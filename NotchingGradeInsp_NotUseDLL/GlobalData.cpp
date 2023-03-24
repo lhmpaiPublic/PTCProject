@@ -84,6 +84,8 @@ CGlobalData::CGlobalData(void)
 	InitRecipe();
 
 	m_ErrStatus.ErrorClear() ; // 22.05.19 Ahn Add 
+
+	m_globalStr.SetOutImageFormat(".jpg");
 }
 
 CGlobalData::~CGlobalData(void)

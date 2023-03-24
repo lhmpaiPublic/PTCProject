@@ -11,6 +11,7 @@
 #include "NotchingGradeInspView.h"
 #include "NotchingGradeInsp.h"
 #include "ImageProcessCtrl.h"
+#include "LogDisplayDlg.h"
 
 
 // CSystemSettingDlg 대화 상자
@@ -71,6 +72,7 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Radio(pDX, IDC_RAD_ANODE_MODE, m_nRadMachineMode);
 	DDX_Control(pDX, IDC_GRID_CTRL_CAMERA_PARAM, m_GridCameraParam);
+	DDX_Control(pDX, IDC_COM_IMAGEOUTFORMAT, m_ImageFormat);
 	DDX_Text(pDX, IDC_ED_EDGE_DET_MEAN_WIDTH, m_nEdMeanWidth);
 	DDX_Text(pDX, IDC_ED_RESOLUTION_VER, m_dEdResolY);
 	DDX_Control(pDX, IDC_ED_DUMMY, m_EdDummy);
@@ -155,6 +157,7 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_IP, &CSystemSettingDlg::OnEnSetfocusEdIP)
 	ON_EN_SETFOCUS(IDC_ED_PORT, &CSystemSettingDlg::OnEnSetfocusEdPort)
 	// 23.02.28 Son Add End
+	ON_CBN_SELCHANGE(IDC_COM_IMAGEOUTFORMAT, &CSystemSettingDlg::OnCbnSelchangeComImageoutformat)
 END_MESSAGE_MAP()
 
 
@@ -277,6 +280,27 @@ BOOL CSystemSettingDlg::OnInitDialog()
 		pWnd->ShowWindow(bShow);
 	}
 	// 23.02.28 Son Add End
+
+		//이미지 포맷 세팅 창
+	m_ImageFormat.Clear();
+	m_ImageFormat.AddString("JPG");
+	m_ImageFormat.AddString("BMP");
+	m_ImageFormat.AddString("PNG");
+	
+	CString imgFormat = AprData.getGSt()->GetOutImageFormat();
+
+	if (imgFormat.Compare(".jpg") == 0)
+	{
+		m_ImageFormat.SetCurSel(0);
+	}
+	else if (imgFormat.Compare(".bmp") == 0)
+	{
+		m_ImageFormat.SetCurSel(1);
+	}
+	else
+	{
+		m_ImageFormat.SetCurSel(2);
+	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -1428,3 +1452,21 @@ void CSystemSettingDlg::OnEnSetfocusEdPort()
 	UpdateData(FALSE);
 }
 // 23.02.28 Son Add End
+
+
+
+void CSystemSettingDlg::OnCbnSelchangeComImageoutformat()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	switch (m_ImageFormat.GetCurSel())
+	{
+	case 1: AprData.getGSt()->SetOutImageFormat(".bmp");
+		break;
+	case 2: AprData.getGSt()->SetOutImageFormat(".png");
+		break;
+	case 0:
+	default: AprData.getGSt()->SetOutImageFormat(".jpg");
+		break;
+	}
+	CLogDisplayDlg::gInst()->AddMessage(AprData.getGSt()->GetOutImageFormat());
+}

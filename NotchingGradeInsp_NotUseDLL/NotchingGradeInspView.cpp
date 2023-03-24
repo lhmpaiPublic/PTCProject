@@ -68,6 +68,7 @@ END_MESSAGE_MAP()
 CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
+	logDisplayDlg = NULL;
 	m_pInspDlg = NULL;
 	m_pDefMapDlg = NULL; // 22.11.09 Ahn Add
 	m_pHistoryDlg = NULL;
@@ -111,6 +112,14 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 
 CNotchingGradeInspView::~CNotchingGradeInspView()
 {
+	if (logDisplayDlg != nullptr) {
+		if (logDisplayDlg->m_hWnd != nullptr) {
+			logDisplayDlg->DestroyWindow();
+		}
+		delete logDisplayDlg;
+		logDisplayDlg = NULL;
+	}
+
 	if (m_pInspDlg != nullptr) {
 		if (m_pInspDlg->m_hWnd != nullptr) {
 			m_pInspDlg->DestroyWindow();
@@ -250,6 +259,17 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
+	logDisplayDlg = new CLogDisplayDlg(this);
+	if (logDisplayDlg != nullptr) {
+		if (logDisplayDlg->Create(IDD_LOGDISPLAYDLG, this) == 0) {
+			delete logDisplayDlg;
+			logDisplayDlg = NULL;
+		}
+		else {
+			logDisplayDlg->ShowWindow(SW_SHOW);
+		}
+	}
+
 	m_pInspDlg = new CInspDlg(this, this);
 	if (m_pInspDlg != nullptr) {
 		if (m_pInspDlg->Create(IDD_DLG_INSP, this) == 0) {

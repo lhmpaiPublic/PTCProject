@@ -297,6 +297,8 @@ public:
 	int m_nRollBrightMode;
 	//afx_msg void OnBnClickedRadDarkRoll();
 	//afx_msg void OnBnClickedRadBrightRoll();
+	afx_msg void OnBnClickedBtnSystemList();
+	CButton m_btnSystemSettingList;
 };
 
 
