@@ -343,65 +343,65 @@ BOOL CDIOTestDlg::AXTInit()
 					switch (dwModuleID)
 					{
 					case AXT_SIO_DI32:
-						strData.Format("[BD No:%d - MD No:%d] SIO_DI32", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_DI32"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDI32:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDI32", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDI32"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_DO32P:
-						strData.Format("[BD No:%d - MD No:%d] SIO_DO32P", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_DO32P"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_DB32P:
-						strData.Format("[BD No:%d - MD No:%d] SIO_DB32P", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_DB32P"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_DO32T:
-						strData.Format("[BD No:%d - MD No:%d] SIO_DO32T", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_DO32T"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDO32:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDO32", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDO32"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_DB32T:
-						strData.Format("[BD No:%d - MD No:%d] SIO_DB32T", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_DB32T"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDB128MLII:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDB128MLII", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDB128MLII"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RSIMPLEIOMLII:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RSIMPLEIOMLII", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RSIMPLEIOMLII"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDI16MLII:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDI16MLII", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDI16MLII"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDO16AMLII:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDO16AMLII", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDO16AMLII"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDO16BMLII:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDO16BMLII", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDO16BMLII"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDB96MLII:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDB96MLII", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDB96MLII"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDO32RTEX:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDO32RTEX", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDO32RTEX"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDI32RTEX:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDI32RTEX", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDI32RTEX"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDB32RTEX:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDB32RTEX", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDB32RTEX"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_DI32_P:
-						strData.Format("[BD No:%d - MD No:%d] SIO_DI32_P", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_DI32_P"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_DO32T_P:
-						strData.Format("[BD No:%d - MD No:%d] SIO_DO32T_P", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_DO32T_P"), IBoardNo, ModuleNo);
 						break;
 					case AXT_SIO_RDB32T:
-						strData.Format("[BD No:%d - MD No:%d] SIO_RDB32T", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] SIO_RDB32T"), IBoardNo, ModuleNo);
 						break;
 
 					default:
-						strData.Format("[BD No:%d - MD No:%d] Unknown", IBoardNo, ModuleNo);
+						strData.Format(_T("[BD No:%d - MD No:%d] Unknown"), IBoardNo, ModuleNo);
 						break;
 					}
 					m_cboModuleInfo.AddString(strData);
@@ -411,13 +411,13 @@ BOOL CDIOTestDlg::AXTInit()
 		}
 		else
 		{
-			AfxMessageBox("Module not exist.");
+			AfxMessageBox(_T("Module not exist."));
 			return FALSE;
 		}
 	}
 	else
 	{
-		AfxMessageBox("Failed initialization.");
+		AfxMessageBox(_T("Failed initialization."));
 		return FALSE;
 	}
 	return TRUE;
@@ -736,13 +736,13 @@ void CDIOTestDlg::OnCheckIntrrupt()
 				if (m_chkIntrrupt.GetCheck())
 				{
 					AxlInterruptEnable();
-					strMessage.Format("Enable Interrupt Button Enable");
+					strMessage.Format(_T("Enable Interrupt Button Enable"));
 					AxdiInterruptSetModuleEnable(m_cboModuleInfo.GetCurSel(), ENABLE);
 				}
 				else
 				{
 					//Initialize interrupt part
-					strMessage.Format("Enable Interrupt Button Desable");
+					strMessage.Format(_T("Enable Interrupt Button Desable"));
 					AxdiInterruptEdgeSetDword(m_cboModuleInfo.GetCurSel(), 0, UP_EDGE, 0x00000000);
 					AxdiInterruptEdgeSetDword(m_cboModuleInfo.GetCurSel(), 0, DOWN_EDGE, 0x00000000);
 
@@ -758,7 +758,7 @@ void CDIOTestDlg::OnCheckIntrrupt()
 				}
 				break;
 			default:
-				strMessage.Format("It is the module not to able to use Enable Interrupt.");
+				strMessage.Format(_T("It is the module not to able to use Enable Interrupt."));
 				m_chkIntrrupt.SetCheck(0);
 				break;
 			}
@@ -791,12 +791,12 @@ void CDIOTestDlg::OnCheckRising()
 				case AXT_SIO_RDI32:
 					if (m_chkRising.GetCheck())
 					{
-						strMessage.Format("▲ Rising Edge Button Ensable");
+						strMessage.Format(_T("▲ Rising Edge Button Ensable"));
 						AxdiInterruptEdgeSetDword(m_cboModuleInfo.GetCurSel(), 0, UP_EDGE, 0xFFFFFFFF);
 					}
 					else
 					{
-						strMessage.Format("▲ Rising Edge Button Desable");
+						strMessage.Format(_T("▲ Rising Edge Button Desable"));
 						AxdiInterruptEdgeSetDword(m_cboModuleInfo.GetCurSel(), 0, UP_EDGE, 0x00000000);
 					}
 					break;
@@ -804,17 +804,17 @@ void CDIOTestDlg::OnCheckRising()
 				case AXT_SIO_DB32T:
 					if (m_chkRising.GetCheck())
 					{
-						strMessage.Format("▲ Rising Edge Button Ensable");
+						strMessage.Format(_T("▲ Rising Edge Button Ensable"));
 						AxdiInterruptEdgeSetWord(m_cboModuleInfo.GetCurSel(), 0, UP_EDGE, 0xFFFF);
 					}
 					else
 					{
-						strMessage.Format("▲ Rising Edge Button Desable");
+						strMessage.Format(_T("▲ Rising Edge Button Desable"));
 						AxdiInterruptEdgeSetWord(m_cboModuleInfo.GetCurSel(), 0, UP_EDGE, 0x0000);
 					}
 					break;
 				default:
-					strMessage.Format("It is the module not to able to use ▲ Rising Edge.");
+					strMessage.Format(_T("It is the module not to able to use ▲ Rising Edge."));
 					m_chkRising.SetCheck(0);
 					break;
 				}
@@ -823,7 +823,7 @@ void CDIOTestDlg::OnCheckRising()
 		}
 		else
 		{
-			strMessage.Format("Enable Interrupt is not to be selected.");
+			strMessage.Format(_T("Enable Interrupt is not to be selected."));
 			m_chkRising.SetCheck(0);
 		}
 		m_listMessage.AddString(strMessage);
@@ -852,12 +852,12 @@ void CDIOTestDlg::OnCheckFalling()
 				case AXT_SIO_RDI32:
 					if (m_chkFalling.GetCheck())
 					{
-						strMessage.Format("▼ Falling Edge Button Ensable");
+						strMessage.Format(_T("▼ Falling Edge Button Ensable"));
 						AxdiInterruptEdgeSetDword(m_cboModuleInfo.GetCurSel(), 0, DOWN_EDGE, 0xFFFFFFFF);
 					}
 					else
 					{
-						strMessage.Format("▼ Falling Edge Button Desable");
+						strMessage.Format(_T("▼ Falling Edge Button Desable"));
 						AxdiInterruptEdgeSetDword(m_cboModuleInfo.GetCurSel(), 0, DOWN_EDGE, 0x00000000);
 					}
 					break;
@@ -865,17 +865,17 @@ void CDIOTestDlg::OnCheckFalling()
 				case AXT_SIO_DB32T:
 					if (m_chkFalling.GetCheck())
 					{
-						strMessage.Format("▼ Falling Edge Button Ensable");
+						strMessage.Format(_T("▼ Falling Edge Button Ensable"));
 						AxdiInterruptEdgeSetWord(m_cboModuleInfo.GetCurSel(), 0, DOWN_EDGE, 0xFFFF);
 					}
 					else
 					{
-						strMessage.Format("▼ Falling Edge Button Desable");
+						strMessage.Format(_T("▼ Falling Edge Button Desable"));
 						AxdiInterruptEdgeSetWord(m_cboModuleInfo.GetCurSel(), 0, DOWN_EDGE, 0x0000);
 					}
 					break;
 				default:
-					strMessage.Format("It is the module not to able to use ▼ Falling Edge.");
+					strMessage.Format(_T("It is the module not to able to use ▼ Falling Edge."));
 					m_chkFalling.SetCheck(0);
 					break;
 				}
@@ -884,7 +884,7 @@ void CDIOTestDlg::OnCheckFalling()
 		}
 		else
 		{
-			strMessage.Format("Enable Interrupt is not to be selected.");
+			strMessage.Format(_T("Enable Interrupt is not to be selected."));
 			m_chkFalling.SetCheck(0);
 		}
 		m_listMessage.AddString(strMessage);
@@ -918,13 +918,13 @@ void CDIOTestDlg::OnRadioMessage()
 
 			AxdiInterruptSetModule(m_cboModuleInfo.GetCurSel(), m_hWnd, WM_AXL_INTERRUPT, NULL, NULL);
 
-			strMessage.Format("Window Message Interrupt is selected.");
+			strMessage.Format(_T("Window Message Interrupt is selected."));
 
 		}
 
 		else
 		{
-			strMessage.Format("Enable Interrupt is not to be selected.");
+			strMessage.Format(_T("Enable Interrupt is not to be selected."));
 			m_radioMessage.SetCheck(0);
 
 		}
@@ -952,9 +952,9 @@ LRESULT CDIOTestDlg::OnInterruptMessage(WPARAM wParam, LPARAM lParam)
 			{
 				AxdiReadInportBit(nModule, ChkBit, &dwValue);
 				if (dwValue)
-					strMessage.Format("▲ Rising %02Xh", ChkBit);
+					strMessage.Format(_T("▲ Rising %02Xh"), ChkBit);
 				else
-					strMessage.Format("▼ Falling %02Xh", ChkBit);
+					strMessage.Format(_T("▼ Falling %02Xh"), ChkBit);
 			}
 		}
 		m_listMessage.AddString(strMessage);
@@ -978,9 +978,9 @@ void __stdcall OnDIOInterruptCallback(long lActiveNo, DWORD uFlag)
 			{
 				AxdiReadInportBit(lActiveNo, ChkBit, &dwValue);
 				if (dwValue)
-					strMessage.Format("▲ Rising %02Xh", ChkBit);
+					strMessage.Format(_T("▲ Rising %02Xh"), ChkBit);
 				else
-					strMessage.Format("▼ Falling %02Xh", ChkBit);
+					strMessage.Format(_T("▼ Falling %02Xh"), ChkBit);
 			}
 		}
 		//pDlg->m_listMessage.AddString(strMessage);
@@ -1014,12 +1014,12 @@ void CDIOTestDlg::OnRadioCallback()
 
 			AxdiInterruptSetModule(m_cboModuleInfo.GetCurSel(), NULL, NULL, (AXT_INTERRUPT_PROC)OnDIOInterruptCallback, NULL);
 
-			strMessage.Format("Callback Intrrupt is selected.");
+			strMessage.Format(_T("Callback Intrrupt is selected."));
 		}
 
 		else
 		{
-			strMessage.Format("Enable Intrrupt is selected.");
+			strMessage.Format(_T("Enable Intrrupt is selected."));
 			m_radioMessage.SetCheck(0);
 		}
 
@@ -1067,12 +1067,12 @@ void CDIOTestDlg::OnRadioEvent()
 				m_hHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadProc, this, NULL, NULL);
 			}
 
-			strMessage.Format("Event Intrrupt is selected.");
+			strMessage.Format(_T("Event Intrrupt is selected."));
 		}
 
 		else
 		{
-			strMessage.Format("Enable Intrrupt is selected.");
+			strMessage.Format(_T("Enable Intrrupt is selected."));
 			m_radioMessage.SetCheck(0);
 		}
 
@@ -1114,9 +1114,9 @@ BOOL CDIOTestDlg::ThreadData()
 							{
 								AxdiReadInportBit(lModuleNo, ChkBit, &dwValue);
 								if (dwValue)
-									strMessage.Format("▲ Rising %02Xh", ChkBit);
+									strMessage.Format(_T("▲ Rising %02Xh"), ChkBit);
 								else
-									strMessage.Format("▼ Falling %02Xh", ChkBit);
+									strMessage.Format(_T("▼ Falling %02Xh"), ChkBit);
 							}
 						}
 						m_listMessage.AddString(strMessage);

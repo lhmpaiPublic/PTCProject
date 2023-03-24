@@ -514,7 +514,7 @@ BOOL CHistoryDlg::OnInitDialog()
 	int nHour = 0;
 	CString strHour;
 	for (int nHour = 0; nHour < 24; nHour++) {
-		strHour.Format("%02d시", nHour);
+		strHour.Format(_T("%02d시"), nHour);
 		m_cmbTimeStart.AddString(strHour);
 		m_cmbTimeEnd.AddString(strHour);
 	}
@@ -711,7 +711,7 @@ void CHistoryDlg::OnNotifySimulation(NMHDR* pNMHDR, LRESULT* pResult)
 void CHistoryDlg::SetTextHeader(COleDateTime dtDate)
 {
 	CString strHeader = _T("");
-	strHeader = dtDate.Format("%Y %B");
+	strHeader = dtDate.Format(_T("%Y %B"));
 	m_stHeader.SetWindowTextA(strHeader);
 }
 
@@ -736,7 +736,7 @@ void CHistoryDlg::SetupItems()
 		// 22.03.02 Ahn Modify Start
 		nYear = OleDateTime.GetYear();
 		//strFolder.Format("%s\\%02d\\%02d", AprData.m_strFeederPath, nMonth, nDay);
-		strFolder.Format("%s\\%d\\%02d\\%02d", AprData.m_strFeederPath, nYear, nMonth, nDay);
+		strFolder.Format(_T("%s\\%d\\%02d\\%02d"), AprData.m_strFeederPath, nYear, nMonth, nDay);
 		// 22.03.02 Ahn Modify End
 		if (file.ExistFile(strFolder))
 		{

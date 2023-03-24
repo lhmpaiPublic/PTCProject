@@ -91,33 +91,33 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 		{
 			strSection = _T("TAB_INFO");
 			strKey = _T("Tab_Width");
-			strData.Format("%.2lf", pRcpInfo->TabCond.dTabWidth);
+			strData.Format(_T("%.2lf"), pRcpInfo->TabCond.dTabWidth);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("Tab_Pitch");
-			strData.Format("%.2lf", pRcpInfo->TabCond.dTabPitch );
+			strData.Format(_T("%.2lf"), pRcpInfo->TabCond.dTabPitch );
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("Round_Radius");
-			strData.Format("%.2lf", pRcpInfo->TabCond.dRadius);
+			strData.Format(_T("%.2lf"), pRcpInfo->TabCond.dRadius);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			// 22.06.08 Ahn Delete Start
 			//strKey = _T("Round_Radius_H");
-			//strData.Format("%.2lf", pRcpInfo->TabCond.dRadiusH);
+			//strData.Format(_T("%.2lf"), pRcpInfo->TabCond.dRadiusH);
 			//SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 			// 22.06.08 Ahn Delete End
 
 			strKey = _T("TOP_COAT_HEIGHT");
-			strData.Format("%.2lf", pRcpInfo->TabCond.dCeramicHeight);
+			strData.Format(_T("%.2lf"), pRcpInfo->TabCond.dCeramicHeight);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("BOTTOM_COAT_HEIGHT");
-			strData.Format("%.2lf", pRcpInfo->TabCond.dCeramicTailHeight);
+			strData.Format(_T("%.2lf"), pRcpInfo->TabCond.dCeramicTailHeight);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("TAB_COAT_HEIGHT");
-			strData.Format("%.2lf", pRcpInfo->TabCond.dTabCeramicHeight);
+			strData.Format(_T("%.2lf"), pRcpInfo->TabCond.dTabCeramicHeight);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			// 23.02.14 Ahn Add Start
@@ -155,11 +155,11 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 
 			// 22.01.05 Ahn Add Start
 			strKey = _T("NEGATIVE_TAB_COAT_HEIGHT");
-			strData.Format("%d", pRcpInfo->TabCond.nNegCoatHeight);
+			strData.Format(_T("%d"), pRcpInfo->TabCond.nNegCoatHeight);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("NEGATIVE_V_GROOVE_HEIGHT");
-			strData.Format("%d", pRcpInfo->TabCond.nNegVGrooveHeight);
+			strData.Format(_T("%d"), pRcpInfo->TabCond.nNegVGrooveHeight);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 			// 22.01.05 Ahn Add End
 		}
@@ -169,7 +169,7 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			for (int i = 0; i < MAX_LIGHT_UNIT; i++) {
 				for (int j = 0; j < MAX_LIGHT_CHANEL; j++) {
 					strKey.Format(_T("LIGHT_UNIT_%02d_CH_%02d"), i, j);
-					strData.Format("%d", pRcpInfo->nLightLevel[i][j]);
+					strData.Format(_T("%d"), pRcpInfo->nLightLevel[i][j]);
 					SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 				}
 			}
@@ -177,63 +177,63 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			for (int i = 0; i < MAX_CAMERA_NO; i++) {
 
 				strKey.Format( _T("DROSS_THRES_LOWER_%01d"), i );
-				strData.Format("%d", pRcpInfo->nDrossThresLower[i]);
+				strData.Format(_T("%d"), pRcpInfo->nDrossThresLower[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("DROSS_THRES_UPPER_%01d"), i);
-				strData.Format("%d", pRcpInfo->nDrossThresOrigin[i]);
+				strData.Format(_T("%d"), pRcpInfo->nDrossThresOrigin[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("FOIL_THRES_LOWER_%01d"), i);
-				strData.Format("%d", pRcpInfo->nFoilExpThresLower[i]);
+				strData.Format(_T("%d"), pRcpInfo->nFoilExpThresLower[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("FOIL_THRES_UPPER_%01d"), i);
-				strData.Format("%d", pRcpInfo->nFoilExpThresOrigin[i]);
+				strData.Format(_T("%d"), pRcpInfo->nFoilExpThresOrigin[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("DROSS_INSP_WIDTH_%01d"), i);
-				strData.Format("%.3lf", pRcpInfo->dFoilOutInspWidth[i]);
+				strData.Format(_T("%.3lf"), pRcpInfo->dFoilOutInspWidth[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("FOIL_INSP_WIDTH_%01d"), i);
-				strData.Format("%.3lf", pRcpInfo->dFoilExpInspWidth[i]);
+				strData.Format(_T("%.3lf"), pRcpInfo->dFoilExpInspWidth[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("DROSS_MASK_OFFSET_%01d"), i);
-				strData.Format("%d", pRcpInfo->nFoilOutMaskOffset[i]);
+				strData.Format(_T("%d"), pRcpInfo->nFoilOutMaskOffset[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("FOIL_MASK_OFFSET_%01d"), i);
-				strData.Format("%d", pRcpInfo->nFoilExpMaskOffset[i]);
+				strData.Format(_T("%d"), pRcpInfo->nFoilExpMaskOffset[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format(_T("MAGNIFICATION_CAM_%01d"), i);
-				strData.Format("%.2lf", pRcpInfo->dMagnification[i]);
+				strData.Format(_T("%.2lf"), pRcpInfo->dMagnification[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("FOIL_OUT_MIN_SIZE_%01d"), i);
-				strData.Format("%d", pRcpInfo->nFoilExpOutMinSize[i]);
+				strData.Format(_T("%d"), pRcpInfo->nFoilExpOutMinSize[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("FOIL_IN_MIN_SIZE_%01d"), i);
-				strData.Format("%d", pRcpInfo->nFoilExpInMinSize[i]);
+				strData.Format(_T("%d"), pRcpInfo->nFoilExpInMinSize[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("DROSS_LINK_X_%01d"), i);
-				strData.Format("%d", pRcpInfo->pntLinkRange[i][TYPE_FOILEXP_OUT].x);
+				strData.Format(_T("%d"), pRcpInfo->pntLinkRange[i][TYPE_FOILEXP_OUT].x);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("DROSS_LINK_Y_%01d"), i);
-				strData.Format("%d", pRcpInfo->pntLinkRange[i][TYPE_FOILEXP_OUT].y);
+				strData.Format(_T("%d"), pRcpInfo->pntLinkRange[i][TYPE_FOILEXP_OUT].y);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("FOILEXP_LINK_X_%01d"), i);
-				strData.Format("%d", pRcpInfo->pntLinkRange[i][TYPE_FOILEXP].x);
+				strData.Format(_T("%d"), pRcpInfo->pntLinkRange[i][TYPE_FOILEXP].x);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("FOILEXP_LINK_Y_%01d"), i);
-				strData.Format("%d", pRcpInfo->pntLinkRange[i][TYPE_FOILEXP].y);
+				strData.Format(_T("%d"), pRcpInfo->pntLinkRange[i][TYPE_FOILEXP].y);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 				strKey.Format( _T("ENABLE_DEFECLINK_CAM_%01d"), i ) ;
@@ -262,23 +262,23 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			}
 
 			strKey = _T("BMP_SAVE_INTERVAL");
-			strData.Format("%d", pRcpInfo->nBmpSaveInterval );
+			strData.Format(_T("%d"), pRcpInfo->nBmpSaveInterval );
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("SAVE_IMAGE_ONLY_NG_TAB");
-			strData.Format("%d", pRcpInfo->bSaveOnlyNgTab);
+			strData.Format(_T("%d"), pRcpInfo->bSaveOnlyNgTab);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("ENABLE_DISABLE_DIFF_PROCESS");
-			strData.Format("%d", pRcpInfo->bDisableProcDiff);
+			strData.Format(_T("%d"), pRcpInfo->bDisableProcDiff);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 						
 			strKey = _T("NG_TAB_STOP");
-			strData.Format("%d", pRcpInfo->bNgStop);
+			strData.Format(_T("%d"), pRcpInfo->bNgStop);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("DARK_EMP_MODE");
-			strData.Format("%d", pRcpInfo->bDarkEmpMode);
+			strData.Format(_T("%d"), pRcpInfo->bDarkEmpMode);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 		}
 
@@ -286,34 +286,34 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strSection = _T("JUDGEMENT");
 
 			strKey = _T("JUDGE_MODE");
-			strData.Format("%d", pRcpInfo->nJudgeMode );
+			strData.Format(_T("%d"), pRcpInfo->nJudgeMode );
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("DEFECT_NG_SIZE_WIDTH");
-			strData.Format("%.1lf", pRcpInfo->dFoilExpInNgSize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpInNgSize);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("DEFECT_NG_SIZE_Height");
-			strData.Format("%.1lf", pRcpInfo->dDefJudgeHeight);
+			strData.Format(_T("%.1lf"), pRcpInfo->dDefJudgeHeight);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			// 22.07.20 Ahn Add Start
 			strKey = _T("DEFECT_FOIL_OUT_NG_SIZE");
-			strData.Format("%.1lf", pRcpInfo->dFoilExpOutNgSize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpOutNgSize);
 			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("DEFECT_FOIL_BOTH_NG_SIZE");
-			strData.Format("%.1lf", pRcpInfo->dFoilExpBothNgSize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpBothNgSize);
 			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 			// 22.07.20 Ahn Add End
 
 			// 22.11.21 Ahn Add Start - JUDGE_GRAY
 			strKey = _T("DEFECT_FOIL_GRAY_SIZE");
-			strData.Format("%.1lf", pRcpInfo->dFoileGraySize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoileGraySize);
 			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("DEFECT_SURFACE_GRAY_SIZE");
-			strData.Format("%.1lf", pRcpInfo->dSurfaceGraySize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dSurfaceGraySize);
 			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 			// 22.11.21 Ahn Add End
 
@@ -609,7 +609,7 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			//for (int nType = 0; nType < MAX_INSP_TYPE; nType++) {
 			//	for (int nRank = 0; nRank < MAX_RANK; nRank++) {
 			//		for (int nCond = 0; nCond < CRecipeInfo::en_RankCond_Max; nCond++) {
-			//			strKey.Format("%s_%s_%s", chType[nType], chRank[nRank], chRankCond[nCond]);
+			//			strKey.Format(_T("%s_%s_%s"), chType[nType], chRank[nRank], chRankCond[nCond]);
 			//			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			//			pRcpInfo->nRank[ nType ][nRank][nCond] = atoi(buff);
 
@@ -754,7 +754,7 @@ int CRecipeCtrl::SearchRecipeFile(CStringList& strRecipeList)
 	strRecipeList.RemoveAll();
 
 	CString strRecipeDir;
-	strRecipeDir.Format("%s\\Recipe\\", AprData.m_strDataPath );
+	strRecipeDir.Format(_T("%s\\Recipe\\"), AprData.m_strDataPath );
 
 	CWin32File winFile;
 

@@ -217,40 +217,40 @@ int CSystemSetting::FileCtrl(int nMode)
 		{
 			strSection = _T("EQP_SETTING");
 			strKey = _T("MACHINE_MODE");
-			strData.Format("%d", m_nMachineMode);
+			strData.Format(_T("%d"), m_nMachineMode);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			// 23.02.27 Son Add Start
 			strKey = _T("LOGO");
-			strData.Format("%d", m_nLogo);
+			strData.Format(_T("%d"), m_nLogo);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			// 23.02.27 Son Add End
 
 			// 23.02.28 Son Add Start
 			strKey = _T("PLC_MODE");
-			strData.Format("%d", m_nPlcMode);
+			strData.Format(_T("%d"), m_nPlcMode);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("PLC_IP_ADDRESS");
 			::WritePrivateProfileString(strSection, strKey, m_strPLCIPAddress, strFileName);
 
 			strKey = _T("PLC_PORT");
-			strData.Format("%d", m_nPLCPort);
+			strData.Format(_T("%d"), m_nPLCPort);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			// 23.02.28 Son Add End
 
 			strKey = _T("EDGE_DET_MEAN_WIDTH");
-			strData.Format("%d", m_nEdgeSearchMean);
+			strData.Format(_T("%d"), m_nEdgeSearchMean);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			for (i = 0; i < MAX_CAMERA_NO; i++) {
 				strKey.Format(_T("RESOLUTION_HOR_CAM_NO_%02d"), i);
-				strData.Format("%.6lf", m_dResolX[i]);
+				strData.Format(_T("%.6lf"), m_dResolX[i]);
 				::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			}
 			;
 			strKey = _T("RESOLUTION_VER");
-			strData.Format("%.2lf", m_dResolY);
+			strData.Format(_T("%.2lf"), m_dResolY);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			// 22.05.27 Ahn Add Start
@@ -275,11 +275,11 @@ int CSystemSetting::FileCtrl(int nMode)
 			// 22.07.04 Ahn Add Start
 			strSection = _T("RESULT_DELETE");
 			strKey = _T("RESULT_SAVE_PERIOD");
-			strData.Format("%d", m_nResultSavePeriod);
+			strData.Format(_T("%d"), m_nResultSavePeriod);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("DISK_CAPACITY_ALARM");
-			strData.Format("%d", m_nDiskCapacity);
+			strData.Format(_T("%d"), m_nDiskCapacity);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			// 22.07.04 Ahn Add End
 		}
@@ -287,51 +287,51 @@ int CSystemSetting::FileCtrl(int nMode)
 		{
 			strSection = _T("CAMERA_SETTING");
 			strKey.Format(_T("TRIGGER_MODE"));
-			strData.Format("%d", m_bTriggerMode);
+			strData.Format(_T("%d"), m_bTriggerMode);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			for (i = 0; i < MAX_CAMERA_NO; i++) {
 				strKey.Format(_T("ACQISITION_RATE_CAM_NO_%02d"), i);
-				strData.Format("%.6lf", m_dCamLineRate[i]);
+				strData.Format(_T("%.6lf"), m_dCamLineRate[i]);
 				::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			}
 
 			for (i = 0; i < MAX_CAMERA_NO; i++) {
 				strKey.Format(_T("GAIN_CAM_NO_%02d"), i);
-				strData.Format("%.1lf", m_dCamGain[i]);
+				strData.Format(_T("%.1lf"), m_dCamGain[i]);
 				::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			}
 
 			for (i = 0; i < MAX_CAMERA_NO; i++) {
 				strKey.Format(_T("EXPOSURE_TIME_CAM_NO_%02d"), i);
-				strData.Format("%.6lf", m_dExposureTime[i]);
+				strData.Format(_T("%.6lf"), m_dExposureTime[i]);
 				::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			}
 
 			//for (i = 0; i < MAX_CAMERA_NO; i++) 
 			{
 				strKey.Format(_T("VIEW_WIDTH_CAM_NO"));
-				strData.Format("%d", m_nCamViewWidth);
+				strData.Format(_T("%d"), m_nCamViewWidth);
 				::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			}
 
 			//for (i = 0; i < MAX_CAMERA_NO; i++) 
 			{
 				strKey.Format(_T("VIEW_HEIGHT_CAM_NO"));
-				strData.Format("%d", m_nCamViewHeight);
+				strData.Format(_T("%d"), m_nCamViewHeight);
 				::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			}
 
 			for (i = 0; i < MAX_CAMERA_NO; i++) {
 				strKey.Format(_T("VIEW_OFFSET_HOR_CAM_NO_%02d"), i);
-				strData.Format("%d", m_nCamViewOffset[i]);
+				strData.Format(_T("%d"), m_nCamViewOffset[i]);
 				::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			}
 
 			// 22.07.27 Ahn Add Start
 			for (i = 0; i < MAX_CAMERA_NO; i++) {
 				strKey.Format(_T("CAMERA_IMAGE_FLIP_%02d"), i);
-				strData.Format("%d", m_nCamImageFlip[i]);
+				strData.Format(_T("%d"), m_nCamImageFlip[i]);
 				::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 			}
 			// 22.07.27 Ahn Add End
@@ -339,13 +339,13 @@ int CSystemSetting::FileCtrl(int nMode)
 		{
 			strSection = _T("DISPLAY_SETTING");
 			strKey = _T("GRID_FONT_SIZE") ;
-			strData.Format("%d", m_nGridFontSize);
+			strData.Format(_T("%d"), m_nGridFontSize);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 		}
 		{
 			strSection = _T("OTHER_SETTING");
 			strKey = _T("ENABLE_MARKER");
-			strData.Format("%d", m_bChkEnableMarker);
+			strData.Format(_T("%d"), m_bChkEnableMarker);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			// 22.01.11 Ahn Add Start
@@ -355,38 +355,38 @@ int CSystemSetting::FileCtrl(int nMode)
 			// 22.01.11 Ahn Add End
 
 			strKey = _T("ENABLE_NG_STOP");
-			strData.Format("%d", m_bEnableNgStop);
+			strData.Format(_T("%d"), m_bEnableNgStop);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);			
 
 			strKey = _T("JPEG_SAVE_QUALITY");
-			strData.Format("%d", m_nJpegSaveQuality);
+			strData.Format(_T("%d"), m_nJpegSaveQuality);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("FIRST_TAB_DONOT_PROCESS");
-			strData.Format("%d", m_bFirstTabDoNotProc);
+			strData.Format(_T("%d"), m_bFirstTabDoNotProc);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);			 
 		}
 		// 23.02.17 Son Add Start
 		{
 			strSection = _T("ADDRESS_SETTING");
 			strKey = _T("BIT_IN");
-			strData.Format("%d", m_nBitIn);
+			strData.Format(_T("%d"), m_nBitIn);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("BIT_OUT");
-			strData.Format("%d", m_nBitOut);
+			strData.Format(_T("%d"), m_nBitOut);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("WORD_IN");
-			strData.Format("%d", m_nWordIn);
+			strData.Format(_T("%d"), m_nWordIn);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("WORD_OUT");
-			strData.Format("%d", m_nWordOut);
+			strData.Format(_T("%d"), m_nWordOut);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 //			strKey = _T("SLAVE_ID");
-// 			strData.Format("%d", );
+// 			strData.Format(_T("%d"), );
 // 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 		}

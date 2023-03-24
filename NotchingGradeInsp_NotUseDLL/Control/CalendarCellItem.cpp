@@ -137,13 +137,13 @@ void CCalendarCellItem::DrawItem(CPaintDC* pDC, CRect* pCellArea, BOOL bMView/*=
 		if (GetDispDate() == TRUE)
 		{
 			if (!bMView)
-				strBuf.Format("%s - %s  %s", dtS.Format("%H%M"), dtE.Format("%H%M"), GetItemText());
+				strBuf.Format(_T("%s - %s  %s"), dtS.Format("%H%M"), dtE.Format("%H%M"), GetItemText());
 			else
-				strBuf.Format("%s  %s", dtS.Format("%H%M"), GetItemText());
+				strBuf.Format(_T("%s  %s"), dtS.Format("%H%M"), GetItemText());
 		}
 		else
 		{
-			strBuf.Format("%s", GetItemText());
+			strBuf.Format(_T("%s"), GetItemText());
 		}
 	}
 	else
@@ -151,13 +151,13 @@ void CCalendarCellItem::DrawItem(CPaintDC* pDC, CRect* pCellArea, BOOL bMView/*=
 		if (GetDispDate() == TRUE)
 		{
 			if (!bMView)
-				strBuf.Format("%s  %s  %s", dtS.Format("%I:%M%p"), dtE.Format("%I:%M%p"), GetItemText());
+				strBuf.Format(_T("%s  %s  %s"), dtS.Format("%I:%M%p"), dtE.Format("%I:%M%p"), GetItemText());
 			else
-				strBuf.Format("%s  %s", dtS.Format("%I:%M%p"), GetItemText());
+				strBuf.Format(_T("%s  %s"), dtS.Format("%I:%M%p"), GetItemText());
 		}
 		else
 		{
-			strBuf.Format("%s", GetItemText());
+			strBuf.Format(_T("%s"), GetItemText());
 		}
 	}
 

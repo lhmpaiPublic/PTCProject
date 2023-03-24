@@ -208,7 +208,7 @@ int CPioCtrl::InPortByteThread(int nAddress , OUT short& data )
 {
 	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE)
 	{
-		return 0;
+		return -1;
 	}
 
 	CSingleLock	cs(&m_csPioThread, TRUE);

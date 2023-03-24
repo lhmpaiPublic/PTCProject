@@ -83,7 +83,11 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	m_bLoadGlsInfoReq = TRUE; 
 	m_bLastAlarmCode = 0xFFFF; 
 	// 22.03.24 Ahn Add End
-	m_bLotStartFlag = TRUE; // 22.03.25 Ahn Add
+
+	m_bLotStartFlag = FALSE;
+	m_bLotEndFlag = FALSE;
+	m_bTabCountResetFlag = FALSE;
+	m_bLotStartInitFlag = TRUE;
 
 	//// 22.04.21 Ahn Add Start
 	//m_pFileManager = NULL ;
@@ -470,7 +474,19 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 		KillSignalCheckTimer();
 
-		BOOL bLotStartSigIn ;
+		//////////////////////////////////////////////////////////////////////////
+		//  Lot Start, Lot End, Tab Count Reset 감시 ]
+		CheckLotEndProcess2();
+		CheckTabZeroReset();
+		CheckLotStartProcess();
+
+
+
+
+
+
+		//////////////////////////////////////////////////////////////////////////
+		// [ Main Loof ]
 
 		switch (m_nStatus)
 		{
@@ -627,7 +643,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				}
 			}
 
-			CheckLotEndProcess();
+//			CheckLotEndProcess();
 			break ;
 
 
@@ -644,10 +660,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			{
 				m_nStatus = en_PrepareRun;
 			}
-			else
-			{
-				CheckLotEndProcess();
-			}
 
 			break;
 
@@ -663,21 +675,13 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				m_pDeleteThread = nullptr;
 			}
 
-			CheckLotEndProcess();
-
-			bLotStartSigIn = pSigProc->SigInLotStart(); 
-			if( (bLotStartSigIn == TRUE) || (m_bLotStartFlag==TRUE) )
+			if( m_bLotStartInitFlag == TRUE )
 			{
-				if (bLotStartSigIn ==  TRUE)
-				{
-					AprData.SaveLotLog(_T("1.Lot Start Signal ON "));
-				}
-				CameraGrabStart();
-
-				if (AprData.LotStartProcess( bLotStartSigIn) < 0)
+				if (AprData.LotStartProcess( FALSE ) < 0)
 				{
 					m_nStatus = en_Initialize;
 				}
+				CameraGrabStart();
 
 				m_bLotStartFlag = FALSE;  // 22.04.13 Ahn Move
 
@@ -685,7 +689,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				pFrame->ReflashAll();
 			}
 			else
-			{
+ 			{
 				if (theApp.m_pImgProcCtrl->IsGrabberRun() == FALSE)
 				{
 					CameraGrabStart();
@@ -723,10 +727,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			}
 
 
-			//pSigProc->SigOutLotStartAck(TRUE);
-			pSigProc->SigOutLotStartAck(FALSE);
-			pSigProc->sigOutLotEndAck(FALSE);
-			pSigProc->SigOutTabZeroReset(FALSE);
+// 			pSigProc->SigOutLotStartAck(FALSE);
+// 			pSigProc->sigOutLotEndAck(FALSE);
+// 			pSigProc->SigOutTabZeroReset(FALSE);
 
 			m_bEncoderReset = FALSE;
 			m_nStatus = en_Run;
@@ -869,9 +872,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == m_TID_Alive_Pulse)
 	{
 		KillAlivePulseTimer();
-//		CSigProc *pSigProc = theApp.m_pSigProc;
-//		pSigProc->SigOutAlivePulse(TRUE);
-//		SetAlivePulseTimer(); //pyjtest
+		CSigProc *pSigProc = theApp.m_pSigProc;
+		pSigProc->SigOutAlivePulse(TRUE);
+		SetAlivePulseTimer(); //pyjtest
 
 	}	
 
@@ -970,7 +973,7 @@ void CNotchingGradeInspView::CheckDiskSpace()
 
 BOOL CNotchingGradeInspView::SetSignalCheckTimer()
 {
-	m_TID_IO_Check = SetTimer(T_ID_IO_CHECK, 10, NULL);
+	m_TID_IO_Check = SetTimer(T_ID_IO_CHECK, 50/*10*/, NULL);
 //	m_TID_IO_Check = SetTimer(T_ID_IO_CHECK, 500, NULL); //pyjtest
 	return FALSE;
 }
@@ -1311,6 +1314,123 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 	return nRet;
 }
 // 22.07.26 Ahn Add End
+
+
+int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
+{
+	int nRet = 0;
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	if ( (pSigProc->SigInLotEnd() == TRUE) && (m_bLotEndFlag == FALSE) )
+	{
+		m_bLotEndFlag = TRUE;
+
+		AprData.SaveDebugLog(_T("CheckLotEndProcess2 ON"));
+
+		pSigProc->sigOutLotEndAck(TRUE);
+		CameraGrabStop();
+		AprData.LotEndProcess();
+
+		AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;
+		AprData.m_NowLotData.m_SeqDataLotEnd.dwBottomNgLotEndCount = AprData.m_NowLotData.m_nBottomNG;
+
+		int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
+
+		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd); // 22.07.13 Ahn Modify m_SeqDataLot -> LotEnd
+		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
+		pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+
+		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+		pFrame->ResetAndRefreshAll();
+	}
+	if ((pSigProc->SigInLotEnd() == FALSE) && (m_bLotEndFlag == TRUE))
+	{
+		m_bLotEndFlag = FALSE;
+		AprData.SaveDebugLog(_T("CheckLotEndProcess2 OFF"));
+
+		pSigProc->sigOutLotEndAck(FALSE);
+	}
+
+
+	return nRet;
+}
+
+
+
+int CNotchingGradeInspView::CheckTabZeroReset()
+{
+	int nRet = 0;
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	if ((pSigProc->SigInTabZeroReset() == TRUE) && (m_bTabCountResetFlag == FALSE) )
+	{
+		m_bTabCountResetFlag = TRUE;
+		AprData.SaveDebugLog(_T("CheckTabZeroReset ON"));
+
+		AprData.SaveLotLog(_T("Tab Zero Reset 신호 ON"));
+		pSigProc->SigOutTabZeroReset(TRUE);
+
+		theApp.m_pImgProcCtrl->TabCountReset();
+		AprData.SaveLotLog(_T("Tab No And Queue Reset"));
+
+		AprData.m_NowLotData.ClearAllCount();
+		AprData.FileCtrl_LotInfo(CGlobalData::en_mode_LotEnd);
+
+		CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
+		pDoc->SetReqCounterReset(TRUE);
+
+		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+		pFrame->ResetAndRefreshAll();
+		pFrame->ReflashAll();
+		pFrame->ResetResultViewDlg();
+
+
+	}
+	if ((pSigProc->SigInTabZeroReset() == FALSE) && (m_bTabCountResetFlag == TRUE))
+	{
+		m_bTabCountResetFlag = FALSE;
+		AprData.SaveDebugLog(_T("CheckTabZeroReset OFF"));
+
+		pSigProc->SigOutTabZeroReset(FALSE);
+
+	}
+
+	return nRet;
+}
+
+
+int CNotchingGradeInspView::CheckLotStartProcess()
+{
+	int nRet = 0;
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	BOOL bLotStartSigIn = pSigProc->SigInLotStart();
+	if ((bLotStartSigIn == TRUE) && (m_bLotStartFlag == FALSE))
+	{
+		m_bLotStartFlag = TRUE;
+		AprData.SaveDebugLog(_T("CheckLotStartProcess ON"));
+		AprData.SaveLotLog(_T("1.Lot Start Signal ON "));
+
+		if (AprData.LotStartProcess(bLotStartSigIn) < 0)
+		{
+			m_nStatus = en_Initialize;
+		}
+
+		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+		pFrame->ReflashAll();
+	}
+	if ((bLotStartSigIn == FALSE) && (m_bLotStartFlag == TRUE))
+	{
+		m_bLotStartFlag = FALSE;
+		AprData.SaveDebugLog(_T("CheckLotStartProcess OFF"));
+
+		pSigProc->SigOutLotStartAck(FALSE);
+	}
+
+	return nRet;
+}
+
+
 
 
 // 23.02.09 Ahn Add Start

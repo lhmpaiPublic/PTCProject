@@ -150,7 +150,7 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 			SapManager::GetServerName(m_nServerIndex, serverName, sizeof(serverName));
 
 		//	printf("%d: %s\n", serverIndex, serverName);
-			strMsg.Format("%d: %s\n", m_nServerIndex, serverName);
+			strMsg.Format(_T("%d: %s\n"), m_nServerIndex, serverName);
 
 			//서버명 복사
 			CorStrncpy(acqServerName, serverName, MAX_PATH);
@@ -181,7 +181,7 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 		char deviceName[CORPRM_GETSIZE(CORACQ_PRM_LABEL)];
 		//디버이스명을 가져온다.
 		SapManager::GetResourceName(acqServerName, SapManager::ResourceAcq, deviceIndex, deviceName, sizeof(deviceName));
-		strMsg.Format("%d: %s\n", deviceIndex + 1, deviceName);
+		strMsg.Format(_T("%d: %s\n"), deviceIndex + 1, deviceName);
 		TRACE(strMsg);
 	}
 

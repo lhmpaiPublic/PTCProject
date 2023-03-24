@@ -203,7 +203,7 @@ BOOL CCalenderCtrl::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 		if(hdr.code == NM_DBLCLK ) {
 			if (m_pList != NULL) {
 				CString str;
-				str.Format("더블클릭 메세지");
+				str.Format(_T("더블클릭 메세지"));
 				AfxMessageBox(str);
 				m_pList->ShowWindow(SW_HIDE);
 			}
@@ -389,7 +389,7 @@ void CCalenderCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 	CPoint ptPos = point;
 
 #ifdef DEBUG
-	strBuf.Format("OnLButtonDown - Clicked point: %d, %d\n", point.x, point.y);
+	strBuf.Format(_T("OnLButtonDown - Clicked point: %d, %d\n"), point.x, point.y);
 	TRACE(strBuf);
 #endif
 	// Clear Highlight from any of the CellDataItems
@@ -475,7 +475,7 @@ void CCalenderCtrl::OnLButtonDblClk(UINT nFlags, CPoint point)
 	CString strBuf;
 
 #ifdef DEBUG
-	strBuf.Format("OnLButtonDblClk - Clicked point: %d, %d\n", point.x, point.y);
+	strBuf.Format(_T("OnLButtonDblClk - Clicked point: %d, %d\n"), point.x, point.y);
 	TRACE(strBuf);
 #endif
 
@@ -514,7 +514,7 @@ void CCalenderCtrl::OnRButtonDown(UINT nFlags, CPoint point)
 	CPoint ptPos = point;
 
 #ifdef DEBUG
-	strBuf.Format("OnRButtonDown - Clicked point: %d, %d\n", point.x, point.y);
+	strBuf.Format(_T("OnRButtonDown - Clicked point: %d, %d\n"), point.x, point.y);
 	TRACE(strBuf);
 #endif
 	// Clear Highlight from any of the CellDataItems
@@ -580,7 +580,7 @@ void CCalenderCtrl::OnRButtonUp(UINT nFlags, CPoint point)
 	CString strBuf;
 
 #ifdef DEBUG
-	strBuf.Format("OnRButtonUp - Clicked point: %d, %d\n", point.x, point.y);
+	strBuf.Format(_T("OnRButtonUp - Clicked point: %d, %d\n"), point.x, point.y);
 	TRACE(strBuf);
 #endif
 
@@ -665,7 +665,7 @@ void CCalenderCtrl::DrawWeekCellHeaders(CPaintDC* pDC)
 			// Calculate Rectangle - for highlighted cell
 			CRect rText;
 			rText.CopyRect(&rHdr);
-			strBuf = pCellData->GetCellDate().Format("%B %d [%A]");
+			strBuf = pCellData->GetCellDate().Format(_T("%B %d [%A]"));
 			strToDay = _T("-Today-   ");
 			strBuf = strToDay + strBuf;
 			pDC->DrawText(strBuf, &rText, DT_CALCRECT);
@@ -696,7 +696,7 @@ void CCalenderCtrl::DrawWeekCellHeaders(CPaintDC* pDC)
 			}
 		}
 		// Draw Date within Header
-		strBuf = pCellData->GetCellDate().Format("%B %d [%A]");
+		strBuf = pCellData->GetCellDate().Format(_T("%B %d [%A]"));
 		strBuf = strToDay + strBuf;
 		pDC->DrawText(strBuf, &rHdr, DT_SINGLELINE | DT_BOTTOM | DT_RIGHT | DT_END_ELLIPSIS);
 		pDC->SetTextColor(RGB(0, 0, 0));
@@ -1383,15 +1383,15 @@ void CCalenderCtrl::DrawMonthCellHeaders(CPaintDC* pDC)
 		if (nCellCount == 1 || pCell->GetCellDate().GetDay() == 1)
 		{
 			// First cell or first of the month in first cell
-			strText.Format("%s %d ", pCell->GetCellDate().Format("%B"), pCell->GetCellDate().GetDay());
+			strText.Format(_T("%s %d "), pCell->GetCellDate().Format("%B"), pCell->GetCellDate().GetDay());
 		}
 		else
 		{
 			// First of the month within the calendar
 			if (pCell->GetCellDate().GetDay() == 1)
-				strText.Format("%s %d ", pCell->GetCellDate().Format("%B"), pCell->GetCellDate().GetDay());
+				strText.Format(_T("%s %d "), pCell->GetCellDate().Format("%B"), pCell->GetCellDate().GetDay());
 			else
-				strText.Format("%d ", pCell->GetCellDate().GetDay());	// Display normal day number
+				strText.Format(_T("%d "), pCell->GetCellDate().GetDay());	// Display normal day number
 		}
 		pDC->SetTextColor(RGB(0, 0, 0));
 		pDC->DrawText(strText, &rHdr, DT_SINGLELINE | DT_BOTTOM | DT_RIGHT | DT_END_ELLIPSIS);

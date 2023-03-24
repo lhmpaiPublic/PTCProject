@@ -767,7 +767,7 @@ void CMelsecDataLink::PioErrorProcess(int iRet, char* cap)
 		break;
 
 	default:
-		cstr.Format("MelsecDataLinkLibrary Error. Code: %d (0x%x)", iRet, (iRet & 0xffff));
+		cstr.Format(_T("MelsecDataLinkLibrary Error. Code: %d (0x%x)"), iRet, (iRet & 0xffff));
 		//에러로그
 		m_bOpened = FALSE; // 22.06.30 Ahn Add 
 		AprData.SaveErrorLog(cstr);

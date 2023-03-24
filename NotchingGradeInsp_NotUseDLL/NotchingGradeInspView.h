@@ -100,16 +100,17 @@ protected:
 	void ResetSignal();
 	void SigInitialize();
 
-	// 22.03.24 Ahn Add Start
 	BOOL m_bLoadGlsInfoReq;
 	WORD m_bLastAlarmCode;
-	// 22.03.24 Ahn Add End
-	// 22.03.29 Ahn Add Start
 	BOOL m_bLotEndProc;
-	// 22.03.29 Ahn Add End
-	//// 22.03.25 Ahn Add Start
-	BOOL m_bLotStartFlag ;
-	//// 22.03.25 Ahn Add End
+	BOOL m_bLotStartFlag;
+	BOOL m_bLotStartInitFlag;
+	BOOL m_bLotEndFlag;
+	BOOL m_bTabCountResetFlag;
+
+
+
+
 
 	// 22.07.04 Ahn Add Start
 	CDeleteResultFileThread* m_pDeleteThread;
@@ -167,6 +168,11 @@ private :
 	// 22.07.26 Ahn Add Start
 	int CheckLotEndProcess();
 	// 22.07.26 Ahn Add End
+
+	int CheckLotEndProcess2(); //조건 없이 Lot End Check
+	int CheckTabZeroReset();
+	int CheckLotStartProcess();
+
 
 // 22.06.27 Ahn Add Start
 public :
