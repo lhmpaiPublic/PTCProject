@@ -324,7 +324,7 @@ void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 		
 		// 22.05.31 Ahn Modify Start
 		int nImgSaveQueCnt = (int)theApp.m_pImgProcCtrl->GetImageSaveQueuePtr()->GetSize() ;
-		m_strDebugStatus.Format("FrmCnt[%d / %d], FrmQue[ %d / %d], ThreadQueue[%d/%d], ResultQueue[ %d / %d], ImgSaveQueue[%d]", nFramdCnt1, nFrameCnt2, nFrmQue1, nFrmQue2, nQueueCnt1, nQueueCnt2, nRsltQueCnt1, nRsltQUeCnt2, nImgSaveQueCnt);
+		m_strDebugStatus.Format(_T("FrmCnt[%d / %d], FrmQue[ %d / %d], ThreadQueue[%d/%d], ResultQueue[ %d / %d], ImgSaveQueue[%d]"), nFramdCnt1, nFrameCnt2, nFrmQue1, nFrmQue2, nQueueCnt1, nQueueCnt2, nRsltQueCnt1, nRsltQUeCnt2, nImgSaveQueCnt);
 		// 22.05.31 Ahn Modify End
 
 		UpdateData(FALSE);

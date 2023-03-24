@@ -484,26 +484,25 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 		::GetLocalTime(&sysTime);
 		m_NowLotData.m_LotStartTime = sysTime;
 	}
-	else {
+	else
+	{
 		sysTime = m_NowLotData.m_LotStartTime;
 	}
 	// 22.07.01 Ahn Add Modify End
 	// 22.07.13 Ahn Modify Start
 
 	CString strTime;
-	strTime.Format(_T("%d\\%02d\\%02d")
-		, sysTime.wYear
-		, sysTime.wMonth
-		, sysTime.wDay
-	);
+	strTime.Format(_T("%d\\%02d\\%02d"), sysTime.wYear, sysTime.wMonth, sysTime.wDay);
 	m_NowLotData.m_strDate = strTime;
 
 	CString strRsltPath;
 	CString strhhmmss;
 	strhhmmss.Format(_T("%02d%02d%02d"), sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
 
-	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE) {
-		if( (nDebugMode & 0x0001) == TRUE ){
+	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE)
+	{
+		if( (nDebugMode & 0x0001) == TRUE )
+		{
 			CString strLotID;
 			strLotID.Format(_T("LOTID_%02d%02d%02d"), sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
 			m_NowLotData.m_strLotNo = strLotID;
@@ -539,29 +538,29 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	// D:/DAT/FOIL/INSP/OK Or NG/YYYYMM/DDHH/LOTID/....
 	// 22.07.13 Ahn Modify Start
 	//strSavePath.Format("%s\\NG\\%s\\%s\\%s\\%s", AprData.m_strImagePath, strYYYYMM, strDD, strHH, AprData.m_NowLotData.m_strLotNo);
-	strSavePath.Format("%s\\NG\\%s\\%s", AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
+	strSavePath.Format(_T("%s\\NG\\%s\\%s"), AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
 	// 22.07.13 Ahn Modify End
 	AprData.m_strNowNgPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
-	strSavePath.Format("%s\\CROP", AprData.m_strNowNgPath );
+	strSavePath.Format(_T("%s\\CROP"), AprData.m_strNowNgPath );
 	CWin32File::CreateDirectory(strSavePath);
 
-	strSavePath.Format("%s\\Overlay", AprData.m_strNowNgPath );
+	strSavePath.Format(_T("%s\\Overlay"), AprData.m_strNowNgPath );
 	CWin32File::CreateDirectory(strSavePath);
 	// 22.07.13 Ahn Modify Start
 	//strSavePath.Format("%s\\OK\\%s\\%s\\%s\\%s", AprData.m_strImagePath, strYYYYMM, strDD, strHH, AprData.m_NowLotData.m_strLotNo);
-	strSavePath.Format("%s\\OK\\%s\\%s", AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
+	strSavePath.Format(_T("%s\\OK\\%s\\%s"), AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
 	// 22.07.13 Ahn Modify End
 	AprData.m_strNowOkPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
-	strSavePath.Format("%s\\%s\\%s", AprData.m_strFeederPath, strYYYYMM, strDD);
+	strSavePath.Format(_T("%s\\%s\\%s"), AprData.m_strFeederPath, strYYYYMM, strDD);
 	AprData.m_strNowCsvPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
 	// 23.02.07 Ahn Add Start
-	strSavePath.Format("%s\\CROP", AprData.m_strNowOkPath);
+	strSavePath.Format(_T("%s\\CROP"), AprData.m_strNowOkPath);
 	CWin32File::CreateDirectory(strSavePath);
 
-	strSavePath.Format("%s\\Overlay", AprData.m_strNowOkPath);
+	strSavePath.Format(_T("%s\\Overlay"), AprData.m_strNowOkPath);
 	CWin32File::CreateDirectory(strSavePath);
 	// 23.02.07 Ahn Add End
 
@@ -612,7 +611,8 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	m_nSectorBaseCount = (int)m_SeqDataIN.wSectorBaseCount ;
 	// 22.08.10 Ahn Add End
 
-	if (bSigInMode == TRUE) {
+	if (bSigInMode == TRUE)
+	{
 		// 22.08.11 Ahn Move Start
 		FileCtrl_LotInfo(en_mode_LotStart); // 22.06.24 Ahn Add
 		// 22.08.11 Ahn Move End
@@ -820,23 +820,23 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 	case	en_mode_LotStart : // Lot Change 시점
 		strSection = _T("LOT_INFO");
 		strKey = _T("LOT_NO");
-		strData.Format("%s", AprData.m_NowLotData.m_strLotNo);
+		strData.Format(_T("%s"), AprData.m_NowLotData.m_strLotNo);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("RECIPE_NAME");
-		strData.Format("%s", AprData.m_NowLotData.m_strRecipeName);
+		strData.Format(_T("%s"), AprData.m_NowLotData.m_strRecipeName);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("TOTAL_COUNT");
-		strData.Format("%d", AprData.m_NowLotData.m_nTabCount);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCount);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("NG_COUNT");
-		strData.Format("%d", AprData.m_NowLotData.m_nTabCountNG);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCountNG);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("OK_COUNT");
-		strData.Format("%d", AprData.m_NowLotData.m_nTabCountOK);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCountOK);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		// 22.11.30 Ahn Add Start
@@ -848,42 +848,42 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strSection = _T("LOT_START_TIME");
 
 		strKey = _T("LOT_START_YEAR");
-		strData.Format("%d", AprData.m_NowLotData.m_LotStartTime.wYear );
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LotStartTime.wYear );
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("LOT_START_MONTH");
-		strData.Format("%d", AprData.m_NowLotData.m_LotStartTime.wMonth);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LotStartTime.wMonth);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("LOT_START_DAY");
-		strData.Format("%d", AprData.m_NowLotData.m_LotStartTime.wDay);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LotStartTime.wDay);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("LOT_START_HOUR");
-		strData.Format("%d", AprData.m_NowLotData.m_LotStartTime.wHour);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LotStartTime.wHour);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile); 
 
 		strKey = _T("LOT_START_MINUTE");
-		strData.Format("%d", AprData.m_NowLotData.m_LotStartTime.wMinute);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LotStartTime.wMinute);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("LOT_START_SECOND");
-		strData.Format("%d", AprData.m_NowLotData.m_LotStartTime.wSecond);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LotStartTime.wSecond);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		break;
 	case	en_mode_Countting : //
 		strSection = _T("LOT_INFO");
 		strKey = _T("TOTAL_COUNT");
-		strData.Format("%d", AprData.m_NowLotData.m_nTabCount);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCount);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("NG_COUNT");
-		strData.Format("%d", AprData.m_NowLotData.m_nTabCountNG);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCountNG);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("OK_COUNT");
-		strData.Format("%d", AprData.m_NowLotData.m_nTabCountOK);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCountOK);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		// 22.11.30 Ahn Add Start
@@ -907,15 +907,15 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		// 22.07.28 Ahn Add Start
 
 		strKey = _T("TOTAL_COUNT");
-		strData.Format("%d", 0);
+		strData.Format(_T("%d"), 0);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("NG_COUNT");
-		strData.Format("%d", 0);
+		strData.Format(_T("%d"), 0);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("OK_COUNT");
-		strData.Format("%d", 0);
+		strData.Format(_T("%d"), 0);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		// 22.11.30 Ahn Add Start
@@ -933,23 +933,23 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strSection = _T("LAST_DELETE_COMPLET_DATE");
 		// 22.07.26 Ahn Modify Start
 		strKey = _T("LAST_DELETE_COMPLET_YEAR");
-		strData.Format("%d", AprData.m_NowLotData.m_LastDeleteCompletTime.wYear);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LastDeleteCompletTime.wYear);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("LAST_DELETE_COMPLET_MONTH");
-		strData.Format("%d", AprData.m_NowLotData.m_LastDeleteCompletTime.wMonth );
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LastDeleteCompletTime.wMonth );
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("LAST_DELETE_COMPLET_DAY");
-		strData.Format("%d", AprData.m_NowLotData.m_LastDeleteCompletTime.wDay );
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LastDeleteCompletTime.wDay );
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("LAST_DELETE_COMPLET_HOUR");
-		strData.Format("%d", AprData.m_NowLotData.m_LastDeleteCompletTime.wHour);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LastDeleteCompletTime.wHour);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("LAST_DELETE_COMPLET_MINUTE");
-		strData.Format("%d", AprData.m_NowLotData.m_LastDeleteCompletTime.wMinute);
+		strData.Format(_T("%d"), AprData.m_NowLotData.m_LastDeleteCompletTime.wMinute);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 		// 22.07.26 Ahn Modify End
 		break;
@@ -976,11 +976,11 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 	case	en_mode_RecipeSelect :
 		strSection = _T("LOT_INFO");
 		strKey = _T("RECIPE_NAME");
-		strData.Format("%s", AprData.m_NowLotData.m_strRecipeName);
+		strData.Format(_T("%s"), AprData.m_NowLotData.m_strRecipeName);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
 		strKey = _T("NEXT_RECIPE_NAME");
-		strData.Format("%s", AprData.m_NowLotData.m_strNextRecipeName);
+		strData.Format(_T("%s"), AprData.m_NowLotData.m_strNextRecipeName);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 		break;
 	// 22.08.04 Ahn Add End

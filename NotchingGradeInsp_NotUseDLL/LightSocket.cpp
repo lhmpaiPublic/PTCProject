@@ -385,7 +385,7 @@ int CLightSocket::DataRecv( char* pBuff, int length, long lTimeOver )
 	if ( buff_temp[ length - 1 ] != enETX )
 	{
 		CString strError ;
-		strError.Format( "Format Error ETX: %s" , buff_temp ) ;
+		strError.Format( _T("Format Error ETX: %s") , buff_temp ) ;
 		SAVE_ERROR_TEXT( strError ) ;
 		return ( -1 ) ;
 	}

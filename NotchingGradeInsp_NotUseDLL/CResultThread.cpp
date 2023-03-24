@@ -588,7 +588,8 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 			CImageProcess::SaveCropImage(pImgPtr, nWidth, nHeight, rcCrop, strFilePath, strFileName);
 
 			// 22.06.10 Ahn Add Star
-			if (pQueueCtrl != NULL) {
+			if (pQueueCtrl != NULL)
+			{
 				CCropImgData data;
 				data.m_bEnable = TRUE;
 				data.m_strFileName.Format( _T("%s%s"), strFilePath, strFileName) ;

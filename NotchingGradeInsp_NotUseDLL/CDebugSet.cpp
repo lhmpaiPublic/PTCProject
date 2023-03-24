@@ -76,7 +76,7 @@ int CDebugSet::FileCtrl(int nMode)
 		strSection = _T("DEBUG_SET");
 		for ( i = 0; i < en_Debug_Total; i++) {
 			strKey = m_strDebugName[i]; 
-			strData.Format("%d", m_bDebug[i]);
+			strData.Format(_T("%d"), m_bDebug[i]);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 		}	
 

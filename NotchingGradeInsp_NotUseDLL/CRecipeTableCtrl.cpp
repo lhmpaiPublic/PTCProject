@@ -17,11 +17,11 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 		for (int i = 0; i < MAX_RECIPE_TABLE; i++) {
 			strSection.Format( _T("RECIPE_NO_%d"), i + 1) ;
 			strKey = _T("RECIPE_NAME");
-			strData.Format("%s", m_RecipeTable[i].strRecipeName);
+			strData.Format(_T("%s"), m_RecipeTable[i].strRecipeName);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("MEMO");
-			strData.Format("%s", m_RecipeTable[i].strMemo );
+			strData.Format(_T("%s"), m_RecipeTable[i].strMemo );
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 		}
 	}

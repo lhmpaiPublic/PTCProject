@@ -2923,7 +2923,7 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	CImageProcess::SmoothVecRoundData(&vecAllRndInfo, CImageProcess::en_FindLeft );
 
 	dTime = cta.WhatTimeIsIt();
-	strTime.Format("Edge Detect[%.1lf], ", dTime);
+	strTime.Format(_T("Edge Detect[%.1lf], "), dTime);
 
 	CRegionInfo roiFoilExp;
 	CRegionInfo roiDross;
@@ -2975,7 +2975,7 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
-	strThres.Format("Thres & Labeling[%.1lf]", dTime);
+	strThres.Format(_T("Thres & Labeling[%.1lf]"), dTime);
 
 	// 22.07.20 Ahn Delete Start
 	//if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
@@ -3165,7 +3165,7 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 	double dTime = cta.WhatTimeIsIt_Double();
 	CString strMeanTime;
-	strMeanTime.Format("MeanProc[%.1lf], ", dTime);
+	strMeanTime.Format(_T("MeanProc[%.1lf], "), dTime);
 	cta.Clear();
 	cta.StopWatchStart();
 
@@ -3395,7 +3395,7 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
-	strThres.Format("Thres & Labeling[%.1lf]", dTime);
+	strThres.Format(_T("Thres & Labeling[%.1lf]"), dTime);
 
 	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
 		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
@@ -3566,7 +3566,7 @@ int CImageProcSimDlg::ProceBottomAll_Negative()
 
 	double dTime = cta.WhatTimeIsIt_Double();
 	CString strMeanTime;
-	strMeanTime.Format("MeanProc[%.1lf], ", dTime);
+	strMeanTime.Format(_T("MeanProc[%.1lf], "), dTime);
 
 	cta.Clear();
 	cta.StopWatchStart();
@@ -3600,7 +3600,7 @@ int CImageProcSimDlg::ProceBottomAll_Negative()
 	CImageProcess::SmoothVecRoundData(&vecAllRndInfo, CImageProcess::en_FindLeft);
 
 	dTime = cta.WhatTimeIsIt();
-	strTime.Format("Edge Detect[%.1lf], ", dTime);
+	strTime.Format(_T("Edge Detect[%.1lf], "), dTime);
 
 	CRegionInfo roiFoilExp;
 	CRegionInfo roiDross;
@@ -3656,7 +3656,7 @@ int CImageProcSimDlg::ProceBottomAll_Negative()
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
-	strThres.Format("Thres & Labeling[%.1lf]", dTime);
+	strThres.Format(_T("Thres & Labeling[%.1lf]"), dTime);
 
 	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
 		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
@@ -4794,7 +4794,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 	double dTime = cta.WhatTimeIsIt_Double();
 	CString strMeanTime;
-	strMeanTime.Format("MeanProc[%.1lf], ", dTime);
+	strMeanTime.Format(_T("MeanProc[%.1lf], "), dTime);
 
 	cta.Clear();
 	cta.StopWatchStart();
@@ -4855,7 +4855,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	int nMaskRight = nHeadBndry - 30;
 
 	dTime = cta.WhatTimeIsIt_Double();
-	strMeanTime.Format("MeanProc[%.1lf], ", dTime);
+	strMeanTime.Format(_T("MeanProc[%.1lf], "), dTime);
 	cta.Clear();
 	cta.StopWatchStart();
 
@@ -5024,7 +5024,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 	CString strProcDiff;
 	double dDiffTime = cta.WhatTimeIsIt_Double();
-	strProcDiff.Format("ProcDiff[%.1lf]", dDiffTime);
+	strProcDiff.Format(_T("ProcDiff[%.1lf]"), dDiffTime);
 	cta.Clear();
 	cta.StopWatchStart();
 
@@ -5048,7 +5048,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 
 	double dThTime = cta.WhatTimeIsIt_Double();
-	strThres.Format("Threshold[%.1lf]", dThTime);
+	strThres.Format(_T("Threshold[%.1lf]"), dThTime);
 
 	cta.Clear();
 	cta.StopWatchStart();
@@ -5074,7 +5074,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	dTime = cta.WhatTimeIsIt_Double();
 
 	CString strLabeling;
-	strLabeling.Format("Labeling[%.1lf]", dTime);
+	strLabeling.Format(_T("Labeling[%.1lf]"), dTime);
 	// 라운드 사이즈 판정.
 	//
 
@@ -5331,7 +5331,7 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 
 	double dTime = cta.WhatTimeIsIt_Double();
 	CString strMeanTime;
-	strMeanTime.Format("MeanProc[%.1lf], ", dTime);
+	strMeanTime.Format(_T("MeanProc[%.1lf], "), dTime);
 	cta.Clear();
 	cta.StopWatchStart();
 
@@ -5517,7 +5517,7 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
-	strThres.Format("Thres & Labeling[%.1lf]", dTime);
+	strThres.Format(_T("Thres & Labeling[%.1lf]"), dTime);
 
 	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
 		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
@@ -5711,7 +5711,7 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 
 	double dTime = cta.WhatTimeIsIt_Double();
 	CString strMeanTime;
-	strMeanTime.Format("MeanProc[%.1lf], ", dTime);
+	strMeanTime.Format(_T("MeanProc[%.1lf], "), dTime);
 	cta.Clear();
 	cta.StopWatchStart();
 

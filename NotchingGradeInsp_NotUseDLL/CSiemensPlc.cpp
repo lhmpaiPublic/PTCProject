@@ -64,7 +64,7 @@ int CSiemensPlc::WriteDataReg(int offset, short data[], int num)
 
 			if (nRet < 0)
 			{
-				strMsg.Format("Siemens Write Error");
+				strMsg.Format(_T("Siemens Write Error"));
 				AprData.SaveErrorLog(strMsg);
 				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
 			}
@@ -72,7 +72,7 @@ int CSiemensPlc::WriteDataReg(int offset, short data[], int num)
 		}
 		else
 		{
-			strMsg.Format("Siemens Open Error");
+			strMsg.Format(_T("Siemens Open Error"));
 			AprData.SaveErrorLog(strMsg);
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
 		}
@@ -99,14 +99,14 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 
 			if( nRet < 0)
 			{
-				strMsg.Format("Siemens Read Error");
+				strMsg.Format(_T("Siemens Read Error"));
 				AprData.SaveErrorLog(strMsg);
 				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
 			}
 		}
 		else
 		{
-			strMsg.Format("Siemens Open Error");
+			strMsg.Format(_T("Siemens Open Error"));
 			AprData.SaveErrorLog(strMsg);
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
 		}

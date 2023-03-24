@@ -4479,8 +4479,26 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 		}
 	}
 
-	if (pstSector == NULL) {
+	if (pstSector == NULL)
+	{
 		AprData.SaveDebugLog(_T("Tab 폭이 너무 작습니다."));
+
+
+
+
+		//////////////////////////////////////////////////////////////////////////
+		// pyjtest - Tab 인식 불량 이미지 저장
+// 		CBitmapStd bmp(nWidth, nHeight, 8);
+// 		bmp.SetImage(nWidth, nHeight, pImgPtr);
+// 
+// 		CString strFile;
+// 		strFile.Format(_T("d:\\TabFindNg.bmp"));
+// 		bmp.SaveBitmap(strFile);
+		//////////////////////////////////////////////////////////////////////////
+
+
+
+
 		return -3;
 	}
 
@@ -6132,6 +6150,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			}
 		}
 
+
+
 		BOOL bResvSend = FALSE;
 		switch (nCase) {
 		case	0 : // 통으로 보냄
@@ -6160,6 +6180,19 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
+
+
+
+			//////////////////////////////////////////////////////////////////////////
+			// pyjtest - 내부 동기 사용 시 프로그램 이상 종료 문제 확인 로그
+// 			strMsg.Format(_T("tabInfo.nLeft = %d, nSendLength = %d, nBaseTabPitch = %d, pResvTabInfo->nImageLength = %d, tabInfo.nRight = %d, tabInfo.nImageLength = %d, tabInfo.nFrameCount = %d, tabInfo.nTabStartPosInFrame = %d"),
+// 				tabInfo.nLeft, nSendLength, nBaseTabPitch, pResvTabInfo->nImageLength, tabInfo.nRight, tabInfo.nImageLength, tabInfo.nFrameCount, tabInfo.nTabStartPosInFrame);
+// 			AprData.SaveDebugLog(strMsg);
+			//////////////////////////////////////////////////////////////////////////
+
+
+
+
 			// 22.11.18 Ahn Add End
 			memcpy(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			memcpy(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);

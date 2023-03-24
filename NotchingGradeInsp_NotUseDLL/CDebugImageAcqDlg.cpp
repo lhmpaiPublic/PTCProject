@@ -116,17 +116,17 @@ void CDebugImageAcqDlg::OnBnClickedBtnImageAcqStart()
 
 	// 22.08.10 Ahn Modify Start
 	AprData.m_strNowDatePath.Format(_T("%s\\%s\\%s"), strYYYYMM, strDD, strHH);
-	strSavePath.Format("%s\\NG\\%s\\%s", AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
+	strSavePath.Format(_T("%s\\NG\\%s\\%s"), AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
 	AprData.m_strNowNgPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
-	strSavePath.Format("%s\\CROP", AprData.m_strNowNgPath);
+	strSavePath.Format(_T("%s\\CROP"), AprData.m_strNowNgPath);
 	CWin32File::CreateDirectory(strSavePath);
-	strSavePath.Format("%s\\Overlay", AprData.m_strNowNgPath);
+	strSavePath.Format(_T("%s\\Overlay"), AprData.m_strNowNgPath);
 	CWin32File::CreateDirectory(strSavePath);
-	strSavePath.Format("%s\\OK\\%s\\%s", AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
+	strSavePath.Format(_T("%s\\OK\\%s\\%s"), AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
 	AprData.m_strNowOkPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
-	strSavePath.Format("%s\\%s\\%s", AprData.m_strFeederPath, strYYYYMM, strDD);
+	strSavePath.Format(_T("%s\\%s\\%s"), AprData.m_strFeederPath, strYYYYMM, strDD);
 	AprData.m_strNowCsvPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
 	strSavePath.Format(_T("%s\\BINARY\\%s\\%s"), AprData.m_strResultPath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
