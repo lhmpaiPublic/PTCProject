@@ -75,8 +75,8 @@ void CIoMonitorDlg::DoDataExchange(CDataExchange* pDX)
 	//DDX_Text(pDX,	IDC_ED_ALARM_OUT, m_strAlarm);
 	//DDX_Text(pDX,	IDC_ED_ALARM_BIT, m_strAlarmBit);
 	// 22.08.12 Ahn Add Start
-	DDX_Control(pDX, IDC_GRID_WORD_IN, m_GridWordIn) ;
-	DDX_Control(pDX, IDC_GRID_WORD_OUT, m_GridWordOut) ;
+	DDX_Control(pDX, IDC_GRID_WORD_IN, m_GridWordIn);
+	DDX_Control(pDX, IDC_GRID_WORD_OUT, m_GridWordOut);
 	// 22.08.12 Ahn Add End
 }
 
@@ -87,6 +87,23 @@ BEGIN_MESSAGE_MAP(CIoMonitorDlg, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CIoMonitorDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDC_BTN_DATA_LOAD, &CIoMonitorDlg::OnBnClickedBtnDataLoad)
 	ON_BN_CLICKED(IDC_BTN_DUMMY_ERROR, &CIoMonitorDlg::OnBnClickedBtnDummyError)
+	ON_WM_SHOWWINDOW()
+	ON_STN_DBLCLK(IDC_ST_READY_OUT, &CIoMonitorDlg::OnDblclkStReadyOut)
+	ON_STN_DBLCLK(IDC_ST_READY_OUT_OFF, &CIoMonitorDlg::OnDblclkStReadyOutOff)
+	ON_STN_DBLCLK(IDC_ST_ALIVE_PULSE_OUT, &CIoMonitorDlg::OnDblclkStAlivePulseOut)
+	ON_STN_DBLCLK(IDC_ST_ALIVE_PULSE_OUT_OFF, &CIoMonitorDlg::OnDblclkStAlivePulseOutOff)
+	ON_STN_DBLCLK(IDC_ST_CNT_RESET_ACK, &CIoMonitorDlg::OnDblclkStCntResetAck)
+	ON_STN_DBLCLK(IDC_ST_CNT_RESET_ACK_OFF, &CIoMonitorDlg::OnDblclkStCntResetAckOff)
+	ON_STN_DBLCLK(IDC_ST_DISK_SPACE_ALARM, &CIoMonitorDlg::OnDblclkStDiskSpaceAlarm)
+	ON_STN_DBLCLK(IDC_ST_DISK_SPACE_ALARM_OFF, &CIoMonitorDlg::OnDblclkStDiskSpaceAlarmOff)
+	ON_STN_DBLCLK(IDC_ST_DISK_SPACE_ERROR, &CIoMonitorDlg::OnDblclkStDiskSpaceError)
+	ON_STN_DBLCLK(IDC_ST_DISK_SPACE_ERROR_OFF, &CIoMonitorDlg::OnDblclkStDiskSpaceErrorOff)
+	ON_STN_DBLCLK(IDC_ST_RAD_RECIPE_CHANGE_ACK, &CIoMonitorDlg::OnDblclkStRadRecipeChangeAck)
+	ON_STN_DBLCLK(IDC_ST_RAD_RECIPE_CHANGE_ACK_OFF, &CIoMonitorDlg::OnDblclkStRadRecipeChangeAckOff)
+	ON_STN_DBLCLK(IDC_ST_LOT_START_ACK, &CIoMonitorDlg::OnDblclkStLotStartAck)
+	ON_STN_DBLCLK(IDC_ST_LOT_START_ACK_OFF, &CIoMonitorDlg::OnDblclkStLotStartAckOff)
+	ON_STN_DBLCLK(IDC_ST_LOT_END_ACK, &CIoMonitorDlg::OnDblclkStLotEndAck)
+	ON_STN_DBLCLK(IDC_ST_LOT_END_ACK_OFF, &CIoMonitorDlg::OnDblclkStLotEndAckOff)
 END_MESSAGE_MAP()
 
 
@@ -392,6 +409,13 @@ int CIoMonitorDlg::RefreshAll()
 			}
 		}
 	}
+
+
+// 	pSigProc->ReadBlockAllData(&m_localSeqDataIn);
+// 	pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
+// 
+// 	UpdateGridCtrl();
+
 
 	return nRet;
 }
@@ -945,3 +969,128 @@ void CIoMonitorDlg::OnBnClickedBtnDummyError()
 	}
 }
 // 22.10.05 Ahn Add End
+
+
+void CIoMonitorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	CDialogEx::OnShowWindow(bShow, nStatus);
+
+	if (bShow)
+	{
+		CSigProc* pSigProc = theApp.m_pSigProc;;
+		pSigProc->ReadBlockAllData(&m_localSeqDataIn);
+		pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
+
+		UpdateGridCtrl();
+
+	}
+}
+
+void CIoMonitorDlg::OnDblclkStAlivePulseOut()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutAlivePulse(FALSE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStAlivePulseOutOff()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutAlivePulse(TRUE);
+}
+
+void CIoMonitorDlg::OnDblclkStReadyOut()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutReady(FALSE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStReadyOutOff()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutReady(TRUE);
+}
+
+void CIoMonitorDlg::OnDblclkStCntResetAck()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutTabZeroReset(FALSE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStCntResetAckOff()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutTabZeroReset(TRUE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStDiskSpaceAlarm()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutDiskCapacityAlarm(FALSE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStDiskSpaceAlarmOff()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutDiskCapacityAlarm(TRUE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStDiskSpaceError()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutDiskCapacityWarning(FALSE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStDiskSpaceErrorOff()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutDiskCapacityWarning(TRUE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStRadRecipeChangeAck()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutRecipeChangeAck(FALSE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStRadRecipeChangeAckOff()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutRecipeChangeAck(TRUE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStLotStartAck()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutLotStartAck(FALSE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStLotStartAckOff()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->SigOutLotStartAck(TRUE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStLotEndAck()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->sigOutLotEndAck(FALSE);
+}
+
+
+void CIoMonitorDlg::OnDblclkStLotEndAckOff()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	pSigProc->sigOutLotEndAck(TRUE);
+}

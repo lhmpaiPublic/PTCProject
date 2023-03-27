@@ -396,6 +396,14 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 		size2 = size = 1;
 		buff = (short)(data);
 
+
+
+// 		CString strMsg;
+// 		strMsg.Format(_T("OutPort devno=%d, port=%d, wTmpStNo=%d, m_wOffset_Out=%d"), devno, port, wTmpStNo, m_wOffset_Out);
+// 		AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+
 		// 22.04.04 Ahn Delete Start
 		//if (ChangeWorkingSetSize() != 0) {
 		//	//에러로그
@@ -517,6 +525,18 @@ int CMelsecDataLink::WriteDataReg(int offset, short data[], int num)
 	// 23.02.17 Son Mod Start
 	//devno = (long)offset;
 	devno = (long)(offset + AprData.m_System.m_nWordOut);
+
+
+
+
+// 	CString strMsg;
+// 	strMsg.Format(_T("WriteDataReg devno=%d"), devno);
+// 	AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+
+
+
 	// 23.02.17 Son Mod End
 	size2 = size = (long)(2 * num);
 	long nNetNo = 0;
@@ -1249,6 +1269,17 @@ int CMelsecDataLink::ReadPortAllBitIn( BYTE *data, short size )
 		short	devno, size2 ;
 		devno = (short)(port * 8 + (wTmpStNo - 1) * 4 * 8 + m_wOffset_In);
 		size2 = size ;
+
+
+
+// 		CString strMsg;
+// 		strMsg.Format(_T("ReadPortAllBitIn devno=%d, wTmpStNo=%d, m_wOffset_In=%d"), devno, wTmpStNo, m_wOffset_In);
+// 		AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+
+
+
 
 		{
 			CSingleLock cs(GetCriticalSection(), TRUE);

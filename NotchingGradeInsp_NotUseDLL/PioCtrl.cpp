@@ -10,7 +10,7 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 	pAprPio = NULL;
 
 	WORD wMaxPort = MAX_PORT;
-	WORD wMyStNo = MAIN_STATION_NO;
+	WORD wMyStNo = LIO_STATION_NO; //MAIN_STATION_NO; (MAIN_STATION_NO 사용 시 HEX 기준 Address 20개 밀림)
 	WORD wExStNo = EX_STATION_NO;
 	WORD wSeqStNo = 0x00;
 	WORD wOffsetIn = 0x00;
@@ -492,7 +492,8 @@ int CPioCtrl::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 		bBitPos = (nMode == 0) ? 0x01 : 0x00;
 		nRet = pAprPio->WriteDataReg(nPort, (short*)bBitPos, 1);
 	}
-	else {
+	else
+	{
 		nRet = pAprPio->Out_Port_Bit(nPort, bBitPos, nMode);
 	}
 

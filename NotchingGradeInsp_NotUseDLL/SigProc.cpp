@@ -37,10 +37,13 @@ int CSigProc::GetPortBit(int nIntegration, int* piPort, BYTE* pByte)
 	// 23.03.02 Ahn Modify Start
 	//*piPort = (int)((nIntegration >> 8) & 0xff);
 	//*pByte = (BYTE)(nIntegration & 0xff);
-	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
+	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
+	{
 		*piPort = (int)((nIntegration >> 8) & 0xff);
 		*pByte = (BYTE)(nIntegration & 0xff);
-	} else {
+	}
+	else
+	{
 		*piPort = nIntegration;
 		*pByte = (BYTE)(0x01);
 	}
@@ -135,7 +138,8 @@ int CSigProc::SignalBitOut(int nIntegration, int nMode, BOOL bLocal /*= FALSE*/)
 // 	AprData.SaveDebugLog(strMsg); //pyjtest
 
 	int	nRet = 0;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
 		short nData = (nMode == 1) ? 1 : 0;
 		short* pData = (short*)(&nData);
 		int nSize = sizeof(short) / sizeof(short);

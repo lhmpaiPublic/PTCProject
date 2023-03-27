@@ -786,19 +786,24 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 
 					// 22.05.31 Ahn Add Start - Image Save Thread 
-					for (int i = 0; i < MAX_CAMERA_NO; i++) {
+					for (int i = 0; i < MAX_CAMERA_NO; i++)
+					{
 						CFrameRsltInfo* pFrmRsltInfo;
-						if (i == CAM_POS_TOP) {
+						if (i == CAM_POS_TOP)
+						{
 							pFrmRsltInfo = pTopInfo;
 						}
-						else {
+						else
+						{
 							pFrmRsltInfo = pBtmInfo;
 						}
 						// 22.08.09 Ahn Move Start
 						int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
 						// 22.08.09 Ahn Move End
-						if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE) {
-							if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE) {
+						if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE)
+						{
+							if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE)
+							{
 								pFrmRsltInfo->m_nWidth;
 								CImgSaveInfo *pSaveInfo = new CImgSaveInfo ;
 								BYTE* pImgSavePtr;
@@ -807,6 +812,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
 								pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 								pImgSaveQueueCtrl->PushBack(pSaveInfo);
+
+
+								CString strMsg;
+								strMsg.Format(_T("Save Image Path = %s"), pSaveInfo->m_strSavePath);
+								AprData.SaveDebugLog(strMsg); //pyjtest
+
+
 							}
 						}
 					}

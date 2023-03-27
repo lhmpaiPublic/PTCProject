@@ -683,7 +683,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				}
 				CameraGrabStart();
 
-				m_bLotStartFlag = FALSE;  // 22.04.13 Ahn Move
+				m_bLotStartInitFlag = FALSE;
 
 				CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 				pFrame->ReflashAll();
@@ -761,8 +761,10 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				break;
 			}
 
-			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == FALSE) {
-				if (pSigProc->SigInRun() == FALSE) {
+			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == FALSE)
+			{
+				if (pSigProc->SigInRun() == FALSE)
+				{
 					// POC에서 Run 신호가 OFF된 경우.
 					// 검사 정지 처리
 					InspectionEnd();
@@ -1321,7 +1323,9 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 	int nRet = 0;
 	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	if ( (pSigProc->SigInLotEnd() == TRUE) && (m_bLotEndFlag == FALSE) )
+	BOOL bSigIn = (pSigProc->SigInLotEnd() == 1) ? TRUE : FALSE;
+
+	if ( (bSigIn == TRUE) && (m_bLotEndFlag == FALSE) )
 	{
 		m_bLotEndFlag = TRUE;
 
@@ -1343,7 +1347,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		pFrame->ResetAndRefreshAll();
 	}
-	if ((pSigProc->SigInLotEnd() == FALSE) && (m_bLotEndFlag == TRUE))
+	if ((bSigIn == FALSE) && (m_bLotEndFlag == TRUE))
 	{
 		m_bLotEndFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 OFF"));
@@ -1362,7 +1366,8 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 	int nRet = 0;
 	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	if ((pSigProc->SigInTabZeroReset() == TRUE) && (m_bTabCountResetFlag == FALSE) )
+	BOOL bSigIn = (pSigProc->SigInTabZeroReset() == 1) ? TRUE : FALSE;
+	if ((bSigIn == TRUE) && (m_bTabCountResetFlag == FALSE) )
 	{
 		m_bTabCountResetFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckTabZeroReset ON"));
@@ -1386,7 +1391,7 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 
 
 	}
-	if ((pSigProc->SigInTabZeroReset() == FALSE) && (m_bTabCountResetFlag == TRUE))
+	if ((bSigIn == FALSE) && (m_bTabCountResetFlag == TRUE))
 	{
 		m_bTabCountResetFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckTabZeroReset OFF"));
@@ -1404,7 +1409,7 @@ int CNotchingGradeInspView::CheckLotStartProcess()
 	int nRet = 0;
 	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bLotStartSigIn = pSigProc->SigInLotStart();
+	BOOL bLotStartSigIn = (pSigProc->SigInLotStart()==1) ? TRUE : FALSE;
 	if ((bLotStartSigIn == TRUE) && (m_bLotStartFlag == FALSE))
 	{
 		m_bLotStartFlag = TRUE;

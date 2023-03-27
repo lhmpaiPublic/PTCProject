@@ -572,7 +572,8 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	// 22.05.17 Ahn Modify End
 
 	// 22.07.07 Ahn Add Start
-	if (bSigInMode == TRUE) {
+	if (bSigInMode == TRUE)
+	{
 		// 22.05.25 Son Add Start
 		strSavePath.Format(_T("%s\\%s.bin"), AprData.m_strNowBinPath, AprData.m_NowLotData.m_strLotNo);
 		CreateIndexFile(strSavePath);

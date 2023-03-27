@@ -136,7 +136,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//if (pFrmInfo->m_bErrorFlag == FALSE) {
 				
 				//에러 ? 또는 Over Flow 가 아니면
-				if ((pFrmInfo->m_bErrorFlag == FALSE) && (pFrmInfo->m_bOverFlow == FALSE)) {
+				if ((pFrmInfo->m_bErrorFlag == FALSE) && (pFrmInfo->m_bOverFlow == FALSE))
+				{
 				// 23.02.20 Ahn Modify End
 
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같다면 실행
@@ -371,7 +372,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//::_tcsnccpy_s(pFrameRsltInfo->m_pTabRsltInfo->m_chCropPath, _countof(pFrameRsltInfo->m_pTabRsltInfo->m_chCropPath), strFilePath.GetBuffer(0), _TRUNCATE);
 
 					//bSaveCrop TRUE이면 Tab 결과 정보 Crop 이미지 플레그를 TRUE로 설정
-					if (bSaveCrop == TRUE) {
+					if (bSaveCrop == TRUE)
+					{
 						pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = TRUE;
 					}
 				}
@@ -385,23 +387,27 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//if ( (nJudge == JUDGE_NG) || (bSaveOkDef == TRUE ) ){
 				
 				//Judge GRAY 또는 NG이면 bSave TRUE 모든 파일 저장
-				if ( (nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG) ){
+				if ( (nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG) )
+				{
 				// 22.11.21 Ahn Modify End
 					bSave = TRUE;
 				} 
 				//Judge가 OK이면bSaveOnlyNgTab가 FALsE 이고, nBmpSaveInterval이 0이상일 때 저장
-				else {
-					if (AprData.m_pRecipeInfo->bSaveOnlyNgTab != TRUE) {
-
+				else
+				{
+					if (AprData.m_pRecipeInfo->bSaveOnlyNgTab != TRUE)
+					{
 						//비트맵 이미지 저장 레벨이 0 이상이면
-						if (AprData.m_pRecipeInfo->nBmpSaveInterval > 0) {
-
+						if (AprData.m_pRecipeInfo->nBmpSaveInterval > 0)
+						{
 							//비트맵 레벨이 1이면 저장
-							if (AprData.m_pRecipeInfo->nBmpSaveInterval == 1) {
+							if (AprData.m_pRecipeInfo->nBmpSaveInterval == 1)
+							{
 								bSave = TRUE;
 							}
 							//비트맵 레벨이 1이 아니면 체크 : Tab 번호를 레벨로 나눈다
-							else if ((pFrmInfo->nTabNo % AprData.m_pRecipeInfo->nBmpSaveInterval) == 0) {
+							else if ((pFrmInfo->nTabNo % AprData.m_pRecipeInfo->nBmpSaveInterval) == 0)
+							{
 								bSave = TRUE;
 							}
 						}
@@ -413,7 +419,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				}
 #endif
 				//이미지를 저장 변수가  TRUE이면
-				if (bSave == TRUE) {
+				if (bSave == TRUE)
+				{
 					// 22.05.31 Ahn Delete Start - Image Save Thread
 					//CBitmapStd bmp(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, 8);
 					//bmp.SetImage(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->GetImagePtr());
@@ -437,7 +444,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//}
 
 					//Judge 별 저장 경로를 가져온다.
-					switch (nJudge) {
+					switch (nJudge)
+					{
 					case	JUDGE_OK :
 						strPath = AprData.m_strNowOkPath;
 						strJudge = _T("OK");
@@ -488,6 +496,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//ImageProc:  이미지파일저장명과 경로를 저장
 					::_tcsnccpy_s(pFrameRsltInfo->m_pTabRsltInfo->m_chImageFile, _countof(pFrameRsltInfo->m_pTabRsltInfo->m_chImageFile), strFileName.GetBuffer(0), _TRUNCATE);
 					::_tcsnccpy_s(pFrameRsltInfo->m_pTabRsltInfo->m_chImagePath, _countof(pFrameRsltInfo->m_pTabRsltInfo->m_chImagePath), strPath.GetBuffer(0), _TRUNCATE);
+
+// 					CString strMsg;
+// 					strMsg.Format(_T("Save Image Path = %s"), pFrameRsltInfo->m_pTabRsltInfo->m_chImagePath);
+// 					AprData.SaveDebugLog(strMsg); //pyjtest
+// 					strMsg.Format(_T("Save Image Name = %s"), pFrameRsltInfo->m_pTabRsltInfo->m_chImageFile);
+// 					AprData.SaveDebugLog(strMsg); //pyjtest
+
+
 				}
 
 				//파일저장 프레임 결과 정보에 저장한다.

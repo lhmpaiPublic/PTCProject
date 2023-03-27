@@ -575,6 +575,22 @@ void CImageProcSimDlg::OnBnClickedBtnProcAll()
 		return ;
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	// 검사 전 선택된 레시피 다시 로드 함
+	int nSelNo = m_cmbRecipeSelect.GetCurSel();
+	m_cmbRecipeSelect.SetCurSel(nSelNo);
+
+	CString strRcpName;
+	m_cmbRecipeSelect.GetWindowText(strRcpName);
+
+	CRecipeCtrl rcpCtrl;
+	if (m_pRecipeInfo != nullptr) {
+		rcpCtrl.LoadRecipe(m_pRecipeInfo, strRcpName);
+	}
+	//////////////////////////////////////////////////////////////////////////
+
+	UpdateRecipeGrid(); // 22.09.16 Ahn Add 
+
 
 	if (m_bModeTop == TRUE)
 	{

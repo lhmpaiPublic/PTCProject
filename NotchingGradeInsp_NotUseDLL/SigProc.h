@@ -215,57 +215,33 @@ public:
 		//// 22.12.12 Ahn Add End
 
 		//enWordWroteMaxSize = 100, 
-		enWordWrite_DataReportV1_Ea = 0x0000,
-		enWordWrite_DataReportV1_Len = 2,
-		enWordWrite_DataReportV2_OK = 0x0002,
-		enWordWrite_DataReportV2_Len = 2,
-		enWordWrite_DataReportV3_NG = 0x0004,
-		enWordWrite_DataReportV3_Len = 2,
-		enWordWrite_DataReportV4_OkRate = 0x0006,
-		enWordWrite_DataReportV4_Len = 2,
-		enWordWrite_DataReportV5_NgRate = 0x0008,
-		enWordWrite_DataReportV5_Len = 2,
-		enWordWrite_DataReportV6_RunRate = 0x000A,
-		enWordWrite_DataReportV6_Len = 2,
-		enWordWrite_Continue_Alarm_Cnt = 0x000C,
-		enWordWrite_Continue_Alarm_Cnt_Len = 2,
-		enWordWrite_Heavy_Alarm_Cnt = 0x000E,
-		enWordWrite_Heavy_Alarm_Cnt_Len = 2,
-		enWordWrite_DrossTop_Alarm_Cnt = 0x0010,
-		enWordWrite_DrossTop_Alarm_Cnt_Len = 2,
-		enWordWrite_DrossBtm_Alarm_Cnt = 0x0012,
-		enWordWrite_DrossBtm_Alarm_Cnt_Len = 2,
-		enWordWrite_FoilExpTop_Alarm_Cnt = 0x0014,
-		enWordWrite_FoilExpTop_Alarm_Cnt_Len = 2,
-		enWordWrite_FoilExpBtm_Alarm_Cnt = 0x0016,
-		enWordWrite_FoilExpBtm_Alarm_Cnt_Len = 2,
-		enWordWrite_SpeterTop_Alarm_Cnt = 0x0018,
-		enWordWrite_SpeterTop_Alarm_Cnt_Len = 2,
-		enWordWrite_SpeterBtm_Alarm_Cnt = 0x001A,
-		enWordWrite_SpeterBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_DataReportV1_Ea = 0x0000,		enWordWrite_DataReportV1_Len = 2,
+		enWordWrite_DataReportV2_OK = 0x0002,		enWordWrite_DataReportV2_Len = 2,
+		enWordWrite_DataReportV3_NG = 0x0004,		enWordWrite_DataReportV3_Len = 2,
+		enWordWrite_DataReportV4_OkRate = 0x0006,		enWordWrite_DataReportV4_Len = 2,
+		enWordWrite_DataReportV5_NgRate = 0x0008,		enWordWrite_DataReportV5_Len = 2,
+		enWordWrite_DataReportV6_RunRate = 0x000A,		enWordWrite_DataReportV6_Len = 2,
+		enWordWrite_Continue_Alarm_Cnt = 0x000C,		enWordWrite_Continue_Alarm_Cnt_Len = 2,
+		enWordWrite_Heavy_Alarm_Cnt = 0x000E,		enWordWrite_Heavy_Alarm_Cnt_Len = 2,
+		enWordWrite_DrossTop_Alarm_Cnt = 0x0010,		enWordWrite_DrossTop_Alarm_Cnt_Len = 2,
+		enWordWrite_DrossBtm_Alarm_Cnt = 0x0012,		enWordWrite_DrossBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpTop_Alarm_Cnt = 0x0014,		enWordWrite_FoilExpTop_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpBtm_Alarm_Cnt = 0x0016,		enWordWrite_FoilExpBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_SpeterTop_Alarm_Cnt = 0x0018,		enWordWrite_SpeterTop_Alarm_Cnt_Len = 2,
+		enWordWrite_SpeterBtm_Alarm_Cnt = 0x001A,		enWordWrite_SpeterBtm_Alarm_Cnt_Len = 2,
 		// 22.07.05 Ahn Add Start
-		enWordWrite_Top_Defect_Count_Real = 0x001C,
-		enWordWrite_Top_Defect_Count_Real_Len = 2,
-		enWordWrite_Btm_Defect_Count_Real = 0x001E,
-		enWordWrite_Btm_Defect_Count_Real_Len = 2,
-		enWordWrite_Top_Defect_Count_LotEnd = 0x0020,
-		enWordWrite_Top_Defect_Count_LotEnd_Len = 2,
-		enWordWrite_Btm_Defect_Count_LotEnd = 0x0022,
-		enWordWrite_Btm_Defect_Count_LotEnd_Len = 2,
+		enWordWrite_Top_Defect_Count_Real = 0x001C,		enWordWrite_Top_Defect_Count_Real_Len = 2,
+		enWordWrite_Btm_Defect_Count_Real = 0x001E,		enWordWrite_Btm_Defect_Count_Real_Len = 2,
+		enWordWrite_Top_Defect_Count_LotEnd = 0x0020,		enWordWrite_Top_Defect_Count_LotEnd_Len = 2,
+		enWordWrite_Btm_Defect_Count_LotEnd = 0x0022,		enWordWrite_Btm_Defect_Count_LotEnd_Len = 2,
 		// 22.07.05 Ahn Add End
 
-		enWordWrite_DrossTopTarget = 0x0032,
-		enWordWrite_DrossTopTarget_Len = 2,
-		enWordWrite_DrossBtmTarget = 0x0034,
-		enWordWrite_DrossBtmTarget_Len = 2,
-		enWordWrite_FoilExpTopTarget = 0x0036,
-		enWordWrite_FoilExpTopTarget_Len = 2,
-		enWordWrite_FoilExpBtmTarget = 0x0038,
-		enWordWrite_FoilExpBtmTarget_Len = 2,
-		enWordWrite_SpeterTopTarget = 0x003A,
-		enWordWrite_SpeterTopTarget_Len = 2,
-		enWordWrite_SpeterBtmTarget = 0x003C,
-		enWordWrite_SpeterBtmTarget_Len = 2,
+		enWordWrite_DrossTopTarget = 0x0032,		enWordWrite_DrossTopTarget_Len = 2,
+		enWordWrite_DrossBtmTarget = 0x0034,		enWordWrite_DrossBtmTarget_Len = 2,
+		enWordWrite_FoilExpTopTarget = 0x0036,		enWordWrite_FoilExpTopTarget_Len = 2,
+		enWordWrite_FoilExpBtmTarget = 0x0038,		enWordWrite_FoilExpBtmTarget_Len = 2,
+		enWordWrite_SpeterTopTarget = 0x003A,		enWordWrite_SpeterTopTarget_Len = 2,
+		enWordWrite_SpeterBtmTarget = 0x003C,		enWordWrite_SpeterBtmTarget_Len = 2,
 
 		enWordWrite_AlarmExist = 0x0050,
 		enWordWrite_AlarmExist_Len = 2,
@@ -521,18 +497,10 @@ public :
 	int SigOutRecipeChangeAck(int nMode);
 	int SigOutLotStartAck(int nMode);
 	int sigOutLotEndAck(int nMode);
-	// 22.02.23 Ahn Add Start
 	int SigOutTabZeroReset(int nMode);
-	// 22.02.23 Ahn Add End
 	int SigOutAlarmResetAck(int nMode);
-
-
-
-	// 22.08.05 Ahn Add Start
 	int SigOutDiskCapacityAlarm(int nMode);
 	int SigOutDiskCapacityWarning(int nMode);
-	// 22.08.05 Ahn Add End
-
 	int SigOutAlarmExist(int nMode);
 
 

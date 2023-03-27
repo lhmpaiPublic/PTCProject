@@ -57,25 +57,31 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 	CImageProcessCtrl* pParent = pThis->m_pParent ;
 	CImageSaveQueueCtrl* pQueuePtr = pParent->GetImageSaveQueuePtr() ;
 
-	while (1) {
-		if (pThis == NULL) {
+	while (1)
+	{
+		if (pThis == NULL)
+		{
 			break;
 		}
 
-		if (pThis->m_bKill == TRUE) {
+		if (pThis->m_bKill == TRUE)
+		{
 			break;
 		}
 
-		if (pQueuePtr == NULL) {
+		if (pQueuePtr == NULL)
+		{
 			break;
 		}
 
-		if (pQueuePtr->IsEmpty() == FALSE ) {
+		if (pQueuePtr->IsEmpty() == FALSE )
+		{
 			// Image 하나 가지고 오고 삭제함.
 			CImgSaveInfo* pSaveInfo = pQueuePtr->Pop() ;
 			if( pSaveInfo == NULL ) continue ;
 
-			if ((pSaveInfo->m_nHeight <= 0) || (pSaveInfo->m_nHeight <= 0)) {
+			if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
+			{
 				BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 				delete[]pImgPtr;
 				pImgPtr = NULL;
@@ -85,7 +91,8 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				continue ;
 			}
 
-			if (pSaveInfo->m_strSavePath.GetLength() > 0) {
+			if (pSaveInfo->m_strSavePath.GetLength() > 0)
+			{
 				BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 
 				CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
@@ -93,15 +100,25 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
 
 				int nJpgQuality; 
-				if (pQueuePtr->GetSize() > 2) {
+				if (pQueuePtr->GetSize() > 2)
+				{
 					nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10 ;
-				} else {
+				}
+				else
+				{
 					nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
 				}
 
 				bmp.SetJpegQuality(nJpgQuality);
 
 				bmp.SaveBitmap(pSaveInfo->m_strSavePath);
+
+
+				CString strMsg;
+				strMsg.Format(_T("ImageSaveThread : Save Image Path = %s"), pSaveInfo->m_strSavePath);
+				AprData.SaveDebugLog(strMsg); //pyjtest
+
+
 				delete []pImgPtr;
 				pImgPtr = NULL;
 			}
