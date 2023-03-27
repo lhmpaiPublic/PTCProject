@@ -17,6 +17,7 @@ x64/
 NotchingGradeInsp_NotUseDLL_Test/
 NotchingGradeInsp_NotUseDLL/.vs/
 NotchingGradeInsp_NotUseDLL/Data/INDEX/
+NotchingGradeInsp_NotUseDLL/마도\ HLI\ #1-1\ Data\ Folder/
 
 # ignore doc/notes.txt, but not doc/server/arch.txt
 doc/*.txt
