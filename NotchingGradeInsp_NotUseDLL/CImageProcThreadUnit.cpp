@@ -11,6 +11,7 @@
 #include "CRecipeCtrl.h"
 #include "BitmapStd.h"
 #include "TimeAnalyzer.h"
+#include "LogDisplayDlg.h"
 
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
@@ -378,8 +379,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					}
 				}
 
-				//저정 포맷을 jpg로 
-				CString strExtName = _T(".jpg");
 				//Save 상태값 초기화
 				BOOL bSave = FALSE;
 
@@ -419,8 +418,18 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				}
 #endif
 				//이미지를 저장 변수가  TRUE이면
+<<<<<<< HEAD
 				if (bSave == TRUE)
 				{
+=======
+				if (bSave == TRUE) 
+				{
+					//선택된 이미지 저장 포맷
+					//SystemSetting Dlg 에서 설정한다.
+					//전역 접근 객체에 저장한다.
+					CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
+
+>>>>>>> e7a5da71624378dac113583f878b19ff68b834ca
 					// 22.05.31 Ahn Delete Start - Image Save Thread
 					//CBitmapStd bmp(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, 8);
 					//bmp.SetImage(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->GetImagePtr());
@@ -463,8 +472,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 					// 22.05.27 Ahn Modify Start
 					//ImageProc: 이미지저장명 결정 생성
-#ifdef IMAGE_JPG
-					strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s.jpg")
+					strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
 						, INSPECTION_TYPE
 						, strTime
 						, AprData.m_System.m_strMachineID
@@ -472,18 +480,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						, pFrmInfo->nTabNo + 1
 						, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BTM")
 						, strJudge
+						, strImageFormat
 					);
-#else
-					strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s.bmp")
-						, INSPECTION_TYPE
-						, strTime
-						, AprData.m_System.m_strMachineID
-						, AprData.m_NowLotData.m_strLotNo
-						, pFrmInfo->nTabNo + 1
-						, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BTM")
-						, strJudge
-					);
-#endif
+					CLogDisplayDlg::gInst()->AddMessage("이미지파일명 : ");
+					CLogDisplayDlg::gInst()->AddMessage(strFileName);
 
 					// 22.05.27 Ahn Modify End
 					//ImageProc: 이미지저장 플레그를 TRUE로 설정한다.
@@ -611,6 +611,7 @@ END_MESSAGE_MAP()
 
 int CImageProcThreadUnit::Begin()
 {
+
 	if (m_pThread == NULL) {
 		m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlImageProcThread
 			, (LPVOID)this

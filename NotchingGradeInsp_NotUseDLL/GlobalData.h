@@ -184,6 +184,14 @@ public:
 } _SEQ_OUT_DATA_LOT_END_SMS;
 
 
+typedef struct GlobalSetingString
+{
+private:
+	CString outImageFormat;			//이미지 출력 포맷 글로벌 세팅 값
+public:
+	void SetOutImageFormat(CString str) { outImageFormat = str; }
+	CString GetOutImageFormat() { return outImageFormat; }
+} _GLOBAL_SETTING_STRING;
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -397,13 +405,19 @@ public :
 	int		m_nCoutinuouCount;
 	int		m_nSectorNgCount;
 	int		m_nSectorBaseCount;
-	// 22.08.10 Ahn Add End
+	
+
+	//글로벌 스트링 세팅 객체를 넘긴다.
+	_GLOBAL_SETTING_STRING* getGSt() { return &m_globalStr; }
 protected :
 	void InitRecipe();
 
 
 private :
 	long nFrameCounter[GRABBER_COUNT];
+
+	//전역 스트링 세팅이 필요한 값을 저장한다.
+	_GLOBAL_SETTING_STRING m_globalStr;
 };
 
 extern CGlobalData AprData ;

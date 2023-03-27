@@ -24,7 +24,4 @@ using namespace Gdiplus;
 #pragma comment(lib, "AxL.lib")
 #endif
 
-//이미지 JPG, BMP 선택
-#define IMAGE_JPG
-
 #endif //PCH_H

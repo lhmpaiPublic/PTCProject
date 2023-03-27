@@ -42,7 +42,7 @@ CMelsecDataLink::CMelsecDataLink(WORD wChannelNo /*= CHN_NO_CCLINK1*/, WORD wMax
 
 	if (iRet != 0) {
 		//에러로그
-		PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+		PioErrorProcess(iRet, _T("OPEN Error"));
 	}
 	else {
 		OpenPio();		//초기화
@@ -92,7 +92,7 @@ CMelsecDataLink::~CMelsecDataLink()
 
 	if (iRet != 0) {
 		//에러로그
-		PioErrorProcess(iRet, _T("MelsecDataLinkLibrary Close Error"));
+		PioErrorProcess(iRet, _T("Close Error"));
 	}
 
 	return;
@@ -177,7 +177,7 @@ int CMelsecDataLink::InPort(WORD port, BYTE* data, BOOL bExtSt /*=FALSE*/)
 		if (m_pPath == NULL) {
 			iRet = LocalPioOpen();
 			if (iRet != 0) {
-				PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+				PioErrorProcess(iRet, _T("InPort OPEN Error111"));
 				//에러로그
 				return (-1);
 			}
@@ -205,7 +205,7 @@ int CMelsecDataLink::InPort(WORD port, BYTE* data, BOOL bExtSt /*=FALSE*/)
 		}
 
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary READ Error"));
+			PioErrorProcess(iRet, _T("InPort 111"));
 			//에러로그
 			return (-1);
 		}
@@ -235,7 +235,7 @@ int CMelsecDataLink::InPort_AnotherDevice(short stno, CString device, int boffse
 		if (m_pPath == NULL) {
 			iRet = LocalPioOpen();
 			if (iRet != 0) {
-				PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+				PioErrorProcess(iRet, _T("InPort_AnotherDevice OPEN Error 222"));
 				//에러로그
 				return (-1);
 			}
@@ -280,7 +280,7 @@ int CMelsecDataLink::InPort_AnotherDevice(short stno, CString device, int boffse
 		}
 
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary READ Error"));
+			PioErrorProcess(iRet, _T("InPort_AnotherDevice 222"));
 			delete[]	buff;
 			//에러로그
 			return (-1);
@@ -361,7 +361,7 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 		if (m_pPath == NULL) {
 			iRet = LocalPioOpen(bLockCtrl);
 			if (iRet != 0) {
-				PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+				PioErrorProcess(iRet, _T("OutPort OPEN Error 333"));
 				//에러로그
 				return (-1);
 			}
@@ -421,7 +421,7 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 				, sBuff
 			);
 			if (iRet != 0) {
-				PioErrorProcess(iRet, _T("MelsecDataLinkLibrary WRITE(GetBit) Error"));
+				PioErrorProcess(iRet, _T("OutPort 333"));
 				//에러로그
 				return (-1);
 			}
@@ -448,7 +448,7 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 		}
 
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary WRITE Error"));
+			PioErrorProcess(iRet, _T("OutPort 333-1"));
 			//에러로그
 			return (-1);
 		}
@@ -497,7 +497,7 @@ int CMelsecDataLink::WriteDataReg(int offset, short data[], int num)
 	if (m_pPath == NULL) {
 		iRet = LocalPioOpen();
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+			PioErrorProcess(iRet, _T("WriteDataReg OPEN Error 444"));
 			//에러로그
 			return (-1);
 		}
@@ -558,7 +558,7 @@ int CMelsecDataLink::WriteDataReg(int offset, short data[], int num)
 	}
 
 	if (iRet != 0) {
-		PioErrorProcess(iRet, _T("MelsecDataLinkLibrary WRITE Error"));
+		PioErrorProcess(iRet, _T("WriteDataReg 444"));
 		//에러로그
 		return (-1);
 	}
@@ -682,7 +682,7 @@ int CMelsecDataLink::ReadDataReg(int offset, short data[], int num)
 	if (m_pPath == NULL) {
 		iRet = LocalPioOpen();
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+			PioErrorProcess(iRet, _T("ReadDataReg OPEN Error 555"));
 			//에러로그
 			return (-1);
 		}
@@ -720,7 +720,7 @@ int CMelsecDataLink::ReadDataReg(int offset, short data[], int num)
 	}
 
 	if (iRet != 0) {
-		PioErrorProcess(iRet, _T("MelsecDataLinkLibrary READ Error"));
+		PioErrorProcess(iRet, _T("ReadDataReg 555"));
 		//에러로그
 		return (-1);
 	}
@@ -787,7 +787,7 @@ void CMelsecDataLink::PioErrorProcess(int iRet, char* cap)
 		break;
 
 	default:
-		cstr.Format(_T("MelsecDataLinkLibrary Error. Code: %d (0x%x)"), iRet, (iRet & 0xffff));
+		cstr.Format("MelsecDataLinkLibrary Error. Code: %d (0x%x)-(%s)", iRet, (iRet & 0xffff), cap);
 		//에러로그
 		m_bOpened = FALSE; // 22.06.30 Ahn Add 
 		AprData.SaveErrorLog(cstr);
@@ -1032,7 +1032,7 @@ int CMelsecDataLink::ReadDataReg(int offset, short data[], int num, short device
 	if (m_pPath == NULL) {
 		iRet = LocalPioOpen();
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+			PioErrorProcess(iRet, _T("ReadDataReg OPEN Error 666"));
 			//에러로그
 			return (-1);
 		}
@@ -1064,7 +1064,7 @@ int CMelsecDataLink::ReadDataReg(int offset, short data[], int num, short device
 	}
 
 	if (iRet != 0) {
-		PioErrorProcess(iRet, _T("MelsecDataLinkLibrary READ Error"));
+		PioErrorProcess(iRet, _T("ReadDataReg 666"));
 		//에러로그
 		return (-1);
 	}
@@ -1116,7 +1116,7 @@ int CMelsecDataLink::WriteDataReg(int offset, short data[], int num, short devic
 	if (m_pPath == NULL) {
 		iRet = LocalPioOpen();
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+			PioErrorProcess(iRet, _T("WriteDataReg OPEN Error 777"));
 			//에러로그
 			return (-1);
 		}
@@ -1145,7 +1145,7 @@ int CMelsecDataLink::WriteDataReg(int offset, short data[], int num, short devic
 	}
 
 	if (iRet != 0) {
-		PioErrorProcess(iRet, _T("MelsecDataLinkLibrary WRITE Error"));
+		PioErrorProcess(iRet, _T("WriteDataReg 777"));
 		//에러로그
 		return (-1);
 	}
@@ -1260,7 +1260,7 @@ int CMelsecDataLink::ReadPortAllBitIn( BYTE *data, short size )
 		if (m_pPath == NULL) {
 			iRet = LocalPioOpen();
 			if (iRet != 0) {
-				PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+				PioErrorProcess(iRet, _T("ReadPortAllBitIn OPEN Error 888"));
 				//에러로그
 				return (-1);
 			}
@@ -1293,7 +1293,7 @@ int CMelsecDataLink::ReadPortAllBitIn( BYTE *data, short size )
 		}
 
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary READ Error"));
+			PioErrorProcess(iRet, _T("ReadPortAllBitIn 888"));
 			//에러로그
 			return (-1);
 		}
@@ -1397,7 +1397,7 @@ int CMelsecDataLink::ReadPortAllBitOut( BYTE *data, short nSize )
 		if (m_pPath == NULL) {
 			iRet = LocalPioOpen();
 			if (iRet != 0) {
-				PioErrorProcess(iRet, _T("MelsecDataLinkLibrary OPEN Error"));
+				PioErrorProcess(iRet, _T("ReadPortAllBitOut 999"));
 				//에러로그
 				return (-1);
 			}
@@ -1419,7 +1419,7 @@ int CMelsecDataLink::ReadPortAllBitOut( BYTE *data, short nSize )
 		}
 
 		if (iRet != 0) {
-			PioErrorProcess(iRet, _T("MelsecDataLinkLibrary READ Error"));
+			PioErrorProcess(iRet, _T("ReadPortAllBitOut 999"));
 			//에러로그
 			return (-1);
 		}

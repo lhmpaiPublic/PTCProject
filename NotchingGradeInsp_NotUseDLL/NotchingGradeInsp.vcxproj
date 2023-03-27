@@ -393,6 +393,7 @@
     <ClInclude Include="CHistoryLotDlg.h" />
     <ClInclude Include="CHistoryLotView.h" />
     <ClInclude Include="CImgDisplayDlg.h" />
+    <ClInclude Include="CInitSystemSetting.h" />
     <ClInclude Include="CIoMonitorDlg.h" />
     <ClInclude Include="CJoinImageDlg.h" />
     <ClInclude Include="CCameraSettingDlg.h" />
@@ -484,6 +485,7 @@
     <ClInclude Include="LeftPanel.h" />
     <ClInclude Include="LGIS\LGIS_Plc.h" />
     <ClInclude Include="LightSocket.h" />
+    <ClInclude Include="LogDisplayDlg.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Melsec\MelsecDataLink.h" />
     <ClInclude Include="ModeDlg.h" />
@@ -534,6 +536,7 @@
     <ClCompile Include="CHistoryLotDlg.cpp" />
     <ClCompile Include="CHistoryLotView.cpp" />
     <ClCompile Include="CImgDisplayDlg.cpp" />
+    <ClCompile Include="CInitSystemSetting.cpp" />
     <ClCompile Include="CIoMonitorDlg.cpp" />
     <ClCompile Include="CJoinImageDlg.cpp" />
     <ClCompile Include="CCameraSettingDlg.cpp" />
@@ -615,6 +618,7 @@
     <ClCompile Include="LanguageCode.cpp" />
     <ClCompile Include="LeftPanel.cpp" />
     <ClCompile Include="LightSocket.cpp" />
+    <ClCompile Include="LogDisplayDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Melsec\MelsecDataLink.cpp" />
     <ClCompile Include="ModeDlg.cpp" />

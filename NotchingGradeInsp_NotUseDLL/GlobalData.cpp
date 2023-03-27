@@ -84,6 +84,8 @@ CGlobalData::CGlobalData(void)
 	InitRecipe();
 
 	m_ErrStatus.ErrorClear() ; // 22.05.19 Ahn Add 
+
+	m_globalStr.SetOutImageFormat(".jpg");
 }
 
 CGlobalData::~CGlobalData(void)
@@ -474,10 +476,10 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	// 22.07.13 Ahn Modify Start
 	//::GetLocalTime(&sysTime);
 
-	// 22.07.01 Ahn Add Modify Start
+	//PLC 작동 오프젝트 객체을 얻는다.
 	CSigProc* pSigProc = theApp.m_pSigProc;
-	if (bSigInMode == TRUE)
-	{
+	if (bSigInMode == TRUE) {
+		//PLC 
 		pSigProc->SigOutLotStartAck(TRUE);
 		::GetLocalTime(&sysTime);
 		m_NowLotData.m_LotStartTime = sysTime;
