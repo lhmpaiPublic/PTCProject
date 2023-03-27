@@ -29,6 +29,7 @@ public:
 
 protected:
 	CLogDisplayDlg* logDisplayDlg;
+	bool logControlKeyDown;
 	CInspDlg*		m_pInspDlg;
 	// 22.11.09 Ahn Add Start
 	CDefectMapDlg* m_pDefMapDlg;
@@ -209,6 +210,7 @@ public:
 	afx_msg void OnSystemSetting();
 	afx_msg void OnBackupDeleteSetting();
 	afx_msg void OnDebugControl();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
 #ifndef _DEBUG  // NotchingGradeInspView.cpp의 디버그 버전

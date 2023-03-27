@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "CSiemensPlc.h"
 #include "GlobalData.h"
+#include "LogDisplayDlg.h"
 
 
 // 23.03.03 Ahn Modify Start
@@ -126,9 +127,11 @@ BOOL CSiemensPlc::IsOpened()
 
 int CSiemensPlc::OpenPio(void)
 {
+	CLogDisplayDlg::gInst()->AddLogDisplayMessage("PLC Siemens Open");
 	CString strMsg;
 	strMsg.Format(_T("OpenPio start IP:%s, Port:%d"), m_strIPAddress, m_nPort);
 	AprData.SaveDebugLog(strMsg);
+	CLogDisplayDlg::gInst()->AddLogDisplayMessage(strMsg);
 
 
 	ClosePio();
@@ -138,6 +141,7 @@ int CSiemensPlc::OpenPio(void)
 	{
 		AprData.SaveDebugLog(_T("Siemens Plc Connect Fail"));
 		ClosePio();
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("PLC Siemens Open failed");
 	}
 
 	AprData.SaveDebugLog(_T("OpenPio OK"));

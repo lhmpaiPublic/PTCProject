@@ -52,7 +52,7 @@ BOOL CLogDisplayDlg::OnInitDialog()
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
 
-void CLogDisplayDlg::AddMessage(CString msg)
+void CLogDisplayDlg::AddLogDisplayMessage(CString msg)
 {
 	// TODO: 여기에 구현 코드 추가.
 	m_cs.Lock();
@@ -68,16 +68,18 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	CListBox* listBox = pMain->getListBox();
 	while (pMain->m_isWorkingThread)
 	{
-		Sleep(30);
-
 		//Do something...
-		cs->Lock();
-		for (int i = 0; i < strList->size(); i++)
+		if (strList->size())
 		{
-			listBox->AddString(strList->front());
-			strList->pop();
+			cs->Lock();
+			for (int i = 0; i < strList->size(); i++)
+			{
+				listBox->AddString(strList->front());
+				strList->pop();
+			}
+			cs->Unlock();
 		}
-		cs->Unlock();
+		Sleep(30);
 	}
 
 	return 0;

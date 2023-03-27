@@ -2,6 +2,7 @@
 #include "MelsecDataLink.h"
 #include "mdfunc.h"
 #include "GlobalData.h"
+#include "LogDisplayDlg.h"
 
 CCriticalSection CMelsecDataLink::m_csMelsec;
 
@@ -363,6 +364,7 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 			if (iRet != 0) {
 				PioErrorProcess(iRet, _T("OutPort OPEN Error 333"));
 				//에러로그
+				CLogDisplayDlg::gInst()->AddLogDisplayMessage("PLC Melsec Open failed");
 				return (-1);
 			}
 		}
@@ -792,7 +794,7 @@ void CMelsecDataLink::PioErrorProcess(int iRet, char* cap)
 
 int CMelsecDataLink::OpenPio(void)
 {
-
+	CLogDisplayDlg::gInst()->AddLogDisplayMessage("PLC Melsec Open");
 	int	ret = 0;
 
 	if (m_bDebugIO) {
@@ -852,6 +854,7 @@ int CMelsecDataLink::LocalPioOpen(BOOL bLockCtrl /*= TRUE*/)
 	// 22.06.30 Ahn Add Start
 	if (iRet == 0) {
 		m_bOpened = TRUE;
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("PLC Melsec Open");
 	}
 	// 22.06.30 Ahn Add End
 
@@ -860,6 +863,7 @@ int CMelsecDataLink::LocalPioOpen(BOOL bLockCtrl /*= TRUE*/)
 	if (ChangeWorkingSetSize() != 0) {
 		//에러로그
 		m_bOpened = FALSE ; // 22.06.30 Ahn Add
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("PLC Melsec ChangeWorkingSetSize failed");
 	}
 	// 22.04.04 Ahn Add Start
 

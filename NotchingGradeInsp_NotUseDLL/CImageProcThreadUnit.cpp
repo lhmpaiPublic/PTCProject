@@ -470,8 +470,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						, strJudge
 						, strImageFormat
 					);
-					CLogDisplayDlg::gInst()->AddMessage("이미지파일명 : ");
-					CLogDisplayDlg::gInst()->AddMessage(strFileName);
 
 					// 22.05.27 Ahn Modify End
 					//ImageProc: 이미지저장 플레그를 TRUE로 설정한다.
