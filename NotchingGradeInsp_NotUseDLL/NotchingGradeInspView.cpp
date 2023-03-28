@@ -112,6 +112,9 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	// 22.12.07 Ahn Add Start
 	m_nRedrawCnt = 0;
 	// 22.12.07 Ahn Add End
+
+	//로그 출력창 활성화 키(Ctrl 눌림 확인용)
+	logControlKeyDown = false;
 }
 
 CNotchingGradeInspView::~CNotchingGradeInspView()
@@ -270,7 +273,7 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 			logDisplayDlg = NULL;
 		}
 		else {
-			logDisplayDlg->ShowWindow(SW_SHOW);
+			logDisplayDlg->ShowWindow(SW_HIDE);
 		}
 	}
 
@@ -1478,3 +1481,26 @@ void CNotchingGradeInspView::SwitchDisplay(BOOL bModeMap)
 	}
 }
 // 23.02.09 Ahn Add End
+
+
+BOOL CNotchingGradeInspView::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_CONTROL)
+		{
+			logControlKeyDown = true;
+		}
+		else if (pMsg->wParam == VK_F5)
+		{
+			if (logControlKeyDown && logDisplayDlg)
+			{
+				logDisplayDlg->ShowWindow(SW_SHOW);
+				logControlKeyDown = false;
+			}
+		}
+	}
+
+	return CView::PreTranslateMessage(pMsg);
+}

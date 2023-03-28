@@ -1,0 +1,23 @@
+{
+    "TXN_ID": "1",
+    "actID": "4",
+    "inDTName": "2",
+    "outDTName": "3",
+    "rdfDS": {
+        "IN_DATA": [
+            {
+                "ALARM_ALL_RESET_FLAG": "14",
+                "ALARM_CODE": "12",
+                "ALARM_FLAG": "8",
+                "ALARM_HOST": "10",
+                "ALARM_INTO_DATE": "9",
+                "ALARM_LEVEL": "11",
+                "ALARM_NAME": "13",
+                "ALARM_OUTTO_DATE": "15",
+                "CATEGORY": "5",
+                "EQP_ID": "6",
+                "EQP_INSP_ID": "7"
+            }
+        ]
+    }
+}

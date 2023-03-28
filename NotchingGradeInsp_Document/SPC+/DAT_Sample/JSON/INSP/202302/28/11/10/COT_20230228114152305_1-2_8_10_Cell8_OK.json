@@ -1,0 +1,135 @@
+{
+    "TXN_ID": "1",
+    "actID": "4",
+    "inDTName": "2",
+    "outDTName": "3",
+    "rdfDS": {
+        "IN_DATA": [
+            {
+                "CATEGORY": "5",
+                "CONDITION_MODE": "13",
+                "DEF_COUNT_DPU": "107",
+                "DEF_COUNT_INFO": [
+                    {
+                        "DEF_COUNT_AREA": "93",
+                        "DEF_COUNT_LANE": "95",
+                        "DEF_COUNT_LANE_NO": "94"
+                    },
+                    {
+                        "DEF_COUNT_AREA": "96",
+                        "DEF_COUNT_LANE": "98",
+                        "DEF_COUNT_LANE_NO": "97"
+                    },
+                    {
+                        "DEF_COUNT_AREA": "99",
+                        "DEF_COUNT_LANE": "101",
+                        "DEF_COUNT_LANE_NO": "100"
+                    },
+                    {
+                        "DEF_COUNT_AREA": "102",
+                        "DEF_COUNT_LANE": "104",
+                        "DEF_COUNT_LANE_NO": "103"
+                    }
+                ],
+                "DEF_COUNT_SPEC": "105",
+                "DEF_COUNT_TOTAL": "106",
+                "EQP_ID": "8",
+                "EQP_INSP_ID": "9",
+                "INSP_RECIPE": "7",
+                "INSP_SW_VERSION": "14",
+                "INSP_TIME": "6",
+                "LANE_CRITERIA": "12",
+                "LOT_ID": "10",
+                "MISMATCH_INFO": [
+                    {
+                        "CENTER_BACK_DISTANCE": "24",
+                        "CENTER_BACK_LEFT_AXIS": "27",
+                        "CENTER_BACK_RIGHT_AXIS": "28",
+                        "CENTER_TOP_DISTANCE": "23",
+                        "CENTER_TOP_LEFT_AXIS": "25",
+                        "CENTER_TOP_RIGHT_AXIS": "26",
+                        "DIMENSION_JUDGE": "19",
+                        "DIMENSION_POSITION": "17",
+                        "DIMENSION_VALUE": "18",
+                        "FOIL_BACK_LEFT_EDGE": "33",
+                        "FOIL_BACK_RIGHT_EDGE": "34",
+                        "FOIL_BACK_WIDTH": "30",
+                        "FOIL_TOP_LEFT_EDGE": "31",
+                        "FOIL_TOP_RIGHT_EDGE": "32",
+                        "FOIL_TOP_WIDTH": "29",
+                        "LANE_NUMBER": "20",
+                        "MEASURE_METHOD": "22",
+                        "MISMATCH_ORIGIN_VALUE": "35",
+                        "OFFSET": "21"
+                    },
+                    {
+                        "CENTER_BACK_DISTANCE": "43",
+                        "CENTER_BACK_LEFT_AXIS": "46",
+                        "CENTER_BACK_RIGHT_AXIS": "47",
+                        "CENTER_TOP_DISTANCE": "42",
+                        "CENTER_TOP_LEFT_AXIS": "44",
+                        "CENTER_TOP_RIGHT_AXIS": "45",
+                        "DIMENSION_JUDGE": "38",
+                        "DIMENSION_POSITION": "36",
+                        "DIMENSION_VALUE": "37",
+                        "FOIL_BACK_LEFT_EDGE": "52",
+                        "FOIL_BACK_RIGHT_EDGE": "53",
+                        "FOIL_BACK_WIDTH": "49",
+                        "FOIL_TOP_LEFT_EDGE": "50",
+                        "FOIL_TOP_RIGHT_EDGE": "51",
+                        "FOIL_TOP_WIDTH": "48",
+                        "LANE_NUMBER": "39",
+                        "MEASURE_METHOD": "41",
+                        "MISMATCH_ORIGIN_VALUE": "54",
+                        "OFFSET": "40"
+                    },
+                    {
+                        "CENTER_BACK_DISTANCE": "62",
+                        "CENTER_BACK_LEFT_AXIS": "65",
+                        "CENTER_BACK_RIGHT_AXIS": "66",
+                        "CENTER_TOP_DISTANCE": "61",
+                        "CENTER_TOP_LEFT_AXIS": "63",
+                        "CENTER_TOP_RIGHT_AXIS": "64",
+                        "DIMENSION_JUDGE": "57",
+                        "DIMENSION_POSITION": "55",
+                        "DIMENSION_VALUE": "56",
+                        "FOIL_BACK_LEFT_EDGE": "71",
+                        "FOIL_BACK_RIGHT_EDGE": "72",
+                        "FOIL_BACK_WIDTH": "68",
+                        "FOIL_TOP_LEFT_EDGE": "69",
+                        "FOIL_TOP_RIGHT_EDGE": "70",
+                        "FOIL_TOP_WIDTH": "67",
+                        "LANE_NUMBER": "58",
+                        "MEASURE_METHOD": "60",
+                        "MISMATCH_ORIGIN_VALUE": "73",
+                        "OFFSET": "59"
+                    },
+                    {
+                        "CENTER_BACK_DISTANCE": "81",
+                        "CENTER_BACK_LEFT_AXIS": "84",
+                        "CENTER_BACK_RIGHT_AXIS": "85",
+                        "CENTER_TOP_DISTANCE": "80",
+                        "CENTER_TOP_LEFT_AXIS": "82",
+                        "CENTER_TOP_RIGHT_AXIS": "83",
+                        "DIMENSION_JUDGE": "76",
+                        "DIMENSION_POSITION": "74",
+                        "DIMENSION_VALUE": "75",
+                        "FOIL_BACK_LEFT_EDGE": "90",
+                        "FOIL_BACK_RIGHT_EDGE": "91",
+                        "FOIL_BACK_WIDTH": "87",
+                        "FOIL_TOP_LEFT_EDGE": "88",
+                        "FOIL_TOP_RIGHT_EDGE": "89",
+                        "FOIL_TOP_WIDTH": "86",
+                        "LANE_NUMBER": "77",
+                        "MEASURE_METHOD": "79",
+                        "MISMATCH_ORIGIN_VALUE": "92",
+                        "OFFSET": "78"
+                    }
+                ],
+                "PRE_LOT_ID": "15",
+                "PRE_LOT_SEQ_METER": "16",
+                "SEQ_METER": "11"
+            }
+        ]
+    }
+}

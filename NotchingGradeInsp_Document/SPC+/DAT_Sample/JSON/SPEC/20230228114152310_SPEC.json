@@ -1,0 +1,45 @@
+{
+    "TXN_ID": "1",
+    "actID": "4",
+    "inDTName": "2",
+    "outDTName": "3",
+    "rdfDS": {
+        "IN_DATA": [
+            {
+                "CATEGORY": "5",
+                "EQP_ID": "8",
+                "EQP_INSP_ID": "9",
+                "INSP_RECIPE": "6",
+                "INSP_SW_VERSION": "14",
+                "LOT_ID": "13",
+                "MAKER": "7",
+                "MODIFIER": "11",
+                "MODIFY_REASON": "12",
+                "MODIFY_TIME": "10",
+                "SPEC_INFO": [
+                    {
+                        "DIMENSION_CATEGORY": "15",
+                        "DIMENSION_LSL": "17",
+                        "DIMENSION_POSITION": "16",
+                        "DIMENSION_TARGET": "18",
+                        "DIMENSION_USL": "19"
+                    },
+                    {
+                        "DIMENSION_CATEGORY": "20",
+                        "DIMENSION_LSL": "22",
+                        "DIMENSION_POSITION": "21",
+                        "DIMENSION_TARGET": "23",
+                        "DIMENSION_USL": "24"
+                    },
+                    {
+                        "DIMENSION_CATEGORY": "25",
+                        "DIMENSION_LSL": "27",
+                        "DIMENSION_POSITION": "26",
+                        "DIMENSION_TARGET": "28",
+                        "DIMENSION_USL": "29"
+                    }
+                ]
+            }
+        ]
+    }
+}

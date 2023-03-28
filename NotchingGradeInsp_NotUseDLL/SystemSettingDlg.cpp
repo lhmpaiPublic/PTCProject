@@ -288,18 +288,22 @@ BOOL CSystemSettingDlg::OnInitDialog()
 	m_ImageFormat.AddString("PNG");
 	
 	CString imgFormat = AprData.getGSt()->GetOutImageFormat();
+	CLogDisplayDlg::gInst()->AddLogDisplayMessage("이미지출력 포맷설정 ");
 
 	if (imgFormat.Compare(".jpg") == 0)
 	{
 		m_ImageFormat.SetCurSel(0);
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("JPG");
 	}
 	else if (imgFormat.Compare(".bmp") == 0)
 	{
 		m_ImageFormat.SetCurSel(1);
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("BMP");
 	}
 	else
 	{
 		m_ImageFormat.SetCurSel(2);
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("PNG");
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -1468,5 +1472,5 @@ void CSystemSettingDlg::OnCbnSelchangeComImageoutformat()
 	default: AprData.getGSt()->SetOutImageFormat(".jpg");
 		break;
 	}
-	CLogDisplayDlg::gInst()->AddMessage(AprData.getGSt()->GetOutImageFormat());
+	CLogDisplayDlg::gInst()->AddLogDisplayMessage(CString(_T("변경 이미지 포맷 : ")) + AprData.getGSt()->GetOutImageFormat());
 }

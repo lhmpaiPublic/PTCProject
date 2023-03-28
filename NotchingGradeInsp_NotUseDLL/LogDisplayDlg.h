@@ -35,5 +35,5 @@ public:
 	CListBox* getListBox() { return &m_ListLog; }
 	virtual BOOL OnInitDialog();
 
-	void AddMessage(CString msg);
+	void AddLogDisplayMessage(CString msg);
 };

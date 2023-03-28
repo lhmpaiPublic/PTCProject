@@ -418,10 +418,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				}
 #endif
 				//이미지를 저장 변수가  TRUE이면
-<<<<<<< HEAD
-				if (bSave == TRUE)
-				{
-=======
 				if (bSave == TRUE) 
 				{
 					//선택된 이미지 저장 포맷
@@ -429,7 +425,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//전역 접근 객체에 저장한다.
 					CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
 
->>>>>>> e7a5da71624378dac113583f878b19ff68b834ca
 					// 22.05.31 Ahn Delete Start - Image Save Thread
 					//CBitmapStd bmp(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, 8);
 					//bmp.SetImage(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->GetImagePtr());
@@ -482,8 +477,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						, strJudge
 						, strImageFormat
 					);
-					CLogDisplayDlg::gInst()->AddMessage("이미지파일명 : ");
-					CLogDisplayDlg::gInst()->AddMessage(strFileName);
 
 					// 22.05.27 Ahn Modify End
 					//ImageProc: 이미지저장 플레그를 TRUE로 설정한다.
