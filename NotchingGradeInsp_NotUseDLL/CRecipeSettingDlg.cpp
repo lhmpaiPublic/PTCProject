@@ -185,7 +185,6 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_SURFACE_GRAY_SIZE, m_dEdSurfaceGraySize);
 	DDX_Text(pDX, IDC_ED_TAB_MIN_BRIGHT, m_nTabMinBright);
 	DDX_Radio(pDX, IDC_RAD_DARK_ROLL, m_nRollBrightMode);
-	DDX_Control(pDX, IDC_BTN_SYSTEM_LIST, m_btnSystemSettingList);
 }
 
 
@@ -263,7 +262,6 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_TAB_MIN_BRIGHT, &CRecipeSettingDlg::OnEnSetfocusEdTabMinBright)
 	//ON_BN_CLICKED(IDC_RAD_DARK_ROLL, &CRecipeSettingDlg::OnBnClickedRadDarkRoll)
 	//ON_BN_CLICKED(IDC_RAD_BRIGHT_ROLL, &CRecipeSettingDlg::OnBnClickedRadBrightRoll)
-	ON_BN_CLICKED(IDC_BTN_SYSTEM_LIST, &CRecipeSettingDlg::OnBnClickedBtnSystemList)
 END_MESSAGE_MAP()
 
 
@@ -328,8 +326,6 @@ BOOL CRecipeSettingDlg::OnInitDialog()
 	UpdateGrid_Marking();	// 22.07.19 Ahn Add 
 
 	ShowControl();
-
-	m_btnSystemSettingList.ShowWindow(SW_HIDE);
 
 	UpdateData(FALSE);
 

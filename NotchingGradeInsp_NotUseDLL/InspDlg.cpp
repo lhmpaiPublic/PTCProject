@@ -167,7 +167,8 @@ void CInspDlg::OnSize(UINT nType, int cx, int cy)
 	CWnd* pWnd;
 	// 22.07.22 Ahn Add Start
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	if (pFrame != nullptr) {
+	if (pFrame != nullptr)
+	{
 		CPoint cpStartPos = pFrame->GetInspDIspPosition();
 	// 22.07.22 Ahn Add End
 

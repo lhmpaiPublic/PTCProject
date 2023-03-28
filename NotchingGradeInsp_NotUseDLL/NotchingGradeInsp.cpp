@@ -165,6 +165,7 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	// 22.06.29 Son Add Start
 	m_pDispErrorDlg = new CDispErrorDlg(m_pMainWnd);
 	m_pDispErrorDlg->Create(IDD_DLG_DISPERROR, m_pMainWnd);
+	m_pDispErrorDlg->ShowWindow(SW_HIDE);
 	// 22.06.29 Son Add End
 
 	DeviceOpen();
@@ -493,11 +494,11 @@ int CNotchingGradeInspApp::ErrOutput(LPCSTR ptstr, int nErrorType )
 		break;
 	}
 
-	if (m_pDispErrorDlg != NULL) {
-		if (m_pDispErrorDlg->AddMessage(str) == FALSE) {
-			return -1;
-		}
-	}
+	//if (m_pDispErrorDlg != NULL) {
+	//	if (m_pDispErrorDlg->AddMessage(str) == FALSE) {
+	//		return -1;
+	//	}
+	//}
 	return 0;
 }
 // 22.06.29 Son Add End

@@ -612,7 +612,6 @@
 #define IDC_ST_A                        1222
 #define IDC_ST_COAT_HEIGHT              1222
 #define IDC_ST_GROUP_SIGNAL_IN          1223
-#define IDC_BTN_SYSTEM_LIST             1223
 #define IDC_ST_GROUP_SIGNAL_OUT         1224
 #define IDC_ST_ALIVE_PULSE_IN           1225
 #define IDC_ST_ALIVE_PULSE_OUT          1226
@@ -729,6 +728,8 @@
 #define IDC_ST_IP                       1334
 #define IDC_ST_PORT                     1335
 #define IDC_COM_IMAGEOUTFORMAT          1336
+#define IDC_STATIC_IMAGESAVETIME        1337
+#define IDC_STATIC_IMAGESAVEINTERVAL    1337
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define IDS_VIEW_RESULT                 32773
@@ -764,7 +765,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        418
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1337
+#define _APS_NEXT_CONTROL_VALUE         1338
 #define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

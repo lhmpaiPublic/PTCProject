@@ -109,6 +109,7 @@ protected:  // 컨트롤 모음이 포함된 멤버입니다.
 	CMFCStatusBar	m_wndStatusBar;
 	CTopPanel*		m_pWndTopPanel;
 	// 22.07.21 Delete Start
+	// 
 	//CHistoryLotView* m_pWndHistoryLotView;
 	//CLeftPanel*		m_pWndLeftPanel;
 	//CRightPanel*	m_pWndRightPanel;
