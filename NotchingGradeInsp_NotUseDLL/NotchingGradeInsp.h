@@ -84,6 +84,8 @@ public :
 	// 22.11.25 Ahn Add Start
 	int LoadLastDefList();
 	// 22.11.25 Ahn Add End
+
+	void ProgramVersionInfo();
 };
 
 extern CNotchingGradeInspApp theApp;

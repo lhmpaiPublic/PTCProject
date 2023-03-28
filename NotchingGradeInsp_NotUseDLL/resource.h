@@ -546,6 +546,8 @@
 #define IDC_BTN_LOAD                    1167
 #define IDC_LIST1                       1168
 #define IDC_LIST_LOG                    1168
+#define IDC_BTN_LOAD2                   1168
+#define IDC_BTN_PROGRAMINFO             1168
 #define IDC_CHK_DIO_DEBUG               1169
 #define IDC_CHK_LIGHT_DEBUG             1170
 #define IDC_CHK_IMAGE_DEBUG             1171

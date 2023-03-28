@@ -298,6 +298,7 @@ public:
 	//afx_msg void OnBnClickedRadDarkRoll();
 	//afx_msg void OnBnClickedRadBrightRoll();
 	afx_msg void OnBnClickedBtnSystemList();
+	afx_msg void OnBnClickedBtnPrograminfo();
 };
 
 

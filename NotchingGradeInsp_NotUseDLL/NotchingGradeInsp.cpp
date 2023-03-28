@@ -523,3 +523,9 @@ int CNotchingGradeInspApp::LoadLastDefList()
 	return nRet ;
 }
 // 22.11.25 Ahn Add End
+
+void CNotchingGradeInspApp::ProgramVersionInfo()
+{
+	CAboutDlg aboutDlg;
+	aboutDlg.DoModal();
+}

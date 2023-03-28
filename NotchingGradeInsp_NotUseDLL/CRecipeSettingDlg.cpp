@@ -14,6 +14,7 @@
 #include "BitmapStd.h"
 #include "SystemSettingDlg.h" // 22.08.05 Ahn Add
 #include "CInitSystemSetting.h"
+
 // CRecipeSettingDlg 대화 상자
 
 IMPLEMENT_DYNAMIC(CRecipeSettingDlg, CDialogEx)
@@ -262,6 +263,7 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_TAB_MIN_BRIGHT, &CRecipeSettingDlg::OnEnSetfocusEdTabMinBright)
 	//ON_BN_CLICKED(IDC_RAD_DARK_ROLL, &CRecipeSettingDlg::OnBnClickedRadDarkRoll)
 	//ON_BN_CLICKED(IDC_RAD_BRIGHT_ROLL, &CRecipeSettingDlg::OnBnClickedRadBrightRoll)
+	ON_BN_CLICKED(IDC_BTN_PROGRAMINFO, &CRecipeSettingDlg::OnBnClickedBtnPrograminfo)
 END_MESSAGE_MAP()
 
 
@@ -2737,4 +2739,11 @@ void CRecipeSettingDlg::OnBnClickedBtnSystemList()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CInitSystemSetting InitSystemSetting(this);
 	InitSystemSetting.DoModal();
+}
+
+
+void CRecipeSettingDlg::OnBnClickedBtnPrograminfo()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	theApp.ProgramVersionInfo();
 }
