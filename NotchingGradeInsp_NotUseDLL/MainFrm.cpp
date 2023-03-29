@@ -10,6 +10,7 @@
 #include "GlobalData.h"				// 22.05.25 Son Add
 #include "CHistoryLotView.h"		// 22.06.24 Ahn Add
 #include "NotchingGradeInspView.h"	// 22.11.09 Ahn Add
+#include "LogDisplayDlg.h" //Log 출력창
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -67,6 +68,8 @@ static UINT indicators[] =
 CMainFrame::CMainFrame() noexcept
 {
 	// TODO: 여기에 멤버 초기화 코드를 추가합니다.
+	logDisplayDlg = NULL;
+
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
 	m_clrBkColor = RGB(235,238,252);
 
@@ -97,6 +100,7 @@ CMainFrame::CMainFrame() noexcept
 
 CMainFrame::~CMainFrame()
 {
+
 	if (m_pWndTopPanel != nullptr) {
 		delete m_pWndTopPanel;
 		m_pWndTopPanel = NULL;
@@ -152,6 +156,15 @@ CMainFrame::~CMainFrame()
 		delete m_pWndBottomPanel;
 		m_pWndBottomPanel = NULL;
 	}
+
+	// 로그출력창 삭제
+	if (logDisplayDlg != nullptr) {
+		if (logDisplayDlg->m_hWnd != nullptr) {
+			logDisplayDlg->DestroyWindow();
+		}
+		delete logDisplayDlg;
+		logDisplayDlg = NULL;
+	}
 }
 
 void CMainFrame::OnSysCommand(UINT nID, LPARAM lParam)
@@ -168,6 +181,17 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
+	// 로그출력 창 생성
+	logDisplayDlg = new CLogDisplayDlg(this);
+	if (logDisplayDlg != nullptr) {
+		if (logDisplayDlg->Create(IDD_LOGDISPLAYDLG, this) == 0) {
+			delete logDisplayDlg;
+			logDisplayDlg = NULL;
+		}
+		else {
+			logDisplayDlg->ShowWindow(SW_HIDE);
+		}
+	}
 
 //	BOOL bNameValid;
 
@@ -361,6 +385,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	//BOOL bNameValid;
 
 	if (m_pWndTopPanel == NULL) {
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("TopPanel 생성");
 		m_pWndTopPanel = new CTopPanel(this, pView);
 		CString strCaption;
 		strCaption = _T("");
@@ -708,7 +733,6 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 		int nHeight = m_nTopPanelHeight + m_pWndTopPanel->m_nTitleHeight + nOffset;
 		m_pWndTopPanel->SetWindowPos(this, 0, 0, cx, nHeight, SWP_NOZORDER);
 		nBottomOfTop = nHeight;
-		//RecalcLayout();
 	}
 
 	// 22.07.21 Ahn Add Start

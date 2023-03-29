@@ -22,6 +22,8 @@
 #include "SigProc.h" // 22.04.01 Ahn Add
 #include "CDispErrorDlg.h"	// 22.06.29 Son Add
 #include "Win32File.h" // 22.11.25 Ahn Add
+#include "LogDisplayDlg.h"
+#include "resource.h"
 
 #pragma comment( lib, "version.lib")
 
@@ -219,6 +221,7 @@ BOOL CNotchingGradeInspApp::InitInstance()
 int CNotchingGradeInspApp::ExitInstance()
 {
 	//TODO: 추가한 추가 리소스를 처리합니다.
+
 	DeviceClose();
 
 	// 22.06.29 Son Add Start

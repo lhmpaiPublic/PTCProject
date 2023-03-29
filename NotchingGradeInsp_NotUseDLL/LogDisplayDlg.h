@@ -29,8 +29,6 @@ public:
 	static UINT ThreadProc(LPVOID param);
 	void ExitThread();
 	CListBox m_ListLog;
-	CCriticalSection m_cs;
-	CCriticalSection *getcs() { return &m_cs; }
 	std::queue<CString>* getstrLog() { return &m_ListMsg; }
 	CListBox* getListBox() { return &m_ListLog; }
 	virtual BOOL OnInitDialog();

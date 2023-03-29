@@ -8,7 +8,6 @@
 #include "HistoryDlg.h"
 #include "CondDlg.h"
 #include "CDefectMapDlg.h" // 22.11.09 Ahn Add 
-#include "LogDisplayDlg.h"
 
 //class CCameraViewDlg;
 class CRecipeSettingDlg;// 22.07.21 Ahn Add
@@ -28,7 +27,6 @@ public:
 	CNotchingGradeInspDoc* GetDocument() const;
 
 protected:
-	CLogDisplayDlg* logDisplayDlg;
 	bool logControlKeyDown;
 	CInspDlg*		m_pInspDlg;
 	// 22.11.09 Ahn Add Start

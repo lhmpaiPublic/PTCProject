@@ -29,6 +29,7 @@
 #include "SetValue.h" //  22.09.16 Ahn Add
 
 #include "CResultThread.h" // 23.02.06 Ahn Test 
+#include "LogDisplayDlg.h"
 
 
 
@@ -4176,6 +4177,7 @@ int CImageProcSimDlg::ProcHalfSlittingInsp(BYTE* pImgPtr, int nWidth, int nHeigh
 // 22.07.26 Ahn Add Start
 int CImageProcSimDlg::RecipeListLoad()
 {
+	CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad");
 	CRecipeCtrl rcpCtrl;
 	m_cmbRecipeSelect.Clear();
 	CStringList strRcpList;
@@ -4191,6 +4193,7 @@ int CImageProcSimDlg::RecipeListLoad()
 		CString strRcpName = strRcpList.GetNext(pos);
 		strRcpName.Replace(_T(".ini"), _T(""));
 		m_cmbRecipeSelect.AddString(strRcpName);
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad 파일명 : " + strRcpName);
 	}
 	m_cmbRecipeSelect.SetCurSel(0);
 
