@@ -2,6 +2,7 @@
 #include "CRecipeCtrl.h"
 #include "Win32File.h"
 #include "GlobalData.h"
+#include "LogDisplayDlg.h"
 
 
 CRecipeCtrl::CRecipeCtrl()
@@ -755,6 +756,8 @@ int CRecipeCtrl::SearchRecipeFile(CStringList& strRecipeList)
 
 	CString strRecipeDir;
 	strRecipeDir.Format(_T("%s\\Recipe\\"), AprData.m_strDataPath );
+	
+	CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad 경로 : "+ strRecipeDir);
 
 	CWin32File winFile;
 

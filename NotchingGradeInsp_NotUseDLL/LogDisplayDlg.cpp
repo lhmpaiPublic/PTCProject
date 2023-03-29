@@ -55,31 +55,27 @@ BOOL CLogDisplayDlg::OnInitDialog()
 void CLogDisplayDlg::AddLogDisplayMessage(CString msg)
 {
 	// TODO: 여기에 구현 코드 추가.
-	m_cs.Lock();
 	m_ListMsg.push(msg);
-	m_cs.Unlock();
 }
 //source file
 UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 {
 	CLogDisplayDlg* pMain = (CLogDisplayDlg*)param;
-	CCriticalSection* cs = pMain->getcs();
 	std::queue<CString>* strList = pMain->getstrLog();
 	CListBox* listBox = pMain->getListBox();
-	while (pMain->m_isWorkingThread)
+	while (pMain && pMain->m_isWorkingThread)
 	{
 		//Do something...
-		if (strList->size())
+		Sleep(30);
+		if (strList->size() && listBox->m_hWnd)
 		{
-			cs->Lock();
 			for (int i = 0; i < strList->size(); i++)
 			{
-				listBox->AddString(strList->front());
+				CString tempStr = strList->front();
 				strList->pop();
+				listBox->AddString(tempStr);
 			}
-			cs->Unlock();
 		}
-		Sleep(30);
 	}
 
 	return 0;

@@ -32,6 +32,7 @@
 // 22.12.09 Ahn Add Start
 #include "CTactTimeGraphDlg.h"
 // 22.12.09 Ahn Add End
+#include "LogDisplayDlg.h"
 
 IMPLEMENT_DYNAMIC(CModeDlg, CDialogEx)
 
@@ -139,6 +140,10 @@ void CModeDlg::OnSize(UINT nType, int cx, int cy)
 	if (pStatic != nullptr) {
 		pStatic->GetClientRect(&btnRect);
 		pFrame->m_nTopPanelHeight = btnRect.Height();
+		CString logStr;
+		logStr.Format("Mainframe : left %d, top %d, width %d, height %d"
+			, btnRect.left, btnRect.right, btnRect.Width(), btnRect.Height());
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage(logStr);
 	}
 
 	//Exit 버튼 이동
@@ -453,9 +458,11 @@ void CModeDlg::OnBnClickedBtnInspSim()
 	if (theApp.m_pImageSimDlg == NULL) {
 		theApp.m_pImageSimDlg = new CImageProcSimDlg(this);
 		theApp.m_pImageSimDlg->Create(IDD_DLG_INSP_SIM, this);
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("CImageProcSimDlg 생성");
 	}
 	if (theApp.m_pImageSimDlg != NULL) {
 		theApp.m_pImageSimDlg->ShowWindow(SW_SHOW);
+		CLogDisplayDlg::gInst()->AddLogDisplayMessage("CImageProcSimDlg SHOW");
 	}
 }
 
