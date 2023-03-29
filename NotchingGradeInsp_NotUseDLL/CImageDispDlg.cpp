@@ -920,10 +920,13 @@ BOOL CImageDispDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 	if (nFlags == MK_CONTROL) {
 		if (zDelta < 0) {
-			OnBnClickedBtnZoomIn();
-		}
-		else {
 			OnBnClickedBtnZoomOut();
+//			OnBnClickedBtnZoomIn();
+		}
+		else
+		{
+//			OnBnClickedBtnZoomOut();
+			OnBnClickedBtnZoomIn();
 		}
 		return CDialog::OnMouseWheel(nFlags, zDelta, pt);
 	}

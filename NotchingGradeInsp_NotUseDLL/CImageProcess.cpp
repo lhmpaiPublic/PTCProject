@@ -583,6 +583,7 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 	{
 		nStartX = 0;
 	}
+	
 	if (nEndX > nWidth)
 	{
 		nEndX = nWidth;
@@ -590,37 +591,48 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 
 	BYTE* pLine;
 	int nCount = 0 ; // 22.06.24 Ahn Add 
-	if (nDir == DIR_HOR) {
-
+	if (nDir == DIR_HOR)
+	{
 		nCount = ((nEndX - nStartX) / nSampling);
-		if (nCount <= 0) nCount = 1;
+
+		if (nCount <= 0)
+			nCount = 1;
 
 		memset(pProjection, 0x00, sizeof(int) * (nDestHeight));
-		for (y = nStartY; y < nEndY; y++) {
+		for (y = nStartY; y < nEndY; y++)
+		{
 			pLine = pImage + (nWidth * y);
-			for (x = nStartX; x < nEndX; x += nSampling) {
+			for (x = nStartX; x < nEndX; x += nSampling)
+			{
 				pProjection[y - nStartY] += *(pLine + x);
 			}
 		}
-		if (bModeSum == FALSE) {
-			for (y = nStartY; y < nEndY; y++) {
+		if (bModeSum == FALSE)
+		{
+			for (y = nStartY; y < nEndY; y++)
+			{
 				pProjection[y - nStartY] = pProjection[y - nStartY] / nCount;
 			}
 		}
 	}
-	else {
+	else
+	{
 		memset(pProjection, 0x00, sizeof(int) * (nDestWidth));
 		nCount = ((nEndY - nStartY) / nSampling);
 		if (nCount <= 0) nCount = 1;
 
-		for (y = nStartY; y < nEndY; y += nSampling) {
+		for (y = nStartY; y < nEndY; y += nSampling)
+		{
 			pLine = pImage + (nWidth * y);
-			for (x = nStartX; x < nEndX; x++) {
+			for (x = nStartX; x < nEndX; x++)
+			{
 				pProjection[x - nStartX] += *(pLine + x);
 			}
 		}
-		if (bModeSum == FALSE) {
-			for (x = nStartX; x < nEndX; x++) {
+		if (bModeSum == FALSE)
+		{
+			for (x = nStartX; x < nEndX; x++)
+			{
 				pProjection[x - nStartX] = pProjection[x - nStartX] / nCount;
 			}
 		}
@@ -4016,8 +4028,10 @@ int CImageProcess::CheckDistanceToEdgeLine(CBlockData* pBlock, CImageProcess::VE
 	dDistR = (double)abs(nMin - pBlock->rcRect.right) * dResoX;
 	double dDistRx = (double)abs(nMax - pBlock->rcRect.right) * dResoX;
 	// 22.07.26 Ahn Modify Start
-	if( (dDistance > 0 ) && (pBlock->nType == en_ModeFoilExp ) ) {
-		if ((dDistL > dDistance) && (dDistR > dDistance) && (dDistLx > dDistance) && (dDistRx > dDistance)) {
+	if( (dDistance > 0 ) && (pBlock->nType == en_ModeFoilExp ) )
+	{
+		if ((dDistL > dDistance) && (dDistR > dDistance) && (dDistLx > dDistance) && (dDistRx > dDistance))
+		{
 			pBlock->bDeleteFlag = TRUE;
 		}
 	}
