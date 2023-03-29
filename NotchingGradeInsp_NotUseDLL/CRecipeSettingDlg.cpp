@@ -703,7 +703,8 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 	int nCamPos = m_nLastSelTab ;
 	int nTabCamPos = m_nLastSelTabInfo;
 
-	if (nMode == MODE_READ) {
+	if (nMode == MODE_READ)
+	{
 		// 22.06.08 Ahn Modify Start
 		m_dTabWidth = pRecipeInfo->TabCond.dTabWidth;
 		m_dTabPitch =pRecipeInfo->TabCond.dTabPitch;
