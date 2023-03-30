@@ -23,20 +23,23 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
+	afx_msg void OnClickGridCtrlRecipeTable(NMHDR* pNMHDR, LRESULT* pResult);
 
 	CListBox m_ListRecipeName;
 	virtual BOOL OnInitDialog();
 
 private :
-	//레시피 파일 목록을 얻는다.
-	void LoadRecipeFileList();
+	CString m_strSelectedRcpName;
+	CGridCtrl m_GridRecipeTable;
+	CFont* m_pFontGrid;
+	CRecipeTableCtrl m_RcpTableCtrl;
+	
+	BOOL m_bAvailableRecipe;
+
+	int MakeGridCtrl_RecipeTable();
+	int UpdateGrid_RecipeTable();
+
 public :
-	//선택된 레시피명
+	CString GetSeletedName();
 	CString m_strRecipeName;
-	//선택된 레시피의 메모
-	CString m_strRecipeMemo;
-	//레시피 명 콤보박스 컨트롤 제어 객체
-	CComboBox m_RecipeNameCtrl;
-	afx_msg void OnBnClickedButRecipedelete();
-	afx_msg void OnCbnSelchangeComboRecipeName();
 };

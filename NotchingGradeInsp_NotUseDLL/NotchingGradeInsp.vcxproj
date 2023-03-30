@@ -451,6 +451,7 @@
     <ClInclude Include="CRecipeSelectDlg.h" />
     <ClInclude Include="CRecipeSettingDlg.h" />
     <ClInclude Include="CRecipeTableCtrl.h" />
+    <ClInclude Include="RecipImportDlg.h" />
     <ClInclude Include="CResultDirectoryDlg.h" />
     <ClInclude Include="CResultFileManager.h" />
     <ClInclude Include="CResultThread.h" />
@@ -638,6 +639,7 @@
     <ClCompile Include="Ping.cpp" />
     <ClCompile Include="PioCtrl.cpp" />
     <ClCompile Include="QueueCtrl.cpp" />
+    <ClCompile Include="RecipImportDlg.cpp" />
     <ClCompile Include="ResultView.cpp" />
     <ClCompile Include="ResultViewDlg.cpp" />
     <ClCompile Include="RightPanel.cpp" />

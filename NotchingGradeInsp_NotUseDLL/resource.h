@@ -3,6 +3,8 @@
 // NotchingGradeInsp.rc에서 사용되고 있습니다.
 //
 #define IDCANCEL2                       3
+#define IDOK2                           3
+#define DC_BUT_RECIPEDELETE             3
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDS_RESULT_VIEW                 101
@@ -146,6 +148,7 @@
 #define IDB_HLI_LOGO                    413
 #define IDD_DLG_INITSYSTEMSETTING       414
 #define IDD_LOGDISPLAYDLG               416
+#define IDD_DLG_RECIPEIMPORT            418
 #define IDC_BTN_LOG                     1000
 #define IDC_COMBO                       1000
 #define IDC_CHECK_HIGH_00               1001
@@ -770,7 +773,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        418
+#define _APS_NEXT_RESOURCE_VALUE        420
 #define _APS_NEXT_COMMAND_VALUE         32799
 #define _APS_NEXT_CONTROL_VALUE         1341
 #define _APS_NEXT_SYMED_VALUE           316

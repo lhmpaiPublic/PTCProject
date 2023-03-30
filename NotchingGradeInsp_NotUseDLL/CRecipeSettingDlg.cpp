@@ -9,7 +9,7 @@
 #include "GlobalData.h"
 #include "CRecipeCtrl.h"
 #include "Win32File.h"
-#include "CRecipeSelectDlg.h"
+#include "RecipImportDlg.h"
 #include "GridCtrl.h"
 #include "BitmapStd.h"
 #include "SystemSettingDlg.h" // 22.08.05 Ahn Add
@@ -708,11 +708,8 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 
 	if (nMode == MODE_READ)
 	{
-<<<<<<< HEAD
-=======
 		CLogDisplayDlg::gInst()->LogDisplayMessage("레시피정보를 창으로 가져오기 ");
 
->>>>>>> master
 		// 22.06.08 Ahn Modify Start
 		m_dTabWidth = pRecipeInfo->TabCond.dTabWidth;
 		m_dTabPitch =pRecipeInfo->TabCond.dTabPitch;
@@ -1817,13 +1814,13 @@ void CRecipeSettingDlg::OnBnClickedBtnLoad()
 		else
 		{
 			//레시피 선택 창
-			CRecipeSelectDlg rcpSelDlg;
+			CRecipeImportDlg rcpSelDlg;
 
 			if (rcpSelDlg.DoModal() == IDOK) {
 				m_strEdRecipeName = rcpSelDlg.m_strRecipeName;
 				m_pRecipeCtrl->LoadRecipe(m_pRecipeInfo, m_strEdRecipeName);
 				DataControl(MODE_READ, m_pRecipeInfo);
-				m_strRecipeMemo = rcpSelDlg.m_strRecipeMemo;
+				//m_strRecipeMemo = rcpSelDlg.m_strRecipeMemo;
 				UpdateData(FALSE);
 			}
 		}
