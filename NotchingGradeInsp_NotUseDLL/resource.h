@@ -312,6 +312,7 @@
 #define IDC_CMB_MAP_DISP_LENGTH         1038
 #define IDC_ED_BIT_OUT_ADDRESS          1038
 #define IDC_EDIT_RESOLUTION_VER         1038
+#define IDC_COMBO_RECIPE_NAME           1038
 #define IDC_EDIT6                       1039
 #define IDC_ED_COAT_BRIGHT              1039
 #define IDC_CHECK_LOW_14                1039
@@ -460,6 +461,7 @@
 #define IDC_ST_RECIPE_NAME              1106
 #define IDC_BTN_SAVE                    1107
 #define IDC_BTN_TEST                    1108
+#define IDC_ST_RECIPE_NAME2             1108
 #define IDC_CHK_CAM1_INDIVIDUAL         1109
 #define IDC_BTN_INSP_SPETER             1109
 #define IDC_CHK_CAM2_INDIVIDUAL         1110
@@ -550,6 +552,7 @@
 #define IDC_BTN_LOAD2                   1168
 #define IDC_BTN_PROGRAMINFO             1168
 #define IDC_CHK_DIO_DEBUG               1169
+#define IDC_EDIT_RECIPE_MEMO            1169
 #define IDC_CHK_LIGHT_DEBUG             1170
 #define IDC_CHK_IMAGE_DEBUG             1171
 #define IDC_LIST_CHECK_DEBUG            1172
@@ -733,6 +736,7 @@
 #define IDC_COM_IMAGEOUTFORMAT          1336
 #define IDC_STATIC_IMAGESAVETIME        1337
 #define IDC_STATIC_IMAGESAVEINTERVAL    1337
+#define IDC_BUT_RECIPEDELETE            1340
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define IDS_VIEW_RESULT                 32773
@@ -768,7 +772,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        418
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1338
+#define _APS_NEXT_CONTROL_VALUE         1341
 #define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

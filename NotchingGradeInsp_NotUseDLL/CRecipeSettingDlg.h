@@ -299,6 +299,7 @@ public:
 	//afx_msg void OnBnClickedRadBrightRoll();
 	afx_msg void OnBnClickedBtnSystemList();
 	afx_msg void OnBnClickedBtnPrograminfo();
+	CString m_strRecipeMemo;
 };
 
 

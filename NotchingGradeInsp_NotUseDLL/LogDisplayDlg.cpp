@@ -15,8 +15,15 @@ CLogDisplayDlg* CLogDisplayDlg::gInstObject = NULL;
 CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_LOGDISPLAYDLG, pParent)
 {
-	gInstObject = this;
+}
 
+void CLogDisplayDlg::ExitLogDisplayDlg()
+{
+	// 로그출력 창 생성
+	if (gInstObject != NULL)
+	{
+		delete gInstObject;
+	}
 }
 
 CLogDisplayDlg::~CLogDisplayDlg()
@@ -79,6 +86,17 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	}
 
 	return 0;
+}
+
+void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
+{
+	va_list arg;
+	int done;
+	char str[MAX_PATH] = { 0, };
+	va_start(arg, format);
+	done = vsprintf_s(str, format, arg);
+	va_end(arg);
+	AddLogDisplayMessage(str);
 }
 
 void CLogDisplayDlg::ExitThread()
