@@ -14,6 +14,7 @@
 #include "BitmapStd.h"
 #include "SystemSettingDlg.h" // 22.08.05 Ahn Add
 #include "CInitSystemSetting.h"
+#include "LogDisplayDlg.h"
 
 // CRecipeSettingDlg 대화 상자
 
@@ -59,6 +60,7 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	, m_dEdSurfaceGraySize(0)
 	, m_nTabMinBright(0)
 	, m_nRollBrightMode(0)
+	, m_strRecipeMemo(_T(""))
 {
 	m_bRcpSelMode = bRcpSelMode ;
 
@@ -186,6 +188,7 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_SURFACE_GRAY_SIZE, m_dEdSurfaceGraySize);
 	DDX_Text(pDX, IDC_ED_TAB_MIN_BRIGHT, m_nTabMinBright);
 	DDX_Radio(pDX, IDC_RAD_DARK_ROLL, m_nRollBrightMode);
+	DDX_Text(pDX, IDC_EDIT_RECIPE_MEMO, m_strRecipeMemo);
 }
 
 
@@ -699,12 +702,17 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 	if (pRecipeInfo == nullptr) {
 		return;
 	}
-	
+
 	int nCamPos = m_nLastSelTab ;
 	int nTabCamPos = m_nLastSelTabInfo;
 
 	if (nMode == MODE_READ)
 	{
+<<<<<<< HEAD
+=======
+		CLogDisplayDlg::gInst()->LogDisplayMessage("레시피정보를 창으로 가져오기 ");
+
+>>>>>>> master
 		// 22.06.08 Ahn Modify Start
 		m_dTabWidth = pRecipeInfo->TabCond.dTabWidth;
 		m_dTabPitch =pRecipeInfo->TabCond.dTabPitch;
@@ -814,7 +822,9 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 
 		UpdateData(FALSE);
 	}
-	else {
+	else 
+	{
+		CLogDisplayDlg::gInst()->LogDisplayMessage("창의 레시피 정보를 변수에 저장하기 ");
 		UpdateData(TRUE);
 
 		// 23.02.14 Ahn Add Start
@@ -928,22 +938,62 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 void CRecipeSettingDlg::OnBnClickedBtnSave()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CString strRecipeName = m_strEdRecipeName;
-	//m_cmbRecipeName.GetWindowTextA(strRecipeName);
 	ASSERT(m_pRecipeInfo);
 	ASSERT(m_pRecipeCtrl);
-	if (( m_pRecipeInfo == NULL) || (m_pRecipeCtrl == NULL) ){
-		MessageBox(_T("레시피 저장 실패") );
-		return;
+
+	UpdateData();
+	CString strRecipeName = m_strEdRecipeName;
+
+	//파일명이 있는가 검사한다.
+	//로드된 레시피명 정보
+	CStringList strRecipeList;
+	strRecipeList.RemoveAll();
+
+	//레시피 파일이 들어있는 경로 설정
+	CString strRecipeDir;
+	strRecipeDir.Format(_T("%s\\Recipe\\"), AprData.m_strDataPath);
+
+	CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad 경로 : " + strRecipeDir);
+
+	//경로에 있는 레시피 파일 목록을 가져온다.
+	CWin32File winFile;
+	winFile.GetFileList(strRecipeDir, strRecipeList);
+
+	//가져온 레시피 파일의 목록을 콤보박스에 추가한다.
+	POSITION pos;
+	CString strTemp;
+	BOOL bFileNameExist = FALSE;
+	for (pos = strRecipeList.GetHeadPosition(); pos != NULL; ) 
+	{
+		strTemp = strRecipeList.GetNext(pos);
+		strTemp.Replace(_T(".ini"), _T(""));
+		if (strTemp.Compare(strRecipeName) == 0)
+		{
+			bFileNameExist = TRUE;
+			break;
+		}
 	}
-	if (strRecipeName.GetLength() <= 0) {
-		MessageBox(_T("레시피 이름을 지정해 주세요."));
-		return;
+
+	//파일명이 없으면 저장
+	if (bFileNameExist == FALSE && strRecipeName.GetLength())
+	{
+		DataControl(MODE_WRITE, m_pRecipeInfo);
+		m_pRecipeCtrl->SetRecipeInfo(m_pRecipeInfo);
+		m_pRecipeCtrl->SaveRecipe(strRecipeName);
+		SaveRecipeTable();
 	}
-	DataControl( MODE_WRITE, m_pRecipeInfo);
-	m_pRecipeCtrl->SetRecipeInfo( m_pRecipeInfo );
-	m_pRecipeCtrl->SaveRecipe(strRecipeName);
-	SaveRecipeTable();
+	//있으면 메시지 출력
+	else
+	{
+		if (strRecipeName.GetLength() <= 0)
+		{
+			MessageBox(_T("레시피 이름을 지정해 주세요."));
+		}
+		else
+		{
+			MessageBox(_T("레시피 이름이 이미 존재합니다."));
+		}
+	}
 }
 
 int CRecipeSettingDlg::MakeGridCtrl()
@@ -1427,6 +1477,7 @@ void CRecipeSettingDlg::OnClickGridCtrlRecipeTable(NMHDR* pNMHDR, LRESULT* pResu
 			return;
 		}
 
+
 		int	iRealNo = iRow - 1;
 		int	ret = 0;
 		int	iSetValue = 0;
@@ -1435,6 +1486,10 @@ void CRecipeSettingDlg::OnClickGridCtrlRecipeTable(NMHDR* pNMHDR, LRESULT* pResu
 		double	dTmpValue = (double)0.0;
 		CString	strRecipeName = _T("");
 		strRecipeName = pGridCtrl->GetTextMatrix(iRow, 1);
+
+		CString	strRecipeMemo = _T("");
+		strRecipeMemo = pGridCtrl->GetTextMatrix(iRow, 2);
+
 		int nTemp = 0;
 
 		int nColNo = iCol - 1;
@@ -1445,6 +1500,12 @@ void CRecipeSettingDlg::OnClickGridCtrlRecipeTable(NMHDR* pNMHDR, LRESULT* pResu
 			m_pRecipeCtrl->LoadRecipe( m_pRecipeInfo, strRecipeName);
 			DataControl(MODE_READ, m_pRecipeInfo);
 			m_strEdRecipeName = strRecipeName;
+			m_strRecipeMemo = strRecipeMemo;
+		}
+		else
+		{
+			m_strEdRecipeName = "";
+			m_strRecipeMemo = "";
 		}
 
 		//pGridCtrl->Refresh();
@@ -1692,9 +1753,12 @@ void CRecipeSettingDlg::OnBnClickedBtnRegist()
 	}
 
 	pRcpTableInfo->strRecipeName = strRecipeName;
+	pRcpTableInfo->strMemo = m_strRecipeMemo;
 
 	UpdateGrid();
 	UpdateGrid_RecipeTable();
+
+	m_RcpTableCtrl.FileCtrl(MODE_WRITE);
 }
 
 
@@ -1719,6 +1783,7 @@ void CRecipeSettingDlg::OnBnClickedBtnDelete()
 	pRcpTableInfo->strMemo = _T("");
 
 	UpdateGrid_RecipeTable();
+	m_RcpTableCtrl.FileCtrl(MODE_WRITE);
 }
 
 
@@ -1736,12 +1801,32 @@ void CRecipeSettingDlg::SaveRecipeTable()
 void CRecipeSettingDlg::OnBnClickedBtnLoad()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CRecipeSelectDlg rcpSelDlg;
+	
+	CGridCtrl* pGridCtrl = &m_GridRecipeTable;
 
-	if (rcpSelDlg.DoModal() == IDOK) {
-		m_strEdRecipeName = rcpSelDlg.GetSeletedName();
-		m_pRecipeCtrl->LoadRecipe( m_pRecipeInfo, m_strEdRecipeName);
-		DataControl(MODE_READ, m_pRecipeInfo);
+	if (pGridCtrl != NULL) 
+	{
+		UpdateData();
+		int iRow = m_nEdRecipeNo;
+		CString	strRecipeName = _T("");
+		strRecipeName = pGridCtrl->GetTextMatrix(iRow, 1);
+		if (strRecipeName.GetLength())
+		{
+			MessageBox(_T("이미 등록된 번호입니다."));
+		}
+		else
+		{
+			//레시피 선택 창
+			CRecipeSelectDlg rcpSelDlg;
+
+			if (rcpSelDlg.DoModal() == IDOK) {
+				m_strEdRecipeName = rcpSelDlg.m_strRecipeName;
+				m_pRecipeCtrl->LoadRecipe(m_pRecipeInfo, m_strEdRecipeName);
+				DataControl(MODE_READ, m_pRecipeInfo);
+				m_strRecipeMemo = rcpSelDlg.m_strRecipeMemo;
+				UpdateData(FALSE);
+			}
+		}
 	}
 }
 

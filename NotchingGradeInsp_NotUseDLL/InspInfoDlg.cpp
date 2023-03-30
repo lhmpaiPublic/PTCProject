@@ -276,7 +276,7 @@ void CInspInfoDlg::OnBnClickedBtnRecipeSelect()
 	// AprData.m_NowLotData.m_strNextRecipeName = m_strEdRecipeName ;
 
 	CString strRecipeName;
-	strRecipeName = dlg.GetSeletedName();
+	strRecipeName = dlg.m_strRecipeName;
 	if ( strRecipeName.GetLength() > 0 ) {
 		m_strNextRecipeName = strRecipeName;
 		UpdateData(FALSE); // 22.12.08 Ahn Add

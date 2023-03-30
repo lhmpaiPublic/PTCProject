@@ -249,6 +249,7 @@ public:
 
 class CRecipeInfo;
 class CSystemSetting;
+class CLogDisplayDlg;
 
 // 22.06.27 Ahn Add Start
 class CHistoryLotCtrl;
@@ -260,6 +261,7 @@ public:
 	CGlobalData(void);
 	~CGlobalData(void);
 
+	CLogDisplayDlg* logDisplayDlg;
 public :
 	void ResetAllCounter() ;
 	void ResetFrameCounter() ;

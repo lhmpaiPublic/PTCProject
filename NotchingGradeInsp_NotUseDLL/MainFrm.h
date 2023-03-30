@@ -18,7 +18,6 @@
 
 class CHistoryLotView;
 class CNotchingGradeInspView;
-class CLogDisplayDlg;
 
 class CMainFrame : public CFrameWndEx
 {
@@ -37,7 +36,6 @@ protected:
 	BOOL CreateDockingWindows();
 	void SetDockingWindowIcons(BOOL bHiColorIcons);
 
-	CLogDisplayDlg* logDisplayDlg;
 public:
 	void ReflashAll();
 	void ResetAndRefreshAll();
