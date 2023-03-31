@@ -740,6 +740,9 @@
 #define IDC_STATIC_IMAGESAVETIME        1337
 #define IDC_STATIC_IMAGESAVEINTERVAL    1337
 #define IDC_BUT_RECIPEDELETE            1340
+#define IDC_BUT_LOGCLEAR                1341
+#define IDC_CHECK_ISLOGPRINT            1342
+#define IDC_CHECK_MOVELASTLOG           1343
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define IDS_VIEW_RESULT                 32773
@@ -775,7 +778,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        420
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1341
+#define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

@@ -261,7 +261,6 @@ public:
 	CGlobalData(void);
 	~CGlobalData(void);
 
-	CLogDisplayDlg* logDisplayDlg;
 public :
 	void ResetAllCounter() ;
 	void ResetFrameCounter() ;

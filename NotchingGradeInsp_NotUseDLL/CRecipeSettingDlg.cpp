@@ -708,7 +708,8 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 
 	if (nMode == MODE_READ)
 	{
-		CLogDisplayDlg::gInst()->LogDisplayMessage("레시피정보를 창으로 가져오기 ");
+		//로그출력
+		LOGDISPLAY_ALL("레시피정보를 창으로 가져오기 ");
 
 		// 22.06.08 Ahn Modify Start
 		m_dTabWidth = pRecipeInfo->TabCond.dTabWidth;
@@ -821,7 +822,9 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 	}
 	else 
 	{
-		CLogDisplayDlg::gInst()->LogDisplayMessage("창의 레시피 정보를 변수에 저장하기 ");
+		//로그출력
+		LOGDISPLAY_ALL("창의 레시피 정보를 변수에 저장하기 ");
+
 		UpdateData(TRUE);
 
 		// 23.02.14 Ahn Add Start
@@ -950,7 +953,8 @@ void CRecipeSettingDlg::OnBnClickedBtnSave()
 	CString strRecipeDir;
 	strRecipeDir.Format(_T("%s\\Recipe\\"), AprData.m_strDataPath);
 
-	CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad 경로 : " + strRecipeDir);
+	//로그출력
+	LOGDISPLAY_ALL("Recipe 저장 RecipeListLoad 경로 : %s", strRecipeDir);
 
 	//경로에 있는 레시피 파일 목록을 가져온다.
 	CWin32File winFile;
@@ -1820,7 +1824,7 @@ void CRecipeSettingDlg::OnBnClickedBtnLoad()
 				m_strEdRecipeName = rcpSelDlg.m_strRecipeName;
 				m_pRecipeCtrl->LoadRecipe(m_pRecipeInfo, m_strEdRecipeName);
 				DataControl(MODE_READ, m_pRecipeInfo);
-				//m_strRecipeMemo = rcpSelDlg.m_strRecipeMemo;
+				m_strRecipeMemo = rcpSelDlg.m_strRecipeMemo;
 				UpdateData(FALSE);
 			}
 		}

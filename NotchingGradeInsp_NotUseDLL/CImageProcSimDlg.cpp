@@ -4177,7 +4177,9 @@ int CImageProcSimDlg::ProcHalfSlittingInsp(BYTE* pImgPtr, int nWidth, int nHeigh
 // 22.07.26 Ahn Add Start
 int CImageProcSimDlg::RecipeListLoad()
 {
-	CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad");
+	//로그출력
+	LOGDISPLAY_ALL("RecipeListLoad");
+
 	CRecipeCtrl rcpCtrl;
 	m_cmbRecipeSelect.Clear();
 	CStringList strRcpList;
@@ -4193,7 +4195,9 @@ int CImageProcSimDlg::RecipeListLoad()
 		CString strRcpName = strRcpList.GetNext(pos);
 		strRcpName.Replace(_T(".ini"), _T(""));
 		m_cmbRecipeSelect.AddString(strRcpName);
-		CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad 파일명 : " + strRcpName);
+
+		//로그출력
+		LOGDISPLAY_ALL("RecipeListLoad 파일명 : %s", strRcpName);
 	}
 	m_cmbRecipeSelect.SetCurSel(0);
 

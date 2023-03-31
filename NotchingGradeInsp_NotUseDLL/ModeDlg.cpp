@@ -143,7 +143,9 @@ void CModeDlg::OnSize(UINT nType, int cx, int cy)
 		CString logStr;
 		logStr.Format("Mainframe : left %d, top %d, width %d, height %d"
 			, btnRect.left, btnRect.right, btnRect.Width(), btnRect.Height());
-		CLogDisplayDlg::gInst()->AddLogDisplayMessage(logStr);
+
+		//로그출력
+		LOGDISPLAY(logStr);
 	}
 
 	//Exit 버튼 이동
@@ -455,14 +457,18 @@ void CModeDlg::OnBnClickedRadCondMode()
 void CModeDlg::OnBnClickedBtnInspSim()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (theApp.m_pImageSimDlg == NULL) {
+	if (theApp.m_pImageSimDlg == NULL) 
+	{
 		theApp.m_pImageSimDlg = new CImageProcSimDlg(this);
 		theApp.m_pImageSimDlg->Create(IDD_DLG_INSP_SIM, this);
-		CLogDisplayDlg::gInst()->AddLogDisplayMessage("CImageProcSimDlg 생성");
+		LOGDISPLAY_ALL("CImageProcSimDlg 생성");
 	}
-	if (theApp.m_pImageSimDlg != NULL) {
+	if (theApp.m_pImageSimDlg != NULL) 
+	{
 		theApp.m_pImageSimDlg->ShowWindow(SW_SHOW);
-		CLogDisplayDlg::gInst()->AddLogDisplayMessage("CImageProcSimDlg SHOW");
+
+		//로그출력
+		LOGDISPLAY("CImageProcSimDlg SHOW");
 	}
 }
 

@@ -757,7 +757,8 @@ int CRecipeCtrl::SearchRecipeFile(CStringList& strRecipeList)
 	CString strRecipeDir;
 	strRecipeDir.Format(_T("%s\\Recipe\\"), AprData.m_strDataPath );
 	
-	CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad 경로 : "+ strRecipeDir);
+	//로그출력
+	LOGDISPLAY_ALL("RecipeListLoad 경로 : %s", strRecipeDir);
 
 	CWin32File winFile;
 

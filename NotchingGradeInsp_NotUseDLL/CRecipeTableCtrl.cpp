@@ -10,7 +10,9 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 	CString strFileName;
 	strFileName.Format(_T("%s\\RecipeTable.ini"), AprData.m_strDataPath); 
 
-	CLogDisplayDlg::gInst()->AddLogDisplayMessage(CString("Recipe Table File 경로 : ") + strFileName);
+	//로그출력
+	LOGDISPLAY_ALL("Recipe Table File 경로 : %s", strFileName);
+
 	CString strKey;
 	CString strSection;
 	CString strData;
@@ -18,7 +20,8 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 	//레시피 테이블(정보관리) 파일에 쓰기(RecipeTable.ini)
 	if (nMode == MODE_WRITE) 
 	{
-		CLogDisplayDlg::gInst()->AddLogDisplayMessage("Recipe Table File 쓰기");
+		//로그출력
+		LOGDISPLAY_ALL("Recipe Table File 쓰기");
 
 		for (int i = 0; i < MAX_RECIPE_TABLE; i++) 
 		{
@@ -35,19 +38,26 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 	//레시피 테이블 파일에서 읽기
 	else 
 	{
-		CLogDisplayDlg::gInst()->AddLogDisplayMessage("Recipe Table File 읽기");
+		//로그출력
+		LOGDISPLAY_ALL("Recipe Table File 읽기");
+
 		char buff[256];
 		for (int i = 0; i < MAX_RECIPE_TABLE; i++) 
 		{
 			strSection.Format(_T("RECIPE_NO_%d"), i + 1);
-			CLogDisplayDlg::gInst()->LogDisplayMessage("[%s]", strSection);
+
+			//로그출력
+			LOGDISPLAY("[%s]", strSection);
+
 			strKey = _T("RECIPE_NAME");
 			memset(buff, 0, 256);
 			::GetPrivateProfileString(strSection, strKey, "", buff, 256, strFileName);
 
 			//레시피 테이블에서읽은 레시피 명
 			m_RecipeTable[i].strRecipeName.Format( _T("%s"), buff  ) ;
-			CLogDisplayDlg::gInst()->LogDisplayMessage("RECIPE_NAME : %s", buff);
+
+			//로그출력
+			LOGDISPLAY("RECIPE_NAME : %s", buff);
 
 			strKey = _T("MEMO");
 			memset(buff, 0, 256);
@@ -55,7 +65,9 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 
 			//레시피 테이블에서 읽은 레이피 메모
 			m_RecipeTable[i].strMemo.Format(_T("%s"), buff );
-			CLogDisplayDlg::gInst()->LogDisplayMessage("MEMO : %s", buff);
+
+			//로그출력
+			LOGDISPLAY("MEMO : %s", buff);
 
 		}
 	}

@@ -471,7 +471,7 @@ void CNotchingGradeInspView::ResetSignal()
 void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
+	LOGDISPLAY("Timer");
 	if (nIDEvent == m_TID_IO_Check)
 	{
 		CSigProc* pSigProc = theApp.m_pSigProc;
@@ -672,6 +672,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_PrepareRun:
+
 			if (m_pDeleteThread != nullptr)
 			{
 				m_pDeleteThread->Kill();

@@ -367,7 +367,10 @@ BOOL CMainFrame::CreateDockingWindows()
 	//BOOL bNameValid;
 
 	if (m_pWndTopPanel == NULL) {
-		CLogDisplayDlg::gInst()->AddLogDisplayMessage("TopPanel 생성");
+
+		//로그출력
+		LOGDISPLAY_ALL("TopPanel 생성");
+
 		m_pWndTopPanel = new CTopPanel(this, pView);
 		CString strCaption;
 		strCaption = _T("");

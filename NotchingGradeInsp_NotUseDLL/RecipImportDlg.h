@@ -36,6 +36,6 @@ public:
 	CString m_strRecipeMemo;
 	//레시피 명 콤보박스 컨트롤 제어 객체
 	CComboBox m_RecipeNameCtrl;
-	afx_msg void OnBnClickedButRecipedelete();
 	afx_msg void OnCbnSelchangeComboRecipeName();
+	afx_msg void OnBnClickedButRecipedelete();
 };

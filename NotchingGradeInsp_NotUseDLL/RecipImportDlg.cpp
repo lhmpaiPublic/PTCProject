@@ -37,8 +37,8 @@ void CRecipeImportDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CRecipeImportDlg, CDialogEx)
 	ON_BN_CLICKED(IDOK, &CRecipeImportDlg::OnBnClickedOk)
-	ON_BN_CLICKED(IDC_BUT_RECIPEDELETE, &CRecipeImportDlg::OnBnClickedButRecipedelete)
 	ON_CBN_SELCHANGE(IDC_COMBO_RECIPE_NAME, &CRecipeImportDlg::OnCbnSelchangeComboRecipeName)
+	ON_BN_CLICKED(DC_BUT_RECIPEDELETE, &CRecipeImportDlg::OnBnClickedButRecipedelete)
 END_MESSAGE_MAP()
 
 
@@ -64,7 +64,8 @@ void CRecipeImportDlg::LoadRecipeFileList()
 	CString strRecipeDir;
 	strRecipeDir.Format(_T("%s\\Recipe\\"), AprData.m_strDataPath);
 
-	CLogDisplayDlg::gInst()->AddLogDisplayMessage("RecipeListLoad 경로 : " + strRecipeDir);
+	//로그출력
+	LOGDISPLAY_ALL("RecipeListLoad 경로 : %s", strRecipeDir);
 
 	//경로에 있는 레시피 파일 목록을 가져온다.
 	CWin32File winFile;
@@ -98,25 +99,6 @@ BOOL CRecipeImportDlg::OnInitDialog()
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
 
-
-void CRecipeImportDlg::OnBnClickedButRecipedelete()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData();
-	CString deleteFileName;
-	deleteFileName.Format(_T("%s\\Recipe\\%s.ini"), AprData.m_strDataPath, m_strRecipeName);
-	if (DeleteFile(deleteFileName) == FALSE)
-	{
-		MessageBox(_T("파일 삭제 실패"));
-	}
-	else
-	{
-		m_RecipeNameCtrl.ResetContent();
-		LoadRecipeFileList();
-	}
-}
-
-
 void CRecipeImportDlg::OnCbnSelchangeComboRecipeName()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -126,4 +108,30 @@ void CRecipeImportDlg::OnCbnSelchangeComboRecipeName()
 	//메모 기본 텍스트 쓰기
 	m_strRecipeName = m_strRecipeMemo = str;
 	UpdateData(FALSE);
+}
+
+
+void CRecipeImportDlg::OnBnClickedButRecipedelete()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData();
+	CString deleteFileName;
+	deleteFileName.Format(_T("%s\\Recipe\\%s.ini"), AprData.m_strDataPath, m_strRecipeName);
+	CString strMsg;
+	strMsg.Format("%s 파일을 삭제하겠습니까?", m_strRecipeName);
+	if (IDYES == AfxMessageBox(strMsg, MB_YESNO))
+	{
+		// OK Action 
+
+		if (DeleteFile(deleteFileName) == FALSE)
+		{
+			MessageBox(_T("파일 삭제 실패"));
+		}
+		else
+		{
+			m_RecipeNameCtrl.ResetContent();
+			LoadRecipeFileList();
+		}
+
+	}
 }

@@ -1468,5 +1468,7 @@ void CSystemSettingDlg::OnCbnSelchangeComImageoutformat()
 	default: AprData.getGSt()->SetOutImageFormat(".jpg");
 		break;
 	}
-	CLogDisplayDlg::gInst()->AddLogDisplayMessage(CString(_T("변경 이미지 포맷 : ")) + AprData.getGSt()->GetOutImageFormat());
+
+	//로그출력
+	LOGDISPLAY_ALL("변경 이미지 포맷 : ", AprData.getGSt()->GetOutImageFormat());
 }
