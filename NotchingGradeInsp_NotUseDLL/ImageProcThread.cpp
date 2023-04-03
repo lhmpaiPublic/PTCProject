@@ -894,7 +894,8 @@ WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, in
 
 	// 22.01.11 Ahn Add Start
 	// 마킹 테스트용 모든 탭 마킹 신호 출력.
-	if (AprData.m_System.m_bMarkingAllTab == TRUE) {
+	if (AprData.m_System.m_bMarkingAllTab == TRUE)
+	{
 		nJudge1 = JUDGE_NG;
 		nJudge2 = JUDGE_NG;
 		// 22.08.11 Ahn Add Start
@@ -904,8 +905,10 @@ WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, in
 	}
 	// 22.01.11 Ahn Add End
 
-	if ( ( nJudge1 == JUDGE_NG )  || ( nJudge2 == JUDGE_NG ) ) {
-		wOutput |= CAppDIO::eOut_TAB_JUDGE_SURFACE;	
+	if ( ( nJudge1 == JUDGE_NG )  || ( nJudge2 == JUDGE_NG ) )
+	{
+		wOutput |= CAppDIO::eOut_TAB_JUDGE_SURFACE;	//기존 버전 0번 bit 사용
+		//wOutput |= CAppDIO::eOut_TAB_JUDGE_SIZE;
 		//wOutput |= CAppDIO::eOut_TAB_JUDGE_SIZE ; // 22.08.11 Ahn Test
 		//22.07.26 Ahn Modify Start
 		//int nMarkSel = (nMarkSel1 || nMarkSel2 );

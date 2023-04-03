@@ -206,12 +206,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							
 							//Right 영역 값 ImageProcessDetectSurface 처리 시에 적용
 							//Machine Mode 가 양극이면
-							if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
+							if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+							{
 							// 22.09.15 Ahn Modify End
 								rcArea.right = pFrmInfo->m_nTabLevel - AprData.m_pRecipeInfo->TabCond.nNegVGrooveHeight;
 							}
 							//Machine Mode 가 음극이면 
-							else {
+							else
+							{
 								rcArea.right = pFrmInfo->m_nBndElectrode - AprData.m_pRecipeInfo->nSurfaceMaskOffset[CAM_POS_TOP];
 							}
 							// 22.07.12 Ahn Modify End
