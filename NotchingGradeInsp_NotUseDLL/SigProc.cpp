@@ -1040,47 +1040,32 @@ int CSigProc::SigOutDiskCapacityWarning(int nMode)
 int CSigProc::SigOutAlarmExist(int nMode)
 {
 	int nRet = 0;
-	//int nAddress = enBitOut_RecipeChangeAck;
-// 	int nAddress;
-// 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
-// 		nAddress = enSmsBitOut_RecipeChangeAck;
-// 	}
-// 	else {
-// 		nAddress = enBitOut_RecipeChangeAck;
-// 	}
-// 	// 23.02.02 Ahn Add End
-// 	nRet = SignalBitOut(nAddress, nMode);
-
-
-
-
 	int address = GetWordAddress(enWordWrite_AlarmExist, MODE_WRITE);
-
-
-
 	int nNumOfData = 1;
 
-	if (m_pPioCtrl == NULL) {
+	if (m_pPioCtrl == NULL)
+	{
 		//에러로그
 		return (-1);
 	}
 
 
-	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
-	{
+// 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+// 	{
 		short pData = (nMode==1) ? 0x01 : 0x00;
 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& pData, nNumOfData) < 0) {
 			//에러로그
 			return (-1);
 		}
-	}
-	else
-	{
-// 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& nAlarmCode, nNumOfData) < 0) {
+// 	}
+// 	else
+// 	{
+// 		short pData = (nMode == 1) ? 0x01 : 0x00;
+// 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& pData, nNumOfData) < 0) {
 // 			//에러로그
 // 			return (-1);
 // 		}
-	}
+// 	}
 
 
 
@@ -1099,8 +1084,8 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	WORD btData[enWordReadMaxSize];
 	WORD* pData = btData;
 	// 22.03.22 Ahn Modify Start
-	//int nSize = enWordReadMaxSize / 2 ;
-	int nSize = enWordRead_LotInfoLength / 2;
+	int nSize = enWordReadMaxSize / 2 ;
+	//int nSize = enWordRead_LotInfoLength / 2;
 	// 22.03.22 Ahn Modify End
 	int nAddress = enWordRead_RecipeNo;
 
@@ -1241,14 +1226,16 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	//pSeqData->wSectorNgCount;
 	//pwData = &btData[enWordRead_PrmSectorBaseCnt - nAddress];
 	//pSeqData->wSectorBaseCount;
-	//// 22.08.10 Ahn Add End
+
+
 	pwData = &btData[enWordRead_PrmContinuousCnt];
-	pSeqData->wContinousCount;
+	pSeqData->wContinousCount = *pwData;
 	pwData = &btData[enWordRead_PrmSectorNgTabCnt];
-	pSeqData->wSectorNgCount;
+	pSeqData->wSectorNgCount = *pwData;
 	pwData = &btData[enWordRead_PrmSectorBaseCnt];
-	pSeqData->wSectorBaseCount;
-	// 23.02.17 Son Mod End
+	pSeqData->wSectorBaseCount = *pwData;
+
+
 
 	return 0;
 }
@@ -1282,124 +1269,13 @@ int CSigProc::WriteBlockAllData_Melsec(int nMode )
 }
 
 
-// 22.05.26 Ahn Add Start
 void CSigProc::EnableWorkSet(BOOL bMode)
 {
 	if (m_pPioCtrl != NULL) {
 		m_pPioCtrl->EnableWorkSet(bMode);
 	}
 }
-// 22.05.26 Ahn Add Start
-//
 
-// 22.08.12 Ahn Add Start
-// 23.03.03 Ahn Delete End
-//int CSigProc::ReadBlockWriteData_Melsec(_SEQ_OUT_DATA* pSeqOutData)
-//{
-//	ASSERT(pSeqOutData);
-//	// RecipeInfo
-//	WORD btData[enWordReadMaxSize];
-//	WORD* pData = btData;
-//	// 22.03.22 Ahn Modify Start
-//	//int nSize = enWordReadMaxSize / 2 ;
-//	int nSize = enWordReadMaxSize / 2;
-//	// 22.03.22 Ahn Modify End
-//	int nAddress = enWordWrite_DataReportV1_Ea;
-//
-//	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
-//		return -1;
-//	}
-//
-//	WORD btTemp;
-//	// 23.02.17 Son Mod Start
-//	//btTemp = btData[enWordWrite_DataReportV1_Ea - nAddress];
-//	//pSeqOutData->dwDataReportV1 = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_DataReportV2_OK - nAddress];
-//	//pSeqOutData->dwDataReportV2 = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_DataReportV3_NG - nAddress];
-//	//pSeqOutData->dwDataReportV3 = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_DataReportV4_OkRate - nAddress];
-//	//pSeqOutData->dwDataReportV4 = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_DataReportV6_RunRate - nAddress];
-//	//pSeqOutData->dwDataReportV5 = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_Continue_Alarm_Cnt - nAddress];
-//	//pSeqOutData->dwDataReportV6 = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_DrossTop_Alarm_Cnt - nAddress];
-//	//pSeqOutData->dwDrossTopCount = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_DrossBtm_Alarm_Cnt - nAddress];
-//	//pSeqOutData->dwDrossBottomCount = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_FoilExpTop_Alarm_Cnt - nAddress];
-//	//pSeqOutData->dwFoilExpTopCount = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_FoilExpBtm_Alarm_Cnt - nAddress];
-//	//pSeqOutData->dwFoilExpBottomCount = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_SpeterTop_Alarm_Cnt - nAddress];
-//	//pSeqOutData->dwSpeterTopCount = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_SpeterBtm_Alarm_Cnt - nAddress];
-//	//pSeqOutData->dwSpeterBottomCount = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_Top_Defect_Count_Real - nAddress];
-//	//pSeqOutData->dwTopNgRealTimeCount = (DWORD)btTemp;
-//
-//	//btTemp = btData[enWordWrite_Btm_Defect_Count_Real - nAddress];
-//	//pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
-//	btTemp = btData[enWordWrite_DataReportV1_Ea];
-//	pSeqOutData->dwDataReportV1 = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_DataReportV2_OK];
-//	pSeqOutData->dwDataReportV2 = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_DataReportV3_NG];
-//	pSeqOutData->dwDataReportV3 = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_DataReportV4_OkRate];
-//	pSeqOutData->dwDataReportV4 = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_DataReportV6_RunRate];
-//	pSeqOutData->dwDataReportV5 = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_Continue_Alarm_Cnt];
-//	pSeqOutData->dwDataReportV6 = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_DrossTop_Alarm_Cnt];
-//	pSeqOutData->dwDrossTopCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_DrossBtm_Alarm_Cnt];
-//	pSeqOutData->dwDrossBottomCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_FoilExpTop_Alarm_Cnt];
-//	pSeqOutData->dwFoilExpTopCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_FoilExpBtm_Alarm_Cnt];
-//	pSeqOutData->dwFoilExpBottomCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_SpeterTop_Alarm_Cnt];
-//	pSeqOutData->dwSpeterTopCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_SpeterBtm_Alarm_Cnt];
-//	pSeqOutData->dwSpeterBottomCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_Top_Defect_Count_Real];
-//	pSeqOutData->dwTopNgRealTimeCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enWordWrite_Btm_Defect_Count_Real];
-//	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
-//	// 23.02.17 Son Mod End
-//	return 0;
-//}
-// 23.03.03 Ahn Delete End
-// 22.08.12 Ahn Add End
-// 22.08.19 Ahn Add Start
 int CSigProc::ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 {
 	_SEQ_OUT_DATA* pSeqOutData;
@@ -1543,20 +1419,7 @@ int CSigProc::WriteBlockAllData(int nMode)
 	}
 	return nRet;
 }
-// 23.03.03 Ahn Delete Start
-//int CSigProc::ReadBlockWriteData(_SEQ_OUT_DATA* pSeqOutData)
-//{
-//	int nRet = 0;
-//	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
-//		nRet = ReadBlockWriteData_Melsec(pSeqOutData);
-//	}
-//	else {
-//		nRet = ReadBlockWriteData_Siemens(pSeqOutData);
-//
-//	}
-//	return nRet;
-//}
-// 23.03.03 Ahn Delete End
+
 int CSigProc::ReadBlockWriteDataAll(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 {
 	int nRet = 0;
@@ -1697,68 +1560,6 @@ int CSigProc::WriteBlockAllData_Siemens(int nMode)
 
 	return nRet;
 }
-// 23.03.03 Ahn Delete Start
-//int CSigProc::ReadBlockWriteData_Siemens(_SEQ_OUT_DATA* pSeqOutData)
-//{
-//	int nRet = 0;
-//	ASSERT(pSeqOutData);
-//	// RecipeInfo
-//	WORD btData[enSmsWordWrite_Size];
-//	WORD* pData = btData;
-//	int nSize = enSmsWordWrite_Size;
-//	int nAddress = enSmsWordWrite_DataReportV1_Ea;
-//
-//	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
-//		return -1;
-//	}
-//
-//	WORD btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_DataReportV1_Ea];
-//	pSeqOutData->dwDataReportV1 = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_DataReportV2_OK];
-//	pSeqOutData->dwDataReportV2 = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_DataReportV3_NG];
-//	pSeqOutData->dwDataReportV3 = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_DataReportV4_OkRate];
-//	pSeqOutData->dwDataReportV4 = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_DataReportV6_RunRate];
-//	pSeqOutData->dwDataReportV5 = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_Continue_Alarm_Cnt];
-//	pSeqOutData->dwDataReportV6 = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_DrossTop_Alarm_Cnt];
-//	pSeqOutData->dwDrossTopCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_DrossBtm_Alarm_Cnt];
-//	pSeqOutData->dwDrossBottomCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_FoilExpTop_Alarm_Cnt];
-//	pSeqOutData->dwFoilExpTopCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_FoilExpBtm_Alarm_Cnt];
-//	pSeqOutData->dwFoilExpBottomCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_SpeterTop_Alarm_Cnt];
-//	pSeqOutData->dwSpeterTopCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_SpeterBtm_Alarm_Cnt];
-//	pSeqOutData->dwSpeterBottomCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_Top_Defect_Count_Real];
-//	pSeqOutData->dwTopNgRealTimeCount = (DWORD)btTemp;
-//
-//	btTemp = btData[enSmsWordWrite_Btm_Defect_Count_Real];
-//	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
-//
-//	return nRet;
-//}
-// 23.03.03 Ahn Delete End
 
 int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 {

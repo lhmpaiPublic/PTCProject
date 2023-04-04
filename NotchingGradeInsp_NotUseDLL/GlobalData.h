@@ -106,28 +106,35 @@ public:
 	DWORD dwSpeterTopCount;
 	DWORD dwSpeterBottomCount;
 
-	// 22.07.06 Ahn Add Start
 	DWORD dwTopNgRealTimeCount;			// 실시간 Tob NG Count
 	DWORD dwBottomNgRealTimeCount;		// 실시간 Bottom NG Count
-	// 22.07.06 Ahn Add End
+	DWORD dwTopNgLotEndCount;			// Lot End 시
+	DWORD dwBottomNgLotEndCount;		// Lot End 시
 
-	//DWORD dwDrossTopTarget;
-	//DWORD dwDrossBottomTarget;
-	//DWORD dwFoilExpTopTarget;
-	//DWORD dwFoilExpBottomTarget;
-	//DWORD dwSpeterTopTarget;
-	//DWORD dwSpeterBottomTarget;
+	DWORD dwDummy1[7];
 
-	//DWORD dwAlarmExist;
-	//DWORD dwAlarmBuffer[5];
-} _SEQ_OUT_DATA ;
+	DWORD dwDrossTopTarget;
+	DWORD dwDrossBottomTarget;
+	DWORD dwFoilExpTopTarget;
+	DWORD dwFoilExpBottomTarget;
+	DWORD dwSpeterTopTarget;
+	DWORD dwSpeterBottomTarget;
+
+	DWORD dwDummy2;
+
+	DWORD dwPrmContinuousCnt;
+	DWORD dwPrmSectorNgTabCnt;
+	DWORD dwPrmSectorBaseCnt;
+
+
+} _SEQ_OUT_DATA;
 // 22.08.19 Ahn Add Start
 typedef struct stSeqDataOutAll {
 public:
 	_SEQ_OUT_DATA m_SeqOutData;
 
-	DWORD dwTopNgLotEndCount;			
-	DWORD dwBottomNgLotEndCount;		
+	DWORD dwTopNgLotEndCount;
+	DWORD dwBottomNgLotEndCount;
 	DWORD dwAlarm;
 	DWORD dwAlarmCode;
 
@@ -160,8 +167,25 @@ public:
 	WORD wSpeterTopCount;
 	WORD wSpeterBottomCount;
 
+	WORD wDrossTopTarget;
+	WORD wDrossBottomTarget;
+	WORD wFoilExpTopTarget;
+	WORD wFoilExpBottomTarget;
+	WORD wSpeterTopTarget;
+	WORD wSpeterBottomTarget;
+
+	WORD wAlarmExist;
+	WORD wAlarmCode[24];
+
 	WORD wTopNgRealTimeCount;			// 실시간 Tob NG Count
 	WORD wBottomNgRealTimeCount;		// 실시간 Bottom NG Count
+	WORD wTopNgLotEndCount;
+	WORD wBottomNgLotEndCount;
+
+	WORD wCellTriggerID;
+	WORD wCellJudge;
+	WORD wCellNgCode;
+
 
 } _SEQ_OUT_DATA_SMS;
 

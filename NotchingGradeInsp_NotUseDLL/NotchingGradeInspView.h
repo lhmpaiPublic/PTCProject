@@ -108,6 +108,7 @@ protected:
 	BOOL m_bLotStartInitFlag;
 	BOOL m_bLotEndFlag;
 	BOOL m_bTabCountResetFlag;
+	BOOL m_bAlarmResetFlag;
 
 
 
@@ -173,6 +174,7 @@ private :
 	int CheckLotEndProcess2(); //조건 없이 Lot End Check
 	int CheckTabZeroReset();
 	int CheckLotStartProcess();
+	int CheckAlarmReset();
 
 
 // 22.06.27 Ahn Add Start

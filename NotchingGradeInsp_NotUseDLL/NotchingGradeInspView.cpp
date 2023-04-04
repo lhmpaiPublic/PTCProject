@@ -89,6 +89,8 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	m_bLotEndFlag = FALSE;
 	m_bTabCountResetFlag = FALSE;
 	m_bLotStartInitFlag = TRUE;
+	m_bAlarmResetFlag = FALSE;
+
 
 	//// 22.04.21 Ahn Add Start
 	//m_pFileManager = NULL ;
@@ -483,7 +485,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		CheckLotEndProcess2();
 		CheckTabZeroReset();
 		CheckLotStartProcess();
-
+		CheckAlarmReset();
 
 
 
@@ -791,6 +793,23 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				AprData.m_NowLotData.m_SeqDataOut.dwTopNgRealTimeCount = (DWORD)AprData.m_NowLotData.m_nTopNG; // 22.07.13 Ahn Modify  TabNG -> TopNG
 				AprData.m_NowLotData.m_SeqDataOut.dwBottomNgRealTimeCount = (DWORD)AprData.m_NowLotData.m_nBottomNG;
 
+				//////////////////////////////////////////////////////////////////////////
+				// [ 레시피 설정값 전송 ]
+				// [ 목표값 ]
+				AprData.m_NowLotData.m_SeqDataOut.dwDrossTopTarget = AprData.m_pRecipeInfo->dFoilExpOutNgSize + AprData.m_pRecipeInfo->dFoilExpBothNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwDrossBottomTarget = AprData.m_pRecipeInfo->dFoilExpOutNgSize + AprData.m_pRecipeInfo->dFoilExpBothNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpTopTarget = AprData.m_pRecipeInfo->dFoilExpInNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBottomTarget = AprData.m_pRecipeInfo->dFoilExpInNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget = AprData.m_pRecipeInfo->dSurfaceNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget = AprData.m_pRecipeInfo->dSurfaceNgSize;
+
+
+				// [ 연속/구간 불량 ]
+				AprData.m_NowLotData.m_SeqDataOut.dwPrmContinuousCnt = AprData.m_nCoutinuouCount; //AprData.m_pRecipeInfo->nContinousNgCount;
+				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorNgTabCnt= AprData.m_nSectorNgCount; //AprData.m_pRecipeInfo->nAlarmCount;
+				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorBaseCnt = AprData.m_nSectorBaseCount; //AprData.m_pRecipeInfo->nSectorCount;
+
+
 				//int nAddress = CSigProc::enWordWrite_DataReportV1_Ea;
 				int nAddress;
 				nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
@@ -817,6 +836,16 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wTopNgRealTimeCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwTopNgRealTimeCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wBottomNgRealTimeCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwBottomNgRealTimeCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wDrossTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDrossTopTarget;
+
+					AprData.m_NowLotData.m_SeqDataOutSms.wDrossBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDrossBottomTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpTopTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBottomTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget;
+
+
+
 
 					short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
 					int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
@@ -1442,7 +1471,33 @@ int CNotchingGradeInspView::CheckLotStartProcess()
 }
 
 
+int CNotchingGradeInspView::CheckAlarmReset()
+{
+	int nRet = 0;
+	CSigProc* pSigProc = theApp.m_pSigProc;
 
+	BOOL bSigIn = (pSigProc->SigInAlarmReset() == 1) ? TRUE : FALSE;
+	if ((bSigIn == TRUE) && (m_bAlarmResetFlag == FALSE))
+	{
+		m_bAlarmResetFlag = TRUE;
+		AprData.SaveDebugLog(_T("CheckAlarmReset ON"));
+
+		pSigProc->SigOutAlarmResetAck(TRUE);
+		pSigProc->WriteAlarmCode(0x0000);
+		pSigProc->SigOutAlarmExist(FALSE);
+
+	}
+	if ((bSigIn == FALSE) && (m_bAlarmResetFlag == TRUE))
+	{
+		m_bAlarmResetFlag = FALSE;
+		AprData.SaveDebugLog(_T("CheckAlarmReset OFF"));
+
+		pSigProc->SigOutAlarmResetAck(FALSE);
+
+	}
+
+	return nRet;
+}
 
 // 23.02.09 Ahn Add Start
 void CNotchingGradeInspView::SwitchDisplay(BOOL bModeMap)

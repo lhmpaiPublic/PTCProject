@@ -104,6 +104,7 @@ BEGIN_MESSAGE_MAP(CIoMonitorDlg, CDialogEx)
 	ON_STN_DBLCLK(IDC_ST_LOT_START_ACK_OFF, &CIoMonitorDlg::OnDblclkStLotStartAckOff)
 	ON_STN_DBLCLK(IDC_ST_LOT_END_ACK, &CIoMonitorDlg::OnDblclkStLotEndAck)
 	ON_STN_DBLCLK(IDC_ST_LOT_END_ACK_OFF, &CIoMonitorDlg::OnDblclkStLotEndAckOff)
+	ON_BN_CLICKED(IDC_BTN_DUMMY_ERROR_CLEAR, &CIoMonitorDlg::OnBnClickedBtnDummyErrorClear)
 END_MESSAGE_MAP()
 
 
@@ -960,9 +961,9 @@ void CIoMonitorDlg::OnBnClickedBtnDummyError()
 		pSigProc->WriteAlarmCode(wAlarmCode);
 		pSigProc->SigOutAlarmExist(TRUE);
 
-  		Sleep(200);
- 		pSigProc->WriteAlarmCode(0x0000);
-		pSigProc->SigOutAlarmExist(FALSE);
+//   		Sleep(200);
+//  		pSigProc->WriteAlarmCode(0x0000);
+// 		pSigProc->SigOutAlarmExist(FALSE);
 
 
 // 22.10.05 Ahn Add End
@@ -1093,4 +1094,13 @@ void CIoMonitorDlg::OnDblclkStLotEndAckOff()
 {
 	CSigProc* pSigProc = theApp.m_pSigProc;
 	pSigProc->sigOutLotEndAck(TRUE);
+}
+
+
+void CIoMonitorDlg::OnBnClickedBtnDummyErrorClear()
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	pSigProc->WriteAlarmCode(0x0000);
+	pSigProc->SigOutAlarmExist(FALSE);
 }

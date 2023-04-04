@@ -235,6 +235,8 @@
 #define IDC_BTN_TODAY                   1029
 #define IDC_BTN_LOAD_IMG_2              1029
 #define IDC_BUT_CAMERA_SETTING          1029
+#define IDC_BTN_DUMMY_ERROR2            1029
+#define IDC_BTN_DUMMY_ERROR_CLEAR       1029
 #define IDC_ST_GRUP_RECIPE              1030
 #define IDC_CHECK_LOW_05                1030
 #define IDC_BTN_NEXT                    1030

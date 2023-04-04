@@ -173,4 +173,5 @@ public:
 	afx_msg void OnDblclkStLotStartAckOff();
 	afx_msg void OnDblclkStLotEndAck();
 	afx_msg void OnDblclkStLotEndAckOff();
+	afx_msg void OnBnClickedBtnDummyErrorClear();
 };

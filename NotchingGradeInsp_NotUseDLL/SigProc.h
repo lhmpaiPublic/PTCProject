@@ -13,8 +13,11 @@ class CSequenceData ;
 class CSigProc
 {
 public:
-	// Melsec Address Start
-	enum{
+	//////////////////////////////////////////////////////////////////////////
+	// [ Melsec Address Start ]
+	// [ BIT IN ]
+	enum
+	{
 		enBitIn_Alive			= 0x00000001,	// B63C0
 		enBitIn_Ready			= 0x00000002,	// B63C1
 		enBitIn_Run				= 0x00000004,	// B63C2
@@ -41,7 +44,10 @@ public:
 
 		enBitIn_AlarmResetReq	= 0x00000301,	// B63D8 
 	};
-	enum {
+
+	// [ BIT OUT ]
+	enum
+	{
 		enBitOut_Alive			= 0x00000001,	// B6B40
 		enBitOut_Ready			= 0x00000002,	// B6B41
 		enBitOut_Dummy3			= 0x00000004,	// B6B42
@@ -66,210 +72,81 @@ public:
 		enBitOut_AlramResetAck	= 0x00000301,	// B6B55
 	};
 
-	enum {
-		// 23.02.17 Son Mod Start
-		//enWordRead_RecipeNo				= 0x9680,		
-		//enWordRead_RecipeNo_Len			= 2,				//	2
-		//enWordRead_RecipeName			= 0x9682,
-		//enWordRead_RecipeName_Len		= 8,				// 10
-		//enWordRead_CELL_ID				= 0x9690,
-		//enWordRead_CELL_ID_Len			= 10,				// 30
-		//enWordRead_Speed				= 0x96B0,
-		//enWordRead_Speed_Len			= 2,				// 32
-		//enWordRead_DrossTopTarget		= 0x96B2,
-		//enWordRead_DrossTopTarget_Len	= 2,				// 34
-		//enWordRead_DrossBtmTarget		= 0x96B4,
-		//enWordRead_DrossBtmTarget_Len	= 2,				// 36
-		//enWordRead_FoilExpTopTarget		= 0x96B6,
-		//enWordRead_FoilExpTopTarget_Len	= 2,				// 38
-		//enWordRead_FoilExpBtmTarget		= 0x96B8,
-		//enWordRead_FoilExpBtmTarget_Len = 2,				// 40
-		//enWordRead_SpeterTopTarget		= 0x96BA,
-		//enWordRead_SpeterTopTarget_Len	= 2,				// 42
-		//enWordRead_SpeterBtmTarget		= 0x96BC,
-		//enWordRead_SpeterBtmTarget_Len	= 2,				// 44
-		//enWordRead_LotInfoLength		= 44,
-		//en_WordRead_LotInfo_Length		= 60 ,				
-		//enWordRead_AlarmExistAck		= 0x96D0,	
-		//enWordRead_AlarmExistAck_Len	= 2,				// 46
-		//// 22.08.10 Ahn Add Start
-		//enWordRead_PrmContinuousCnt		= 0x96c0, 
-		//enWordRead_PrmContinuousCnt_Len	= 2,
-		//enWordRead_PrmSectorNgTabCnt	= 0x96c2,
-		//enWordRead_PrmSectorNgTabCnt_Len= 2,
-		//enWordRead_PrmSectorBaseCnt		= 0x96c4,
-		//enWordRead_PrmSectorBaseCnt_Len	= 2,
-		//// 22.08.10 Ahn Add End
-		//enWordReadMaxSize 				= 100,
-		enWordRead_RecipeNo = 0x0000,
-		enWordRead_RecipeNo_Len = 2,				//	2
-		enWordRead_RecipeName = 0x0002,
-		enWordRead_RecipeName_Len = 8,				// 10
-		enWordRead_CELL_ID = 0x0010,
-		enWordRead_CELL_ID_Len = 20,				// 30
-		enWordRead_Speed = 0x0030,
-		enWordRead_Speed_Len = 2,				// 32
-		enWordRead_DrossTopTarget = 0x0032,
-		enWordRead_DrossTopTarget_Len = 2,				// 34
-		enWordRead_DrossBtmTarget = 0x0034,
-		enWordRead_DrossBtmTarget_Len = 2,				// 36
-		enWordRead_FoilExpTopTarget = 0x0036,
-		enWordRead_FoilExpTopTarget_Len = 2,				// 38
-		enWordRead_FoilExpBtmTarget = 0x0038,
-		enWordRead_FoilExpBtmTarget_Len = 2,				// 40
-		enWordRead_SpeterTopTarget = 0x003A,
-		enWordRead_SpeterTopTarget_Len = 2,				// 42
-		enWordRead_SpeterBtmTarget = 0x003C,
-		enWordRead_SpeterBtmTarget_Len = 2,				// 44
+	//////////////////////////////////////////////////////////////////////////
+	// [ DATA READ ]
+	enum
+	{
+		enWordRead_RecipeNo = 0x0000,		enWordRead_RecipeNo_Len = 2,				//	2
+		enWordRead_RecipeName = 0x0002,		enWordRead_RecipeName_Len = 8,				// 10
+		enWordRead_CELL_ID = 0x0010,		enWordRead_CELL_ID_Len = 20,				// 30
+		enWordRead_Speed = 0x0030,		enWordRead_Speed_Len = 2,				// 32
+		enWordRead_DrossTopTarget = 0x0032,		enWordRead_DrossTopTarget_Len = 2,				// 34
+		enWordRead_DrossBtmTarget = 0x0034,		enWordRead_DrossBtmTarget_Len = 2,				// 36
+		enWordRead_FoilExpTopTarget = 0x0036,		enWordRead_FoilExpTopTarget_Len = 2,				// 38
+		enWordRead_FoilExpBtmTarget = 0x0038,		enWordRead_FoilExpBtmTarget_Len = 2,				// 40
+		enWordRead_SpeterTopTarget = 0x003A,		enWordRead_SpeterTopTarget_Len = 2,				// 42
+		enWordRead_SpeterBtmTarget = 0x003C,		enWordRead_SpeterBtmTarget_Len = 2,				// 44
 		enWordRead_LotInfoLength = 44,
-		// en_WordRead_LotInfo_Length = 60,				// 23.03.03 Ahn Delete 
-		// 22.08.10 Ahn Add Start
-		enWordRead_PrmContinuousCnt = 0x0040,
-		enWordRead_PrmContinuousCnt_Len = 2,
-		enWordRead_PrmSectorNgTabCnt = 0x0042,
-		enWordRead_PrmSectorNgTabCnt_Len = 2,
-		enWordRead_PrmSectorBaseCnt = 0x0044,
-		enWordRead_PrmSectorBaseCnt_Len = 2,
-		// 22.08.10 Ahn Add End
-		enWordRead_AlarmExistAck = 0x0050,
-		enWordRead_AlarmExistAck_Len = 2,				// 46
-		enWordReadMaxSize = 60,
-		// 23.02.17 Son Mod End
+		enWordRead_PrmContinuousCnt = 0x0040,		enWordRead_PrmContinuousCnt_Len = 2,
+		enWordRead_PrmSectorNgTabCnt = 0x0042,		enWordRead_PrmSectorNgTabCnt_Len = 2,
+		enWordRead_PrmSectorBaseCnt = 0x0044,		enWordRead_PrmSectorBaseCnt_Len = 2,
+		enWordRead_AlarmExistAck = 0x0050,		enWordRead_AlarmExistAck_Len = 2,				// 46
+		enWordReadMaxSize = 159,
 
 	};
 
-	enum {
-		// 23.02.17 Son Mod Start
-		//enWordWrite_DataReportV1_Ea = 0xC380,
-		//enWordWrite_DataReportV1_Len = 2,
-		//enWordWrite_DataReportV2_OK = 0xC382,
-		//enWordWrite_DataReportV2_Len = 2,
-		//enWordWrite_DataReportV3_NG = 0xC384,
-		//enWordWrite_DataReportV3_Len = 2,
-		//enWordWrite_DataReportV4_OkRate = 0xC386,
-		//enWordWrite_DataReportV4_Len = 2,
-		//enWordWrite_DataReportV5_NgRate = 0xC388,
-		//enWordWrite_DataReportV5_Len = 2,
-		//enWordWrite_DataReportV6_RunRate = 0xC38A,
-		//enWordWrite_DataReportV6_Len = 2,
-		//enWordWrite_Continue_Alarm_Cnt = 0xC38C,
-		//enWordWrite_Continue_Alarm_Cnt_Len = 2,
-		//enWordWrite_Heavy_Alarm_Cnt = 0xC38E,
-		//enWordWrite_Heavy_Alarm_Cnt_Len = 2,
-		//enWordWrite_DrossTop_Alarm_Cnt = 0xC390,
-		//enWordWrite_DrossTop_Alarm_Cnt_Len = 2,
-		//enWordWrite_DrossBtm_Alarm_Cnt = 0xC392,
-		//enWordWrite_DrossBtm_Alarm_Cnt_Len = 2,
-		//enWordWrite_FoilExpTop_Alarm_Cnt = 0xC394,
-		//enWordWrite_FoilExpTop_Alarm_Cnt_Len = 2,
-		//enWordWrite_FoilExpBtm_Alarm_Cnt = 0xC396,
-		//enWordWrite_FoilExpBtm_Alarm_Cnt_Len = 2,
-		//enWordWrite_SpeterTop_Alarm_Cnt = 0xC398,
-		//enWordWrite_SpeterTop_Alarm_Cnt_Len = 2,
-		//enWordWrite_SpeterBtm_Alarm_Cnt = 0xC39A,
-		//enWordWrite_SpeterBtm_Alarm_Cnt_Len = 2,
-		//// 22.07.05 Ahn Add Start
-		//enWordWrite_Top_Defect_Count_Real = 0xC39C,
-		//enWordWrite_Top_Defect_Count_Real_Len = 2,
-		//enWordWrite_Btm_Defect_Count_Real = 0xC39E,
-		//enWordWrite_Btm_Defect_Count_Real_Len = 2,
-		//enWordWrite_Top_Defect_Count_LotEnd = 0xC3A0,
-		//enWordWrite_Top_Defect_Count_LotEnd_Len = 2,
-		//enWordWrite_Btm_Defect_Count_LotEnd = 0xC3A2,
-		//enWordWrite_Btm_Defect_Count_LotEnd_Len = 2,
-		//// 22.07.05 Ahn Add End
+	// [ DATA WRITE ]
+	enum
+	{
+		enWordWrite_DataReportV1_Ea = 0x0000, enWordWrite_DataReportV1_Len = 2,
+		enWordWrite_DataReportV2_OK = 0x0002, enWordWrite_DataReportV2_Len = 2,
+		enWordWrite_DataReportV3_NG = 0x0004, enWordWrite_DataReportV3_Len = 2,
+		enWordWrite_DataReportV4_OkRate = 0x0006, enWordWrite_DataReportV4_Len = 2,
+		enWordWrite_DataReportV5_NgRate = 0x0008, enWordWrite_DataReportV5_Len = 2,
+		enWordWrite_DataReportV6_RunRate = 0x000A, enWordWrite_DataReportV6_Len = 2,
+		enWordWrite_Continue_Alarm_Cnt = 0x000C, enWordWrite_Continue_Alarm_Cnt_Len = 2,
+		enWordWrite_Heavy_Alarm_Cnt = 0x000E, enWordWrite_Heavy_Alarm_Cnt_Len = 2,
+		enWordWrite_DrossTop_Alarm_Cnt = 0x0010, enWordWrite_DrossTop_Alarm_Cnt_Len = 2,
+		enWordWrite_DrossBtm_Alarm_Cnt = 0x0012, enWordWrite_DrossBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpTop_Alarm_Cnt = 0x0014, enWordWrite_FoilExpTop_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpBtm_Alarm_Cnt = 0x0016, enWordWrite_FoilExpBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_SpeterTop_Alarm_Cnt = 0x0018, enWordWrite_SpeterTop_Alarm_Cnt_Len = 2,
+		enWordWrite_SpeterBtm_Alarm_Cnt = 0x001A, enWordWrite_SpeterBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_Top_Defect_Count_Real = 0x001C, enWordWrite_Top_Defect_Count_Real_Len = 2,
+		enWordWrite_Btm_Defect_Count_Real = 0x001E, enWordWrite_Btm_Defect_Count_Real_Len = 2,
+		enWordWrite_Top_Defect_Count_LotEnd = 0x0020, enWordWrite_Top_Defect_Count_LotEnd_Len = 2,
+		enWordWrite_Btm_Defect_Count_LotEnd = 0x0022, enWordWrite_Btm_Defect_Count_LotEnd_Len = 2,
 
-		//enWordWrite_DrossTopTarget = 0xC3B2,
-		//enWordWrite_DrossTopTarget_Len = 2,
-		//enWordWrite_DrossBtmTarget = 0xC3B4,
-		//enWordWrite_DrossBtmTarget_Len = 2,
-		//enWordWrite_FoilExpTopTarget = 0xC3B6,
-		//enWordWrite_FoilExpTopTarget_Len = 2,
-		//enWordWrite_FoilExpBtmTarget = 0xC3B8,
-		//enWordWrite_FoilExpBtmTarget_Len = 2,
-		//enWordWrite_SpeterTopTarget = 0xC3BA,
-		//enWordWrite_SpeterTopTarget_Len = 2,
-		//enWordWrite_SpeterBtmTarget = 0xC3BC,
-		//enWordWrite_SpeterBtmTarget_Len = 2,
+		enWordWrite_DrossTopTarget = 0x0032, enWordWrite_DrossTopTarget_Len = 2,
+		enWordWrite_DrossBtmTarget = 0x0034, enWordWrite_DrossBtmTarget_Len = 2,
+		enWordWrite_FoilExpTopTarget = 0x0036, enWordWrite_FoilExpTopTarget_Len = 2,
+		enWordWrite_FoilExpBtmTarget = 0x0038, enWordWrite_FoilExpBtmTarget_Len = 2,
+		enWordWrite_SpeterTopTarget = 0x003A, enWordWrite_SpeterTopTarget_Len = 2,
+		enWordWrite_SpeterBtmTarget = 0x003C, enWordWrite_SpeterBtmTarget_Len = 2,
 
-		//enWordWrite_AlarmExist = 0xC3D0,
-		//enWordWrite_AlarmExist_Len = 2,
-		//enWordWrite_AlarmCode_Buffer1 = 0xC3D2,
-		//enWordWrite_AlarmCode_Buffer1_Len = 2,
-		//enWordWrite_AlarmCode_Buffer2 = 0xC3D4,
-		//enWordWrite_AlarmCode_Buffer2_Len = 2,
-		//enWordWrite_AlarmCode_Buffer3 = 0xC3D6,
-		//enWordWrite_AlarmCode_Buffer3_Len = 2,
-		//enWordWrite_AlarmCode_Buffer4 = 0xC3D8,
-		//enWordWrite_AlarmCode_Buffer4_Len = 2,
-		//enWordWrite_AlarmCode_Buffer5 = 0xC3DA,
-		//enWordWrite_AlarmCode_Buffer5_Len = 2,
+		enWordWrite_PrmContinuousCnt = 0x0040, enWordWrite_PrmContinuousCnt_Len = 2,
+		enWordWrite_PrmSectorNgTabCnt = 0x0042, enWordWrite_PrmSectorNgTabCnt_Len = 2,
+		enWordWrite_PrmSectorBaseCnt = 0x0044, enWordWrite_PrmSectorBaseCnt_Len = 2,
 
-		//// 22.12.12 Ahn Add Start - Judge Report
-		//en_WordWrite_Cell_Trigger_ID		= 0xC3F0, 
-		//en_WordWrite_Cell_Trigger_ID_Len	= 2,
-		//en_WordWrite_Judge					= 0xC3F2,
-		//en_WordWrite_Judge_Len				= 2,
-		//en_WordWrite_NG_Code				= 0xC3F4,
-		//en_WordWrite_NG_Code_Len			= 2,
-		//// 22.12.12 Ahn Add End
 
-		//enWordWroteMaxSize = 100, 
-		enWordWrite_DataReportV1_Ea = 0x0000,		enWordWrite_DataReportV1_Len = 2,
-		enWordWrite_DataReportV2_OK = 0x0002,		enWordWrite_DataReportV2_Len = 2,
-		enWordWrite_DataReportV3_NG = 0x0004,		enWordWrite_DataReportV3_Len = 2,
-		enWordWrite_DataReportV4_OkRate = 0x0006,		enWordWrite_DataReportV4_Len = 2,
-		enWordWrite_DataReportV5_NgRate = 0x0008,		enWordWrite_DataReportV5_Len = 2,
-		enWordWrite_DataReportV6_RunRate = 0x000A,		enWordWrite_DataReportV6_Len = 2,
-		enWordWrite_Continue_Alarm_Cnt = 0x000C,		enWordWrite_Continue_Alarm_Cnt_Len = 2,
-		enWordWrite_Heavy_Alarm_Cnt = 0x000E,		enWordWrite_Heavy_Alarm_Cnt_Len = 2,
-		enWordWrite_DrossTop_Alarm_Cnt = 0x0010,		enWordWrite_DrossTop_Alarm_Cnt_Len = 2,
-		enWordWrite_DrossBtm_Alarm_Cnt = 0x0012,		enWordWrite_DrossBtm_Alarm_Cnt_Len = 2,
-		enWordWrite_FoilExpTop_Alarm_Cnt = 0x0014,		enWordWrite_FoilExpTop_Alarm_Cnt_Len = 2,
-		enWordWrite_FoilExpBtm_Alarm_Cnt = 0x0016,		enWordWrite_FoilExpBtm_Alarm_Cnt_Len = 2,
-		enWordWrite_SpeterTop_Alarm_Cnt = 0x0018,		enWordWrite_SpeterTop_Alarm_Cnt_Len = 2,
-		enWordWrite_SpeterBtm_Alarm_Cnt = 0x001A,		enWordWrite_SpeterBtm_Alarm_Cnt_Len = 2,
-		// 22.07.05 Ahn Add Start
-		enWordWrite_Top_Defect_Count_Real = 0x001C,		enWordWrite_Top_Defect_Count_Real_Len = 2,
-		enWordWrite_Btm_Defect_Count_Real = 0x001E,		enWordWrite_Btm_Defect_Count_Real_Len = 2,
-		enWordWrite_Top_Defect_Count_LotEnd = 0x0020,		enWordWrite_Top_Defect_Count_LotEnd_Len = 2,
-		enWordWrite_Btm_Defect_Count_LotEnd = 0x0022,		enWordWrite_Btm_Defect_Count_LotEnd_Len = 2,
-		// 22.07.05 Ahn Add End
+		enWordWrite_AlarmExist = 0x0050,		enWordWrite_AlarmExist_Len = 2,
+		enWordWrite_AlarmCode_Buffer1 = 0x0052,		enWordWrite_AlarmCode_Buffer1_Len = 2,
+		enWordWrite_AlarmCode_Buffer2 = 0x0054,		enWordWrite_AlarmCode_Buffer2_Len = 2,
+		enWordWrite_AlarmCode_Buffer3 = 0x0056,		enWordWrite_AlarmCode_Buffer3_Len = 2,
+		enWordWrite_AlarmCode_Buffer4 = 0x0058,		enWordWrite_AlarmCode_Buffer4_Len = 2,
+		enWordWrite_AlarmCode_Buffer5 = 0x005A,		enWordWrite_AlarmCode_Buffer5_Len = 2,
 
-		enWordWrite_DrossTopTarget = 0x0032,		enWordWrite_DrossTopTarget_Len = 2,
-		enWordWrite_DrossBtmTarget = 0x0034,		enWordWrite_DrossBtmTarget_Len = 2,
-		enWordWrite_FoilExpTopTarget = 0x0036,		enWordWrite_FoilExpTopTarget_Len = 2,
-		enWordWrite_FoilExpBtmTarget = 0x0038,		enWordWrite_FoilExpBtmTarget_Len = 2,
-		enWordWrite_SpeterTopTarget = 0x003A,		enWordWrite_SpeterTopTarget_Len = 2,
-		enWordWrite_SpeterBtmTarget = 0x003C,		enWordWrite_SpeterBtmTarget_Len = 2,
-
-		enWordWrite_AlarmExist = 0x0050,
-		enWordWrite_AlarmExist_Len = 2,
-		enWordWrite_AlarmCode_Buffer1 = 0x0052,
-		enWordWrite_AlarmCode_Buffer1_Len = 2,
-		enWordWrite_AlarmCode_Buffer2 = 0x0054,
-		enWordWrite_AlarmCode_Buffer2_Len = 2,
-		enWordWrite_AlarmCode_Buffer3 = 0x0056,
-		enWordWrite_AlarmCode_Buffer3_Len = 2,
-		enWordWrite_AlarmCode_Buffer4 = 0x0058,
-		enWordWrite_AlarmCode_Buffer4_Len = 2,
-		enWordWrite_AlarmCode_Buffer5 = 0x005A,
-		enWordWrite_AlarmCode_Buffer5_Len = 2,
-
-		// 22.12.12 Ahn Add Start - Judge Report
-		en_WordWrite_Cell_Trigger_ID = 0x0070,
-		en_WordWrite_Cell_Trigger_ID_Len = 2,
-		en_WordWrite_Judge = 0x0072,
-		en_WordWrite_Judge_Len = 2,
-		en_WordWrite_NG_Code = 0x0074,
-		en_WordWrite_NG_Code_Len = 2,
-		// 22.12.12 Ahn Add End
+		en_WordWrite_Cell_Trigger_ID = 0x0070,		en_WordWrite_Cell_Trigger_ID_Len = 2,
+		en_WordWrite_Judge = 0x0072,		en_WordWrite_Judge_Len = 2,
+		en_WordWrite_NG_Code = 0x0074,		en_WordWrite_NG_Code_Len = 2,
 
 		enWordWroteMaxSize = 100,
-		// 23.02.17 Son Mod End
 	};
 
-	enum { // Alarm Code
+	//////////////////////////////////////////////////////////////////////////
+	// [ Alarm Code ]
+	enum
+	{
 		en_Alarm_ContinueNg		= 0x0001,
 		en_Alarm_Heavy			= 0x0002,
 		en_Alarm_SectorNg		= 0x0004,
@@ -290,7 +167,17 @@ public:
 	//Wxxx.7 Spatter Top - 불량 알람
 	//Wxxx.8 Spatter Bot - 불량 알람
 
-	// Melsec Address End
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -298,7 +185,7 @@ public:
 
 	// 23.03.02 Ahn Add Start
 	//////////////////////////////////////////////////////////////////////////
-	// Siemens Address Start
+	// [ Siemens Address Start ]
 	enum {
 		enSmsBitIn_Alive				= 0,	//
 		enSmsBitIn_Ready				= 1,	//

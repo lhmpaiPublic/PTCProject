@@ -602,14 +602,17 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					// 22.12.09 Ahn Add End
 
 					// NG Tab 보고
-					if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG)) {
+					if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG))
+					{
 						WORD wAlarmCode = 0x0000;
 						bJudgeNG = TRUE;
-						if (nTopJudge == JUDGE_NG) {
+						if (nTopJudge == JUDGE_NG)
+						{
 							wAlarmCode = pTopInfo->m_pTabRsltInfo->m_wNgReason;
 							AprData.m_NowLotData.m_nTopNG++;
 						}
-						if (nBtmJudge == JUDGE_NG) {
+						if (nBtmJudge == JUDGE_NG)
+						{
 							wAlarmCode |= pBtmInfo->m_pTabRsltInfo->m_wNgReason;
 							AprData.m_NowLotData.m_nBottomNG++ ;
 						}
@@ -623,13 +626,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						tab.nTabNo = pTopInfo->nTabNo ;
 						// 22.08.10 Ahn Modify Start
 						//int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_pRecipeInfo->nSectorCount) ;
-						//if ( (AprData.m_NowLotData.m_nContinueCount >= AprData.m_pRecipeInfo->nContinousNgCount)
-						//	&& (AprData.m_pRecipeInfo->nContinousNgCount > 2) ) {
-						if ((AprData.m_NowLotData.m_nContinueCount >= AprData.m_nCoutinuouCount)
-							// 22.09.22 Ahn Modify Start
-							&& (AprData.m_nCoutinuouCount >= 2)) {
-							// 22.09.22 Ahn Modify End
-						// 22.08.10 Ahn Modify End
+						//if ( (AprData.m_NowLotData.m_nContinueCount >= AprData.m_pRecipeInfo->nContinousNgCount) && (AprData.m_pRecipeInfo->nContinousNgCount > 2) ) {
+						if ((AprData.m_NowLotData.m_nContinueCount >= AprData.m_nCoutinuouCount) && (AprData.m_nCoutinuouCount >= 2))
+						{
 							wAlarmCode |= CSigProc::en_Alarm_ContinueNg;
 							CString strMessage;
 							strMessage.Format(_T("연속 NG Alarm 발생. %d Tab연속 NG 발생"), AprData.m_NowLotData.m_nContinueCount);
@@ -640,11 +639,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//if ((AprData.m_pRecipeInfo->nSectorCount > 0) && (AprData.m_pRecipeInfo->nAlarmCount > 0)) {
 						//	if (nSecterNgCount >= AprData.m_pRecipeInfo->nAlarmCount) {
 						int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_nSectorBaseCount);
-						if ((AprData.m_nSectorNgCount > 0) && (AprData.m_nSectorBaseCount> 0)) {
+						if ((AprData.m_nSectorNgCount > 0) && (AprData.m_nSectorBaseCount> 0))
+						{
 							// 22.09.22 Ahn Modify Start
-							if (nSecterNgCount >= AprData.m_nSectorNgCount) {
-							// 22.09.22 Ahn Modify End
-						// 22.08.10 Ahn Modify End
+							if (nSecterNgCount >= AprData.m_nSectorNgCount)
+							{
 								wAlarmCode |= CSigProc::en_Alarm_SectorNg;
 								CString strMessage;
 								strMessage.Format(_T("구간 NG Alarm 발생. %d / %d Tab NG 발생"), nSecterNgCount, AprData.m_pRecipeInfo->nSectorCount);
@@ -653,10 +652,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 						// 22.08.09 Ahn Add End
 
-						if (AprData.m_System.m_bEnableNgStop == TRUE) {
-							if (AprData.m_pRecipeInfo->bNgStop == TRUE) {
+						if (AprData.m_System.m_bEnableNgStop == TRUE)
+						{
+							if (AprData.m_pRecipeInfo->bNgStop == TRUE)
+							{
 								bClearFlag = TRUE;; // 22.03.03 Ahn Add 
 								CSigProc* pSigProc = theApp.m_pSigProc;
+								pSigProc->SigOutAlarmExist(TRUE);
 								pSigProc->WriteAlarmCode(wAlarmCode);
 								// 22.08.09 Ahn Add Start
 								CString strLog;

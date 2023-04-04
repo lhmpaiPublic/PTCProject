@@ -938,63 +938,22 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 void CRecipeSettingDlg::OnBnClickedBtnSave()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString strRecipeName = m_strEdRecipeName;
+	//m_cmbRecipeName.GetWindowTextA(strRecipeName);
 	ASSERT(m_pRecipeInfo);
 	ASSERT(m_pRecipeCtrl);
-
-	UpdateData();
-	CString strRecipeName = m_strEdRecipeName;
-
-	//파일명이 있는가 검사한다.
-	//로드된 레시피명 정보
-	CStringList strRecipeList;
-	strRecipeList.RemoveAll();
-
-	//레시피 파일이 들어있는 경로 설정
-	CString strRecipeDir;
-	strRecipeDir.Format(_T("%s\\Recipe\\"), AprData.m_strDataPath);
-
-	//로그출력
-	LOGDISPLAY_ALL("Recipe 저장 RecipeListLoad 경로 : %s", strRecipeDir);
-
-	//경로에 있는 레시피 파일 목록을 가져온다.
-	CWin32File winFile;
-	winFile.GetFileList(strRecipeDir, strRecipeList);
-
-	//가져온 레시피 파일의 목록을 콤보박스에 추가한다.
-	POSITION pos;
-	CString strTemp;
-	BOOL bFileNameExist = FALSE;
-	for (pos = strRecipeList.GetHeadPosition(); pos != NULL; ) 
-	{
-		strTemp = strRecipeList.GetNext(pos);
-		strTemp.Replace(_T(".ini"), _T(""));
-		if (strTemp.Compare(strRecipeName) == 0)
-		{
-			bFileNameExist = TRUE;
-			break;
-		}
+	if (( m_pRecipeInfo == NULL) || (m_pRecipeCtrl == NULL) ){
+		MessageBox(_T("레시피 저장 실패") );
+		return;
 	}
-
-	//파일명이 없으면 저장
-	if (bFileNameExist == FALSE && strRecipeName.GetLength())
-	{
-		DataControl(MODE_WRITE, m_pRecipeInfo);
-		m_pRecipeCtrl->SetRecipeInfo(m_pRecipeInfo);
-		m_pRecipeCtrl->SaveRecipe(strRecipeName);
-		SaveRecipeTable();
+	if (strRecipeName.GetLength() <= 0) {
+		MessageBox(_T("레시피 이름을 지정해 주세요."));
+		return;
 	}
-	//있으면 메시지 출력
-	else
-	{
-		if (strRecipeName.GetLength() <= 0)
-		{
-			MessageBox(_T("레시피 이름을 지정해 주세요."));
-		}
-		else
-		{
-			MessageBox(_T("레시피 이름이 이미 존재합니다."));
-		}
-	}
+	DataControl( MODE_WRITE, m_pRecipeInfo);
+	m_pRecipeCtrl->SetRecipeInfo( m_pRecipeInfo );
+	m_pRecipeCtrl->SaveRecipe(strRecipeName);
+	SaveRecipeTable();
 }
 
 int CRecipeSettingDlg::MakeGridCtrl()
