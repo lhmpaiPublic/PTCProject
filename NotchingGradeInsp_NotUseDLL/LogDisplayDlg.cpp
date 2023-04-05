@@ -19,7 +19,9 @@ bool CLogDisplayDlg::bLogPrint = TRUE;
 int CLogDisplayDlg::printLogNum = 0;
 CString strLogNameList =
 "0 NONE,"
-"1 PLCTimer,"
+"1 PLC_Read_BitIn,"
+"2 PLC_Read_BitOut,"
+"3 PLC_Read_Block,"
 "100 END"
 ;
 

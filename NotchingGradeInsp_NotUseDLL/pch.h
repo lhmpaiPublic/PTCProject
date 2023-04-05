@@ -24,4 +24,6 @@ using namespace Gdiplus;
 #pragma comment(lib, "AxL.lib")
 #endif
 
+#include "LogDisplayDlg.h"
+
 #endif //PCH_H

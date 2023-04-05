@@ -11,7 +11,6 @@
 #include "NotchingGradeInspView.h"
 #include "NotchingGradeInsp.h"
 #include "ImageProcessCtrl.h"
-#include "LogDisplayDlg.h"
 
 
 // CSystemSettingDlg 대화 상자

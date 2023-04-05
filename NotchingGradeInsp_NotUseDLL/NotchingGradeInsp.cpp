@@ -22,7 +22,6 @@
 #include "SigProc.h" // 22.04.01 Ahn Add
 #include "CDispErrorDlg.h"	// 22.06.29 Son Add
 #include "Win32File.h" // 22.11.25 Ahn Add
-#include "LogDisplayDlg.h"
 #include "resource.h"
 
 #pragma comment( lib, "version.lib")

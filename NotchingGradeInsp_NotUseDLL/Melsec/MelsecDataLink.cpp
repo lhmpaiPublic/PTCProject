@@ -2,7 +2,6 @@
 #include "MelsecDataLink.h"
 #include "mdfunc.h"
 #include "GlobalData.h"
-#include "LogDisplayDlg.h"
 
 CCriticalSection CMelsecDataLink::m_csMelsec;
 

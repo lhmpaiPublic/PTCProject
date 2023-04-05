@@ -33,7 +33,6 @@
 #include "CDebugLotCtrlDlg.h" // 22.06.27 Ahn Add
 
 #include "CDeleteResultFileThread.h" // 22.07.04 Ahn Add
-#include "LogDisplayDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -472,9 +471,13 @@ void CNotchingGradeInspView::ResetSignal()
 
 void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 {
+	//특정 로그 출력
+	LOGDISPLAY_CHECK(1)
+	{
+		LOGDISPLAY_ALL("CNotchingGradeInspView OnTimer");
+	}
+
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	LOGDISPLAY("Timer");
-	LOGDISPLAY_SPEC(1)("sp Timer");
 	if (nIDEvent == m_TID_IO_Check)
 	{
 		CSigProc* pSigProc = theApp.m_pSigProc;
@@ -498,6 +501,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		switch (m_nStatus)
 		{
 		case	en_CameraReset:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : 카메라리셋");
 			m_nCamErrorResetCnt++;
 			if (GrabberResetReqest() == 0)
 			{
@@ -530,6 +535,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			// 22.05.19 Ahn Add End
 		case	en_Initialize:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : 초기화");
 			pSigProc->SigOutReady(FALSE);
 			pSigProc->SigOutEncoderZeroSet(FALSE);
 			pSigProc->sigOutLotEndAck(FALSE);
@@ -546,6 +553,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_InspStop:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : Insp Stop");
 			if (IsInspReady() == TRUE)
 			{
 				m_nStatus = en_WaitReady;
@@ -577,6 +586,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_WaitReady:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : 준비 대기");
 			if (IsInspReady() == FALSE)
 			{
 				// Stop 버튼을 누른경우.
@@ -659,6 +670,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_Ready:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : 준비");
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
@@ -675,6 +688,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_PrepareRun:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : 시작 전단계");
 
 			if (m_pDeleteThread != nullptr)
 			{
@@ -751,6 +766,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_Run:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : 시작");
 			if (IsInspReady() == FALSE)
 			{
 				// Stop 버튼을 누른경우.
@@ -886,6 +903,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_LotChange:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : Lot Change");
 			m_nStatus = en_Initialize;
 			break;
 
@@ -894,6 +913,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_ErrorStop:
+			//체크 로그출력
+			LOGDISPLAY("Main Timer Status : 에러 정지");
 			break;
 
 		}

@@ -23,6 +23,9 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 
 	switch (ChnNo) {
 	case	CHN_NO_NETH1:
+		//로그 항상출력
+		LOGDISPLAY_ALL("Pio Ctrl : Melsec Net-H");
+
 		wSeqStNo = 0xff;
 		// 23.02.17 Son Del Start
 		//	wOffsetIn = OFFSET_IN;
@@ -30,6 +33,9 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		// 23.02.17 Son Del End
 		break;
 	case	CHN_NO_NETG1:
+		//로그 항상출력
+		LOGDISPLAY_ALL("Pio Ctrl : Melsec Net-G");
+
 		wSeqStNo = 0xff;
 		// 23.02.17 Son Del Start
 		//	wOffsetIn = OFFSET_IN;
@@ -37,10 +43,16 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		// 23.02.17 Son Del End
 		break;
 	case	CHN_NO_CCLINK2:
+		//로그 항상출력
+		LOGDISPLAY_ALL("Pio Ctrl : CC-Link");
+
 		wSeqStNo = 0x00;
 		break;
 	case	CHN_NO_CCLINK1:
 	default:
+		//로그 항상출력
+		LOGDISPLAY_ALL("Pio Ctrl : CC-Link");
+
 		wSeqStNo = 0x00;
 		//wMaxPort = 4;
 		wMaxPort = 8;
@@ -56,9 +68,15 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 	// 23.02.28 Son Mod Start
 	//pAprPio = (CMelsecBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
+		//로그 항상출력
+		LOGDISPLAY_ALL("Pio Ctrl : Melsec 생성");
+
 		pAprPio = (CMelsecBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
 	}
 	else {
+		//로그 항상출력
+		LOGDISPLAY_ALL("Pio Ctrl : Siemens 생성");
+
 		CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 		int nPort = AprData.m_System.m_nPLCPort;
 		pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut );
@@ -341,9 +359,6 @@ bool CPioCtrl::PioPortProcess(int port, BYTE data, int stus)
 
 UINT ThreadProc_InPortCheck(LPVOID Param)
 {
-	AprData.SaveDebugLog(_T("ThreadProc_InPortCheck")); //pyjtest
-
-
 	int	i;
 	PIOTHREAD_DATAIF* data;
 	BYTE buff[MAX_PORT];
@@ -388,6 +403,16 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 			{
 				CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
 				memcpy(data->InputDataSms, nBuffSms, sizeof(data->InputDataSms));
+				
+				//특정 로그 출력
+				LOGDISPLAY_CHECK(3)
+				{
+					LOGDISPLAY_ALL("PLC Block Read");
+					for (int i = 0; i < MAX_SMS_IO_IN; i++)
+					{
+						LOGDISPLAY_ALL("[blockNum:%d]=%d", i, nBuffSms[i]);
+					}
+				}
 			}
 
 

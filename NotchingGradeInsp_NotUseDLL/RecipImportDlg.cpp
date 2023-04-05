@@ -6,7 +6,6 @@
 #include "afxdialogex.h"
 #include "Win32File.h"
 #include "RecipImportDlg.h"
-#include "LogDisplayDlg.h"
 #include "GlobalData.h"
 
 // CRecipeSelectDlg 대화 상자

@@ -32,7 +32,6 @@
 // 22.12.09 Ahn Add Start
 #include "CTactTimeGraphDlg.h"
 // 22.12.09 Ahn Add End
-#include "LogDisplayDlg.h"
 
 IMPLEMENT_DYNAMIC(CModeDlg, CDialogEx)
 

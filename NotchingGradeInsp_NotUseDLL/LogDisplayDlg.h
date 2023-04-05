@@ -102,4 +102,8 @@ public:
 //로그 항상 출력(초기화 또는 버튼, 에러 같은 특정 확인용)
 #define LOGDISPLAY_ALL CLogDisplayDlg::LogDisplayMessage
 
+//특정 설정 로그 출력
 #define LOGDISPLAY_SPEC(a) if(a == CLogDisplayDlg::getLogNumber()) CLogDisplayDlg::LogDisplayMessage
+
+//로그 출력 설정 체크
+#define LOGDISPLAY_CHECK(a) if(a == CLogDisplayDlg::getLogNumber())
