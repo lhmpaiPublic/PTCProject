@@ -14,6 +14,14 @@ class CLogDisplayDlg : public CDialogEx
 
 	//로그 출력 여부
 	static bool bLogPrint;
+
+	//로그출력 선택 번호
+	static int printLogNum;
+
+	//로그 명의 콤보 셀번호의 번호
+	std::vector<int> m_LogNameNumber;
+	//로그 명으로 로그 번호 찾기
+	CMap<CString, LPCTSTR, int, int> m_LogNameMap;
 public:
 	CLogDisplayDlg(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~CLogDisplayDlg();
@@ -29,6 +37,9 @@ public:
 
 	//로그 출력 선택
 	static bool isLogPrint() { return bLogPrint; }
+
+	//로그 번호
+	static int getLogNumber() { return printLogNum; }
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -62,6 +73,8 @@ public:
 	//로그 메시지 추가함수
 	void AddLogDisplayMessage(CString msg);
 
+	//스트링 특정 char로 파서하는 함수
+	static std::vector<CString> StringParser(CString val, char s = ',');
 public:
 	//리스트 박스 객체
 	CListBox m_ListLog;
@@ -78,8 +91,15 @@ public:
 	bool* getLogMoveLast() { return &bLogMoveLast; }
 	bool bLogMoveLast;
 	CButton m_CheckMoveLastLog;
+	CComboBox m_ComboSpecialLogName;
+	CString m_ComboSpecialLogNameStr;
+	afx_msg void OnCbnSelchangeComboSpeciallogname();
 };
 
+//로그 출력 체크를 했을 때 출력 되는 로그
 #define LOGDISPLAY if(CLogDisplayDlg::isLogPrint()) CLogDisplayDlg::LogDisplayMessage
 
+//로그 항상 출력(초기화 또는 버튼, 에러 같은 특정 확인용)
 #define LOGDISPLAY_ALL CLogDisplayDlg::LogDisplayMessage
+
+#define LOGDISPLAY_SPEC(a) if(a == CLogDisplayDlg::getLogNumber()) CLogDisplayDlg::LogDisplayMessage

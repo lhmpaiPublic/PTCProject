@@ -474,6 +474,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	LOGDISPLAY("Timer");
+	LOGDISPLAY_SPEC(1)("sp Timer");
 	if (nIDEvent == m_TID_IO_Check)
 	{
 		CSigProc* pSigProc = theApp.m_pSigProc;
@@ -796,12 +797,12 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				//////////////////////////////////////////////////////////////////////////
 				// [ 레시피 설정값 전송 ]
 				// [ 목표값 ]
-				AprData.m_NowLotData.m_SeqDataOut.dwDrossTopTarget = AprData.m_pRecipeInfo->dFoilExpOutNgSize + AprData.m_pRecipeInfo->dFoilExpBothNgSize;
-				AprData.m_NowLotData.m_SeqDataOut.dwDrossBottomTarget = AprData.m_pRecipeInfo->dFoilExpOutNgSize + AprData.m_pRecipeInfo->dFoilExpBothNgSize;
-				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpTopTarget = AprData.m_pRecipeInfo->dFoilExpInNgSize;
-				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBottomTarget = AprData.m_pRecipeInfo->dFoilExpInNgSize;
-				AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget = AprData.m_pRecipeInfo->dSurfaceNgSize;
-				AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget = AprData.m_pRecipeInfo->dSurfaceNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwDrossTopTarget = (DWORD)(AprData.m_pRecipeInfo->dFoilExpOutNgSize + AprData.m_pRecipeInfo->dFoilExpBothNgSize);
+				AprData.m_NowLotData.m_SeqDataOut.dwDrossBottomTarget = (DWORD)(AprData.m_pRecipeInfo->dFoilExpOutNgSize + AprData.m_pRecipeInfo->dFoilExpBothNgSize);
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpTopTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpInNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBottomTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpInNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget = (DWORD)AprData.m_pRecipeInfo->dSurfaceNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget = (DWORD)AprData.m_pRecipeInfo->dSurfaceNgSize;
 
 
 				// [ 연속/구간 불량 ]

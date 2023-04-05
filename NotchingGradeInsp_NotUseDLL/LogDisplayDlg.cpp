@@ -15,6 +15,14 @@ CLogDisplayDlg* CLogDisplayDlg::gInstObject = NULL;
 //로그 출력 여부
 bool CLogDisplayDlg::bLogPrint = TRUE;
 
+//로그출력 선택 번호
+int CLogDisplayDlg::printLogNum = 0;
+CString strLogNameList =
+"0 NONE,"
+"1 PLCTimer,"
+"100 END"
+;
+
 CLogDisplayDlg* CLogDisplayDlg::gInst()
 {
 	// 로그출력 창 생성
@@ -73,6 +81,7 @@ void CLogDisplayDlg::ExitLogDisplayDlg()
 CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_LOGDISPLAYDLG, pParent)
 	, bLogMoveLast(TRUE)
+	, m_ComboSpecialLogNameStr(_T(""))
 {
 }
 
@@ -87,6 +96,8 @@ void CLogDisplayDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_LOG, m_ListLog);
 	DDX_Control(pDX, IDC_CHECK_ISLOGPRINT, m_CheckIsLogPrint);
 	DDX_Control(pDX, IDC_CHECK_MOVELASTLOG, m_CheckMoveLastLog);
+	DDX_Control(pDX, IDC_COMBO_SPECIALLOGNAME, m_ComboSpecialLogName);
+	DDX_CBString(pDX, IDC_COMBO_SPECIALLOGNAME, m_ComboSpecialLogNameStr);
 }
 
 
@@ -94,6 +105,7 @@ BEGIN_MESSAGE_MAP(CLogDisplayDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_ISLOGPRINT, &CLogDisplayDlg::OnBnClickedCheckIslogprint)
 	ON_BN_CLICKED(IDC_BUT_LOGCLEAR, &CLogDisplayDlg::OnBnClickedButLogclear)
 	ON_BN_CLICKED(IDC_CHECK_MOVELASTLOG, &CLogDisplayDlg::OnBnClickedCheckMovelastlog)
+	ON_CBN_SELCHANGE(IDC_COMBO_SPECIALLOGNAME, &CLogDisplayDlg::OnCbnSelchangeComboSpeciallogname)
 END_MESSAGE_MAP()
 
 
@@ -118,6 +130,28 @@ BOOL CLogDisplayDlg::OnInitDialog()
 	//로그 끝으로 이동 기본 체크
 	bLogMoveLast = TRUE;
 	m_CheckMoveLastLog.SetCheck(TRUE);
+
+	std::vector<CString> recVAl = StringParser(strLogNameList);
+
+	for (int i = 0; i < recVAl.size(); i++)
+	{
+		std::vector<CString> subVAl = StringParser(recVAl[i], ' ');
+		if (subVAl.size() == 2)
+		{
+			int num = atoi(subVAl[0]);
+			if (num == 100)
+			{
+				m_ComboSpecialLogName.SetCurSel(0);
+				break;
+			}
+			else
+			{
+				m_ComboSpecialLogName.AddString(subVAl[1]);
+				m_LogNameNumber.push_back(num);
+				m_LogNameMap.SetAt(subVAl[1], num);
+			}
+		}
+	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -154,6 +188,23 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	}
 
 	return 0;
+}
+
+//스트링 특정 char로 파서하는 함수
+std::vector<CString> CLogDisplayDlg::StringParser(CString val, char s)
+{
+	std::vector<CString> parserVal;
+	parserVal.clear();
+
+	CString strSub;
+	int num = 0;
+	//파싱하여 vector 에 저장한다.
+	while (AfxExtractSubString(strSub, val, num++, s))
+	{
+		parserVal.push_back(strSub);
+	}
+
+	return parserVal;
 }
 
 void CLogDisplayDlg::ExitThread()
@@ -197,5 +248,19 @@ void CLogDisplayDlg::OnBnClickedCheckMovelastlog()
 	else
 	{
 		bLogMoveLast = FALSE;
+	}
+}
+
+
+void CLogDisplayDlg::OnCbnSelchangeComboSpeciallogname()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	//선택된 인덱스 얻기
+	int index = m_ComboSpecialLogName.GetCurSel();
+	//인덱스 범위 검사 후 해당 로그 번호를 설정
+	if (index < m_LogNameNumber.size())
+	{
+		printLogNum = m_LogNameNumber[index];
 	}
 }

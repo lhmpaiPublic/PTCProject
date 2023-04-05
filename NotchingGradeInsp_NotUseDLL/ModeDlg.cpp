@@ -140,10 +140,10 @@ void CModeDlg::OnSize(UINT nType, int cx, int cy)
 	if (pStatic != nullptr) {
 		pStatic->GetClientRect(&btnRect);
 		pFrame->m_nTopPanelHeight = btnRect.Height();
+
 		CString logStr;
 		logStr.Format("Mainframe : left %d, top %d, width %d, height %d"
 			, btnRect.left, btnRect.right, btnRect.Width(), btnRect.Height());
-
 		//로그출력
 		LOGDISPLAY(logStr);
 	}

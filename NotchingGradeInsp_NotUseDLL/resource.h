@@ -318,6 +318,7 @@
 #define IDC_ED_BIT_OUT_ADDRESS          1038
 #define IDC_EDIT_RESOLUTION_VER         1038
 #define IDC_COMBO_RECIPE_NAME           1038
+#define IDC_COMBO_SPECIALLOGNAME        1038
 #define IDC_EDIT6                       1039
 #define IDC_ED_COAT_BRIGHT              1039
 #define IDC_CHECK_LOW_14                1039
