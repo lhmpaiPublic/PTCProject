@@ -144,7 +144,7 @@ void CModeDlg::OnSize(UINT nType, int cx, int cy)
 		logStr.Format("Mainframe : left %d, top %d, width %d, height %d"
 			, btnRect.left, btnRect.right, btnRect.Width(), btnRect.Height());
 		//로그출력
-		LOGDISPLAY(logStr);
+		LOGDISPLAY_GEN(logStr);
 	}
 
 	//Exit 버튼 이동
@@ -467,7 +467,7 @@ void CModeDlg::OnBnClickedBtnInspSim()
 		theApp.m_pImageSimDlg->ShowWindow(SW_SHOW);
 
 		//로그출력
-		LOGDISPLAY("CImageProcSimDlg SHOW");
+		LOGDISPLAY_GEN("CImageProcSimDlg SHOW");
 	}
 }
 

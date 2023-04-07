@@ -47,7 +47,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 			strSection.Format(_T("RECIPE_NO_%d"), i + 1);
 
 			//로그출력
-			LOGDISPLAY("[%s]", strSection);
+			LOGDISPLAY_GEN("[%s]", strSection);
 
 			strKey = _T("RECIPE_NAME");
 			memset(buff, 0, 256);
@@ -57,7 +57,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 			m_RecipeTable[i].strRecipeName.Format( _T("%s"), buff  ) ;
 
 			//로그출력
-			LOGDISPLAY("RECIPE_NAME : %s", buff);
+			LOGDISPLAY_GEN("RECIPE_NAME : %s", buff);
 
 			strKey = _T("MEMO");
 			memset(buff, 0, 256);
@@ -67,7 +67,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 			m_RecipeTable[i].strMemo.Format(_T("%s"), buff );
 
 			//로그출력
-			LOGDISPLAY("MEMO : %s", buff);
+			LOGDISPLAY_GEN("MEMO : %s", buff);
 
 		}
 	}

@@ -97,7 +97,7 @@ public:
 };
 
 //로그 출력 체크를 했을 때 출력 되는 로그
-#define LOGDISPLAY if(CLogDisplayDlg::isLogPrint()) CLogDisplayDlg::LogDisplayMessage
+#define LOGDISPLAY_GEN if(CLogDisplayDlg::isLogPrint()) CLogDisplayDlg::LogDisplayMessage
 
 //로그 항상 출력(초기화 또는 버튼, 에러 같은 특정 확인용)
 #define LOGDISPLAY_ALL CLogDisplayDlg::LogDisplayMessage
