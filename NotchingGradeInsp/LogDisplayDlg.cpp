@@ -22,6 +22,7 @@ CString strLogNameList =
 "1 PLC_Read_BitIn,"
 "2 PLC_Read_BitOut,"
 "3 PLC_Read_Block,"
+"4 ImageProcess_TabInfo,"
 "100 END"
 ;
 
