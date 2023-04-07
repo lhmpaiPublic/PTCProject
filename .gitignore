@@ -5,6 +5,9 @@
 *.zip
 *.ini
 *.aps
+*.uml
+*~ml
+NotchingGradeInsp/.editorconfig
 
 # but do track lib.a, even though you're ignoring .a files above
 !lib.a
@@ -19,6 +22,12 @@ NotchingGradeInsp_NotUseDLL_Test/
 NotchingGradeInsp_NotUseDLL/.vs/
 NotchingGradeInsp_NotUseDLL/Data/INDEX/
 NotchingGradeInsp_NotUseDLL/마도\ HLI\ #1-1\ Data\ Folder/
+NotchingGradeInsp_NotUseDLL_Test/
+NotchingGradeInsp/.vs/
+NotchingGradeInsp/Data/INDEX/
+NotchingGradeInsp/마도\ HLI\ #1-1\ Data\ Folder/
+NotchingGradeInsp/Data/INDEX/
+NotchingGradeInsp_ImageSample/
 
 # ignore doc/notes.txt, but not doc/server/arch.txt
 doc/*.txt
