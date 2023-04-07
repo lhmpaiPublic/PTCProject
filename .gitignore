@@ -3,7 +3,6 @@
 # no .a files
 *.a
 *.zip
-*.ini
 *.aps
 *.uml
 *~ml
@@ -17,7 +16,7 @@ NotchingGradeInsp/.editorconfig
 
 # ignore all files in the build/ directory
 build/
-x64/
+NotchingGradeInsp_NotUseDLL/x64/Debug/
 NotchingGradeInsp_NotUseDLL_Test/
 NotchingGradeInsp_NotUseDLL/.vs/
 NotchingGradeInsp_NotUseDLL/Data/INDEX/
@@ -28,6 +27,7 @@ NotchingGradeInsp/Data/INDEX/
 NotchingGradeInsp/마도\ HLI\ #1-1\ Data\ Folder/
 NotchingGradeInsp/Data/INDEX/
 NotchingGradeInsp_ImageSample/
+NotchingGradeInsp/x64/Debug/
 
 # ignore doc/notes.txt, but not doc/server/arch.txt
 doc/*.txt
