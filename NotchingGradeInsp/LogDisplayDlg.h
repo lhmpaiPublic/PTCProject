@@ -75,6 +75,9 @@ public:
 
 	//스트링 특정 char로 파서하는 함수
 	static std::vector<CString> StringParser(CString val, char s = ',');
+
+	//클립보드 복사
+	void CopyStrToClipboard(CString str);
 public:
 	//리스트 박스 객체
 	CListBox m_ListLog;
@@ -94,6 +97,7 @@ public:
 	CComboBox m_ComboSpecialLogName;
 	CString m_ComboSpecialLogNameStr;
 	afx_msg void OnCbnSelchangeComboSpeciallogname();
+	afx_msg void OnBnClickedButClipboardcopy();
 };
 
 //로그 출력 체크를 했을 때 출력 되는 로그

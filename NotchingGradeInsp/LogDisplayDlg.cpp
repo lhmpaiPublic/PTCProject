@@ -18,11 +18,11 @@ bool CLogDisplayDlg::bLogPrint = TRUE;
 //로그출력 선택 번호
 int CLogDisplayDlg::printLogNum = 0;
 CString strLogNameList =
-"0 NONE,"
-"1 PLC_Read_BitIn,"
-"2 PLC_Read_BitOut,"
-"3 PLC_Read_Block,"
-"4 ImageProcess_TabInfo,"
+"0 NONE_0,"
+"1 PLC_Read_BitIn_1,"
+"2 PLC_Read_BitOut_2,"
+"3 PLC_Read_Block_3,"
+"4 ImageProcess_TabInfo_4,"
 "100 END"
 ;
 
@@ -109,6 +109,7 @@ BEGIN_MESSAGE_MAP(CLogDisplayDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUT_LOGCLEAR, &CLogDisplayDlg::OnBnClickedButLogclear)
 	ON_BN_CLICKED(IDC_CHECK_MOVELASTLOG, &CLogDisplayDlg::OnBnClickedCheckMovelastlog)
 	ON_CBN_SELCHANGE(IDC_COMBO_SPECIALLOGNAME, &CLogDisplayDlg::OnCbnSelchangeComboSpeciallogname)
+	ON_BN_CLICKED(IDC_BUT_CLIPBOARDCOPY, &CLogDisplayDlg::OnBnClickedButClipboardcopy)
 END_MESSAGE_MAP()
 
 
@@ -266,4 +267,39 @@ void CLogDisplayDlg::OnCbnSelchangeComboSpeciallogname()
 	{
 		printLogNum = m_LogNameNumber[index];
 	}
+}
+
+void CLogDisplayDlg::CopyStrToClipboard(CString str)
+{
+	HGLOBAL hGlobal = GlobalAlloc(GHND | GMEM_SHARE, (str.GetLength() + 1) * sizeof(TCHAR));
+	PSTR pGlobal = (PSTR)GlobalLock(hGlobal);
+	lstrcpy(pGlobal, TEXT(str));
+	GlobalUnlock(hGlobal);
+
+	OpenClipboard();
+	EmptyClipboard();
+	SetClipboardData(CF_TEXT, hGlobal);
+	CloseClipboard();
+}
+
+void CLogDisplayDlg::OnBnClickedButClipboardcopy()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CStringA ansi_str; // ASCII 형식으로 문자열을 변경하기 위해서 사용
+	CString str, total_str;
+	// 리스트 박스에 추가된 항목의 개수를 얻는다.
+	int count = m_ListLog.GetCount();
+	for (int i = 0; i < count; i++) {
+		// 리스트 박스의 각 항목에서 URL을 가져온다.
+		m_ListLog.GetText(i, str);
+		// 각 항목의 URL을 하나의 문자열로 합친다.
+		total_str += str;
+		// 각 URL을 구분하기 위해서 개행문자를 추가한다.
+		total_str += L"\r\n";
+	}
+	// total_str에 합쳐진 URL 문자열은 유니코드 형식이기 때문에
+	// ASCII 형식으로 변경해서 ansi_str에 넣습니다.
+	ansi_str = total_str;
+
+	CopyStrToClipboard(ansi_str);
 }

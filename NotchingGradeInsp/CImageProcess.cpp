@@ -6068,7 +6068,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nLevel = 0 ; 
 
 	//Image Tab  정보 출력 로그
-	LOGDISPLAY_SPEC(4)("Image Tab  정보 출력");
+	LOGDISPLAY_SPEC(4)("=====================================================================");
+	LOGDISPLAY_SPEC(4)("===== Image Tab  정보 출력 시작 =====================================");
 
 	CImageProcess::VEC_SECTOR vecSector;
 	int nBaseTabPitch = RecipeInfo.TabCond.nTabPitch;
@@ -6113,7 +6114,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				for (int i = 0; i < vecSector.size(); i++)
 				{
 					LOGDISPLAY_ALL("count : %d => 시작점 : %d,  끝점 : %d, 모드 : %s", 
-						vecSector[i].nStartPos, vecSector[i].nEndPos, (vecSector[i].nMode == 0) ? "LOW" : "HIGHT");
+						i, vecSector[i].nStartPos, vecSector[i].nEndPos, (vecSector[i].nMode == 0) ? "LOW" : "HIGHT");
 				}
 			}
 		}
@@ -6142,7 +6143,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				for (int i = 0; i < vecSector.size(); i++)
 				{
 					LOGDISPLAY_ALL("Tab Sector 정보 count : %d => 시작점 : %d,  끝점 : %d, 모드 : %s",
-						vecSector[i].nStartPos, vecSector[i].nEndPos, (vecSector[i].nMode == 0) ? "LOW" : "HIGHT");
+						i, vecSector[i].nStartPos, vecSector[i].nEndPos, (vecSector[i].nMode == 0) ? "LOW" : "HIGHT");
 				}
 			}
 		}
@@ -6157,7 +6158,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 	if( pResvTabInfo->pImgPtr != NULL ){
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("지난 Frame에서 보내지 못하고 남은 Image가 있음 Tab Info");
+		LOGDISPLAY_SPEC(4)("지난 Frame에서 보내지 못하고 남은 Image가 있음");
 
 		// 지난 Frame에서 보내지 못하고 남은 Image가 있음.
 		CTabInfo tabInfo;		
@@ -6171,43 +6172,60 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		int nSendLength = 0;
 
 		if (nSize <= 0) {
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("새 이미지에서 Sector 정보가 없음.");
+
 			// case 2,3,4는 해당되지 않음
 			if (pResvTabInfo->nImageLength > nBaseTabPitch) {
 				nCase = 0; // 통으로 보냄.
-				//Image Tab  정보 출력 로그
-				LOGDISPLAY_SPEC(4)("Case %d => 통으로 보냄..", nCase);
 			}
 			else if (pResvTabInfo->nTabWidth <= 0) {
 				nCase = 1; // 사이즈로 잘라보냄
-				//Image Tab  정보 출력 로그
-				LOGDISPLAY_SPEC(4)("Case %d => 사이즈로 잘라보냄..", nCase);
 			}
 		}
 		else { // 새 Frame에 탭 정보 있음.
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("새 이미지에서 Sector 정보가 있음.");
+
 			// 22.10.06 Ahn Add Start
 			int nDistance = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nStartPos ;
 			//int n
 			// 22.10.06 Ahn Add End
 			if (pResvTabInfo->nTabWidth > 0) { // 예약 Tab에 Tab정보 있음. // 2또는 3
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("ResvTabInfo(이전 이미지 Tab)  정보 있음 진행");
+
 				// 22.09.06 Ahn Modify Start
 				//int nTabWidth = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nEndPos;
 				int nTabWidth = (pResvTabInfo->nImageLength - pResvTabInfo->nTabLeft) + vecSector[0].nEndPos;
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("Tab Width 계산<%d> : 전이미지정보(nImageLength-nTabLeft<%d-%d>) + 새이미지 Sector(0번)의 EndPos<%d>", 
+					nTabWidth, pResvTabInfo->nImageLength, pResvTabInfo->nTabLeft, vecSector[0].nEndPos);
+
 				// 22.09.06 Ahn Modify End
 				if (nTabWidth <= (int)((double)nBaseTabWidth * 1.2)) { // 22.06.22 Ahn Modify 1.2 -> 1.4
 					//한탭으로 판단.
 					nCase = 3;
 					//Image Tab  정보 출력 로그
-					LOGDISPLAY_SPEC(4)("Case %d => 한탭으로 판단..", nCase);
+					LOGDISPLAY_SPEC(4)("Tab Width가 BaseTabWidth<%d> * 1.2) 보다 작으면 Case %d => 한탭으로 판단..", nBaseTabWidth, nCase);
 				}
 				else { // 앞에꺼만 보내면 됨.	
 					nCase = 2;
 					//Image Tab  정보 출력 로그
-					LOGDISPLAY_SPEC(4)("Case %d => 앞에꺼만 보내면 됨.", nCase);
+					LOGDISPLAY_SPEC(4)("Tab Width가 BaseTabWidth<%d> * 1.2) 보다 크면 Case %d => 앞에꺼만 보내면 됨.", nBaseTabWidth, nCase);
 				}
 			}
 			else { // 앞에 탭 정보 없음.
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("ResvTabInfo(이전 이미지 Tab) 없음 진행");
+
 				// 따로 보낼까?
-				if ((pResvTabInfo->nImageLength + vecSector[0].nEndPos) > (int)((double)nBaseTabPitch * 1.2)) { // 22.06.22 Ahn Modify 1.2 -> 1.4
+				if ((pResvTabInfo->nImageLength + vecSector[0].nEndPos) > (int)((double)nBaseTabPitch * 1.2)) {
+					//Image Tab  정보 출력 로그
+					LOGDISPLAY_SPEC(4)("전이미지정보(nImageLength<%d>) + 새이미지 Sector(0번)의 EndPos<%d> 가 nBaseTabPitch<%d> * 1.2 보다 크면",
+						pResvTabInfo->nImageLength, vecSector[0].nEndPos, nBaseTabPitch);
+
+
 				// 22.10.06 Ahn Modify Start
 				//	nCase = 1;
 					nCase = 5;
@@ -6215,6 +6233,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 					LOGDISPLAY_SPEC(4)("Case %d => ??", nCase);
 				// 22.10.06 Ahn Modify End
 				}else{
+
+					//Image Tab  정보 출력 로그
+					LOGDISPLAY_SPEC(4)("전이미지정보(nImageLength<%d>) + 새이미지 Sector(0번)의 EndPos<%d> 가 nBaseTabPitch<%d> * 1.2 보다 작거나같다면",
+						pResvTabInfo->nImageLength, vecSector[0].nEndPos, nBaseTabPitch);
+
 					nCase = 4;
 					//Image Tab  정보 출력 로그
 					LOGDISPLAY_SPEC(4)("Case %d => 앞에 Tab 정보가 없어 그냥 뒤에꺼 앞에 붙여서 보냄.", nCase);
@@ -6240,6 +6263,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			memcpy(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			memcpy(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			nLastSavePos = 0 ; 
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("nCase 0 ErrorFlage TRUE: Top/Bottom Image 생성크기[새이미지 Width + 이전이미지 길이]<%d>, Tab[left<%d>Right<%d>ImageLength<%d>"
+				, nWidth * tabInfo.nImageLength, tabInfo.nLeft, tabInfo.nRight, tabInfo.nImageLength);
+
 			break;
 		case	1: // 앞뒤 다 없어거나, 그냥 사이즈에 맞춰 잘라보냄.
 			tabInfo.nLeft = 0;
@@ -6252,6 +6280,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("nCase 1 ErrorFlage TRUE: Top/Bottom Image 생성크기[새이미지 Width + BaseTabPitch]<%d>, Tab[left<%d>Right<%d>ImageLength<%d>"
+				, nWidth* tabInfo.nImageLength, tabInfo.nLeft, tabInfo.nRight, tabInfo.nImageLength);
 
 
 
@@ -6280,6 +6312,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 			// 22.11.18 Ahn Add End
 			bResvSend = TRUE;
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("nCase 2는 이전 정보와 합하고 Sector 정보 유지");
+
 			break;
 		case	3 :	// 앞뒤 Tab 정보가 하나로 판단 붙여서 보냄
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
@@ -6290,6 +6326,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.11.18 Ahn Add End
 			vecSector.erase(vecSector.begin());
 			bResvSend = TRUE;
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("nCase 3은 이전 정보와 합하고 Sector 정보를 삭제함");
 			break;
 		case	4 :	// 앞에 Tab 정보가 없어 그냥 뒤에꺼 앞에 붙여서 보냄.
 			tabInfo.nTabLeft = pResvTabInfo->nImageLength + vecSector[0].nStartPos;
@@ -6300,25 +6339,36 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.11.18 Ahn Add End
 			vecSector.erase(vecSector.begin());
 			bResvSend = TRUE;
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("nCase 4는 이전 정보와 합하고 Sector 정보를 삭제함");
 			break;
 		default :
 			break;
 		}
 
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("Case %d => TabLeft : %d, TabRight : %d, TabCenter : %d, TabNoInFrame : %d, TabStartPosInFrame : %d",
-			nCase, tabInfo.nTabLeft, tabInfo.nTabRight, tabInfo.nCenter, tabInfo.nTabNoInFrame, tabInfo.nTabStartPosInFrame);
+		LOGDISPLAY_SPEC(4)("Case %d => TabLeft : %d, TabRight : %d, nFrameCount : %d, TabStartPosInFrame : %d",
+			nCase, tabInfo.nTabLeft, tabInfo.nTabRight, tabInfo.nFrameCount, tabInfo.nTabStartPosInFrame);
 
 		if (bResvSend == TRUE) {
 
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("Case 2 - 4 TabInfo ");
+			LOGDISPLAY_SPEC(4)("Case 2 - 4는 TabInfo를 이용하여 메모리를 생성하고 이미지를 저장한다. ");
 
 			tabInfo.nCenter = (tabInfo.nTabRight + tabInfo.nTabLeft) / 2;
 			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;			// 센터기준으로 할지 오른쪽 기준으로 자를지....
 			nSendLength = tabInfo.nRight - pResvTabInfo->nImageLength;
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("Send Length <%d>:  nRight(Tab의 Center + Base Tab HalfPitch)<%d> - 전이미지 Length<%d>"
+				,nSendLength, tabInfo.nRight, pResvTabInfo->nImageLength);
 			// 22.03.30 Ahn Add Start
 			if (nSendLength > nHeight) {
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("Send Length <%d>가 받은 이미지 Height<%d>  보다 크면 Send Length를 Height로(최대  Height 못벗어나게)"
+					, nSendLength, nHeight);
+
 				nSendLength = nHeight;
 			}
 			// 22.03.30 Ahn Add End
@@ -6337,8 +6387,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.11.18 Ahn Add End
 
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("Case %d => TabLeft : %d, TabRight : %d, TabNoInFrame : %d, TabStartPosInFrame : %d",
-				nCase, tabInfo.nTabLeft, tabInfo.nTabRight, tabInfo.nTabNoInFrame, tabInfo.nTabStartPosInFrame);
+			LOGDISPLAY_SPEC(4)("Case %d => nCenter(Tab의 중심) : %d, nRight(Tab의 Center + Base Tab HalfPitch) : %d, nImageLength : %d, nFrameCount : %d, TabStartPosInFrame : %d",
+				nCase, tabInfo.nCenter, tabInfo.nRight, tabInfo.nImageLength, tabInfo.nFrameCount, tabInfo.nTabStartPosInFrame);
 
 		}
 
@@ -6353,10 +6403,17 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		if (pResvTabInfo->pImgPtr != NULL) {
 			delete[]pResvTabInfo->pImgPtr;
 			pResvTabInfo->pImgPtr = NULL;
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("Top Image 메모리 제거함");
+
 		}
 		if (pResvTabInfo->pImgBtmPtr != NULL) {
 			delete[]pResvTabInfo->pImgBtmPtr;
 			pResvTabInfo->pImgBtmPtr = NULL;
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("Bottom Image 메모리 제거함");
 		}
 		pResvTabInfo->ResetData();
 	}
@@ -6366,15 +6423,20 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	if (nSize <= 0) {
 	 // Tab을 찾지 못하여 길이 우선으로 잘라서 보냄.
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("Tab을 찾지 못하여 길이 우선으로 잘라서 보냄 : DivisionTab_byFixSize 함수호출");
+		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 없을 때 처리구간");
 
 		int nSendAbleLeng = (nHeight - nLastSavePos);
 		int nSendAbleCount = nSendAbleLeng / nBaseTabPitch ;
+		//Image Tab  정보 출력 로그
+		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 없을 때 처리구간");
 
 		nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight, pVecTabInfo);
 
 	}
 	else {
+		//Image Tab  정보 출력 로그
+		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 있을 때 처리구간");
+
 		int nLeftSize = ( ( vecSector[0].nStartPos - nPairSholderLength ) - nLastSavePos);
 		int nDivCnt = 0;
 		//Image Tab  정보 출력 로그
@@ -6392,9 +6454,15 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			}
 		}		
 
+		//Image Tab  정보 출력 로그
+		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보로 Tab 정보를 만들고 메모리할당하여 Image를 저장한다.[nCase 2번만 정보가 생긴다]");
+
 		for (int i = 0; i < nSize; i++) {
 			CTabInfo tabInfo;
 			if (vecSector[i].nStartPos <= nLastSavePos) {
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("Sector %d번 => Start Pos 가 Last Save Pos 보다 작으면 continue", i);
+
 				continue;
 			}
 			tabInfo.nTabLeft = vecSector[i].nStartPos - nLastSavePos;
@@ -6406,15 +6474,26 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// Tab Width  미달인 경우, 센터기준이 아닌 오른쪽 기준으로 자름.
 			if (vecSector[i].nStartPos == 0) {
 				tabInfo.nRight = tabInfo.nTabRight + nPairSholderLength;
+
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("Sector %d번 =>  Start Pos<%d> 가 0 이면 Right<%d> = TabRight<%d> + nPairSholderLength<%d>)"
+					, i, vecSector[i].nStartPos, tabInfo.nRight, tabInfo.nTabRight, nPairSholderLength);
 			}
 			else {
 				tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;
+
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("Sector %d번 =>  Start Pos<%d> 가 0 이 아니면 Right<%d> = nCenter<%d> + nBaseTabHalfPitch<%d>)"
+					, i, vecSector[i].nStartPos, tabInfo.nRight, tabInfo.nCenter, nBaseTabHalfPitch);
 			}
 			// 21.09.02 Ahn Add Start
 			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;
 			tabInfo.nImageLength = tabInfo.nRight ;
 
 			if ((tabInfo.nImageLength + nLastSavePos) > nHeight) { 
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("Sector %d번 =>  보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 ResvTabInfo(남은) 이미지 저장 처리하고 Sector 처리 종료.", i);
+
 				// 보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 
 				int nBackupSize = tabInfo.nImageLength -( (tabInfo.nImageLength + nLastSavePos) - nHeight ) ;
 				*pResvTabInfo = tabInfo;
@@ -6432,6 +6511,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				CString strMsg;
 				strMsg.Format(_T("ReservTabInfo-0 left[%d], nTabLeft[%d], nTabRight[%d], nRight[%d]"), pResvTabInfo->nLeft, pResvTabInfo->nTabLeft, pResvTabInfo->nTabRight, pResvTabInfo->nRight);
 				AprData.SaveDebugLog(strMsg);
+
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("ResvTabInfo : %s", strMsg);
 #endif
 				// 22.11.18 Ahn Add Start
 				pResvTabInfo->nFrameCount = nFrameCount;
@@ -6440,13 +6522,24 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				memcpy(pResvTabInfo->pImgPtr, pImgPtr + ( nWidth * nLastSavePos ) , sizeof(BYTE) * nWidth * nBackupSize);
 				memcpy(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nBackupSize);
 
+				//Image Tab  정보 출력 로그
+				LOGDISPLAY_SPEC(4)("Sector %d번 => ResvTabInfo에[Image 저장 - 크기<%d>, nFrameCount<%d>, nTabStartPosInFrame<%d>]", 
+					i, nWidth* nBackupSize, pResvTabInfo->nFrameCount, pResvTabInfo->nTabStartPosInFrame);
+
 				return 0;
 			}
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("Sector %d번 =>  보낼 이미지 사이즈가 보낼 이미지 사이즈가 남은 이미지 작거나 같을 경우", i);
 
 			tabInfo.pImgPtr = new BYTE[tabInfo.nImageLength * nWidth];
 			memcpy(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
 			tabInfo.pImgBtmPtr = new BYTE[tabInfo.nImageLength * nWidth];
 			memcpy(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
+
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("Sector %d번 => tabInfo 에[Image 저장 - 크기<%d>]",
+				i, nWidth * tabInfo.nImageLength);
 
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = nFrameCount ;
@@ -6457,13 +6550,17 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			pVecTabInfo->push_back(tabInfo);
 
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("Sector %d Tab Info => TabLeft : %d, TabRight : %d, TabNoInFrame : %d, TabStartPosInFrame : %d, FrameCount : %d, ImageLength : %d",
-				i, tabInfo.nTabLeft, tabInfo.nTabRight, tabInfo.nTabNoInFrame, tabInfo.nTabStartPosInFrame, tabInfo.nFrameCount, tabInfo.nImageLength);
+			LOGDISPLAY_SPEC(4)("Sector %d Tab Info => TabLeft : %d, TabRight : %d, nCenter : %d, nImageLength : %d, FrameCount : %d, nTabStartPosInFrame : %d",
+				i, tabInfo.nTabLeft, tabInfo.nTabRight, tabInfo.nCenter, tabInfo.nImageLength, tabInfo.nFrameCount, tabInfo.nTabStartPosInFrame);
 		}	
 		
 		int nRightSize = (nHeight - nLastSavePos) ;
 		if ( nRightSize > nBaseTabPitch ){
 			int nSendLeng = nRightSize / nBaseTabPitch;
+			//Image Tab  정보 출력 로그
+			LOGDISPLAY_SPEC(4)("nLastSavePos DivisionTab_byFixSize 함수 호출 => nBaseTabPitch : %d < nRightSize = (nHeight - nLastSavePos) : %d 라면 LastSavePos구함",
+				nBaseTabPitch, nRightSize);
+
 			nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight,  pVecTabInfo);
 		}
 	}
@@ -6471,7 +6568,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nLeftSize = nHeight - nLastSavePos;
 	if ( nLeftSize > 0) {
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("nHeight - nLastSavePos 이면");
+		LOGDISPLAY_SPEC(4)("nLeftSize = nHeight - nLastSavePos 가 0보다 크면 ResvTabInfo(남은) 이미지 정보 저장");
 
 		pResvTabInfo->pImgPtr = new BYTE[nWidth * nLeftSize];
 		pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nLeftSize];
@@ -6480,6 +6577,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		CString strMsg;
 		strMsg.Format(_T("ReservTabInfo-1 left[%d], nTabLeft[%d], nTabRight[%d], nRight[%d]"), pResvTabInfo->nLeft, pResvTabInfo->nTabLeft, pResvTabInfo->nTabRight, pResvTabInfo->nRight );
 		AprData.SaveDebugLog(strMsg);
+
+		//Image Tab  정보 출력 로그
+		LOGDISPLAY_SPEC(4)("ResvTabInfo : %s", strMsg);
 #endif
 		// 22.11.18 Ahn Add Start
 		pResvTabInfo->nFrameCount = nFrameCount ;
@@ -6489,8 +6589,6 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		memcpy(pResvTabInfo->pImgPtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
 		memcpy(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
 
-		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("pResvTabInfo에 이미지 정보를 저장함");
 	}
 
 	return nRet;

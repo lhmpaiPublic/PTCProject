@@ -746,6 +746,7 @@
 #define IDC_BUT_LOGCLEAR                1341
 #define IDC_CHECK_ISLOGPRINT            1342
 #define IDC_CHECK_MOVELASTLOG           1343
+#define IDC_BUT_CLIPBOARDCOPY           1344
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define IDS_VIEW_RESULT                 32773
