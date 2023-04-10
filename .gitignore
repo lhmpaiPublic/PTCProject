@@ -6,6 +6,7 @@
 *.aps
 *.uml
 *~ml
+*.obj
 NotchingGradeInsp/.editorconfig
 
 # but do track lib.a, even though you're ignoring .a files above
@@ -28,6 +29,7 @@ NotchingGradeInsp/마도\ HLI\ #1-1\ Data\ Folder/
 NotchingGradeInsp/Data/INDEX/
 NotchingGradeInsp_ImageSample/
 NotchingGradeInsp/x64/Debug/
+NotchingGradeInsp/x64/Release/
 
 # ignore doc/notes.txt, but not doc/server/arch.txt
 doc/*.txt
