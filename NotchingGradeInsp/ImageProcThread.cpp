@@ -120,6 +120,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	// 22.04.06 Ahn Add End
 
 	while (1) {
+
+		//체크박스 선택 출력 로그
+		LOGDISPLAY_SPEC(99)("ImgCutting Tab 처리 스래드 === ");
+
 		if (pThis == NULL) {
 			break;
 		}
@@ -139,11 +143,21 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #endif
 		}
 
+		//Image Cutting Tab 정보 출력 로그
+		LOGDISPLAY_SPEC(5)("=====================================================================");
+		LOGDISPLAY_SPEC(5)("===== Image Cutting Tab 출력 시작 =====================================");
+
 		//프레임 크기
 		//Top Frame 크기
 		int nSizeFrmL = pQueueFrame_Top->GetSize();
 		//Bottom Frame 크기
 		int nSizeFrmR = pQueueFrame_Bottom->GetSize();
+
+		//Image Cutting Tab 정보 출력 로그
+		LOGDISPLAY_SPEC(5)("Top Frame 크기<%d>, Bottom Frame 크기<%d>"
+			,nSizeFrmL, nSizeFrmR);
+
+
 
 		//프레임 정보가 Top1개 이상, Bottom 1개 이상
 		bHeadFlag = !pQueueFrame_Top->IsEmpty();
@@ -187,6 +201,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			// 22.02.22 Ahn Modify End
 			//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Top 객체를 가져온다.
 			CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
+
+			//체크박스 선택 출력 로그
+			LOGDISPLAY_SPEC(99)("Queue에 저장된 Frame_Top  FrameInfo를 Pop한다.=== ");
 
 			//Top 이미지의 크기 값
 			int nHeight = pFrmInfo_Top->m_nHeight;
@@ -583,6 +600,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 			while (1) 
 			{
+				//GEN 체크박스 Log 출력
+				LOGDISPLAY_SPEC(99)("Image Top/Bottom Tab 번호/마킹플래그 스래드");
+
 				if (pThis->m_bKill == TRUE) {
 					break;
 				}
@@ -693,17 +713,31 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						GetMarkingFlag(AprData.m_pRecipeInfo, nTopJudge, nBtmJudge, pTopInfo->m_pTabRsltInfo->m_wNgReason, pBtmInfo->m_pTabRsltInfo->m_wNgReason, nMarkSel1, nMarkSel2 );
 						// 22.07.19 Ahn Modify End
 
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(99)("불량 마킹정보 받음 =>  ");
+
 						CSigProc* pSigProc = theApp.m_pSigProc;
 						bMarkingActive = TRUE;
 						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) ) {
+							//체크박스 로그 출력
+							LOGDISPLAY_SPEC(99)("불량도 마킹 안함");
 							nMarkSel1 = 0;
 							nMarkSel2 = 0; 
 						}
 
 						wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
 						dio.OutputWord(wOutPut);
+
+						//GEN 체크박스 Log 출력
+						LOGDISPLAY_SPEC(99)("DIO 마킹 신호를 보냄 => MARK_SEL_01<%s>, MARK_SEL_02<%s>",
+							(wOutPut& CAppDIO::eOut_MARK_SEL_01) ? "TRUE":"FALSE", (wOutPut& CAppDIO::eOut_MARK_SEL_02) ? "TRUE" : "FALSE");
+
 						Sleep(20);
 						dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(99)("DIO out_pulse : TRUE");
+
 						CString strMsg;
 						strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d]"), pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo ); // 22.04.06 Ahn Modify
 						AprData.SaveMemoryLog(strMsg);
@@ -829,12 +863,20 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
 					pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
 
+					// GEN 체크박스 Log 출력
+					LOGDISPLAY_SPEC(99)("Top/Bottom 마킹정보를 pRsltQueueCtrl 저장");
+
 					// 22.12.09 Ahn Add Start
 					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
 					CTactTimeData data;
 					data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo ;
 					data.dTactTime = dTactTime ;
 					pTactCtrl->AddNewTactData(data) ;
+
+					// GEN 체크박스 Log 출력
+					LOGDISPLAY_SPEC(99)("Tac Time Data 추가 : Tab No<%d>, Tac Time<%d>",
+						data.nCellNo, data.dTactTime);
+
 					// 22.12.09 Ahn Add End
 
 					delete pUnitTop;
@@ -846,6 +888,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					Sleep(10);
 					CAppDIO dio;
 					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
+
+					//체크박스 로그 출력
+					LOGDISPLAY_SPEC(99)("DIO out_pulse : FALSE");
+
 					// 22.02.17 Ahn Modify End
 
 					// 22.02.17 Ahn Modify Start
@@ -898,6 +944,9 @@ WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, in
 	// 마킹 테스트용 모든 탭 마킹 신호 출력.
 	if (AprData.m_System.m_bMarkingAllTab == TRUE)
 	{
+		//체크박스 출력 로그
+		LOGDISPLAY_SPEC(99)("MarkingAllTab 설정 상태");
+
 		nJudge1 = JUDGE_NG;
 		nJudge2 = JUDGE_NG;
 		// 22.08.11 Ahn Add Start

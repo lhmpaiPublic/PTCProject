@@ -12,8 +12,9 @@
 IMPLEMENT_DYNAMIC(CLogDisplayDlg, CDialogEx)
 
 CLogDisplayDlg* CLogDisplayDlg::gInstObject = NULL;
-//로그 출력 여부
-bool CLogDisplayDlg::bLogPrint = TRUE;
+
+// 로그출력여부
+CMap<int, int, BOOL, BOOL> CLogDisplayDlg::m_LogPrintStatMap;
 
 //로그출력 선택 번호
 int CLogDisplayDlg::printLogNum = 0;
@@ -23,6 +24,8 @@ CString strLogNameList =
 "2 PLC_Read_BitOut_2,"
 "3 PLC_Read_Block_3,"
 "4 ImageProcess_TabInfo_4,"
+"5 ImageCutting_5,"
+"99 General_99,"
 "100 END"
 ;
 
@@ -97,19 +100,19 @@ void CLogDisplayDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_LOG, m_ListLog);
-	DDX_Control(pDX, IDC_CHECK_ISLOGPRINT, m_CheckIsLogPrint);
 	DDX_Control(pDX, IDC_CHECK_MOVELASTLOG, m_CheckMoveLastLog);
 	DDX_Control(pDX, IDC_COMBO_SPECIALLOGNAME, m_ComboSpecialLogName);
 	DDX_CBString(pDX, IDC_COMBO_SPECIALLOGNAME, m_ComboSpecialLogNameStr);
+	DDX_Control(pDX, IDC_CHECK_LOGSELECT, m_LogSelect);
 }
 
 
 BEGIN_MESSAGE_MAP(CLogDisplayDlg, CDialogEx)
-	ON_BN_CLICKED(IDC_CHECK_ISLOGPRINT, &CLogDisplayDlg::OnBnClickedCheckIslogprint)
 	ON_BN_CLICKED(IDC_BUT_LOGCLEAR, &CLogDisplayDlg::OnBnClickedButLogclear)
 	ON_BN_CLICKED(IDC_CHECK_MOVELASTLOG, &CLogDisplayDlg::OnBnClickedCheckMovelastlog)
 	ON_CBN_SELCHANGE(IDC_COMBO_SPECIALLOGNAME, &CLogDisplayDlg::OnCbnSelchangeComboSpeciallogname)
 	ON_BN_CLICKED(IDC_BUT_CLIPBOARDCOPY, &CLogDisplayDlg::OnBnClickedButClipboardcopy)
+	ON_BN_CLICKED(IDC_CHECK_LOGSELECT, &CLogDisplayDlg::OnBnClickedCheckLogselect)
 END_MESSAGE_MAP()
 
 
@@ -127,13 +130,11 @@ BOOL CLogDisplayDlg::OnInitDialog()
 	//스래드 생성
 	m_pThread = AfxBeginThread(ThreadProc, this);
 
-	//로그 출력여부 기본 체크
-	bLogPrint = FALSE;
-	m_CheckIsLogPrint.SetCheck(FALSE);
+	m_LogSelect.SetCheck(BST_UNCHECKED);
 
 	//로그 끝으로 이동 기본 체크
 	bLogMoveLast = TRUE;
-	m_CheckMoveLastLog.SetCheck(TRUE);
+	m_CheckMoveLastLog.SetCheck(BST_UNCHECKED);
 
 	std::vector<CString> recVAl = StringParser(strLogNameList);
 
@@ -153,6 +154,7 @@ BOOL CLogDisplayDlg::OnInitDialog()
 				m_ComboSpecialLogName.AddString(subVAl[1]);
 				m_LogNameNumber.push_back(num);
 				m_LogNameMap.SetAt(subVAl[1], num);
+				m_LogPrintStatMap.SetAt(num, FALSE);
 			}
 		}
 	}
@@ -220,20 +222,6 @@ void CLogDisplayDlg::ExitThread()
 
 
 
-void CLogDisplayDlg::OnBnClickedCheckIslogprint()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (m_CheckIsLogPrint.GetCheck() == BST_CHECKED)
-	{
-		bLogPrint = TRUE;
-	}
-	else
-	{
-		bLogPrint = FALSE;
-	}
-}
-
-
 void CLogDisplayDlg::OnBnClickedButLogclear()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -262,10 +250,18 @@ void CLogDisplayDlg::OnCbnSelchangeComboSpeciallogname()
 
 	//선택된 인덱스 얻기
 	int index = m_ComboSpecialLogName.GetCurSel();
-	//인덱스 범위 검사 후 해당 로그 번호를 설정
-	if (index < m_LogNameNumber.size())
+	CString strData;
+	m_ComboSpecialLogName.GetLBText(index, strData);
+	BOOL val = FALSE;
+	m_LogPrintStatMap.Lookup(m_LogNameMap[strData], val);
+
+	if (val)
 	{
-		printLogNum = m_LogNameNumber[index];
+		m_LogSelect.SetCheck(BST_CHECKED);
+	}
+	else
+	{
+		m_LogSelect.SetCheck(BST_UNCHECKED);
 	}
 }
 
@@ -302,4 +298,26 @@ void CLogDisplayDlg::OnBnClickedButClipboardcopy()
 	ansi_str = total_str;
 
 	CopyStrToClipboard(ansi_str);
+}
+
+
+void CLogDisplayDlg::OnBnClickedCheckLogselect()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	//선택된 인덱스 얻기
+	int index = m_ComboSpecialLogName.GetCurSel();
+	CString strData;
+	m_ComboSpecialLogName.GetLBText(index, strData);
+	int val = m_LogNameMap[strData];
+
+	if (m_LogSelect.GetCheck() == BST_CHECKED)
+	{
+		m_LogPrintStatMap.SetAt(val, TRUE);
+	}
+	else
+	{
+		m_LogPrintStatMap.SetAt(val, FALSE);
+	}
+
 }

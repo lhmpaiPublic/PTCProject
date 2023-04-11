@@ -12,9 +12,6 @@ class CLogDisplayDlg : public CDialogEx
 	//로그 내용 저장용
 	std::queue<CString> m_ListMsg;
 
-	//로그 출력 여부
-	static bool bLogPrint;
-
 	//로그출력 선택 번호
 	static int printLogNum;
 
@@ -22,6 +19,8 @@ class CLogDisplayDlg : public CDialogEx
 	std::vector<int> m_LogNameNumber;
 	//로그 명으로 로그 번호 찾기
 	CMap<CString, LPCTSTR, int, int> m_LogNameMap;
+	//로그 출력 상태 저장
+	static CMap<int, int, BOOL, BOOL> m_LogPrintStatMap;
 public:
 	CLogDisplayDlg(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~CLogDisplayDlg();
@@ -35,11 +34,8 @@ public:
 	//로그 메시지 추가 전역함수
 	static void LogDisplayMessage(const char* format, ...);
 
-	//로그 출력 선택
-	static bool isLogPrint() { return bLogPrint; }
-
 	//로그 번호
-	static int getLogNumber() { return printLogNum; }
+	static int getLogNumber(int a) { return m_LogPrintStatMap[a]; }
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -82,10 +78,6 @@ public:
 	//리스트 박스 객체
 	CListBox m_ListLog;
 
-	//로그 출력여부 컨트롤 변수 및 함수
-	CButton m_CheckIsLogPrint;
-	afx_msg void OnBnClickedCheckIslogprint();
-
 	//로그 내용을 지우는 함수
 	afx_msg void OnBnClickedButLogclear();
 
@@ -98,6 +90,8 @@ public:
 	CString m_ComboSpecialLogNameStr;
 	afx_msg void OnCbnSelchangeComboSpeciallogname();
 	afx_msg void OnBnClickedButClipboardcopy();
+	CButton m_LogSelect;
+	afx_msg void OnBnClickedCheckLogselect();
 };
 
 //로그 출력 체크를 했을 때 출력 되는 로그
@@ -107,7 +101,7 @@ public:
 #define LOGDISPLAY_ALL CLogDisplayDlg::LogDisplayMessage
 
 //특정 설정 로그 출력
-#define LOGDISPLAY_SPEC(a) if(a == CLogDisplayDlg::getLogNumber()) CLogDisplayDlg::LogDisplayMessage
+#define LOGDISPLAY_SPEC(a) if(TRUE == CLogDisplayDlg::getLogNumber(a)) CLogDisplayDlg::LogDisplayMessage
 
 //로그 출력 설정 체크
-#define LOGDISPLAY_CHECK(a) if(a == CLogDisplayDlg::getLogNumber())
+#define LOGDISPLAY_CHECK(a) if(TRUE == CLogDisplayDlg::getLogNumber(a))

@@ -47,6 +47,8 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 		m_pQueueFrmCtrl[i]->ResetQueue();
 	}
 
+	LOGDISPLAY_ALL("CImageProcessCtrl Top/Bottom Frame 저장할 Queue m_pQueueFrmCtrl 생성");
+
 	m_pQueueCtrl = new CQueueCtrl();
 	m_pQueueCtrl->ResetQueue();
 
@@ -54,6 +56,8 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 		m_pQueueResult[i] = new CQueueCtrl();
 		m_pQueueResult[i]->ResetQueue();
 	}
+
+	LOGDISPLAY_ALL("CImageProcessCtrl 결과 저장할 Queue m_pQueueResult 생성");
 
 	//22.05.31 Ahn Add Start
 	m_pImgSaveQueueCtrl = new CImageSaveQueueCtrl();
@@ -229,6 +233,9 @@ int CImageProcessCtrl::Initialize(HWND hWnd, int nIndex )
 	//Grabber index 0 Top 열기, 1 Bottom  열기
 	//메모리 할당된 CQueueCtrl 포인터 객체을 변수로 넘긴다.
 	m_pGrabCtrl[nIndex]->Open( hWnd, m_pQueueFrmCtrl[ nIndex ], nIndex );
+
+	LOGDISPLAY_ALL("CGrabberCtrl에 Top/Bottom Frame 저장 Queue 생성");
+
 	// Check SerialNo And Swap 
 	//if( AprData.m_System.m_nCamViewHeight)
 
