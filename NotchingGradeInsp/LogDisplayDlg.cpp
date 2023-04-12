@@ -18,15 +18,20 @@ CMap<int, int, BOOL, BOOL> CLogDisplayDlg::m_LogPrintStatMap;
 
 //로그출력 선택 번호
 int CLogDisplayDlg::printLogNum = 0;
+
+BOOL CLogDisplayDlg::bCreate = FALSE;
+
 CString strLogNameList =
-"0 NONE_0,"
-"1 PLC_Read_BitIn_1,"
-"2 PLC_Read_BitOut_2,"
-"3 PLC_Read_Block_3,"
-"4 ImageProcess_TabInfo_4,"
-"5 ImageCutting_5,"
-"99 General_99,"
-"100 END"
+"0 Execute_ERROT_0 1,"
+"1 PLC_Read_BitIn_1 0,"
+"2 PLC_Read_BitOut_2 0,"
+"3 PLC_Read_Block_3 0,"
+"4 ImageProcess_TabInfo_4 0,"
+"5 ImageCutting_5 0,"
+"6 OnTimerLog_6 0,"
+"7 Thread_OKNGMarking_7 0,"
+"99 GeneralLog_99 0,"
+"100 END 0"
 ;
 
 CLogDisplayDlg* CLogDisplayDlg::gInst()
@@ -39,7 +44,9 @@ CLogDisplayDlg* CLogDisplayDlg::gInst()
 			delete gInstObject;
 			gInstObject = NULL;
 		}
-		else {
+		else 
+		{
+			bCreate = TRUE;
 			gInstObject->ShowWindow(SW_HIDE);
 		}
 	}
@@ -69,6 +76,7 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 		}
 		else 
 		{
+			bCreate = TRUE;
 			gInstObject->ShowWindow(SW_HIDE);
 			gInstObject->AddLogDisplayMessage(str);
 		}
@@ -141,12 +149,23 @@ BOOL CLogDisplayDlg::OnInitDialog()
 	for (int i = 0; i < recVAl.size(); i++)
 	{
 		std::vector<CString> subVAl = StringParser(recVAl[i], ' ');
-		if (subVAl.size() == 2)
+		if (subVAl.size() >= 2)
 		{
-			int num = atoi(subVAl[0]);
+			int num = _ttoi(subVAl[0]);
 			if (num == 100)
 			{
 				m_ComboSpecialLogName.SetCurSel(0);
+				BOOL val = FALSE;
+				m_LogPrintStatMap.Lookup(0, val);
+
+				if (val)
+				{
+					m_LogSelect.SetCheck(BST_CHECKED);
+				}
+				else
+				{
+					m_LogSelect.SetCheck(BST_UNCHECKED);
+				}
 				break;
 			}
 			else
@@ -154,7 +173,10 @@ BOOL CLogDisplayDlg::OnInitDialog()
 				m_ComboSpecialLogName.AddString(subVAl[1]);
 				m_LogNameNumber.push_back(num);
 				m_LogNameMap.SetAt(subVAl[1], num);
-				m_LogPrintStatMap.SetAt(num, FALSE);
+				if(subVAl.size() >= 3)
+					m_LogPrintStatMap.SetAt(num, _ttoi(subVAl[2]));
+				else
+					m_LogPrintStatMap.SetAt(num, FALSE);
 			}
 		}
 	}
@@ -178,16 +200,19 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	{
 		//Do something...
 		Sleep(30);
-		if (strList->size() && listBox->m_hWnd)
+		if (CLogDisplayDlg::bCreate)
 		{
-			for (int i = 0; i < strList->size(); i++)
+			if (strList->size() && listBox->m_hWnd)
 			{
-				CString tempStr = strList->front();
-				strList->pop();
-				listBox->AddString(tempStr);
-				if (*pMain->getLogMoveLast())
+				for (int i = 0; i < strList->size(); i++)
 				{
-					listBox->SetTopIndex(listBox->GetCount() - 1);
+					CString tempStr = strList->front();
+					strList->pop();
+					listBox->AddString(tempStr);
+					if (*pMain->getLogMoveLast())
+					{
+						listBox->SetTopIndex(listBox->GetCount() - 1);
+					}
 				}
 			}
 		}

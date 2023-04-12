@@ -21,6 +21,8 @@ class CLogDisplayDlg : public CDialogEx
 	CMap<CString, LPCTSTR, int, int> m_LogNameMap;
 	//로그 출력 상태 저장
 	static CMap<int, int, BOOL, BOOL> m_LogPrintStatMap;
+
+	static BOOL bCreate;
 public:
 	CLogDisplayDlg(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~CLogDisplayDlg();

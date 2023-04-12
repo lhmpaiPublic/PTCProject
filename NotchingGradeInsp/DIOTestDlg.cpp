@@ -449,9 +449,14 @@ void CDIOTestDlg::OnTimer(UINT_PTR nIDEvent)
 	long		lBoardNo;
 	long		lModulePos;
 	DWORD		dwModuleID;
+
+	//OnTimer 로그출력
+	LOGDISPLAY_SPEC(6)("CDIOTestDlg::OnTimer => %s", m_bChkTestRun ? "DIO TestRun" : "DIO None");
+
 	if( m_bChkTestRun ) {
 		BOOL bTriggerBit;
 		dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
+
 		if (bTriggerBit == TRUE) {
 			WORD wInSignal = 0x00;
 			// 입력 
@@ -482,6 +487,10 @@ void CDIOTestDlg::OnTimer(UINT_PTR nIDEvent)
 		case AXT_SIO_RDI16MLII:
 		case AXT_SIO_RDI32RTEX:
 		case AXT_SIO_DI32_P:
+
+			//OnTimer 로그출력
+			LOGDISPLAY_SPEC(6)("CDIOTestDlg::OnTimer => ModuleID<AXT_SIO_DI32><AXT_SIO_RDI32><AXT_SIO_RDI16MLII><AXT_SIO_RDI32RTEX><AXT_SIO_DI32_P>");
+
 			//++
 			// Read inputting signal in WORD
 			//AxdiReadInportWord(/*m_cboModuleInfo.GetCurSel()*/0, 0, &dwDataHigh);
@@ -520,6 +529,10 @@ void CDIOTestDlg::OnTimer(UINT_PTR nIDEvent)
 		case AXT_SIO_RDB96MLII:
 		case AXT_SIO_RDB128MLII:
 		case AXT_SIO_RSIMPLEIOMLII:
+
+			//OnTimer 로그출력
+			LOGDISPLAY_SPEC(6)("CDIOTestDlg::OnTimer => ModuleID<AXT_SIO_DB32P><AXT_SIO_DB32T><AXT_SIO_RDB32RTEX><AXT_SIO_RDB32T><AXT_SIO_RDB96MLII><AXT_SIO_RDB128MLII><AXT_SIO_RSIMPLEIOMLII>");
+
 			//++
 			// Read inputting signal in WORD
 			//AxdiReadInportWord(m_cboModuleInfo.GetCurSel(), 0, &dwDataHigh);

@@ -11,6 +11,8 @@ class CImageProcThreadUnit : public CWinThread
 {
 	DECLARE_DYNCREATE(CImageProcThreadUnit)
 
+	//이미지 프로세싱 처리 결과를 이용하여 마키 설정 및 통신처리를 위한 스래드 함수
+	//최종 OK , NG 판정 처리
 	static UINT CtrlImageProcThread(LPVOID pParam);
 
 	CImageProcThreadUnit(CFrameInfo *pFrmInfo = NULL);           // 동적 만들기에 사용되는 protected 생성자입니다.

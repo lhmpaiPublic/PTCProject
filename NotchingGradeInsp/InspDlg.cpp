@@ -309,6 +309,9 @@ void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == m_TID_Renewal) {
 		KillRenewalTimer();
 
+		//OnTimer 로그출력
+		LOGDISPLAY_SPEC(6)("CInspDlg::OnTimer");
+
 		int nFramdCnt1, nFrameCnt2;
 		int nFrmQue1, nFrmQue2;
 		int nQueueCnt1, nQueueCnt2;

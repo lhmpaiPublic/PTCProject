@@ -54,6 +54,9 @@ void CStartDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == T_ID_START) {
 		KillTimer(T_ID_START);
 
+		//OnTimer 로그출력
+		LOGDISPLAY_SPEC(6)("CStartDlg::OnTimer");
+
 		TimeEnd = CTime::GetCurrentTime() ;
 		CTimeSpan ts = TimeEnd - TimeStart ;
 		if (ts.GetTotalSeconds() > lWait_Time) {

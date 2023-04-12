@@ -134,6 +134,9 @@ void CCropImageViewDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == T_ID_CROP_VIEW_TIMER) {
 		KillCropViewTimer();
 
+		//OnTimer 로그출력
+		LOGDISPLAY_SPEC(6)("CCropImageViewDlg::OnTimer");
+
 		CCropImgQueueCtrl *pQueue = theApp.m_pImgProcCtrl->GetCropImageQueuePtr();
 		if (pQueue != NULL) {
 			// 22.12.23 Ahn Modify Start

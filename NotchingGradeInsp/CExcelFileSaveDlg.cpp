@@ -129,6 +129,9 @@ void CExcelFileSaveDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == T_ID_PRG_TIMER) {
 		KillProgressTimer();
 
+		//OnTimer 로그출력
+		LOGDISPLAY_SPEC(6)("CExcelFileSaveDlg::OnTimer");
+
 		if (m_pExcelCtrl != NULL) {
 			int nPos = m_pExcelCtrl->m_nSaveCount;
 			m_ExcelPrgCtrl.SetPos(nPos);

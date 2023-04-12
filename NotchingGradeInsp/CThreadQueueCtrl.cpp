@@ -43,8 +43,7 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 		// 23.02.20 Ahn Modify End
 	}
 
-	//이미지 유닛에 대한 처리 스래드 생성
-	//이미지 저장을 위한 프로세스 Frame 프로세서 처리
+	//이미지 저리 결과 마킹 최종 결과를 생성하기 위한 스래드 생성
 	CImageProcThreadUnit* pThread = new CImageProcThreadUnit( pFrmInfo );
 	pThread->Begin();
 

@@ -40,14 +40,14 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 {
 	int i;
 	m_bInspFlag = FALSE;
+
+	//
 	for ( i = 0; i < GRABBER_COUNT; i++) {
 		m_pGrabCtrl[i] = NULL;
 
 		m_pQueueFrmCtrl[i] = new CQueueCtrl();
 		m_pQueueFrmCtrl[i]->ResetQueue();
 	}
-
-	LOGDISPLAY_ALL("CImageProcessCtrl Top/Bottom Frame 저장할 Queue m_pQueueFrmCtrl 생성");
 
 	m_pQueueCtrl = new CQueueCtrl();
 	m_pQueueCtrl->ResetQueue();
@@ -56,8 +56,6 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 		m_pQueueResult[i] = new CQueueCtrl();
 		m_pQueueResult[i]->ResetQueue();
 	}
-
-	LOGDISPLAY_ALL("CImageProcessCtrl 결과 저장할 Queue m_pQueueResult 생성");
 
 	//22.05.31 Ahn Add Start
 	m_pImgSaveQueueCtrl = new CImageSaveQueueCtrl();
@@ -386,10 +384,10 @@ CImageProcessCtrl::~CImageProcessCtrl(void)
 	Destroy();
 }
 
-CQueueCtrl* CImageProcessCtrl::GetQueuePtr()
-{
-	return m_pQueueCtrl;
-}
+//CQueueCtrl* CImageProcessCtrl::GetQueuePtr()
+//{
+//	return m_pQueueCtrl;
+//}
 
 
 CQueueCtrl* CImageProcessCtrl::GetResultPtr(int nHeadNo)

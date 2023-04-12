@@ -431,10 +431,10 @@ void CDebugImageAcqDlg::Kill(void)
 	LONG	ret;
 
 	if (m_pThread != NULL) {
-		// 긚깒긞긤륉뫴롦벦
+		// 스래드 종료 코드를 가져온다.
 		ret = ::GetExitCodeThread(m_pThread->m_hThread, &dwCode);
 		if (ret && dwCode == STILL_ACTIVE) {
-			// -----긚깒긞긤벍띿뭷-----
+			// 종료코드가 아직 Atctive 이면 종료 세팅하고 종료 대기
 			m_ThreadPrm.bKill = TRUE;
 			WaitForSingleObject(m_pThread->m_hThread, INFINITE);
 		}

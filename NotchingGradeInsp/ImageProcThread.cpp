@@ -121,9 +121,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 	while (1) {
 
-		//체크박스 선택 출력 로그
-		LOGDISPLAY_SPEC(99)("ImgCutting Tab 처리 스래드 === ");
-
 		if (pThis == NULL) {
 			break;
 		}
@@ -154,7 +151,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		int nSizeFrmR = pQueueFrame_Bottom->GetSize();
 
 		//Image Cutting Tab 정보 출력 로그
-		LOGDISPLAY_SPEC(5)("Top Frame 크기<%d>, Bottom Frame 크기<%d>"
+		LOGDISPLAY_SPEC(5)("카메라에서 읽은 Top Frame 크기<%d>, Bottom Frame 크기<%d>"
 			,nSizeFrmL, nSizeFrmR);
 
 
@@ -165,6 +162,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 		//Top과 Bottom Frame 크기의 차가 FRAME_ACQ_ERROR_CHK_CNT 이상이면 에러 출력한다.
 		if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) {
+
+			//Image Cutting Tab 정보 출력 로그
+			LOGDISPLAY_SPEC(5)("Top-Bottom Frame 사이즈 차가 5 이상이면 카메라 에러");
+
 			// 에러 처리 
 		//	pThis->SetFameSizeError(); // 
 			CString strErrMsg;
@@ -198,17 +199,24 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		//Top과 Bottom  정보가 1개씩 이상이 되어야 한다.
 		if (bHeadFlag && bTailFlag) {
 #endif
+			//Image Cutting Tab 정보 출력 로그
+			LOGDISPLAY_SPEC(5)("Top-Bottom Frame 정보 처리 구간");
+
 			// 22.02.22 Ahn Modify End
 			//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Top 객체를 가져온다.
 			CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
 
-			//체크박스 선택 출력 로그
-			LOGDISPLAY_SPEC(99)("Queue에 저장된 Frame_Top  FrameInfo를 Pop한다.=== ");
+			//Image Cutting Tab 정보 출력 로그
+			LOGDISPLAY_SPEC(5)("Queue에 저장된 Frame_Top  FrameInfo를 Pop한다.=== ");
 
 			//Top 이미지의 크기 값
 			int nHeight = pFrmInfo_Top->m_nHeight;
 			int nFrmWIdth = pFrmInfo_Top->m_nWidth;
 			int nWidth = nFrmWIdth;
+
+			//Image Cutting Tab 정보 출력 로그
+			LOGDISPLAY_SPEC(5)("Top 이미지 크기 값 =>  높이 : nHeight<%d>, 넓이 : nWidth<%d> ",
+				nHeight, nWidth);
 
 			// 22.02.22 Ahn Add Start
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
@@ -245,6 +253,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 			//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Bottom 객체를 가져온다.
 			CFrameInfo* pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
+
+			//Image Cutting Tab 정보 출력 로그
+			LOGDISPLAY_SPEC(5)("Queue에 저장된 Frame_Bottom  FrameInfo를 Pop한다.=== ");
 #else
 			CFrameInfo* pFrmInfo_Bottom = new CFrameInfo();
 			BYTE* pImg = new BYTE[nWidth * nHeight];
@@ -267,6 +278,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			int nFrameCountL = pFrmInfo_Top->m_nFrameCount;
 			//Bottom Frame 번호
 			int nFrameCountR = pFrmInfo_Bottom->m_nFrameCount;
+
+			//Image Cutting Tab 정보 출력 로그
+			LOGDISPLAY_SPEC(5)("Top Frame 번호<%d>, Bottom Frame 번호<%d> ",
+				nFrameCountL, nFrameCountR);
 
 			// 22.11.30 Ahn Modify Start
 			AprData.m_NowLotData.m_nFrameCount = pFrmInfo_Top->m_nFrameCount ;
@@ -298,6 +313,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #if defined( ANODE_MODE )
 				//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
+
+				//Image Cutting Tab 정보 출력 로그
+				LOGDISPLAY_SPEC(5)("TabFindPos 값 => 양극경우 CImageProcess::GetBoundaryOfElectorde 처리 값을  nBndElectrode 저장 ");
 #endif
 				// 22.05.09 Ahn Add End
 				//Tab 정보를 저장할 vector 임시 객체
@@ -307,18 +325,29 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 				//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
 				int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight ;
+
+				//Image Cutting Tab 정보 출력 로그
+				LOGDISPLAY_SPEC(5)("TabFindPos 값 =>  nBndElectrode<%d> + Recipe에 설정한 CeramicHeight 값<%d>으로 구한다.",
+					nBndElectrode, AprData.m_pRecipeInfo->TabCond.nCeramicHeight);
+
 				// 22.11.18 Ahn Modify Start
 				//int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo );
 				
 				//이미지 프로세싱을 위한 클래스 
 				//이미지 Tab 정보에서 Tab을 그룹으로 나누기
 				int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo( pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
+				
 				// 22.11.18 Ahn Modify End
 				// 21.12.28 Ahn Modify Start
 				//int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 
 				//Tab 정보 크기, Tab 정보가 없다면 에러처리
 				int nVecSize = (int)vecTabInfo.size();
+
+				//Image Cutting Tab 정보 출력 로그
+				LOGDISPLAY_SPEC(5)("Top/Bottom Image를 CImageProcess::DivisionTab_FromImageToTabInfo 함수를 이용한 Tab 정보 구하기 => Tab 정보 갯수<%d>"
+					,nVecSize);
+
 				BOOL bErrorAll = FALSE;
 				if (nVecSize <= 0) {
 					AprData.SaveDebugLog(_T("!!!!Tab Find Faile!!!!"));
@@ -362,6 +391,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					// 22.05.03 Ahn Modify End
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 1;
+						//Image Cutting Tab 정보 출력 로그
+						LOGDISPLAY_SPEC(5)("에러유형 1 : Left가 레시피 설정 반지름 보다 작거나 Right 가 레시피 설정 반지름 보다 작다");
 					}
 
 					//에레 체크 : 
@@ -369,6 +400,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pTabInfo->m_bErrorFlag = TRUE;
 						AprData.m_NowLotData.m_bProcError = FALSE;
 						nErrorNo = 2;
+						//Image Cutting Tab 정보 출력 로그
+						LOGDISPLAY_SPEC(5)("에러유형 2 : Left가 레시피 설정 반지름 보다 작거나 Right 가 레시피 설정 반지름 보다 작다으면서 시스템 설정 m_bFirstTabDoNotProc가 TRUE");
 					}
 
 					// 21.12.28 Ahn Add Start
@@ -376,6 +409,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					if (bErrorAll == TRUE) {
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 3;
+						//Image Cutting Tab 정보 출력 로그
+						LOGDISPLAY_SPEC(5)("에러유형 3 : Tab 정보 구하기에서 못 구했을 때");
 					}
 
 					// 21.12.28 Ahn Add End
@@ -385,6 +420,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					if (nLevel <= 0 ) {
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 4;
+
+						//Image Cutting Tab 정보 출력 로그
+						LOGDISPLAY_SPEC(5)("에러유형 4 : nLevel 이미지 바운드리 값<%d>이 잘못되었을 때", nLevel);
 					}
 					// 22.06.22 Ahn Add End
 
@@ -394,8 +432,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					if( nLevel >= (nWidth - 100 )){
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 5;
+
+						//Image Cutting Tab 정보 출력 로그
+						LOGDISPLAY_SPEC(5)("에러유형 4 : nLevel 이미지 바운드리 값<%d>이 (이미지 넓이<%d>-100) 보다 클 경우", 
+							nLevel, nWidth);
 					}
 					// 22.09.30 Ahn Add End
+
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPEC(5)("구한 Tab 정보 => ImageLength<%d>, FrameCount<%d>, TabStartPosInFrame<%d>, TabLeft<%d>, TabRight<%d>, ErrorFlag<%d>",
+						pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, pTabInfo->m_bErrorFlag);
 
 					//프레임 정보 임시 객체(Top 프레임 정보 처리)
 					CFrameInfo* pInfo;
@@ -554,17 +600,17 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {
+	//스래드생성 시 넘긴 객체 포인터
 	CImageProcThread* pThis = (CImageProcThread*)Param;
-	// 22.08.10 Ahn Delete Start
-	//CQueueCtrl* pQueueCtrl = pThis->m_pParent->GetQueuePtr();
-	// 22.08.10 Ahn Delete End
-	// 22.05.31 Ahn Add Start
-	CImageSaveQueueCtrl* pImgSaveQueueCtrl = pThis->m_pParent->GetImageSaveQueuePtr();
-	// 22.05.31 Ahn Add End
-	// 22.12.09 Ahn Add Start
-	CTacTimeDataCtrl* pTactCtrl = pThis->m_pParent->GetTactDataCtrlPtr();
-	// 22.12.09 Ahn Add End
 
+	//CImageSaveQueueCtrl에서 이미지 저장 객체<CImageSaveQueueCtrl> 포인터를 가져온다.
+	CImageSaveQueueCtrl* pImgSaveQueueCtrl = pThis->m_pParent->GetImageSaveQueuePtr();
+
+	//CImageSaveQueueCtrl에서 이미지 저장 객체<CTacTimeDataCtrl> 포인터를 가져온다.
+	CTacTimeDataCtrl* pTactCtrl = pThis->m_pParent->GetTactDataCtrlPtr();
+
+	//결과 저장객체를 가져온다.
+	//CImageProcessCtrl의 객체 멤버인 결과저장 객체<CQueueCtrl> 포인터를 가져온다.
 	CQueueCtrl* pRsltQueueCtrl[GRABBER_COUNT];
 	for (int i = 0; i < GRABBER_COUNT; i++) {
 		pRsltQueueCtrl[i] = pThis->m_pParent->GetResultPtr(i);

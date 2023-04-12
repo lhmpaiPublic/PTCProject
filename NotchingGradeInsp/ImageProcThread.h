@@ -23,6 +23,8 @@
 class CRecipeInfo;
 class CTabInfo;
 class CImageProcessCtrl ;
+
+//이미지 처리 스래드 객체
 class CImageProcThread
 {
 public:
@@ -58,12 +60,19 @@ protected :
 	CWinThread* m_pThread ;				//!< 긚깒긞긤(CWinThread *)x1
 
 protected:
+	//이미지 분석처리를 위한 스래드 함수
 	static UINT CtrlThreadImgProc( LPVOID pParam ) ;
+
+	//이미지 분석을 위한 검사영역 Cutting Tab 스래드 함수
 	static UINT CtrlThreadImgCuttingTab(LPVOID Param) ;
-	// 22.07.19 Ahn Modify Start
+
+
+	//레시피 정보에 설정된 마킹 방식이 저장된 방법을 가져온다.
+	//마킹셀 1, 2 어디에 할 것인가를 가져온다.
+	//nTopJudge NG 거나 nBtmJudge NG 거나
+	//Surface < FoilExp < FoilExpOut 우선순위 선택됨
 	static int GetMarkingFlag(CRecipeInfo* pRecipeInfo, int nTopJudge, int nBtmJudge, WORD wTopReson, WORD wBtmReson, int& nMarkSel1, int& nMarkSel2 );
-	// 22.07.19 Ahn Modify End
-	// 22.12.09 Ahn Add Start
+
+	// 비교처리 시간
 	static double GetDiffTime(LARGE_INTEGER stTime, double dFrequency);
-	// 22.12.09 Ahn Add End
 };

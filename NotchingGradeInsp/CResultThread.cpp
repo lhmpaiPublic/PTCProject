@@ -698,6 +698,10 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 					// 22.06.09 Ahn Modify Start
 					if( pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE ){
+
+						//이미지 저장 포맷
+						CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
+
 						CString strPath;
 						CString strTime;
 						strTime.Format(_T("%04d%02d%02d_%02d%02d%02d.%d")
@@ -709,7 +713,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							, pRsltInfo->m_pTabRsltInfo->sysTime.wSecond
 							, pRsltInfo->m_pTabRsltInfo->sysTime.wMilliseconds
 						);
-						strPath.Format( _T("%s\\Overlay\\%s_%s_%s.jpg")
+						strPath.Format( _T("%s\\Overlay\\%s_%s_%s%s")
 							, pRsltInfo->m_pTabRsltInfo->m_chImagePath
 							, AprData.m_NowLotData.m_strLotNo
 							// 23.02.08 Ahn Modify Start
@@ -717,6 +721,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BOTTOM")
 							// 23.02.08 Ahn Modify Start
 							, strTime
+							, strImageFormat
 						);
 						if ( strPath.GetLength() > 0 ) {
 							// 23.02.06 Ahn Modify Start
