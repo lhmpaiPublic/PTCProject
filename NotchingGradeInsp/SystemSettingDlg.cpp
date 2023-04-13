@@ -82,34 +82,21 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHK_ENABLE_NG_STOP, m_bChkEnableNgStop);
 	DDX_Check(pDX, IDC_CHK_MARKING_ALL, m_bChkMarkingAllTab);
 	DDX_Text(pDX, IDC_ED_MACHINE_ID, m_EdMachineID);
-	// 22.08.31 Ahn Delete Start
-	//DDX_Text(pDX, IDC_ED_GRID_FONT_SIZE, m_nGridFondSize);
-	//DDX_Text(pDX, IDC_ED_GRAPH_SIZE_FOILEXP, m_nGraphSizeFoilExp);
-	//DDX_Text(pDX, IDC_ED_GRAPH_SIZE_SURFACE, m_nGraphSizeSurface);
-	// 22.08.31 Ahn Delete End
 	DDX_Text(pDX, IDC_ED_RESULT_SAVE_PERIOD, m_nEdSavePeriod);
 	DDX_Text(pDX, IDC_ED_DISK_CAPACITY_ALARM, m_nDiskCapacityAlarm);
 	DDX_Radio(pDX, IDC_RAD_KOREAN, m_nLanguage);
-	// 23.02.17 Son Add Start
 	DDX_Text(pDX, IDC_ED_BIT_IN_ADDRESS, m_EdBitIn);
 	DDX_Text(pDX, IDC_ED_BIT_OUT_ADDRESS, m_EdBitOut);
 	DDX_Text(pDX, IDC_ED_WORD_IN_ADDRESS, m_EdWordIn);
 	DDX_Text(pDX, IDC_ED_WORD_OUT_ADDRESS, m_EdWordOut);
-	// 23.02.17 Son Add End
-	// 23.02.27 Son Add Start
 	DDX_Radio(pDX, IDC_RAD_LOGO1, (int&)m_RadLogo);
-	// 23.02.27 Son Add End
-	// 23.02.28 Son Add Start
 	DDX_Radio(pDX, IDC_RAD_PLC_MODE1, (int&)m_RadPlcMode);
 	DDX_Text(pDX, IDC_ED_IP, m_EdIPAddress);
 	DDX_Text(pDX, IDC_ED_PORT, m_nEdPort);
-	// 23.02.28 Son Add End
-	// 23.03.03 Son Add Start
 	DDX_Text(pDX, IDC_ED_BIT_IN_ADDRESS_16, m_EdBitIn_16);
 	DDX_Text(pDX, IDC_ED_BIT_OUT_ADDRESS_16, m_EdBitOut_16);
 	DDX_Text(pDX, IDC_ED_WORD_IN_ADDRESS_16, m_EdWordIn_16);
 	DDX_Text(pDX, IDC_ED_WORD_OUT_ADDRESS_16, m_EdWordOut_16);
-	// 23.03.03 Son Add End
 }
 
 
@@ -132,11 +119,6 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_MARKING_ALL, &CSystemSettingDlg::OnEnClickChkMarkingAllTab)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_NG_STOP, &CSystemSettingDlg::OnBnClickedChkEnableNgStop)
 	ON_EN_SETFOCUS(IDC_ED_MACHINE_ID, &CSystemSettingDlg::OnEnSetfocusEdMachineId)
-	// 22.08.31 Ahn Delete Start
-	//ON_EN_SETFOCUS(IDC_ED_GRID_FONT_SIZE, &CSystemSettingDlg::OnEnSetfocusEdGridFontSize)
-	//ON_EN_SETFOCUS(IDC_ED_GRAPH_SIZE_FOILEXP, &CSystemSettingDlg::OnEnSetfocusEdGraphSizeFoilexp)
-	//ON_EN_SETFOCUS(IDC_ED_GRAPH_SIZE_SURFACE, &CSystemSettingDlg::OnEnSetfocusEdGraphSizeSurface)
-	// 22.08.31 Ahn Delete End
 	ON_WM_DESTROY()
 	ON_EN_SETFOCUS(IDC_ED_RESULT_SAVE_PERIOD, &CSystemSettingDlg::OnEnSetfocusEdResultSavePeriod)
 	ON_EN_SETFOCUS(IDC_ED_DISK_CAPACITY_ALARM, &CSystemSettingDlg::OnEnSetfocusEdDiskCapacityAlarm)
@@ -147,15 +129,10 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_BIT_OUT_ADDRESS, &CSystemSettingDlg::OnEnSetfocusEdBitOut)
 	ON_EN_SETFOCUS(IDC_ED_WORD_IN_ADDRESS, &CSystemSettingDlg::OnEnSetfocusEdWordIn)
 	ON_EN_SETFOCUS(IDC_ED_WORD_OUT_ADDRESS, &CSystemSettingDlg::OnEnSetfocusEdWordOut)
-	// 23.02.17 Son Add End
-	// 23.02.27 Son Add Start
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RAD_LOGO1, IDC_RAD_LOGO3, &CSystemSettingDlg::LogoCtrl)
-	// 23.02.27 Son Add End
-	// 23.02.28 Son Add Start
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RAD_PLC_MODE1, IDC_RAD_PLC_MODE2, &CSystemSettingDlg::PLCCtrl)
 	ON_EN_SETFOCUS(IDC_ED_IP, &CSystemSettingDlg::OnEnSetfocusEdIP)
 	ON_EN_SETFOCUS(IDC_ED_PORT, &CSystemSettingDlg::OnEnSetfocusEdPort)
-	// 23.02.28 Son Add End
 	ON_CBN_SELCHANGE(IDC_COM_IMAGEOUTFORMAT, &CSystemSettingDlg::OnCbnSelchangeComImageoutformat)
 END_MESSAGE_MAP()
 

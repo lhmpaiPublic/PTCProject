@@ -57,21 +57,12 @@ CInspDlg::~CInspDlg()
 void CInspDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	// 22.06.13 Ahn Delete Start
-	//DDX_Control(pDX, IDC_RD_RUN, m_rdInspRun);
-	//DDX_Control(pDX, IDC_RD_STOP, m_rdInspStop);
-	//DDX_Control(pDX, IDC_RD_PAUSE, m_rdInspPause);
-	// 22.06.13 Ahn Delete End
 	DDX_Text(pDX, IDC_ST_DEBUG_STATUS, m_strDebugStatus);
 }
 
 
 BEGIN_MESSAGE_MAP(CInspDlg, CDialogEx)
 	ON_WM_SIZE()
-	// 22.06.13 Ahn Delete End
-	//ON_BN_CLICKED(IDC_RD_RUN, &CInspDlg::OnBnClickedRdRun)
-	//ON_BN_CLICKED(IDC_RD_STOP, &CInspDlg::OnBnClickedRdStop)
-	//ON_BN_CLICKED(IDC_RD_PAUSE, &CInspDlg::OnBnClickedRdPause)
 	//ON_BN_CLICKED(IDC_BTN_LOT_CHANGE, &CInspDlg::OnBnClickedBtnLotChange)
 	// 22.06.13 Ahn Delete End
 	ON_WM_TIMER()
@@ -142,10 +133,6 @@ BOOL CInspDlg::OnInitDialog()
 
 	SetRenewalTimer();
 
-	//CStartDlg dlg;
-	//if (dlg.DoModal() == IDOK) {
-	//	SendMessage(WM_COMMAND, IDC_RD_RUN, 0L);
-	//}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -206,102 +193,6 @@ void CInspDlg::OnSize(UINT nType, int cx, int cy)
 	}
 
 }
-
-// 22.06.13 Ahn Add Start
-//void CInspDlg::OnBnClickedRdRun()
-//{
-//	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-//
-//	if (AprData.m_NowLotData.m_strNextRecipeName.IsEmpty() == TRUE) {
-//		MessageBox(_T("다음 레시피가 선택되어 있지 않습니다."));
-//		//PostMessage(WM_COMMAND, IDC_RD_STOP, 0L);
-//		m_rdInspStop.SetCheck(1);
-//		m_rdInspRun.SetCheck(0);
-//		return;
-//	}
-//
-//	m_pDoc->SetInspState(enInspRun);
-//
-//	// 22.02.10 Ahn Modify Start
-//	// 22.02.23 Ahn Add Start
-//	if (theApp.m_pImgProcCtrl->GrabStart() < 0) {
-//		MessageBox(_T("이미 Grabber가 동작중 입니다."));
-//	}
-//	// 22.02.23 Ahn Add End
-//	// 22.02.10 Ahn Modify End
-//	m_pView->SetInspReady(TRUE);
-//}
-//void CInspDlg::OnBnClickedRdStop()
-//{
-//	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.	
-//	m_pDoc->SetInspState(enInspStop);
-//	// 22.02.10 Ahn Modify Start
-//	// 22.02.23 Ahn Add Start
-//	theApp.m_pImgProcCtrl->GrabStop();
-//	// 22.02.23 Ahn Add End
-//	// 22.02.10 Ahn Modify End
-//
-//	m_pView->SetInspReady(FALSE);
-//}
-//
-//void CInspDlg::OnBnClickedRdPause()
-//{
-//	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-//	m_pDoc->SetInspState(enInspPause);
-//}
-// 22.06.13 Ahn Add End
-
-
-// CInspDlg 메시지 처리기
-// 22.06.13 Ahn Delete Start
-//void CInspDlg::ChangeStatus(int nState)
-//{
-//
-//	switch (nState)
-//	{
-//	case enInspRun:
-//		m_rdInspRun.SetCheck(TRUE);
-//		OnBnClickedRdRun();
-//		break;
-//	case enInspStop:
-//		m_rdInspStop.SetCheck(TRUE);
-//		OnBnClickedRdStop();
-//		break;
-//	case enInspPause:
-//		m_rdInspPause.SetCheck(TRUE);
-//		break;
-//	default:
-//		break;
-//	}
-//	//UpdateData(FALSE);
-//}
-// 22.06.13 Ahn Delete End
-
-// 22.07.06 Ahn Delete Start - 미사용
-//// 22.06.13 Ahn Add Start
-//void CInspDlg::InspRun()
-//{
-//	if (AprData.m_NowLotData.m_strNextRecipeName.IsEmpty() == TRUE) {
-//		MessageBox(_T("다음 레시피가 선택되어 있지 않습니다."));
-//		return;
-//	}
-//
-//	m_pDoc->SetInspState(enInspRun);
-//	if (theApp.m_pImgProcCtrl->GrabStart() < 0) {
-//		MessageBox(_T("이미 Grabber가 동작중 입니다."));
-//	}
-//	m_pView->SetInspReady(TRUE);
-//}
-//
-//void CInspDlg::InspStop()
-//{
-//	m_pDoc->SetInspState(enInspStop);
-//	theApp.m_pImgProcCtrl->GrabStop();
-//
-//	m_pView->SetInspReady(FALSE);
-//}
-//// 22.06.13 Ahn Add End
-// 22.07.06 Ahn Delete End
 
 void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 {

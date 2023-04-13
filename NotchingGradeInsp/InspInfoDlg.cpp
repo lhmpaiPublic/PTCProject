@@ -42,8 +42,6 @@ void CInspInfoDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_ST_NUM_TOTAL, m_stNumTotal);
 	DDX_Control(pDX, IDC_ST_NUM_OK, m_stNumOK);
 	DDX_Control(pDX, IDC_ST_NUM_NG, m_stNumNG);
-	// 22.12.13 Ahn Modify Start
-	//DDX_Control(pDX, IDC_ST_MEMO, m_stMemo);
 	DDX_Control(pDX, IDC_ST_NUM_YIELD, m_stNumYield );
 	// 22.12.13 Ahn Modify End
 	DDX_Text(pDX, IDC_ED_RECIPE_NAME, m_strEdRecipeName);

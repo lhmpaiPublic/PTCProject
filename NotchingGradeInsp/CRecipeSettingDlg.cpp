@@ -103,9 +103,6 @@ CRecipeSettingDlg::~CRecipeSettingDlg()
 void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	//DDX_Control(pDX, IDC_GRID_TAB_INFO, m_GridCtrlTabInfo);
-	//DDX_Control(pDX, IDC_GRID_INSP_COND, m_GridCtrlInspCond);
-
 	DDX_Text(pDX, IDC_ED_TAB_WIDTH_MM, m_dTabWidth);
 	DDX_Control(pDX, IDC_ED_TEMP, m_EdTemp);
 	DDX_Text(pDX, IDC_ED_TAB_PITCH_MM, m_dTabPitch);
@@ -137,7 +134,6 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_FOIL_THRES_UPPER, m_nThresFoilOrigin);
 	DDX_Text(pDX, IDC_ED_DROSS_THRES_UPPER, m_nThresDrossOrigin);
 
-	//DDX_Control(pDX, IDC_GRID_CTRL_RANK, m_GridCtrlRank);
 	//DDX_Control(pDX, IDC_GRID_CTRL_JUDGE, m_GridCtrlJudge);
 	// 22.07.15 Ahn Add Start
 	DDX_Control(pDX, IDC_GRID_CTRL_MARKING, m_GridMarking);
@@ -149,7 +145,6 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_DROSS_LINK_RANGE_X, m_nDrossLinkX);
 	DDX_Text(pDX, IDC_DROSS_LINK_RANGE_Y, m_nDrossLinkY);
 	DDX_Control(pDX, IDC_TAB_DETECT_COND, m_TabDetectCond);
-	//DDX_Radio(pDX, IDC_RAD_MAX_DIFF, m_nRadEdgeDetectMode);
 	DDX_Text(pDX, IDC_ED_BMP_SAVE_INTERVAL, m_nBmpSaveInterval);
 	DDX_Control(pDX, IDC_TAB_INFO, m_TabInfo);
 	DDX_Check(pDX, IDC_CHK_SAVE_ONLY_NG_TAB, m_bChkSaveOnlyNgTab);
@@ -223,10 +218,6 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_DROSS_LINK_RANGE_X, &CRecipeSettingDlg::OnEnSetfocusDrossLinkRangeX)
 	ON_EN_SETFOCUS(IDC_FOIL_LINK_RANGE_Y, &CRecipeSettingDlg::OnEnSetfocusFoilLinkRangeY)
 	ON_EN_SETFOCUS(IDC_DROSS_LINK_RANGE_Y, &CRecipeSettingDlg::OnEnSetfocusDrossLinkRangeY)
-	// 22.07.15 Ahn Delete Start
-	//ON_BN_CLICKED(IDC_RAD_MAX_DIFF, &CRecipeSettingDlg::OnBnClickedRadMaxDiff)
-	//ON_BN_CLICKED(IDC_RAD_SET_BRIGHT, &CRecipeSettingDlg::OnBnClickedRadSetBright)
-	// 22.07.15 Ahn Delete End
 	ON_EN_SETFOCUS(IDC_ED_BMP_SAVE_INTERVAL, &CRecipeSettingDlg::OnEnSetfocusEdBmpSaveInterval)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_INFO, &CRecipeSettingDlg::OnTcnSelchangeTabInfo)
 	ON_BN_CLICKED(IDC_CHK_SAVE_ONLY_NG_TAB, &CRecipeSettingDlg::OnBnClickedChkSaveOnlyNgTab)
@@ -1816,28 +1807,6 @@ void CRecipeSettingDlg::OnEnSetfocusEdSaveDefSize()
 
 void CRecipeSettingDlg::ShowControl()
 {
-	//CWnd* pWnd;
-	//if (m_bChkSaveDefInTab == TRUE) {
-	//	pWnd = (CWnd*)GetDlgItem(IDC_ED_BMP_SAVE_INTERVAL);
-	//	if (pWnd != nullptr) {
-	//		pWnd->EnableWindow(FALSE);
-	//	}
-	//	pWnd = (CWnd*)GetDlgItem(IDC_CHK_SAVE_ONLY_NG_TAB);
-	//	if (pWnd != nullptr) {
-	//		pWnd->EnableWindow(FALSE);
-	//	}
-	//}
-	//else {
-	//	pWnd = (CWnd*)GetDlgItem(IDC_ED_BMP_SAVE_INTERVAL);
-	//	if (pWnd != nullptr) {
-	//		pWnd->EnableWindow(TRUE);
-	//	}
-	//	pWnd = (CWnd*)GetDlgItem(IDC_CHK_SAVE_ONLY_NG_TAB);
-	//	if (pWnd != nullptr) {
-	//		pWnd->EnableWindow(TRUE);
-	//	}
-	//}
-
 	CWnd* pWnd;
 	if (m_bChkDisableSurface == FALSE) {
 		pWnd = (CWnd*)GetDlgItem(IDC_ED_THRES_SPETTER);

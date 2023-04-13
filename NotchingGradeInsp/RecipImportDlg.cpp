@@ -27,7 +27,6 @@ CRecipeImportDlg::~CRecipeImportDlg()
 void CRecipeImportDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	//DDX_Control(pDX, IDC_LIST1, m_ListRecipeName);
 	DDX_CBString(pDX, IDC_COMBO_RECIPE_NAME, m_strRecipeName);
 	DDX_Text(pDX, IDC_EDIT_RECIPE_MEMO, m_strRecipeMemo);
 	DDX_Control(pDX, IDC_COMBO_RECIPE_NAME, m_RecipeNameCtrl);

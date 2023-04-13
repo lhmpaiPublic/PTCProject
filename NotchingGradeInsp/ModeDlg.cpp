@@ -665,13 +665,6 @@ void CModeDlg::OnBnClickedBtnDirectory()
 void CModeDlg::OnBnClickedRadRun()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//if (AprData.m_NowLotData.m_strNextRecipeName.IsEmpty() == TRUE) {
-	//	MessageBox(_T("다음 레시피가 선택되어 있지 않습니다."));
-	//	//PostMessage(WM_COMMAND, IDC_RD_STOP, 0L);
-	//	//m_radInspStop.SetCheck(1);
-	//	//m_radInspRun.SetCheck(0);
-	//	return;
-	//}
 		
 	m_pDoc->SetInspState(enInspRun);
 

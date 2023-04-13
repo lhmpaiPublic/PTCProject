@@ -35,7 +35,6 @@ CRecipeSelectDlg::~CRecipeSelectDlg()
 void CRecipeSelectDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	//DDX_Control(pDX, IDC_LIST1, m_ListRecipeName);
 	DDX_Control(pDX, IDC_GRID_RECIPE_TABLE, m_GridRecipeTable);
 	DDX_Text(pDX, IDC_ED_RECIPE_NAME, m_strRecipeName);
 }

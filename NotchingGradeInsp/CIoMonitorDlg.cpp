@@ -71,7 +71,6 @@ void CIoMonitorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_ST_LOT_START_ACK_OFF, m_bmpSigOut[en_Out_LotStartAck][en_mode_off]);
 	DDX_Control(pDX, IDC_ST_LOT_END_ACK_OFF, m_bmpSigOut[en_Out_LotEndAck][en_mode_off]);
 	//DDX_Text(pDX,	IDC_ED_LOT_ID, m_strLotID);
-	//DDX_Text(pDX,	IDC_ED_RCP_NAME, m_strRecipeName);
 	//DDX_Text(pDX,	IDC_ED_ALARM_OUT, m_strAlarm);
 	//DDX_Text(pDX,	IDC_ED_ALARM_BIT, m_strAlarmBit);
 	// 22.08.12 Ahn Add Start
