@@ -295,6 +295,8 @@ public :
 	long GetFrameCounter(int nHeadNo ){ return nFrameCounter[ nHeadNo ] ; } ;
 
 	int SaveDebugLog( CString strMsg ) ;
+	void SaveDebugLog(const char* format, ...);
+
 	int SaveErrorLog(CString strMsg);
 	int SaveTactLog(CString strMsg);
 	int SaveMemoryLog( CString strMsg ) ;

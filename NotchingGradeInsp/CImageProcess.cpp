@@ -4495,23 +4495,8 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 
 	if (pstSector == NULL)
 	{
-		AprData.SaveDebugLog(_T("Tab 폭이 너무 작습니다."));
-
-
-
-
-		//////////////////////////////////////////////////////////////////////////
-		// pyjtest - Tab 인식 불량 이미지 저장
-// 		CBitmapStd bmp(nWidth, nHeight, 8);
-// 		bmp.SetImage(nWidth, nHeight, pImgPtr);
-// 
-// 		CString strFile;
-// 		strFile.Format(_T("d:\\TabFindNg.bmp"));
-// 		bmp.SaveBitmap(strFile);
-		//////////////////////////////////////////////////////////////////////////
-
-
-
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<FindTabLevel_Simple>>이미지 Sector 에러 => 레시피에 설정한 TabWidth/2 값 보다 큰 TabWidth 가 없다."));
 
 		return -3;
 	}
@@ -4561,12 +4546,6 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 		int nUpperBright = nCount * ( (pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP] ) / 2  ); 
 		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 		// 22.06.24 Ahn Moidyf End
-
-		if ((*pnLevel == 0) || (*pnLevel == (nWidth - 1))) {
-			CString strLog;
-			strLog.Format(_T("Level Find Fail - Level[%d], nCount[%d], UpperBright[%d], Cetner[%d] MaxSt[%d], MaxEnd[%d], rect_LRTB[%d,%d,%d,%d]"), *pnLevel, nCount, nUpperBright, nCenterPos, nMaxStartPos, nMaxEndPos, rcPrj.left, rcPrj.right, rcPrj.top, rcPrj.bottom);
-			AprData.SaveDebugLog(strLog);
-		}
 
 		delete[] pnPrjData;
 		pnPrjData = NULL;
@@ -4623,7 +4602,9 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 	}
 
 	if (pstSector == NULL) {
-		AprData.SaveDebugLog(_T("Tab 폭이 너무 작습니다."));
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<FindTab_Negative>>이미지 Sector 에러 => 레시피에 설정한 TabWidth/2 값 보다 큰 TabWidth 가 없다."));
+
 		return -3;
 	}
 
@@ -5775,9 +5756,8 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				pTabRsltInfo->m_nJudge = JUDGE_NG;
 				pTabRsltInfo->m_wNgReason |= ( ( pDefInfo->nHeadNo == CAM_POS_TOP ) ? CTabRsltBase::en_Reason_Surface_Top : CTabRsltBase::en_Reason_Surface_Btm ); // 22.07.08 Ahn Add
 
-				CString strMsg;
-				strMsg.Format(_T("[NG] Surface : Head No %d"), pDefInfo->nHeadNo);
-				AprData.SaveDebugLog(strMsg); //pyjtest
+				//DEBUG_LOG.txt
+				AprData.SaveDebugLog(_T("<<AddDefectInfoByBlockInfo>>Surface NG => Head No<%d>."), pDefInfo->nHeadNo);
 
 			}
 			// 22.05.24 Ahn Add End
@@ -5844,17 +5824,15 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 					{
 						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm); // 22.07.08 Ahn Add
 
-						CString strMsg;
-						strMsg.Format(_T("[NG] en_ModeFoilExp : Head No = %d"));
-						AprData.SaveDebugLog(strMsg); //pyjtest
+						//DEBUG_LOG.txt
+						AprData.SaveDebugLog(_T("<<AddDefectInfoByBlockInfo>>en_ModeFoilExp NG => Head No<%d>."), pDefInfo->nHeadNo);
 					}
 					else
 					{
 						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpOut_Top : CTabRsltBase::en_Reason_FoilExpOut_Btm); // 22.07.08 Ahn Add
 
-						CString strMsg;
-						strMsg.Format(_T("[NG] en_ModeFoilExp Out : Head No = %d"));
-						AprData.SaveDebugLog(strMsg); //pyjtest
+						//DEBUG_LOG.txt
+						AprData.SaveDebugLog(_T("<<AddDefectInfoByBlockInfo>>en_ModeFoilExp NG => Head No<%d>."), pDefInfo->nHeadNo);
 					}
 				}
 			}
@@ -6102,11 +6080,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		*pnLevel = nLevel;
 
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("양극 : 넓이 %d, 높이 %d, TabFindPos %d, "
-			, nWidth, nHeight, nTabFindPos, RecipeInfo.m_strRecipeName);
-		//Image Tab  정보 출력 로그
 		LOGDISPLAY_CHECK(4)
 		{
+			LOGDISPLAY_ALL("양극 : 넓이 %d, 높이 %d, TabFindPos %d, "
+				, nWidth, nHeight, nTabFindPos, RecipeInfo.m_strRecipeName);
 			if (nLocalRet == -2)
 				LOGDISPLAY_ALL("Tab Sector 정보 없음");
 			else
@@ -6124,18 +6101,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		nLocalRet = CImageProcess::FindTabLevel_Simple(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
 		*pnLevel = nLevel;
 
-		if (nLevel <= 0) {
-			CString strMsg;
-			strMsg.Format(_T("Level[%d]"), nLevel );
-			AprData.SaveDebugLog(strMsg);
-		}
-
-		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("음극 : 넓이 %d, 높이 %d, TabFindPos %d, "
-			, nWidth, nHeight, nTabFindPos, RecipeInfo.m_strRecipeName);
 		//Image Tab  정보 출력 로그
 		LOGDISPLAY_CHECK(4)
 		{
+			LOGDISPLAY_ALL("음극 : 넓이 %d, 높이 %d, TabFindPos %d, "
+				, nWidth, nHeight, nTabFindPos, RecipeInfo.m_strRecipeName);
 			if (nLocalRet == -2)
 				LOGDISPLAY_ALL("Tab Sector 정보 없음");
 			else
@@ -6149,13 +6119,18 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		}
 	}
 
-	CString strMsg;
-	strMsg.Format(_T("Level{%d], TabCnt[%d]"), nLevel, (int)vecSector.size());
-	AprData.SaveDebugLog(strMsg);
-
 	int nLastSavePos = 0;
 	int nSize = (int)vecSector.size();
 
+	bool bSectorInfo = TRUE;
+	if (nSize == 0)
+	{
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<DivisionTab_FromImageToTabInfo>>이미지에서 Sector 정보 찾지 못함"));
+		bSectorInfo = FALSE;
+	}
+
+	int nCase = -1;
 	if( pResvTabInfo->pImgPtr != NULL ){
 		//Image Tab  정보 출력 로그
 		LOGDISPLAY_SPEC(4)("지난 Frame에서 보내지 못하고 남은 Image가 있음");
@@ -6168,7 +6143,6 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		// 예약 Tab과 첫번째 Tab이 붙은 Tab인가??
 		// 예약 정보에 Tab이 존재하는가?
 
-		int nCase = 0;
 		int nSendLength = 0;
 
 		if (nSize <= 0) {
@@ -6286,17 +6260,6 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				, nWidth* tabInfo.nImageLength, tabInfo.nLeft, tabInfo.nRight, tabInfo.nImageLength);
 
 
-
-			//////////////////////////////////////////////////////////////////////////
-			// pyjtest - 내부 동기 사용 시 프로그램 이상 종료 문제 확인 로그
-// 			strMsg.Format(_T("tabInfo.nLeft = %d, nSendLength = %d, nBaseTabPitch = %d, pResvTabInfo->nImageLength = %d, tabInfo.nRight = %d, tabInfo.nImageLength = %d, tabInfo.nFrameCount = %d, tabInfo.nTabStartPosInFrame = %d"),
-// 				tabInfo.nLeft, nSendLength, nBaseTabPitch, pResvTabInfo->nImageLength, tabInfo.nRight, tabInfo.nImageLength, tabInfo.nFrameCount, tabInfo.nTabStartPosInFrame);
-// 			AprData.SaveDebugLog(strMsg);
-			//////////////////////////////////////////////////////////////////////////
-
-
-
-
 			// 22.11.18 Ahn Add End
 			memcpy(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			memcpy(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
@@ -6392,13 +6355,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		}
 
-#if defined( SAVE_TAB_DIV_LOG )
-		CString strMsg;
-		strMsg.Format(_T("nCase[%d], left[%d], nTabLeft[%d], nTabRight[%d], nRight[%d]"), nCase, tabInfo.nLeft, tabInfo.nTabLeft, tabInfo.nTabRight, tabInfo.nRight);
-		AprData.SaveDebugLog(strMsg);
-#endif
-
+		//텝정보를 저장한다.
 		pVecTabInfo->push_back(tabInfo);
+		LOGDISPLAY_SPEC(4)("텝정보저장 총갯수<%d>", pVecTabInfo->size());
 
 		if (pResvTabInfo->pImgPtr != NULL) {
 			delete[]pResvTabInfo->pImgPtr;
@@ -6420,33 +6379,44 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 	nSize = (int)vecSector.size();
 
+	if (bSectorInfo && (nSize == 0))
+	{
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> ** 이미지에서 Sector 정보 찾지았지만 기존이미지 통합과정에서 삭제됨"), nCase);
+	}
+
 	if (nSize <= 0) {
 	 // Tab을 찾지 못하여 길이 우선으로 잘라서 보냄.
-		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 없을 때 처리구간");
 
 		int nSendAbleLeng = (nHeight - nLastSavePos);
 		int nSendAbleCount = nSendAbleLeng / nBaseTabPitch ;
+
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 없을 때 처리구간");
+		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 없을 때 처리구간 시작");
 
 		nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight, pVecTabInfo);
 
-	}
-	else {
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 있을 때 처리구간");
+		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 없을 때 처리구간 끝");
+
+	}
+	else
+	{
+		//Image Tab  정보 출력 로그
+		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 있을 때 처리구간 시작");
 
 		int nLeftSize = ( ( vecSector[0].nStartPos - nPairSholderLength ) - nLastSavePos);
 		int nDivCnt = 0;
-		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("Sector 0번째 에서  Left Size  구함");
-		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("Left Size : %d, Base Tab Pitch : %d", nLeftSize, nBaseTabPitch);
 
-		if (nLeftSize > nBaseTabPitch ) {
+		//Image Tab  정보 출력 로그
+		LOGDISPLAY_SPEC(4)("Sector 0번째 에서  Left Size  구함 => Left Size : %d, Base Tab Pitch : %d", nLeftSize, nBaseTabPitch);
+
+		//Last Save Pos를 다시 구한다.
+		if (nLeftSize > nBaseTabPitch ) 
+		{
 			nDivCnt = nLeftSize / nBaseTabPitch ;
-			if (nDivCnt > 0) {
+			if (nDivCnt > 0) 
+			{
 				nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nLastSavePos + nLeftSize, pVecTabInfo);
 
 				//Image Tab  정보 출력 로그
@@ -6457,11 +6427,13 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		//Image Tab  정보 출력 로그
 		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보로 Tab 정보를 만들고 메모리할당하여 Image를 저장한다.[nCase 2번만 정보가 생긴다]");
 
-		for (int i = 0; i < nSize; i++) {
+		for (int i = 0; i < nSize; i++) 
+		{
 			CTabInfo tabInfo;
-			if (vecSector[i].nStartPos <= nLastSavePos) {
-				//Image Tab  정보 출력 로그
-				LOGDISPLAY_SPEC(4)("Sector %d번 => Start Pos 가 Last Save Pos 보다 작으면 continue", i);
+			if (vecSector[i].nStartPos <= nLastSavePos) 
+			{
+				//DEBUG_LOG.txt
+				AprData.SaveDebugLog(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** Scetor Start Pos가 Last Save Pos 보다 작거나 같을 때 continue(패스) 처리번호<%d/%d>"), nCase, i, nSize);
 
 				continue;
 			}
@@ -6490,7 +6462,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;
 			tabInfo.nImageLength = tabInfo.nRight ;
 
-			if ((tabInfo.nImageLength + nLastSavePos) > nHeight) { 
+			if ((tabInfo.nImageLength + nLastSavePos) > nHeight)
+			{ 
 				//Image Tab  정보 출력 로그
 				LOGDISPLAY_SPEC(4)("Sector %d번 =>  보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 ResvTabInfo(남은) 이미지 저장 처리하고 Sector 처리 종료.", i);
 
@@ -6507,14 +6480,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nBackupSize];
 				pResvTabInfo->nImageLength = nBackupSize;
 
-#if defined( SAVE_TAB_DIV_LOG )
-				CString strMsg;
-				strMsg.Format(_T("ReservTabInfo-0 left[%d], nTabLeft[%d], nTabRight[%d], nRight[%d]"), pResvTabInfo->nLeft, pResvTabInfo->nTabLeft, pResvTabInfo->nTabRight, pResvTabInfo->nRight);
-				AprData.SaveDebugLog(strMsg);
-
 				//Image Tab  정보 출력 로그
-				LOGDISPLAY_SPEC(4)("ResvTabInfo : %s", strMsg);
-#endif
+				LOGDISPLAY_SPEC(4)("ReservTabInfo-0 left[%d], nTabLeft[%d], nTabRight[%d], nRight[%d]",
+					pResvTabInfo->nLeft, pResvTabInfo->nTabLeft, pResvTabInfo->nTabRight, pResvTabInfo->nRight);
+
 				// 22.11.18 Ahn Add Start
 				pResvTabInfo->nFrameCount = nFrameCount;
 				pResvTabInfo->nTabStartPosInFrame = nLastSavePos;
@@ -6525,6 +6494,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				//Image Tab  정보 출력 로그
 				LOGDISPLAY_SPEC(4)("Sector %d번 => ResvTabInfo에[Image 저장 - 크기<%d>, nFrameCount<%d>, nTabStartPosInFrame<%d>]", 
 					i, nWidth* nBackupSize, pResvTabInfo->nFrameCount, pResvTabInfo->nTabStartPosInFrame);
+
+				//DEBUG_LOG.txt
+				AprData.SaveDebugLog(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** 보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 처리종료 처리번호<%d/%d>"), nCase, i, nSize);
 
 				return 0;
 			}
@@ -6563,6 +6535,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 			nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight,  pVecTabInfo);
 		}
+
+		//Image Tab  정보 출력 로그
+		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 있을 때 처리구간 끝");
 	}
 
 	int nLeftSize = nHeight - nLastSavePos;
@@ -6573,14 +6548,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		pResvTabInfo->pImgPtr = new BYTE[nWidth * nLeftSize];
 		pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nLeftSize];
 		pResvTabInfo->nImageLength = nLeftSize;
-#if defined( SAVE_TAB_DIV_LOG )
-		CString strMsg;
-		strMsg.Format(_T("ReservTabInfo-1 left[%d], nTabLeft[%d], nTabRight[%d], nRight[%d]"), pResvTabInfo->nLeft, pResvTabInfo->nTabLeft, pResvTabInfo->nTabRight, pResvTabInfo->nRight );
-		AprData.SaveDebugLog(strMsg);
 
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("ResvTabInfo : %s", strMsg);
-#endif
+		LOGDISPLAY_SPEC(4)("ReservTabInfo-1 left[%d], nTabLeft[%d], nTabRight[%d], nRight[%d]",
+			pResvTabInfo->nLeft, pResvTabInfo->nTabLeft, pResvTabInfo->nTabRight, pResvTabInfo->nRight);
+
 		// 22.11.18 Ahn Add Start
 		pResvTabInfo->nFrameCount = nFrameCount ;
 		pResvTabInfo->nTabStartPosInFrame = nLastSavePos ;
@@ -7069,11 +7041,12 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	}
 	nLocalRet = CImageProcess::EdgeDetectImageToBoth_BaseBright(pEdgePtr, pBndryPtr, &vecLeftRndInfo, nWidth, nHeight, rcLeft, nThresBnd, nThresMax, CImageProcess::en_TopSide, nLineLevel, CImageProcess::en_FindRight);
 
-	if (nLocalRet < 0) {
-		CString strMsg;
-		strMsg.Format(_T("Edge found faile left round, ret = %d"), nLocalRet);
-		// 22.04.18 Ahn Add Start
-		AprData.SaveErrorLog(strMsg);
+	if (nLocalRet < 0)
+	{
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessTopSide_BrightRoll>>에러 Edge found faile left round, ret = %d"),
+			nLocalRet);
+
 		delete[] pStdPtr;
 		delete[] pProcPtr;
 		delete[] pnResultArr;
@@ -7094,15 +7067,16 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 		rcLeft.top = vecLeftRndInfo[0].y;
 		rcLeft.bottom = vecLeftRndInfo[nLeftSize - 1].y;
 	}
-	else {
+	else
+	{
 		delete[] pStdPtr;
 		delete[] pProcPtr;
 		delete[] pnResultArr;
 		delete[] pMeanPtr; 
 
-		CString strMsg;
-		strMsg.Format(_T("nLeftSize = %d"), nLeftSize);
-		AprData.SaveErrorLog(strMsg);
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile left SmoothVecRoundData Size = %d"),
+			nLeftSize);
 
 		return -2; // 처리 불가.
 	}
@@ -7116,10 +7090,12 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 
 	nLocalRet = CImageProcess::EdgeDetectImageToBoth_BaseBright(pEdgePtr, NULL, &vecRightRndInfo, nWidth, nHeight, rcRight, nThresBnd, nThresMax, CImageProcess::en_TopSide, nLineLevel, CImageProcess::en_FindRight);
 
-	if (nLocalRet < 0) {
-		CString strMsg;
-		strMsg.Format(_T("Edge found faile right round, ret = %d"), nLocalRet);
-		AprData.SaveDebugLog(strMsg);
+	if (nLocalRet < 0) 
+	{
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile right round, ret = %d"),
+			nLocalRet);
+
 		delete[] pStdPtr;
 		delete[] pProcPtr;
 		delete[] pnResultArr;
@@ -7133,14 +7109,17 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 		rcRight.top = vecRightRndInfo[0].y;
 		rcRight.bottom = vecRightRndInfo[nRightSize - 1].y;
 	}
-	else {
+	else 
+	{
 		delete[] pStdPtr;
 		delete[] pProcPtr;
 		delete[] pnResultArr;
 		delete[] pMeanPtr; 
-		CString strMsg;
-		strMsg.Format(_T("nRightSize = %d"), nRightSize);
-		AprData.SaveDebugLog(strMsg);
+
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile right SmoothVecRoundData, nRightSize = %d"),
+			nRightSize);
+
 		return -3;
 	}
 
@@ -7310,7 +7289,8 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	rcAll.bottom = nHeight;
 
 	if (nLineLevel < 0) {
-		AprData.SaveDebugLog(_T("!!! Tab Level 이상 !!!"));
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessBottomSide_BrightRoll>>에러 - !!! Tab Level 이상 !!!"));
 		return -1;
 	}
 	if (rcAll.left < 0) {
@@ -7373,9 +7353,9 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	nLocalRet = CImageProcess::EdgeDetectImageToBoth_BaseBright(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
 
 	if (nLocalRet < 0) {
-		CString strMsg;
-		strMsg.Format(_T("Edge found faile, ret = %d"), nLocalRet);
-		AprData.SaveDebugLog(strMsg);
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessBottomSide_BrightRoll>>에러 - Edge found faile, ret = %d"),
+			nLocalRet);
 		return -3;
 	}
 
@@ -7730,10 +7710,11 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	}
 
 	if (nLocalRet < 0) {
-		CString strMsg;
-		strMsg.Format(_T("Edge found faile right round, ret = %d"), nLocalRet);
-		AprData.SaveDebugLog(strMsg);
-		// 22.04.18 Ahn Add Start
+
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessTopSide_AreaDiff>>에러 - Edge found faile right round, ret = %d"),
+			nLocalRet);
+
 		delete[] pStdPtr;
 		delete[] pProcPtr;
 		delete[] pnResultArr;
@@ -7756,11 +7737,11 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 		delete[] pnResultArr;
 		// 22.04.18 Ahn Add End
 		delete[] pMeanPtr; // 22.04.26 Ahn Add
-		// 22.05.02 Ahn Add Start
-		CString strMsg;
-		strMsg.Format(_T("nRightSize = %d"), nRightSize);
-		AprData.SaveDebugLog(strMsg);
-		// 22.05.02 Ahn Add End
+
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessTopSide_AreaDiff>>에러 SmoothVecRoundData - nRightSize = %d"),
+			nRightSize);
+
 		return -3;
 	}
 
@@ -7997,7 +7978,10 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	rcAll.bottom = nHeight;
 
 	if (nLineLevel < 0) {
-		AprData.SaveDebugLog(_T("!!! Tab Level 이상 !!!"));
+
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessBottomSide_AreaDiff>>에러 - !!! Tab Level 이상 !!!"));
+
 		return -1;
 	}
 	if (rcAll.left < 0) {
@@ -8404,9 +8388,10 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	}
 
 	if (nLocalRet < 0) {
-		CString strMsg;
-		strMsg.Format(_T("Edge found faile left round, ret = %d"), nLocalRet);
-		AprData.SaveDebugLog(strMsg);
+
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessTopSide_Negative>>에러 - Edge found faile left round, ret = %d"), nLocalRet);
+
 		// 22.04.18 Ahn Add Start
 		delete[] pStdPtr;
 		delete[] pProcPtr;
@@ -8468,10 +8453,10 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	}
 
 	if (nLocalRet < 0) {
-		CString strMsg;
-		strMsg.Format(_T("Edge found faile right round, ret = %d"), nLocalRet);
-		AprData.SaveDebugLog(strMsg);
-		// 22.04.18 Ahn Add Start
+		
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessTopSide_Negative>>에러 - Edge found faile right round, ret = %d"), nLocalRet);
+
 		delete[] pStdPtr;
 		delete[] pProcPtr;
 		delete[]pnResultArr;
@@ -8702,7 +8687,10 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 	rcAll.bottom = nHeight;
 
 	if (nLineLevel < 0) {
-		AprData.SaveDebugLog(_T("!!! Tab Level 이상 !!!"));
+
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<ImageProcessBottomSide_Negative>>에러 - !!! Tab Level 이상 !!!"));
+
 		return -1;
 	}
 	if (rcAll.left < 0) {

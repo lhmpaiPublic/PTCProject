@@ -333,9 +333,7 @@ void CDefectDataCtrl::PushBackTabQueue(CTabRsltInfo *pTabRsltInfo)
 {
 	::EnterCriticalSection(&m_csTabQueue);
 	m_queTabRsltInfo.push(pTabRsltInfo);
-//	CString strMsg;
-//	strMsg.Format("QuAdd [%d]", pTabRsltInfo->GetSize());
-//	AprData.SaveDebugLog(strMsg);
+
 	int nTabNo = pTabRsltInfo->m_nTabNo;
 	int nJudge = pTabRsltInfo->m_nJudge;
 	if (nJudge == JUDGE_NG) {

@@ -56,9 +56,10 @@ int CLightControl::SetUnit(int no, const CString& ip, int mode/*TCP*/)
 		if (m_pClient[no]->Create() == 0) {
 			CString strError;
 			DWORD dwErrCode = ::GetLastError();
-
 			strError = ::FormatErrorMsg(dwErrCode);
-		//	AprData.SaveDebugLog(strError);
+			//DEBUG_LOG.txt
+			AprData.SaveDebugLog(_T("<<CLightSocket>>에러 - strError<%s>"), strError);
+
 			return (-1);
 		}
 		bRet = m_pClient[no]->Connect(ip, TCP_PORT);
@@ -131,9 +132,8 @@ int CLightControl::SetUnit(int no, const CString& ip, int mode/*TCP*/)
 			strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
 			break;
 		}
-		CString str;
-		str.Format( _T("Socket Connect Error: ch %d, ip %s, %s"), no, ip, strErMsg);
-	//	AprData.SaveDebugLog(str);
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog(_T("<<CLightSocket Connect Error>>에러 - strErMsg<%s>"), strErMsg);
 
 		return (-1);
 	}

@@ -113,11 +113,8 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 				bmp.SaveBitmap(pSaveInfo->m_strSavePath);
 
-
-				CString strMsg;
-				strMsg.Format(_T("ImageSaveThread : Save Image Path = %s"), pSaveInfo->m_strSavePath);
-				AprData.SaveDebugLog(strMsg); //pyjtest
-
+				LOGDISPLAY_SPEC(0)(_T("<<CtrlThreadImgSave>> : Save BMP Name = %s"),
+					pSaveInfo->m_strSavePath);
 
 				delete []pImgPtr;
 				pImgPtr = NULL;

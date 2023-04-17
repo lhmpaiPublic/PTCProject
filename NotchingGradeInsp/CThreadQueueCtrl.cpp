@@ -28,19 +28,10 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 		// 23.02.10 Ahn Add Start
 		
 		//예외 처리 로그를 출력한다.
-		CString strLog;
-		strLog.Format(_T("TabNo[%d]-Delete data due to queue size exceeded."), pFrmInfo->nTabNo );
-		AprData.SaveDebugLog( strLog ) ;
-		// 23.02.10 Ahn Add End
-		// 23.02.20 Ahn Modify Start
-		//delete pFrmInfo;
-		//pFrmInfo = NULL;
-		//::LeaveCriticalSection(&m_csQueue);
-		//return nSize;
+		AprData.SaveDebugLog(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, nSize, MAX_THREAD_QUEUE_SIZE) ;
 
 		//저장큐가 Over Flow 값 설정
 		pFrmInfo->m_bOverFlow = TRUE;
-		// 23.02.20 Ahn Modify End
 	}
 
 	//이미지 저리 결과 마킹 최종 결과를 생성하기 위한 스래드 생성

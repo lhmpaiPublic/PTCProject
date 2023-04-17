@@ -349,8 +349,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					,nVecSize);
 
 				BOOL bErrorAll = FALSE;
-				if (nVecSize <= 0) {
-					AprData.SaveDebugLog(_T("!!!!Tab Find Faile!!!!"));
+				if (nVecSize <= 0)
+				{
+					AprData.SaveDebugLog(_T("CtrlThreadImgCuttingTab - Tab Find Faile! => "));
 					// 강제 분할 
 					bErrorAll = TRUE;
 				}

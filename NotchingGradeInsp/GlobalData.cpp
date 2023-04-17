@@ -165,6 +165,20 @@ int CGlobalData::SaveDebugLog( CString strMsg )
 	return 0 ;
 }
 
+void CGlobalData::SaveDebugLog(const char* format, ...)
+{
+	va_list arg;
+	int done;
+	char str[MAX_PATH] = { 0, };
+	va_start(arg, format);
+	done = vsprintf_s(str, format, arg);
+	va_end(arg);
+	if (done > 0)
+	{
+		SaveDebugLog(str);
+	}	
+}
+
 int CGlobalData::SaveErrorLog(CString strMsg)
 {
 	::EnterCriticalSection(&m_csSaveLog);

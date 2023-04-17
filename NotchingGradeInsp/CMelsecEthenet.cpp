@@ -252,6 +252,8 @@ int CMelsecEthernet::ReadDataReg(int offset, short data[], int num)
 
 int CMelsecEthernet::OpenPio(void)
 {
+	//로그출력
+	LOGDISPLAY_ALL("PLC MelsecEthernetSock Open IP:%s, Protocol:%d", m_strIpAddress, m_nProtocol);
 	int bRet = 0;
 
 	if (m_pEthernetSock == NULL) {
@@ -264,9 +266,11 @@ int CMelsecEthernet::OpenPio(void)
 		if (m_pEthernetSock->Create() == 0) {
 			CString strError;
 			DWORD dwErrCode = ::GetLastError();
-
 			strError = ::FormatErrorMsg(dwErrCode);
-			AprData.SaveErrorLog(strError);
+
+			//로그출력
+			LOGDISPLAY_ALL(_T("<<CMelsecEthernetSock TCP Sock Create Errorr>>에러 - 에러<%s>"), strError);
+
 			return (-1);
 		}
 		bRet = m_pEthernetSock->Connect( m_strIpAddress, MELSEC_TCP_PORT);
@@ -275,7 +279,9 @@ int CMelsecEthernet::OpenPio(void)
 		if (m_pEthernetSock->Create(MELSEC_UDP_PORT, SOCK_DGRAM, FD_READ) == 0) {
 			CString strError;
 			strError = ::FormatErrorMsg(::GetLastError());
-			AprData.SaveErrorLog(strError);
+
+			//로그출력
+			LOGDISPLAY_ALL(_T("<<CMelsecEthernet UDP Sock Create Errorr>>에러 - 에러<%s>"), strError);
 			return (-1);
 		}
 		bRet = m_pEthernetSock->Connect(m_strIpAddress, MELSEC_UDP_PORT);
@@ -341,11 +347,8 @@ int CMelsecEthernet::OpenPio(void)
 			strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
 			break;
 		}
-		CString str;
-		str.Format(_T("Socket Connect Error: ip %s, %s"), m_strIpAddress, strErMsg);
-		//	AprData.SaveDebugLog(str);
-		//m_pEthernetSock->m_bConnected = FALSE;
-		//m_pEthernetSock->m_bDisConnected = TRUE;
+		//로그출력
+		LOGDISPLAY_ALL(_T("<<CMelsecEthernet Socket Connect Errorr>>에러 - 에러<%s>"), strErMsg);
 		return (-1);
 	}
 
