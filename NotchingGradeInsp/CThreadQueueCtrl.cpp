@@ -27,7 +27,7 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 	if (MAX_THREAD_QUEUE_SIZE <= nSize) {
 		// 23.02.10 Ahn Add Start
 		
-		//예외 처리 로그를 출력한다.
+		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, nSize, MAX_THREAD_QUEUE_SIZE) ;
 
 		//저장큐가 Over Flow 값 설정
