@@ -61,10 +61,25 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 	va_start(arg, format);
 	done = vsprintf_s(str, format, arg);
 	va_end(arg);
+	CString strData;
+
+	SYSTEMTIME	sysTime;
+	::GetLocalTime(&sysTime);
+
+	strData.Format(_T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d :: Log = , ")
+		, sysTime.wYear
+		, sysTime.wMonth
+		, sysTime.wDay
+		, sysTime.wHour
+		, sysTime.wMinute
+		, sysTime.wSecond
+		, sysTime.wMilliseconds
+		, str
+	);
 
 	if (gInstObject)
 	{
-		gInstObject->AddLogDisplayMessage(str);
+		gInstObject->AddLogDisplayMessage(strData);
 	}
 	else
 	{
@@ -78,7 +93,7 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 		{
 			bCreate = TRUE;
 			gInstObject->ShowWindow(SW_HIDE);
-			gInstObject->AddLogDisplayMessage(str);
+			gInstObject->AddLogDisplayMessage(strData);
 		}
 	}
 }

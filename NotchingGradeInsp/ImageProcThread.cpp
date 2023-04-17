@@ -344,13 +344,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				//Tab 정보 크기, Tab 정보가 없다면 에러처리
 				int nVecSize = (int)vecTabInfo.size();
 
-				//Image Cutting Tab 정보 출력 로그
-				LOGDISPLAY_SPEC(5)("Top/Bottom Image를 CImageProcess::DivisionTab_FromImageToTabInfo 함수를 이용한 Tab 정보 구하기 => Tab 정보 갯수<%d>"
-					,nVecSize);
-
 				BOOL bErrorAll = FALSE;
-				if (nVecSize <= 0) {
-					AprData.SaveDebugLog(_T("!!!!Tab Find Faile!!!!"));
+				if (nVecSize <= 0)
+				{
+					//DEBUG_LOG.txt
+					AprData.SaveDebugLog(_T("CtrlThreadImgCuttingTab - 찾은 Tab정보 없음 processing NG 마칭 처리"));
 					// 강제 분할 
 					bErrorAll = TRUE;
 				}

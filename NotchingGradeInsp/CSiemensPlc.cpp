@@ -128,30 +128,20 @@ BOOL CSiemensPlc::IsOpened()
 int CSiemensPlc::OpenPio(void)
 {
 	//로그출력
-	LOGDISPLAY_ALL("PLC Siemens Open");
-
-	CString strMsg;
-	strMsg.Format(_T("OpenPio start IP:%s, Port:%d"), m_strIPAddress, m_nPort);
-	AprData.SaveDebugLog(strMsg);
-
-	//로그출력
-	LOGDISPLAY_ALL("PCL Setting : %s", strMsg);
+	LOGDISPLAY_ALL("PLC Siemens Open IP:%s, Port:%d", m_strIPAddress, m_nPort);
 
 	ClosePio();
 	m_pLGIS_Plc = new CLGIS_Plc((std::string)CT2CA(m_strIPAddress), m_nPort);
 	
 	if (!m_pLGIS_Plc->Connect())
 	{
-		AprData.SaveDebugLog(_T("Siemens Plc Connect Fail"));
 		ClosePio();
-
 		//로그출력
 		LOGDISPLAY_ALL("PLC Siemens Open failed");
 	}
 
-	AprData.SaveDebugLog(_T("OpenPio OK"));
-
-
+	//로그출력
+	LOGDISPLAY_ALL("PLC Siemens Open OK");
 
 	return 0;
 }

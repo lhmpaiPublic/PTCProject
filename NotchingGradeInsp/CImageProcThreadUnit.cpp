@@ -390,9 +390,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					pFrameRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((pFrameRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm);
 
 					 //NG 로그 출력한다.
-					 CString strMsg;
-					 strMsg.Format(_T("[Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"), pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
-					 AprData.SaveDebugLog(strMsg); //pyjtest
+					 //DEBUG_LOG.txt
+					 AprData.SaveDebugLog(_T("<<CtrlImageProcThread>>에러 - [Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"),
+						 pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
 
 				}
 
@@ -579,13 +579,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//ImageProc:  이미지파일저장명과 경로를 저장
 					::_tcsnccpy_s(pFrameRsltInfo->m_pTabRsltInfo->m_chImageFile, _countof(pFrameRsltInfo->m_pTabRsltInfo->m_chImageFile), strFileName.GetBuffer(0), _TRUNCATE);
 					::_tcsnccpy_s(pFrameRsltInfo->m_pTabRsltInfo->m_chImagePath, _countof(pFrameRsltInfo->m_pTabRsltInfo->m_chImagePath), strPath.GetBuffer(0), _TRUNCATE);
-
-// 					CString strMsg;
-// 					strMsg.Format(_T("Save Image Path = %s"), pFrameRsltInfo->m_pTabRsltInfo->m_chImagePath);
-// 					AprData.SaveDebugLog(strMsg); //pyjtest
-// 					strMsg.Format(_T("Save Image Name = %s"), pFrameRsltInfo->m_pTabRsltInfo->m_chImageFile);
-// 					AprData.SaveDebugLog(strMsg); //pyjtest
-
 
 				}
 
