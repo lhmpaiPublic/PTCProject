@@ -309,8 +309,6 @@ int CSigProc::ReadAllPort_BitOut( BOOL* pSigBitOut )
 // 		}
 // 	}
 
-	//로그출력 값
-	CString bitVal = "";
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
@@ -326,9 +324,6 @@ int CSigProc::ReadAllPort_BitOut( BOOL* pSigBitOut )
 			{
 				pSigBitOut[i] = TRUE;
 
-				CString str;
-				str.Format("[%d]:TRUE ", i);
-				bitVal = str + bitVal;
 			}
 
 		}
@@ -344,17 +339,10 @@ int CSigProc::ReadAllPort_BitOut( BOOL* pSigBitOut )
 					nBitPos = (port * MAX_PORT_BIT) + bit;
 					pSigBitOut[nBitPos] = TRUE;
 
-					CString str;
-					str.Format("[%d]:TRUE ", nBitPos);
-					bitVal = str + bitVal;
 				}
 			}
 		}
 	}
-
-	//특정로그 출력
-	LOGDISPLAY_SPEC(2)("PLC Bit-Out 값 : %s", bitVal);
-
 
 	return nRet;
 }

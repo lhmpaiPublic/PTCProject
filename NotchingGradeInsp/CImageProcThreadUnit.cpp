@@ -380,7 +380,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					}
 				// 23.02.20 Ahn Add Start
 				}
-				//에러 ? 또는 Over Flow이면
+				//Tab 정보가 없을 때  ? 또는 Over Flow이면
 				else
 				{
 
