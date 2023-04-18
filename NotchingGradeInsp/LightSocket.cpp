@@ -8,7 +8,7 @@
 #include "pch.h"
 #include "LightSocket.h"
 #include "TimeAnalyzer.h"
-//#include "GlobalData.h"
+#include "GlobalData.h"
 //#include "GlobalDef.h"
 #include "WinTool.h"
 
@@ -178,10 +178,8 @@ void CLightSocket::OnReceive( int nErrorCode )
 			DWORD dwErrorCode = GetLastError() ;
 			CString strErMsg , strError ;
 			bNoError = SetError( dwErrorCode, &strErMsg ) ;
-			
-			strError.Format(_T( "%s %s" ), this->m_strIpAddress , strErMsg ) ;
-			//SAVE_ERROR_LOG( strError ) ;
-		//	AprData.SaveDebugLog(strError);
+
+			AprData.SaveDebugLog(_T("address<%s> ErrorMsg<%s>"), this->m_strIpAddress, strErMsg);
 
 			if ( bNoError != TRUE ) {
 				// クリア
@@ -376,9 +374,6 @@ int CLightSocket::DataRecv( char* pBuff, int length, long lTimeOver )
 	// 応答コマンドの先頭は、必ずACK(0x06)で始まり、末尾はETX(0x03)までとします。
 	if ( buff_temp[ 0 ] != enACK )
 	{
-		CString strError ;
-		strError.Format( _T("Format Error ACK: %s") , buff_temp ) ;
-	//	AprData.SaveDebugLog( strError ) ;
 		return ( -1 ) ;
 	}
 /*

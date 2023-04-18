@@ -159,10 +159,6 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		return FALSE;
 	}
 
-	// 22.04.06 Ahn Add Start
-	AprData.SaveDebugLog(_T("------------------------------ 검사 프로그램 기동 --------------------------------"));
-	// 22.04.06 Ahn Add End
-
 	// 22.06.29 Son Add Start
 	m_pDispErrorDlg = new CDispErrorDlg(m_pMainWnd);
 	m_pDispErrorDlg->Create(IDD_DLG_DISPERROR, m_pMainWnd);
@@ -229,10 +225,6 @@ int CNotchingGradeInspApp::ExitInstance()
 		m_pDispErrorDlg = NULL;
 	}
 	// 22.06.29 Son Add End
-
-	// 22.04.06 Ahn Add Start
-	AprData.SaveDebugLog(_T("!!!!!!!!!!!!!!!!!!!!!!!!!! 검사 프로그램 종료 !!!!!!!!!!!!!!!!!!!!!!"));
-	// 22.04.06 Ahn Add End
 
 	AfxOleTerm(FALSE);
 

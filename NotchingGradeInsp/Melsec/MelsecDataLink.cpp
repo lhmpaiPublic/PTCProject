@@ -399,20 +399,6 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 		size2 = size = 1;
 		buff = (short)(data);
 
-
-
-// 		CString strMsg;
-// 		strMsg.Format(_T("OutPort devno=%d, port=%d, wTmpStNo=%d, m_wOffset_Out=%d"), devno, port, wTmpStNo, m_wOffset_Out);
-// 		AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-
-		// 22.04.04 Ahn Delete Start
-		//if (ChangeWorkingSetSize() != 0) {
-		//	//에러로그
-		//}
-		// 22.04.04 Ahn Delete End
-
 		if (bGetBit == TRUE) {
 			short sBuff[10] = { 0, };
 			CSingleLock cs(GetCriticalSection(), TRUE);
@@ -506,47 +492,16 @@ int CMelsecDataLink::WriteDataReg(int offset, short data[], int num)
 		}
 	}
 
-	//short	devno, size, size2;
-	//devno = (short)offset;
-	//size2 = size = (short)(2 * num);
-
-	//if (ChangeWorkingSetSize() != 0) {
-	//	//에러로그
-	//}
-
-	//{
-	//	CSingleLock cs(GetCriticalSection(), TRUE);
-	//	iRet = mdSend(m_pPath
-	//		, m_wSeqStNo
-	//		, sDevType
-	//		, devno
-	//		, &size
-	//		, data
-	//	);
-	//}
 	long	devno, size, size2;
 	// 23.02.17 Son Mod Start
 	//devno = (long)offset;
 	devno = (long)(offset + AprData.m_System.m_nWordOut);
 
 
-
-
-// 	CString strMsg;
-// 	strMsg.Format(_T("WriteDataReg devno=%d"), devno);
-// 	AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-
-
-
 	// 23.02.17 Son Mod End
 	size2 = size = (long)(2 * num);
 	long nNetNo = 0;
-	// 22.04.04 Ahn Delete Start
-	//if (ChangeWorkingSetSize() != 0) {
-	//	//에러로그
-	//}
+
 	// 22.04.04 Ahn Delete End
 	{
 		CSingleLock cs(GetCriticalSection(), TRUE);
@@ -799,12 +754,6 @@ void CMelsecDataLink::PioErrorProcess(int iRet, char* cap)
 		// 22.10.13 Ahn Add End
 		break;
 	}
-
-#ifdef	_DEBUG
-	if (iRet != 0) {
-		AfxGetMainWnd()->MessageBox(cstr, cap, (MB_OK | MB_ICONERROR));
-	}
-#endif	// end of _DEBUG
 
 	nowExecute = FALSE;
 
@@ -1283,16 +1232,6 @@ int CMelsecDataLink::ReadPortAllBitIn( BYTE *data, short size )
 		size2 = size ;
 
 
-
-// 		CString strMsg;
-// 		strMsg.Format(_T("ReadPortAllBitIn devno=%d, wTmpStNo=%d, m_wOffset_In=%d"), devno, wTmpStNo, m_wOffset_In);
-// 		AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-
-
-
-
 		{
 			CSingleLock cs(GetCriticalSection(), TRUE);
 			iRet = mdReceive(m_pPath
@@ -1308,14 +1247,6 @@ int CMelsecDataLink::ReadPortAllBitIn( BYTE *data, short size )
 			PioErrorProcess(iRet, _T("ReadPortAllBitIn 888"));
 			//에러로그
 			return (-1);
-		}
-		else {
-			//if (size == size2) {
-			//	*data = (BYTE)(buff[0] & 0x00ff);
-			//}
-			//else {
-			//	AfxMessageBox(_T("size error"));
-			//}
 		}
 	}
 

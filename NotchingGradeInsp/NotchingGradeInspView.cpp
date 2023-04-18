@@ -752,6 +752,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			m_nStatus = en_Run;
 			m_nRedrawCnt = 0;
 
+			//검사개시 설정함수
 			InspectionStart();
 			break;
 

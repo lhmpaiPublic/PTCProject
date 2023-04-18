@@ -348,7 +348,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				if (nVecSize <= 0)
 				{
 					//DEBUG_LOG.txt
-					AprData.SaveDebugLog(_T("CtrlThreadImgCuttingTab - 찾은 Tab정보 없음 processing NG 마칭 처리"));
+					AprData.SaveDebugLog(_T("<<CtrlThreadImgCuttingTab>>에러 - 찾은 Tab정보 없음 processing 처리 문제 있음"));
 					// 강제 분할 
 					bErrorAll = TRUE;
 				}
@@ -474,12 +474,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//프레임 정보 출력
 					//Tab 번호, 에러번호, Tab left, Tab right, Tab ID
-					CString strMsg;
-					// 22.05.03 Ahn Modify Start
-					strMsg.Format(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPEC(5)(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
 						, pInfo->nTabNo, nErrorNo, pInfo->m_nTabLevel, pInfo->m_nTabLeft, pInfo->m_nTabRight, pInfo->m_nHeight, pInfo->m_nTabId_CntBoard);
-					// 22.05.03 Ahn Modify End
-					AprData.SaveDebugLog(strMsg);
 
 					//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
 					CFrameInfo* pBtmInfo;
@@ -893,13 +890,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 								pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
-
-								CString strMsg;
-								strMsg.Format(_T("Save Image Path = %s"), pSaveInfo->m_strSavePath);
-								AprData.SaveDebugLog(strMsg); //pyjtest
-
-
 							}
+							else
+							{
+								//DEBUG_LOG.txt
+								AprData.SaveDebugLog(_T("<<CtrlThreadImgProc>>에러 - Image Save Queue Overflow<%d/%d>"),
+									pImgSaveQueueCtrl->GetSize(), MAX_SAVE_IMAGE_QUEUE);
+							}
+
 						}
 					}
 					// 22.05.31 Ahn Add End

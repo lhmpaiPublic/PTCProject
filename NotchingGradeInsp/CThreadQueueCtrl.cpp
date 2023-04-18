@@ -28,7 +28,7 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 		// 23.02.10 Ahn Add Start
 		
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, nSize, MAX_THREAD_QUEUE_SIZE) ;
+		AprData.SaveDebugLog(_T("<<CThreadQueueCtrl::push>>에러 - TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, nSize, MAX_THREAD_QUEUE_SIZE) ;
 
 		//저장큐가 Over Flow 값 설정
 		pFrmInfo->m_bOverFlow = TRUE;
