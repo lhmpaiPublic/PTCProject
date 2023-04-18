@@ -671,11 +671,17 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						{
 							wAlarmCode = pTopInfo->m_pTabRsltInfo->m_wNgReason;
 							AprData.m_NowLotData.m_nTopNG++;
+
+							//DEBUG_LOG.txt Log
+							AprData.SaveDebugLog_format("TopNG <couht : %d>", AprData.m_NowLotData.m_nTopNG);
 						}
 						if (nBtmJudge == JUDGE_NG)
 						{
 							wAlarmCode |= pBtmInfo->m_pTabRsltInfo->m_wNgReason;
 							AprData.m_NowLotData.m_nBottomNG++ ;
+
+							//DEBUG_LOG.txt Log
+							AprData.SaveDebugLog_format("BottomNG <couht : %d>", AprData.m_NowLotData.m_nBottomNG);
 						}
 						AprData.m_NowLotData.m_nTabCountNG++ ;
 		

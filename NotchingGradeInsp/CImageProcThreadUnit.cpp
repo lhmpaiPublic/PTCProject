@@ -293,7 +293,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						}
 						// 22.05.10 Ahn Add Start 
 					} 
-					//프레임의 헤더 번호가 CAM_POS_TOP과 같지 않다면
+					//프레임의 헤더 번호가 CAM_POS_TOP과 같지 않다면 CAM_POS_BOTTOM
 					else 
 					{
 						//이미지 OK/NG 판정 결과 생성 스래드
@@ -391,8 +391,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 					 //NG 로그 출력한다.
 					 //DEBUG_LOG.txt
-					 AprData.SaveDebugLog_format(_T("<<CtrlImageProcThread>>에러 - [Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"),
-						 pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
+					 AprData.SaveDebugLog_format(_T("<<CtrlImageProcThread>>에러 - [Error NG 판정], Tab을 못찾았다<%s>, Overflow가 발생했다<%s>")
+						 ,(pFrmInfo->m_bErrorFlag == TRUE) ? "TRUE":"FALSE", (pFrmInfo->m_bOverFlow == TRUE) ? "TRUE" : "FALSE");
 
 				}
 
