@@ -391,7 +391,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 					 //NG 로그 출력한다.
 					 //DEBUG_LOG.txt
-					 AprData.SaveDebugLog(_T("<<CtrlImageProcThread>>에러 - [Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"),
+					 AprData.SaveDebugLog_format(_T("<<CtrlImageProcThread>>에러 - [Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"),
 						 pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
 
 				}

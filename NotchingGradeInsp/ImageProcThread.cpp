@@ -894,7 +894,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							else
 							{
 								//DEBUG_LOG.txt
-								AprData.SaveDebugLog(_T("<<CtrlThreadImgProc>>에러 - Image Save Queue Overflow<%d/%d>"),
+								AprData.SaveDebugLog_format(_T("<<CtrlThreadImgProc>>에러 - Image Save Queue Overflow<%d/%d>"),
 									pImgSaveQueueCtrl->GetSize(), MAX_SAVE_IMAGE_QUEUE);
 							}
 

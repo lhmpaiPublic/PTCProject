@@ -2527,7 +2527,7 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 	if (bLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProceTopAll_AreaDiff>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProceTopAll_AreaDiff>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
 		return -1;
 	}
 	rcLeftRnd.right = nMaskRight;
@@ -2578,7 +2578,7 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 	if (bLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProceTopAll_AreaDiff>>에러 - vecRightRndInfo Edge found faile, ret = %d."), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProceTopAll_AreaDiff>>에러 - vecRightRndInfo Edge found faile, ret = %d."), bLocalRet);
 		return -2;
 	}
 
@@ -3265,7 +3265,7 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 	if (bLocalRet < 0) {
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProceTopAll_Negative>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProceTopAll_Negative>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
 
 		return -1;
 	}
@@ -3320,7 +3320,7 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	if (bLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProceTopAll_Negative>>에러 - vecRightRndInfo Edge found faile, ret = %d"), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProceTopAll_Negative>>에러 - vecRightRndInfo Edge found faile, ret = %d"), bLocalRet);
 
 		return -2;
 	}
@@ -4944,7 +4944,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	if (bLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
 		return -1;
 	}
 	//rcLeftRnd.right = nMaskRight;
@@ -4994,7 +4994,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 		CString strMsg;
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo 엣지라인 데이터 사이즈 이상."), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo 엣지라인 데이터 사이즈 이상."), bLocalRet);
 		return -2;
 	}
 
@@ -5003,7 +5003,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	int nRightSize = (int)vecRightRndInfo.size();
 	if (nRightSize <= 0) {
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0."), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0."), bLocalRet);
 
 		CString strMsg;
 		strMsg.Format(_T("Right EdgeLine Vector Size is 0"));
@@ -5016,7 +5016,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	if (rcRight.bottom < nRightSize - 1) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0."), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0."), bLocalRet);
 
 		CString strMsg;
 		strMsg.Format(_T("Right 엣지라인 데이터 사이즈 이상."));
@@ -5433,7 +5433,7 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 	if (bLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProcTopAll_BrightRoll>>에러 - vecLeftRndInfo Edge found faile, ret = %d."), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProcTopAll_BrightRoll>>에러 - vecLeftRndInfo Edge found faile, ret = %d."), bLocalRet);
 
 		return -3;
 	}
@@ -5480,7 +5480,7 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 	if (bLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProcTopAll_BrightRoll>>에러 - vecRightRndInfo Edge found faile, ret = %d"), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProcTopAll_BrightRoll>>에러 - vecRightRndInfo Edge found faile, ret = %d"), bLocalRet);
 
 		return -6;
 	}
@@ -5814,7 +5814,7 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	if (bLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ProcBottomAll_BrightRoll>>에러 - vecRndInfo Edge found faile, ret = %d"), bLocalRet);
+		AprData.SaveDebugLog_format(_T("<<ProcBottomAll_BrightRoll>>에러 - vecRndInfo Edge found faile, ret = %d"), bLocalRet);
 
 		return -3;
 	}

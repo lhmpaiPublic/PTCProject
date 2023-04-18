@@ -165,7 +165,7 @@ int CGlobalData::SaveDebugLog( CString strMsg )
 	return 0 ;
 }
 
-void CGlobalData::SaveDebugLog(const char* format, ...)
+void CGlobalData::SaveDebugLog_format(const char* format, ...)
 {
 	va_list arg;
 	int done;
@@ -173,6 +173,7 @@ void CGlobalData::SaveDebugLog(const char* format, ...)
 	va_start(arg, format);
 	done = vsprintf_s(str, format, arg);
 	va_end(arg);
+
 	if (done > 0)
 	{
 		SaveDebugLog(str);
