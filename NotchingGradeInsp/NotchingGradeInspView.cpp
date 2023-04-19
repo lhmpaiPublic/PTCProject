@@ -89,7 +89,7 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	m_bTabCountResetFlag = FALSE;
 	m_bLotStartInitFlag = TRUE;
 	m_bAlarmResetFlag = FALSE;
-
+	m_bRecipeChagneFlag = FALSE;
 
 	//// 22.04.21 Ahn Add Start
 	//m_pFileManager = NULL ;
@@ -484,7 +484,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		CheckTabZeroReset();
 		CheckLotStartProcess();
 		CheckAlarmReset();
-
+		CheckRecipeChange();
 
 
 
@@ -725,16 +725,13 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			}
 
 			{
-				int nRecipeNo = 0;
-				AprData.m_NowLotData.m_strRecipeName = AprData.m_NowLotData.m_strNextRecipeName;
-				CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
-				if( pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName) >= 0 )
-				{
-					pSigProc->SigOutRecipeChangeAck(TRUE);
-					Sleep(200);
-					pSigProc->SigOutRecipeChangeAck(FALSE);
-
-				}
+// 				int nRecipeNo = 0;
+// 				AprData.m_NowLotData.m_strRecipeName = AprData.m_NowLotData.m_strNextRecipeName;
+// 				CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
+// 				if( pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName) >= 0 )
+// 				{
+// 
+// 				}
 
 			}
 
@@ -1537,6 +1534,41 @@ int CNotchingGradeInspView::CheckAlarmReset()
 
 	return nRet;
 }
+
+
+int CNotchingGradeInspView::CheckRecipeChange()
+{
+	int nRet = 0;
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	BOOL bSigIn = (pSigProc->SigInRecipeChange() == 1) ? TRUE : FALSE;
+	if ((bSigIn == TRUE) && (m_bRecipeChagneFlag == FALSE))
+	{
+		m_bRecipeChagneFlag = TRUE;
+		AprData.SaveDebugLog(_T("RecipeChange ON"));
+
+
+		int nRecipeNo = 0;
+		AprData.m_NowLotData.m_strRecipeName = AprData.m_NowLotData.m_strNextRecipeName;
+		CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
+		if (pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName) >= 0)
+		{
+			pSigProc->SigOutRecipeChangeAck(TRUE);
+		}
+
+	}
+	if ((bSigIn == FALSE) && (m_bRecipeChagneFlag == TRUE))
+	{
+		m_bRecipeChagneFlag = FALSE;
+		AprData.SaveDebugLog(_T("RecipeChange OFF"));
+
+		pSigProc->SigOutRecipeChangeAck(FALSE);
+
+	}
+
+	return nRet;
+}
+
 
 // 23.02.09 Ahn Add Start
 void CNotchingGradeInspView::SwitchDisplay(BOOL bModeMap)
