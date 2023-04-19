@@ -17,7 +17,8 @@ int CSectorNgJudge::ResetAll()
 int CSectorNgJudge::AddNgTab(CTabJudge tab, int nSectSize)
 {
 	int nNewTabNo = tab.nTabNo;
-	if ( (tab.nJudge == JUDGE_NG) && ( tab.nReason >= CTabRsltBase::en_Reason_FoilExp_Top)){
+	if ( (tab.nJudge == JUDGE_NG) && ( tab.nReason >= CTabRsltBase::en_Reason_FoilExpIn_Top))
+	{
 		m_vecSector.push_back(tab) ;
 	}
 

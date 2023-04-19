@@ -42,7 +42,7 @@ public:
 		enBitIn_LotStartReq		= 0x00000208,	// B63D3
 		enBitIn_LotEndReq		= 0x00000210,	// B63D4
 
-		enBitIn_AlarmResetReq	= 0x00000301,	// B63D8 
+		enBitIn_AlarmResetReq	= 0x00000220,	// B63D8 
 	};
 
 	// [ BIT OUT ]
@@ -69,7 +69,7 @@ public:
 		enBitOut_RecipeChangeAck= 0x00000204,	// B6B52
 		enBitOut_LotStartReqAck	= 0x00000208,	// B6B53
 		enBitOut_LotEndReqAck	= 0x00000210,	// B6B54
-		enBitOut_AlramResetAck	= 0x00000301,	// B6B55
+		enBitOut_AlramResetAck	= 0x00000220,	// B6B55
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -104,23 +104,29 @@ public:
 		enWordWrite_DataReportV4_OkRate = 0x0006, enWordWrite_DataReportV4_Len = 2,
 		enWordWrite_DataReportV5_NgRate = 0x0008, enWordWrite_DataReportV5_Len = 2,
 		enWordWrite_DataReportV6_RunRate = 0x000A, enWordWrite_DataReportV6_Len = 2,
+
+
 		enWordWrite_Continue_Alarm_Cnt = 0x000C, enWordWrite_Continue_Alarm_Cnt_Len = 2,
 		enWordWrite_Heavy_Alarm_Cnt = 0x000E, enWordWrite_Heavy_Alarm_Cnt_Len = 2,
-		enWordWrite_DrossTop_Alarm_Cnt = 0x0010, enWordWrite_DrossTop_Alarm_Cnt_Len = 2,
-		enWordWrite_DrossBtm_Alarm_Cnt = 0x0012, enWordWrite_DrossBtm_Alarm_Cnt_Len = 2,
-		enWordWrite_FoilExpTop_Alarm_Cnt = 0x0014, enWordWrite_FoilExpTop_Alarm_Cnt_Len = 2,
-		enWordWrite_FoilExpBtm_Alarm_Cnt = 0x0016, enWordWrite_FoilExpBtm_Alarm_Cnt_Len = 2,
-		enWordWrite_SpeterTop_Alarm_Cnt = 0x0018, enWordWrite_SpeterTop_Alarm_Cnt_Len = 2,
-		enWordWrite_SpeterBtm_Alarm_Cnt = 0x001A, enWordWrite_SpeterBtm_Alarm_Cnt_Len = 2,
-		enWordWrite_Top_Defect_Count_Real = 0x001C, enWordWrite_Top_Defect_Count_Real_Len = 2,
-		enWordWrite_Btm_Defect_Count_Real = 0x001E, enWordWrite_Btm_Defect_Count_Real_Len = 2,
-		enWordWrite_Top_Defect_Count_LotEnd = 0x0020, enWordWrite_Top_Defect_Count_LotEnd_Len = 2,
-		enWordWrite_Btm_Defect_Count_LotEnd = 0x0022, enWordWrite_Btm_Defect_Count_LotEnd_Len = 2,
+		enWordWrite_FoilExpInTop_Alarm_Cnt = 0x0010, enWordWrite_FoilExpInTop_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpInBottom_Alarm_Cnt = 0x0012, enWordWrite_FoilExpInBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpOutTop_Alarm_Cnt = 0x0014, enWordWrite_FoilExpOutTop_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpOutBottom_Alarm_Cnt = 0x0016, enWordWrite_FoilExpOutBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpBothTop_Alarm_Cnt = 0x0018, enWordWrite_FoilExpBothTop_Alarm_Cnt_Len = 2,
+		enWordWrite_FoilExpBothBottom_Alarm_Cnt = 0x001A, enWordWrite_FoilExpBothBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_SpeterTop_Alarm_Cnt = 0x001C, enWordWrite_SpeterTop_Alarm_Cnt_Len = 2,
+		enWordWrite_SpeterBtm_Alarm_Cnt = 0x001E, enWordWrite_SpeterBtm_Alarm_Cnt_Len = 2,
+		enWordWrite_Top_Defect_Count_Real = 0x0020, enWordWrite_Top_Defect_Count_Real_Len = 2,
+		enWordWrite_Btm_Defect_Count_Real = 0x0022, enWordWrite_Btm_Defect_Count_Real_Len = 2,
+		enWordWrite_Top_Defect_Count_LotEnd = 0x0024, enWordWrite_Top_Defect_Count_LotEnd_Len = 2,
+		enWordWrite_Btm_Defect_Count_LotEnd = 0x0026, enWordWrite_Btm_Defect_Count_LotEnd_Len = 2,
 
-		enWordWrite_DrossTopTarget = 0x0032, enWordWrite_DrossTopTarget_Len = 2,
-		enWordWrite_DrossBtmTarget = 0x0034, enWordWrite_DrossBtmTarget_Len = 2,
-		enWordWrite_FoilExpTopTarget = 0x0036, enWordWrite_FoilExpTopTarget_Len = 2,
-		enWordWrite_FoilExpBtmTarget = 0x0038, enWordWrite_FoilExpBtmTarget_Len = 2,
+		enWordWrite_FoilExpInTopTarget = 0x002E, enWordWrite_FoilExpInTopTarget_Len = 2,
+		enWordWrite_FoilExpInBottomTarget = 0x0030, enWordWrite_FoilExpInBottomTarget_Len = 2,
+		enWordWrite_FoilExpOutTopTarget = 0x0032, enWordWrite_FoilExpOutTopTarget_Len = 2,
+		enWordWrite_FoilExpOutBottomTarget = 0x0034, enWordWrite_FoilExpOutBottomTarget_Len = 2,
+		enWordWrite_FoilExpBothTopTarget = 0x0036, enWordWrite_FoilExpBothTopTarget_Len = 2,
+		enWordWrite_FoilExpBothBottomTarget = 0x0038, enWordWrite_FoilExpBothBottomTarget_Len = 2,
 		enWordWrite_SpeterTopTarget = 0x003A, enWordWrite_SpeterTopTarget_Len = 2,
 		enWordWrite_SpeterBtmTarget = 0x003C, enWordWrite_SpeterBtmTarget_Len = 2,
 

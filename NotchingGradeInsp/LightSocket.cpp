@@ -179,7 +179,7 @@ void CLightSocket::OnReceive( int nErrorCode )
 			CString strErMsg , strError ;
 			bNoError = SetError( dwErrorCode, &strErMsg ) ;
 
-			AprData.SaveDebugLog_format(_T("address<%s> ErrorMsg<%s>"), this->m_strIpAddress, strErMsg);
+			AprData.SaveDebugLog_Format(_T("address<%s> ErrorMsg<%s>"), this->m_strIpAddress, strErMsg);
 
 			if ( bNoError != TRUE ) {
 				// クリア

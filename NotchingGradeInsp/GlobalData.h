@@ -98,11 +98,13 @@ public:
 	DWORD dwDataReportV6;				// 가동률
 
 	DWORD dwContinueAlarmCount;			// 연속 알람 발생 수량
-	DWORD dwHeavyAlarmCount;			// 중알람 발생 수량
-	DWORD dwDrossTopCount;			
-	DWORD dwDrossBottomCount;
-	DWORD dwFoilExpTopCount;
-	DWORD dwFoilExpBottomCount;
+	DWORD dwSectorAlarmCount;			// 구간 알람 발생 수량
+	DWORD dwFoilExpInTopCount;
+	DWORD dwFoilExpInBottomCount;
+	DWORD dwFoilExpOutTopCount;
+	DWORD dwFoilExpOutBottomCount;
+	DWORD dwFoilExpBothTopCount;
+	DWORD dwFoilExpBothBottomCount;
 	DWORD dwSpeterTopCount;
 	DWORD dwSpeterBottomCount;
 
@@ -111,12 +113,14 @@ public:
 	DWORD dwTopNgLotEndCount;			// Lot End 시
 	DWORD dwBottomNgLotEndCount;		// Lot End 시
 
-	DWORD dwDummy1[7];
+	DWORD dwDummy1[3];
 
-	DWORD dwDrossTopTarget;
-	DWORD dwDrossBottomTarget;
-	DWORD dwFoilExpTopTarget;
-	DWORD dwFoilExpBottomTarget;
+	DWORD dwFoilExpInTopTarget;
+	DWORD dwFoilExpInBottomTarget;
+	DWORD dwFoilExpOutTopTarget;
+	DWORD dwFoilExpOutBottomTarget;
+	DWORD dwFoilExpBothTopTarget;
+	DWORD dwFoilExpBothBottomTarget;
 	DWORD dwSpeterTopTarget;
 	DWORD dwSpeterBottomTarget;
 
@@ -295,8 +299,8 @@ public :
 	long GetFrameCounter(int nHeadNo ){ return nFrameCounter[ nHeadNo ] ; } ;
 
 	int SaveDebugLog( CString strMsg ) ;
-	void SaveDebugLog_format(const char* format, ...);
-
+	void SaveDebugLog_Format(const char* format, ...);
+	
 	int SaveErrorLog(CString strMsg);
 	int SaveTactLog(CString strMsg);
 	int SaveMemoryLog( CString strMsg ) ;

@@ -37,9 +37,9 @@ public:
 		eOut_BCD_ID_16			= 0x00000040,	// 출력
 		eOut_BCD_ID_32			= 0x00000080,
 		eOut_08					= 0x00000100,	// 8		
-		eOut_PULSE = 0x00000200,   // 9
-		eOut_MARK_SEL_01 = 0x00000400,   // 10   // 0 1 : mark 출력 Tab이 없을 때 00
-		eOut_MARK_SEL_02 = 0x00000800,   // 11   // 1 1 : 3 Tab 출력
+		eOut_PULSE				= 0x00000200,	// 9
+		eOut_MARK_SEL_01		= 0x00000400,	// 10 	// 0 1 : mark 출력 Tab이 없을 때 00
+		eOut_MARK_SEL_02		= 0x00000800,	// 11	// 1 1 : 3 Tab 출력
 		eOut_12					= 0x00001000,
 		eOut_13					= 0x00002000,
 		eOut_14					= 0x00004000,

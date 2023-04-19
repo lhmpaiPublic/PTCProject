@@ -108,10 +108,10 @@ public:
 	//double dDefJudgeWidth;
 	double dDefJudgeHeight; // 삭제요...
 
-	double dFoilExpInNgSize;
-	double dFoilExpOutNgSize;
-	double dFoilExpBothNgSize;
-	// 22.07.19 Ahn Modify End
+	double dFoilExpInNgSize[MAX_CAMERA_NO];
+	double dFoilExpOutNgSize[MAX_CAMERA_NO];
+	double dFoilExpBothNgSize[MAX_CAMERA_NO];
+	double dSurfaceNgSize[MAX_CAMERA_NO];
 
 	double dIgnoreDistance;
 	double dIgnoreSize;
@@ -119,7 +119,6 @@ public:
 	int nSurfaceMaskOffset[MAX_CAMERA_NO];
 	BOOL bDisableSurface;
 
-	double dSurfaceNgSize ;
 	int m_nSurfaceMinSize[MAX_CAMERA_NO];
 	// 22.11.21 Ahn Add Start - JUDGE_GRAY
 	double dSurfaceGraySize;

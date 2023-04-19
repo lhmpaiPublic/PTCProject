@@ -33,7 +33,6 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	, m_bChkSaveOnlyNgTab(FALSE)
 	, m_dEdMagnification(0)
 	, m_bChkEnableDefLink(FALSE)
-	, m_dEdNgSizeWidth(0)
 	, m_dEdNgSizeHeight(0)
 	, m_bChkNgStop(FALSE)
 	, m_bChkDarkEmpMode(FALSE)
@@ -49,10 +48,7 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	, m_nEdThresSurface(0)
 	, m_nEdSurfaceMaskOffset(0)
 	, m_bChkDisableSurface(FALSE)
-	, m_dSurfaceNgSize(0)
 	, m_nEdSurfaceMinSize(0)
-	, m_dEdFoilExpOutNgSize(0)
-	, m_dEdFoilExpBothNgSize(0)
 	, m_nContinuousNgAlarmCnt(0)
 	, m_nAlarmCnt(0)
 	, m_nSectorCnt(0)
@@ -85,6 +81,13 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	m_nTabMinBright = 50 ;
 	// 23.02.14 Ahn Add End
 
+	for( int i=0; i<MAX_CAMERA_NO; i++ )
+	{
+		m_dEdNgSizeWidth[i] = 0.f;
+		m_dEdFoilExpOutNgSize[i] = 0.f;
+		m_dEdFoilExpBothNgSize[i] = 0.f;
+		m_dSurfaceNgSize[i] = 0.f;	
+	}
 }
 
 CRecipeSettingDlg::~CRecipeSettingDlg()
@@ -168,12 +171,9 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_THRES_SPETTER, m_nEdThresSurface);
 	DDX_Text(pDX, IDC_ED_SPT_MASK, m_nEdSurfaceMaskOffset);
 	DDX_Check(pDX, IDC_CHK_DISABLE_SPTTER, m_bChkDisableSurface);
-	DDX_Text(pDX, IDC_ED_SURFACE_NG_SIZE, m_dSurfaceNgSize);
+
 	DDX_Text(pDX, IDC_ED_SURFACE_MINSIZE, m_nEdSurfaceMinSize);
-	DDX_Text(pDX, IDC_ED_NG_X_SIZE, m_dEdNgSizeWidth);
 	DDX_Text(pDX, IDC_ED_NG_Y_SIZE, m_dEdNgSizeHeight);
-	DDX_Text(pDX, IDC_ED_FOIL_OUT_NG_X_SIZE, m_dEdFoilExpOutNgSize);
-	DDX_Text(pDX, IDC_ED_FOIL_BOTH_NG_X_SIZE, m_dEdFoilExpBothNgSize);
 	// 22.08.09 Ahn Add Start
 	DDX_Text(pDX, IDC_ED_CONTINUOUS_ALARM, m_nContinuousNgAlarmCnt);
 	DDX_Text(pDX, IDC_ED_ALARM_COUNT, m_nAlarmCnt);
@@ -184,6 +184,17 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_TAB_MIN_BRIGHT, m_nTabMinBright);
 	DDX_Radio(pDX, IDC_RAD_DARK_ROLL, m_nRollBrightMode);
 	DDX_Text(pDX, IDC_EDIT_RECIPE_MEMO, m_strRecipeMemo);
+
+	DDX_Text(pDX, IDC_ED_NG_X_SIZE, m_dEdNgSizeWidth[CAM_POS_TOP]);
+	DDX_Text(pDX, IDC_ED_FOIL_OUT_NG_X_SIZE, m_dEdFoilExpOutNgSize[CAM_POS_TOP]);
+	DDX_Text(pDX, IDC_ED_FOIL_BOTH_NG_X_SIZE, m_dEdFoilExpBothNgSize[CAM_POS_TOP]);
+	DDX_Text(pDX, IDC_ED_SURFACE_NG_SIZE, m_dSurfaceNgSize[CAM_POS_TOP]);
+
+	DDX_Text(pDX, IDC_ED_NG_X_SIZE_BTM, m_dEdNgSizeWidth[CAM_POS_BOTTOM]);
+	DDX_Text(pDX, IDC_ED_FOIL_OUT_NG_X_SIZE_BTM, m_dEdFoilExpOutNgSize[CAM_POS_BOTTOM]);
+	DDX_Text(pDX, IDC_ED_FOIL_BOTH_NG_X_SIZE_BTM, m_dEdFoilExpBothNgSize[CAM_POS_BOTTOM]);
+	DDX_Text(pDX, IDC_ED_SURFACE_NG_SIZE_BTM, m_dSurfaceNgSize[CAM_POS_BOTTOM]);
+
 }
 
 
@@ -224,7 +235,6 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_DISABLE_PROC_DIFF, &CRecipeSettingDlg::OnBnClickedChkDisableProcDiff)
 	ON_EN_SETFOCUS(IDC_ED_MAGNIFICATION, &CRecipeSettingDlg::OnEnSetfocusEdMagnification)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_DEF_LINK, &CRecipeSettingDlg::OnBnClickedChkEnableDefLink)
-	ON_EN_SETFOCUS(IDC_ED_NG_X_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdNgXSize)
 	ON_EN_SETFOCUS(IDC_ED_NG_Y_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdNgYSize)
 	ON_BN_CLICKED(IDC_CHK_NG_STOP, &CRecipeSettingDlg::OnBnClickedChkNgStop)
 	ON_BN_CLICKED(IDC_CHK_DARK_EMP_MODE, &CRecipeSettingDlg::OnBnClickedChkDarkEmpMode)
@@ -240,11 +250,8 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_THRES_SPETTER, &CRecipeSettingDlg::OnEnSetfocusEdThresSurface)
 	ON_EN_SETFOCUS(IDC_ED_SPT_MASK, &CRecipeSettingDlg::OnEnSetfocusEdSptMask)
 	ON_BN_CLICKED(IDC_CHK_DISABLE_SPTTER, &CRecipeSettingDlg::OnBnClickedChkDisableSurface)
-	ON_EN_SETFOCUS(IDC_ED_SURFACE_NG_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdSurfaceNgSize)
 	ON_EN_SETFOCUS(IDC_ED_SURFACE_MINSIZE, &CRecipeSettingDlg::OnEnSetfocusEdSurfaceMinsize)
 	ON_WM_SIZE()
-	ON_EN_SETFOCUS(IDC_ED_FOIL_OUT_NG_X_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdFoilOutNgXSize)
-	ON_EN_SETFOCUS(IDC_ED_FOIL_BOTH_NG_X_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdFoilBothNgXSize)
 	ON_BN_CLICKED(IDCANCEL, &CRecipeSettingDlg::OnBnClickedCancel)
 	ON_WM_PAINT()
 	ON_BN_CLICKED(IDC_BTN_SYSTEM_SET, &CRecipeSettingDlg::OnBnClickedBtnSystemSet)
@@ -255,9 +262,17 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_FOILEXP_GRAY_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdFoilexpGraySize)
 	ON_EN_SETFOCUS(IDC_ED_SURFACE_GRAY_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdSurfaceGraySize)
 	ON_EN_SETFOCUS(IDC_ED_TAB_MIN_BRIGHT, &CRecipeSettingDlg::OnEnSetfocusEdTabMinBright)
-	//ON_BN_CLICKED(IDC_RAD_DARK_ROLL, &CRecipeSettingDlg::OnBnClickedRadDarkRoll)
-	//ON_BN_CLICKED(IDC_RAD_BRIGHT_ROLL, &CRecipeSettingDlg::OnBnClickedRadBrightRoll)
 	ON_BN_CLICKED(IDC_BTN_PROGRAMINFO, &CRecipeSettingDlg::OnBnClickedBtnPrograminfo)
+
+	ON_EN_SETFOCUS(IDC_ED_NG_X_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdNgXSize)
+	ON_EN_SETFOCUS(IDC_ED_FOIL_OUT_NG_X_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdFoilOutNgXSize)
+	ON_EN_SETFOCUS(IDC_ED_FOIL_BOTH_NG_X_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdFoilBothNgXSize)
+	ON_EN_SETFOCUS(IDC_ED_SURFACE_NG_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdSurfaceNgSize)
+
+	ON_EN_SETFOCUS(IDC_ED_NG_X_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdNgXSizeBtm)
+	ON_EN_SETFOCUS(IDC_ED_FOIL_OUT_NG_X_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdFoilOutNgXSizeBtm)
+	ON_EN_SETFOCUS(IDC_ED_FOIL_BOTH_NG_X_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdFoilBothNgXSizeBtm)
+	ON_EN_SETFOCUS(IDC_ED_SURFACE_NG_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdSurfaceNgSizeBtm)
 END_MESSAGE_MAP()
 
 
@@ -777,14 +792,6 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 
 		m_bChkNgStop = pRecipeInfo->bNgStop;
 		m_bChkDarkEmpMode = pRecipeInfo->bDarkEmpMode;
-
-		// 22.07.19 Ahn Modify Start
-		//m_dEdNgSizeWidth = pRecipeInfo->dFoilExpInNgSize;
-		m_dEdNgSizeWidth = pRecipeInfo->dFoilExpInNgSize ;
-		m_dEdFoilExpOutNgSize = pRecipeInfo->dFoilExpOutNgSize ;
-		m_dEdFoilExpBothNgSize = pRecipeInfo->dFoilExpBothNgSize ;
-		// 22.07.19 Ahn Modify End
-
 		m_dEdNgSizeHeight = pRecipeInfo->dDefJudgeHeight;
 
 		m_dEdSaveDefSize = pRecipeInfo->dSaveDefSize;
@@ -794,7 +801,6 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		m_nEdThresSurface = pRecipeInfo->nThresSurface[nCamPos];
 		m_nEdSurfaceMaskOffset = pRecipeInfo->nSurfaceMaskOffset[nCamPos];
 		m_bChkDisableSurface = pRecipeInfo->bDisableSurface ;
-		m_dSurfaceNgSize = pRecipeInfo->dSurfaceNgSize;
 		// 22.11.21 Ahn Add Start - JUDGE_GRAY
 		m_dEdFoilGraySize = pRecipeInfo->dFoileGraySize;
 		m_dEdSurfaceGraySize = pRecipeInfo->dSurfaceGraySize;
@@ -808,6 +814,15 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		m_nAlarmCnt = pRecipeInfo->nAlarmCount ;
 		m_nSectorCnt = pRecipeInfo->nSectorCount ;
 		// 22.08.09 Ahn Add End
+
+		for( int i=0; i<MAX_CAMERA_NO; i++ )
+		{
+			m_dEdNgSizeWidth[i] = pRecipeInfo->dFoilExpInNgSize[i];
+			m_dEdFoilExpOutNgSize[i] = pRecipeInfo->dFoilExpOutNgSize[i];
+			m_dEdFoilExpBothNgSize[i] = pRecipeInfo->dFoilExpBothNgSize[i];
+			m_dSurfaceNgSize[i] = pRecipeInfo->dSurfaceNgSize[i];
+		}
+
 
 		UpdateData(FALSE);
 	}
@@ -884,43 +899,31 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		pRecipeInfo->bNgStop = m_bChkNgStop ;
 		pRecipeInfo->bDarkEmpMode = m_bChkDarkEmpMode ;
 
-		// 22.07.19 Ahn Add Start
-		pRecipeInfo->dFoilExpInNgSize	= m_dEdNgSizeWidth;
-		pRecipeInfo->dFoilExpOutNgSize	= m_dEdFoilExpOutNgSize;
-		pRecipeInfo->dFoilExpBothNgSize = m_dEdFoilExpBothNgSize;
-		// 22.07.19 Ahn Add End
-		//pRecipeInfo->dDefJudgeHeight = m_dEdNgSizeHeight;
-		// 22.11.21 Ahn Add Start - JUDGE_GRAY
+		for( int i=0; i<MAX_CAMERA_NO; i++ )
+		{
+			pRecipeInfo->dFoilExpInNgSize[i] = m_dEdNgSizeWidth[i];
+			pRecipeInfo->dFoilExpOutNgSize[i] = m_dEdFoilExpOutNgSize[i];
+			pRecipeInfo->dFoilExpBothNgSize[i] = m_dEdFoilExpBothNgSize[i];
+			pRecipeInfo->dSurfaceNgSize[i] = m_dSurfaceNgSize[i];
+		}
+
+
 		pRecipeInfo->dFoileGraySize = m_dEdFoilGraySize ;
 		pRecipeInfo->dSurfaceGraySize = m_dEdSurfaceGraySize ;
-		// 22.11.21 Ahn Add End
 
 		pRecipeInfo->dSaveDefSize = m_dEdSaveDefSize ;
 		pRecipeInfo->bSaveDefInTab = m_bChkSaveDefInTab ;
-		// 22.01.20 Ahn Add Start
 		pRecipeInfo->dIgnoreDistance = m_dEdIgnoreDistance ;
-		// 22.01.20 Ahn Add End
-		// 22.03.07 Ahn Add Start
 		pRecipeInfo->dIgnoreSize = m_dEdIgnoreSize ;
-		// 22.03.07 Ahn Add End
-		// 22.05.10 Ahn Add Start
 		pRecipeInfo->nThresSurface[nCamPos] = m_nEdThresSurface;
 		pRecipeInfo->nSurfaceMaskOffset[nCamPos] = m_nEdSurfaceMaskOffset ;
 		pRecipeInfo->bDisableSurface = m_bChkDisableSurface;
-		// 22.05.10 Ahn Add End
 
-		// 22.05.24 Ahn Add Start
-		pRecipeInfo->dSurfaceNgSize = m_dSurfaceNgSize ;
-		// 22.05.24 Ahn Add End
-		// 22.06.08 Ahn Add Start
 		pRecipeInfo->m_nSurfaceMinSize[nCamPos] = m_nEdSurfaceMinSize ;
-		// 22.06.08 Ahn Add End
 
-		// 22.08.09 Ahn Add Start
 		pRecipeInfo->nContinousNgCount = m_nContinuousNgAlarmCnt ;
 		pRecipeInfo->nAlarmCount = m_nAlarmCnt ;
 		pRecipeInfo->nSectorCount  = m_nSectorCnt ;
-		// 22.08.09 Ahn Add End
 
 	}
 	OnRefresh();
@@ -1374,10 +1377,10 @@ void CRecipeSettingDlg::OnEnSetfocusEdNgXSize()
 	double dValue, dMax, dMin;
 	dMax = 999.0;
 	dMin = 0.0;
-	dValue = m_dEdNgSizeWidth;
+	dValue = m_dEdNgSizeWidth[CAM_POS_TOP];
 	CString strMsg;
 	strMsg.Format(_T("Foil 노출 결함 유지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
-	m_dEdNgSizeWidth = SetValue(dValue, strMsg, dMax, dMin);
+	m_dEdNgSizeWidth[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
 
@@ -2002,7 +2005,7 @@ void CRecipeSettingDlg::OnEnSetfocusEdSptMask()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	
 	int nValue, nMax, nMin;
-	nMax = 200;
+	nMax = 500;
 	nMin = 0;
 	nValue = m_nEdSurfaceMaskOffset;
 	CString strMsg;
@@ -2027,10 +2030,10 @@ void CRecipeSettingDlg::OnEnSetfocusEdSurfaceNgSize()
 	double dValue, dMax, dMin;
 	dMax = 9999.0;
 	dMin = 0.0;
-	dValue = m_dSurfaceNgSize ;
+	dValue = m_dSurfaceNgSize[CAM_POS_TOP];
 	CString strMsg;
 	strMsg.Format(_T("표면결함 NG 사이즈을 입력해 주세요. ( %.1lf um ~ %.1lf um). 0.0 미사용"), dMin, dMax);
-	m_dSurfaceNgSize = SetValue(dValue, strMsg, dMax, dMin);
+	m_dSurfaceNgSize[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
 
@@ -2291,10 +2294,10 @@ void CRecipeSettingDlg::OnEnSetfocusEdFoilOutNgXSize()
 	double dValue, dMax, dMin;
 	dMax = 999.0;
 	dMin = 0.0;
-	dValue = m_dEdNgSizeWidth;
+	dValue = m_dEdFoilExpOutNgSize[CAM_POS_TOP];
 	CString strMsg;
 	strMsg.Format(_T("Foil 노출 결함 무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
-	m_dEdFoilExpOutNgSize = SetValue(dValue, strMsg, dMax, dMin);
+	m_dEdFoilExpOutNgSize[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
 
@@ -2305,10 +2308,10 @@ void CRecipeSettingDlg::OnEnSetfocusEdFoilBothNgXSize()
 	double dValue, dMax, dMin;
 	dMax = 999.0;
 	dMin = 0.0;
-	dValue = m_dEdNgSizeWidth;
+	dValue = m_dEdFoilExpBothNgSize[CAM_POS_TOP];
 	CString strMsg;
 	strMsg.Format(_T("Foil 노출 결함 유/무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
-	m_dEdFoilExpBothNgSize = SetValue(dValue, strMsg, dMax, dMin);
+	m_dEdFoilExpBothNgSize[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
 // 22.07.19 Ahn Add End
@@ -2633,10 +2636,10 @@ void CRecipeSettingDlg::DisplayLanguage()
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("결함 판정"), _T("Defect Judgement")));
 	}
-	pWnd = GetDlgItem(IDC_ST_HORIZON);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("가로(화면기준)"), _T("Horizon")));
-	}
+// 	pWnd = GetDlgItem(IDC_ST_HORIZON);
+// 	if (pWnd != nullptr) {
+// 		pWnd->SetWindowTextA(_LANG(_T("가로(화면기준)"), _T("Horizon")));
+// 	}
 	pWnd = GetDlgItem(IDC_ST_SURFACE_NG_SIZE);
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("표면결함 NG 사이즈"), _T("Surface NG Size")));
@@ -2761,4 +2764,56 @@ void CRecipeSettingDlg::OnBnClickedBtnPrograminfo()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	theApp.ProgramVersionInfo();
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdNgXSizeBtm()
+{
+	double dValue, dMax, dMin;
+	dMax = 999.0;
+	dMin = 0.0;
+	dValue = m_dEdNgSizeWidth[CAM_POS_BOTTOM];
+	CString strMsg;
+	strMsg.Format(_T("Foil 노출 결함 유지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	m_dEdNgSizeWidth[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdFoilOutNgXSizeBtm()
+{
+	double dValue, dMax, dMin;
+	dMax = 999.0;
+	dMin = 0.0;
+	dValue = m_dEdFoilExpOutNgSize[CAM_POS_BOTTOM];
+	CString strMsg;
+	strMsg.Format(_T("Foil 노출 결함 무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	m_dEdFoilExpOutNgSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdFoilBothNgXSizeBtm()
+{
+	double dValue, dMax, dMin;
+	dMax = 999.0;
+	dMin = 0.0;
+	dValue = m_dEdFoilExpBothNgSize[CAM_POS_BOTTOM];
+	CString strMsg;
+	strMsg.Format(_T("Foil 노출 결함 유/무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	m_dEdFoilExpBothNgSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdSurfaceNgSizeBtm()
+{
+	double dValue, dMax, dMin;
+	dMax = 9999.0;
+	dMin = 0.0;
+	dValue = m_dSurfaceNgSize[CAM_POS_BOTTOM];
+	CString strMsg;
+	strMsg.Format(_T("표면결함 NG 사이즈을 입력해 주세요. ( %.1lf um ~ %.1lf um). 0.0 미사용"), dMin, dMax);
+	m_dSurfaceNgSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
+	UpdateData(FALSE);
 }

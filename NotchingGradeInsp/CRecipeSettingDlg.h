@@ -217,7 +217,6 @@ public:
 	afx_msg void OnBnClickedChkEnableDefLink();
 
 	void OnRefresh();
-	double m_dEdNgSizeWidth;
 	double m_dEdNgSizeHeight;
 	afx_msg void OnEnSetfocusEdNgXSize();
 	afx_msg void OnEnSetfocusEdNgYSize();
@@ -263,14 +262,11 @@ public:
 	int m_nEdSurfaceMaskOffset;
 	afx_msg void OnBnClickedChkDisableSurface();
 	BOOL m_bChkDisableSurface;
-	double m_dSurfaceNgSize;
 	afx_msg void OnEnSetfocusEdSurfaceNgSize();
 	int m_nEdSurfaceMinSize;
 	afx_msg void OnEnSetfocusEdSurfaceMinsize();
 
 	
-	double m_dEdFoilExpOutNgSize;
-	double m_dEdFoilExpBothNgSize;
 	afx_msg void OnEnSetfocusEdFoilOutNgXSize();
 	afx_msg void OnEnSetfocusEdFoilBothNgXSize();
 	afx_msg void OnBnClickedCancel();
@@ -300,6 +296,17 @@ public:
 	afx_msg void OnBnClickedBtnSystemList();
 	afx_msg void OnBnClickedBtnPrograminfo();
 	CString m_strRecipeMemo;
+
+
+	double m_dEdNgSizeWidth[MAX_CAMERA_NO];
+	double m_dEdFoilExpOutNgSize[MAX_CAMERA_NO];
+	double m_dEdFoilExpBothNgSize[MAX_CAMERA_NO];
+	double m_dSurfaceNgSize[MAX_CAMERA_NO];
+
+	afx_msg void OnSetfocusEdNgXSizeBtm();
+	afx_msg void OnSetfocusEdFoilOutNgXSizeBtm();
+	afx_msg void OnSetfocusEdFoilBothNgXSizeBtm();
+	afx_msg void OnSetfocusEdSurfaceNgSizeBtm();
 };
 
 

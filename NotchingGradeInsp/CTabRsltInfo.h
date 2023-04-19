@@ -32,12 +32,14 @@ public:
 		en_Reason_Continus				= 0x0001,
 		en_Reason_Heavy					= 0x0002,
 		en_Reason_HV_Continus			= 0x0004, 
-		en_Reason_FoilExp_Top			= 0x0008,
-		en_Reason_FoilExp_Btm			= 0x0010,
+		en_Reason_FoilExpIn_Top			= 0x0008,
+		en_Reason_FoilExpIn_Btm			= 0x0010,
 		en_Reason_FoilExpOut_Top		= 0x0020,
 		en_Reason_FoilExpOut_Btm		= 0x0040,
-		en_Reason_Surface_Top			= 0x0080,
-		en_Reason_Surface_Btm			= 0x0100,
+		en_Reason_FoilExpBoth_Top		= 0x0080,
+		en_Reason_FoilExpBoth_Btm		= 0x0100,
+		en_Reason_Surface_Top			= 0x0200,
+		en_Reason_Surface_Btm			= 0x0400,
 		// 22.07.25 Ahn Modify End
 	};
 	// 22.07.08 Ahn Add End

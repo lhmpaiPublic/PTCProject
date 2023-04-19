@@ -223,9 +223,11 @@ int CNotchingGradeInspDoc::RecipeChange(int nRecipeNo, CString strRecipeName)
 
 	strRecipeName.TrimRight();
 	strRecipeName.MakeUpper();
-	if (rcpCtrl.IsEnableRecipe(strRecipeName) == TRUE) {
+	if (rcpCtrl.IsEnableRecipe(strRecipeName) == TRUE)
+	{
 		rcpCtrl.LoadRecipe(AprData.m_pRecipeInfo, strRecipeName);
 		AprData.m_NowLotData.m_strRecipeName = strRecipeName;
+
 	}
 	else {
 		nRet = -1;

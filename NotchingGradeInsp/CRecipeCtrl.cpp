@@ -291,7 +291,7 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("DEFECT_NG_SIZE_WIDTH");
-			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpInNgSize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpInNgSize[CAM_POS_TOP]);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("DEFECT_NG_SIZE_Height");
@@ -300,11 +300,11 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 
 			// 22.07.20 Ahn Add Start
 			strKey = _T("DEFECT_FOIL_OUT_NG_SIZE");
-			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpOutNgSize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpOutNgSize[CAM_POS_TOP]);
 			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 
 			strKey = _T("DEFECT_FOIL_BOTH_NG_SIZE");
-			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpBothNgSize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpBothNgSize[CAM_POS_TOP]);
 			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 			// 22.07.20 Ahn Add End
 
@@ -340,9 +340,26 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 
 			// 22.05.24 Ahn Add Start
 			strKey = _T("SURFACE_NG_SIZE");
-			strData.Format(_T("%.1lf"), pRcpInfo->dSurfaceNgSize);
+			strData.Format(_T("%.1lf"), pRcpInfo->dSurfaceNgSize[CAM_POS_TOP]);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 			// 22.05.24 Ahn Add End	
+
+			strKey = _T("DEFECT_NG_SIZE_WIDTH_BTM");
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpInNgSize[CAM_POS_BOTTOM]);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey = _T("DEFECT_FOIL_OUT_NG_SIZE_BTM");
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpOutNgSize[CAM_POS_BOTTOM]);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey = _T("DEFECT_FOIL_BOTH_NG_SIZE_BTM");
+			strData.Format(_T("%.1lf"), pRcpInfo->dFoilExpBothNgSize[CAM_POS_BOTTOM]);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey = _T("SURFACE_NG_SIZE_BTM");
+			strData.Format(_T("%.1lf"), pRcpInfo->dSurfaceNgSize[CAM_POS_BOTTOM]);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
 		}
 
 		{
@@ -620,7 +637,7 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 
 			strKey = _T("DEFECT_NG_SIZE_WIDTH");
 			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
-			pRcpInfo->dFoilExpInNgSize = atof( buff) ;
+			pRcpInfo->dFoilExpInNgSize[CAM_POS_TOP] = atof( buff) ;
 
 			strKey = _T("DEFECT_NG_SIZE_Height");
 			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
@@ -629,11 +646,11 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			// 22.07.20 Ahn Add Start
 			strKey = _T("DEFECT_FOIL_OUT_NG_SIZE");
 			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
-			pRcpInfo->dFoilExpOutNgSize = atof(buff);
+			pRcpInfo->dFoilExpOutNgSize[CAM_POS_TOP] = atof(buff);
 
 			strKey = _T("DEFECT_FOIL_BOTH_NG_SIZE");
 			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
-			pRcpInfo->dFoilExpBothNgSize = atof(buff);
+			pRcpInfo->dFoilExpBothNgSize[CAM_POS_TOP] = atof(buff);
 			// 22.07.20 Ahn Add End
 
 			// 22.11.21 Ahn Add Start - JUDGE_GRAY
@@ -669,8 +686,26 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			// 22.05.24 Ahn Add Start
 			strKey = _T("SURFACE_NG_SIZE");
 			::GetPrivateProfileString(strSection, strKey, "61.0", buff, 256, strFileName);
-			pRcpInfo->dSurfaceNgSize = atof(buff);
-			// 22.05.24 Ahn Add End			
+			pRcpInfo->dSurfaceNgSize[CAM_POS_TOP] = atof(buff);
+			// 22.05.24 Ahn Add End
+
+
+			strKey = _T("DEFECT_NG_SIZE_WIDTH_BTM");
+			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+			pRcpInfo->dFoilExpInNgSize[CAM_POS_BOTTOM] = atof(buff);
+
+			strKey = _T("DEFECT_FOIL_OUT_NG_SIZE_BTM");
+			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+			pRcpInfo->dFoilExpOutNgSize[CAM_POS_BOTTOM] = atof(buff);
+
+			strKey = _T("DEFECT_FOIL_BOTH_NG_SIZE_BTM");
+			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+			pRcpInfo->dFoilExpBothNgSize[CAM_POS_BOTTOM] = atof(buff);
+
+			strKey = _T("SURFACE_NG_SIZE_BTM");
+			::GetPrivateProfileString(strSection, strKey, "61.0", buff, 256, strFileName);
+			pRcpInfo->dSurfaceNgSize[CAM_POS_BOTTOM] = atof(buff);
+
 		}
 
 		{

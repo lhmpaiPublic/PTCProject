@@ -1323,23 +1323,37 @@ int CSigProc::ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 	btTemp = btData[enWordWrite_Continue_Alarm_Cnt];
 	pSeqOutData->dwDataReportV6 = (DWORD)btTemp;
 
-	btTemp = btData[enWordWrite_DrossTop_Alarm_Cnt];
-	pSeqOutData->dwDrossTopCount = (DWORD)btTemp;
 
-	btTemp = btData[enWordWrite_DrossBtm_Alarm_Cnt];
-	pSeqOutData->dwDrossBottomCount = (DWORD)btTemp;
 
-	btTemp = btData[enWordWrite_FoilExpTop_Alarm_Cnt];
-	pSeqOutData->dwFoilExpTopCount = (DWORD)btTemp;
 
-	btTemp = btData[enWordWrite_FoilExpBtm_Alarm_Cnt];
-	pSeqOutData->dwFoilExpBottomCount = (DWORD)btTemp;
+
+	btTemp = btData[enWordWrite_FoilExpInTop_Alarm_Cnt];
+	pSeqOutData->dwFoilExpInTopCount = (DWORD)btTemp;
+
+	btTemp = btData[enWordWrite_FoilExpInBottom_Alarm_Cnt];
+	pSeqOutData->dwFoilExpInBottomCount = (DWORD)btTemp;
+
+	btTemp = btData[enWordWrite_FoilExpOutTop_Alarm_Cnt];
+	pSeqOutData->dwFoilExpOutTopCount = (DWORD)btTemp;
+
+	btTemp = btData[enWordWrite_FoilExpOutTop_Alarm_Cnt];
+	pSeqOutData->dwFoilExpOutBottomCount = (DWORD)btTemp;
+
+	btTemp = btData[enWordWrite_FoilExpBothTop_Alarm_Cnt];
+	pSeqOutData->dwFoilExpBothTopCount = (DWORD)btTemp;
+
+	btTemp = btData[enWordWrite_FoilExpBothTop_Alarm_Cnt];
+	pSeqOutData->dwFoilExpBothBottomCount = (DWORD)btTemp;
 
 	btTemp = btData[enWordWrite_SpeterTop_Alarm_Cnt];
 	pSeqOutData->dwSpeterTopCount = (DWORD)btTemp;
 
 	btTemp = btData[enWordWrite_SpeterBtm_Alarm_Cnt];
 	pSeqOutData->dwSpeterBottomCount = (DWORD)btTemp;
+
+
+
+
 
 	btTemp = btData[enWordWrite_Top_Defect_Count_Real];
 	pSeqOutData->dwTopNgRealTimeCount = (DWORD)btTemp;
@@ -1604,20 +1618,26 @@ int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 	btTemp = btData[enSmsWordWrite_Continue_Alarm_Cnt];
 	pSeqOutData->dwDataReportV6 = (DWORD)btTemp;
 
+
+	//////////////////////////////////////////////////////////////////////////
+	/// 임시 Address 맵 재 정의 후 수정 필요
 	btTemp = btData[enSmsWordWrite_DrossTop_Alarm_Cnt];
-	pSeqOutData->dwDrossTopCount = (DWORD)btTemp;
+	pSeqOutData->dwFoilExpBothTopCount = (DWORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_DrossBtm_Alarm_Cnt];
-	pSeqOutData->dwDrossBottomCount = (DWORD)btTemp;
+	pSeqOutData->dwFoilExpBothBottomCount = (DWORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_FoilExpTop_Alarm_Cnt];
-	pSeqOutData->dwFoilExpTopCount = (DWORD)btTemp;
+	pSeqOutData->dwFoilExpInTopCount = (DWORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_FoilExpBtm_Alarm_Cnt];
-	pSeqOutData->dwFoilExpBottomCount = (DWORD)btTemp;
+	pSeqOutData->dwFoilExpOutTopCount = (DWORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_SpeterTop_Alarm_Cnt];
 	pSeqOutData->dwSpeterTopCount = (DWORD)btTemp;
+	//////////////////////////////////////////////////////////////////////////
+
+
 
 	btTemp = btData[enSmsWordWrite_SpeterBtm_Alarm_Cnt];
 	pSeqOutData->dwSpeterBottomCount = (DWORD)btTemp;
@@ -1729,16 +1749,19 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordWrite_Heavy_Alarm_Cnt :
 				nRetAdd = enSmsWordWrite_Heavy_Alarm_Cnt;
 				break;
-			case	enWordWrite_DrossTop_Alarm_Cnt :
+
+			///////////////////////////////////////////////////////////////////////////
+			// 임시, 지멘스 Address 재 정의 후 수정 필요
+			case	enWordWrite_FoilExpInTop_Alarm_Cnt :
 				nRetAdd = enSmsWordWrite_DrossTop_Alarm_Cnt;
 				break;
-			case	enWordWrite_DrossBtm_Alarm_Cnt :
+			case	enWordWrite_FoilExpInBottom_Alarm_Cnt:
 				nRetAdd = enSmsWordWrite_DrossBtm_Alarm_Cnt;
 				break;
-			case	enWordWrite_FoilExpTop_Alarm_Cnt :
+			case	enWordWrite_FoilExpOutTop_Alarm_Cnt:
 				nRetAdd = enSmsWordWrite_FoilExpTop_Alarm_Cnt;
 				break;
-			case	enWordWrite_FoilExpBtm_Alarm_Cnt :
+			case	enWordWrite_FoilExpOutBottom_Alarm_Cnt:
 				nRetAdd = enSmsWordWrite_FoilExpBtm_Alarm_Cnt;
 				break;
 			case	enWordWrite_SpeterTop_Alarm_Cnt :
@@ -1747,6 +1770,9 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordWrite_SpeterBtm_Alarm_Cnt :
 				nRetAdd = enSmsWordWrite_SpeterBtm_Alarm_Cnt;
 				break;
+			///////////////////////////////////////////////////////////////////////////
+
+
 			case	enWordWrite_Top_Defect_Count_Real :
 				nRetAdd = enSmsWordWrite_Top_Defect_Count_Real;
 				break;
@@ -1760,16 +1786,18 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 				nRetAdd = enSmsWordWrite_Btm_Defect_Count_LotEnd;
 				break;
 
-			case	enWordWrite_DrossTopTarget :
+				///////////////////////////////////////////////////////////////////////////
+				// 임시, 지멘스 Address 재 정의 후 수정 필요
+			case	enWordWrite_FoilExpInTopTarget :
 				nRetAdd = enSmsWordWrite_DrossTopTarget;
 				break;
-			case	enWordWrite_DrossBtmTarget :
+			case	enWordWrite_FoilExpInBottomTarget:
 				nRetAdd = enSmsWordWrite_DrossBtmTarget;
 				break;
-			case	enWordWrite_FoilExpTopTarget :
+			case	enWordWrite_FoilExpOutTopTarget:
 				nRetAdd = enSmsWordWrite_FoilExpTopTarget;
 				break;
-			case	enWordWrite_FoilExpBtmTarget :
+			case	enWordWrite_FoilExpOutBottomTarget :
 				nRetAdd = enSmsWordWrite_FoilExpBtmTarget;
 				break;
 			case	enWordWrite_SpeterTopTarget :
@@ -1778,6 +1806,7 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordWrite_SpeterBtmTarget :
 				nRetAdd = enSmsWordWrite_SpeterBtmTarget;
 				break;
+			///////////////////////////////////////////////////////////////////////////
 
 			case	enWordWrite_AlarmExist :
 				nRetAdd = enSmsWordWrite_AlarmExist;

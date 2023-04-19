@@ -40,8 +40,6 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 {
 	int i;
 	m_bInspFlag = FALSE;
-
-	//
 	for ( i = 0; i < GRABBER_COUNT; i++) {
 		m_pGrabCtrl[i] = NULL;
 

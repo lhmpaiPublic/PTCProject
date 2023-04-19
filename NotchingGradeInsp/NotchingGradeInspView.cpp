@@ -531,7 +531,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		case	en_Initialize:
 			//OnTimer 로그출력
 			LOGDISPLAY_SPEC(6)("CNotchingGradeInspView::OnTimer => Initialize");
-			pSigProc->SigOutReady(FALSE);
+//			pSigProc->SigOutReady(FALSE);
 			pSigProc->SigOutEncoderZeroSet(FALSE);
 			pSigProc->sigOutLotEndAck(FALSE);
 			pSigProc->SigOutLotStartAck(FALSE);
@@ -728,7 +728,14 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				int nRecipeNo = 0;
 				AprData.m_NowLotData.m_strRecipeName = AprData.m_NowLotData.m_strNextRecipeName;
 				CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
-				pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName);
+				if( pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName) >= 0 )
+				{
+					pSigProc->SigOutRecipeChangeAck(TRUE);
+					Sleep(200);
+					pSigProc->SigOutRecipeChangeAck(FALSE);
+
+				}
+
 			}
 
 
@@ -752,7 +759,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			m_nStatus = en_Run;
 			m_nRedrawCnt = 0;
 
-			//검사개시 설정함수
 			InspectionStart();
 			break;
 
@@ -794,33 +800,43 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			if (AprData.m_NowLotData.m_SeqDataOut.dwDataReportV1 != (DWORD)AprData.m_NowLotData.m_nTabCount)
 			{
-				AprData.m_NowLotData.m_SeqDataOut.dwDataReportV1 = (DWORD)AprData.m_NowLotData.m_nTabCount;
-				AprData.m_NowLotData.m_SeqDataOut.dwDataReportV2 = (DWORD)(AprData.m_NowLotData.m_nTabCount - AprData.m_NowLotData.m_nTabCountNG);
-				AprData.m_NowLotData.m_SeqDataOut.dwDataReportV3 = (DWORD)AprData.m_NowLotData.m_nTabCountNG;
+				AprData.m_NowLotData.m_SeqDataOut.dwDataReportV1 = (DWORD)AprData.m_NowLotData.m_nTabCount; //검사수량
+				AprData.m_NowLotData.m_SeqDataOut.dwDataReportV2 = (DWORD)(AprData.m_NowLotData.m_nTabCount - AprData.m_NowLotData.m_nTabCountNG); //OK 수량
+				AprData.m_NowLotData.m_SeqDataOut.dwDataReportV3 = (DWORD)AprData.m_NowLotData.m_nTabCountNG; // NG 수량
 
 				if (AprData.m_NowLotData.m_nTabCount > 0)
 				{
-					AprData.m_NowLotData.m_SeqDataOut.dwDataReportV4 = (DWORD)(((double)AprData.m_NowLotData.m_nTabCountOK / (double)AprData.m_NowLotData.m_nTabCount) * 1000.0);
-					//AprData.m_NowLotData.m_SeqDataOut.dwDataReportV5 = 100 - AprData.m_NowLotData.m_SeqDataOut.dwDataReportV4;
+					AprData.m_NowLotData.m_SeqDataOut.dwDataReportV4 = (DWORD)(((double)AprData.m_NowLotData.m_nTabCountOK / (double)AprData.m_NowLotData.m_nTabCount) * 1000.0); //양품률, 소숫점 한자리 포함 ex) 95.4 => 954 로 전송
+					AprData.m_NowLotData.m_SeqDataOut.dwDataReportV5 = (DWORD)( 1000 - AprData.m_NowLotData.m_SeqDataOut.dwDataReportV4 ); //불량률
+					AprData.m_NowLotData.m_SeqDataOut.dwDataReportV6 = AprData.m_NowLotData.m_SeqDataOut.dwDataReportV4; //양품률과 동일
 				}
 				AprData.m_NowLotData.m_SeqDataOut.dwTopNgRealTimeCount = (DWORD)AprData.m_NowLotData.m_nTopNG; // 22.07.13 Ahn Modify  TabNG -> TopNG
 				AprData.m_NowLotData.m_SeqDataOut.dwBottomNgRealTimeCount = (DWORD)AprData.m_NowLotData.m_nBottomNG;
 
+
+
+
+
+
+
+
 				//////////////////////////////////////////////////////////////////////////
 				// [ 레시피 설정값 전송 ]
 				// [ 목표값 ]
-				AprData.m_NowLotData.m_SeqDataOut.dwDrossTopTarget = (DWORD)(AprData.m_pRecipeInfo->dFoilExpOutNgSize + AprData.m_pRecipeInfo->dFoilExpBothNgSize);
-				AprData.m_NowLotData.m_SeqDataOut.dwDrossBottomTarget = (DWORD)(AprData.m_pRecipeInfo->dFoilExpOutNgSize + AprData.m_pRecipeInfo->dFoilExpBothNgSize);
-				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpTopTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpInNgSize;
-				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBottomTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpInNgSize;
-				AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget = (DWORD)AprData.m_pRecipeInfo->dSurfaceNgSize;
-				AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget = (DWORD)AprData.m_pRecipeInfo->dSurfaceNgSize;
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpInNgSize[CAM_POS_TOP];
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpInNgSize[CAM_POS_BOTTOM];
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutTopTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpOutNgSize[CAM_POS_TOP];
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpOutNgSize[CAM_POS_BOTTOM];
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothTopTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpBothNgSize[CAM_POS_TOP];
+				AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomTarget = (DWORD)AprData.m_pRecipeInfo->dFoilExpBothNgSize[CAM_POS_BOTTOM];
+				AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget = (DWORD)AprData.m_pRecipeInfo->dSurfaceNgSize[CAM_POS_TOP];
+				AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget = (DWORD)AprData.m_pRecipeInfo->dSurfaceNgSize[CAM_POS_BOTTOM];
 
 
 				// [ 연속/구간 불량 ]
-				AprData.m_NowLotData.m_SeqDataOut.dwPrmContinuousCnt = AprData.m_nCoutinuouCount; //AprData.m_pRecipeInfo->nContinousNgCount;
-				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorNgTabCnt= AprData.m_nSectorNgCount; //AprData.m_pRecipeInfo->nAlarmCount;
-				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorBaseCnt = AprData.m_nSectorBaseCount; //AprData.m_pRecipeInfo->nSectorCount;
+				AprData.m_NowLotData.m_SeqDataOut.dwPrmContinuousCnt = (DWORD)AprData.m_nCoutinuouCount; //AprData.m_pRecipeInfo->nContinousNgCount;
+				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorNgTabCnt= (DWORD)AprData.m_nSectorNgCount; //AprData.m_pRecipeInfo->nAlarmCount;
+				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorBaseCnt = (DWORD)AprData.m_nSectorBaseCount; //AprData.m_pRecipeInfo->nSectorCount;
 
 
 				//int nAddress = CSigProc::enWordWrite_DataReportV1_Ea;
@@ -839,24 +855,30 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV4 = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDataReportV4;
 					AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV5 = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDataReportV5;
 					AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV6 = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDataReportV6;
+
+
 					AprData.m_NowLotData.m_SeqDataOutSms.wContinueAlarmCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwContinueAlarmCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wHeavyAlarmCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwHeavyAlarmCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wDrossTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDrossTopCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wDrossBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDrossBottomCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpTopCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBottomCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wHeavyAlarmCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSectorAlarmCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wDrossTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothTopCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wDrossBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wTopNgRealTimeCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwTopNgRealTimeCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wBottomNgRealTimeCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwBottomNgRealTimeCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wDrossTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDrossTopTarget;
 
-					AprData.m_NowLotData.m_SeqDataOutSms.wDrossBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDrossBottomTarget;
-					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpTopTarget;
-					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBottomTarget;
+
+
+					//////////////////////////////////////////////////////////////////////////
+					/// 2023.04.19 pyj 지멘스 Address는 재 정의되지 않아 임시로 처리
+					AprData.m_NowLotData.m_SeqDataOutSms.wDrossTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothTopTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wDrossBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomTarget;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget;
-
+					//////////////////////////////////////////////////////////////////////////
 
 
 

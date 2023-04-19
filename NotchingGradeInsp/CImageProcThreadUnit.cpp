@@ -293,7 +293,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						}
 						// 22.05.10 Ahn Add Start 
 					} 
-					//프레임의 헤더 번호가 CAM_POS_TOP과 같지 않다면 CAM_POS_BOTTOM
+					//프레임의 헤더 번호가 CAM_POS_TOP과 같지 않다면
 					else 
 					{
 						//이미지 OK/NG 판정 결과 생성 스래드
@@ -387,12 +387,12 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					LOGDISPLAY_SPEC(7)("pFrmInfo->m_bErrorFlag == TRUE 경우 => Tab 결과정보에 NG 처리(m_pTabRsltInfo->m_nJudge = JUDGE_NG)");
 					// Top 결과 정보  m_pTabRsltInfo  /NG 설정
 					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
-					pFrameRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((pFrameRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm);
+					pFrameRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((pFrameRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
 
 					 //NG 로그 출력한다.
 					 //DEBUG_LOG.txt
-					 AprData.SaveDebugLog_format(_T("<<CtrlImageProcThread>>에러 - [Error NG 판정], Tab을 못찾았다<%s>, Overflow가 발생했다<%s>")
-						 ,(pFrmInfo->m_bErrorFlag == TRUE) ? "TRUE":"FALSE", (pFrmInfo->m_bOverFlow == TRUE) ? "TRUE" : "FALSE");
+					 AprData.SaveDebugLog_Format(_T("<<CtrlImageProcThread>>에러 - [Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"),
+						 pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
 
 				}
 
@@ -413,7 +413,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//BOOL bSaveOkDef = FALSE; // 23.02.10 Ahn Delete
 				{
 					//Foil Size 가져온다.
-					double dSizeX = AprData.m_pRecipeInfo->dFoilExpInNgSize;
+					double dSizeX = AprData.m_pRecipeInfo->dFoilExpInNgSize[pFrmInfo->m_nHeadNo];
 					double dSizeY = AprData.m_pRecipeInfo->dDefJudgeHeight;
 
 					//알람코드 0 초기화

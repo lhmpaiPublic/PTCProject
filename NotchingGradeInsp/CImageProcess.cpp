@@ -5707,7 +5707,8 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 	//// 22.11.21 Ahn Add End
 
 	int nCount = 0; 
-	for (int i = 0; i < nSize; i++) {
+	for (int i = 0; i < nSize; i++)
+	{
 		pData = &(*pBlockInfo)[i];
 		if (pData->bDeleteFlag == TRUE) continue;
 		if (pData->nPixelCnt < nMinSize[pData->nType]) continue;
@@ -5744,34 +5745,35 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 		// 22.05.25 Ahn Add End
 
 		// 22.05.10 Ahn Add Start
-		if( pData->nType == en_ModeSurface ){
-			if (pData->dWidth > pData->dHeight){
+		if( pData->nType == en_ModeSurface )
+		{
+			if (pData->dWidth > pData->dHeight)
+			{
 				pDefInfo->dJudgeSize = pData->dWidth;
-			} else {
+			}
+			else
+			{
 				pDefInfo->dJudgeSize = pData->dHeight;
 			}
-			// 22.05.24 Ahn Add Start
-			if ( ( pRecipeInfo->dSurfaceNgSize > 0.0 ) && ( pDefInfo->dJudgeSize > pRecipeInfo->dSurfaceNgSize ) ){
+			if ( (pRecipeInfo->dSurfaceNgSize[pDefInfo->nHeadNo] > 0.0 ) && ( pDefInfo->dJudgeSize > pRecipeInfo->dSurfaceNgSize[pDefInfo->nHeadNo]) )
+			{
 				pDefInfo->nRank = JUDGE_NG;
 				pTabRsltInfo->m_nJudge = JUDGE_NG;
 				pTabRsltInfo->m_wNgReason |= ( ( pDefInfo->nHeadNo == CAM_POS_TOP ) ? CTabRsltBase::en_Reason_Surface_Top : CTabRsltBase::en_Reason_Surface_Btm ); // 22.07.08 Ahn Add
 
 				//DEBUG_LOG.txt
-				AprData.SaveDebugLog_format(_T("<<AddDefectInfoByBlockInfo>>Surface NG => Head No<%d>."), pDefInfo->nHeadNo);
+				AprData.SaveDebugLog_Format(_T("<<AddDefectInfoByBlockInfo>>Surface NG => Head No<%d>."), pDefInfo->nHeadNo);
 
 			}
-			// 22.05.24 Ahn Add End
-			// 22.11.21 Ahn Modify Start - JUDGE_GRAY
-			else if (pTabRsltInfo->m_nJudge < JUDGE_NG) {
+			else if (pTabRsltInfo->m_nJudge < JUDGE_NG)
+			{
 				if ((pRecipeInfo->dSurfaceGraySize > 0.0) && ( pDefInfo->dJudgeSize > pRecipeInfo->dSurfaceGraySize )) {
 					pDefInfo->nRank = JUDGE_GRAY;
 					pTabRsltInfo->m_nJudge = JUDGE_GRAY;
 				}
 			}
-			// 22.11.21 Ahn Modify End
-			// 22.12.14 Ahn Add Start
+
 			pDefInfo->nDispPos = en_defPosSurface;
-			// 22.12.14 Ahn Add End
 		}
 		else
 		{
@@ -5788,29 +5790,31 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 			// 22.12.14 Ahn Add End
 
 			double dNgSize;
-			switch (pDefInfo->nType) {
+			switch (pDefInfo->nType)
+			{
 			case	en_ModeFoilExp :
-				dNgSize = pRecipeInfo->dFoilExpInNgSize;
+				dNgSize = pRecipeInfo->dFoilExpInNgSize[pDefInfo->nHeadNo];
 				break;
 			case	en_ModeFoilExpOut:
-				dNgSize = pRecipeInfo->dFoilExpOutNgSize;
+				dNgSize = pRecipeInfo->dFoilExpOutNgSize[pDefInfo->nHeadNo];
 				break;
 			case	en_ModeFoilBoth :
-				dNgSize = pRecipeInfo->dFoilExpBothNgSize;
+				dNgSize = pRecipeInfo->dFoilExpBothNgSize[pDefInfo->nHeadNo];
 				break;
 			case	en_ModeSurface :
-				dNgSize = pRecipeInfo->dSurfaceNgSize;
+				dNgSize = pRecipeInfo->dSurfaceNgSize[pDefInfo->nHeadNo];
 				break;
 			}
 			pDefInfo->nRank = CTabRsltInfo::GetDefJudge( dNgSize, 0, pDefInfo->dJudgeSize, pDefInfo->dSizeY );
 			// 22.07.20 Ahn Modify End
-			if (pDefInfo->nRank == JUDGE_NG) {
+			if (pDefInfo->nRank == JUDGE_NG)
+			{
 				BOOL bNg = TRUE;
-				if ( pDefInfo->nType == en_ModeFoilExp ) {
-					// 22.09.14 Ahn Modify Start
-					//if ((pRecipeInfo->dIgnoreDistance < pDefInfo->dDistance) && (pRecipeInfo->dIgnoreDistance > 0)) {
+				if ( pDefInfo->nType == en_ModeFoilExp )
+				{
 					if ((pRecipeInfo->dIgnoreDistance < pDefInfo->dDistance) && (pRecipeInfo->dIgnoreDistance > 0) 
-						&& (( pDefInfo->dSizeX < pRecipeInfo->dIgnoreSize ) && (pRecipeInfo->dIgnoreSize > 0))) {
+						&& (( pDefInfo->dSizeX < pRecipeInfo->dIgnoreSize ) && (pRecipeInfo->dIgnoreSize > 0)))
+					{
 					// 22.09.14 Ahn Modify End
 						pDefInfo->dJudgeSize = pDefInfo->dSizeX;
 						pDefInfo->nRank = JUDGE_OK;
@@ -5818,27 +5822,100 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 						bNg = FALSE;
 					}
 				}
-				if ( bNg == TRUE ) {
+				if ( bNg == TRUE )
+				{
 					pTabRsltInfo->m_nJudge = JUDGE_NG;
-					if (pDefInfo->nType == en_ModeFoilExp)
-					{
-						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm); // 22.07.08 Ahn Add
 
-						//DEBUG_LOG.txt
-						AprData.SaveDebugLog_format(_T("<<AddDefectInfoByBlockInfo>>en_ModeFoilExp NG => Head No<%d>."), pDefInfo->nHeadNo);
-					}
-					else
-					{
-						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpOut_Top : CTabRsltBase::en_Reason_FoilExpOut_Btm); // 22.07.08 Ahn Add
 
-						//DEBUG_LOG.txt
-						AprData.SaveDebugLog_format(_T("<<AddDefectInfoByBlockInfo>>en_ModeFoilExp NG => Head No<%d>."), pDefInfo->nHeadNo);
+// 					if (pDefInfo->nType == en_ModeFoilExp)
+// 					{
+// 						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm); // 22.07.08 Ahn Add
+// 
+// 						CString strMsg;
+// 						strMsg.Format(_T("[NG] en_ModeFoilExp : Head No = %d"));
+// 						AprData.SaveDebugLog(strMsg); //pyjtest
+// 					}
+// 					else
+// 					{
+// 						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpOut_Top : CTabRsltBase::en_Reason_FoilExpOut_Btm); // 22.07.08 Ahn Add
+// 
+// 						CString strMsg;
+// 						strMsg.Format(_T("[NG] en_ModeFoilExp Out : Head No = %d"));
+// 						AprData.SaveDebugLog(strMsg); //pyjtest
+// 					}
+
+
+
+					CString strMsg;
+					switch (pDefInfo->nType)
+					{
+					case	en_ModeFoilExp:
+						if (pDefInfo->nHeadNo == CAM_POS_TOP)
+						{
+							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpIn_Top;
+							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopCount++;
+						}
+						else
+						{
+							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpIn_Btm;
+							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount++;
+						}
+						strMsg.Format(_T("[NG] en_ModeFoilExpIn : Head No = %d"));
+						break;
+
+					case	en_ModeFoilExpOut:
+						if (pDefInfo->nHeadNo == CAM_POS_TOP)
+						{
+							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpOut_Top;
+							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutTopCount++;
+						}
+						else
+						{
+							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpOut_Btm;
+							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount++;
+						}
+						strMsg.Format(_T("[NG] en_ModeFoilExpOut : Head No = %d"));
+						break;
+
+					case	en_ModeFoilBoth:
+						if (pDefInfo->nHeadNo == CAM_POS_TOP)
+						{
+							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpBoth_Top;
+							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothTopCount++;
+						}
+						else
+						{
+							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpBoth_Btm;
+							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomCount++;
+						}
+						strMsg.Format(_T("[NG] en_ModeFoilExpBoth : Head No = %d"));
+						break;
+
+					case	en_ModeSurface:
+						if (pDefInfo->nHeadNo == CAM_POS_TOP)
+						{
+							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_Surface_Top;
+							AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopCount++;
+						}
+						else
+						{
+							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_Surface_Btm;
+							AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomCount++;
+						}
+						strMsg.Format(_T("[NG] en_ModeFoilExpBoth : Head No = %d"));
+						break;
 					}
+
+					AprData.SaveDebugLog(strMsg);
+
+
 				}
 			}
 			// 22.11.21 Ahn Modify Start - JUDGE_GRAY
-			else if (pTabRsltInfo->m_nJudge < JUDGE_NG) {
-				if ((pRecipeInfo->dFoileGraySize  > 0.0) && (pDefInfo->dJudgeSize > pRecipeInfo->dFoileGraySize)) {
+			else if (pTabRsltInfo->m_nJudge < JUDGE_NG)
+			{
+				if ((pRecipeInfo->dFoileGraySize  > 0.0) && (pDefInfo->dJudgeSize > pRecipeInfo->dFoileGraySize))
+				{
 					pDefInfo->nRank = JUDGE_GRAY;
 					pTabRsltInfo->m_nJudge = JUDGE_GRAY;
 				}
@@ -5846,16 +5923,19 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 			// 22.11.21 Ahn Modify End
 		}
 
-		if ( pDefInfo->bDeleteFlag == FALSE) {
+		if ( pDefInfo->bDeleteFlag == FALSE)
+		{
 			pTabRsltInfo->AddDefectInfo(pDefInfo);
 			nCount++;	// 22.05.25 Ahn Add Start
 		}
-		else {
+		else
+		{
 			delete pDefInfo;
 			pDefInfo = NULL;
 		}
 		// 22.05.25 Ahn Add Start 
-		if( ( nSaveCount > 0  ) && ( nCount >= nSaveCount ) ){
+		if( ( nSaveCount > 0  ) && ( nCount >= nSaveCount ) )
+		{
 			break;
 		}
 		// 22.05.25 Ahn Add End
@@ -6382,7 +6462,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	if (bSectorInfo && (nSize == 0))
 	{
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> ** 이미지에서 Sector 정보 찾지았지만 기존이미지 통합과정에서 삭제됨"), nCase);
+		AprData.SaveDebugLog_Format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> ** 이미지에서 Sector 정보 찾지았지만 기존이미지 통합과정에서 삭제됨"), nCase);
 	}
 
 	if (nSize <= 0) {
@@ -6433,7 +6513,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			if (vecSector[i].nStartPos <= nLastSavePos) 
 			{
 				//DEBUG_LOG.txt
-				AprData.SaveDebugLog_format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** Scetor Start Pos가 Last Save Pos 보다 작거나 같을 때 continue(패스) 처리번호<%d/%d>"), nCase, i, nSize);
+				AprData.SaveDebugLog_Format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** Scetor Start Pos가 Last Save Pos 보다 작거나 같을 때 continue(패스) 처리번호<%d/%d>"), nCase, i, nSize);
 
 				continue;
 			}
@@ -6496,7 +6576,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 					i, nWidth* nBackupSize, pResvTabInfo->nFrameCount, pResvTabInfo->nTabStartPosInFrame);
 
 				//DEBUG_LOG.txt
-				AprData.SaveDebugLog_format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** 보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 처리종료 처리번호<%d/%d>"), nCase, i, nSize);
+				AprData.SaveDebugLog_Format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** 보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 처리종료 처리번호<%d/%d>"), nCase, i, nSize);
 
 				return 0;
 			}
@@ -7044,7 +7124,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	if (nLocalRet < 0)
 	{
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessTopSide_BrightRoll>>에러 Edge found faile left round, ret = %d"),
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessTopSide_BrightRoll>>에러 Edge found faile left round, ret = %d"),
 			nLocalRet);
 
 		delete[] pStdPtr;
@@ -7075,7 +7155,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 		delete[] pMeanPtr; 
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile left SmoothVecRoundData Size = %d"),
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile left SmoothVecRoundData Size = %d"),
 			nLeftSize);
 
 		return -2; // 처리 불가.
@@ -7093,7 +7173,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	if (nLocalRet < 0) 
 	{
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile right round, ret = %d"),
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile right round, ret = %d"),
 			nLocalRet);
 
 		delete[] pStdPtr;
@@ -7117,7 +7197,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 		delete[] pMeanPtr; 
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile right SmoothVecRoundData, nRightSize = %d"),
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessTopSide_BrightRoll>>에러 - Edge found faile right SmoothVecRoundData, nRightSize = %d"),
 			nRightSize);
 
 		return -3;
@@ -7354,7 +7434,7 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 
 	if (nLocalRet < 0) {
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessBottomSide_BrightRoll>>에러 - Edge found faile, ret = %d"),
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessBottomSide_BrightRoll>>에러 - Edge found faile, ret = %d"),
 			nLocalRet);
 		return -3;
 	}
@@ -7712,7 +7792,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	if (nLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessTopSide_AreaDiff>>에러 - Edge found faile right round, ret = %d"),
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessTopSide_AreaDiff>>에러 - Edge found faile right round, ret = %d"),
 			nLocalRet);
 
 		delete[] pStdPtr;
@@ -7739,7 +7819,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 		delete[] pMeanPtr; // 22.04.26 Ahn Add
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessTopSide_AreaDiff>>에러 SmoothVecRoundData - nRightSize = %d"),
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessTopSide_AreaDiff>>에러 SmoothVecRoundData - nRightSize = %d"),
 			nRightSize);
 
 		return -3;
@@ -8390,7 +8470,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	if (nLocalRet < 0) {
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessTopSide_Negative>>에러 - Edge found faile left round, ret = %d"), nLocalRet);
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessTopSide_Negative>>에러 - Edge found faile left round, ret = %d"), nLocalRet);
 
 		// 22.04.18 Ahn Add Start
 		delete[] pStdPtr;
@@ -8455,7 +8535,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	if (nLocalRet < 0) {
 		
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_format(_T("<<ImageProcessTopSide_Negative>>에러 - Edge found faile right round, ret = %d"), nLocalRet);
+		AprData.SaveDebugLog_Format(_T("<<ImageProcessTopSide_Negative>>에러 - Edge found faile right round, ret = %d"), nLocalRet);
 
 		delete[] pStdPtr;
 		delete[] pProcPtr;

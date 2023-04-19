@@ -476,6 +476,7 @@
 #define IDC_ED_NG_Y_SIZE                1149
 #define IDC_ST_HEADER                   1149
 #define IDC_BTN_ONE_BY_ONE              1150
+#define IDC_ED_NG_X_SIZE_BTM            1150
 #define IDC_CHK_NG_STOP                 1151
 #define IDC_CHK_ENABLE_MARKER           1151
 #define IDC_CHK_NOTUSE_BACKUP           1151
@@ -534,6 +535,7 @@
 #define IDC_ST_TILDE                    1200
 #define IDC_ED_SURFACE_NG_SIZE          1201
 #define IDC_ST_IMAGE                    1201
+#define IDC_ED_SURFACE_NG_SIZE_BTM      1202
 #define IDC_PROGRESS_ECEXL              1203
 #define IDC_BTN_OPEN_NG_IMG             1204
 #define IDC_BTN_OPEN_OK_IMG             1205
@@ -557,7 +559,9 @@
 #define IDC_ST_A                        1222
 #define IDC_ST_COAT_HEIGHT              1222
 #define IDC_ST_GROUP_SIGNAL_IN          1223
+#define IDC_ED_FOIL_OUT_NG_X_SIZE_BTM   1223
 #define IDC_ST_GROUP_SIGNAL_OUT         1224
+#define IDC_ED_FOIL_BOTH_NG_X_SIZE_BTM  1224
 #define IDC_ST_ALIVE_PULSE_IN           1225
 #define IDC_ST_ALIVE_PULSE_OUT          1226
 #define IDC_ST_READY_IN                 1227
@@ -645,8 +649,10 @@
 #define IDC_ST_FOIL_DEF_REMOVE_DISTANCE 1310
 #define IDC_ST_FOIL_DEF_REMOVE_SIZE     1311
 #define IDC_ST_HORIZON                  1312
+#define IDC_ST_JUDGE_TOP                1312
 #define IDC_ST_GROUP_JUDGE              1313
 #define IDC_ST_MAP_DISP                 1314
+#define IDC_ST_JUDGE_TOP2               1314
 #define IDC_ED_FOILEXP_GRAY_SIZE        1315
 #define IDC_ED_SURFACE_GRAY_SIZE        1316
 #define IDC_ST_GRAY_SIZE                1317

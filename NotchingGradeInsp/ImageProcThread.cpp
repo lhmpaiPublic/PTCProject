@@ -348,7 +348,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				if (nVecSize <= 0)
 				{
 					//DEBUG_LOG.txt
-					AprData.SaveDebugLog(_T("<<CtrlThreadImgCuttingTab>>에러 - 찾은 Tab정보 없음 processing 처리 문제 있음"));
+					AprData.SaveDebugLog(_T("CtrlThreadImgCuttingTab - 찾은 Tab정보 없음 processing NG 마칭 처리"));
 					// 강제 분할 
 					bErrorAll = TRUE;
 				}
@@ -474,9 +474,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//프레임 정보 출력
 					//Tab 번호, 에러번호, Tab left, Tab right, Tab ID
-					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(5)(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
+					CString strMsg;
+					// 22.05.03 Ahn Modify Start
+					strMsg.Format(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
 						, pInfo->nTabNo, nErrorNo, pInfo->m_nTabLevel, pInfo->m_nTabLeft, pInfo->m_nTabRight, pInfo->m_nHeight, pInfo->m_nTabId_CntBoard);
+					// 22.05.03 Ahn Modify End
+					AprData.SaveDebugLog(strMsg);
 
 					//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
 					CFrameInfo* pBtmInfo;
@@ -671,17 +674,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						{
 							wAlarmCode = pTopInfo->m_pTabRsltInfo->m_wNgReason;
 							AprData.m_NowLotData.m_nTopNG++;
-
-							//DEBUG_LOG.txt Log
-							AprData.SaveDebugLog_format("TopNG <couht : %d>", AprData.m_NowLotData.m_nTopNG);
 						}
 						if (nBtmJudge == JUDGE_NG)
 						{
 							wAlarmCode |= pBtmInfo->m_pTabRsltInfo->m_wNgReason;
 							AprData.m_NowLotData.m_nBottomNG++ ;
-
-							//DEBUG_LOG.txt Log
-							AprData.SaveDebugLog_format("BottomNG <couht : %d>", AprData.m_NowLotData.m_nBottomNG);
 						}
 						AprData.m_NowLotData.m_nTabCountNG++ ;
 		
@@ -700,6 +697,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							CString strMessage;
 							strMessage.Format(_T("연속 NG Alarm 발생. %d Tab연속 NG 발생"), AprData.m_NowLotData.m_nContinueCount);
 							AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
+
+							AprData.m_NowLotData.m_SeqDataOut.dwContinueAlarmCount++;
 						}
 
 						// 22.08.10 Ahn Modify End
@@ -715,6 +714,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								CString strMessage;
 								strMessage.Format(_T("구간 NG Alarm 발생. %d / %d Tab NG 발생"), nSecterNgCount, AprData.m_pRecipeInfo->nSectorCount);
 								AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
+
+								AprData.m_NowLotData.m_SeqDataOut.dwSectorAlarmCount++;
 							}
 						}
 						// 22.08.09 Ahn Add End
@@ -741,7 +742,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								// 22.12.12 Ahn Add End
 							}
 						}
-					} else {
+					}
+					else
+					{
 						AprData.m_NowLotData.m_nTabCountOK++ ;
 						AprData.m_NowLotData.m_nContinueCount = 0 ; // 22.08.09 Ahn Add
 						AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_pRecipeInfo->nSectorCount);
@@ -896,14 +899,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 								pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
-							}
-							else
-							{
-								//DEBUG_LOG.txt
-								AprData.SaveDebugLog_format(_T("<<CtrlThreadImgProc>>에러 - Image Save Queue Overflow<%d/%d>"),
-									pImgSaveQueueCtrl->GetSize(), MAX_SAVE_IMAGE_QUEUE);
-							}
 
+								CString strMsg;
+								strMsg.Format(_T("Save Image Path = %s"), pSaveInfo->m_strSavePath);
+								AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+							}
 						}
 					}
 					// 22.05.31 Ahn Add End
@@ -1040,40 +1042,74 @@ int CImageProcThread::GetMarkingFlag(CRecipeInfo* pRecipeInfo, int nTopJudge, in
 
 	// 판정결과 적용
 	pRecipeInfo = AprData.m_pRecipeInfo;
-	if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG)) {
+	if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG))
+	{
 		WORD wReason = wTopReson | wBtmReson ;
-		if ( ( wReason & CTabRsltBase::en_Reason_Surface_Top ) || ( wReason & CTabRsltBase::en_Reason_Surface_Btm ) ) {
-			if (pRecipeInfo->nMarkingUse[en_ModeSurface] == TRUE) {
-				if (pRecipeInfo->nMarkingType[en_ModeSurface] == 0) {
+		if ( ( wReason & CTabRsltBase::en_Reason_Surface_Top ) || ( wReason & CTabRsltBase::en_Reason_Surface_Btm ) )
+		{
+			if (pRecipeInfo->nMarkingUse[en_ModeSurface] == TRUE)
+			{
+				if (pRecipeInfo->nMarkingType[en_ModeSurface] == 0)
+				{
 					nMarkSel1 = 1;
-				} else {
+				}
+				else
+				{
 					nMarkSel1 = 1;
 					nMarkSel2 = 1;
 				}
 			}
 		}
-		if ((wReason & CTabRsltBase::en_Reason_FoilExp_Top) || (wReason & CTabRsltBase::en_Reason_FoilExp_Btm)) {
-			if (pRecipeInfo->nMarkingUse[en_ModeFoilExp] == TRUE) {
-				if (pRecipeInfo->nMarkingType[en_ModeFoilExp] == 0) {
+
+		if ((wReason & CTabRsltBase::en_Reason_FoilExpIn_Top) || (wReason & CTabRsltBase::en_Reason_FoilExpIn_Btm))
+		{
+			if (pRecipeInfo->nMarkingUse[en_ModeFoilExp] == TRUE)
+			{
+				if (pRecipeInfo->nMarkingType[en_ModeFoilExp] == 0)
+				{
 					nMarkSel1 = 1;
-				} else {
+				}
+				else
+				{
 					nMarkSel1 = 1;
 					nMarkSel2 = 1;
 				}
 			}
 		}
-		if ((wReason & CTabRsltBase::en_Reason_FoilExpOut_Top) || (wReason & CTabRsltBase::en_Reason_FoilExp_Btm)) {
-			if (pRecipeInfo->nMarkingUse[en_ModeFoilExpOut] == TRUE) {
-				if (pRecipeInfo->nMarkingType[en_ModeFoilExpOut] == 0) {
+
+		if ((wReason & CTabRsltBase::en_Reason_FoilExpOut_Top) || (wReason & CTabRsltBase::en_Reason_FoilExpOut_Btm))
+		{
+			if (pRecipeInfo->nMarkingUse[en_ModeFoilExpOut] == TRUE)
+			{
+				if (pRecipeInfo->nMarkingType[en_ModeFoilExpOut] == 0)
+				{
 					nMarkSel1 = 1;
 				}
-				else {
+				else
+				{
 					nMarkSel1 = 1;
 					nMarkSel2 = 1;
 				}
 			}
 		}
-		//}
+
+		if ((wReason & CTabRsltBase::en_Reason_FoilExpBoth_Top) || (wReason & CTabRsltBase::en_Reason_FoilExpBoth_Btm))
+		{
+			if (pRecipeInfo->nMarkingUse[en_ModeFoilBoth] == TRUE)
+			{
+				if (pRecipeInfo->nMarkingType[en_ModeFoilBoth] == 0)
+				{
+					nMarkSel1 = 1;
+				}
+				else
+				{
+					nMarkSel1 = 1;
+					nMarkSel2 = 1;
+				}
+			}
+		}
+
+
 	}
 
 	nRet = ( nMarkSel1 | ( nMarkSel2 << 1 ) );
