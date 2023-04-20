@@ -157,7 +157,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				// 22.12.16 Ahn Modify Start
 				//strTime.Format(_T("%02d-%02d%02d%02d.%03d"), sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds);
 				//시스템 시간명으로 이미지 저정명 추카
-				strTime.Format(_T("%04d%02d%02d%02d%02d%02d%03d"), sysTime.wYear,sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds);
+				strTime.Format(_T("%04d%02d%02d_%02d%02d%02d%03d"), sysTime.wYear,sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds);
 				// 22.12.16 Ahn Modify End
 				// 22.02.24 Ahn Add End
 

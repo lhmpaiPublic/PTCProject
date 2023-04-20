@@ -524,7 +524,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 	CString strFileName;
 
 	CString strTime;
-	strTime.Format(_T("%04d%02d%02d%02d%02d%02d%03d")
+	strTime.Format(_T("%04d%02d%02d_%02d%02d%02d%03d")
 		, pTabInfo->sysTime.wYear, pTabInfo->sysTime.wMonth, pTabInfo->sysTime.wDay
 		, pTabInfo->sysTime.wHour, pTabInfo->sysTime.wMinute, pTabInfo->sysTime.wSecond, pTabInfo->sysTime.wMilliseconds);
 
