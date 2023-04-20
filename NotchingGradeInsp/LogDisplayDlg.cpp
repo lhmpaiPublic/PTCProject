@@ -34,6 +34,7 @@ CString strLogNameList =
 "100 END 0"
 ;
 
+#define MAX_DISPLAYLOG 1024
 CLogDisplayDlg* CLogDisplayDlg::gInst()
 {
 	// 로그출력 창 생성
@@ -57,7 +58,7 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 {
 	va_list arg;
 	int done;
-	char str[MAX_PATH] = { 0, };
+	char str[MAX_DISPLAYLOG] = { 0, };
 	va_start(arg, format);
 	done = vsprintf_s(str, format, arg);
 	va_end(arg);
@@ -66,7 +67,7 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 	SYSTEMTIME	sysTime;
 	::GetLocalTime(&sysTime);
 
-	strData.Format(_T("%04d/%02d/%02d-%02d:%02d:%02d.%03d : Log = %s ")
+	strData.Format(_T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d :: Log = %s")
 		, sysTime.wYear
 		, sysTime.wMonth
 		, sysTime.wDay
