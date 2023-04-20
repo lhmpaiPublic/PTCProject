@@ -66,7 +66,7 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 	SYSTEMTIME	sysTime;
 	::GetLocalTime(&sysTime);
 
-	strData.Format(_T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d :: Log = , ")
+	strData.Format(_T("%04d/%02d/%02d-%02d:%02d:%02d.%03d : Log = %s ")
 		, sysTime.wYear
 		, sysTime.wMonth
 		, sysTime.wDay
