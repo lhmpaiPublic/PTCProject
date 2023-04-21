@@ -9,6 +9,8 @@
 
 #define LOGTEXTFILENAME "NotchingGradeInsp.txt"
 
+#define LOGTEXTFILEFOLDER CString("NotchingLog")
+
 // CLogDisplayDlg 대화 상자
 
 IMPLEMENT_DYNAMIC(CLogDisplayDlg, CDialogEx)
@@ -26,7 +28,7 @@ BOOL CLogDisplayDlg::bCreate = FALSE;
 CString strLogNameList =
 "0 Execute_ERROT_0 1,"
 "1 PLC_Read_BitIn_1 0,"
-"2 PLC_Read_BitOut_2 0,"
+"2 DIO_IDinout_2 0,"
 "3 PLC_Read_Block_3 0,"
 "4 ImageProcess_TabInfo_4 0,"
 "5 ImageCutting_5 0,"
@@ -259,9 +261,15 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	std::queue<CString>* strList = pMain->getstrLog();
 	CListBox* listBox = pMain->getListBox();
 
+	CString FilePath;
 	char	LogTextpath[_MAX_PATH];
 	memset(LogTextpath, 0x00, sizeof(LogTextpath));
 	::GetCurrentDirectory(_MAX_PATH, LogTextpath);
+	FilePath.Format(_T("%s\\%s")
+		, LogTextpath
+		, LOGTEXTFILEFOLDER
+	);
+
 	CWin32File file;
 	while (pMain && pMain->m_isWorkingThread)
 	{
@@ -283,10 +291,11 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 					//텍스트 로그 출력
 					if (pMain->getTextLogPrint())
 					{
+						
 						CString FileName;
 						SYSTEMTIME	sysTime;
 						::GetLocalTime(&sysTime);
-
+						
 						FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
 							, LOGTEXTFILENAME
 							, sysTime.wYear
@@ -296,7 +305,7 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 							, sysTime.wMinute
 						);
 
-						file.TextSave1Line(LogTextpath, FileName, tempStr+CString("\r\n"), "at", FALSE, 999999999);
+						file.TextSave1Line(FilePath, FileName, tempStr+CString("\r\n"), "at", FALSE, 999999999);
 					}
 				}
 			}

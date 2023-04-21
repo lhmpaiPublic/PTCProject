@@ -14,15 +14,8 @@
 #include "LogDisplayDlg.h"
 
 // CImageProcThreadUnit
-static int GlobalCount = 0;
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
-	//스래드 생성 번호
-	int createcount = GlobalCount++;
-
-	//항상출력 로그
-	LOGDISPLAY_ALL("CImageProcThreadUnit - 스래드 생성<%d> CtrlImageProcThread 함수", createcount);
-
 	//스래드에 넘긴 객체 정보
 	CImageProcThreadUnit* pCtrl = (CImageProcThreadUnit*)pParam;
 
@@ -66,9 +59,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 			if (::WaitForSingleObject(pCtrl->m_hEventProcStart, 0) == WAIT_OBJECT_0) {
 
 				//이미지 OK/NG 판정 결과 생성 스래드
-				LOGDISPLAY_SPECTXT(7)("=======================================================");
-				//이미지 OK/NG 판정 결과 생성 스래드
-				LOGDISPLAY_SPEC(7)("=프래임 처리 최종 NG-OK 스래드 생성 번호 : %d ======== ", createcount);
+				LOGDISPLAY_SPECTXT(7)("=프래임 처리 최종 NG-OK 처리 스래드 생성");
 
 				// 이미지 처리 개시
 				if (pFrmInfo == NULL) {
@@ -606,9 +597,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	pCtrl->m_bThreadValid = FALSE;
 	//CFrameInfo 객체의 Kill 이벤트 설정
 	::SetEvent(pCtrl->m_hEventKilled);
-
-	//항상출력 로그
-	LOGDISPLAY_ALL("CImageProcThreadUnit - 스래드 종료<%d> CtrlImageProcThread 함수", createcount);
 
 	return 0;
 }

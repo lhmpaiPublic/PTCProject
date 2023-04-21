@@ -469,6 +469,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					pInfo->m_nTabLeft = pTabInfo->nTabLeft;
 					pInfo->m_nTabRight = pTabInfo->nTabRight;
 					pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
+
 					pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 					pInfo->m_nBndElectrode = nBndElectrode;
 

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CMelsecEthenet.h"
 #include "CMelsecEthernetSock.h"
 #include "TimeAnalyzer.h"
@@ -78,7 +78,7 @@ int CMelsecEthernet::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 	ASSERT(nPort >= 0);
 	ASSERT(nPort < m_wMaxPort);
 	if ((nPort < 0) || (nPort >= m_wMaxPort)) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	int	nRet = 0;
@@ -106,7 +106,7 @@ int CMelsecEthernet::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 			break;
 		default:
 		{
-			//¿¡·¯·Î±×
+			//ì—ëŸ¬ë¡œê·¸
 		}
 		return (-1);
 		}
@@ -115,7 +115,7 @@ int CMelsecEthernet::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 		//nRet = OutPort(nPort, data, TRUE, bGetBit);
 		//if (nRet < 0) {
 		//	nRet = -1;
-		//	//¿¡·¯·Î±×
+		//	//ì—ëŸ¬ë¡œê·¸
 		//}
 		btOutPortData[nPort] = data;
 		// 22.03.24 Ahn Delete Start
@@ -124,14 +124,14 @@ int CMelsecEthernet::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 
 }
 // 22.03.24 Ahn Modify Start
-// ÀÌ¹Ì ÀĞ¾îµĞ Æ÷Æ® °ªÀ» ¹İÈ¯ÇÔ.
+// ì´ë¯¸ ì½ì–´ë‘” í¬íŠ¸ ê°’ì„ ë°˜í™˜í•¨.
 int CMelsecEthernet::InPort(WORD nPort, BYTE* data, BOOL bExtSt /*= FALSE*/)
 {
 	ASSERT(nPort >= 0);
 	ASSERT(nPort < m_wMaxPort);
 	ASSERT(data);
 	if ((nPort < 0) || (nPort >= m_wMaxPort)) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		return (-1);
 	}
 	int	nRet = 0;
@@ -142,7 +142,7 @@ int CMelsecEthernet::InPort(WORD nPort, BYTE* data, BOOL bExtSt /*= FALSE*/)
 	}
 	return (nRet);
 }
-// 1¹ÙÀÌÆ®¾¿ ÀĞ¾î¿È
+// 1ë°”ì´íŠ¸ì”© ì½ì–´ì˜´
 //int CMelsecEthernet::InPort(WORD port, BYTE* data, BOOL bExtSt /*= FALSE*/)
 //{
 //	ASSERT(data);
@@ -194,7 +194,7 @@ int CMelsecEthernet::WriteAlarmCode(int offset)
 
 	CSingleLock cs(GetCriticalSection(), TRUE);
 	if (m_pEthernetSock->WriteDataReg(offset, (short*)wAlarmCode, num * conv) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		ret = -1;
 	}
 
@@ -216,7 +216,7 @@ int CMelsecEthernet::WriteDataReg(int offset, short data[], int num)
 
 	CSingleLock cs(GetCriticalSection(), TRUE);
 	if (m_pEthernetSock->WriteDataReg(offset, data, num * conv) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		ret = -1;
 	}
 
@@ -238,7 +238,7 @@ int CMelsecEthernet::ReadDataReg(int offset, short data[], int num)
 
 	CSingleLock cs(GetCriticalSection(), TRUE);
 	if (m_pEthernetSock->ReadDataReg(offset, data, num ) != 0) {
-		//¿¡·¯·Î±×
+		//ì—ëŸ¬ë¡œê·¸
 		ret = -1;
 	}
 
@@ -252,8 +252,8 @@ int CMelsecEthernet::ReadDataReg(int offset, short data[], int num)
 
 int CMelsecEthernet::OpenPio(void)
 {
-	//·Î±×Ãâ·Â
-	LOGDISPLAY_ALL("PLC MelsecEthernetSock Open IP:%s, Protocol:%d", m_strIpAddress, m_nProtocol);
+	//ë¡œê·¸ì¶œë ¥
+	LOGDISPLAY_SPEC(0)("PLC MelsecEthernetSock Open IP:%s, Protocol:%d", m_strIpAddress, m_nProtocol);
 	int bRet = 0;
 
 	if (m_pEthernetSock == NULL) {
@@ -268,8 +268,8 @@ int CMelsecEthernet::OpenPio(void)
 			DWORD dwErrCode = ::GetLastError();
 			strError = ::FormatErrorMsg(dwErrCode);
 
-			//·Î±×Ãâ·Â
-			LOGDISPLAY_ALL(_T("<<CMelsecEthernetSock TCP Sock Create Errorr>>¿¡·¯ - ¿¡·¯<%s>"), strError);
+			//ë¡œê·¸ì¶œë ¥
+			LOGDISPLAY_SPEC(0)(_T("<<CMelsecEthernetSock TCP Sock Create Errorr>>ì—ëŸ¬ - ì—ëŸ¬<%s>"), strError);
 
 			return (-1);
 		}
@@ -280,8 +280,8 @@ int CMelsecEthernet::OpenPio(void)
 			CString strError;
 			strError = ::FormatErrorMsg(::GetLastError());
 
-			//·Î±×Ãâ·Â
-			LOGDISPLAY_ALL(_T("<<CMelsecEthernet UDP Sock Create Errorr>>¿¡·¯ - ¿¡·¯<%s>"), strError);
+			//ë¡œê·¸ì¶œë ¥
+			LOGDISPLAY_SPEC(0)(_T("<<CMelsecEthernet UDP Sock Create Errorr>>ì—ëŸ¬ - ì—ëŸ¬<%s>"), strError);
 			return (-1);
 		}
 		bRet = m_pEthernetSock->Connect(m_strIpAddress, MELSEC_UDP_PORT);
@@ -294,61 +294,61 @@ int CMelsecEthernet::OpenPio(void)
 		CString	strErMsg = _T("");
 		switch (dwErrorCode) {
 		case	WSANOTINITIALISED:
-			strErMsg.Format(_T("ÀÌ API¸¦ »ç¿ëÇÏ±â Àü¿¡ AfxSocketInit È£ÃâÀÌ ¼º°øÀûÀÎ ¿Ï·á°¡ ÇÊ¿äÇÕ´Ï´Ù."));
+			strErMsg.Format(_T("ì´ APIë¥¼ ì‚¬ìš©í•˜ê¸° ì „ì— AfxSocketInit í˜¸ì¶œì´ ì„±ê³µì ì¸ ì™„ë£Œê°€ í•„ìš”í•©ë‹ˆë‹¤."));
 			break;
 		case	WSAENETDOWN:
-			strErMsg.Format(_T("Windows ¼ÒÄÏ ±¸ÇöÀÌ ³×Æ®¿öÅ© ¼­ºê ½Ã½ºÅÛÀÇ ÀÌ»óÀ» °ËÃâÇß½À´Ï´Ù."));
+			strErMsg.Format(_T("Windows ì†Œì¼“ êµ¬í˜„ì´ ë„¤íŠ¸ì›Œí¬ ì„œë¸Œ ì‹œìŠ¤í…œì˜ ì´ìƒì„ ê²€ì¶œí–ˆìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAEADDRINUSE:
-			strErMsg.Format(_T("ÁöÁ¤ÇÑ ÁÖ¼Ò´Â »ç¿ëÁßÀÔ´Ï´Ù."));
+			strErMsg.Format(_T("ì§€ì •í•œ ì£¼ì†ŒëŠ” ì‚¬ìš©ì¤‘ì…ë‹ˆë‹¤."));
 			break;
 		case	WSAEINPROGRESS:
-			strErMsg.Format(_T("½ÇÇàÁßÀÎ Windows ¼ÒÄÏ ÀÛ¾÷ÀÌ Â÷´ÜµÇ¾î ÀÖ½À´Ï´Ù."));
+			strErMsg.Format(_T("ì‹¤í–‰ì¤‘ì¸ Windows ì†Œì¼“ ì‘ì—…ì´ ì°¨ë‹¨ë˜ì–´ ìˆìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAEADDRNOTAVAIL:
-			strErMsg.Format(_T("ÁöÁ¤µÈ ÁÖ¼Ò´Â ·ÎÄÃ ÄÄÇ»ÅÍ¿¡¼­ »ç¿ëÇÒ ¼ö ¾ø½À´Ï´Ù."));
+			strErMsg.Format(_T("ì§€ì •ëœ ì£¼ì†ŒëŠ” ë¡œì»¬ ì»´í“¨í„°ì—ì„œ ì‚¬ìš©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAEAFNOSUPPORT:
-			strErMsg.Format(_T("ÁöÁ¤ÇÑ ÁÖ¼Ò Á¦Ç°±ºÀÌ ¼ÒÄÏ¿¡¼­ Áö¿øÇÏÁö ¾Ê½À´Ï´Ù."));
+			strErMsg.Format(_T("ì§€ì •í•œ ì£¼ì†Œ ì œí’ˆêµ°ì´ ì†Œì¼“ì—ì„œ ì§€ì›í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAECONNREFUSED:
-			strErMsg.Format(_T("¿¬°áÀ» ½ÃµµÇßÀ¸³ª °ÅºÎµÇ¾ú½À´Ï´Ù."));
+			strErMsg.Format(_T("ì—°ê²°ì„ ì‹œë„í–ˆìœ¼ë‚˜ ê±°ë¶€ë˜ì—ˆìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAEDESTADDRREQ:
-			strErMsg.Format(_T("¸ñÀûÁö ÁÖ¼Ò°¡ ÇÊ¿äÇÕ´Ï´Ù."));
+			strErMsg.Format(_T("ëª©ì ì§€ ì£¼ì†Œê°€ í•„ìš”í•©ë‹ˆë‹¤."));
 			break;
 		case	WSAEFAULT:
-			strErMsg.Format(_T("ÀÎ¼ö SockAddr_in°¡ Àß¸øµÇ¾ú½À´Ï´Ù."));
+			strErMsg.Format(_T("ì¸ìˆ˜ SockAddr_inê°€ ì˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAEINVAL:
-			strErMsg.Format(_T("È£½ºÆ® ÁÖ¼Ò°¡ Àß¸øµÇ¾ú½À´Ï´Ù."));
+			strErMsg.Format(_T("í˜¸ìŠ¤íŠ¸ ì£¼ì†Œê°€ ì˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAEISCONN:
-			strErMsg.Format(_T("¼ÒÄÏÀº ÀÌ¹Ì ¿¬°áµÇ¾î ÀÖ½À´Ï´Ù."));
+			strErMsg.Format(_T("ì†Œì¼“ì€ ì´ë¯¸ ì—°ê²°ë˜ì–´ ìˆìŠµë‹ˆë‹¤."));
 			return(0); //break ;
 		case	WSAEMFILE:
-			strErMsg.Format(_T("À¯È¿ÇÑ ÆÄÀÏ µğ½ºÅ©¸³ÅÍ°¡ ¾Æ´Õ´Ï´Ù."));
+			strErMsg.Format(_T("ìœ íš¨í•œ íŒŒì¼ ë””ìŠ¤í¬ë¦½í„°ê°€ ì•„ë‹™ë‹ˆë‹¤."));
 			break;
 		case	WSAENETUNREACH:
-			strErMsg.Format(_T("ÇöÀç È£½ºÆ®¿¡¼­ ³×Æ®¿öÅ©¿¡ ¿¬°áÇÒ ¼ö ¾ø½À´Ï´Ù."));
+			strErMsg.Format(_T("í˜„ì¬ í˜¸ìŠ¤íŠ¸ì—ì„œ ë„¤íŠ¸ì›Œí¬ì— ì—°ê²°í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAENOBUFS:
-			strErMsg.Format(_T("»ç¿ë°¡´ÉÇÑ ¹öÆÛ °ø°£ÀÌ ¾ø½À´Ï´Ù. ¼ÒÄÏÀ» ¿¬°áÇÒ ¼ö ¾ø½À´Ï´Ù."));
+			strErMsg.Format(_T("ì‚¬ìš©ê°€ëŠ¥í•œ ë²„í¼ ê³µê°„ì´ ì—†ìŠµë‹ˆë‹¤. ì†Œì¼“ì„ ì—°ê²°í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAENOTSOCK:
-			strErMsg.Format(_T("µğ½ºÅ©¸³ÅÍ°¡ ¼ÒÄÏÀÌ ¾Æ´Õ´Ï´Ù."));
+			strErMsg.Format(_T("ë””ìŠ¤í¬ë¦½í„°ê°€ ì†Œì¼“ì´ ì•„ë‹™ë‹ˆë‹¤."));
 			break;
 		case	WSAETIMEDOUT:
-			strErMsg.Format(_T("¿¬°áÀ» ½ÃµµÇßÁö¸¸ ½Ã°£¿¡ ¿¬°áÇÒ ¼ö ¾ø½À´Ï´Ù."));
+			strErMsg.Format(_T("ì—°ê²°ì„ ì‹œë„í–ˆì§€ë§Œ ì‹œê°„ì— ì—°ê²°í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤."));
 			break;
 		case	WSAEWOULDBLOCK:
 			return (0);
 		default:
-			strErMsg.Format(_T("¼ÒÄÏ ¿À·ù£º%lu"), (DWORD)dwErrorCode);
+			strErMsg.Format(_T("ì†Œì¼“ ì˜¤ë¥˜ï¼š%lu"), (DWORD)dwErrorCode);
 			break;
 		}
-		//·Î±×Ãâ·Â
-		LOGDISPLAY_ALL(_T("<<CMelsecEthernet Socket Connect Errorr>>¿¡·¯ - ¿¡·¯<%s>"), strErMsg);
+		//ë¡œê·¸ì¶œë ¥
+		LOGDISPLAY_SPEC(0)(_T("<<CMelsecEthernet Socket Connect Errorr>>ì—ëŸ¬ - ì—ëŸ¬<%s>"), strErMsg);
 		return (-1);
 	}
 

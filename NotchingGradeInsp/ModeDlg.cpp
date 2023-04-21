@@ -458,7 +458,7 @@ void CModeDlg::OnBnClickedBtnInspSim()
 	{
 		theApp.m_pImageSimDlg = new CImageProcSimDlg(this);
 		theApp.m_pImageSimDlg->Create(IDD_DLG_INSP_SIM, this);
-		LOGDISPLAY_ALLTXT("CImageProcSimDlg 생성");
+		LOGDISPLAY_SPECTXT(0)("CImageProcSimDlg 생성");
 	}
 	if (theApp.m_pImageSimDlg != NULL) 
 	{

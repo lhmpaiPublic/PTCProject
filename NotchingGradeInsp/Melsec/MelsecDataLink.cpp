@@ -364,7 +364,7 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 				PioErrorProcess(iRet, _T("OutPort OPEN Error 333"));
 
 				//로그출력
-				LOGDISPLAY_ALLTXT("PLC Melsec Open failed");
+				LOGDISPLAY_SPECTXT(0)("PLC Melsec Open failed");
 
 				return (-1);
 			}

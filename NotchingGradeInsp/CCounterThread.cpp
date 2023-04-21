@@ -138,6 +138,10 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						CString strMsg;
 						strMsg.Format(_T("Input ID[%d]"), cntInfo.nTabID);
 						AprData.SaveMemoryLog(strMsg);
+
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(2)(_T("DIO Trigger - Input ID[%d]"), cntInfo.nTabID);
+
 						::Sleep(5);
 					}
 					// Cell 추적 Queue Data -> Local Queue 

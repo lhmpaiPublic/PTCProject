@@ -11,7 +11,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 	strFileName.Format(_T("%s\\RecipeTable.ini"), AprData.m_strDataPath); 
 
 	//로그출력
-	LOGDISPLAY_ALL("Recipe Table File 경로 : %s", strFileName);
+	LOGDISPLAY_SPEC(0)("Recipe Table File 경로 : %s", strFileName);
 
 	CString strKey;
 	CString strSection;
@@ -21,7 +21,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 	if (nMode == MODE_WRITE) 
 	{
 		//로그출력
-		LOGDISPLAY_ALLTXT("Recipe Table File 쓰기");
+		LOGDISPLAY_SPECTXT(0)("Recipe Table File 쓰기");
 
 		for (int i = 0; i < MAX_RECIPE_TABLE; i++) 
 		{
@@ -39,7 +39,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 	else 
 	{
 		//로그출력
-		LOGDISPLAY_ALLTXT("Recipe Table File 읽기");
+		LOGDISPLAY_SPECTXT(0)("Recipe Table File 읽기");
 
 		char buff[256];
 		for (int i = 0; i < MAX_RECIPE_TABLE; i++) 
@@ -47,7 +47,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 			strSection.Format(_T("RECIPE_NO_%d"), i + 1);
 
 			//로그출력
-			LOGDISPLAY_SPEC(99)("[%s]", strSection);
+			LOGDISPLAY_SPEC(0)("[%s]", strSection);
 
 			strKey = _T("RECIPE_NAME");
 			memset(buff, 0, 256);
@@ -57,7 +57,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 			m_RecipeTable[i].strRecipeName.Format( _T("%s"), buff  ) ;
 
 			//로그출력
-			LOGDISPLAY_SPEC(99)("RECIPE_NAME : %s", buff);
+			LOGDISPLAY_SPEC(0)("RECIPE_NAME : %s", buff);
 
 			strKey = _T("MEMO");
 			memset(buff, 0, 256);
@@ -67,7 +67,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 			m_RecipeTable[i].strMemo.Format(_T("%s"), buff );
 
 			//로그출력
-			LOGDISPLAY_SPEC(99)("MEMO : %s", buff);
+			LOGDISPLAY_SPEC(0)("MEMO : %s", buff);
 
 		}
 	}
