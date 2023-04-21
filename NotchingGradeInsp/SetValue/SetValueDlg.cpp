@@ -636,9 +636,6 @@ int CSetValueDlg::SetEventCheckFunc( int ( *eventfunc)( void ) )
 void CSetValueDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO:
-	//OnTimer 로그출력
-	LOGDISPLAY_SPEC(6)("CSetValueDlg::OnTimer");
-
 	if ( nIDEvent == TID_EventCheck ) {
 		TimerCtrl( FALSE ) ;
 		if ( *m_pfEventCheckfunc != NULL ) {

@@ -414,7 +414,7 @@ void CResultViewDlg::OnTimer(UINT_PTR nIDEvent)
 		// 22.06.09 Ahn Add Start
 		if (m_pDoc->IsReqCounterReset() == TRUE) {
 			//OnTimer 로그출력
-			LOGDISPLAY_SPEC(6)("CResultViewDlg::OnTimer => ReqCounterReset 처리");
+			LOGDISPLAY_SPECTXT(6)("CResultViewDlg::OnTimer => ReqCounterReset 처리");
 
 			CounterReset();
 			m_pDoc->SetReqCounterReset(FALSE);

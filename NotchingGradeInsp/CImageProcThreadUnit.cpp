@@ -66,7 +66,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 			if (::WaitForSingleObject(pCtrl->m_hEventProcStart, 0) == WAIT_OBJECT_0) {
 
 				//이미지 OK/NG 판정 결과 생성 스래드
-				LOGDISPLAY_SPEC(7)("=======================================================");
+				LOGDISPLAY_SPECTXT(7)("=======================================================");
 				//이미지 OK/NG 판정 결과 생성 스래드
 				LOGDISPLAY_SPEC(7)("=프래임 처리 최종 NG-OK 스래드 생성 번호 : %d ======== ", createcount);
 
@@ -168,13 +168,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				if ((pFrmInfo->m_bErrorFlag == FALSE) && (pFrmInfo->m_bOverFlow == FALSE))
 				{
 					//이미지 OK/NG 판정 결과 생성 스래드
-					LOGDISPLAY_SPEC(7)("pFrmInfo->m_bErrorFlag == FALSE 경우");
+					LOGDISPLAY_SPECTXT(7)("pFrmInfo->m_bErrorFlag == FALSE 경우");
 
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같다면 실행
 					if (pFrmInfo->m_nHeadNo == CAM_POS_TOP) {
 						
 						//이미지 OK/NG 판정 결과 생성 스래드
-						LOGDISPLAY_SPEC(7)("pFrmInfo->m_nHeadNo == CAM_POS_TOP 경우");
+						LOGDISPLAY_SPECTXT(7)("pFrmInfo->m_nHeadNo == CAM_POS_TOP 경우");
 
 						//Tab Left >0, Tab Right  < 0  이면 실행 Left이면 실행
 						if ((nTabLeft > 0) && (nTabRight < nHeight)) {
@@ -192,7 +192,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
 
 								//이미지 OK/NG 판정 결과 생성 스래드
-								LOGDISPLAY_SPEC(7)("양극 Machine Mode 경우");
+								LOGDISPLAY_SPECTXT(7)("양극 Machine Mode 경우");
 
 							// 22.09.15 Ahn Modify End
 								// 23.02.16 Ahn Modify Start
@@ -204,7 +204,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									nLocalRet = CImageProcess::ImageProcessTopSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
 									
 									//이미지 OK/NG 판정 결과 생성 스래드
-									LOGDISPLAY_SPEC(7)("Bright 모드 CAM의 위치 TOP => ImageProcessTopSide_BrightRoll 함수에서 처리");
+									LOGDISPLAY_SPECTXT(7)("Bright 모드 CAM의 위치 TOP => ImageProcessTopSide_BrightRoll 함수에서 처리");
 								}
 								//Roll Bright Mode Top 가 아니면 ImageProcessTopSide_Negative 실행
 								else {
@@ -212,7 +212,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									nLocalRet = CImageProcess::ImageProcessTopSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
 								
 									//이미지 OK/NG 판정 결과 생성 스래드
-									LOGDISPLAY_SPEC(7)("Bright 모드 CAM의 위치 BOTTOM => ImageProcessTopSide_Negative 함수에서 처리");
+									LOGDISPLAY_SPECTXT(7)("Bright 모드 CAM의 위치 BOTTOM => ImageProcessTopSide_Negative 함수에서 처리");
 								}
 								// 23.02.16 Ahn Modify End
 							}
@@ -223,7 +223,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								nLocalRet = CImageProcess::ImageProcessTopSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
 							
 								//이미지 OK/NG 판정 결과 생성 스래드
-								LOGDISPLAY_SPEC(7)("음극 Machine Mode 경우 => ImageProcessTopSide_AreaDiff 함수에서 처리");
+								LOGDISPLAY_SPECTXT(7)("음극 Machine Mode 경우 => ImageProcessTopSide_AreaDiff 함수에서 처리");
 							}
 							// 22.05.30 Ahn Modify End
 							
@@ -244,7 +244,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						if (AprData.m_pRecipeInfo->bDisableSurface == FALSE) {
 							
 							//이미지 OK/NG 판정 결과 생성 스래드
-							LOGDISPLAY_SPEC(7)("레시피 설정 Surface Enable 처리");
+							LOGDISPLAY_SPECTXT(7)("레시피 설정 Surface Enable 처리");
 
 							CRect rcArea;
 							rcArea.left = 0;
@@ -297,7 +297,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					else 
 					{
 						//이미지 OK/NG 판정 결과 생성 스래드
-						LOGDISPLAY_SPEC(7)("pFrmInfo->m_nHeadNo == CAM_POS_BOTTOM 경우");
+						LOGDISPLAY_SPECTXT(7)("pFrmInfo->m_nHeadNo == CAM_POS_BOTTOM 경우");
 						
 						//실행시간 체크 시작
 						ctAna.StopWatchStart();
@@ -317,14 +317,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								nLocalRet = CImageProcess::ImageProcessBottomSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
 								
 								//이미지 OK/NG 판정 결과 생성 스래드
-								LOGDISPLAY_SPEC(7)("양극 Bright 모드 CAM의 위치 BOTTOM => ImageProcessBottomSide_BrightRoll 함수에서 처리");
+								LOGDISPLAY_SPECTXT(7)("양극 Bright 모드 CAM의 위치 BOTTOM => ImageProcessBottomSide_BrightRoll 함수에서 처리");
 							} 
 							//Tabcond Roll Bright Mode 가 Top 이면 ImageProcessBottomSide_Negative 실행
 							else {
 								nLocalRet = CImageProcess::ImageProcessBottomSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
 							
 								//이미지 OK/NG 판정 결과 생성 스래드
-								LOGDISPLAY_SPEC(7)("양극 Bright 모드 CAM의 위치 TOP => ImageProcessTopSide_Negative 함수에서 처리");
+								LOGDISPLAY_SPECTXT(7)("양극 Bright 모드 CAM의 위치 TOP => ImageProcessTopSide_Negative 함수에서 처리");
 							}
 						}
 						//Machine Mode 가 음극이면 ImageProcessBottomSide_AreaDiff 실행
@@ -332,7 +332,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							nLocalRet = CImageProcess::ImageProcessBottomSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
 						
 							//이미지 OK/NG 판정 결과 생성 스래드
-							LOGDISPLAY_SPEC(7)("음극 ImageProcessBottomSide_AreaDiff 함수에서 처리");
+							LOGDISPLAY_SPECTXT(7)("음극 ImageProcessBottomSide_AreaDiff 함수에서 처리");
 						}
 
 						// 22.05.30 Ahn Modify End
@@ -350,7 +350,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						if (AprData.m_pRecipeInfo->bDisableSurface == FALSE) {
 
 							//이미지 OK/NG 판정 결과 생성 스래드
-							LOGDISPLAY_SPEC(7)("레시피 설정 Surface Enable 처리");
+							LOGDISPLAY_SPECTXT(7)("레시피 설정 Surface Enable 처리");
 
 							//영역 객체 생성 left 값
 							CRect rcArea;
@@ -384,7 +384,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				else
 				{
 
-					LOGDISPLAY_SPEC(7)("pFrmInfo->m_bErrorFlag == TRUE 경우 => Tab 결과정보에 NG 처리(m_pTabRsltInfo->m_nJudge = JUDGE_NG)");
+					LOGDISPLAY_SPECTXT(7)("pFrmInfo->m_bErrorFlag == TRUE 경우 => Tab 결과정보에 NG 처리(m_pTabRsltInfo->m_nJudge = JUDGE_NG)");
 					// Top 결과 정보  m_pTabRsltInfo  /NG 설정
 					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
 					pFrameRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((pFrameRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);

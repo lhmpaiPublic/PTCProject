@@ -141,8 +141,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		}
 
 		//Image Cutting Tab 정보 출력 로그
-		LOGDISPLAY_SPEC(5)("=====================================================================");
-		LOGDISPLAY_SPEC(5)("===== Image Cutting Tab 출력 시작 =====================================");
+		LOGDISPLAY_SPECTXT(5)("=====================================================================");
+		LOGDISPLAY_SPECTXT(5)("===== Image Cutting Tab 출력 시작 =====================================");
 
 		//프레임 크기
 		//Top Frame 크기
@@ -164,7 +164,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) {
 
 			//Image Cutting Tab 정보 출력 로그
-			LOGDISPLAY_SPEC(5)("Top-Bottom Frame 사이즈 차가 5 이상이면 카메라 에러");
+			LOGDISPLAY_SPECTXT(5)("Top-Bottom Frame 사이즈 차가 5 이상이면 카메라 에러");
 
 			// 에러 처리 
 		//	pThis->SetFameSizeError(); // 
@@ -200,14 +200,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		if (bHeadFlag && bTailFlag) {
 #endif
 			//Image Cutting Tab 정보 출력 로그
-			LOGDISPLAY_SPEC(5)("Top-Bottom Frame 정보 처리 구간");
+			LOGDISPLAY_SPECTXT(5)("Top-Bottom Frame 정보 처리 구간");
 
 			// 22.02.22 Ahn Modify End
 			//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Top 객체를 가져온다.
 			CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
 
 			//Image Cutting Tab 정보 출력 로그
-			LOGDISPLAY_SPEC(5)("Queue에 저장된 Frame_Top  FrameInfo를 Pop한다.=== ");
+			LOGDISPLAY_SPECTXT(5)("Queue에 저장된 Frame_Top  FrameInfo를 Pop한다.=== ");
 
 			//Top 이미지의 크기 값
 			int nHeight = pFrmInfo_Top->m_nHeight;
@@ -255,7 +255,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			CFrameInfo* pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
 
 			//Image Cutting Tab 정보 출력 로그
-			LOGDISPLAY_SPEC(5)("Queue에 저장된 Frame_Bottom  FrameInfo를 Pop한다.=== ");
+			LOGDISPLAY_SPECTXT(5)("Queue에 저장된 Frame_Bottom  FrameInfo를 Pop한다.=== ");
 #else
 			CFrameInfo* pFrmInfo_Bottom = new CFrameInfo();
 			BYTE* pImg = new BYTE[nWidth * nHeight];
@@ -315,7 +315,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
 
 				//Image Cutting Tab 정보 출력 로그
-				LOGDISPLAY_SPEC(5)("TabFindPos 값 => 양극경우 CImageProcess::GetBoundaryOfElectorde 처리 값을  nBndElectrode 저장 ");
+				LOGDISPLAY_SPECTXT(5)("TabFindPos 값 => 양극경우 CImageProcess::GetBoundaryOfElectorde 처리 값을  nBndElectrode 저장 ");
 #endif
 				// 22.05.09 Ahn Add End
 				//Tab 정보를 저장할 vector 임시 객체
@@ -390,7 +390,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 1;
 						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("에러유형 1 : Left가 레시피 설정 반지름 보다 작거나 Right 가 레시피 설정 반지름 보다 작다");
+						LOGDISPLAY_SPECTXT(5)("에러유형 1 : Left가 레시피 설정 반지름 보다 작거나 Right 가 레시피 설정 반지름 보다 작다");
 					}
 
 					//에레 체크 : 
@@ -399,7 +399,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						AprData.m_NowLotData.m_bProcError = FALSE;
 						nErrorNo = 2;
 						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("에러유형 2 : Left가 레시피 설정 반지름 보다 작거나 Right 가 레시피 설정 반지름 보다 작다으면서 시스템 설정 m_bFirstTabDoNotProc가 TRUE");
+						LOGDISPLAY_SPECTXT(5)("에러유형 2 : Left가 레시피 설정 반지름 보다 작거나 Right 가 레시피 설정 반지름 보다 작다으면서 시스템 설정 m_bFirstTabDoNotProc가 TRUE");
 					}
 
 					// 21.12.28 Ahn Add Start
@@ -408,7 +408,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 3;
 						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("에러유형 3 : Tab 정보 구하기에서 못 구했을 때");
+						LOGDISPLAY_SPECTXT(5)("에러유형 3 : Tab 정보 구하기에서 못 구했을 때");
 					}
 
 					// 21.12.28 Ahn Add End
@@ -645,7 +645,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			while (1) 
 			{
 				//GEN 체크박스 Log 출력
-				LOGDISPLAY_SPEC(99)("Image Top/Bottom Tab 번호/마킹플래그 스래드");
+				LOGDISPLAY_SPECTXT(99)("Image Top/Bottom Tab 번호/마킹플래그 스래드");
 
 				if (pThis->m_bKill == TRUE) {
 					break;
@@ -764,13 +764,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 22.07.19 Ahn Modify End
 
 						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(99)("불량 마킹정보 받음 =>  ");
+						LOGDISPLAY_SPECTXT(99)("불량 마킹정보 받음 =>  ");
 
 						CSigProc* pSigProc = theApp.m_pSigProc;
 						bMarkingActive = TRUE;
 						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) ) {
 							//체크박스 로그 출력
-							LOGDISPLAY_SPEC(99)("불량도 마킹 안함");
+							LOGDISPLAY_SPECTXT(99)("불량도 마킹 안함");
 							nMarkSel1 = 0;
 							nMarkSel2 = 0; 
 						}
@@ -786,7 +786,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
 
 						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(99)("DIO out_pulse : TRUE");
+						LOGDISPLAY_SPECTXT(99)("DIO out_pulse : TRUE");
 
 						CString strMsg;
 						strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d]"), pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo ); // 22.04.06 Ahn Modify
@@ -914,7 +914,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
 
 					// GEN 체크박스 Log 출력
-					LOGDISPLAY_SPEC(99)("Top/Bottom 마킹정보를 pRsltQueueCtrl 저장");
+					LOGDISPLAY_SPECTXT(99)("Top/Bottom 마킹정보를 pRsltQueueCtrl 저장");
 
 					// 22.12.09 Ahn Add Start
 					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
@@ -940,7 +940,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
 
 					//체크박스 로그 출력
-					LOGDISPLAY_SPEC(99)("DIO out_pulse : FALSE");
+					LOGDISPLAY_SPECTXT(99)("DIO out_pulse : FALSE");
 
 					// 22.02.17 Ahn Modify End
 
@@ -995,7 +995,7 @@ WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, in
 	if (AprData.m_System.m_bMarkingAllTab == TRUE)
 	{
 		//체크박스 출력 로그
-		LOGDISPLAY_SPEC(99)("MarkingAllTab 설정 상태");
+		LOGDISPLAY_SPECTXT(99)("MarkingAllTab 설정 상태");
 
 		nJudge1 = JUDGE_NG;
 		nJudge2 = JUDGE_NG;

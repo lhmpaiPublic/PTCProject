@@ -116,9 +116,6 @@ void CIoMonitorDlg::OnTimer(UINT_PTR nIDEvent)
 	if (m_TID_CheckIO == nIDEvent) {
 		KillCheckIoTimer();
 
-		//OnTimer 로그출력
-		LOGDISPLAY_SPEC(6)("CIoMonitorDlg::OnTimer");
-
 		// 신호 Display 갱신
 		RefreshAll();
 

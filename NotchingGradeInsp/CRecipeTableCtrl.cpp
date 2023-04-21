@@ -21,7 +21,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 	if (nMode == MODE_WRITE) 
 	{
 		//로그출력
-		LOGDISPLAY_ALL("Recipe Table File 쓰기");
+		LOGDISPLAY_ALLTXT("Recipe Table File 쓰기");
 
 		for (int i = 0; i < MAX_RECIPE_TABLE; i++) 
 		{
@@ -39,7 +39,7 @@ int CRecipeTableCtrl::FileCtrl(int nMode)
 	else 
 	{
 		//로그출력
-		LOGDISPLAY_ALL("Recipe Table File 읽기");
+		LOGDISPLAY_ALLTXT("Recipe Table File 읽기");
 
 		char buff[256];
 		for (int i = 0; i < MAX_RECIPE_TABLE; i++) 

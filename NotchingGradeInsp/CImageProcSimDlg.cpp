@@ -4185,9 +4185,6 @@ int CImageProcSimDlg::ProcHalfSlittingInsp(BYTE* pImgPtr, int nWidth, int nHeigh
 // 22.07.26 Ahn Add Start
 int CImageProcSimDlg::RecipeListLoad()
 {
-	//로그출력
-	LOGDISPLAY_ALL("RecipeListLoad");
-
 	CRecipeCtrl rcpCtrl;
 	m_cmbRecipeSelect.Clear();
 	CStringList strRcpList;

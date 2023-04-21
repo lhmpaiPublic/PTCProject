@@ -230,7 +230,7 @@ int CImageProcessCtrl::Initialize(HWND hWnd, int nIndex )
 	//메모리 할당된 CQueueCtrl 포인터 객체을 변수로 넘긴다.
 	m_pGrabCtrl[nIndex]->Open( hWnd, m_pQueueFrmCtrl[ nIndex ], nIndex );
 
-	LOGDISPLAY_ALL("CGrabberCtrl에 Top/Bottom Frame 저장 Queue 생성");
+	LOGDISPLAY_ALLTXT("CGrabberCtrl에 Top/Bottom Frame 저장 Queue 생성");
 
 	// Check SerialNo And Swap 
 	//if( AprData.m_System.m_nCamViewHeight)

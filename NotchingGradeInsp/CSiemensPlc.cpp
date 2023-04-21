@@ -137,11 +137,11 @@ int CSiemensPlc::OpenPio(void)
 	{
 		ClosePio();
 		//로그출력
-		LOGDISPLAY_ALL("PLC Siemens Open failed");
+		LOGDISPLAY_ALLTXT("PLC Siemens Open failed");
 	}
 
 	//로그출력
-	LOGDISPLAY_ALL("PLC Siemens Open OK");
+	LOGDISPLAY_ALLTXT("PLC Siemens Open OK");
 
 	return 0;
 }

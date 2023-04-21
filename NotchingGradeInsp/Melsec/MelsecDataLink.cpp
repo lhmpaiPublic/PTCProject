@@ -364,7 +364,7 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 				PioErrorProcess(iRet, _T("OutPort OPEN Error 333"));
 
 				//로그출력
-				LOGDISPLAY_ALL("PLC Melsec Open failed");
+				LOGDISPLAY_ALLTXT("PLC Melsec Open failed");
 
 				return (-1);
 			}
@@ -765,7 +765,7 @@ void CMelsecDataLink::PioErrorProcess(int iRet, char* cap)
 int CMelsecDataLink::OpenPio(void)
 {
 	//로그출력
-	LOGDISPLAY_ALL("PLC Melsec Open");
+	LOGDISPLAY_ALLTXT("PLC Melsec Open");
 
 	int	ret = 0;
 
@@ -828,7 +828,7 @@ int CMelsecDataLink::LocalPioOpen(BOOL bLockCtrl /*= TRUE*/)
 		m_bOpened = TRUE;
 
 		//로그출력
-		LOGDISPLAY_ALL("PLC Melsec Open");
+		LOGDISPLAY_ALLTXT("PLC Melsec Open");
 	}
 	// 22.06.30 Ahn Add End
 
@@ -840,7 +840,7 @@ int CMelsecDataLink::LocalPioOpen(BOOL bLockCtrl /*= TRUE*/)
 
 
 		//로그출력
-		LOGDISPLAY_ALL("PLC Melsec ChangeWorkingSetSize failed");
+		LOGDISPLAY_ALLTXT("PLC Melsec ChangeWorkingSetSize failed");
 	}
 	// 22.04.04 Ahn Add Start
 

@@ -5,7 +5,9 @@
 #include "NotchingGradeInsp.h"
 #include "LogDisplayDlg.h"
 #include "afxdialogex.h"
+#include "Win32File.h"
 
+#define LOGTEXTFILENAME "NotchingGradeInsp.txt"
 
 // CLogDisplayDlg 대화 상자
 
@@ -99,6 +101,45 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 	}
 }
 
+void CLogDisplayDlg::LogDisplayMessageText(const char* data)
+{
+	CString strData;
+
+	SYSTEMTIME	sysTime;
+	::GetLocalTime(&sysTime);
+
+	strData.Format(_T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d :: Log = %s")
+		, sysTime.wYear
+		, sysTime.wMonth
+		, sysTime.wDay
+		, sysTime.wHour
+		, sysTime.wMinute
+		, sysTime.wSecond
+		, sysTime.wMilliseconds
+		, data
+	);
+
+	if (gInstObject)
+	{
+		gInstObject->AddLogDisplayMessage(strData);
+	}
+	else
+	{
+		gInstObject = new CLogDisplayDlg();
+		if (gInstObject->Create(IDD_LOGDISPLAYDLG) == 0)
+		{
+			delete gInstObject;
+			gInstObject = NULL;
+		}
+		else
+		{
+			bCreate = TRUE;
+			gInstObject->ShowWindow(SW_HIDE);
+			gInstObject->AddLogDisplayMessage(strData);
+		}
+	}
+}
+
 void CLogDisplayDlg::ExitLogDisplayDlg()
 {
 	// 로그출력 창 생성
@@ -128,6 +169,7 @@ void CLogDisplayDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_SPECIALLOGNAME, m_ComboSpecialLogName);
 	DDX_CBString(pDX, IDC_COMBO_SPECIALLOGNAME, m_ComboSpecialLogNameStr);
 	DDX_Control(pDX, IDC_CHECK_LOGSELECT, m_LogSelect);
+	DDX_Control(pDX, IDC_CHECK_TextPrint, m_checkTextPrint);
 }
 
 
@@ -137,6 +179,7 @@ BEGIN_MESSAGE_MAP(CLogDisplayDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBO_SPECIALLOGNAME, &CLogDisplayDlg::OnCbnSelchangeComboSpeciallogname)
 	ON_BN_CLICKED(IDC_BUT_CLIPBOARDCOPY, &CLogDisplayDlg::OnBnClickedButClipboardcopy)
 	ON_BN_CLICKED(IDC_CHECK_LOGSELECT, &CLogDisplayDlg::OnBnClickedCheckLogselect)
+	ON_BN_CLICKED(IDC_CHECK_TextPrint, &CLogDisplayDlg::OnBnClickedCheckTextprint)
 END_MESSAGE_MAP()
 
 
@@ -159,6 +202,9 @@ BOOL CLogDisplayDlg::OnInitDialog()
 	//로그 끝으로 이동 기본 체크
 	bLogMoveLast = TRUE;
 	m_CheckMoveLastLog.SetCheck(BST_UNCHECKED);
+	//Text Log 출력 여부
+	m_checkTextPrint.SetCheck(BST_CHECKED);
+	bTextLogPrint = true;
 
 	std::vector<CString> recVAl = StringParser(strLogNameList);
 
@@ -212,6 +258,11 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	CLogDisplayDlg* pMain = (CLogDisplayDlg*)param;
 	std::queue<CString>* strList = pMain->getstrLog();
 	CListBox* listBox = pMain->getListBox();
+
+	char	LogTextpath[_MAX_PATH];
+	memset(LogTextpath, 0x00, sizeof(LogTextpath));
+	::GetCurrentDirectory(_MAX_PATH, LogTextpath);
+	CWin32File file;
 	while (pMain && pMain->m_isWorkingThread)
 	{
 		//Do something...
@@ -228,6 +279,24 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 					if (*pMain->getLogMoveLast())
 					{
 						listBox->SetTopIndex(listBox->GetCount() - 1);
+					}
+					//텍스트 로그 출력
+					if (pMain->getTextLogPrint())
+					{
+						CString FileName;
+						SYSTEMTIME	sysTime;
+						::GetLocalTime(&sysTime);
+
+						FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
+							, LOGTEXTFILENAME
+							, sysTime.wYear
+							, sysTime.wMonth
+							, sysTime.wDay
+							, sysTime.wHour
+							, sysTime.wMinute
+						);
+
+						file.TextSave1Line(LogTextpath, FileName, tempStr+CString("\r\n"), "at", FALSE, 999999999);
 					}
 				}
 			}
@@ -361,4 +430,18 @@ void CLogDisplayDlg::OnBnClickedCheckLogselect()
 		m_LogPrintStatMap.SetAt(val, FALSE);
 	}
 
+}
+
+
+void CLogDisplayDlg::OnBnClickedCheckTextprint()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_checkTextPrint.GetCheck() == BST_CHECKED)
+	{
+		bTextLogPrint = TRUE;
+	}
+	else
+	{
+		bTextLogPrint = FALSE;
+	}
 }

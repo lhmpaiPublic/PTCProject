@@ -6126,8 +6126,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nLevel = 0 ; 
 
 	//Image Tab  정보 출력 로그
-	LOGDISPLAY_SPEC(4)("=====================================================================");
-	LOGDISPLAY_SPEC(4)("===== Image Tab  정보 출력 시작 =====================================");
+	LOGDISPLAY_SPECTXT(4)("=====================================================================");
+	LOGDISPLAY_SPECTXT(4)("===== Image Tab  정보 출력 시작 =====================================");
 
 	CImageProcess::VEC_SECTOR vecSector;
 	int nBaseTabPitch = RecipeInfo.TabCond.nTabPitch;
@@ -6165,7 +6165,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			LOGDISPLAY_ALL("양극 : 넓이 %d, 높이 %d, TabFindPos %d, "
 				, nWidth, nHeight, nTabFindPos, RecipeInfo.m_strRecipeName);
 			if (nLocalRet == -2)
-				LOGDISPLAY_ALL("Tab Sector 정보 없음");
+				LOGDISPLAY_ALLTXT("Tab Sector 정보 없음");
 			else
 			{
 				for (int i = 0; i < vecSector.size(); i++)
@@ -6187,7 +6187,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			LOGDISPLAY_ALL("음극 : 넓이 %d, 높이 %d, TabFindPos %d, "
 				, nWidth, nHeight, nTabFindPos, RecipeInfo.m_strRecipeName);
 			if (nLocalRet == -2)
-				LOGDISPLAY_ALL("Tab Sector 정보 없음");
+				LOGDISPLAY_ALLTXT("Tab Sector 정보 없음");
 			else
 			{
 				for (int i = 0; i < vecSector.size(); i++)
@@ -6213,7 +6213,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nCase = -1;
 	if( pResvTabInfo->pImgPtr != NULL ){
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("지난 Frame에서 보내지 못하고 남은 Image가 있음");
+		LOGDISPLAY_SPECTXT(4)("지난 Frame에서 보내지 못하고 남은 Image가 있음");
 
 		// 지난 Frame에서 보내지 못하고 남은 Image가 있음.
 		CTabInfo tabInfo;		
@@ -6227,7 +6227,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		if (nSize <= 0) {
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("새 이미지에서 Sector 정보가 없음.");
+			LOGDISPLAY_SPECTXT(4)("새 이미지에서 Sector 정보가 없음.");
 
 			// case 2,3,4는 해당되지 않음
 			if (pResvTabInfo->nImageLength > nBaseTabPitch) {
@@ -6239,7 +6239,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		}
 		else { // 새 Frame에 탭 정보 있음.
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("새 이미지에서 Sector 정보가 있음.");
+			LOGDISPLAY_SPECTXT(4)("새 이미지에서 Sector 정보가 있음.");
 
 			// 22.10.06 Ahn Add Start
 			int nDistance = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nStartPos ;
@@ -6247,7 +6247,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.10.06 Ahn Add End
 			if (pResvTabInfo->nTabWidth > 0) { // 예약 Tab에 Tab정보 있음. // 2또는 3
 				//Image Tab  정보 출력 로그
-				LOGDISPLAY_SPEC(4)("ResvTabInfo(이전 이미지 Tab)  정보 있음 진행");
+				LOGDISPLAY_SPECTXT(4)("ResvTabInfo(이전 이미지 Tab)  정보 있음 진행");
 
 				// 22.09.06 Ahn Modify Start
 				//int nTabWidth = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nEndPos;
@@ -6271,7 +6271,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			}
 			else { // 앞에 탭 정보 없음.
 				//Image Tab  정보 출력 로그
-				LOGDISPLAY_SPEC(4)("ResvTabInfo(이전 이미지 Tab) 없음 진행");
+				LOGDISPLAY_SPECTXT(4)("ResvTabInfo(이전 이미지 Tab) 없음 진행");
 
 				// 따로 보낼까?
 				if ((pResvTabInfo->nImageLength + vecSector[0].nEndPos) > (int)((double)nBaseTabPitch * 1.2)) {
@@ -6284,7 +6284,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				//	nCase = 1;
 					nCase = 5;
 					//Image Tab  정보 출력 로그
-					LOGDISPLAY_SPEC(4)("Case %d => ??", nCase);
+					LOGDISPLAY_SPEC(4)("Case %d => 처리하지 않고 있음", nCase);
 				// 22.10.06 Ahn Modify End
 				}else{
 
@@ -6357,7 +6357,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			bResvSend = TRUE;
 
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("nCase 2는 이전 정보와 합하고 Sector 정보 유지");
+			LOGDISPLAY_SPECTXT(4)("nCase 2는 이전 정보와 합하고 Sector 정보 유지");
 
 			break;
 		case	3 :	// 앞뒤 Tab 정보가 하나로 판단 붙여서 보냄
@@ -6371,7 +6371,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			bResvSend = TRUE;
 
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("nCase 3은 이전 정보와 합하고 Sector 정보를 삭제함");
+			LOGDISPLAY_SPECTXT(4)("nCase 3은 이전 정보와 합하고 Sector 정보를 삭제함");
 			break;
 		case	4 :	// 앞에 Tab 정보가 없어 그냥 뒤에꺼 앞에 붙여서 보냄.
 			tabInfo.nTabLeft = pResvTabInfo->nImageLength + vecSector[0].nStartPos;
@@ -6384,7 +6384,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			bResvSend = TRUE;
 
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("nCase 4는 이전 정보와 합하고 Sector 정보를 삭제함");
+			LOGDISPLAY_SPECTXT(4)("nCase 4는 이전 정보와 합하고 Sector 정보를 삭제함");
 			break;
 		default :
 			break;
@@ -6397,7 +6397,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		if (bResvSend == TRUE) {
 
 			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("Case 2 - 4는 TabInfo를 이용하여 메모리를 생성하고 이미지를 저장한다. ");
+			LOGDISPLAY_SPECTXT(4)("Case 2 - 4는 TabInfo를 이용하여 메모리를 생성하고 이미지를 저장한다. ");
 
 			tabInfo.nCenter = (tabInfo.nTabRight + tabInfo.nTabLeft) / 2;
 			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;			// 센터기준으로 할지 오른쪽 기준으로 자를지....
@@ -6443,16 +6443,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			delete[]pResvTabInfo->pImgPtr;
 			pResvTabInfo->pImgPtr = NULL;
 
-			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("Top Image 메모리 제거함");
-
 		}
 		if (pResvTabInfo->pImgBtmPtr != NULL) {
 			delete[]pResvTabInfo->pImgBtmPtr;
 			pResvTabInfo->pImgBtmPtr = NULL;
-
-			//Image Tab  정보 출력 로그
-			LOGDISPLAY_SPEC(4)("Bottom Image 메모리 제거함");
 		}
 		pResvTabInfo->ResetData();
 	}
@@ -6472,18 +6466,18 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		int nSendAbleCount = nSendAbleLeng / nBaseTabPitch ;
 
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 없을 때 처리구간 시작");
+		LOGDISPLAY_SPECTXT(4)("새 이미지에 Sector 정보가 없을 때 처리구간 시작");
 
 		nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight, pVecTabInfo);
 
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 없을 때 처리구간 끝");
+		LOGDISPLAY_SPECTXT(4)("새 이미지에 Sector 정보가 없을 때 처리구간 끝");
 
 	}
 	else
 	{
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 있을 때 처리구간 시작");
+		LOGDISPLAY_SPECTXT(4)("새 이미지에 Sector 정보가 있을 때 처리구간 시작");
 
 		int nLeftSize = ( ( vecSector[0].nStartPos - nPairSholderLength ) - nLastSavePos);
 		int nDivCnt = 0;
@@ -6500,12 +6494,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nLastSavePos + nLeftSize, pVecTabInfo);
 
 				//Image Tab  정보 출력 로그
-				LOGDISPLAY_SPEC(4)("Left Size / Base Tab Pitch 나누기한 결과 0 보다 클때 DivisionTab_byFixSize 함수 호출");
+				LOGDISPLAY_SPECTXT(4)("Left Size / Base Tab Pitch 나누기한 결과 0 보다 클때 DivisionTab_byFixSize 함수 호출");
 			}
 		}		
 
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보로 Tab 정보를 만들고 메모리할당하여 Image를 저장한다.[nCase 2번만 정보가 생긴다]");
+		LOGDISPLAY_SPECTXT(4)("새 이미지에 Sector 정보로 Tab 정보를 만들고 메모리할당하여 Image를 저장한다.[nCase 2번만 정보가 생긴다]");
 
 		for (int i = 0; i < nSize; i++) 
 		{
@@ -6616,14 +6610,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight,  pVecTabInfo);
 		}
 
-		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("새 이미지에 Sector 정보가 있을 때 처리구간 끝");
 	}
 
 	int nLeftSize = nHeight - nLastSavePos;
 	if ( nLeftSize > 0) {
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_SPEC(4)("nLeftSize = nHeight - nLastSavePos 가 0보다 크면 ResvTabInfo(남은) 이미지 정보 저장");
+		LOGDISPLAY_SPECTXT(4)("nLeftSize = nHeight - nLastSavePos 가 0보다 크면 ResvTabInfo(남은) 이미지 정보 저장");
 
 		pResvTabInfo->pImgPtr = new BYTE[nWidth * nLeftSize];
 		pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nLeftSize];

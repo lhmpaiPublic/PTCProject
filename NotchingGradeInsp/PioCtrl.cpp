@@ -24,7 +24,7 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 	switch (ChnNo) {
 	case	CHN_NO_NETH1:
 		//로그 항상출력
-		LOGDISPLAY_ALL("Pio Ctrl : Melsec Net-H");
+		LOGDISPLAY_ALLTXT("Pio Ctrl : Melsec Net-H");
 
 		wSeqStNo = 0xff;
 		// 23.02.17 Son Del Start
@@ -34,7 +34,7 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		break;
 	case	CHN_NO_NETG1:
 		//로그 항상출력
-		LOGDISPLAY_ALL("Pio Ctrl : Melsec Net-G");
+		LOGDISPLAY_ALLTXT("Pio Ctrl : Melsec Net-G");
 
 		wSeqStNo = 0xff;
 		// 23.02.17 Son Del Start
@@ -44,14 +44,14 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		break;
 	case	CHN_NO_CCLINK2:
 		//로그 항상출력
-		LOGDISPLAY_ALL("Pio Ctrl : CC-Link");
+		LOGDISPLAY_ALLTXT("Pio Ctrl : CC-Link");
 
 		wSeqStNo = 0x00;
 		break;
 	case	CHN_NO_CCLINK1:
 	default:
 		//로그 항상출력
-		LOGDISPLAY_ALL("Pio Ctrl : CC-Link");
+		LOGDISPLAY_ALLTXT("Pio Ctrl : CC-Link");
 
 		wSeqStNo = 0x00;
 		//wMaxPort = 4;
@@ -69,13 +69,13 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 	//pAprPio = (CMelsecBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
 		//로그 항상출력
-		LOGDISPLAY_ALL("Pio Ctrl : Melsec 생성");
+		LOGDISPLAY_ALLTXT("Pio Ctrl : Melsec 생성");
 
 		pAprPio = (CMelsecBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
 	}
 	else {
 		//로그 항상출력
-		LOGDISPLAY_ALL("Pio Ctrl : Siemens 생성");
+		LOGDISPLAY_ALLTXT("Pio Ctrl : Siemens 생성");
 
 		CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 		int nPort = AprData.m_System.m_nPLCPort;
@@ -407,7 +407,7 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 				//특정 로그 출력
 				LOGDISPLAY_CHECK(3)
 				{
-					LOGDISPLAY_ALL("PLC Block Read");
+					LOGDISPLAY_ALLTXT("PLC Block Read");
 					for (int i = 0; i < MAX_SMS_IO_IN; i++)
 					{
 						LOGDISPLAY_ALL("[blockNum:%d]=%d", i, nBuffSms[i]);

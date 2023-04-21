@@ -143,9 +143,6 @@ void CCameraWaveDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == T_ID_CAMERA_WAVE) {
 		KillTimer(T_ID_CAMERA_WAVE);
 
-		//OnTimer 로그출력
-		LOGDISPLAY_SPEC(6)("CCameraWaveDlg::OnTimer");
-
 	//	BYTE btWave[CAMERA_VIEW_WIDTH];
 	//	theApp.m_pImgProcCtrl->GetCameraWaveData(m_nRadSelCamNo, btWave);
 

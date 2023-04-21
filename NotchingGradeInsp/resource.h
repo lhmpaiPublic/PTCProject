@@ -678,6 +678,8 @@
 #define IDC_CHECK_MOVELASTLOG           1343
 #define IDC_BUT_CLIPBOARDCOPY           1344
 #define IDC_CHECK_LOGSELECT             1345
+#define IDC_CHECK_MOVELASTLOG2          1346
+#define IDC_CHECK_TextPrint             1346
 #define IDS_VIEW_RESULT                 32773
 #define ID_INSP_INFO_VIEW               32775
 #define ID_TREND_VIEW                   32777

@@ -853,9 +853,6 @@ void CGridCtrl::OnTimer(UINT_PTR nIDEvent)
     if (nIDEvent != WM_LBUTTONDOWN)
         return;
 
-    //OnTimer 로그출력
-    LOGDISPLAY_SPEC(6)("CGridCtrl::OnTimer");
-
     CPoint pt, origPt;
 
 #ifdef _WIN32_WCE

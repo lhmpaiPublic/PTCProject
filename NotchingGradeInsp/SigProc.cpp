@@ -283,12 +283,6 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 		}
 	}
 
-	//특정로그 출력
-	LOGDISPLAY_SPEC(1)("PLC Bit-In 값 : %s", bitVal);
-
-
-
-
 	return nRet;
 }
 

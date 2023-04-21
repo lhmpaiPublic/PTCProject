@@ -714,8 +714,6 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 
 	if (nMode == MODE_READ)
 	{
-		//로그출력
-		LOGDISPLAY_ALL("레시피정보를 창으로 가져오기 ");
 
 		// 22.06.08 Ahn Modify Start
 		m_dTabWidth = pRecipeInfo->TabCond.dTabWidth;
@@ -828,9 +826,6 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 	}
 	else 
 	{
-		//로그출력
-		LOGDISPLAY_ALL("창의 레시피 정보를 변수에 저장하기 ");
-
 		UpdateData(TRUE);
 
 		// 23.02.14 Ahn Add Start

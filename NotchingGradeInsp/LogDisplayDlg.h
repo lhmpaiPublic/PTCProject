@@ -36,6 +36,9 @@ public:
 	//로그 메시지 추가 전역함수
 	static void LogDisplayMessage(const char* format, ...);
 
+	//로그 메시지 추가 전역함수
+	static void LogDisplayMessageText(const char* data);
+
 	//로그 번호
 	static int getLogNumber(int a) { return m_LogPrintStatMap[a]; }
 
@@ -94,10 +97,12 @@ public:
 	afx_msg void OnBnClickedButClipboardcopy();
 	CButton m_LogSelect;
 	afx_msg void OnBnClickedCheckLogselect();
+	CButton m_checkTextPrint;
+	afx_msg void OnBnClickedCheckTextprint();
+	//텍스트 로그 출력 여부
+	bool* getTextLogPrint() { return &bTextLogPrint; }
+	bool bTextLogPrint;
 };
-
-//로그 출력 체크를 했을 때 출력 되는 로그
-#define LOGDISPLAY_GEN if(CLogDisplayDlg::isLogPrint()) CLogDisplayDlg::LogDisplayMessage
 
 //로그 항상 출력(초기화 또는 버튼, 에러 같은 특정 확인용)
 #define LOGDISPLAY_ALL CLogDisplayDlg::LogDisplayMessage
@@ -107,3 +112,9 @@ public:
 
 //로그 출력 설정 체크
 #define LOGDISPLAY_CHECK(a) if(TRUE == CLogDisplayDlg::getLogNumber(a))
+
+//로그 항상 출력(초기화 또는 버튼, 에러 같은 특정 확인용)
+#define LOGDISPLAY_ALLTXT CLogDisplayDlg::LogDisplayMessageText
+
+//특정 설정 로그 출력
+#define LOGDISPLAY_SPECTXT(a) if(TRUE == CLogDisplayDlg::getLogNumber(a)) CLogDisplayDlg::LogDisplayMessageText
