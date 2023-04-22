@@ -6136,15 +6136,13 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nPairSholderLength = (nBaseTabPitch - nBaseTabWidth) / 2;
 
 	//Image Tab  정보 출력 로그
-	LOGDISPLAY_SPEC(5)("Base 레시피 정보 : TabPitch %d, TabWidth %d, TabBlank %d, TabHalfPitch %d, SholderLength %d"
-		, nBaseTabPitch, nBaseTabWidth, nBaseTabBlank, nBaseTabHalfPitch, nPairSholderLength);
+	LOGDISPLAY_SPEC(5)("Tab정보를 찾을 Base 레시피 정보 :RecipeName<%s>, TabPitch %d, TabWidth %d"
+		, RecipeInfo.m_strRecipeName, nBaseTabPitch, nBaseTabWidth);
 
-	// 22.05.30 Ahn Add Start
 	int nTabFindPos = ( nWidth - 220 ) ; 
-	// 22.05.30 Ahn Add End
-
-	//22.09.15 Ahn Modify Start
-	//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) { // 22.01.06 Ahn Modify Start
+	//Image Tab  정보 출력 로그
+	LOGDISPLAY_SPEC(5)("Sactor Tab찾을 시작위치 : %d =  이미지 nWidth<%d> - 220 "
+		, nTabFindPos, nWidth);
 
 	//모드가 양극일 경우 처리
 	if (AprData.m_System.m_nMachineMode == ANODE_MODE) { 
@@ -6159,17 +6157,15 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		*pnLevel = nLevel;
 
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_CHECK(4)
+		LOGDISPLAY_CHECK(5)
 		{
-			LOGDISPLAY_ALL("양극 : 넓이 %d, 높이 %d, TabFindPos %d, "
-				, nWidth, nHeight, nTabFindPos, RecipeInfo.m_strRecipeName);
 			if (nLocalRet == -2)
-				LOGDISPLAY_ALLTXT("Tab Sector 정보 없음");
+				LOGDISPLAY_ALLTXT("=== 정보없음 === 양극 Tab Sector 정보 없음");
 			else
 			{
 				for (int i = 0; i < vecSector.size(); i++)
 				{
-					LOGDISPLAY_ALL("count : %d => 시작점 : %d,  끝점 : %d, 모드 : %s", 
+					LOGDISPLAY_ALL("양극 Tab Sector count : %d => 시작점 : %d,  끝점 : %d, 모드 : %s", 
 						i, vecSector[i].nStartPos, vecSector[i].nEndPos, (vecSector[i].nMode == 0) ? "LOW" : "HIGHT");
 				}
 			}
@@ -6181,17 +6177,15 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		*pnLevel = nLevel;
 
 		//Image Tab  정보 출력 로그
-		LOGDISPLAY_CHECK(4)
+		LOGDISPLAY_CHECK(5)
 		{
-			LOGDISPLAY_ALL("음극 : 넓이 %d, 높이 %d, TabFindPos %d, "
-				, nWidth, nHeight, nTabFindPos, RecipeInfo.m_strRecipeName);
 			if (nLocalRet == -2)
-				LOGDISPLAY_ALLTXT("Tab Sector 정보 없음");
+				LOGDISPLAY_ALLTXT("=== 정보없음 === 음극 Tab Sector 정보 없음");
 			else
 			{
 				for (int i = 0; i < vecSector.size(); i++)
 				{
-					LOGDISPLAY_ALL("Tab Sector 정보 count : %d => 시작점 : %d,  끝점 : %d, 모드 : %s",
+					LOGDISPLAY_ALL("음극 Tab Sector count : %d => 시작점 : %d,  끝점 : %d, 모드 : %s",
 						i, vecSector[i].nStartPos, vecSector[i].nEndPos, (vecSector[i].nMode == 0) ? "LOW" : "HIGHT");
 				}
 			}
@@ -6205,7 +6199,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	if (nSize == 0)
 	{
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<DivisionTab_FromImageToTabInfo>>이미지에서 Sector 정보 찾지 못함"));
+		AprData.SaveDebugLog(_T("==에러== 이미지에서 Sector 정보 찾지 못함"));
 		bSectorInfo = FALSE;
 	}
 
