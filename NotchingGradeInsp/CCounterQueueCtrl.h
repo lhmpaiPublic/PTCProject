@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include <queue>
-#define MAX_COUNTER_QUEUE_SIZE 2 // 22.01.11 Ahn Modify 2->3
+#define MAX_COUNTER_QUEUE_SIZE 4 // 22.01.11 Ahn Modify 2->3
 class CCounterInfo {
 public :
 	CCounterInfo() { nTabNo = 0; nTabID = 0;  nJudgement = 0; nMarkSel = 0; nMarkType = 0; };

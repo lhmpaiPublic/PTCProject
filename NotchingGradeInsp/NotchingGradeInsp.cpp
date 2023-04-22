@@ -150,6 +150,8 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, 0);
 	}
 
+	CLogDisplayDlg::CreateLogDisplayDlg();
+
 	//CDebugSetDlg DebugSet;
 	//if (DebugSet.DoModal() == IDOK) {
 	//}
@@ -229,6 +231,8 @@ int CNotchingGradeInspApp::ExitInstance()
 	AfxOleTerm(FALSE);
 
 	GdiplusShutdown(m_gdiplusToken);
+
+	CLogDisplayDlg::ExitLogDisplayDlg();
 
 	return CWinAppEx::ExitInstance();
 }

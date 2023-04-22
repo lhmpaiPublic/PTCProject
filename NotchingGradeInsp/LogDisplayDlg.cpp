@@ -25,10 +25,12 @@ int CLogDisplayDlg::printLogNum = 0;
 
 BOOL CLogDisplayDlg::bCreate = FALSE;
 
+CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
+
 CString strLogNameList =
-"0 Execute_ERROT_0 1,"
+"0 Execute_ERROT_0 0,"
 "1 PLC_Read_BitIn_1 0,"
-"2 DIO_IDinout_2 0,"
+"2 DIO_IDinout_2 1,"
 "3 PLC_Read_Block_3 0,"
 "4 ImageProcess_TabInfo_4 0,"
 "5 ImageCutting_5 0,"
@@ -38,23 +40,10 @@ CString strLogNameList =
 "100 END 0"
 ;
 
+#define LOGDISPLAY_LISTBOX
 #define MAX_DISPLAYLOG 1024
 CLogDisplayDlg* CLogDisplayDlg::gInst()
 {
-	// 로그출력 창 생성
-	if (gInstObject == NULL)
-	{
-		gInstObject = new CLogDisplayDlg();
-		if (gInstObject->Create(IDD_LOGDISPLAYDLG) == 0) {
-			delete gInstObject;
-			gInstObject = NULL;
-		}
-		else 
-		{
-			bCreate = TRUE;
-			gInstObject->ShowWindow(SW_HIDE);
-		}
-	}
 	return gInstObject;
 }
 
@@ -86,21 +75,6 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 	{
 		gInstObject->AddLogDisplayMessage(strData);
 	}
-	else
-	{
-		gInstObject = new CLogDisplayDlg();
-		if (gInstObject->Create(IDD_LOGDISPLAYDLG) == 0) 
-		{
-			delete gInstObject;
-			gInstObject = NULL;
-		}
-		else 
-		{
-			bCreate = TRUE;
-			gInstObject->ShowWindow(SW_HIDE);
-			gInstObject->AddLogDisplayMessage(strData);
-		}
-	}
 }
 
 void CLogDisplayDlg::LogDisplayMessageText(const char* data)
@@ -125,20 +99,16 @@ void CLogDisplayDlg::LogDisplayMessageText(const char* data)
 	{
 		gInstObject->AddLogDisplayMessage(strData);
 	}
-	else
+}
+
+void CLogDisplayDlg::CreateLogDisplayDlg()
+{
+	// 로그출력 창 생성
+	if (gInstObject == NULL)
 	{
 		gInstObject = new CLogDisplayDlg();
-		if (gInstObject->Create(IDD_LOGDISPLAYDLG) == 0)
-		{
-			delete gInstObject;
-			gInstObject = NULL;
-		}
-		else
-		{
-			bCreate = TRUE;
-			gInstObject->ShowWindow(SW_HIDE);
-			gInstObject->AddLogDisplayMessage(strData);
-		}
+		gInstObject->Create(IDD_LOGDISPLAYDLG);
+		bCreate = true;
 	}
 }
 
@@ -147,7 +117,9 @@ void CLogDisplayDlg::ExitLogDisplayDlg()
 	// 로그출력 창 생성
 	if (gInstObject != NULL)
 	{
+		bCreate = false;
 		delete gInstObject;
+		gInstObject = NULL;
 	}
 }
 
@@ -156,11 +128,13 @@ CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 	, bLogMoveLast(TRUE)
 	, m_ComboSpecialLogNameStr(_T(""))
 {
+	::InitializeCriticalSection(&m_csQueueLog);
 }
 
 CLogDisplayDlg::~CLogDisplayDlg()
 {
-	ExitThread();
+	getListBox()->m_hWnd = NULL;
+	::DeleteCriticalSection(&m_csQueueLog);
 }
 
 void CLogDisplayDlg::DoDataExchange(CDataExchange* pDX)
@@ -252,8 +226,29 @@ BOOL CLogDisplayDlg::OnInitDialog()
 void CLogDisplayDlg::AddLogDisplayMessage(CString msg)
 {
 	// TODO: 여기에 구현 코드 추가.
-	m_ListMsg.push(msg);
+	if (bCreate)
+	{
+		::EnterCriticalSection(&m_csQueueLog);
+		m_ListMsg.push(msg);
+		::LeaveCriticalSection(&m_csQueueLog);
+	}
+
 }
+
+CString CLogDisplayDlg::GetLogDisplayMessage()
+{
+	// TODO: 여기에 구현 코드 추가.
+	CString tempStr = "";
+	if (bCreate)
+	{
+		tempStr = m_ListMsg.front();
+		::EnterCriticalSection(&m_csQueueLog);
+		m_ListMsg.pop();
+		::LeaveCriticalSection(&m_csQueueLog);
+	}
+	return tempStr;
+}
+
 //source file
 UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 {
@@ -281,13 +276,14 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 			{
 				for (int i = 0; i < strList->size(); i++)
 				{
-					CString tempStr = strList->front();
-					strList->pop();
+					CString tempStr = pMain->GetLogDisplayMessage();
+#ifdef LOGDISPLAY_LISTBOX
 					listBox->AddString(tempStr);
 					if (*pMain->getLogMoveLast())
 					{
 						listBox->SetTopIndex(listBox->GetCount() - 1);
 					}
+#endif //LOGDISPLAY_LISTBOX
 					//텍스트 로그 출력
 					if (pMain->getTextLogPrint())
 					{
@@ -306,6 +302,7 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 						);
 
 						file.TextSave1Line(FilePath, FileName, tempStr+CString("\r\n"), "at", FALSE, 999999999);
+						Sleep(10);
 					}
 				}
 			}

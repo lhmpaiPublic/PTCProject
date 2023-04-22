@@ -31,6 +31,9 @@ public:
 	static CLogDisplayDlg* gInst();
 
 	//LogDlg 메모리 해제
+	static void CreateLogDisplayDlg();
+
+	//LogDlg 메모리 해제
 	static void ExitLogDisplayDlg();
 
 	//로그 메시지 추가 전역함수
@@ -42,6 +45,7 @@ public:
 	//로그 번호
 	static int getLogNumber(int a) { return m_LogPrintStatMap[a]; }
 
+	static CRITICAL_SECTION m_csQueueLog;
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_LOGDISPLAYDLG };
@@ -73,6 +77,8 @@ public:
 
 	//로그 메시지 추가함수
 	void AddLogDisplayMessage(CString msg);
+
+	CString GetLogDisplayMessage();
 
 	//스트링 특정 char로 파서하는 함수
 	static std::vector<CString> StringParser(CString val, char s = ',');

@@ -344,6 +344,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				//Tab 정보 크기, Tab 정보가 없다면 에러처리
 				int nVecSize = (int)vecTabInfo.size();
 
+				int CounterInfoSize = pCntQueueInCtrl->GetSize();
+				//Image Cutting Tab 정보 출력 로그
+				LOGDISPLAY_SPEC(5)("Trigger Id 정보 객체 갯수<%d>", CounterInfoSize);
+
 				BOOL bErrorAll = FALSE;
 				if (nVecSize <= 0)
 				{
@@ -639,6 +643,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			break;
 		}
 
+		//Top/Botton에 Tab 정보가 저장된 정보가 있을 경우
+		//위 함수 CtrlThreadImgCuttingTab Tab 정보를 찾는 스래드에서
+		//GetThreadQueuePtr(i) Queue 에 push 되면 처리를 탄다.
+		//처리를 하여 결과 정보 저장 Queue pRsltQueueCtrl 에 저장된다.
 		if (!pThdQue[CAM_POS_TOP]->IsEmpty() && !pThdQue[CAM_POS_BOTTOM]->IsEmpty()) {
 			pUnitTop = pThdQue[CAM_POS_TOP]->pop();
 			pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
@@ -646,7 +654,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			while (1) 
 			{
 				//GEN 체크박스 Log 출력
-				LOGDISPLAY_SPECTXT(99)("Image Top/Bottom Tab 번호/마킹플래그 스래드");
+				LOGDISPLAY_SPECTXT(5)("Image Top/Bottom Tab 번호/마킹플래그 스래드");
 
 				if (pThis->m_bKill == TRUE) {
 					break;
@@ -656,6 +664,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				LARGE_INTEGER stTime ;
 				// 22.12.09 Ahn Add End
 				if ( (pUnitTop->IsProcEnd() == TRUE) && (pUnitBtm->IsProcEnd() == TRUE) ){
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPECTXT(5)("=====================================================================");
+					LOGDISPLAY_SPECTXT(5)("===== Tab Info Top/Bottom 결과 Grabber 저장  =======================");
+
 					CFrameRsltInfo *pTopInfo = pUnitTop->GetResultPtr();
 					CFrameRsltInfo *pBtmInfo = pUnitBtm->GetResultPtr();
 
@@ -765,13 +777,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 22.07.19 Ahn Modify End
 
 						//체크박스 로그 출력
-						LOGDISPLAY_SPECTXT(99)("불량 마킹정보 받음 =>  ");
+						LOGDISPLAY_SPECTXT(5)("불량 마킹정보 받음 =>  ");
 
 						CSigProc* pSigProc = theApp.m_pSigProc;
 						bMarkingActive = TRUE;
 						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) ) {
 							//체크박스 로그 출력
-							LOGDISPLAY_SPECTXT(99)("불량도 마킹 안함");
+							LOGDISPLAY_SPECTXT(5)("불량도 마킹 안함");
 							nMarkSel1 = 0;
 							nMarkSel2 = 0; 
 						}
@@ -780,14 +792,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						dio.OutputWord(wOutPut);
 
 						//GEN 체크박스 Log 출력
-						LOGDISPLAY_SPEC(99)("DIO 마킹 신호를 보냄 => MARK_SEL_01<%s>, MARK_SEL_02<%s>",
+						LOGDISPLAY_SPEC(5)("DIO 마킹 신호를 보냄 => MARK_SEL_01<%s>, MARK_SEL_02<%s>",
 							(wOutPut& CAppDIO::eOut_MARK_SEL_01) ? "TRUE":"FALSE", (wOutPut& CAppDIO::eOut_MARK_SEL_02) ? "TRUE" : "FALSE");
 
 						Sleep(20);
 						dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
 
 						//체크박스 로그 출력
-						LOGDISPLAY_SPECTXT(99)("DIO out_pulse : TRUE");
+						LOGDISPLAY_SPECTXT(5)("DIO out_pulse : TRUE");
 
 						CString strMsg;
 						strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d]"), pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo ); // 22.04.06 Ahn Modify
@@ -915,7 +927,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
 
 					// GEN 체크박스 Log 출력
-					LOGDISPLAY_SPECTXT(99)("Top/Bottom 마킹정보를 pRsltQueueCtrl 저장");
+					LOGDISPLAY_SPECTXT(5)("Top/Bottom 마킹정보를 pRsltQueueCtrl 저장");
 
 					// 22.12.09 Ahn Add Start
 					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
@@ -925,7 +937,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pTactCtrl->AddNewTactData(data) ;
 
 					// GEN 체크박스 Log 출력
-					LOGDISPLAY_SPEC(99)("Tac Time Data 추가 : Tab No<%d>, Tac Time<%d>",
+					LOGDISPLAY_SPEC(5)("Tac Time Data 추가 : Tab No<%d>, Tac Time<%d>",
 						data.nCellNo, data.dTactTime);
 
 					// 22.12.09 Ahn Add End
@@ -941,7 +953,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
 
 					//체크박스 로그 출력
-					LOGDISPLAY_SPECTXT(99)("DIO out_pulse : FALSE");
+					LOGDISPLAY_SPECTXT(5)("DIO out_pulse : FALSE");
 
 					// 22.02.17 Ahn Modify End
 
