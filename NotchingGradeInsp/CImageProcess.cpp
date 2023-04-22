@@ -5860,7 +5860,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpIn_Btm;
 							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount++;
 						}
-						strMsg.Format(_T("[NG] en_ModeFoilExpIn : Head No = %d"));
+						strMsg.Format(_T("[NG] en_ModeFoilExpIn : Head No = %d"), pDefInfo->nHeadNo);
 						break;
 
 					case	en_ModeFoilExpOut:
@@ -5874,7 +5874,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpOut_Btm;
 							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount++;
 						}
-						strMsg.Format(_T("[NG] en_ModeFoilExpOut : Head No = %d"));
+						strMsg.Format(_T("[NG] en_ModeFoilExpOut : Head No = %d"), pDefInfo->nHeadNo);
 						break;
 
 					case	en_ModeFoilBoth:
@@ -5888,7 +5888,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_FoilExpBoth_Btm;
 							AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomCount++;
 						}
-						strMsg.Format(_T("[NG] en_ModeFoilExpBoth : Head No = %d"));
+						strMsg.Format(_T("[NG] en_ModeFoilExpBoth : Head No = %d"), pDefInfo->nHeadNo);
 						break;
 
 					case	en_ModeSurface:
@@ -5902,7 +5902,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 							pTabRsltInfo->m_wNgReason |= CTabRsltBase::en_Reason_Surface_Btm;
 							AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomCount++;
 						}
-						strMsg.Format(_T("[NG] en_ModeFoilExpBoth : Head No = %d"));
+						strMsg.Format(_T("[NG] en_ModeFoilExpBoth : Head No = %d"), pDefInfo->nHeadNo);
 						break;
 					}
 

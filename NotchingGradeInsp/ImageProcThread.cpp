@@ -1108,9 +1108,9 @@ int CImageProcThread::GetMarkingFlag(CRecipeInfo* pRecipeInfo, int nTopJudge, in
 
 		if ((wReason & CTabRsltBase::en_Reason_FoilExpBoth_Top) || (wReason & CTabRsltBase::en_Reason_FoilExpBoth_Btm))
 		{
-			if (pRecipeInfo->nMarkingUse[en_ModeFoilBoth] == TRUE)
+			if (pRecipeInfo->nMarkingUse[en_ModeFoilExpOut/*en_ModeFoilBoth*/] == TRUE)
 			{
-				if (pRecipeInfo->nMarkingType[en_ModeFoilBoth] == 0)
+				if (pRecipeInfo->nMarkingType[en_ModeFoilExpOut/*en_ModeFoilBoth*/] == 0)
 				{
 					nMarkSel1 = 1;
 				}

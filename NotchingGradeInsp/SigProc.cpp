@@ -867,7 +867,6 @@ int CSigProc::SigOutAlivePulse(int nInMode)
 }
 int CSigProc::SigOutReady(int nMode)
 {
-//	AprData.SaveDebugLog(_T("SigOutReady")); //pyjtest
 
 	CString strMsg;
 	strMsg.Format(_T("SigOutReady %d"), nMode);

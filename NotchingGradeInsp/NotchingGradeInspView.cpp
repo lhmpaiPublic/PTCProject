@@ -1236,13 +1236,11 @@ BOOL CNotchingGradeInspView::SetInspReady(BOOL bStatus)
 	CSigProc *pSigProc = theApp.m_pSigProc ;
 	pSigProc->WriteBlockAllData(bStatus);	
 
-	// 23.01.03 Ahn Add Start
 	m_pDefMapDlg->RequestCloseImgDispDlg();
-	// 23.01.03 Ahn Add End
 
-	// 23.01.10 Ahn Add Start
 	m_pDefMapDlg->EnableWindow(!bStatus);
-	// 23.01.10 Ahn Add End
+
+	pSigProc->SigOutReady(bStatus);
 
 	return m_bReady;
 }
