@@ -324,6 +324,7 @@ private:
 	short	m_sSmsSigBItOut[MAX_SMS_IO_OUT];
 
 	BOOL	m_bSmsAlive;
+	BOOL	m_bSigInkMarkAcrive;
 
 	static CCriticalSection	m_cs;
 
@@ -371,6 +372,12 @@ public:
 	// 23.03.03 Ahn Add Start
 	static int GetWordAddress( int nAddress, int nMode/*Read or Write*/);
 	// 23.03.03 Ahn Add End
+
+	void SetInkMarkAcktive(BOOL bUse) { m_bSigInkMarkAcrive = bUse; }
+	BOOL GetInkMarkActive() { return m_bSigInkMarkAcrive; }
+
+
+
 public :
 	// Signal In
 	int SigInAlivePulse();
@@ -382,6 +389,7 @@ public :
 	int SigInLotStart();
 	int SigInLotEnd();
 	int SigInAlarmReset();
+	int SigInInkMarkActive();
 
 	// Signal Out
 	int SigOutAlivePulse(int nMode);

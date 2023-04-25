@@ -482,7 +482,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					CString strMsg;
 					// 22.05.03 Ahn Modify Start
 					strMsg.Format(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
-						, pInfo->nTabNo, nErrorNo, pInfo->m_nTabLevel, pInfo->m_nTabLeft, pInfo->m_nTabRight, pInfo->m_nHeight, pInfo->m_nTabId_CntBoard);
+						, (pInfo->nTabNo+1), nErrorNo, pInfo->m_nTabLevel, pInfo->m_nTabLeft, pInfo->m_nTabRight, pInfo->m_nHeight, pInfo->m_nTabId_CntBoard);
 					// 22.05.03 Ahn Modify End
 					AprData.SaveDebugLog(strMsg);
 
@@ -780,8 +780,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						LOGDISPLAY_SPECTXT(5)("불량 마킹정보 받음 =>  ");
 
 						CSigProc* pSigProc = theApp.m_pSigProc;
-						bMarkingActive = TRUE;
-						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) ) {
+						bMarkingActive = pSigProc->GetInkMarkActive();
+						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) )
+						{
 							//체크박스 로그 출력
 							LOGDISPLAY_SPECTXT(5)("불량도 마킹 안함");
 							nMarkSel1 = 0;
@@ -802,15 +803,21 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						LOGDISPLAY_SPECTXT(5)("DIO out_pulse : TRUE");
 
 						CString strMsg;
-						strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d]"), pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo ); // 22.04.06 Ahn Modify
+						strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),
+										pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo+1,
+										(AprData.m_System.m_bChkEnableMarker == FALSE) ? _T("SKIP") : _T("USE"),
+										(bMarkingActive == FALSE) ? _T("SKIP") : _T("USE")	);
 						AprData.SaveMemoryLog(strMsg);
 
-						if ( (wOutPut & CAppDIO::eOut_MARK_SEL_01 ) || (wOutPut & CAppDIO::eOut_MARK_SEL_02) ) {
+						if ( (wOutPut & CAppDIO::eOut_MARK_SEL_01 ) || (wOutPut & CAppDIO::eOut_MARK_SEL_02) )
+						{
 							strMarking = _T("ON");
 							pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
 							pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
 							AprData.m_NowLotData.m_nMarkingCount++; // 22.06.29 Ahn Add 
-						} else {
+						}
+						else
+						{
 							strMarking = _T("OFF");
 							pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
 							pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;

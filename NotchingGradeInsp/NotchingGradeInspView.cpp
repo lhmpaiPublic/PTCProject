@@ -90,10 +90,8 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	m_bLotStartInitFlag = TRUE;
 	m_bAlarmResetFlag = FALSE;
 	m_bRecipeChagneFlag = FALSE;
+	m_bInkMarkActiveFlag = FALSE;
 
-	//// 22.04.21 Ahn Add Start
-	//m_pFileManager = NULL ;
-	//// 22.04.21 Ahn Add End
 
 	m_nCamErrorResetCnt = 0;
 
@@ -485,7 +483,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		CheckLotStartProcess();
 		CheckAlarmReset();
 		CheckRecipeChange();
-
+		CheckInkMarkActive();
 
 
 
@@ -1566,6 +1564,33 @@ int CNotchingGradeInspView::CheckRecipeChange()
 
 	return nRet;
 }
+
+
+int CNotchingGradeInspView::CheckInkMarkActive()
+{
+	int nRet = 0;
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	BOOL bSigIn = (pSigProc->SigInInkMarkActive() == 1) ? TRUE : FALSE;
+	if ((bSigIn == TRUE) && (m_bInkMarkActiveFlag == FALSE))
+	{
+		m_bInkMarkActiveFlag = TRUE;
+		AprData.SaveDebugLog(_T("Ink Marking Active ON"));
+
+		pSigProc->SetInkMarkAcktive(TRUE);
+	}
+	if ((bSigIn == FALSE) && (m_bInkMarkActiveFlag == TRUE))
+	{
+		m_bInkMarkActiveFlag = FALSE;
+		AprData.SaveDebugLog(_T("Ink Marking Active OFF"));
+
+		pSigProc->SetInkMarkAcktive(FALSE);
+	}
+
+	return nRet;
+}
+
+
 
 
 // 23.02.09 Ahn Add Start

@@ -689,6 +689,38 @@ int CSigProc::SigInTabZeroReset()
 	return nRet;
 }
 
+
+int CSigProc::SigInInkMarkActive()
+{
+	int nRet = 0;
+	int nAddress;
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		nAddress = enSmsBitIn_InkMarkingActive;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
+	}
+	else
+	{
+		nAddress = enBitIn_InkMarkingActive;
+		nRet = SignalPortCheck(nAddress);
+	}
+
+	return nRet;
+}
+
+
+
 int CSigProc::SigInRecipeChange()
 {
 	int nRet = 0;

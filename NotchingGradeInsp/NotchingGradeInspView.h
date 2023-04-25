@@ -110,6 +110,7 @@ protected:
 	BOOL m_bTabCountResetFlag;
 	BOOL m_bAlarmResetFlag;
 	BOOL m_bRecipeChagneFlag;
+	BOOL m_bInkMarkActiveFlag;
 
 
 
@@ -177,6 +178,7 @@ private :
 	int CheckLotStartProcess();
 	int CheckAlarmReset();
 	int CheckRecipeChange();
+	int CheckInkMarkActive();
 
 
 // 22.06.27 Ahn Add Start
