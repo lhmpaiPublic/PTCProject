@@ -37,7 +37,7 @@ int CCounterQueueCtrl::PushBack(CCounterInfo CntInfo)
 	if (m_nMaxQueueSize < nSize) {
 		CCounterInfo CntInfobefore = Pop();
 		//체크박스 로그 출력
-		LOGDISPLAY_SPEC(2)(_T("DIO Trigger - 이전 ID[%d] Pop"), CntInfobefore.nTabID);
+		LOGDISPLAY_SPEC(5)(_T("DIO Trigger - 이전 ID[%d] Pop 삭제됨"), CntInfobefore.nTabID);
 	}
 	// 21.12.27 Ahn Add End
 

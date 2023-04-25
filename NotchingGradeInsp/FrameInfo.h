@@ -14,6 +14,8 @@ class CFrameInfo
 public:
 	CFrameInfo(void);
 	~CFrameInfo(void);
+	//임시 로그 카운터
+	int TempLogCount;
 
 	enum {
 		en_TopFrame = 0,
