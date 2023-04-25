@@ -8,6 +8,7 @@
 *~ml
 *.obj
 NotchingGradeInsp/.editorconfig
+NotchingGradeInsp/Default.ini
 
 # but do track lib.a, even though you're ignoring .a files above
 !lib.a
@@ -30,6 +31,7 @@ NotchingGradeInsp/Data/INDEX/
 NotchingGradeInsp_ImageSample/
 NotchingGradeInsp/x64/Debug/
 NotchingGradeInsp/x64/Release/
+NotchingGradeInsp/NotchingLog/
 
 # ignore doc/notes.txt, but not doc/server/arch.txt
 doc/*.txt

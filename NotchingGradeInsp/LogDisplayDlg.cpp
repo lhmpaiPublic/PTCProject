@@ -167,6 +167,8 @@ BOOL CLogDisplayDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
+	// 
+	::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	//source file
 	m_isWorkingThread = true;
 
@@ -269,41 +271,43 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	while (pMain && pMain->m_isWorkingThread)
 	{
 		//Do something...
-		Sleep(30);
+		Sleep(1);
 		if (CLogDisplayDlg::bCreate)
 		{
 			if (strList->size() && listBox->m_hWnd)
 			{
+				CString tempStr = "";
 				for (int i = 0; i < strList->size(); i++)
 				{
-					CString tempStr = pMain->GetLogDisplayMessage();
+					CString popStr = pMain->GetLogDisplayMessage();
 #ifdef LOGDISPLAY_LISTBOX
-					listBox->AddString(tempStr);
+					listBox->AddString(popStr);
 					if (*pMain->getLogMoveLast())
 					{
 						listBox->SetTopIndex(listBox->GetCount() - 1);
 					}
 #endif //LOGDISPLAY_LISTBOX
-					//텍스트 로그 출력
-					if (pMain->getTextLogPrint())
-					{
-						
-						CString FileName;
-						SYSTEMTIME	sysTime;
-						::GetLocalTime(&sysTime);
-						
-						FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
-							, LOGTEXTFILENAME
-							, sysTime.wYear
-							, sysTime.wMonth
-							, sysTime.wDay
-							, sysTime.wHour
-							, sysTime.wMinute
-						);
+					tempStr += popStr + CString("\r\n");
+				}
 
-						file.TextSave1Line(FilePath, FileName, tempStr+CString("\r\n"), "at", FALSE, 999999999);
-						Sleep(10);
-					}
+				//텍스트 로그 출력
+				if (pMain->getTextLogPrint())
+				{
+
+					CString FileName;
+					SYSTEMTIME	sysTime;
+					::GetLocalTime(&sysTime);
+
+					FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
+						, LOGTEXTFILENAME
+						, sysTime.wYear
+						, sysTime.wMonth
+						, sysTime.wDay
+						, sysTime.wHour
+						, sysTime.wMinute
+					);
+
+					file.TextSave1Line(FilePath, FileName, tempStr, "at", FALSE, 999999999);
 				}
 			}
 		}

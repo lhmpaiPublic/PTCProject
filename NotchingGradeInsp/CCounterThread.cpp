@@ -131,6 +131,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						CCounterInfo cntInfo;
 						cntInfo.nTabID = wID;
 						pCntQueInPtr->PushBack(cntInfo);
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d]"), cntInfo.nTabID);
 				
 						// 22.04.06 Ahn Modify Start
 						wLastInfo = wID;
@@ -139,8 +141,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						strMsg.Format(_T("Input ID[%d]"), cntInfo.nTabID);
 						AprData.SaveMemoryLog(strMsg);
 
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(2)(_T("DIO Trigger - Input ID[%d]"), cntInfo.nTabID);
+						
 
 						::Sleep(5);
 					}

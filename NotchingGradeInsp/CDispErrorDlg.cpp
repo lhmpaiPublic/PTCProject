@@ -118,8 +118,6 @@ void CDispErrorDlg::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent) {
 	case eCheckMsg_ID :
 		KillTimer(eCheckMsg_ID); // 22.10.04 Ahn Add 
-		//OnTimer 로그출력
-		LOGDISPLAY_SPECTXT(6)("CDispErrorDlg::OnTimer => CheckMsg_ID");
 
 		if (m_ListMsg.GetCount() > 0) {
 			ShowWindow(SW_NORMAL);
@@ -134,8 +132,6 @@ void CDispErrorDlg::OnTimer(UINT_PTR nIDEvent)
 	case eAlarmReset_ID :
 		KillTimer(eAlarmReset_ID);
 
-		//OnTimer 로그출력
-		LOGDISPLAY_SPECTXT(6)("CDispErrorDlg::OnTimer => AlarmReset_ID");
 		if (IsWindowVisible() == TRUE) {
 			if (IsAlarmReset() == TRUE) {
 				OnBnClickedOk();

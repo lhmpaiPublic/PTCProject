@@ -33,7 +33,7 @@ public:
 
 	void Begin( int nMode ) ;
 	void Kill( void ) ;
-	static WORD GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2);
+	static WORD GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2, int LogCount);
 
 	CImageProcessCtrl *m_pParent ;
 	typedef std::vector< CTabInfo > _VEC_TAB_INFO;
