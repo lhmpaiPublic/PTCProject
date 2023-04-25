@@ -122,19 +122,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	static int TempLogCount = 0;
 	while (1) {
 
-		//Image Cutting Tab 정보 출력 로그
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
-		LOGDISPLAY_SPECTXT(5)("=================44444444444============");
 		//로그카운트 증가
 		TempLogCount++;
 		if (pThis == NULL) {
@@ -351,6 +338,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 				//Tab 정보 크기, Tab 정보가 없다면 에러처리
 				int nVecSize = (int)vecTabInfo.size();
+				//Image Cutting Tab 정보 출력 로그
+				LOGDISPLAY_SPEC(5)(_T("Logcount<%d> Top TabInfo 갯수<%d>"),
+					TempLogCount, nVecSize);
 
 				BOOL bErrorAll = FALSE;
 				if (nVecSize <= 0)
