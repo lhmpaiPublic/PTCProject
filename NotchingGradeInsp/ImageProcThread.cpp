@@ -369,8 +369,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					TempLogCount, dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
 
 				//Tab 정보 크기 만큼 루프 돌다.
-				for (int i = 0; i < nVecSize; i++) {
-
+				for (int i = 0; i < nVecSize; i++)
+				{
 					//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 					CCounterInfo cntInfo;
 
@@ -379,6 +379,32 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//Tab  정보 접근 임시 포인터 변수
 					CTabInfo* pTabInfo = &vecTabInfo[i];
+
+
+
+
+// 					if (nVecSize >= 2)
+// 					{
+// 						CBitmapStd bmp(nWidth, nHeight);
+// 						bmp.SetImage(nWidth, nHeight, pTabInfo->pImgPtr);
+// 
+// 						CTime time = CTime::GetCurrentTime();
+// 						CString str;
+// 						str.Format(_T("d:\\[nVecSize]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
+// 						bmp.SaveBitmap(str);
+// 					}
+
+
+
+
+
+
+
+
+
+
+
+
 
 					//Tab 정보에서 Left 크기, Right 크기
 					int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
@@ -418,7 +444,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					// 22.06.22 Ahn Add Start
 					
 					//Tab부의 흑연 코팅높이 에러
-					if (nLevel <= 0 ) {
+					if (nLevel <= 0 )
+					{
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 4;
 
@@ -430,7 +457,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					// 22.09.30 Ahn Add Start
 					
 					//Tab부의 흑연 코팅높이 에러
-					if( nLevel >= (nWidth - 100 )){
+					if( nLevel >= (nWidth - 100 ))
+					{
 						pTabInfo->m_bErrorFlag = TRUE;
 						nErrorNo = 5;
 

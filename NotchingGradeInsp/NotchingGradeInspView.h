@@ -111,6 +111,7 @@ protected:
 	BOOL m_bAlarmResetFlag;
 	BOOL m_bRecipeChagneFlag;
 	BOOL m_bInkMarkActiveFlag;
+	BOOL m_bConnectZoneFlag;
 
 
 
@@ -179,6 +180,7 @@ private :
 	int CheckAlarmReset();
 	int CheckRecipeChange();
 	int CheckInkMarkActive();
+	int CheckConnectZone();
 
 
 // 22.06.27 Ahn Add Start

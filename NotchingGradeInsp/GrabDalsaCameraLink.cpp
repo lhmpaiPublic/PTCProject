@@ -3,6 +3,8 @@
 #include "QueueCtrl.h"
 #include "FrameInfo.h"
 #include "GlobalData.h"
+#include "SigProc.h"
+
 // Static Functions
 static void AcqCallback(SapXferCallbackInfo* pInfo)
 {
@@ -46,7 +48,16 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 			return;
 		}
 
-		if (pQueueCtrl != NULL) {
+
+		CSigProc* pSigProc = theApp.m_pSigProc;
+		BOOL bConnectZone = pSigProc->GetConnectZone();
+		if (bConnectZone == TRUE)
+		{
+			return;
+		}
+
+		if ( pQueueCtrl != NULL )
+		{
 			BYTE* pImg = new BYTE[nWidth * nHeight];
 			memcpy(pImg, pData, sizeof(BYTE) * nWidth * nHeight);
 

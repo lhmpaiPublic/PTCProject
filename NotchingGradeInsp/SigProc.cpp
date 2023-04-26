@@ -840,6 +840,34 @@ int CSigProc::SigInAlarmReset()
 
 
 
+int CSigProc::SigInConnectZone()
+{
+	int nRet = 0;
+	int nAddress;
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		nAddress = enSmsBitIn_ConnectZone;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
+	}
+	else
+	{
+		nAddress = enBitIn_ConnectZone;
+		nRet = SignalPortCheck(nAddress);
+	}
+
+	return nRet;
+}
 
 
 

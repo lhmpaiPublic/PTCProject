@@ -472,6 +472,23 @@ void CModeDlg::OnBnClickedBtnInspSim()
 
 void CModeDlg::OnBnClickedBtnLog()
 {
+	//pyjtest
+// 	CSigProc* pSigProc = theApp.m_pSigProc;
+// 
+// 	if(pSigProc->GetConnectZone() == FALSE )
+// 	{
+// 		pSigProc->SetConnectZone(TRUE);
+// 	}
+// 	else
+// 	{
+// 		pSigProc->SetConnectZone(FALSE);
+// 	}
+// 
+// 	return;
+
+
+
+
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	//CSystemSettingDlg dlg;
 //	CDIOTestDlg dlg;

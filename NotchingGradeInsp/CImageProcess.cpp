@@ -4543,7 +4543,9 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 
 		BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 
-		int nUpperBright = nCount * ( (pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP] ) / 2  ); 
+		int nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
+//		int nUpperBright = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];//pyjtest
+
 		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 		// 22.06.24 Ahn Moidyf End
 
@@ -6192,6 +6194,30 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nLastSavePos = 0;
 	int nSize = (int)vecSector.size();
 
+// 	if( nSize >= 2 )
+// 	{
+// 		CBitmapStd bmp(nWidth, nHeight);
+// 		bmp.SetImage(nWidth, nHeight, pImgPtr);
+// 
+// 		CTime time = CTime::GetCurrentTime();
+// 		CString str;
+// 		str.Format(_T("d:\\[nSizeOver]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
+// 		bmp.SaveBitmap(str);
+// 	}
+
+
+// 	if( nLevel <= 0 )
+// 	{
+// 		CBitmapStd bmp(nWidth, nHeight);
+// 		bmp.SetImage(nWidth, nHeight, pImgPtr);
+// 
+// 		CTime time = CTime::GetCurrentTime();
+// 		CString str;
+// 		str.Format(_T("d:\\[nSizeOver]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
+// 		bmp.SaveBitmap(str);
+// 	}
+
+
 	bool bSectorInfo = TRUE;
 	if (nSize == 0)
 	{
@@ -6289,8 +6315,6 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			}
 		}
 
-
-
 		BOOL bResvSend = FALSE;
 		switch (nCase) {
 		case	0 : // 통으로 보냄
@@ -6312,7 +6336,21 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			LOGDISPLAY_SPEC(5)("Logcount<%d> nCase 0 ErrorFlage TRUE: Top/Bottom Image 생성크기[새이미지 Width + 이전이미지 길이]<%d>, Tab[left<%d>Right<%d>ImageLength<%d>"
 				, logCount, nWidth * tabInfo.nImageLength, tabInfo.nLeft, tabInfo.nRight, tabInfo.nImageLength);
 
+// 			{
+// 				CBitmapStd bmp(nWidth, tabInfo.nImageLength);
+// 				bmp.SetImage(nWidth, tabInfo.nImageLength, tabInfo.pImgPtr);
+// 
+// 				CTime time = CTime::GetCurrentTime();
+// 				CString str;
+// 				str.Format(_T("d:\\[Case0]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount() );
+// 				bmp.SaveBitmap(str);
+// 			}
+
+
+
 			break;
+
+
 		case	1: // 앞뒤 다 없어거나, 그냥 사이즈에 맞춰 잘라보냄.
 			tabInfo.nLeft = 0;
 			nSendLength = nBaseTabPitch - pResvTabInfo->nImageLength ;
@@ -6336,7 +6374,19 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			memcpy(tabInfo.pImgPtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
 			memcpy(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
+
+// 			{
+// 				CBitmapStd bmp(nWidth, tabInfo.nImageLength);
+// 				bmp.SetImage(nWidth, tabInfo.nImageLength, tabInfo.pImgPtr);
+// 
+// 				CTime time = CTime::GetCurrentTime();
+// 				CString str;
+// 				str.Format(_T("d:\\[Case1]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
+// 				bmp.SaveBitmap(str);
+// 			}
 			break;
+
+
 		case	2 : // 예약Tab 정보에 Tab이 있어서 뒤에 꺼 붙여보냄.
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
 			tabInfo.nTabRight = pResvTabInfo->nTabRight;
@@ -6350,6 +6400,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			LOGDISPLAY_SPEC(5)("Logcount<%d> nCase 2는 이전 정보와 합하고 Sector 정보 유지", logCount);
 
 			break;
+
+
 		case	3 :	// 앞뒤 Tab 정보가 하나로 판단 붙여서 보냄
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
 			tabInfo.nTabRight = pResvTabInfo->nImageLength + vecSector[0].nEndPos ;
@@ -6362,7 +6414,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 			//Image Tab  정보 출력 로그
 			LOGDISPLAY_SPEC(5)("Logcount<%d> nCase 3은 이전 정보와 합하고 Sector 정보를 삭제함", logCount);
+
 			break;
+
+
 		case	4 :	// 앞에 Tab 정보가 없어 그냥 뒤에꺼 앞에 붙여서 보냄.
 			tabInfo.nTabLeft = pResvTabInfo->nImageLength + vecSector[0].nStartPos;
 			tabInfo.nTabRight = pResvTabInfo->nImageLength + vecSector[0].nEndPos;
@@ -6375,7 +6430,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 			//Image Tab  정보 출력 로그
 			LOGDISPLAY_SPEC(5)("Logcount<%d> nCase 4는 이전 정보와 합하고 Sector 정보를 삭제함", logCount);
+
 			break;
+
+
 		default :
 			break;
 		}

@@ -91,7 +91,7 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	m_bAlarmResetFlag = FALSE;
 	m_bRecipeChagneFlag = FALSE;
 	m_bInkMarkActiveFlag = FALSE;
-
+	m_bConnectZoneFlag = FALSE;
 
 	m_nCamErrorResetCnt = 0;
 
@@ -484,6 +484,11 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		CheckAlarmReset();
 		CheckRecipeChange();
 		CheckInkMarkActive();
+		CheckConnectZone();
+
+
+
+
 
 
 
@@ -1591,6 +1596,29 @@ int CNotchingGradeInspView::CheckInkMarkActive()
 }
 
 
+int CNotchingGradeInspView::CheckConnectZone()
+{
+	int nRet = 0;
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	BOOL bSigIn = (pSigProc->SigInConnectZone() == 1) ? TRUE : FALSE;
+	if ((bSigIn == TRUE) && (m_bConnectZoneFlag == FALSE))
+	{
+		m_bConnectZoneFlag = TRUE;
+		AprData.SaveDebugLog(_T("Connect Zone ON"));
+
+		pSigProc->SetConnectZone(TRUE);
+	}
+	if ((bSigIn == FALSE) && (m_bConnectZoneFlag == TRUE))
+	{
+		m_bConnectZoneFlag = FALSE;
+		AprData.SaveDebugLog(_T("Connect Zone OFF"));
+
+		pSigProc->SetConnectZone(FALSE);
+	}
+
+	return nRet;
+}
 
 
 // 23.02.09 Ahn Add Start
