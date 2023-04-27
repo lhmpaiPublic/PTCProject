@@ -1095,7 +1095,7 @@ WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, in
 	wOutput |= (nTabId << 2) & CAppDIO::eInOut_ID_Mask; // 3F = 1111 1100
 
 	//체크박스 출력 로그
-	LOGDISPLAY_SPEC(5)("Logcount<%d> Trigger OUTPUT<%d> TabId<%d>", LogCount, wOutput);
+	LOGDISPLAY_SPEC(5)("Logcount<%d> Trigger OUTPUT<%d> TabId<%d>", LogCount, wOutput, nTabId);
 
 	return wOutput;
 }

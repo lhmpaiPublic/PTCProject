@@ -100,6 +100,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	WORD wLastInfo = 0x00;
 	int nIncrease = 0 ;
 
+	WORD backupwInSignal = 0x00;
+
 	while (1) {
 		if (pThis == NULL) {
 			break;
@@ -121,6 +123,13 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				if (bTriggerBit == TRUE) {
 					WORD wInSignal = 0x00;
 					dio.InputWord(&wInSignal);
+
+					//DIO에서 받은 값이 이전 값과 다르면 찍는다.
+					if (backupwInSignal != wInSignal)
+					{
+						LOGDISPLAY_SPEC(5)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
+					}
+
 					// 22.04.06 Ahn Modify Start
 					WORD wTempID;
 					wTempID = 0x3F & (wInSignal >> 1);
