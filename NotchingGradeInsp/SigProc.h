@@ -325,6 +325,7 @@ private:
 
 	BOOL	m_bSmsAlive;
 	BOOL	m_bSigInkMarkAcrive;
+	BOOL	m_bSigInConnectZone;
 
 	static CCriticalSection	m_cs;
 
@@ -376,6 +377,8 @@ public:
 	void SetInkMarkAcktive(BOOL bUse) { m_bSigInkMarkAcrive = bUse; }
 	BOOL GetInkMarkActive() { return m_bSigInkMarkAcrive; }
 
+	void SetConnectZone(BOOL bUse) { m_bSigInConnectZone = bUse; }
+	BOOL GetConnectZone() { return m_bSigInConnectZone; }
 
 
 public :
@@ -390,6 +393,9 @@ public :
 	int SigInLotEnd();
 	int SigInAlarmReset();
 	int SigInInkMarkActive();
+	int SigInConnectZone();
+
+
 
 	// Signal Out
 	int SigOutAlivePulse(int nMode);

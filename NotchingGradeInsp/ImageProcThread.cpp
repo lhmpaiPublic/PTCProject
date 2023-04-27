@@ -119,6 +119,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	BOOL bFirstTab = TRUE;
 	// 22.04.06 Ahn Add End
 
+	//CCounterInfo 에 값이 없을때 사용할 값
+	int useTabID = -1;
+	//CCounterInfo 에 값이 없을때 미리 사용한 값 저장
+	std::queue<int> quUserTabID;
+
 	static int TempLogCount = 0;
 	while (1) {
 
@@ -374,36 +379,75 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 					CCounterInfo cntInfo;
 
-					//Tab Counter 정보를 가져온다.(Trigger ID )
-					cntInfo = pCntQueueInCtrl->Pop();
+					//Trigger input id 사용 예외처리
+					//queue에서 정보가 없을 때 들어올 값을 미리 사용한다.
+					//Tab Id 정보가 있을 경우
+					bool bNextTabId = false;
+					while (pCntQueueInCtrl->GetSize())
+					{
+						//정보를 하나 가지고 온다.
+						cntInfo = pCntQueueInCtrl->Pop();
+						//미리 땡겨 쓴 Tab Id가 있다면
+						if (quUserTabID.size())
+						{
+							//미리 땡겨 쓴 id를 가져온다.
+							int beforeTabId = quUserTabID.front();
+							//정보 삭제
+							quUserTabID.pop();
+							//비교해서 다르다면 빠져나간다.
+							if (beforeTabId != cntInfo.nTabID)
+							{
+								bNextTabId = true;
+								//다음에 사용할 id : 1 증가 시켜 저장
+								useTabID = cntInfo.nTabID + 1;
+								if (useTabID >= 64)
+								{
+									useTabID = 0;
+								}
+								break;
+							}
+							else
+							{
+								//다음에 사용할 id를 못찾았다.
+								bNextTabId = false;
+							}
+						}
+						//땡겨 쓴 id가 없다.
+						else
+						{
+							bNextTabId = true;
+							//다음에 사용할 id : 1 증가 시켜 저장
+							useTabID = cntInfo.nTabID+1;
+							if (useTabID >= 64)
+							{
+								useTabID = 0;
+							}
+							break;
+						}
+					}
+
+					//Tab id 정보가 없을 경우
+					//다음에 들어올 id를 할당한다.
+					if (bNextTabId == false)
+					{
+						//다음 아이디를 할당한다.
+						cntInfo.nTabID = useTabID;
+						//사용한 아이디를 backup 한다. 확인용
+						quUserTabID.push(useTabID);
+						//다음에 사용할 id : 1 증가 시켜 저장
+						useTabID++;
+						if (useTabID >= 64)
+						{
+							useTabID = 0;
+						}
+					}
+
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPEC(5)(_T("Logcount<%d> 사용할 Trigger Tab Id<%d>"),
+						TempLogCount, cntInfo.nTabID);
 
 					//Tab  정보 접근 임시 포인터 변수
 					CTabInfo* pTabInfo = &vecTabInfo[i];
-
-
-
-
-// 					if (nVecSize >= 2)
-// 					{
-// 						CBitmapStd bmp(nWidth, nHeight);
-// 						bmp.SetImage(nWidth, nHeight, pTabInfo->pImgPtr);
-// 
-// 						CTime time = CTime::GetCurrentTime();
-// 						CString str;
-// 						str.Format(_T("d:\\[nVecSize]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
-// 						bmp.SaveBitmap(str);
-// 					}
-
-
-
-
-
-
-
-
-
-
-
 
 
 					//Tab 정보에서 Left 크기, Right 크기

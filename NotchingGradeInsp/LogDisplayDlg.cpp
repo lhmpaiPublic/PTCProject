@@ -30,7 +30,7 @@ CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 CString strLogNameList =
 "0 Execute_ERROT_0 0,"
 "1 PLC_Read_BitIn_1 0,"
-"2 DIO_IDinout_2 1,"
+"2 DIO_IDinout_2 0,"
 "3 PLC_Read_Block_3 0,"
 "4 ImageProcess_TabInfo_4 0,"
 "5 ImageCutting_5 0,"
@@ -42,6 +42,7 @@ CString strLogNameList =
 
 #define LOGDISPLAY_LISTBOX
 #define MAX_DISPLAYLOG 1024
+#define LISTBOX_CLEARCOUNT 5000
 CLogDisplayDlg* CLogDisplayDlg::gInst()
 {
 	return gInstObject;
@@ -285,6 +286,10 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 					if (*pMain->getLogMoveLast())
 					{
 						listBox->SetTopIndex(listBox->GetCount() - 1);
+					}
+					if (listBox->GetCount() >= LISTBOX_CLEARCOUNT)
+					{
+						listBox->ResetContent();
 					}
 #endif //LOGDISPLAY_LISTBOX
 					tempStr += popStr + CString("\r\n");
