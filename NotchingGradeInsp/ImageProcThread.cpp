@@ -120,7 +120,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	// 22.04.06 Ahn Add End
 
 	//CCounterInfo 에 값이 없을때 사용할 값
-	int useTabID = -1;
+	int useTabID = 64;
 	//CCounterInfo 에 값이 없을때 미리 사용한 값 저장
 	std::queue<int> quUserTabID;
 
