@@ -62,9 +62,6 @@ void CRecipeImportDlg::LoadRecipeFileList()
 	CString strRecipeDir;
 	strRecipeDir.Format(_T("%s\\Recipe\\"), AprData.m_strDataPath);
 
-	//로그출력
-	LOGDISPLAY_SPEC(0)("RecipeListLoad 경로 : %s", strRecipeDir);
-
 	//경로에 있는 레시피 파일 목록을 가져온다.
 	CWin32File winFile;
 	winFile.GetFileList(strRecipeDir, strRecipeList);

@@ -127,9 +127,6 @@ BOOL CSiemensPlc::IsOpened()
 
 int CSiemensPlc::OpenPio(void)
 {
-	//로그출력
-	LOGDISPLAY_SPEC(0)("PLC Siemens Open IP:%s, Port:%d", m_strIPAddress, m_nPort);
-
 	ClosePio();
 	m_pLGIS_Plc = new CLGIS_Plc((std::string)CT2CA(m_strIPAddress), m_nPort);
 	
@@ -139,9 +136,6 @@ int CSiemensPlc::OpenPio(void)
 		//로그출력
 		LOGDISPLAY_SPECTXT(0)("PLC Siemens Open failed");
 	}
-
-	//로그출력
-	LOGDISPLAY_SPECTXT(0)("PLC Siemens Open OK");
 
 	return 0;
 }

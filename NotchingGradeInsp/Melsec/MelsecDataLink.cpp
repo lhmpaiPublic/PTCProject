@@ -764,9 +764,6 @@ void CMelsecDataLink::PioErrorProcess(int iRet, char* cap)
 
 int CMelsecDataLink::OpenPio(void)
 {
-	//로그출력
-	LOGDISPLAY_ALLTXT("PLC Melsec Open");
-
 	int	ret = 0;
 
 	if (m_bDebugIO) {
@@ -827,8 +824,6 @@ int CMelsecDataLink::LocalPioOpen(BOOL bLockCtrl /*= TRUE*/)
 	if (iRet == 0) {
 		m_bOpened = TRUE;
 
-		//로그출력
-		LOGDISPLAY_ALLTXT("PLC Melsec Open");
 	}
 	// 22.06.30 Ahn Add End
 
@@ -840,7 +835,7 @@ int CMelsecDataLink::LocalPioOpen(BOOL bLockCtrl /*= TRUE*/)
 
 
 		//로그출력
-		LOGDISPLAY_ALLTXT("PLC Melsec ChangeWorkingSetSize failed");
+		LOGDISPLAY_SPECTXT(0)("PLC Melsec ChangeWorkingSetSize failed");
 	}
 	// 22.04.04 Ahn Add Start
 

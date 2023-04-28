@@ -1445,6 +1445,4 @@ void CSystemSettingDlg::OnCbnSelchangeComImageoutformat()
 		break;
 	}
 
-	//로그출력
-	LOGDISPLAY_SPEC(0)("변경 이미지 포맷 : ", AprData.getGSt()->GetOutImageFormat());
 }

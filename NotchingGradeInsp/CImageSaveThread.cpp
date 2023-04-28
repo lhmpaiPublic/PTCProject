@@ -61,16 +61,19 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 	{
 		if (pThis == NULL)
 		{
+			LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-1 Thread 종료"));
 			break;
 		}
 
 		if (pThis->m_bKill == TRUE)
 		{
+			LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-2 Thread 종료"));
 			break;
 		}
 
 		if (pQueuePtr == NULL)
 		{
+			LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-3 Thread 종료"));
 			break;
 		}
 
@@ -112,9 +115,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				bmp.SetJpegQuality(nJpgQuality);
 
 				bmp.SaveBitmap(pSaveInfo->m_strSavePath);
-
-				LOGDISPLAY_SPEC(0)(_T("<<CtrlThreadImgSave>> : Save BMP Name = %s"),
-					pSaveInfo->m_strSavePath);
 
 				delete []pImgPtr;
 				pImgPtr = NULL;
