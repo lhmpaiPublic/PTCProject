@@ -261,7 +261,7 @@ BOOL CModeDlg::OnInitDialog()
 	// 22.06.14 Ahn Add Start
 	//m_stTitle.SetWindowText(_T("Notching Foil Exposure Vision")); // 22.05.30 Ahn Modify 
 	CString strDispName;
-	strDispName.Format(_T("%s Foil 노출 Vision"), AprData.m_System.m_strMachineID );
+	strDispName.Format(_T("%s Foil Exposure Vision"), AprData.m_System.m_strMachineID );
 	m_stTitle.SetWindowText(strDispName); 
 	// 22.06.14 Ahn Add End
 
@@ -514,7 +514,7 @@ void CModeDlg::OnBnClickedBtnLog()
 void CModeDlg::OnBnClickedBtnExit()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if( MessageBox( _T("어플리케이션을 종료하시겠습니까?"), _T("NotchingGradeInsp"), MB_ICONQUESTION | MB_YESNO) == IDYES ) {
+	if( MessageBox( _T("Do you want to exit the application?"), _T("NotchingGradeInsp"), MB_ICONQUESTION | MB_YESNO) == IDYES ) {
 		AfxGetMainWnd()->PostMessageA(WM_CLOSE);
 	}
 }
@@ -758,11 +758,11 @@ void CModeDlg::DisplayLanguage()
 	
 	pWnd = GetDlgItem(IDC_RADI_INSP_MODE);
 	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("검사모드"), _T("Insp Mode")));
+		pWnd->SetWindowTextA(_LANG(_T("검사모드"), _T("Inspect Mode")));
 	}
 	pWnd = GetDlgItem(IDC_RAD_COND_MODE);
 	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("설정모드"), _T("Setting")));
+		pWnd->SetWindowTextA(_LANG(_T("설정모드"), _T("Recipe Setting")));
 	}
 	pWnd = GetDlgItem(IDC_BTN_DIRECTORY);
 	if (pWnd != nullptr) {

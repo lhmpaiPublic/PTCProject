@@ -311,11 +311,11 @@ BOOL CRecipeSettingDlg::OnInitDialog()
 	//	}
 	//}
 
-	m_TabDetectCond.InsertItem(1, _T("탑 조건"));
-	m_TabDetectCond.InsertItem(2, _T("버틈 조건"));
+	m_TabDetectCond.InsertItem(1, _T("TOP Cond"));
+	m_TabDetectCond.InsertItem(2, _T("BTM Cond"));
 
-	m_TabInfo.InsertItem(1, _T("탑 조건"));
-	m_TabInfo.InsertItem(2, _T("버틈 조건"));
+	m_TabInfo.InsertItem(1, _T("TOP Cond"));
+	m_TabInfo.InsertItem(2, _T("BTM Cond"));
 
 	DisplayLanguage(); // 22.09.16 Ahn Add 
 
@@ -375,7 +375,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdTabWidthMm()
 	dMin = 9.9;
 	dValue = m_dTabWidth;
 	CString strMsg;
-	strMsg.Format(_T("탭 폭을 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+//	strMsg.Format(_T("탭 폭을 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+	strMsg.Format(_T("Range( %.3lf ~ %.3lf )"), dMin, dMax);
 	m_dTabWidth = SetValue(dValue, strMsg, dMax, dMin);
 
 	m_nTabWidthPix = (int)( (m_dTabWidth / AprData.m_System.m_dResolY * 1000 ) + 0.5 ) ;
@@ -391,7 +392,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdTabPitchMm()
 	dMin = 9.9;
 	dValue = m_dTabPitch;
 	CString strMsg;
-	strMsg.Format(_T("탭 피치를 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+//	strMsg.Format(_T("탭 피치를 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+	strMsg.Format(_T("Range( %.3lf ~ %.3lf )"), dMin, dMax);
 	m_dTabPitch = SetValue(dValue, strMsg, dMax, dMin);
 
 	m_nTabPitchPix = (int)(((m_dTabPitch / AprData.m_System.m_dResolY) * 1000.0) + 0.5 );
@@ -407,7 +409,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdTabRadiusMm()
 	dMin = 0.9;
 	dValue = m_dRadius;
 	CString strMsg;
-	strMsg.Format(_T("라운드의 반지름 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+//	strMsg.Format(_T("라운드의 반지름 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+	strMsg.Format(_T("Range( %.3lf ~ %.3lf )"), dMin, dMax);
 	m_dRadius = SetValue(dValue, strMsg, dMax, dMin);
 
 	m_nRadiusPixH = (int)(((m_dRadius / AprData.m_System.m_dResolY) * 1000.0) + 0.5 );
@@ -424,7 +427,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdTopCoatHeightMm()
 	dMin = 0.9;
 	dValue = m_dTopCoatH;
 	CString strMsg;
-	strMsg.Format(_T("탑 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+//	strMsg.Format(_T("탑 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+	strMsg.Format(_T("Range( %.3lf ~ %.3lf )"), dMin, dMax);
 	m_dTopCoatH = SetValue(dValue, strMsg, dMax, dMin);
 
 	m_nTopCoatPixH = (int)(((m_dTopCoatH / AprData.m_System.m_dResolX[ CAM_POS_TOP ]) * 1000.0) + 0.5 );
@@ -440,7 +444,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdBtmCoatHeightMm()
 	dMin = 0.9;
 	dValue = m_dBtmCoatH;
 	CString strMsg;
-	strMsg.Format(_T("버틈 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+//	strMsg.Format(_T("버틈 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+	strMsg.Format(_T("Range( %.3lf ~ %.3lf )"), dMin, dMax);
 	m_dBtmCoatH = SetValue(dValue, strMsg, dMax, dMin);
 
 	m_nBtmCoatPixH = (int)(((m_dBtmCoatH / AprData.m_System.m_dResolX[ CAM_POS_TOP ]) * 1000.0) + 0.5 );
@@ -456,7 +461,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdTabCoatHeightMm()
 	dMin = 0.9;
 	dValue = this->m_dTabCoatH;
 	CString strMsg;
-	strMsg.Format(_T("버틈 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+//	strMsg.Format(_T("버틈 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
+	strMsg.Format(_T("Range( %.3lf ~ %.3lf )"), dMin, dMax);
 	m_dTabCoatH = SetValue(dValue, strMsg, dMax, dMin);
 
 	m_nTabCoatPixH = (int)(((m_dTabCoatH / AprData.m_System.m_dResolX[ CAM_POS_BOTTOM ]) * 1000.0) + 0.5);
@@ -472,7 +478,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdCoatBright()
 	nMin = 0;
 	nValue = m_nCoatBrightMin;
 	CString strMsg;
-	strMsg.Format(_T("코팅부의 휘도값을 입력해 주세요. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("코팅부의 휘도값을 입력해 주세요. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nCoatBrightMin = SetValue(nValue, strMsg, nMax, nMin);
 
 	UpdateData(FALSE);
@@ -487,7 +494,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdRollBright()
 	nMin = 0;
 	nValue = m_nRollBrightMin;
 	CString strMsg;
-	strMsg.Format(_T("롤 부위의 휘도값을 입력해 주세요. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("롤 부위의 휘도값을 입력해 주세요. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nRollBrightMin = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -500,7 +508,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdCoatBrightMax()
 	nMin = 0;
 	nValue = m_nCoatBrightMax;
 	CString strMsg;
-	strMsg.Format(_T("코팅부의 휘도값을 입력해 주세요. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("코팅부의 휘도값을 입력해 주세요. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nCoatBrightMax = SetValue(nValue, strMsg, nMax, nMin);
 
 	UpdateData(FALSE);
@@ -515,7 +524,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdRollBrightMax()
 	nMin = 0;
 	nValue = m_nRollBrightMax;
 	CString strMsg;
-	strMsg.Format(_T("롤 부위의 휘도값을 입력해 주세요. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("롤 부위의 휘도값을 입력해 주세요. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nRollBrightMax = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -527,7 +537,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdFoilThresUpper()
 	nMin = THRESHOLD_MIN_VALUE; // 22.07.07 Ahn Modify 
 	nValue = m_nThresFoilOrigin;
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 검출 Origin 쓰레스홀드 레벨 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("Foil 노출 검출 Origin 쓰레스홀드 레벨 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nThresFoilOrigin = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -538,7 +549,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdDrossThresUpper()
 	nMin = THRESHOLD_MIN_VALUE; // 22.07.07 Ahn Modify 
 	nValue = m_nThresDrossOrigin;
 	CString strMsg;
-	strMsg.Format(_T("Dross 검출 Origin 쓰레스홀드 레벨을 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("Dross 검출 Origin 쓰레스홀드 레벨을 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nThresDrossOrigin = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -551,7 +563,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdFoilThresLow()
 	nMin = THRESHOLD_MIN_VALUE; // 22.07.07 Ahn Modify 
 	nValue = m_nThresFoilLower;
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 검출 쓰레스 홀드 레벨을 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("Foil 노출 검출 쓰레스 홀드 레벨을 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nThresFoilLower = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -565,7 +578,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdDrossThresLow()
 	nMin = THRESHOLD_MIN_VALUE; // 22.07.07 Ahn Modify 
 	nValue = m_nThresDrossLower;
 	CString strMsg;
-	strMsg.Format(_T("Dross 검출 쓰레스 홀드 레벨을 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("Dross 검출 쓰레스 홀드 레벨을 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nThresDrossLower = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 
@@ -580,7 +594,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdMinSizeFoil()
 	nMin = 0;
 	nValue = m_nMinSizeFoil;
 	CString strMsg;
-	strMsg.Format(_T("Foil 검출 최소 검출 사이즈를 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("Foil 검출 최소 검출 사이즈를 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nMinSizeFoil = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -594,7 +609,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdMinSizeDross()
 	nMin = 0;
 	nValue = m_nMinSizeDross;
 	CString strMsg;
-	strMsg.Format(_T("Dross 검출 최소 검출 사이즈를 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("Dross 검출 최소 검출 사이즈를 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nMinSizeDross = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -608,7 +624,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdMaskOffsetFoil()
 	nMin = 0;
 	nValue = m_nMaskOffsetFoil;
 	CString strMsg;
-	strMsg.Format(_T("Foil 마스크 오프셋 사이즈를 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("Foil 마스크 오프셋 사이즈를 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nMaskOffsetFoil = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -622,7 +639,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdMaskOffsetDross()
 	nMin = 0;
 	nValue = m_nMaskOffsetDross;
 	CString strMsg;
-	strMsg.Format(_T("Dross 마스크 오프셋 사이즈를 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("Dross 마스크 오프셋 사이즈를 설정해 주세요.. 범위( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nMaskOffsetDross = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -637,7 +655,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdInspRangeIn()
 	dMin = 0.0;
 	dValue = m_dInspWidthFoil;
 	CString strMsg;
-	strMsg.Format(_T("Foil부 검사 영역을 설정해 주세요.. 범위( %.3lf mm ~ %.3lf mm)"), dMin, dMax);
+//	strMsg.Format(_T("Foil부 검사 영역을 설정해 주세요.. 범위( %.3lf mm ~ %.3lf mm)"), dMin, dMax);
+	strMsg.Format(_T("Range( %.3lf mm ~ %.3lf mm)"), dMin, dMax);
 	m_dInspWidthFoil = SetValue(dValue, strMsg, dMax, dMin);
 	m_nInspWidthFoil = (int) ( (m_dInspWidthFoil / AprData.m_System.m_dResolX[nCamNo]) * 1000.0)  ;
 	UpdateData(FALSE);
@@ -653,7 +672,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdInspRangeOut()
 	dMin = 0.0;
 	dValue = m_dInspWidthDross;
 	CString strMsg;
-	strMsg.Format(_T("Dross 검사 영역을 설정해 주세요.. 범위( %.3lf mm ~ %.3lf mm)"), dMin, dMax);
+//	strMsg.Format(_T("Dross 검사 영역을 설정해 주세요.. 범위( %.3lf mm ~ %.3lf mm)"), dMin, dMax);
+	strMsg.Format(_T("Range( %.3lf mm ~ %.3lf mm)"), dMin, dMax);
 	m_dInspWidthDross = SetValue(dValue, strMsg, dMax, dMin);
 	m_nInspWidthDross = (int)( (m_dInspWidthDross / AprData.m_System.m_dResolX[nCamNo]) * 1000 ) ;
 	UpdateData(FALSE);
@@ -665,14 +685,14 @@ void CRecipeSettingDlg::OnBnClickedOk()
 	int nSelRecipNo = m_nEdRecipeNo - 1;
 	if ((nSelRecipNo < 0) || (nSelRecipNo >= MAX_RECIPE_TABLE)) {
 
-		MessageBox(_T("레시피 번호가 범위 밖입니다. 확인해 주세요."));
+		MessageBox(_T("The recipe number is out of the range. Please check."));
 		return;
 	}
 
 	CRecipeTableInfo* pRcpInfo = m_RcpTableCtrl.GetRecipeTableInfo(nSelRecipNo);
 	CString strRecipeName = pRcpInfo->strRecipeName;
 	if (pRcpInfo->strRecipeName.GetLength() == 0) {
-		MessageBox(_T("레시피가 등록 되어있지 않습니다. 확인해 주세요."));
+		MessageBox(_T("The recipe is not registered. Please check."));
 		return;
 	}
 	// 22.07.26 Ahn Add Start
@@ -681,7 +701,7 @@ void CRecipeSettingDlg::OnBnClickedOk()
 		rcpCtrl.LoadRecipe(AprData.m_pRecipeInfo, strRecipeName);
 	}
 	else {
-		MessageBox(_T("적용하려는 Recipe 명과 현재 적용중인 Recipe 명이 같지 않아 적용할 수 없습니다."));
+		MessageBox(_T("The recipe name you are trying to apply is not the same as the recipe name you are currently applying."));
 	}
 	// 22.07.26 Ahn Add End
 	// 22.07.21 Ahn Delete Start
@@ -932,11 +952,11 @@ void CRecipeSettingDlg::OnBnClickedBtnSave()
 	ASSERT(m_pRecipeInfo);
 	ASSERT(m_pRecipeCtrl);
 	if (( m_pRecipeInfo == NULL) || (m_pRecipeCtrl == NULL) ){
-		MessageBox(_T("레시피 저장 실패") );
+		MessageBox(_T("Failed to save recipe") );
 		return;
 	}
 	if (strRecipeName.GetLength() <= 0) {
-		MessageBox(_T("레시피 이름을 지정해 주세요."));
+		MessageBox(_T("Please specify the name of the recipe."));
 		return;
 	}
 	DataControl( MODE_WRITE, m_pRecipeInfo);
@@ -985,7 +1005,7 @@ int CRecipeSettingDlg::MakeGridCtrl()
 		pGridCtrl->SetFont(m_pFontGrid, TRUE);
 		pGridCtrl->SetRowHeight( 0, nHeight);
 
-		CString strTitle[en_Light_Cols] = { _T("구분"), _T("탑"), _T("버틈") };
+		CString strTitle[en_Light_Cols] = { _T("SORT"), _T("TOP"), _T("BOTTOM") };
 		for (nCol = 0; nCol < pGridCtrl->GetColumnCount(); nCol++) {
 			CString strText;
 			GV_ITEM Item;
@@ -1009,7 +1029,7 @@ int CRecipeSettingDlg::MakeGridCtrl()
 			pGridCtrl->SetColumnWidth(nCol, nWidth);
 		}
 
-		CString strLightName[MAX_LIGHT_UNIT] = { _T("정반사"), _T("난반사") };
+		CString strLightName[MAX_LIGHT_UNIT] = { _T("MAIN"), _T("SUB") };
 	//	CString strCameraName[MAX_CAMERA_NO] = { _T("탑"), _T("버틈") };
 		for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++) {
 			int nUnitNo = nRow - 1;
@@ -1147,16 +1167,17 @@ void CRecipeSettingDlg::OnClickGridCtrlLight(NMHDR* pNMHDR, LRESULT* pResult)
 
 		int nColNo = iCol - 1;
 
-		CString strName = _T("반사");
-		CString strCamName = _T("탑");
+		CString strName = _T("MAIN");
+		CString strCamName = _T("TOP");
 		if (iRealNo == 1) {
-			strName = _T("난반사");
+			strName = _T("SUB");
 		}
 		if (nColNo == 1) {
-			strCamName = _T("버틈");
+			strCamName = _T("BOTTOM");
 		}
 
-		guidemsg.Format(_T("%s 카메라 %s의 조명 값을 입력하세요."), strCamName, strName);
+		guidemsg.Format(_T("Enter the% s light value of the% s camera."), strName, strCamName );
+	
 
 		nTemp = atoi(szTemp.GetBuffer());
 
@@ -1204,7 +1225,8 @@ void CRecipeSettingDlg::OnEnSetfocusFoilLinkRangeX()
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nFoilLinkX;
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 결함 링크 X 범위를 입력해 주세요. 범위( %d mm ~ %d mm)"), nMin, nMax);
+//	strMsg.Format(_T("Foil 노출 결함 링크 X 범위를 입력해 주세요. 범위( %d mm ~ %d mm)"), nMin, nMax);
+	strMsg.Format(_T("Range( %d mm ~ %d mm)"), nMin, nMax);
 	m_nFoilLinkX = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -1219,7 +1241,8 @@ void CRecipeSettingDlg::OnEnSetfocusDrossLinkRangeX()
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nDrossLinkX;
 	CString strMsg;
-	strMsg.Format(_T("Dross 결함 링크 X 범위를 입력해 주세요. 범위( %d mm ~ %d mm)"), nMin, nMax);
+//	strMsg.Format(_T("Dross 결함 링크 X 범위를 입력해 주세요. 범위( %d mm ~ %d mm)"), nMin, nMax);
+	strMsg.Format(_T("Range( %d mm ~ %d mm)"), nMin, nMax);
 	m_nDrossLinkX = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -1234,7 +1257,8 @@ void CRecipeSettingDlg::OnEnSetfocusFoilLinkRangeY()
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nFoilLinkY;
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 결함 링크 Y 범위를 입력해 주세요. 범위( %d mm ~ %d mm)"), nMin, nMax);
+//	strMsg.Format(_T("Foil 노출 결함 링크 Y 범위를 입력해 주세요. 범위( %d mm ~ %d mm)"), nMin, nMax);
+	strMsg.Format(_T("Range( %d mm ~ %d mm)"), nMin, nMax);
 	m_nFoilLinkY = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -1249,7 +1273,8 @@ void CRecipeSettingDlg::OnEnSetfocusDrossLinkRangeY()
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nDrossLinkY;
 	CString strMsg;
-	strMsg.Format(_T("Dross 결함 링크 Y 범위를 입력해 주세요. 범위( %d mm ~ %d mm)"), nMin, nMax);
+//	strMsg.Format(_T("Dross 결함 링크 Y 범위를 입력해 주세요. 범위( %d mm ~ %d mm)"), nMin, nMax);
+	strMsg.Format(_T("Range( %d mm ~ %d mm)"), nMin, nMax);
 	m_nDrossLinkY = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -1282,7 +1307,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdBmpSaveInterval()
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nBmpSaveInterval;
 	CString strMsg;
-	strMsg.Format(_T("비트맵 이미지 저장 간격을 설정해 주세요. %d ~ %d"), nMin, nMax);
+//	strMsg.Format(_T("비트맵 이미지 저장 간격을 설정해 주세요. %d ~ %d"), nMin, nMax);
+	strMsg.Format(_T("Range(%d ~ %d)"), nMin, nMax);
 	nValue = m_nBmpSaveInterval;
 	m_nBmpSaveInterval = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
@@ -1326,7 +1352,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdMagnification()
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	dValue = m_dEdMagnification;
 	CString strMsg;
-	strMsg.Format(_T("검출 배율을 입력해 주세요.( %2.lf mm ~ %.2lf mm)"), dMin, dMax);
+//	strMsg.Format(_T("검출 배율을 입력해 주세요.( %2.lf mm ~ %.2lf mm)"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf mm ~ %.2lf mm)"), dMin, dMax);
 	m_dEdMagnification = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -1374,7 +1401,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdNgXSize()
 	dMin = 0.0;
 	dValue = m_dEdNgSizeWidth[CAM_POS_TOP];
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 결함 유지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("Foil 노출 결함 유지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um). Not used if 0 or less"), dMin, dMax);
 	m_dEdNgSizeWidth[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -1388,7 +1416,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdNgYSize()
 	dMin = 0.0;
 	dValue = m_dEdNgSizeHeight;
 	CString strMsg;
-	strMsg.Format(_T("NG 판정 세로 길이를 입력해 주세요. ( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("NG 판정 세로 길이를 입력해 주세요. ( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um). Not used if 0 or less"), dMin, dMax);
 	m_dEdNgSizeHeight = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -1681,14 +1710,14 @@ void CRecipeSettingDlg::OnBnClickedBtnRegist()
 	m_bRecipeTableChanged = TRUE;
 
 	if ((m_nEdRecipeNo <= 0) || (m_nEdRecipeNo > MAX_RECIPE_TABLE)) {
-		MessageBox(_T("레시피 번호 이상 : 등록할 레시피 번호를 아래 표에서 선택해 주세요."));
+		MessageBox(_T("Recipe number NG : Please select the recipe number to register in the table below."));
 		return ;
 	}
 
 	CRecipeTableInfo *pRcpTableInfo = m_RcpTableCtrl.GetRecipeTableInfo(m_nEdRecipeNo-1);
 
 	if (pRcpTableInfo == NULL) {
-		MessageBox(_T("레시피 테이블 정보 이상."));
+		MessageBox(_T("Recipe table info NG."));
 		return;
 	}
 
@@ -1697,7 +1726,7 @@ void CRecipeSettingDlg::OnBnClickedBtnRegist()
 	//m_cmbRecipeName.GetWindowTextA(strRecipeName);
 	strRcpTableName = pRcpTableInfo->strRecipeName;
 	if (strRecipeName.Compare(strRcpTableName) == 0) {
-		MessageBox(_T("이미 등록중 입니다."));
+		MessageBox(_T("You are already registering."));
 		return;
 	}
 
@@ -1717,14 +1746,14 @@ void CRecipeSettingDlg::OnBnClickedBtnDelete()
 	m_bRecipeTableChanged = TRUE;
 
 	if ((m_nEdRecipeNo <= 0) || (m_nEdRecipeNo > MAX_RECIPE_TABLE)) {
-		MessageBox(_T("레시피 번호 이상 : 등록할 레시피 번호를 아래 표에서 선택해 주세요."));
+		MessageBox(_T("Recipe number NG : Please select the recipe number to register in the table below."));
 		return;
 	}
 
 	CRecipeTableInfo* pRcpTableInfo = m_RcpTableCtrl.GetRecipeTableInfo(m_nEdRecipeNo - 1);
 
 	if (pRcpTableInfo == NULL) {
-		MessageBox(_T("레시피 테이블 정보 이상."));
+		MessageBox(_T("Recipe table info NG."));
 		return;
 	}
 
@@ -1761,7 +1790,7 @@ void CRecipeSettingDlg::OnBnClickedBtnLoad()
 		strRecipeName = pGridCtrl->GetTextMatrix(iRow, 1);
 		if (strRecipeName.GetLength())
 		{
-			MessageBox(_T("이미 등록된 번호입니다."));
+			MessageBox(_T("You are already registering."));
 		}
 		else
 		{
@@ -1797,7 +1826,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdSaveDefSize()
 	dMin = 0;
 	dValue = m_dEdSaveDefSize ;
 	CString strMsg;
-	strMsg.Format(_T("NG 판정 세로 길이를 입력해 주세요. ( %.1lf um ~ %.1lf um). 0 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("NG 판정 세로 길이를 입력해 주세요. ( %.1lf um ~ %.1lf um). 0 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %.1lf um ~ %.1lf um). Not used if 0.0 or less"), dMin, dMax);
 	m_dEdSaveDefSize = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -1926,7 +1956,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdNegaTabCoatHeight()
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	dValue = m_dEdNegTabCoatHeight  ;
 	CString strMsg;
-	strMsg.Format(_T("음극 TAB부의 코팅 높이를 입력해 주세요. 범위( %d mm ~ %d mm)"), dMin, dMax);
+//	strMsg.Format(_T("음극 TAB부의 코팅 높이를 입력해 주세요. 범위( %d mm ~ %d mm)"), dMin, dMax);
+	strMsg.Format(_T("Range ( %d mm ~ %d mm)"), dMin, dMax);
 	m_dEdNegTabCoatHeight = SetValue(dValue, strMsg, dMax, dMin);
 
 	m_nEdNegTabCoatHeightPix = (int)(m_dEdNegTabCoatHeight / AprData.m_System.m_dResolX[CAM_POS_TOP] * 1000);
@@ -1943,7 +1974,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdVGrooveHeight()
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	dValue = m_dEdNegVGrooveHeight;
 	CString strMsg;
-	strMsg.Format(_T("음극 TAB부의 코팅 높이를 입력해 주세요. 범위( %d mm ~ %d mm)"), dMin, dMax);
+//	strMsg.Format(_T("음극 TAB부의 코팅 높이를 입력해 주세요. 범위( %d mm ~ %d mm)"), dMin, dMax);
+	strMsg.Format(_T("Range( %d mm ~ %d mm)"), dMin, dMax);
 	m_dEdNegVGrooveHeight = SetValue(dValue, strMsg, dMax, dMin);
 
 	m_nEdNegVGrooveHeightPix = (int)(m_dEdNegVGrooveHeight / AprData.m_System.m_dResolX[CAM_POS_TOP] * 1000);
@@ -1959,7 +1991,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdIgnoreDistance()
 	dMin = 0.0;
 	dValue = m_dEdIgnoreDistance ;
 	CString strMsg;
-	strMsg.Format(_T("판정대상 제외 거리를 설정해 주세요. ( %.1lf um ~ %.1lf um). 0.0 이하 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("판정대상 제외 거리를 설정해 주세요. ( %.1lf um ~ %.1lf um). 0.0 이하 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %.1lf um ~ %.1lf um). Not used if 0.0 or less"), dMin, dMax);
 	m_dEdIgnoreDistance = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -1973,7 +2006,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdIgnoreSize()
 	dMin = 0.0;
 	dValue = m_dEdIgnoreSize;
 	CString strMsg;
-	strMsg.Format(_T("판정대상 제외 결함크기를 설정해 주세요. ( %.1lf um ~ %.1lf um). 0.0 이하 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("판정대상 제외 결함크기를 설정해 주세요. ( %.1lf um ~ %.1lf um). 0.0 이하 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %.1lf um ~ %.1lf um). Not used if 0.0 or less"), dMin, dMax);
 	m_dEdIgnoreSize = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 
@@ -1988,7 +2022,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdThresSurface()
 	nMin = 0;
 	nValue = m_nEdThresSurface;
 	CString strMsg;
-	strMsg.Format(_T("적극내 스패터 결함의 스레스홀드를 입력해 주세요. ( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("적극내 스패터 결함의 스레스홀드를 입력해 주세요. ( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nEdThresSurface = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 
@@ -2004,7 +2039,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdSptMask()
 	nMin = 0;
 	nValue = m_nEdSurfaceMaskOffset;
 	CString strMsg;
-	strMsg.Format(_T("적극내 스패터 검출 마스크 오프셋을 입력해 주세요. ( %d ~ %d )"), nMin, nMax);
+//	strMsg.Format(_T("적극내 스패터 검출 마스크 오프셋을 입력해 주세요. ( %d ~ %d )"), nMin, nMax);
+	strMsg.Format(_T("Range ( %d ~ %d )"), nMin, nMax);
 	m_nEdSurfaceMaskOffset = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -2027,7 +2063,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdSurfaceNgSize()
 	dMin = 0.0;
 	dValue = m_dSurfaceNgSize[CAM_POS_TOP];
 	CString strMsg;
-	strMsg.Format(_T("표면결함 NG 사이즈을 입력해 주세요. ( %.1lf um ~ %.1lf um). 0.0 미사용"), dMin, dMax);
+//	strMsg.Format(_T("표면결함 NG 사이즈을 입력해 주세요. ( %.1lf um ~ %.1lf um). 0.0 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %.1lf um ~ %.1lf um). Not used if 0.0 or less"), dMin, dMax);
 	m_dSurfaceNgSize[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -2041,7 +2078,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdSurfaceMinsize()
 	nMin = 2 ;
 	nValue = m_nEdSurfaceMinSize;
 	CString strMsg;
-	strMsg.Format(_T("표면결함 최소검출 사이즈을 입력해 주세요. (Pixcel)"), nMin, nMax);
+//	strMsg.Format(_T("표면결함 최소검출 사이즈을 입력해 주세요. (Pixcel)"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d pixel)"), nMin, nMax);
 	m_nEdSurfaceMinSize = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -2147,7 +2185,7 @@ int CRecipeSettingDlg::MakeGridCtrl_Marking()
 			pGridCtrl->SetFont(m_pFontGrid, TRUE);
 		pGridCtrl->SetRowHeight(0, nHeight);
 
-		CString strTitle[en_MarkingGrid_Cols] = { _T("결함종류"), _T("Use"), _T("Type") };
+		CString strTitle[en_MarkingGrid_Cols] = { _T("Defect Sorts"), _T("Use"), _T("Type") };
 		for (nCol = 0; nCol < pGridCtrl->GetColumnCount(); nCol++) {
 			CString strText;
 			GV_ITEM Item;
@@ -2291,7 +2329,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdFoilOutNgXSize()
 	dMin = 0.0;
 	dValue = m_dEdFoilExpOutNgSize[CAM_POS_TOP];
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 결함 무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("Foil 노출 결함 무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um).  Not used if 0.0 or less"), dMin, dMax);
 	m_dEdFoilExpOutNgSize[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -2305,7 +2344,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdFoilBothNgXSize()
 	dMin = 0.0;
 	dValue = m_dEdFoilExpBothNgSize[CAM_POS_TOP];
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 결함 유/무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("Foil 노출 결함 유/무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um).  Not used if 0.0 or less"), dMin, dMax);
 	m_dEdFoilExpBothNgSize[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -2429,7 +2469,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdContinuousAlarm()
 	nMin = 0;
 	nValue = m_nContinuousNgAlarmCnt;
 	CString strMsg;
-	strMsg.Format(_T("연속 NG 발생 알람 발생 탭수. 0 인경우 미사용"), nMin, nMax); 
+//	strMsg.Format(_T("연속 NG 발생 알람 발생 탭수. 0 인경우 미사용"), nMin, nMax); 
+	strMsg.Format(_T("Range( %d ~ %d ).  Not used if 0 or less"), nMin, nMax);
 	m_nContinuousNgAlarmCnt = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE ) ;
 }
@@ -2443,7 +2484,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdAlarmCount()
 	nMin = 0;
 	nValue = m_nAlarmCnt;
 	CString strMsg;
-	strMsg.Format(_T("구간 NG 발생 알람 발생 NG 탭수( n/m 중 n). 0 인경우 미사용"), nMin, nMax);
+//	strMsg.Format(_T("구간 NG 발생 알람 발생 NG 탭수( n/m 중 n). 0 인경우 미사용"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d ).  Not used if 0 or less"), nMin, nMax);
 	m_nAlarmCnt = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -2457,7 +2499,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdSectorCount()
 	nMin = 0;
 	nValue = m_nSectorCnt;
 	CString strMsg;
-	strMsg.Format(_T("구간 NG 발생 알람 발생 설정의 구간 탭수( n/m 중 m). 0 인경우 미사용"), nMin, nMax);
+//	strMsg.Format(_T("구간 NG 발생 알람 발생 설정의 구간 탭수( n/m 중 m). 0 인경우 미사용"), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d ).  Not used if 0 or less"), nMin, nMax);
 	m_nSectorCnt = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }
@@ -2478,6 +2521,10 @@ void CRecipeSettingDlg::DisplayLanguage()
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("레시피명"), _T("Recipe Name")));
 	}
+	pWnd = GetDlgItem(IDC_ST_RECIPE_NAME2);
+	if (pWnd != nullptr) {
+		pWnd->SetWindowTextA(_LANG(_T("메모"), _T("Memo")));
+	}
 	pWnd = GetDlgItem(IDC_ST_RECIPE_NO);
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("레시피 번호"), _T("Recipe No.")));
@@ -2490,14 +2537,21 @@ void CRecipeSettingDlg::DisplayLanguage()
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("삭제"), _T("Delete")));
 	}
+	pWnd = GetDlgItem(IDC_BTN_PROGRAMINFO);
+	if (pWnd != nullptr) {
+		pWnd->SetWindowTextA(_LANG(_T("프로그램정보"), _T("Program Info")));
+	}
 	pWnd = GetDlgItem(IDC_BTN_LOAD);
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("가져오기"), _T("Load")));
 	}
-
 	pWnd = GetDlgItem(IDC_ST_OTHER_SETTING);
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("기타 설정"), _T("Other Setting")));
+	}
+		pWnd = GetDlgItem(IDC_STATIC_IMAGESAVEINTERVAL);
+	if (pWnd != nullptr) {
+		pWnd->SetWindowTextA(_LANG(_T("IMAGE 저장 간격"), _T("IMAGE Save Interval")));
 	}
 	pWnd = GetDlgItem(IDC_CHK_SAVE_ONLY_NG_TAB);
 	if (pWnd != nullptr) {
@@ -2518,6 +2572,18 @@ void CRecipeSettingDlg::DisplayLanguage()
 	pWnd = GetDlgItem(IDC_ST_INPUT_PIX);
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("단위[Pix]"), _T("Unit[Pix]")));
+	}
+	pWnd = GetDlgItem(IDC_GROUP_CATHODE);
+	if (pWnd != nullptr) {
+		pWnd->SetWindowTextA(_LANG(_T("음극"), _T("CATHODE")));
+	}
+	pWnd = GetDlgItem(IDC_ST_COAT_HEIGHT);
+	if (pWnd != nullptr) {
+	    pWnd->SetWindowTextA(_LANG(_T("탭 코팅 높이"), _T("Tab coat Height")));
+	}
+	pWnd = GetDlgItem(IDC_STATIC_GROOVE_HEIGHT);
+	if (pWnd != nullptr) {
+		pWnd->SetWindowTextA(_LANG(_T("V홈 높이음극"), _T("V Hight")));
 	}
 	pWnd = GetDlgItem(IDC_ST_TAB_WIDTH);
 	if (pWnd != nullptr) {
@@ -2694,7 +2760,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdFoilexpGraySize()
 	dMin = 0.0;
 	dValue = m_dEdFoilGraySize;
 	CString strMsg;
-	strMsg.Format(_LANG(_T("Foil노출 결함 그레이판정 사이즈를 입력하세요."),_T("")), dMin, dMax);
+//	strMsg.Format(_LANG(_T("Foil노출 결함 그레이판정 사이즈를 입력하세요."),_T("")), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um)"), dMin, dMax);
 	m_dEdFoilGraySize = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -2708,7 +2775,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdSurfaceGraySize()
 	dMin = 0.0;
 	dValue = m_dEdSurfaceGraySize;
 	CString strMsg;
-	strMsg.Format(_LANG(_T("Surface 결함 그레이판정 사이즈를 입력하세요."), _T("")), dMin, dMax);
+//	strMsg.Format(_LANG(_T("Surface 결함 그레이판정 사이즈를 입력하세요."), _T("")), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um)"), dMin, dMax);
 	m_dEdSurfaceGraySize = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -2723,7 +2791,8 @@ void CRecipeSettingDlg::OnEnSetfocusEdTabMinBright()
 	nMin = 0;
 	nValue = m_nTabMinBright;
 	CString strMsg;
-	strMsg.Format(_LANG(_T("Tab 부 최저휘도를 입력해주세요."), _T("")), nMin, nMax);
+//	strMsg.Format(_LANG(_T("Tab 부 최저휘도를 입력해주세요."), _T("")), nMin, nMax);
+	strMsg.Format(_T("Range( %d ~ %d )"), nMin, nMax);
 	m_nTabMinBright = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 
@@ -2769,7 +2838,8 @@ void CRecipeSettingDlg::OnSetfocusEdNgXSizeBtm()
 	dMin = 0.0;
 	dValue = m_dEdNgSizeWidth[CAM_POS_BOTTOM];
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 결함 유지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("Foil 노출 결함 유지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um)."), dMin, dMax);
 	m_dEdNgSizeWidth[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -2782,7 +2852,8 @@ void CRecipeSettingDlg::OnSetfocusEdFoilOutNgXSizeBtm()
 	dMin = 0.0;
 	dValue = m_dEdFoilExpOutNgSize[CAM_POS_BOTTOM];
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 결함 무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("Foil 노출 결함 무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um)."), dMin, dMax);
 	m_dEdFoilExpOutNgSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -2795,7 +2866,8 @@ void CRecipeSettingDlg::OnSetfocusEdFoilBothNgXSizeBtm()
 	dMin = 0.0;
 	dValue = m_dEdFoilExpBothNgSize[CAM_POS_BOTTOM];
 	CString strMsg;
-	strMsg.Format(_T("Foil 노출 결함 유/무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+//	strMsg.Format(_T("Foil 노출 결함 유/무지부 NG 판정 가로 길이를 입력해 주세요.( %2.lf um ~ %.2lf um). 0 인경우 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um)."), dMin, dMax);
 	m_dEdFoilExpBothNgSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }
@@ -2808,7 +2880,8 @@ void CRecipeSettingDlg::OnSetfocusEdSurfaceNgSizeBtm()
 	dMin = 0.0;
 	dValue = m_dSurfaceNgSize[CAM_POS_BOTTOM];
 	CString strMsg;
-	strMsg.Format(_T("표면결함 NG 사이즈을 입력해 주세요. ( %.1lf um ~ %.1lf um). 0.0 미사용"), dMin, dMax);
+//	strMsg.Format(_T("표면결함 NG 사이즈을 입력해 주세요. ( %.1lf um ~ %.1lf um). 0.0 미사용"), dMin, dMax);
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um)."), dMin, dMax);
 	m_dSurfaceNgSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }

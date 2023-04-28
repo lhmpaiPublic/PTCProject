@@ -93,6 +93,11 @@ void CInspInfoDlg::DisplayLanguage()
 		pWnd->SetWindowText(_LANG(_T("NG 수량"), _T("NG Count")));
 	}
 
+	pWnd = (CWnd*)GetDlgItem(IDC_ST_YIELD);
+	if (pWnd != nullptr) {
+		pWnd->SetWindowText(_LANG(_T("수    율"), _T("YIELD Count")));
+	}
+	
 }
 
 

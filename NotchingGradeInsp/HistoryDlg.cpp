@@ -514,7 +514,7 @@ BOOL CHistoryDlg::OnInitDialog()
 	int nHour = 0;
 	CString strHour;
 	for (int nHour = 0; nHour < 24; nHour++) {
-		strHour.Format(_T("%02d시"), nHour);
+		strHour.Format(_T("%02d"), nHour);
 		m_cmbTimeStart.AddString(strHour);
 		m_cmbTimeEnd.AddString(strHour);
 	}

@@ -508,7 +508,7 @@ void CIoMonitorDlg::MakeGridCtrl()
 		}
 		END_CATCH
 
-		CString strTitle[en_col_Max] = { _T("항목명"),_T("선두주소"),_T("내용") };
+		CString strTitle[en_col_Max] = { _T("Category"),_T("Address"),_T("Content") };
 		for (nCol = 0; nCol < pGridCtrl->GetColumnCount(); nCol++) {
 			CString strText;
 			GV_ITEM Item;
@@ -658,13 +658,13 @@ CString CIoMonitorDlg::GetInWordName(int nRow)
 		strRet = _T("Lot ID");
 		break;
 	case	en_InWord_ContinuosCnt :
-		strRet = _T("연속결함수");
+		strRet = _T("Consecutive defects");
 		break;
 	case	en_InWord_SectorNgCnt :
-		strRet = _T("구간결함수");
+		strRet = _T("Interval defects");
 		break;
 	case	en_InWord_SectorBaseCnt :
-		strRet = _T("구간크기");
+		strRet = _T("Interval Size");
 		break;
 	default :
 		strRet = _T("");

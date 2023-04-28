@@ -1300,7 +1300,7 @@ int CImageProcSimDlg::MakeGridData()
 			}
 			END_CATCH
 
-				CString strTitle[en_CimDef_Max] = { _T(" 결함번호 "),_T(" 종류 "),_T("판정"), _T(" 픽셀수 "), _T("PosX"), _T("PosY"),_T("판정크기[㎛]"), _T("간격[㎛]"), _T(" 가로[㎛] "), _T(" 세로[㎛] "), _T(" 평균휘도 "), _T(" 최대휘도 "), _T(" 최저휘도 "), _T("원화상평균"), _T("원화상최대"), _T("원화상최저")};
+				CString strTitle[en_CimDef_Max] = { _T(" Defect No "),_T(" Type "),_T("Judge"), _T(" Pixel Count "), _T("PosX"), _T("PosY"),_T("Judge Size[㎛]"), _T("Interval[㎛]"), _T("Length[㎛]"), _T("Width[㎛]"), _T("Ave Bright"), _T("MAX Brigit"), _T("Min Bright"), _T("Org Img Ave"), _T("Org Img Max"), _T("Org Img Min")};
 			for (nCol = 0; nCol < m_GridCtrlDef.GetColumnCount(); nCol++) {
 				CString strText;
 				GV_ITEM Item;
@@ -1404,7 +1404,7 @@ int CImageProcSimDlg::MakeGridData()
 		}
 		END_CATCH
 
-		CString strTitle[MAX_INSP_TYPE + 1] = { _T(" 구분 "),_T("Foil_Exp_in"), _T("Foil_Exp_Out"),_T("Surface") };
+		CString strTitle[MAX_INSP_TYPE + 1] = { _T(" Sort "),_T("Foil_Exp_in"), _T("Foil_Exp_Out"),_T("Surface") };
 		for (nCol = 0; nCol < pGridCtrl->GetColumnCount(); nCol++) {
 			CString strText;
 			GV_ITEM Item;

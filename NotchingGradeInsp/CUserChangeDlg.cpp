@@ -175,28 +175,28 @@ void CUserChangeDlg::OnBnClickedOk()
 			}
 			pWnd = GetDlgItem(IDOK);
 			pWnd->ShowWindow(SW_SHOW);
-			pWnd->SetWindowTextA(_T("확인"));
+			pWnd->SetWindowTextA(_T("OK"));
 			pWnd = GetDlgItem(IDC_ST_PASSWORD2);
 			pWnd->ShowWindow(SW_HIDE);
 			pWnd = GetDlgItem(IDC_ED_PASSWORD2);
 			pWnd->ShowWindow(SW_HIDE);
-			m_StaticPassword.SetWindowText(_T("비밀번호"));
+			m_StaticPassword.SetWindowText(_T("Password"));
 			pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
 			pWnd->ShowWindow(SW_SHOW);
-			pWnd->SetWindowTextA(_T("비밀번호 변경"));
+			pWnd->SetWindowTextA(_T("Password Change"));
 		}
 		else {
-			AfxMessageBox(_T("현재 비밀번호와 변경하고자하는 비밀번호를 확인해주세요"));
+			AfxMessageBox(_T("Please check the current password and the password you want to change"));
 			pWnd = GetDlgItem(IDOK);
 			pWnd->ShowWindow(SW_SHOW);
-			pWnd->SetWindowTextA(_T("확인"));
+			pWnd->SetWindowTextA(_T("OK"));
 			pWnd = GetDlgItem(IDC_ST_PASSWORD2);
 			pWnd->ShowWindow(SW_HIDE);
 			pWnd = GetDlgItem(IDC_ED_PASSWORD2);
 			pWnd->ShowWindow(SW_HIDE);
-			m_StaticPassword.SetWindowText(_T("비밀번호"));
+			m_StaticPassword.SetWindowText(_T("Password"));
 			pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
-			pWnd->SetWindowTextA(_T("비밀번호 변경"));
+			pWnd->SetWindowTextA(_T("Password Change"));
 			pWnd->ShowWindow(SW_SHOW);
 		}
 		m_ChkChangePassword = FALSE;
@@ -211,7 +211,7 @@ void CUserChangeDlg::OnBnClickedOk()
 				CDialogEx::OnOK();
 			}
 			else {
-				AfxMessageBox(_LANG(_T("패스워드가 잘못 되었습니다."), _T("Entered Password is worng")));
+				AfxMessageBox(_LANG(_T("Invalid password."), _T("Entered Password is worng")));
 			}
 		}
 		else
@@ -221,7 +221,7 @@ void CUserChangeDlg::OnBnClickedOk()
 				CDialogEx::OnOK();
 			}
 			else {
-				AfxMessageBox(_LANG(_T("패스워드가 잘못 되었습니다."), _T("Entered Password is worng")));
+				AfxMessageBox(_LANG(_T("Invalid password."), _T("Entered Password is worng")));
 			}
 		}
 	}
@@ -235,10 +235,10 @@ void CUserChangeDlg::OnBnClickedChkPasswordChange()
 	CWnd* pWnd;
 
 	if (m_ChkChangePassword == FALSE && (nSel != 0)) {
-		m_StaticPassword.SetWindowText(_T("현재 비밀번호"));
+		m_StaticPassword.SetWindowText(_T("Current password"));
 		pWnd = GetDlgItem(IDOK);
 		pWnd->ShowWindow(SW_SHOW);
-		pWnd->SetWindowTextA(_T("변경"));
+		pWnd->SetWindowTextA(_T("Change"));
 		pWnd = GetDlgItem(IDC_ST_PASSWORD2);
 		pWnd->ShowWindow(SW_SHOW);
 		pWnd = GetDlgItem(IDC_ED_PASSWORD2);
@@ -276,12 +276,12 @@ void CUserChangeDlg::OnCbnSelchangeCbUserlist()
 	CWnd* pWnd = nullptr;
 	pWnd = GetDlgItem(IDC_CHK_PASSWORD_CHANGE);
 	pWnd->ShowWindow(SW_SHOW);
-	pWnd->SetWindowTextA(_T("비밀번호 변경"));
+	pWnd->SetWindowTextA(_T("Password Change"));
 	pWnd = GetDlgItem(IDC_ST_PASSWORD2);
 	pWnd->ShowWindow(SW_HIDE);
 	pWnd = GetDlgItem(IDC_ED_PASSWORD2);
 	pWnd->ShowWindow(SW_HIDE);
-	m_StaticPassword.SetWindowText(_T("비밀번호"));
+	m_StaticPassword.SetWindowText(_T("Password"));
 
 	m_ChkChangePassword = FALSE;
 
