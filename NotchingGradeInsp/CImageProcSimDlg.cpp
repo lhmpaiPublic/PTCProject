@@ -4237,8 +4237,6 @@ int CImageProcSimDlg::RecipeListLoad()
 		strRcpName.Replace(_T(".ini"), _T(""));
 		m_cmbRecipeSelect.AddString(strRcpName);
 
-		//로그출력
-		LOGDISPLAY_ALL("RecipeListLoad 파일명 : %s", strRcpName);
 	}
 	m_cmbRecipeSelect.SetCurSel(0);
 

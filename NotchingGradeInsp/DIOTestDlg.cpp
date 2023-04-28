@@ -450,9 +450,6 @@ void CDIOTestDlg::OnTimer(UINT_PTR nIDEvent)
 	long		lModulePos;
 	DWORD		dwModuleID;
 
-	//OnTimer 로그출력
-	LOGDISPLAY_SPEC(6)("CDIOTestDlg::OnTimer => %s", m_bChkTestRun ? "DIO TestRun" : "DIO None");
-
 	if( m_bChkTestRun ) {
 		BOOL bTriggerBit;
 		dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
@@ -479,6 +476,9 @@ void CDIOTestDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 	case TM_SENSOR_ID:
 		AxdInfoGetModule(/*m_cboModuleInfo.GetCurSel()*/0, &lBoardNo, &lModulePos, &dwModuleID);
+
+		//로그출력
+		LOGDISPLAY_SPECTXT(3)("DIO Processing");
 
 		switch (dwModuleID)
 		{

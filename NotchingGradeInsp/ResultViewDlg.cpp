@@ -400,9 +400,6 @@ void CResultViewDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == T_GRID_REFRESH) {
 		KillTimer(T_GRID_REFRESH);
 
-		//OnTimer 로그출력
-		LOGDISPLAY_SPEC(6)("CResultViewDlg::OnTimer => Insp Run ? %s", m_pDoc->GetInspState() == enInspRun ? "TRUE":"FALSE");
-
 		UpdateGrid();
 		if (m_pDoc->GetInspState() == enInspRun) {
 			SetTimer(T_GRID_REFRESH, 100, NULL);
@@ -413,8 +410,6 @@ void CResultViewDlg::OnTimer(UINT_PTR nIDEvent)
 
 		// 22.06.09 Ahn Add Start
 		if (m_pDoc->IsReqCounterReset() == TRUE) {
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CResultViewDlg::OnTimer => ReqCounterReset 처리");
 
 			CounterReset();
 			m_pDoc->SetReqCounterReset(FALSE);

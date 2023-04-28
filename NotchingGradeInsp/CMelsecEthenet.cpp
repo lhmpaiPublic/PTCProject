@@ -252,8 +252,6 @@ int CMelsecEthernet::ReadDataReg(int offset, short data[], int num)
 
 int CMelsecEthernet::OpenPio(void)
 {
-	//로그출력
-	LOGDISPLAY_SPEC(0)("PLC MelsecEthernetSock Open IP:%s, Protocol:%d", m_strIpAddress, m_nProtocol);
 	int bRet = 0;
 
 	if (m_pEthernetSock == NULL) {
@@ -269,7 +267,7 @@ int CMelsecEthernet::OpenPio(void)
 			strError = ::FormatErrorMsg(dwErrCode);
 
 			//로그출력
-			LOGDISPLAY_SPEC(0)(_T("<<CMelsecEthernetSock TCP Sock Create Errorr>>에러 - 에러<%s>"), strError);
+			LOGDISPLAY_SPEC(0)(_T("Melsec Open 에러-1 - 에러<%s>"), strError);
 
 			return (-1);
 		}
@@ -281,7 +279,7 @@ int CMelsecEthernet::OpenPio(void)
 			strError = ::FormatErrorMsg(::GetLastError());
 
 			//로그출력
-			LOGDISPLAY_SPEC(0)(_T("<<CMelsecEthernet UDP Sock Create Errorr>>에러 - 에러<%s>"), strError);
+			LOGDISPLAY_SPEC(0)(_T("Melsec Open 에러-2 - 에러<%s>"), strError);
 			return (-1);
 		}
 		bRet = m_pEthernetSock->Connect(m_strIpAddress, MELSEC_UDP_PORT);
@@ -348,7 +346,7 @@ int CMelsecEthernet::OpenPio(void)
 			break;
 		}
 		//로그출력
-		LOGDISPLAY_SPEC(0)(_T("<<CMelsecEthernet Socket Connect Errorr>>에러 - 에러<%s>"), strErMsg);
+		LOGDISPLAY_SPEC(0)(_T("Melsec Open 에러-3 - 에러<%s>"), strErMsg);
 		return (-1);
 	}
 

@@ -28,13 +28,13 @@ BOOL CLogDisplayDlg::bCreate = FALSE;
 CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 
 CString strLogNameList =
-"0 Execute_ERROT_0 0,"
+"0 Init_FromExecute_Error_0 1,"
 "1 PLC_Read_BitIn_1 0,"
 "2 DIO_IDinout_2 0,"
 "3 PLC_Read_Block_3 0,"
 "4 ImageProcess_TabInfo_4 0,"
-"5 ImageCutting_5 0,"
-"6 OnTimerLog_6 0,"
+"5 Image_TabFind_ToResult 0,"
+"6 InspView_TimerPorcStatus_6 0,"
 "7 Thread_OKNGMarking_7 0,"
 "99 GeneralLog_99 0,"
 "100 END 0"
