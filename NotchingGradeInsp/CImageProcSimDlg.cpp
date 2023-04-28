@@ -4681,7 +4681,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Anode()// 음극
 
 	if ((rcRange.Width() <= 0) || (rcRange.Height() <= 0))
 	{
-		MessageBox(_T("검사할 영역을 설정해 주세요."));
+		MessageBox(_T("Please set the area to be inspected."));
 		return -4;
 	}
 
@@ -4775,7 +4775,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 	if ((rcRange.Width() <= 0) || (rcRange.Height() <= 0))
 	{
-		MessageBox(_T("검사할 영역을 설정해 주세요."));
+		MessageBox(_T("Please set the area to be inspected."));
 		return -4;
 	}
 

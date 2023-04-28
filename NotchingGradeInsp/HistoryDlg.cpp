@@ -1850,21 +1850,21 @@ void CHistoryDlg::OnBnClickedBtnSearch()
 
 	if (m_nSearchMethod == 0) {
 		if (m_strSearchLotID.GetLength() == 0) {
-			MessageBox(_T("검색할 LOT ID를 입력해 주세요."));
+			MessageBox(_T("Please input the LOT ID to search.") );
 			return;
 		}
 		else {
 			CString strIndexFileName;
 			strIndexFileName = AprData.GetIndexFileName(m_strSearchLotID);
 			if (file.ExistFile(strIndexFileName) == FALSE) {
-				MessageBox(_T("검색 결과가 없습니다."));
+				MessageBox(_T("No search results found."));
 				return;
 			}
 			else {
 				CStdioFile cf;
 				CString strMsg;
 				if (!cf.Open(strIndexFileName, (CFile::typeText | CFile::modeRead))) {
-					strMsg.Format(_T("파일 오픈 에러[%s]"), strIndexFileName);
+					strMsg.Format(_T("File open error[%s]"), strIndexFileName);
 					MessageBox(strMsg);
 					return;
 				}
@@ -1878,7 +1878,7 @@ void CHistoryDlg::OnBnClickedBtnSearch()
 					catch (CFileException& e) {
 						CHAR	szChar[256];
 						e.GetErrorMessage(szChar, 255);
-						strMsg.Format(_T("에러 - %s"), szChar);
+						strMsg.Format(_T("Error - %s"), szChar);
 						MessageBox(strMsg);
 						cf.Close();
 						return;
@@ -1907,7 +1907,7 @@ void CHistoryDlg::OnBnClickedBtnSearch()
 		spanTime = eTime - sTime;
 		if (spanTime.m_dt <= 0) {
 			if ((spanTime.m_dt == 0) && ((eHour - sHour) < 0)) {
-				MessageBox(_T("검색 날짜 설정이 잘 못되었습니다."));
+				MessageBox(_T("The search date setting is invalid."));
 				return;
 			}
 		}
@@ -1930,7 +1930,7 @@ void CHistoryDlg::OnBnClickedBtnSearch()
 			}
 		}
 		if (strSearchFileList.GetCount() == 0) {
-			MessageBox(_T("검색 결과가 없습니다."));
+			MessageBox(_T("No search results found."));
 		}
 	//KANG 22.06.17 Add Start
 		else {

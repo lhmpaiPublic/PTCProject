@@ -90,7 +90,8 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	::CreateMutex(NULL, TRUE, AfxGetAppName());
-//
+
+
 //#ifndef _DEBUG // 22.03.22 Test 
 //	if (GetLastError() == ERROR_ALREADY_EXISTS) {
 //		AfxMessageBox(_T("이미 실행 중입니다."));
