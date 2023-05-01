@@ -134,18 +134,19 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					WORD wTempID;
 					wTempID = 0x3F & (wInSignal >> 1);
 
+					//이전에 받았던 id와 다르다면 추가
 					if ( wTempID != wLastInfo ) {
-					// 22.04.06 Ahn Modify End
-						WORD wID = 0x3F & (wInSignal >> 1);
 						CCounterInfo cntInfo;
-						cntInfo.nTabID = wID;
+						cntInfo.nTabID = wTempID;
 						pCntQueInPtr->PushBack(cntInfo);
+
 						//체크박스 로그 출력
 						LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d]"), cntInfo.nTabID);
 				
-						// 22.04.06 Ahn Modify Start
-						wLastInfo = wID;
-						// 22.04.06 Ahn Modify End
+						//이전 id 갱신
+						wLastInfo = wTempID;
+
+						//메모리 로그 기록
 						CString strMsg;
 						strMsg.Format(_T("Input ID[%d]"), cntInfo.nTabID);
 						AprData.SaveMemoryLog(strMsg);

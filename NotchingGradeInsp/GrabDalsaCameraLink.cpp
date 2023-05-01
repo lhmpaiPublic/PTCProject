@@ -13,6 +13,12 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 	SapView* pView = pCbInfo->m_SapViewPtr;
 	CQueueCtrl* pQueueCtrl = pCbInfo->m_pQueuePtr ;
 	BYTE* pWave = pCbInfo->m_pWave;
+
+	if ((pCbInfo == NULL) || (pView == NULL) || (pQueueCtrl == NULL) || (pWave == NULL))
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 Object Pointer Receive 오류"));
+	}
 	
 	// 21.05.27 Ahn Add Start
 	if (pQueueCtrl != NULL){
@@ -21,6 +27,12 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		
 		long nFrameCnt = pCbInfo->AddFrameCnt();
 		SapBuffer* pBuffer = pView->GetBuffer();
+
+		if (pBuffer == NULL)
+		{
+			//Log Camera Setting
+			LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink Buffer 오류 Frame Count<%d>"), nFrameCnt);
+		}
 
 		int nWidth = pBuffer->GetWidth();
 		int nHeight = pBuffer->GetHeight();
@@ -32,7 +44,8 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		BYTE* pData;
 		pBuffer->GetAddress(nIndex, (void**)&pData);
 
-		if (pCbInfo->m_bWaveFlag == TRUE) {
+		if (pCbInfo->m_bWaveFlag == TRUE) 
+		{
 			int nCopyW = pCbInfo->m_nWaveWidth  ;
 			if (nWidth < pCbInfo->m_nWaveWidth) {
 				nCopyW = nWidth;
@@ -40,19 +53,36 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 			memcpy( pWave, pData, sizeof(BYTE) * nCopyW) ;
 		}
 
-		if (pCbInfo->GetMonitoringMode() == TRUE) {
+		if (pCbInfo->GetMonitoringMode() == TRUE) 
+		{
+			//Log Camera Setting
+			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 Monitering TRUE 오류"));
+
 			return;
 		}
 
-		if (pCbInfo->IsRun() == FALSE) {
+		if (pCbInfo->IsRun() == FALSE) 
+		{
+			//Log Camera Setting
+			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 Run 오류"));
+
 			return;
 		}
 
 
 		CSigProc* pSigProc = theApp.m_pSigProc;
+		if (pSigProc == NULL)
+		{
+			//Log Camera Setting
+			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink pSigProc(PLC 객체) 오류"));
+		}
+
 		BOOL bConnectZone = pSigProc->GetConnectZone();
 		if (bConnectZone == TRUE)
 		{
+			//Log Camera Setting
+			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 PLC Connect Zone 오류"));
+
 			return;
 		}
 
@@ -76,6 +106,10 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 			CString strMsg;
 			strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 			AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo );
+
+			//Log Camera Setting
+			LOGDISPLAY_SPEC(2)(_T("CGrabDalsaCameraLink Image Data : HeadNo<%d>(Top<0>,Bottom<1>), Image 누적 Count<%d>"), 
+				pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 
 			if (bSend == FALSE) {
 				delete[]pImg;
@@ -130,6 +164,9 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	m_nServerIndex = nServerIdx + 1;
 	m_DispHwnd = hWnd;
 
+	//Log Camera Setting
+	LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink Open Server Index<%d>"), m_nServerIndex);
+
 	//메모리가 할당된 저장개체의 포인터
 	m_pQueueFrmPtr = pQueueFrmPtr;
 
@@ -140,8 +177,12 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	BOOL serverFound = FALSE;
 	CString strMsg;
 
-	//Dalsa 서버 갯수를 가졍돈다.
+	//Dalsa 서버 갯수를 가져온다.
 	int serverCount = SapManager::GetServerCount();
+
+	//Log Camera Setting
+	LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink Dalsa Server 갯수<%d>"), serverCount);
+
 	//서버의 갯수가 없으면 에러 
 	if (serverCount == 0)
 	{
@@ -159,6 +200,10 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 			//인덱스 리소스 서버 명을 가져온다.
 			char serverName[CORSERVER_MAX_STRLEN];
 			SapManager::GetServerName(m_nServerIndex, serverName, sizeof(serverName));
+
+			//Log Camera Setting
+			LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink Server Index<%d> = ServerName<%s>"), 
+				m_nServerIndex, serverName);
 
 		//	printf("%d: %s\n", serverIndex, serverName);
 			strMsg.Format(_T("%d: %s\n"), m_nServerIndex, serverName);
@@ -179,11 +224,19 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 		CString strMsg = _T("No acquisition server found!");
 	//	AfxMessageBox(strMsg);
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_GrabberError, strMsg);
+
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink Server Open 실패 "));
+
 		return -2;
 	}
 
 	//찾은 서버의 디바이스 리소스 갯수 가져온다.
 	int deviceCount = SapManager::GetResourceCount(acqServerName, SapManager::ResourceAcq);
+
+	//Log Camera Setting
+	LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink Server Name<%s> = Device 갯수<%d>"),
+		acqServerName, deviceCount);
 
 	//device 의 이름을 가져와서 출력한다.
 	for (int deviceIndex = 0; deviceIndex < deviceCount; deviceIndex++)
@@ -194,6 +247,10 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 		SapManager::GetResourceName(acqServerName, SapManager::ResourceAcq, deviceIndex, deviceName, sizeof(deviceName));
 		strMsg.Format(_T("%d: %s\n"), deviceIndex + 1, deviceName);
 		TRACE(strMsg);
+
+		//Log Camera Setting
+		LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink index<%d> = Device Name<%s>"),
+			deviceIndex, deviceName);
 	}
 
 	// List all files in the config directory
@@ -203,6 +260,10 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	//환경변수의 SAPERADIR 경로를 가져온다.
 	GetEnvironmentVariable("SAPERADIR", configPath, sizeof(configPath));
 	configPath[sizeof(configPath) - 1] = '\0';
+
+	//Log Camera Setting
+	LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink <SAPERADIR 환경변수 Path> = <%s>"),
+		configPath);
 
 	//환경변수의 경로에 \\CamFiles\\User\\ 붙인다. configPath 버퍼크기 오버되지 않게 한다.
 	CorStrncat(configPath, "\\CamFiles\\User\\", sizeof(configPath));
@@ -263,10 +324,16 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 	if (strLabel.Find(_T("CameraLink HS Mono")) >= 0){
 		// Camera 연결 완료.
 		m_bCameraLInkComplet = TRUE;
+
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink CameraLink 성공"));
 	}
 	//아니면 실패
 	else {
 		m_bCameraLInkComplet = FALSE;
+
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink CameraLink 실패"));
 	}
 	// 22.05.20 Ahn Add End
 
@@ -306,11 +373,18 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 
 	//초기화 완료 여부 확인
 	m_bInitComplet = TRUE;
+
+	//Log Camera Setting
+	LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink Camera Open 성공, 초기화 완료"));
+
 	return 0;
 }
 
 int CGrabDalsaCameraLink::GrabberInit()
 {
+	//Log Camera Setting
+	LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink Grabber Init - SapAcqDevice 객체 Create"));
+
 	m_pAcqDevice->Create();
 	// 카메라 초기화 시점에 비닝이나 기타 카메라 파라메터를 변경할 경우 풀어서 사용.
 	double dLineRate = AprData.m_System.m_dCamLineRate[0];
@@ -385,6 +459,8 @@ int CGrabDalsaCameraLink::GrabPrepare(BOOL bMode)
 
 	if (m_pBuffers && !*m_pBuffers && !m_pBuffers->Create())
 	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(2)(_T("카메라가 Buffer 생성 실패"));
 		FreeHandle();
 		return -1;
 	}
@@ -392,6 +468,8 @@ int CGrabDalsaCameraLink::GrabPrepare(BOOL bMode)
 	// Create transfer object
 	if (m_pXfer && !*m_pXfer && !m_pXfer->Create())
 	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(2)(_T("카메라가 Transfer Object 생성 실패"));
 		FreeHandle();
 		return -2;
 	}
@@ -400,12 +478,18 @@ int CGrabDalsaCameraLink::GrabPrepare(BOOL bMode)
 	if (m_DispHwnd != NULL) {
 		if (m_pView && !*m_pView && !m_pView->Create())
 		{
+			//Log Camera Setting
+			LOGDISPLAY_SPECTXT(2)(_T("카메라가 View Object 생성 실패"));
 			FreeHandle();
 			return -3;
 		}
 	}
 	// 21.08.25 Ahn Add Start
 	m_pCallbackInfo->SetMonitoringMode(bMode);
+
+	//Log Camera Setting
+	LOGDISPLAY_SPEC(2)(_T("카메라 모니터링 모드<%s>"), bMode? "TRUE":"FALSE");
+
 	m_pView->SetWindow(m_DispHwnd);
 	// 21.08.25 Ahn Add Start
 
@@ -441,6 +525,9 @@ int CGrabDalsaCameraLink::GrabStart(BOOL bMode /*bMonitoringMode=FALSE*/)
 	m_bRun = TRUE;
 	m_pCallbackInfo->SetRun( TRUE );	// 22.01.12 Ahn Add
 
+	//Log Camera Setting
+	LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink Grabber Start "));
+
 	m_pXfer->Grab();
 
 	return 0;
@@ -457,6 +544,9 @@ int CGrabDalsaCameraLink::GrabStop()
 	m_bInit = FALSE;
 	m_bRun = FALSE;
 	m_pCallbackInfo->SetRun( FALSE ) ;	// 22.01.12 Ahn Add
+
+	//Log Camera Setting
+	LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink Grabber Stop "));
 
 	BOOL bConntected = m_pXfer->IsConnected();
 	if (bConntected == TRUE) {

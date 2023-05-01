@@ -478,7 +478,8 @@ void CDIOTestDlg::OnTimer(UINT_PTR nIDEvent)
 		AxdInfoGetModule(/*m_cboModuleInfo.GetCurSel()*/0, &lBoardNo, &lModulePos, &dwModuleID);
 
 		//로그출력
-		LOGDISPLAY_SPECTXT(3)("DIO Processing");
+		LOGDISPLAY_SPEC(3)("DIO Processing Test BoardNo<%d>, ModulePos<%d>, ModuleId<%d>"
+			, lBoardNo, lModulePos, dwModuleID);
 
 		switch (dwModuleID)
 		{
