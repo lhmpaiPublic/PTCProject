@@ -601,7 +601,9 @@
 #define IDC_GRID_WORD_OUT               1261
 #define IDC_ST_INSP_INFO                1261
 #define IDC_ST_RECIPE                   1262
+#define IDC_GRID_BIT_IN                 1262
 #define IDC_ST_INSP_COUNT               1263
+#define IDC_GRID_BIT_OUT                1263
 #define IDC_ST_TOTAL_COUNT              1264
 #define IDC_ST_OK_COUNT                 1265
 #define IDC_ST_NG_COUNT                 1266

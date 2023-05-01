@@ -194,7 +194,7 @@ void CInspInfoDlg::ReflashAll()
 	CDefectDataCtrl *pCtrl = m_pDoc->GetErrorDataCtrl(); 
 	int nTabCount = AprData.m_NowLotData.m_nTabCount ;
 	int nNgCount = AprData.m_NowLotData.m_nTabCountNG ;
-	int nOKCount = AprData.m_NowLotData.m_nTabCountOK;
+	int nOKCount = AprData.m_NowLotData.m_nTabCount - AprData.m_NowLotData.m_nTabCountNG; //OK 수량 //AprData.m_NowLotData.m_nTabCountOK;
 
 	strTotalCnt.Format(_T("%d"), nTabCount);
 	strNgCnt.Format(_T("%d"), nNgCount);

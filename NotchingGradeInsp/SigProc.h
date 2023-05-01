@@ -79,19 +79,19 @@ public:
 		enWordRead_RecipeNo = 0x0000,		enWordRead_RecipeNo_Len = 2,				//	2
 		enWordRead_RecipeName = 0x0002,		enWordRead_RecipeName_Len = 8,				// 10
 		enWordRead_CELL_ID = 0x0010,		enWordRead_CELL_ID_Len = 20,				// 30
-		enWordRead_Speed = 0x0030,		enWordRead_Speed_Len = 2,				// 32
-		enWordRead_DrossTopTarget = 0x0032,		enWordRead_DrossTopTarget_Len = 2,				// 34
-		enWordRead_DrossBtmTarget = 0x0034,		enWordRead_DrossBtmTarget_Len = 2,				// 36
-		enWordRead_FoilExpTopTarget = 0x0036,		enWordRead_FoilExpTopTarget_Len = 2,				// 38
-		enWordRead_FoilExpBtmTarget = 0x0038,		enWordRead_FoilExpBtmTarget_Len = 2,				// 40
+		enWordRead_FoilExpInTopTarget = 0x002E, enWordRead_FoilExpInTopTarget_Len = 2,				// 34
+		enWordRead_FoilExpInBtmTarget = 0x0030, enWordRead_FoilExpInBtmTarget_Len = 2,				// 34
+		enWordRead_FoilExpOutTopTarget = 0x0032, enWordRead_FoilExpOutTopTarget_Len = 2,				// 34
+		enWordRead_FoilExpOutBtmTarget = 0x0034, enWordRead_FoilExpOutBtmTarget_Len = 2,				// 34
+		enWordRead_FoilExpBothTopTarget = 0x0036, enWordRead_FoilExpBothTopTarget_Len = 2,				// 38
+		enWordRead_FoilExpBothBtmTarget = 0x0038, enWordRead_FoilExpBothBtmTarget_Len = 2,				// 40
 		enWordRead_SpeterTopTarget = 0x003A,		enWordRead_SpeterTopTarget_Len = 2,				// 42
 		enWordRead_SpeterBtmTarget = 0x003C,		enWordRead_SpeterBtmTarget_Len = 2,				// 44
-		enWordRead_LotInfoLength = 44,
 		enWordRead_PrmContinuousCnt = 0x0040,		enWordRead_PrmContinuousCnt_Len = 2,
 		enWordRead_PrmSectorNgTabCnt = 0x0042,		enWordRead_PrmSectorNgTabCnt_Len = 2,
 		enWordRead_PrmSectorBaseCnt = 0x0044,		enWordRead_PrmSectorBaseCnt_Len = 2,
 		enWordRead_AlarmExistAck = 0x0050,		enWordRead_AlarmExistAck_Len = 2,				// 46
-		enWordReadMaxSize = 159,
+		enWordReadMaxSize = 160,
 
 	};
 
@@ -146,7 +146,7 @@ public:
 		en_WordWrite_Judge = 0x0072,		en_WordWrite_Judge_Len = 2,
 		en_WordWrite_NG_Code = 0x0074,		en_WordWrite_NG_Code_Len = 2,
 
-		enWordWroteMaxSize = 100,
+		enWordWriteMaxSize = 160,
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -327,6 +327,10 @@ private:
 	BOOL	m_bSigInkMarkAcrive;
 	BOOL	m_bSigInConnectZone;
 
+
+	WORD	m_wMonitoringReadData_Melsec[enWordReadMaxSize];
+	WORD	m_wMonitoringWriteData_Melsec[enWordWriteMaxSize];
+
 	static CCriticalSection	m_cs;
 
 public:
@@ -379,6 +383,9 @@ public:
 
 	void SetConnectZone(BOOL bUse) { m_bSigInConnectZone = bUse; }
 	BOOL GetConnectZone() { return m_bSigInConnectZone; }
+
+	WORD GetMonitoringReadData_Melsec(int nPos) { return m_wMonitoringReadData_Melsec[nPos]; }
+	WORD GetMonitoringWriteData_Melsec(int nPos) { return m_wMonitoringWriteData_Melsec[nPos]; }
 
 
 public :

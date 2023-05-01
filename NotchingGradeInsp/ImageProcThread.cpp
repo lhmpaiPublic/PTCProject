@@ -913,6 +913,17 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 										(bMarkingActive == FALSE) ? _T("SKIP") : _T("USE")	);
 						AprData.SaveMemoryLog(strMsg);
 
+
+						AprData.m_NowLotData.m_SeqDataOut.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
+						AprData.m_NowLotData.m_SeqDataOut.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+						AprData.m_NowLotData.m_SeqDataOut.wCellNgCode = 1; // 임시, 정의되지 않음
+
+						AprData.m_NowLotData.m_SeqDataOutSms.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
+						AprData.m_NowLotData.m_SeqDataOutSms.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+						AprData.m_NowLotData.m_SeqDataOutSms.wCellNgCode = 1; // 임시, 정의되지 않음
+
+
+
 						if ( (wOutPut & CAppDIO::eOut_MARK_SEL_01 ) || (wOutPut & CAppDIO::eOut_MARK_SEL_02) )
 						{
 							strMarking = _T("ON");
