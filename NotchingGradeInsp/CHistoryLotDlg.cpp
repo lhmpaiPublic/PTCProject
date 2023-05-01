@@ -120,7 +120,7 @@ int CHistoryLotDlg::MakeHitoryGrid()
 				m_pFontGrid = new CFont();
 				m_pFontGrid->CreateFont(12, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET
 					, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
-					, FIXED_PITCH, "Gulim");
+					, FIXED_PITCH, "Arial");
 				m_pHistoryList->SetFont(m_pFontGrid, FALSE);
 			}
 

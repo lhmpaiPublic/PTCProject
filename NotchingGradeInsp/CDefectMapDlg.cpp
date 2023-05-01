@@ -570,7 +570,7 @@ void CDefectMapDlg::DrawTabAndRemark(CDC* pDC, CRect& WinRect)
 	static WCHAR	wchr[100];
 	int plotsize = 12;
 
-	swprintf_s(wchr, L"Gulim");
+	swprintf_s(wchr, L"Arial");
 
 	Gdiplus::FontFamily		fontFamily(wchr);
 	Gdiplus::Font			font(&fontFamily, 12, FontStyleRegular, UnitPixel);
@@ -726,7 +726,7 @@ void CDefectMapDlg::DrawAxis(CDC* pDC, CRect& WinRect)
 	static WCHAR	wchr[100];
 	int plotsize = 12;
 
-	swprintf_s(wchr, L"Gulim");
+	swprintf_s(wchr, L"Arial");
 
 	Gdiplus::FontFamily		fontFamily(wchr);
 	Gdiplus::Font			font(&fontFamily, 12, FontStyleRegular, UnitPixel);
@@ -852,7 +852,7 @@ void CDefectMapDlg::DrawDefect(CDC* pDC, CRect& WinRect)
 	static WCHAR	wchr[100];
 	int plotsize = 12;
 
-	swprintf_s(wchr, L"Gulim");
+	swprintf_s(wchr, L"Arial");
 
 	Gdiplus::FontFamily		fontFamily(wchr);
 	Gdiplus::Font			font(&fontFamily, 12, FontStyleRegular, UnitPixel);

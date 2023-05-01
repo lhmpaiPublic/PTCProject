@@ -48,7 +48,7 @@ CHistoryDlg::CHistoryDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pVi
 		m_strImageFilePath[i] = _T("");
 		m_nImageFileCount[i] = 0;
 	}
-	m_fontHeader.CreatePointFont(200, _T("Gulim"));
+	m_fontHeader.CreatePointFont(200, _T("Arial"));
 	m_nImageType = 0;
 //KANG 22.05.24 Modify Start
 //	m_nDispMode = 0;
@@ -1616,7 +1616,7 @@ int CHistoryDlg::MakeGridSearchList()
 				m_pFontSearchList = new CFont();
 				m_pFontSearchList->CreateFont(16, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET
 					, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
-					, FIXED_PITCH, "Gulim");
+					, FIXED_PITCH, "Arial");
 				m_pSearchList->SetFont(m_pFontSearchList, FALSE);
 			}
 

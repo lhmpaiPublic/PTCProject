@@ -64,7 +64,7 @@ CGlobalData::CGlobalData(void)
 #else
 	UserMode = UserModeDefine::enMaker; // 22.09.15 Ahn Modify
 #endif
-	m_font.CreateFontA(15, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("굴림"));
+	m_font.CreateFontA(15, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("Arial"));
 // 22.05.25 Son Add End
 
 	// 22.06.08 Ahn Add Start

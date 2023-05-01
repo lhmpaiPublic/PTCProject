@@ -86,13 +86,13 @@ BOOL CDispErrorDlg::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	m_Font.CreateFontA(50, 20, 0, 0, FW_NORMAL, FALSE, FALSE, 0, DEFAULT_CHARSET
 						, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
-						, FIXED_PITCH, _T("Gulim"));
+						, FIXED_PITCH, _T("Arial"));
 	GetDlgItem(IDC_ED_MSGSTR)->SetFont(&m_Font);
 	GetDlgItem(IDOK)->SetFont(&m_Font);
 
 	m_FontListBox.CreateFontA(22, 10, 0, 0, FW_NORMAL, FALSE, FALSE, 0, DEFAULT_CHARSET
 							, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
-							, FIXED_PITCH, _T("Gulim"));
+							, FIXED_PITCH, _T("Arial"));
 	GetDlgItem(IDC_LIST_MSG)->SetFont(&m_FontListBox);
 
 	m_Cnt = 0;

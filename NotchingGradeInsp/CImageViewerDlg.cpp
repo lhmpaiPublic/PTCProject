@@ -154,7 +154,7 @@ void CImageViewerDlg::OnPaint()
 
 		StringFormat sFormat;
 		graphics.SetTextContrast(Gdiplus::TextRenderingHintAntiAlias);
-		Gdiplus::Font font(L"Gulim", 100, FontStyleBold, UnitPixel);
+		Gdiplus::Font font(L"Arial", 100, FontStyleBold, UnitPixel);
 		sFormat.SetAlignment(StringAlignmentCenter);
 		sFormat.SetLineAlignment(StringAlignmentCenter);
 		DWORD txtColor = RGB(255, 255, 255);
