@@ -252,7 +252,7 @@ CGridDefaultCell::CGridDefaultCell()
 	lFont.lfWidth = 0 ;
 
 #if _MSC_VER > 1200
-	::_tcsnccpy_s( lFont.lfFaceName, _countof(lFont.lfFaceName), _T( "MS PGothic" ), _TRUNCATE ) ;	//KANG Modify
+	::_tcsnccpy_s( lFont.lfFaceName, _countof(lFont.lfFaceName), _T( "Arial" ), _TRUNCATE ) ;	//KANG Modify
 #else
 	::strcpy( lFont.lfFaceName, _T( "MS PGothic" ) ) ;
 #endif

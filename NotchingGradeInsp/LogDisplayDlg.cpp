@@ -29,14 +29,12 @@ CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 
 CString strLogNameList =
 "0 Init_FromExecute_Error_0 1,"
-"1 PLC_Read_BitIn_1 0,"
-"2 DIO_IDinout_2 0,"
-"3 PLC_Read_Block_3 0,"
-"4 ImageProcess_TabInfo_4 0,"
+"1 ImageProcess_Error_1 0,"
+"2 Camera_Setting_2 0,"
+"3 DIO_Processing_3 0,"
+"4 사용안함_4 0,"
 "5 Image_TabFind_ToResult 0,"
 "6 InspView_TimerPorcStatus_6 0,"
-"7 Thread_OKNGMarking_7 0,"
-"99 GeneralLog_99 0,"
 "100 END 0"
 ;
 
@@ -269,51 +267,48 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	);
 
 	CWin32File file;
-	while (pMain && pMain->m_isWorkingThread)
+	while (CLogDisplayDlg::bCreate && pMain && pMain->m_isWorkingThread)
 	{
 		//Do something...
 		Sleep(1);
-		if (CLogDisplayDlg::bCreate)
+		if (strList->size() && listBox->m_hWnd)
 		{
-			if (strList->size() && listBox->m_hWnd)
+			CString tempStr = "";
+			for (int i = 0; i < strList->size(); i++)
 			{
-				CString tempStr = "";
-				for (int i = 0; i < strList->size(); i++)
-				{
-					CString popStr = pMain->GetLogDisplayMessage();
+				CString popStr = pMain->GetLogDisplayMessage();
 #ifdef LOGDISPLAY_LISTBOX
-					listBox->AddString(popStr);
-					if (*pMain->getLogMoveLast())
-					{
-						listBox->SetTopIndex(listBox->GetCount() - 1);
-					}
-					if (listBox->GetCount() >= LISTBOX_CLEARCOUNT)
-					{
-						listBox->ResetContent();
-					}
-#endif //LOGDISPLAY_LISTBOX
-					tempStr += popStr + CString("\r\n");
-				}
-
-				//텍스트 로그 출력
-				if (pMain->getTextLogPrint())
+				listBox->AddString(popStr);
+				if (*pMain->getLogMoveLast())
 				{
-
-					CString FileName;
-					SYSTEMTIME	sysTime;
-					::GetLocalTime(&sysTime);
-
-					FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
-						, LOGTEXTFILENAME
-						, sysTime.wYear
-						, sysTime.wMonth
-						, sysTime.wDay
-						, sysTime.wHour
-						, sysTime.wMinute
-					);
-
-					file.TextSave1Line(FilePath, FileName, tempStr, "at", FALSE, 999999999);
+					listBox->SetTopIndex(listBox->GetCount() - 1);
 				}
+				if (listBox->GetCount() >= LISTBOX_CLEARCOUNT)
+				{
+					listBox->ResetContent();
+				}
+#endif //LOGDISPLAY_LISTBOX
+				tempStr += popStr + CString("\r\n");
+			}
+
+			//텍스트 로그 출력
+			if (pMain->getTextLogPrint())
+			{
+
+				CString FileName;
+				SYSTEMTIME	sysTime;
+				::GetLocalTime(&sysTime);
+
+				FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
+					, LOGTEXTFILENAME
+					, sysTime.wYear
+					, sysTime.wMonth
+					, sysTime.wDay
+					, sysTime.wHour
+					, sysTime.wMinute
+				);
+
+				file.TextSave1Line(FilePath, FileName, tempStr, "at", FALSE, 999999999);
 			}
 		}
 	}

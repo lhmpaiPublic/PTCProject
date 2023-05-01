@@ -1260,7 +1260,7 @@ int CImageProcSimDlg::MakeGridData()
 		//	LOGFONT lf;
 		//	pFont = m_GridCtrlDef.GetFont();
 		//	pFont->GetLogFont(&lf);
-		//	CString strFontFace = _T("Gulim");
+		//	CString strFontFace = _T("Arial");
 		//	lf.lfHeight = (long)(AprData.m_System.m_nGridFontSize);
 		//	lf.lfWeight = FW_NORMAL;
 		//	::_tcsnccpy_s(lf.lfFaceName, _countof(lf.lfFaceName), strFontFace.GetBuffer(), _TRUNCATE);
@@ -1272,7 +1272,7 @@ int CImageProcSimDlg::MakeGridData()
 			m_pFontGrid = new CFont();
 			m_pFontGrid->CreateFont(AprData.m_System.m_nGridFontSize, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET
 				, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
-				, FIXED_PITCH, "Gulim");
+				, FIXED_PITCH, "Arial");
 		}
 		// 22.08.08 Ahn Add End
 

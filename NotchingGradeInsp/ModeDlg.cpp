@@ -45,11 +45,11 @@ CModeDlg::CModeDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=
 	if (m_pView != NULL) {
 		m_pDoc = pView->GetDocument();
 	}
-	m_fontTitle.CreatePointFont(200, _T("Gulim"));
+	m_fontTitle.CreatePointFont(200, _T("Arial"));
 	m_nViewMode = enInspMode;
 
 	// 22.07.04 Ahn Add Start
-	m_FontDiskCapa.CreatePointFont(10, _T("Gulim"));
+	m_FontDiskCapa.CreatePointFont(10, _T("Arial"));
 	// 22.07.04 Ahn Add End
 
 	// 22.07.01 Ahn Add Start

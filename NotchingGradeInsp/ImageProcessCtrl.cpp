@@ -467,16 +467,12 @@ int CImageProcessCtrl::InspectionStart()
 		m_pResultThread[i]->SetDefectDataCtrl(&m_DefDataCtrl);
 	}
 
-	//m_bInspFlag = TRUE;
-	
 	return 0;
 
 }
 
 int CImageProcessCtrl::InspectionEnd()
 {
-	//m_bInspFlag = FALSE;
-
 	LightOFF();
 
 	return 0;
@@ -489,7 +485,9 @@ int CImageProcessCtrl::GrabStart(BOOL bMode)
 	// Camera 연결상태 확인.
 	int i = 0;
 	BOOL bConnected[MAX_CAMERA_NO] = {FALSE, FALSE};
-	BOOL bError = FALSE ;
+
+	//Log Camera Setting
+	LOGDISPLAY_SPECTXT(2)(_T("Grab Start"));
 
 	// 22.05.26 Ahn Add Start
 	theApp.m_pSigProc->EnableWorkSet(FALSE);
@@ -499,10 +497,15 @@ int CImageProcessCtrl::GrabStart(BOOL bMode)
 		bConnected[i] = m_pGrabCtrl[i]->IsConnected();
 	}
 
-	if (bError == TRUE) {
-		CString strMsg;
-		strMsg.Format(_T("카메라가 이미 연결중 입니다."));
-		AprData.SaveErrorLog(strMsg);
+	if (bConnected[0] == TRUE) 
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(2)(_T("1번 카메라가 이미 연결중 입니다."));
+	}
+	if (bConnected[1] == TRUE) 
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(2)(_T("2번 카메라가 이미 연결중 입니다."));
 	}
 	// 22.01.04 Ahn Add Start
 	int nLocalRet = 0;

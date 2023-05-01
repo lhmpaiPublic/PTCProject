@@ -117,7 +117,7 @@ int CExcelResultFileCtrl::SaveTitleLine( KExcel *pExcel )
 	pExcel->SetLineStyle(xlLineStyle_Continuous);
 	pExcel->SetFreezePanes(2, 1, TRUE); // 틀 고정
 	pExcel->SetRange(1, 1, 2, en_MaxCols);
-	pExcel->SetFont(_T("Gulim"), 11);
+	pExcel->SetFont(_T("Arial"), 11);
 	pExcel->SetTextAlign(xlAlignHCenter, xlAlignVCenter);
 
 	return 0;
@@ -256,7 +256,7 @@ int CExcelResultFileCtrl::MakeDefectListSheet(KExcel* pExcel, VEC_DEF_SEARCH_LIS
 
 	CString strData;
 	pExcel->SetRange(2, 1, nCount + 1, en_MaxCols);
-	pExcel->SetFont(_T("Gulim"), 12);
+	pExcel->SetFont(_T("Arial"), 12);
 	pExcel->SetLineWeight(xlThin);
 	pExcel->SetTextAlign(xlAlignHCenter, xlAlignVCenter);
 	CString strImgFileName;
@@ -285,7 +285,7 @@ int CExcelResultFileCtrl::MakeChartSheet(KExcel* pExcel, VEC_DEF_SEARCH_LIST* pL
 
 	pExcel->SetColWidth(1, 50, 1);
 	pExcel->SetRowHeight(1, 7);
-	pExcel->SetFont(_T("Gulim"), 8);
+	pExcel->SetFont(_T("Arial"), 8);
 	//pExcel->SetRowHeight( 2, )
 
 	pExcel->CreateChart(34, 1, 44, 27, xl3DColumn, xlColumns, TRUE, _T(""), _T(""), _T("") );

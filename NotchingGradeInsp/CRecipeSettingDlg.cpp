@@ -984,7 +984,7 @@ int CRecipeSettingDlg::MakeGridCtrl()
 		m_pFontGrid = new CFont();
 		m_pFontGrid->CreateFont(AprData.m_System.m_nGridFontSize, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET
 			, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
-			, FIXED_PITCH, "Gulim");
+			, FIXED_PITCH, "Arial");
 	}
 	// 22.07.13 Ahn Add End
 
@@ -1507,7 +1507,7 @@ int CRecipeSettingDlg::MakeGridCtrl_RecipeTable()
 		m_pFontGrid = new CFont();
 		m_pFontGrid->CreateFont( AprData.m_System.m_nGridFontSize , 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET
 			, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
-			, FIXED_PITCH, "Gulim");
+			, FIXED_PITCH, "Arial");
 	}
 
 
@@ -2162,7 +2162,7 @@ int CRecipeSettingDlg::MakeGridCtrl_Marking()
 		m_pFontGrid = new CFont();
 		m_pFontGrid->CreateFont(AprData.m_System.m_nGridFontSize, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET
 			, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
-			, FIXED_PITCH, "Gulim");
+			, FIXED_PITCH, "Arial");
 	}
 	// 22.07.13 Ahn Add End
 
