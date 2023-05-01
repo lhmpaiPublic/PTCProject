@@ -73,19 +73,22 @@ public :
 	DWORD wRecipeNo;
 	CString strRecipeName;
 	CString strCell_ID;
-	double dSpeed;
-	DWORD wDrossTopTarget;
-	DWORD wDrossBottomTarget;
-	DWORD wFoilExpTopTarget;
-	DWORD wFoilExpBottomTarget;
+
+	DWORD wFoilExpInTopTarget;
+	DWORD wFoilExpInBottomTarget;
+	DWORD wFoilExpOutTopTarget;
+	DWORD wFoilExpOutBottomTarget;
+	DWORD wFoilExpBothTopTarget;
+	DWORD wFoilExpBothBottomTarget;
 	DWORD wSpeterTopTarget;
 	DWORD wSpeterBottomTarget;
+
 	DWORD wAlarmExistAck;
-	// 22.08.10 Ahn Add Start
+
 	DWORD wContinousCount;
 	DWORD wSectorNgCount;
 	DWORD wSectorBaseCount;
-	// 22.08.10 Ahn Add End
+
 };
 // 22.07.06 Ahn Add Start
 typedef struct stSeqDataOut {
@@ -129,6 +132,17 @@ public:
 	DWORD dwPrmContinuousCnt;
 	DWORD dwPrmSectorNgTabCnt;
 	DWORD dwPrmSectorBaseCnt;
+
+	DWORD dwDummy3[5];
+
+	DWORD dwAlarmExist;
+	DWORD dwAlarmCode[5];
+
+	DWORD dwDummy4[10];
+
+	DWORD wCellTriggerID;
+	DWORD wCellJudge;
+	DWORD wCellNgCode;
 
 
 } _SEQ_OUT_DATA;

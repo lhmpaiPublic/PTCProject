@@ -661,7 +661,7 @@ int CGlobalData::LotEndProcess()
 	LotInfo.StartTime = AprData.m_NowLotData.m_LotStartTime ;
 	LotInfo.nTabCount = AprData.m_NowLotData.m_nTabCount;
 	LotInfo.nTabCountNG = AprData.m_NowLotData.m_nTabCountNG;
-	LotInfo.nTabCountOK = AprData.m_NowLotData.m_nTabCountOK;
+	LotInfo.nTabCountOK = AprData.m_NowLotData.m_nTabCount - AprData.m_NowLotData.m_nTabCountNG; //OK 수량 //AprData.m_NowLotData.m_nTabCountOK;
 	LotInfo.nTopNgCount = AprData.m_NowLotData.m_nTopNG;
 	LotInfo.nBottomNgCount = AprData.m_NowLotData.m_nBottomNG;
 	LotInfo.nMarkingCount = AprData.m_NowLotData.m_nMarkingCount;

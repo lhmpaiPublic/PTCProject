@@ -815,8 +815,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 
-
-
+				CString strMsg;
+				strMsg.Format(_T("ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_SeqDataOut.wCellTriggerID, AprData.m_NowLotData.m_SeqDataOut.wCellJudge, AprData.m_NowLotData.m_SeqDataOut.wCellNgCode);
+				AprData.SaveDebugLog(strMsg); //pyjtest
 
 
 
@@ -839,13 +840,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorBaseCnt = (DWORD)AprData.m_nSectorBaseCount; //AprData.m_pRecipeInfo->nSectorCount;
 
 
-				//int nAddress = CSigProc::enWordWrite_DataReportV1_Ea;
-				int nAddress;
-				nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
-
-				// 				int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataOut);
-				// 				int nSize = sizeof(_SEQ_OUT_DATA) / sizeof(int) ;
-				// 				pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+				int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
 
 				if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 				{
@@ -879,7 +874,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget;
 					//////////////////////////////////////////////////////////////////////////
-
 
 
 					short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);

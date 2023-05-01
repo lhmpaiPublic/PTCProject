@@ -1143,35 +1143,27 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	ASSERT(pSeqData);
 	// RecipeInfo
 	WORD btData[enWordReadMaxSize];
-	WORD* pData = btData;
-	// 22.03.22 Ahn Modify Start
-	int nSize = enWordReadMaxSize / 2 ;
-	//int nSize = enWordRead_LotInfoLength / 2;
-	// 22.03.22 Ahn Modify End
-	int nAddress = enWordRead_RecipeNo;
+	memset(btData, 0, sizeof(btData));
 
-	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
+	WORD* pData = btData;
+	int nSize = enWordReadMaxSize;
+	int nAddress = AprData.m_System.m_nWordIn + enWordRead_RecipeNo;
+
+	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0)
+	{
 		return -1;
 	}
+
+	memcpy(m_wMonitoringReadData_Melsec, btData, sizeof(btData));
+
 	// RecipeNo 
-	// 23.02.17 Son Mod Start
-	//WORD btTemp = btData[enWordRead_RecipeNo - nAddress];
 	WORD btTemp = btData[enWordRead_RecipeNo];
-	// 23.02.17 Son Mod End
-	// 22.08.04 Ahn Modify Start
-	//AprData.m_SeqDataIN.wRecipeNo = (DWORD)btTemp;
 	pSeqData->wRecipeNo = (DWORD)btTemp;
-	// 22.08.04 Ahn Modify End
-	//	AprData.m_SeqDataIN.wRecipeNo = btData[enWordRead_RecipeNo - nAddress];
-	int i;
 	CString strBuffer;
 	int nMax = enWordRead_RecipeName_Len;
-	WORD* pwData;
-	// 23.02.17 Son Mod Start
-	//pwData = &btData[enWordRead_RecipeName - nAddress];
-	pwData = &btData[enWordRead_RecipeName];
-	// 23.02.17 Son Mod End
-	for (i = 0; i < nMax; i += 2) {
+	WORD* pwData = &btData[enWordRead_RecipeName];
+	for (int i = 0; i < nMax; i += 2)
+	{
 		btTemp = (BYTE)(*pwData & 0xff);;
 		strBuffer += _T(" ");
 		strBuffer.SetAt(i, (char)btTemp);
@@ -1182,22 +1174,16 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 		}
 		pwData++;
 	}
-	// 22.07.13 Ahn Add Start
 	strBuffer.TrimRight();
 	strBuffer.TrimLeft();
-	// 22.07.13 Ahn Add End
-	// 22.08.04 Ahn Modify Start
 	AprData.m_SeqDataIN.strRecipeName = strBuffer; // 22.08.11 Ahn Recovered // Use save log
 	pSeqData->strRecipeName = strBuffer;
-	// 22.08.04 Ahn Modify End
 
 	nMax = enWordRead_CELL_ID_Len;
-	// 23.02.17 Son Mod Start
-	//pwData = &btData[enWordRead_CELL_ID - nAddress];
 	pwData = &btData[enWordRead_CELL_ID];
-	// 23.02.17 Son Mod End
 
-	for (i = 0; i < nMax; i += 2) {
+	for (int i = 0; i < nMax; i += 2)
+	{
 		btTemp = (BYTE)(*pwData & 0xff);
 		strBuffer += _T(" ");
 		strBuffer.SetAt(i, (char)btTemp);
@@ -1209,90 +1195,40 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 		}
 		pwData++;
 	}
-
-	// 22.07.13 Ahn Add Start
 	strBuffer.TrimRight();
 	strBuffer.TrimLeft();
-	// 22.07.13 Ahn Add End
-	// 22.08.11 Ahn Modify Start
-	//pSeqData->strRecipeName = strBuffer;
 	AprData.m_SeqDataIN.strCell_ID = strBuffer;
-	// 22.08.11 Ahn Modify End
 
-	// RecipeName
-	// Cell ID
-	// Speed 나누기 100 할것(소수점 2자리)
-	// Dross Top 목표값
-	// 23.02.17 Son Mod Start
-	//pwData = &btData[enWordRead_DrossTopTarget - nAddress];
-	pwData = &btData[enWordRead_DrossTopTarget];
-	// 23.02.17 Son Mod End
-	// 22.08.04 Ahn Modify Start
-	//AprData.m_SeqDataIN.wDrossTopTarget = *pwData;
-	pSeqData->wDrossTopTarget = *pwData;
-	// 22.08.04 Ahn Modify End
+	pwData = &btData[enWordRead_FoilExpInTopTarget];
+	pSeqData->wFoilExpInTopTarget = *pwData;
 
-	// Dross Bottom 목표값
-	// 23.02.17 Son Mod Start
-	//pwData = &btData[enWordRead_DrossBtmTarget - nAddress];
-	pwData = &btData[enWordRead_DrossBtmTarget];
-	// 23.02.17 Son Mod End
-	// 22.08.04 Ahn Modify Start
-	//AprData.m_SeqDataIN.wDrossBottomTarget = *pwData;
-	pSeqData->wDrossBottomTarget = *pwData;
-	// 22.08.04 Ahn Modify End
-	// FoilExp Top 목표값
-	// 23.02.17 Son Mod Start
-	//pwData = &btData[enWordRead_FoilExpTopTarget - nAddress];
-	pwData = &btData[enWordRead_FoilExpTopTarget];
-	// 23.02.17 Son Mod End
-	// 22.08.04 Ahn Modify Start
-	//AprData.m_SeqDataIN.wFoilExpTopTarget = *pwData;
-	pSeqData->wFoilExpTopTarget = *pwData;
-	// 22.08.04 Ahn Modify End
-	// FoilExp Bottom 목표값
-	// 23.02.17 Son Mod Start
-	//pwData = &btData[enWordRead_FoilExpBtmTarget - nAddress];
-	pwData = &btData[enWordRead_FoilExpBtmTarget];
-	// 23.02.17 Son Mod End
-	// 22.08.04 Ahn Modify Start
-	//AprData.m_SeqDataIN.wFoilExpBottomTarget = *pwData;
-	pSeqData->wFoilExpBottomTarget = *pwData;
-	// 22.08.04 Ahn Modify End
-	// Spatter Top 목표값
-	// 23.02.17 Son Mod Start
-	//pwData = &btData[enWordRead_SpeterTopTarget - nAddress];
+	pwData = &btData[enWordRead_FoilExpInBtmTarget];
+	pSeqData->wFoilExpInBottomTarget = *pwData;
+
+	pwData = &btData[enWordRead_FoilExpOutTopTarget];
+	pSeqData->wFoilExpOutTopTarget = *pwData;
+
+	pwData = &btData[enWordRead_FoilExpOutBtmTarget];
+	pSeqData->wFoilExpOutBottomTarget = *pwData;
+
+	pwData = &btData[enWordRead_FoilExpBothTopTarget];
+	pSeqData->wFoilExpBothTopTarget = *pwData;
+
+	pwData = &btData[enWordRead_FoilExpBothBtmTarget];
+	pSeqData->wFoilExpBothBottomTarget = *pwData;
+
 	pwData = &btData[enWordRead_SpeterTopTarget];
-	// 23.02.17 Son Mod End
-	// 22.08.04 Ahn Modify Start
-	//AprData.m_SeqDataIN.wSpeterTopTarget = *pwData;
 	pSeqData->wSpeterTopTarget = *pwData;
-	// 22.08.04 Ahn Modify End
-	// Spatter Bottom 목표값
-	// 23.02.17 Son Mod Start
-	//pwData = &btData[enWordRead_SpeterBtmTarget - nAddress];
+
 	pwData = &btData[enWordRead_SpeterBtmTarget];
-	// 23.02.17 Son Mod End
-	// 22.08.04 Ahn Modify Start
-	//AprData.m_SeqDataIN.wSpeterBottomTarget = *pwData;
 	pSeqData->wSpeterBottomTarget = *pwData;
-	// 22.08.04 Ahn Modify End
-	// Alarm Ack
-
-	// 23.02.17 Son Mod Start
-	//// 22.08.10 Ahn Add Start
-	//pwData = &btData[enWordRead_PrmContinuousCnt - nAddress];
-	//pSeqData->wContinousCount;
-	//pwData = &btData[enWordRead_PrmSectorNgTabCnt - nAddress];
-	//pSeqData->wSectorNgCount;
-	//pwData = &btData[enWordRead_PrmSectorBaseCnt - nAddress];
-	//pSeqData->wSectorBaseCount;
-
 
 	pwData = &btData[enWordRead_PrmContinuousCnt];
 	pSeqData->wContinousCount = *pwData;
+
 	pwData = &btData[enWordRead_PrmSectorNgTabCnt];
 	pSeqData->wSectorNgCount = *pwData;
+
 	pwData = &btData[enWordRead_PrmSectorBaseCnt];
 	pSeqData->wSectorBaseCount = *pwData;
 
@@ -1343,18 +1279,20 @@ int CSigProc::ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 	pSeqOutData = &pSeqOutDataAll->m_SeqOutData ;
 
 	ASSERT(pSeqOutData);
-	// RecipeInfo
-	WORD btData[enWordReadMaxSize];
+
+	WORD btData[enWordWriteMaxSize];
+	memset(btData, 0, sizeof(btData));
+
 	WORD* pData = btData;
-	// 22.03.22 Ahn Modify Start
-	//int nSize = enWordReadMaxSize / 2 ;
-	int nSize = enWordReadMaxSize / 2;
-	// 22.03.22 Ahn Modify End
-	int nAddress = enWordWrite_DataReportV1_Ea;
+	int nSize = enWordWriteMaxSize;
+	int nAddress = AprData.m_System.m_nWordOut + enWordWrite_DataReportV1_Ea;
 
 	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
 		return -1;
 	}
+
+	memcpy(m_wMonitoringWriteData_Melsec, btData, sizeof(btData));
+
 
 	WORD btTemp;
 	// 23.03.03 Ahn Modify Start - Delete "- nAddress"
@@ -1600,29 +1538,33 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	AprData.m_SeqDataIN.strCell_ID = strBuffer;
 	pSeqData->strCell_ID = strBuffer;
 
-	// RecipeName
-	// Cell ID
-	// Speed 나누기 100 할것(소수점 2자리)
-	// Dross Top 목표값
-	pwData = &btData[enSmsWordRead_DrossTopTarget];
-	pSeqData->wDrossTopTarget = *pwData;
 
-	// Dross Bottom 목표값
+	////////////////////////////////////////////////////////////////////////////
+	// 임시 적용, 지멘스 Address Map 재정의 필요
+	pwData = &btData[enSmsWordRead_DrossTopTarget];
+	pSeqData->wFoilExpBothTopTarget = *pwData;
+
 	pwData = &btData[enSmsWordRead_DrossBtmTarget];
-	pSeqData->wDrossBottomTarget = *pwData;
+	pSeqData->wFoilExpBothBottomTarget = *pwData;
+
 	pwData = &btData[enSmsWordRead_FoilExpTopTarget];
-	pSeqData->wFoilExpTopTarget = *pwData;
+	pSeqData->wFoilExpInTopTarget = *pwData;
+
 	pwData = &btData[enSmsWordRead_FoilExpBtmTarget];
-	pSeqData->wFoilExpBottomTarget = *pwData;
+	pSeqData->wFoilExpInBottomTarget = *pwData;
+
 	pwData = &btData[enSmsWordRead_SpeterTopTarget];
 	pSeqData->wSpeterTopTarget = *pwData;
+
 	pwData = &btData[enSmsWordRead_SpeterBtmTarget];
 	pSeqData->wSpeterBottomTarget = *pwData;
 
 	pwData = &btData[enSmsWordRead_PrmContinuousCnt];
 	pSeqData->wContinousCount = *pwData;
+
 	pwData = &btData[enSmsWordRead_PrmSectorNgTabCnt];
 	pSeqData->wSectorNgCount = *pwData;;
+
 	pwData = &btData[enSmsWordRead_PrmSectorBaseCnt];
 	pSeqData->wSectorBaseCount = *pwData;;
 
@@ -1738,16 +1680,20 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordRead_CELL_ID :
 				nRetAdd = enSmsWordRead_CELL_ID;
 				break;
-			case	enWordRead_DrossTopTarget :
+
+
+			////////////////////////////////////////////////////////////////
+			// 임시 적용, 지멘스 Address Map 재정의 필요
+			case	enWordRead_FoilExpBothTopTarget:
 				nRetAdd = enSmsWordRead_DrossTopTarget;
 				break;
-			case	enWordRead_DrossBtmTarget :
+			case	enWordRead_FoilExpBothBtmTarget:
 				nRetAdd = enSmsWordRead_DrossBtmTarget;
 				break;
-			case	enWordRead_FoilExpTopTarget :
+			case	enWordRead_FoilExpInTopTarget:
 				nRetAdd = enSmsWordRead_FoilExpTopTarget;
 				break;
-			case	enWordRead_FoilExpBtmTarget :
+			case	enWordRead_FoilExpInBtmTarget:
 				nRetAdd = enSmsWordRead_FoilExpBtmTarget;
 				break;
 			case	enWordRead_SpeterTopTarget :

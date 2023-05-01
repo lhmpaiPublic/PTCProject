@@ -76,6 +76,10 @@ void CIoMonitorDlg::DoDataExchange(CDataExchange* pDX)
 	// 22.08.12 Ahn Add Start
 	DDX_Control(pDX, IDC_GRID_WORD_IN, m_GridWordIn);
 	DDX_Control(pDX, IDC_GRID_WORD_OUT, m_GridWordOut);
+
+	DDX_Control(pDX, IDC_GRID_BIT_IN, m_GridBitIn);
+	DDX_Control(pDX, IDC_GRID_BIT_OUT, m_GridBitOut);
+
 	// 22.08.12 Ahn Add End
 }
 
@@ -104,6 +108,8 @@ BEGIN_MESSAGE_MAP(CIoMonitorDlg, CDialogEx)
 	ON_STN_DBLCLK(IDC_ST_LOT_END_ACK, &CIoMonitorDlg::OnDblclkStLotEndAck)
 	ON_STN_DBLCLK(IDC_ST_LOT_END_ACK_OFF, &CIoMonitorDlg::OnDblclkStLotEndAckOff)
 	ON_BN_CLICKED(IDC_BTN_DUMMY_ERROR_CLEAR, &CIoMonitorDlg::OnBnClickedBtnDummyErrorClear)
+	ON_NOTIFY(NM_DBLCLK, IDC_GRID_BIT_OUT, &CIoMonitorDlg::OnMouseDblClickGridBitOut)	// 22.07.15 Ahn Add 
+
 END_MESSAGE_MAP()
 
 
@@ -113,7 +119,8 @@ END_MESSAGE_MAP()
 void CIoMonitorDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	if (m_TID_CheckIO == nIDEvent) {
+	if (m_TID_CheckIO == nIDEvent)
+	{
 		KillCheckIoTimer();
 
 		// 신호 Display 갱신
@@ -334,88 +341,14 @@ int CIoMonitorDlg::RefreshAll()
 	int nRet = 0;
 
 	CSigProc* pSigProc = theApp.m_pSigProc;;
-	// 23.03.03 Ahn Modify Start
-	//memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * en_In_Max);
-	//memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * en_Out_Max);	
 	memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_IN);
 	memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_OUT);
-	// 23.03.03 Ahn Modify End
 	pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
 	pSigProc->ReadAllPort_BitOut(m_bSigBitOut);
+	pSigProc->ReadBlockAllData(&m_localSeqDataIn);
+	pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
 
-
-	//int nIdOnOff[2] = { IDB_GREEN_LED_OFF , IDB_GREEN_LED_ON };
-
-	int bit = 0 ;
-	int i = 0;
-
-	int nMaxBit = en_In_Max ;
-
-	int nPort = 0 ;
-	BYTE bBit = 0 ;
-	int nAddress = 0;
-	// 22.09.22 Ahn Add Start
-	int nBitPos = 0;
-	// 22.09.22 Ahn Add End
-	for (i = 0; i < nMaxBit; i++) {
-		int nShift = 0;
-		// 23.03.02 Ahn Modify Start
-		// ..... Move All Switch() ....
-		nAddress = GetAddressAndBitPos(MODE_READ, i, nBitPos);
-		//CSigProc::GetPortBit(nAddress, &nPort, &bBit);
-		// 23.03.02 Ahn Modify End
-
-		int nOn = 0;
-		// 22.09.22 Ahn Modify Start
-		if ( m_bSigBitIn[nBitPos] == TRUE ) { // 22.08.11 Ahn Modify
-		// 22.09.22 Ahn Modify End
-			nOn = 1;
-		}
-		if( (m_bmpSigIn[i][en_mode_on].m_hWnd != nullptr) && (m_bmpSigIn[i][en_mode_off].m_hWnd != nullptr)){
-			if (nOn == 1) {
-				m_bmpSigIn[i][en_mode_off].ShowWindow(SW_HIDE);
-				m_bmpSigIn[i][en_mode_on].ShowWindow(SW_SHOW);
-			}
-			else {
-				m_bmpSigIn[i][en_mode_on].ShowWindow(SW_HIDE);
-				m_bmpSigIn[i][en_mode_off].ShowWindow(SW_SHOW);
-			}
-		}
-	}
-
-
-
-	nMaxBit = en_Out_Max;
-	for (i = 0; i < nMaxBit; i++) {
-
-		// 23.03.02 Ahn Modify Start
-		// ..... Move All Switch() ....
-		nAddress = GetAddressAndBitPos(MODE_WRITE, i, nBitPos) ;
-		// 23.03.02 Ahn Modify End
-
-		//CSigProc::GetPortBit(nAddress, &nPort, &bBit);
-
-		int nOn = 0;
-		if ( m_bSigBitOut[nBitPos] == TRUE ) { // 22.08.11 Ahn Modify
-			nOn = 1;
-		}
-		if ((m_bmpSigOut[i][en_mode_on].m_hWnd != nullptr) && (m_bmpSigOut[i][en_mode_off].m_hWnd != nullptr)) {
-			if (nOn == 1) {
-				m_bmpSigOut[i][en_mode_off].ShowWindow(SW_HIDE);
-				m_bmpSigOut[i][en_mode_on].ShowWindow(SW_SHOW);
-			} else {
-				m_bmpSigOut[i][en_mode_on].ShowWindow(SW_HIDE);
-				m_bmpSigOut[i][en_mode_off].ShowWindow(SW_SHOW);
-			}
-		}
-	}
-
-
-// 	pSigProc->ReadBlockAllData(&m_localSeqDataIn);
-// 	pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
-// 
-// 	UpdateGridCtrl();
-
+ 	UpdateGridCtrl();
 
 	return nRet;
 }
@@ -466,50 +399,75 @@ void CIoMonitorDlg::OnBnClickedBtnDataLoad()
 
 void CIoMonitorDlg::MakeGridCtrl()
 {
-	if (m_pFontGrid == nullptr) {
+	if (m_pFontGrid == nullptr)
+	{
 		m_pFontGrid = new CFont();
 		m_pFontGrid->CreateFontA( 12, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET
 			, OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS, DRAFT_QUALITY
 			, FIXED_PITCH, "Arial");
 	}
 
-	CGridCtrl* pGridCtrl;
-	for( int i = 0 ; i < 2 ; i++ )
+	//////////////////////////////////////////////////////////////////////////
+	// Grid Control 생성
+	CGridCtrl* pGridCtrl = NULL;
+	for( int i = 0 ; i < 4 ; i++ )
 	{
 		int m_nFixCols = 1;
 		int m_nFixRows = 1;
 		int m_nCols = en_col_Max;
-		int m_nRows  ;
+		int m_nRows;
 		int nRow = 0;
 		int nCol = 0;
 		int nHeight = 25;
 
-		if (i == 0) {
+		switch (i)
+		{
+		case 0:
+			pGridCtrl = &m_GridBitIn;
+			m_nRows = MAX_ADR_BIT_IN + 1;
+			break;
+
+		case 1:
+			pGridCtrl = &m_GridBitOut;
+			m_nRows = MAX_ADR_BIT_OUT + 1;
+			break;
+
+		case 2:
 			pGridCtrl = &m_GridWordIn;
-			m_nRows = en_InWord_Max + 1 ;
-		} else {
+			m_nRows = en_InWord_Max + 1;
+			break;
+
+		case 3:
 			pGridCtrl = &m_GridWordOut;
-			m_nRows = en_OutWord_Max + 1 ;
+			m_nRows = en_OutWord_Max + 1;
+			break;
+
+		default:
+			break;
 		}
+
 		pGridCtrl->SetFont(m_pFontGrid, TRUE);
 
 		pGridCtrl->SetAutoSizeStyle();
 		pGridCtrl->SetFont(m_pFontGrid, TRUE);
 
-		TRY{
+		TRY
+		{
 			pGridCtrl->SetRowCount(m_nRows);
 			pGridCtrl->SetColumnCount(m_nCols);
 			pGridCtrl->SetFixedRowCount(m_nFixRows);
 			pGridCtrl->SetFixedColumnCount(m_nFixCols);
 		}
-			CATCH(CMemoryException, e) {
+		CATCH(CMemoryException, e)
+		{
 			e->ReportError();
 			return ;
 		}
 		END_CATCH
 
 		CString strTitle[en_col_Max] = { _T("Category"),_T("Address"),_T("Content") };
-		for (nCol = 0; nCol < pGridCtrl->GetColumnCount(); nCol++) {
+		for (nCol = 0; nCol < pGridCtrl->GetColumnCount(); nCol++)
+		{
 			CString strText;
 			GV_ITEM Item;
 			Item.mask = GVIF_TEXT;
@@ -518,29 +476,35 @@ void CIoMonitorDlg::MakeGridCtrl()
 			Item.strText = strTitle[nCol];
 			pGridCtrl->SetItem(&Item);
 			int nWidth = 70;
-			switch (nCol) {
+			switch (nCol)
+			{
 			case	en_col_Name :
-				nWidth = 140;
+				nWidth = 200;
 				break;
 			case	en_col_Address :
 				nWidth = 70;
 				break;
 			case	en_col_Data :
-				nWidth = 100;
+				nWidth = 80;
 				break;
 			default:
 				nWidth = 50;
 				break;
 			}
 			pGridCtrl->SetColumnWidth(nCol, nWidth);
-			pGridCtrl->SetColAlignment(nCol, flexAlignCenterCenter);
+			pGridCtrl->SetColAlignment(nCol, flexAlignLeftCenter /*flexAlignCenterCenter*/);
 		}
 		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
 
-	// Word 입력 Data
-	pGridCtrl = &m_GridWordIn;
-	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++) {
+
+
+
+	//////////////////////////////////////////////////////////////////////////
+	// Bit IN
+	pGridCtrl = &m_GridBitIn;
+	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
+	{
 		int row = nRow - 1;
 		for (int nCol = 0; nCol < pGridCtrl->GetColumnCount() - 1; nCol++)
 		{
@@ -551,7 +515,73 @@ void CIoMonitorDlg::MakeGridCtrl()
 
 			int nCondNo = nCol - 1;
 			CString strTemp;
-			switch (nCol) {
+			switch (nCol)
+			{
+			case	0:
+				strTemp = GetInBitName(row);
+				break;
+			case	1:
+				strTemp = GetInBitAddress(row);
+				break;
+			}
+
+			Item.strText = strTemp;
+			pGridCtrl->SetItem(&Item);
+		}
+		int nHeight = 22;
+		pGridCtrl->SetRowHeight(nRow, nHeight);
+	}
+
+
+	// Bit OUT
+	pGridCtrl = &m_GridBitOut;
+	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
+	{
+		int row = nRow - 1;
+		for (int nCol = 0; nCol < pGridCtrl->GetColumnCount() - 1; nCol++)
+		{
+			GV_ITEM Item;
+			Item.mask = GVIF_TEXT;
+			Item.row = nRow;
+			Item.col = nCol;
+
+			int nCondNo = nCol - 1;
+			CString strTemp;
+			switch (nCol)
+			{
+			case	0:
+				strTemp = GetOutBitName(row);
+				break;
+			case	1:
+				strTemp = GetOutBitAddress(row);
+				break;
+			}
+
+			Item.strText = strTemp;
+			pGridCtrl->SetItem(&Item);
+		}
+		int nHeight = 22;
+		pGridCtrl->SetRowHeight(nRow, nHeight);
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////
+	// Word 입력 Data
+	pGridCtrl = &m_GridWordIn;
+	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
+	{
+		int row = nRow - 1;
+		for (int nCol = 0; nCol < pGridCtrl->GetColumnCount() - 1; nCol++)
+		{
+			GV_ITEM Item;
+			Item.mask = GVIF_TEXT;
+			Item.row = nRow;
+			Item.col = nCol;
+
+			int nCondNo = nCol - 1;
+			CString strTemp;
+			switch (nCol)
+			{
 			case	0 :
 				strTemp = GetInWordName(row);
 				break;
@@ -569,7 +599,8 @@ void CIoMonitorDlg::MakeGridCtrl()
 
 	// Word 출력 Data
 	pGridCtrl = &m_GridWordOut;
-	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++) {
+	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
+	{
 		int row = nRow - 1;
 		for (int nCol = 0; nCol < pGridCtrl->GetColumnCount()-1; nCol++)
 		{
@@ -581,7 +612,8 @@ void CIoMonitorDlg::MakeGridCtrl()
 			int nCondNo = nCol - 1;
 			CString strTemp;
 
-			switch (nCol) {
+			switch (nCol)
+			{
 			case	0:
 				strTemp = GetOutWordName(row);
 				break;
@@ -602,9 +634,54 @@ void CIoMonitorDlg::UpdateGridCtrl()
 {
 	CGridCtrl* pGridCtrl;
 
+	// Bit IN Data
+	pGridCtrl = &m_GridBitIn;
+	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
+	{
+		int row = nRow - 1;
+		{
+			GV_ITEM Item;
+			Item.mask = GVIF_TEXT;
+			Item.row = nRow;
+			Item.col = en_col_Data;
+
+			CString strTemp;
+			strTemp.Format(_T("%d"), m_bSigBitIn[row]);
+
+			Item.strText = strTemp;
+			pGridCtrl->SetItem(&Item);
+		}
+	}
+
+	pGridCtrl->Refresh();
+
+
+	// Bit IN Data
+	pGridCtrl = &m_GridBitOut;
+	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
+	{
+		int row = nRow - 1;
+		{
+			GV_ITEM Item;
+			Item.mask = GVIF_TEXT;
+			Item.row = nRow;
+			Item.col = en_col_Data;
+
+			CString strTemp;
+			strTemp.Format(_T("%d"), m_bSigBitOut[row]);
+
+			Item.strText = strTemp;
+			pGridCtrl->SetItem(&Item);
+		}
+	}
+
+	pGridCtrl->Refresh();
+
+
 	// Word 입력 Data
 	pGridCtrl = &m_GridWordIn;
-	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++) {
+	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
+	{
 		int row = nRow - 1;
 		{
 			GV_ITEM Item;
@@ -618,13 +695,15 @@ void CIoMonitorDlg::UpdateGridCtrl()
 			Item.strText = strTemp;
 			pGridCtrl->SetItem(&Item);
 		}
-		int nHeight = 22;
-		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
+
+	pGridCtrl->Refresh();
+
 
 	// Word 출력 Data
 	pGridCtrl = &m_GridWordOut;
-	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++) {
+	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
+	{
 		int row = nRow - 1;
 		{
 			GV_ITEM Item;
@@ -638,38 +717,272 @@ void CIoMonitorDlg::UpdateGridCtrl()
 			Item.strText = strTemp;
 			pGridCtrl->SetItem(&Item);
 		}
-		int nHeight = 22;
-		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
+
+	pGridCtrl->Refresh();
+
+}
+
+
+
+CString CIoMonitorDlg::GetInBitName(int nRow)
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	CString strRet;
+
+	int nPort = (nRow / 8);
+	unsigned short nBitPos = 0x00000001 << (nRow - (nPort*8));
+	if (nPort != 0)
+	{
+		nBitPos += 0x00000001 << (8 + (nPort-1) );
+	}
+
+	switch (nBitPos)
+	{
+	case	CSigProc::enBitIn_Alive:
+		strRet = _T("Alive");
+		break;
+	case	CSigProc::enBitIn_Ready:
+		strRet = _T("Ready");
+		break;
+	case	CSigProc::enBitIn_Run:
+		strRet = _T("Run");
+		break;
+//	case	CSigProc::enBitIn_EncoderReset:		//사용 안함
+//		strRet = _T("Encoder Zero Set");
+//		break;
+	case	CSigProc::enBitIn_TabZeroReset:
+		strRet = _T("Tab Zero Set");
+		break;
+	case	CSigProc::enBitIn_InkMarkingActive:
+		strRet = _T("Ink Marking Active");
+		break;
+	case	CSigProc::enBitIn_ConnectZone:
+		strRet = _T("Connect Zone Pass");
+		break;
+	case	CSigProc::enBitIn_RecipeChange:
+		strRet = _T("Vision Recipe Change");
+		break;
+	case	CSigProc::enBitIn_LotStartReq:
+		strRet = _T("Lot Start Request");
+		break;
+	case	CSigProc::enBitIn_LotEndReq:
+		strRet = _T("Lot End Request");
+		break;
+	case	CSigProc::enBitIn_AlarmResetReq:
+		strRet = _T("Alarm Reset");
+		break;
+	default:
+		strRet = _T("");
+		break;
+	}
+
+
+
+
+	return strRet;
+}
+
+CString CIoMonitorDlg::GetOutBitName(int nRow)
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	CString strRet;
+
+	int nPort = (nRow / 8);
+	unsigned short nBitPos = 0x00000001 << (nRow - (nPort * 8));
+	if (nPort != 0)
+	{
+		nBitPos += 0x00000001 << (8 + (nPort - 1));
+	}
+
+
+
+	switch (nBitPos)
+	{
+	case	CSigProc::enBitOut_Alive:
+		strRet = _T("Alive");
+		break;
+	case	CSigProc::enBitOut_Ready:
+		strRet = _T("Ready");
+		break;
+//	case	CSigProc::enBitOut_EncoderSet:		//사용 안함
+//		strRet = _T("Encoder Zero Set");
+//		break;
+	case	CSigProc::enBitOut_TabZeroReset:
+		strRet = _T("Tab Zero Set Ack");
+		break;
+//	case	CSigProc::enBitOut_DiskSpaceWarning:		//사용 안함
+//		strRet = _T("");
+//		break;
+//	case	CSigProc::enBitOut_DiskSpaceAlarm:		//사용 안함
+//		strRet = _T("");
+//		break;
+	case	CSigProc::enBitOut_RecipeChangeAck:
+		strRet = _T("Recipe Change Ack");
+		break;
+	case	CSigProc::enBitOut_LotStartReqAck:
+		strRet = _T("Lot Start Ack");
+		break;
+	case	CSigProc::enBitOut_LotEndReqAck:
+		strRet = _T("Lot End Ack");
+		break;
+	case	CSigProc::enBitOut_AlramResetAck:
+		strRet = _T("Alarm Reset Ack");
+		break;
+
+	default:
+		strRet = _T("");
+		break;
+	}
+
+
+
+	return strRet;
+}
+
+
+CString CIoMonitorDlg::GetInBitAddress(int nRow)
+{
+	CString strRet;
+
+	int nAddress = AprData.m_System.m_nBitIn + nRow;
+	
+	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
+	{
+		strRet.Format(_T("0x%04X"), nAddress);
+	}
+	else
+	{
+		strRet.Format(_T("%04d"), nAddress);
+	}
+
+	return strRet;
+}
+
+CString CIoMonitorDlg::GetOutBitAddress(int nRow)
+{
+	CString strRet;
+
+	int nAddress = AprData.m_System.m_nBitOut + nRow;
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
+	{
+		strRet.Format(_T("0x%04X"), nAddress);
+	}
+	else
+	{
+		strRet.Format(_T("%04d"), nAddress);
+	}
+
+	return strRet;
 }
 
 CString CIoMonitorDlg::GetInWordName(int nRow)
 {
 	CString strRet ;
 
-	switch (nRow) {
-	case	en_InWord_RecipeNo :
+	nRow *= 2;
+
+	switch (nRow)
+	{
+	case	CSigProc::enWordRead_RecipeNo:
 		strRet = _T("Recipe No");
 		break;
-	case	en_InWord_RecipeName :
-		strRet = _T("Recipe Name");
+
+	case	CSigProc::enWordRead_RecipeName:
+		strRet = _T("Recipe Name 1");
 		break;
-	case	en_InWord_LotId :
-		strRet = _T("Lot ID");
+	case	CSigProc::enWordRead_RecipeName+2:
+		strRet = _T("Recipe Name 2");
 		break;
-	case	en_InWord_ContinuosCnt :
-		strRet = _T("Consecutive defects");
+	case	CSigProc::enWordRead_RecipeName+4:
+		strRet = _T("Recipe Name 3");
 		break;
-	case	en_InWord_SectorNgCnt :
-		strRet = _T("Interval defects");
+	case	CSigProc::enWordRead_RecipeName+6:
+		strRet = _T("Recipe Name 4");
 		break;
-	case	en_InWord_SectorBaseCnt :
-		strRet = _T("Interval Size");
+
+	case	CSigProc::enWordRead_CELL_ID:
+		strRet = _T("Lot ID 1");
 		break;
+	case	CSigProc::enWordRead_CELL_ID+2:
+		strRet = _T("Lot ID 2");
+		break;
+	case	CSigProc::enWordRead_CELL_ID+4:
+		strRet = _T("Lot ID 3");
+		break;
+	case	CSigProc::enWordRead_CELL_ID+6:
+		strRet = _T("Lot ID 4");
+		break;
+	case	CSigProc::enWordRead_CELL_ID+8:
+		strRet = _T("Lot ID 5");
+		break;
+	case	CSigProc::enWordRead_CELL_ID+10:
+		strRet = _T("Lot ID 6");
+		break;
+	case	CSigProc::enWordRead_CELL_ID+12:
+		strRet = _T("Lot ID 7");
+		break;
+	case	CSigProc::enWordRead_CELL_ID+14:
+		strRet = _T("Lot ID 8");
+		break;
+	case	CSigProc::enWordRead_CELL_ID+16:
+		strRet = _T("Lot ID 9");
+		break;
+	case	CSigProc::enWordRead_CELL_ID+18:
+		strRet = _T("Lot ID 10");
+		break;
+
+	case	CSigProc::enWordRead_FoilExpInTopTarget:
+		strRet = _T("Foil Exp In Top Target");
+		break;
+	case	CSigProc::enWordRead_FoilExpInBtmTarget:
+		strRet = _T("Foil Exp In Bottom Target");
+		break;
+	case	CSigProc::enWordRead_FoilExpOutTopTarget:
+		strRet = _T("Foil Exp Out Top Target");
+		break;
+	case	CSigProc::enWordRead_FoilExpOutBtmTarget:
+		strRet = _T("Foil Exp Out Bottom Target");
+		break;
+	case	CSigProc::enWordRead_FoilExpBothTopTarget:
+		strRet = _T("Foil Exp Both Top Target");
+		break;
+	case	CSigProc::enWordRead_FoilExpBothBtmTarget:
+		strRet = _T("Foil Exp Both Bottom Target");
+		break;
+	case	CSigProc::enWordRead_SpeterTopTarget:
+		strRet = _T("Spatter Top Target");
+		break;
+	case	CSigProc::enWordRead_SpeterBtmTarget:
+		strRet = _T("Spatter Bottom Target");
+		break;
+
+	case	CSigProc::enWordRead_PrmContinuousCnt:
+		strRet = _T("Continuous NG Count");
+		break;
+	case	CSigProc::enWordRead_PrmSectorNgTabCnt:
+		strRet = _T("Sector NG Count");
+		break;
+	case	CSigProc::enWordRead_PrmSectorBaseCnt:
+		strRet = _T("Sector Range Tab Count");
+		break;
+
+		
+
 	default :
 		strRet = _T("");
 		break;
 	}
+
+
+
+
+
+
+
 
 	return strRet;
 }
@@ -678,45 +991,142 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 {
 	CString strRet;
 
-	switch (nRow) {
-	case	en_OutWord_TabCount :
-		strRet = _T("Total");
+	nRow *= 2;
+
+	switch (nRow)
+	{
+	case	CSigProc::enWordWrite_DataReportV1_Ea:
+		strRet = _T("Total Count");
 		break;
-	case	en_OutWord_OkCount :
-		strRet = _T("OK");
+	case	CSigProc::enWordWrite_DataReportV2_OK:
+		strRet = _T("OK Count");
 		break;
-	case	en_OutWord_NgCount :
-		strRet = _T("NG");
+	case	CSigProc::enWordWrite_DataReportV3_NG:
+		strRet = _T("NG Count");
 		break;
-	case	en_OutWord_OkRate :
-		strRet = _T("OK(%)");
+	case	CSigProc::enWordWrite_DataReportV4_OkRate:
+		strRet = _T("OK Rate");
 		break;
-	case	en_OutWord_NgRate :
-		strRet = _T("NG(%)");
+	case	CSigProc::enWordWrite_DataReportV5_NgRate:
+		strRet = _T("NG Rate");
 		break;
-	case	en_OutWord_TopDefCount :
-		strRet = _T("Top Count");
+	case	CSigProc::enWordWrite_DataReportV6_RunRate:
+		strRet = _T("Run Rate");
 		break;
-	case	en_OutWord_BtmDefCount :
-		strRet = _T("Btm Count");
+
+	case	CSigProc::enWordWrite_Continue_Alarm_Cnt:
+		strRet = _T("Continuous Alarm Count");
 		break;
-	case	en_OutWord_TopDefCount_LotEnd :
-		strRet = _T("Top Count(LotEnd)");
+	case	CSigProc::enWordWrite_Heavy_Alarm_Cnt:
+		strRet = _T("Sector Alarm Count");
 		break;
-	case	en_OutWord_BtmDefCount_LotEnd :
-		strRet = _T("Top Count(LotEnd)");
+	case	CSigProc::enWordWrite_FoilExpInTop_Alarm_Cnt:
+		strRet = _T("Foil Exp In Top Alarm Count");
 		break;
-	case	en_OutWord_Alarm :
-		strRet = _T("Alarm");
+	case	CSigProc::enWordWrite_FoilExpInBottom_Alarm_Cnt:
+		strRet = _T("Foil Exp In Bottom Alarm Count");
 		break;
-	case	en_OutWord_Code :
-		strRet = _T("Alarm Code");
+	case	CSigProc::enWordWrite_FoilExpOutTop_Alarm_Cnt:
+		strRet = _T("Foil Exp Out Top Alarm Count");
 		break;
+	case	CSigProc::enWordWrite_FoilExpOutBottom_Alarm_Cnt:
+		strRet = _T("Foil Exp Out Bottom Alarm Count");
+		break;
+	case	CSigProc::enWordWrite_FoilExpBothTop_Alarm_Cnt:
+		strRet = _T("Foil Exp Both Top Alarm Count");
+		break;
+	case	CSigProc::enWordWrite_FoilExpBothBottom_Alarm_Cnt:
+		strRet = _T("Foil Exp Both Bottom Alarm Count");
+		break;
+	case	CSigProc::enWordWrite_SpeterTop_Alarm_Cnt:
+		strRet = _T("Spatter Top Alarm Count");
+		break;
+	case	CSigProc::enWordWrite_SpeterBtm_Alarm_Cnt:
+		strRet = _T("Spatter Bottom Alarm Count");
+		break;
+	case	CSigProc::enWordWrite_Top_Defect_Count_Real:
+		strRet = _T("RealTime Top NG Count");
+		break;
+	case	CSigProc::enWordWrite_Btm_Defect_Count_Real:
+		strRet = _T("RealTime Bottom NG Count");
+		break;
+	case	CSigProc::enWordWrite_Top_Defect_Count_LotEnd:
+		strRet = _T("LotEnd Time Top NG Count");
+		break;
+	case	CSigProc::enWordWrite_Btm_Defect_Count_LotEnd:
+		strRet = _T("LotEnd Time Bottom NG Count");
+		break;
+
+	case	CSigProc::enWordWrite_FoilExpInTopTarget:
+		strRet = _T("Foil Exp In Top Target");
+		break;
+	case	CSigProc::enWordWrite_FoilExpInBottomTarget:
+		strRet = _T("Foil Exp In Bottom Target");
+		break;
+	case	CSigProc::enWordWrite_FoilExpOutTopTarget:
+		strRet = _T("Foil Exp Out Top Target");
+		break;
+	case	CSigProc::enWordWrite_FoilExpOutBottomTarget:
+		strRet = _T("Foil Exp Out Bottom Target");
+		break;
+	case	CSigProc::enWordWrite_FoilExpBothTopTarget:
+		strRet = _T("Foil Exp Both Top Target");
+		break;
+	case	CSigProc::enWordWrite_FoilExpBothBottomTarget:
+		strRet = _T("Foil Exp Both Bottom Target");
+		break;
+	case	CSigProc::enWordWrite_SpeterTopTarget:
+		strRet = _T("Spatter Top Target");
+		break;
+	case	CSigProc::enWordWrite_SpeterBtmTarget:
+		strRet = _T("Spatter Bottom Target");
+		break;
+
+	case	CSigProc::enWordWrite_PrmContinuousCnt:
+		strRet = _T("Continuous NG Count");
+		break;
+	case	CSigProc::enWordWrite_PrmSectorNgTabCnt:
+		strRet = _T("Sector NG Count");
+		break;
+	case	CSigProc::enWordWrite_PrmSectorBaseCnt:
+		strRet = _T("Sector Range Tab Count");
+		break;
+
+	case	CSigProc::enWordWrite_AlarmExist:
+		strRet = _T("Alarm Exist");
+		break;
+	case	CSigProc::enWordWrite_AlarmCode_Buffer1:
+		strRet = _T("Alarm Code Buffer 1");
+		break;
+	case	CSigProc::enWordWrite_AlarmCode_Buffer2:
+		strRet = _T("Alarm Code Buffer 2");
+		break;
+	case	CSigProc::enWordWrite_AlarmCode_Buffer3:
+		strRet = _T("Alarm Code Buffer 3");
+		break;
+	case	CSigProc::enWordWrite_AlarmCode_Buffer4:
+		strRet = _T("Alarm Code Buffer 4");
+		break;
+	case	CSigProc::enWordWrite_AlarmCode_Buffer5:
+		strRet = _T("Alarm Code Buffer 5");
+		break;
+
+	case	CSigProc::en_WordWrite_Cell_Trigger_ID:
+		strRet = _T("Cell ID");
+		break;
+	case	CSigProc::en_WordWrite_Judge:
+		strRet = _T("OK/NG");
+		break;
+	case	CSigProc::en_WordWrite_NG_Code:
+		strRet = _T("NG Code");
+		break;
+
 	default :
 		strRet = _T("");
 		break;
 	}
 	
+
 	return strRet;
 }
 
@@ -724,32 +1134,10 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 CString CIoMonitorDlg::GetInWordAddress(int nRow)
 {
 	CString strRet;
-	// 23.03.03 Son Modify Start
-	//switch (nRow) {
-	//case	en_InWord_RecipeNo:
-	//	strRet = _T("0x9680");
-	//	break;
-	//case	en_InWord_RecipeName:
-	//	strRet = _T("0x9682");
-	//	break;
-	//case	en_InWord_LotId:
-	//	strRet = _T("0x9690");
-	//	break;
-	//case	en_InWord_ContinuosCnt:
-	//	strRet = _T("0x96C0");
-	//	break;
-	//case	en_InWord_SectorNgCnt:
-	//	strRet = _T("0x96C2");
-	//	break;
-	//case	en_InWord_SectorBaseCnt:
-	//	strRet = _T("0x96C4");
-	//	break;
-	//default:
-	//	strRet = _T("");
-	//	break;
-	//}
+
 	int nAddress = 0;// AprData.m_System.m_nWordIn;
-	switch (nRow) {
+	switch (nRow)
+	{
 	case	en_InWord_RecipeNo:
 		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordRead_RecipeNo, MODE_READ);
 		break;
@@ -772,59 +1160,27 @@ CString CIoMonitorDlg::GetInWordAddress(int nRow)
 		nAddress = 0;
 		break;
 	}
-	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
-		strRet.Format(_T("0x%X"), nAddress);
+	
+	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
+	{
+		strRet.Format(_T("0x%04X"), AprData.m_System.m_nWordIn + (nRow*2));
 	}
-	else {
+	else
+	{
 		strRet.Format(_T("%d"), nAddress);
 	}
 	// 23.03.03 Son Modify End
 	return strRet;
 }
+
+
 CString CIoMonitorDlg::GetOutWordAddress(int nRow)
 {
 	CString strRet;
-	// 23.03.03 Son Modify Start
-	//switch (nRow) {
-	//case	en_OutWord_TabCount:
-	//	strRet = _T("0xC380");
-	//	break;
-	//case	en_OutWord_OkCount:
-	//	strRet = _T("0xC382");
-	//	break;
-	//case	en_OutWord_NgCount:
-	//	strRet = _T("0xC384");
-	//	break;
-	//case	en_OutWord_OkRate:
-	//	strRet = _T("0xC386");
-	//	break;
-	//case	en_OutWord_NgRate:
-	//	strRet = _T("0xC388");
-	//	break;
-	//case	en_OutWord_TopDefCount:
-	//	strRet = _T("0xC39C");
-	//	break;
-	//case	en_OutWord_BtmDefCount:
-	//	strRet = _T("0xC39E");
-	//	break;
-	//case	en_OutWord_TopDefCount_LotEnd:
-	//	strRet = _T("0xC3A0");
-	//	break;
-	//case	en_OutWord_BtmDefCount_LotEnd:
-	//	strRet = _T("0xC3A2");
-	//	break;
-	//case	en_OutWord_Alarm:
-	//	strRet = _T("0xC3D0");
-	//	break;
-	//case	en_OutWord_Code:
-	//	strRet = _T("0xC3D2");
-	//	break;
-	//default:
-	//	strRet = _T("");
-	//	break;
-	//}
+
 	int nAddress = 0; // AprData.m_System.m_nWordOut;
-	switch (nRow) {
+	switch (nRow)
+	{
 	case	en_OutWord_TabCount:
 		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
 		break;
@@ -862,8 +1218,9 @@ CString CIoMonitorDlg::GetOutWordAddress(int nRow)
 		nAddress = 0;
 		break;
 	}
-	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
-		strRet.Format(_T("0x%X"), nAddress);
+	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
+	{
+		strRet.Format(_T("0x%04X"), AprData.m_System.m_nWordOut + (nRow * 2));
 	}
 	else {
 		strRet.Format(_T("%d"), nAddress);
@@ -875,72 +1232,19 @@ CString CIoMonitorDlg::GetOutWordAddress(int nRow)
 CString CIoMonitorDlg::GetInWordData(int nRow)
 {
 	CString strRet;
-	switch (nRow) {
-	case	en_InWord_RecipeNo:
-		strRet.Format( _T("%d"), (int)m_localSeqDataIn.wRecipeNo );
-		break;
-	case	en_InWord_RecipeName:
-		strRet.Format(_T("%s"), m_localSeqDataIn.strRecipeName );
-		break;
-	case	en_InWord_LotId:
-		strRet.Format(_T("%s"), m_localSeqDataIn.strCell_ID);
-		break;
-	case	en_InWord_ContinuosCnt:
-		strRet.Format(_T("%d"), (int)m_localSeqDataIn.wContinousCount );
-		break;
-	case	en_InWord_SectorNgCnt:
-		strRet.Format(_T("%d"), (int)m_localSeqDataIn.wSectorNgCount);
-		break;
-	case	en_InWord_SectorBaseCnt:
-		strRet.Format(_T("%d"), (int)m_localSeqDataIn.wSectorBaseCount);
-		break;
-	default:
-		strRet = _T("");
-		break;
-	}
+
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringReadData_Melsec(nRow*2));
+
 	return strRet;
 }
 CString CIoMonitorDlg::GetOutWordData(int nRow)
 {
 	CString strRet;
-	_SEQ_OUT_DATA* pSeqOutData = &m_localSeqDataOut.m_SeqOutData;
-	switch (nRow) {
-	case	en_OutWord_TabCount:
-		strRet.Format(_T("%d"), (int)pSeqOutData->dwDataReportV1 );
-		break;
-	case	en_OutWord_OkCount:
-		strRet.Format(_T("%d"), (int)pSeqOutData->dwDataReportV2);
-		break;
-	case	en_OutWord_NgCount:
-		strRet.Format(_T("%d"), (int)pSeqOutData->dwDataReportV3);
-		break;
-	case	en_OutWord_OkRate:
-		strRet.Format(_T("%d"), (int)pSeqOutData->dwDataReportV4);
-		break;
-	case	en_OutWord_NgRate:
-		strRet.Format(_T("%d"), (int)pSeqOutData->dwDataReportV5);
-		break;
-	case	en_OutWord_TopDefCount:
-		strRet.Format(_T("%d"), (int)pSeqOutData->dwTopNgRealTimeCount);
-		break;
-	case	en_OutWord_BtmDefCount:
-		strRet.Format(_T("%d"), (int)pSeqOutData->dwBottomNgRealTimeCount);
-		break;
-	case	en_OutWord_TopDefCount_LotEnd:
-		strRet.Format(_T("%d"), (int)m_localSeqDataOut.dwTopNgLotEndCount);
-		break;
-	case	en_OutWord_BtmDefCount_LotEnd:
-		strRet.Format(_T("%d"), (int)m_localSeqDataOut.dwBottomNgLotEndCount);
-		break;
-	case	en_OutWord_Alarm:
-		strRet.Format(_T("%d"), (int)m_localSeqDataOut.dwAlarm);
-		break;
-	case	en_OutWord_Code:
-		strRet.Format(_T("0x%x"), (int)m_localSeqDataOut.dwAlarmCode);
-		break;
-	default :
-		break;
-	}
+
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringWriteData_Melsec(nRow * 2));
+
 	return strRet;
 }
 // 22.08.16 Ahn Add End
@@ -977,7 +1281,7 @@ void CIoMonitorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	if (bShow)
 	{
-		CSigProc* pSigProc = theApp.m_pSigProc;;
+		CSigProc* pSigProc = theApp.m_pSigProc;
 		pSigProc->ReadBlockAllData(&m_localSeqDataIn);
 		pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
 
@@ -1102,4 +1406,52 @@ void CIoMonitorDlg::OnBnClickedBtnDummyErrorClear()
 
 	pSigProc->WriteAlarmCode(0x0000);
 	pSigProc->SigOutAlarmExist(FALSE);
+}
+
+
+void CIoMonitorDlg::OnMouseDblClickGridBitOut(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	CSigProc* pSigProc = theApp.m_pSigProc;
+	CGridCtrl* pGridCtrl = &m_GridBitOut;
+
+	if (pGridCtrl != NULL)
+	{
+		int	iMaxColNum = pGridCtrl->GetCols();
+		int	iMaxRowNum = pGridCtrl->GetRows();
+		int iRow = pGridCtrl->GetRow();
+		int iCol = pGridCtrl->GetCol();
+
+		if (iCol == 2 && iRow < MAX_ADR_BIT_OUT)
+		{
+			CString	szTemp = pGridCtrl->GetTextMatrix(iRow, iCol);
+
+			int nCol = iCol - 1;
+			int nRow = iRow - 1;
+			BOOL bSignalOut = (_ttoi(szTemp)==0) ? TRUE : FALSE;
+
+			int nPort = (nRow / 8);
+			unsigned short nBitPos = 0x00000001 << (nRow - (nPort * 8));
+			if (nPort != 0)
+			{
+				nBitPos += 0x00000001 << (8 + (nPort - 1));
+			}
+
+			CString str;
+			str.Format(_T("[ Send Data ]\r\n\r\n  * Address:	%s\r\n  * data:		%d		"), GetOutBitAddress(nRow), bSignalOut);
+			if (AfxMessageBox(str, MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				if (pSigProc->SignalBitOut(nBitPos, (int)bSignalOut) < 0)
+				{
+					AfxMessageBox(_T("Failed to send data."), MB_ICONERROR);
+					return;
+				}
+			}
+
+
+			pGridCtrl->Refresh();
+
+		}
+
+
+	}
 }

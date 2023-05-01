@@ -7,6 +7,10 @@
 #include "SigProc.h"
 #include "GlobalData.h"
 
+
+#define MAX_BIT_IN 30
+#define MAX_BIT_OUT 30
+
 class CModeDlg;
 
 class CIoMonitorDlg : public CDialogEx
@@ -60,7 +64,13 @@ protected :
 		en_Out_Max				= 8,
 	};
 
-	// 22.08.16 Ahn Add Start
+	CString GetInBitName(int nRow);
+	CString GetOutBitName(int nRow);
+
+	CString GetInBitAddress(int nRow);
+	CString GetOutBitAddress(int nRow);
+
+
 	CString GetInWordName(int nRow);
 	CString GetOutWordName(int nRow);
 
@@ -69,7 +79,6 @@ protected :
 
 	CString GetInWordData(int nRow);
 	CString GetOutWordData(int nRow);
-	// 22.08.16 Ahn Add Start
 
 	CBmpStatic m_bmpSigIn[en_In_Max][en_mode_max];
 	CBmpStatic m_bmpSigOut[en_Out_Max][en_mode_max];
@@ -95,7 +104,8 @@ public:
 		en_InWord_ContinuosCnt	= 3,
 		en_InWord_SectorNgCnt	= 4,
 		en_InWord_SectorBaseCnt = 5,
-		en_InWord_Max			= 6, 
+
+		en_InWord_Max			= 80, 
 	};
 
 	enum {
@@ -110,7 +120,8 @@ public:
 		en_OutWord_BtmDefCount_LotEnd	= 8, 
 		en_OutWord_Alarm				= 9,
 		en_OutWord_Code					= 10,
-		en_OutWord_Max					= 11,
+
+		en_OutWord_Max					= 80,
 	};
 
 private :
@@ -125,8 +136,12 @@ private :
 	CModeDlg* m_pParent;
 	CSequenceData m_SeqData;
 
+	CGridCtrl	m_GridBitIn;
+	CGridCtrl	m_GridBitOut;
+
 	CGridCtrl	m_GridWordIn ;
 	CGridCtrl	m_GridWordOut;
+
 	CFont*		m_pFontGrid;
 	
 	// 23.02.03 Ahn Delete Start
@@ -174,4 +189,6 @@ public:
 	afx_msg void OnDblclkStLotEndAck();
 	afx_msg void OnDblclkStLotEndAckOff();
 	afx_msg void OnBnClickedBtnDummyErrorClear();
+	afx_msg void OnMouseDblClickGridBitOut(NMHDR* pNMHDR, LRESULT* pResult);	 // 22.06.23 Ahn Add 
+
 };

@@ -651,7 +651,8 @@ int CMelsecDataLink::ReadDataReg(int offset, short data[], int num)
 	long	seqStNo = (long)m_wSeqStNo;
 	// 23.02.17 Son Mod Start
 	//devno = (long)offset;
-	devno = (long)(offset + AprData.m_System.m_nWordIn);
+//	devno = (long)(offset + AprData.m_System.m_nWordIn);
+	devno = (long)(offset);
 	// 23.02.17 Son Mod End
 	size2 = size = (long)(2 * num);
 	if (num <= 0) {
