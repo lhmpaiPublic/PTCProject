@@ -375,19 +375,26 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 
 	while (TRUE)
 	{
-
 		if (ctrl->pAprPio == NULL)
 		{
+			//PLC Thread
+			LOGDISPLAY_SPEC(0)(_T("PLC 객체가 없다 "));
+
 			break;
 		}
 	
 		if (data->EndFlag == TRUE)
 		{
+			//PLC Thread
+			LOGDISPLAY_SPEC(0)(_T("PLC Run EndFlag TRUE(종료)"));
 			break;
 		}
 		
 		if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 		{
+			//PLC Thread
+			LOGDISPLAY_SPEC(2)(_T("PLC Siemens Run"));
+
 //			DWORD dwStart = GetTickCount();
 
 
@@ -421,6 +428,9 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 				}
 				ctrl->pAprPio->InPort(i, &buff[i]);
 			}
+
+			//PLC Thread
+			LOGDISPLAY_SPEC(2)(_T("PLC Melsec Run"));
 
 			{
 				CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);

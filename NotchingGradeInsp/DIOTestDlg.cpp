@@ -477,10 +477,6 @@ void CDIOTestDlg::OnTimer(UINT_PTR nIDEvent)
 	case TM_SENSOR_ID:
 		AxdInfoGetModule(/*m_cboModuleInfo.GetCurSel()*/0, &lBoardNo, &lModulePos, &dwModuleID);
 
-		//로그출력
-		LOGDISPLAY_SPEC(3)("DIO Processing Test BoardNo<%d>, ModulePos<%d>, ModuleId<%d>"
-			, lBoardNo, lModulePos, dwModuleID);
-
 		switch (dwModuleID)
 		{
 		case AXT_SIO_DI32:

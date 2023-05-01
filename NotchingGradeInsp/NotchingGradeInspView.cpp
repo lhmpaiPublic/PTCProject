@@ -1170,6 +1170,9 @@ int CNotchingGradeInspView::GrabberResetReqest()
 // Lot Start 시점에 Call
 int CNotchingGradeInspView::CameraGrabStart()
 {
+	//Log Camera Setting
+	LOGDISPLAY_SPECTXT(0)(_T("CNotchingGradeInspView::CameraGrabStart"));
+
 	int nRet = 0;
 	//카메라 Image Processing Start
 	if (theApp.m_pImgProcCtrl != nullptr) {

@@ -29,9 +29,9 @@ CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 
 CString strLogNameList =
 "0 Init_FromExecute_Error_0 1,"
-"1 ImageProcess_Error_1 0,"
-"2 Camera_Setting_2 0,"
-"3 DIO_Processing_3 0,"
+"1 CounterThread_1 0,"
+"2 PLC_Thread_2 0,"
+"3 사용안함 0,"
 "4 사용안함_4 0,"
 "5 Image_TabFind_ToResult 0,"
 "6 InspView_TimerPorcStatus_6 0,"

@@ -108,7 +108,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 			AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo );
 
 			//Log Camera Setting
-			LOGDISPLAY_SPEC(2)(_T("CGrabDalsaCameraLink Image Data : HeadNo<%d>(Top<0>,Bottom<1>), Image 누적 Count<%d>"), 
+			LOGDISPLAY_SPEC(5)(_T("AcqCallback Image Data : HeadNo<%d>(Top<0>,Bottom<1>), Image 누적 Count<%d>"), 
 				pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 
 			if (bSend == FALSE) {
@@ -460,7 +460,7 @@ int CGrabDalsaCameraLink::GrabPrepare(BOOL bMode)
 	if (m_pBuffers && !*m_pBuffers && !m_pBuffers->Create())
 	{
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(2)(_T("카메라가 Buffer 생성 실패"));
+		LOGDISPLAY_SPECTXT(0)(_T("카메라가 Buffer 생성 실패"));
 		FreeHandle();
 		return -1;
 	}
@@ -469,7 +469,7 @@ int CGrabDalsaCameraLink::GrabPrepare(BOOL bMode)
 	if (m_pXfer && !*m_pXfer && !m_pXfer->Create())
 	{
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(2)(_T("카메라가 Transfer Object 생성 실패"));
+		LOGDISPLAY_SPECTXT(0)(_T("카메라가 Transfer Object 생성 실패"));
 		FreeHandle();
 		return -2;
 	}
@@ -479,16 +479,13 @@ int CGrabDalsaCameraLink::GrabPrepare(BOOL bMode)
 		if (m_pView && !*m_pView && !m_pView->Create())
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(2)(_T("카메라가 View Object 생성 실패"));
+			LOGDISPLAY_SPECTXT(0)(_T("카메라가 View Object 생성 실패"));
 			FreeHandle();
 			return -3;
 		}
 	}
 	// 21.08.25 Ahn Add Start
 	m_pCallbackInfo->SetMonitoringMode(bMode);
-
-	//Log Camera Setting
-	LOGDISPLAY_SPEC(2)(_T("카메라 모니터링 모드<%s>"), bMode? "TRUE":"FALSE");
 
 	m_pView->SetWindow(m_DispHwnd);
 	// 21.08.25 Ahn Add Start
@@ -514,19 +511,22 @@ int CGrabDalsaCameraLink::GrabStart(BOOL bMode /*bMonitoringMode=FALSE*/)
 {
 
 	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Image) == TRUE) {
+
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_Run_Error : Image Debug "));
 		return 2;
 	}
 
 	if (m_bRun == TRUE) {
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_Run_Error : AlreadyRun"));
+
 		return -1;
 	}
 
 	// Start continous grab
 	m_bRun = TRUE;
 	m_pCallbackInfo->SetRun( TRUE );	// 22.01.12 Ahn Add
-
-	//Log Camera Setting
-	LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink Grabber Start "));
 
 	m_pXfer->Grab();
 
@@ -567,7 +567,14 @@ int CGrabDalsaCameraLink::FreeHandle()
 	//end program
 //	printf("Press any key to terminate\n");
 
+	//Log Camera Setting
+	LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle(메모리 해제)"));
+
 	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Image) == TRUE) {
+
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle_Error : Image Debug "));
+
 		return 2;
 	}
 
@@ -575,22 +582,52 @@ int CGrabDalsaCameraLink::FreeHandle()
 	m_bInitComplet = FALSE;
 
 	// Destroy view object
-	if (m_pView && *m_pView && !m_pView->Destroy()) return FALSE;
+	if (m_pView && *m_pView && !m_pView->Destroy())
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle_Error : Destroy view object"));
+		return FALSE;
+	}
 
 	// Destroy transfer object
-	if (m_pXfer && *m_pXfer && !m_pXfer->Destroy()) return FALSE;
+	if (m_pXfer && *m_pXfer && !m_pXfer->Destroy())
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle_Error : Destroy transfer object"));
+		return FALSE;
+	}
 
 	// Destroy buffer object
-	if (m_pBuffers && *m_pBuffers && !m_pBuffers->Destroy()) return FALSE;
+	if (m_pBuffers && *m_pBuffers && !m_pBuffers->Destroy()) 
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle_Error : Destroy buffer object"));
+		return FALSE;
+	}
 
 	// Destroy acquisition object
-	if (m_pAcq && *m_pAcq && !m_pAcq->Destroy()) return FALSE;
+	if (m_pAcq && *m_pAcq && !m_pAcq->Destroy())
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle_Error : Destroy acquisition object"));
+		return FALSE;
+	}
 
 	// Destroy feature object
-	if (m_pFeature && *m_pFeature && !m_pFeature->Destroy()) return FALSE;
+	if (m_pFeature && *m_pFeature && !m_pFeature->Destroy())
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle_Error : Destroy feature object"));
+		return FALSE;
+	}
 
 	// Destroy acquisition object
-	if (m_pAcqDevice && *m_pAcqDevice && !m_pAcqDevice->Destroy()) return FALSE;
+	if (m_pAcqDevice && *m_pAcqDevice && !m_pAcqDevice->Destroy())
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle_Error : Destroy acquisition object"));
+		return FALSE;
+	}
 
 	// Delete all objects
 	if (m_pView)		delete m_pView;
@@ -674,11 +711,22 @@ int CGrabDalsaCameraLink::GetImagePtr(BYTE** pImgPtr, int* pnWidth, int* pnHeigh
 {
 	BOOL bRet = 0;
 
-	if (m_pView == NULL) return -1;
+	if (m_pView == NULL)
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_GetImage_Error : SapView NULL"));
+
+		return -1;
+	}
 
 	SapBuffer* pBuffer = m_pView->GetBuffer();
 
-	if (pBuffer == NULL) return -2;
+	if (pBuffer == NULL)
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_GetImage_Error : SapBuffer NULL"));
+		return -2;
+	}
 	int nWidth = pBuffer->GetWidth();
 	int nHeight = pBuffer->GetHeight();
 	int nCount = pBuffer->GetCount();
@@ -699,6 +747,10 @@ int CGrabDalsaCameraLink::GetImagePtr(BYTE** pImgPtr, int* pnWidth, int* pnHeigh
 
 	*pImgPtr = new BYTE[nWidth * nHeight];
 	memcpy(*pImgPtr, pData, sizeof(BYTE) * nWidth * nHeight);
+
+	//Log Camera Setting
+	LOGDISPLAY_SPEC(5)(_T("GrabDalsaCameraLink_GetImage : Width<%d>, Height<%d>, Count<%d>, index<%d> "),
+		nWidth, nHeight, nCount, nIndex);
 
 	return 0;
 }

@@ -103,62 +103,85 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	WORD backupwInSignal = 0x00;
 
 	while (1) {
-		if (pThis == NULL) {
+		if (pThis == NULL) 
+		{
+			//DIO Input Log
+			LOGDISPLAY_SPECTXT(0)(_T("DIO CCounterThread 객체 NULL"));
+
 			break;
 		}
-		if (pThis->m_bKill == TRUE) {
+		if (pThis->m_bKill == TRUE) 
+		{
+			//DIO Input Log
+			LOGDISPLAY_SPECTXT(0)(_T("DIO Kill"));
+
 			break;
 		}
-		if (pThis->m_bRunFlag == FALSE) {
+		if (pThis->m_bRunFlag == FALSE)
+		{
+			//DIO Input Log
+			LOGDISPLAY_SPECTXT(1)(_T("DIO 안 읽음 : Run 아님"));
+
 			::Sleep(1);
 			continue;
 		}
 
+		// 입력 취득
+		if (pThis->m_pParent->IsInspection() == TRUE) 
 		{
-		//	dio.OutputBit(CAppDIO::eOut_PULSE, FALSE); // 22.04.06 Ahn Delete 
-			// 입력 취득
-			if (pThis->m_pParent->IsInspection() == TRUE) {
-				BOOL bTriggerBit;
-				dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
-				if (bTriggerBit == TRUE) {
-					WORD wInSignal = 0x00;
-					dio.InputWord(&wInSignal);
+			BOOL bTriggerBit;
+			dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
+			if (bTriggerBit == TRUE) 
+			{
+				WORD wInSignal = 0x00;
+				dio.InputWord(&wInSignal);
 
-					//DIO에서 받은 값이 이전 값과 다르면 찍는다.
-					if (backupwInSignal != wInSignal)
-					{
-						LOGDISPLAY_SPEC(5)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
-					}
-
-					// 22.04.06 Ahn Modify Start
-					WORD wTempID;
-					wTempID = 0x3F & (wInSignal >> 1);
-
-					//이전에 받았던 id와 다르다면 추가
-					if ( wTempID != wLastInfo ) {
-						CCounterInfo cntInfo;
-						cntInfo.nTabID = wTempID;
-						pCntQueInPtr->PushBack(cntInfo);
-
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d]"), cntInfo.nTabID);
-				
-						//이전 id 갱신
-						wLastInfo = wTempID;
-
-						//메모리 로그 기록
-						CString strMsg;
-						strMsg.Format(_T("Input ID[%d]"), cntInfo.nTabID);
-						AprData.SaveMemoryLog(strMsg);
-
-						
-
-						::Sleep(5);
-					}
-					// Cell 추적 Queue Data -> Local Queue 
-					//if(....)
+				//DIO에서 받은 값이 이전 값과 다르면 찍는다.
+				if (backupwInSignal != wInSignal)
+				{
+					//DIO Input Log
+					LOGDISPLAY_SPEC(1)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
 				}
+
+				// 22.04.06 Ahn Modify Start
+				WORD wTempID;
+				wTempID = 0x3F & (wInSignal >> 1);
+
+				//이전에 받았던 id와 다르다면 추가
+				if ( wTempID != wLastInfo ) 
+				{
+					//DIO Input Log
+					LOGDISPLAY_SPEC(1)(_T("DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
+
+					CCounterInfo cntInfo;
+					cntInfo.nTabID = wTempID;
+					pCntQueInPtr->PushBack(cntInfo);
+
+					//DIO Input Log
+					LOGDISPLAY_SPEC(1)(_T("DIO ID Queue Size<%d>"), pCntQueInPtr->GetSize());
+
+					//체크박스 로그 출력
+					LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d]"), cntInfo.nTabID);
+				
+					//이전 id 갱신
+					wLastInfo = wTempID;
+
+					//메모리 로그 기록
+					CString strMsg;
+					strMsg.Format(_T("Input ID[%d]"), cntInfo.nTabID);
+					AprData.SaveMemoryLog(strMsg);
+					
+
+					::Sleep(5);
+				}
+				// Cell 추적 Queue Data -> Local Queue 
+				//if(....)
 			}
+		}
+		else
+		{
+			//DIO Input Log
+			LOGDISPLAY_SPECTXT(1)(_T("DIO Check Image Porcess Insp FALSE 상태"));
 		}
 		::Sleep(1);
 

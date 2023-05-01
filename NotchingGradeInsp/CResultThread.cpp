@@ -634,26 +634,39 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 	CCropImgQueueCtrl* pCropImgQue = pThis->m_pParent->GetCropImageQueuePtr();
 	CDefectQueueCtrl* pDefectQueue = pThis->m_pParent->GetDefectQueuePtr(); // 22.06.23 Ahn Add
 
-	while (1) {
-		if (pThis == NULL) {
+	while (1) 
+	{
+		if (pThis == NULL) 
+		{
+			//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
+			LOGDISPLAY_SPEC(0)("Overlay  CResultThread 객체 NULL 에러");
+
 			break;
 		}
 		int nSize = pQueueResult->GetSize();
-		if (pThis->m_bKill == TRUE) {
-			if (nSize <= 0) {
+		if (pThis->m_bKill == TRUE) 
+		{
+			if (nSize <= 0) 
+			{
+				//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
+				LOGDISPLAY_SPEC(0)("Overlay  CResultThread 종료 메시지 - 아직 결과를 다 처리했을때 종료");
+
 				break;
 			}
 		}
 
-		if (nSize > 0) {
+		if (nSize > 0) 
+		{
 			CFrameRsltInfo* pRsltInfo = (CFrameRsltInfo*)pQueueResult->Pop();
-			if (pRsltInfo == NULL) {
+			if (pRsltInfo == NULL) 
+			{
 				continue;
 			}
 
 			int nHeadNo = pRsltInfo->m_nHeadNo;
 			BYTE* pImgPtr = pRsltInfo->GetImagePtr();
-			if (pImgPtr != NULL) {
+			if (pImgPtr != NULL) 
+			{
 #if defined( IMAGE_DRAW_NOTIFY_VERSION )
 				pThis->m_pParent->SetLastBmpStd(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nHeadNo);
 #else
@@ -681,15 +694,18 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					
 					// 22.12.19 Ahn Delete Start - Overlay Image
 					CBitmapStd bmpStd;
-					if (nSize > IMAGE_DISPLAY_SKIP_COUNT ) {
-						if ((pRsltInfo->nTabNo % (IMAGE_DISPLAY_SKIP_COUNT-1)) == 0) {
+					if (nSize > IMAGE_DISPLAY_SKIP_COUNT ) 
+					{
+						if ((pRsltInfo->nTabNo % (IMAGE_DISPLAY_SKIP_COUNT-1)) == 0)
+						{
 							// 23.02.06 Ahn Modify Start
 							// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
 							SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
 							// 23.02.06 Ahn Modify End
 						}
 					}
-					else {
+					else
+					{
 						// 23.02.06 Ahn Modify Start
 						// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
 						SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
@@ -697,7 +713,8 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					}
 
 					// 22.06.09 Ahn Modify Start
-					if( pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE ){
+					if( pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE )
+					{
 
 						//이미지 저장 포맷
 						CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
@@ -723,16 +740,19 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							, strTime
 							, strImageFormat
 						);
-						if ( strPath.GetLength() > 0 ) {
+						if ( strPath.GetLength() > 0 ) 
+						{
 							// 23.02.06 Ahn Modify Start
 							//CaptureImage( hWnd, strPath );
 							bmpStd.SaveBitmap(strPath);
 							// 23.02.06 Ahn Modify Start
 						}
+						else
+						{
+							//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
+							LOGDISPLAY_SPEC(0)("Overlay 이미지 저장 Path가 없다.");
+						}
 					}
-					//// 22.06.09 Ahn Modify End
-					// 22.12.19 Ahn Delete End
-
 
 					// 22.05.25 Ahn Add Start
 					// 일단 다남겨
@@ -740,11 +760,21 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					// 22.05.25 Ahn Add End
 					delete[] pResizePtr ;
 				}
+				else
+				{
+					//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
+					LOGDISPLAY_SPEC(0)("Overlay 이미지 디스플레이 VIEW 객체 HWND가 없다.");
+				}
 
 				 pThis->m_pDefDataCtrl->PushBackTabQueue(pRsltInfo->m_pTabRsltInfo);
 #endif
 
 #endif 
+			}
+			else
+			{
+				//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
+				LOGDISPLAY_SPEC(0)("저장할 이미지 정보가 없다");
 			}
 			pRsltInfo->m_pTabRsltInfo = NULL;
 			delete pRsltInfo;

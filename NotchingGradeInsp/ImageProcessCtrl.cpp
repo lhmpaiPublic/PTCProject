@@ -487,7 +487,7 @@ int CImageProcessCtrl::GrabStart(BOOL bMode)
 	BOOL bConnected[MAX_CAMERA_NO] = {FALSE, FALSE};
 
 	//Log Camera Setting
-	LOGDISPLAY_SPECTXT(2)(_T("Grab Start"));
+	LOGDISPLAY_SPECTXT(0)(_T("CImageProcessCtrl Grab Start"));
 
 	// 22.05.26 Ahn Add Start
 	theApp.m_pSigProc->EnableWorkSet(FALSE);
@@ -500,12 +500,12 @@ int CImageProcessCtrl::GrabStart(BOOL bMode)
 	if (bConnected[0] == TRUE) 
 	{
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(2)(_T("1번 카메라가 이미 연결중 입니다."));
+		LOGDISPLAY_SPECTXT(0)(_T("1번 카메라가 이미 연결중 입니다."));
 	}
 	if (bConnected[1] == TRUE) 
 	{
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(2)(_T("2번 카메라가 이미 연결중 입니다."));
+		LOGDISPLAY_SPECTXT(0)(_T("2번 카메라가 이미 연결중 입니다."));
 	}
 	// 22.01.04 Ahn Add Start
 	int nLocalRet = 0;
