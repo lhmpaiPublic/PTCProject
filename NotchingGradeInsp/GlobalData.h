@@ -352,7 +352,7 @@ public :
 		en_Mode_Max,
 	};
 
-	int SaveLotInfo( int nMode, BOOL bSignalFlag );
+//	int SaveLotInfo( int nMode, BOOL bSignalFlag );
 
 	enum {
 		en_mode_Initial = 0,

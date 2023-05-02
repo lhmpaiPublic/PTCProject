@@ -747,7 +747,6 @@ void CModeDlg::EnableChild(BOOL bMode)
 
 void CModeDlg::DisplayLanguage()
 {
-
 	CWnd* pWnd;
 	
 	pWnd = GetDlgItem(IDC_RADI_INSP_MODE);
@@ -774,6 +773,7 @@ void CModeDlg::DisplayLanguage()
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("시뮬레이션"), _T("Simulation")));
 	}
+
 
 }
 

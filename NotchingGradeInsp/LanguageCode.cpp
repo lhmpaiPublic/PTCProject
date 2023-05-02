@@ -48,3 +48,4 @@ LPCTSTR GetLanguageCode( void )
 	}
 	return ( szLanguageCode ) ;
 }
+

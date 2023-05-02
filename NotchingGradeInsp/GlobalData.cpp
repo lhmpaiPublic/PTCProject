@@ -636,6 +636,12 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 		SaveLotLog(strMsg);
 	}
 
+
+	strMsg.Format(_T("m_nCoutinuouCount=%d"), m_nCoutinuouCount);
+	AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+
 	return 0;
 }
 
