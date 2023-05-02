@@ -564,15 +564,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 					pInfo->m_nBndElectrode = nBndElectrode;
 
-					//프레임 정보 출력
-					//Tab 번호, 에러번호, Tab left, Tab right, Tab ID
-					CString strMsg;
-					// 22.05.03 Ahn Modify Start
-					strMsg.Format(_T("TabNo[%d], Error[%d], nLevel[%d], nTabLeft[%d], nTabRight[%d], nLength[%d], CntID[%d] ")
-						, (pInfo->nTabNo+1), nErrorNo, pInfo->m_nTabLevel, pInfo->m_nTabLeft, pInfo->m_nTabRight, pInfo->m_nHeight, pInfo->m_nTabId_CntBoard);
-					// 22.05.03 Ahn Modify End
-					AprData.SaveDebugLog(strMsg);
-
 					//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
 					CFrameInfo* pBtmInfo;
 					pBtmInfo = new CFrameInfo;
@@ -659,6 +650,24 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//Lot Data Tab 번호를 증가 시킨다.
 					AprData.m_NowLotData.m_nTabCount++;
+
+					//메모리 로그 기록
+					CString strMsg;
+					strMsg.Format(_T("Find Image Tab TotalCount<%d>"), AprData.m_NowLotData.m_nTabCount);
+					AprData.SaveMemoryLog(strMsg);
+
+					if (AprData.m_NowLotData.m_nTabCount != AprData.m_NowLotData.m_nInputTabIDTotalCnt)
+					{
+						//메모리 로그 기록
+						strMsg = "";
+						strMsg.Format(_T("Recive TabID TotalCount<%d>, Find Image Tab TotalCount<%d>, CountDiff<%d>"), 
+							AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nTabCount, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nTabCount));
+						AprData.SaveMemoryLog(strMsg);
+
+						//Image Cutting Tab 정보 출력 로그
+						LOGDISPLAY_SPEC(1)(_T("Recive TabID TotalCount<%d>, Find Image Tab TotalCount<%d>, CountDiff<%d>"),
+							AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nTabCount, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nTabCount));
+					}
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(5)("Logcount<%d> Next TabNo<%d>", TempLogCount, AprData.m_NowLotData.m_nTabCount);

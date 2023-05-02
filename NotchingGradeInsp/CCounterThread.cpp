@@ -102,6 +102,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 	WORD backupwInSignal = 0x00;
 
+	WORD nextTabID = -1;
+
 	while (1) {
 		if (pThis == NULL) 
 		{
@@ -150,25 +152,60 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				//이전에 받았던 id와 다르다면 추가
 				if ( wTempID != wLastInfo ) 
 				{
+					//받은 Trigger TabID 총 갯수 증가
+					AprData.m_NowLotData.m_nInputTabIDTotalCnt++;
+
 					//DIO Input Log
 					LOGDISPLAY_SPEC(1)(_T("DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
+
+					//누락된 input 아이디를 찾는다.
+					//초기값이 없다면 nextTabID 입력만
+					if (nextTabID == -1)
+					{
+						nextTabID = wTempID+1;
+						if (nextTabID >= 64)
+						{
+							nextTabID = 0;
+						}
+					}
+					//초기값 세팅 상태에서 만 검사한다.
+					else
+					{
+						//다음 들어올 ID와 받은 ID가 다르다면
+						//누락 로그 출력한다.
+						if (nextTabID != wTempID)
+						{
+							//메모리 로그 기록
+							CString strMsg;
+							strMsg.Format(_T("Input ID [%d] 누락"), nextTabID);
+							AprData.SaveMemoryLog(strMsg);
+
+							//DIO Input Log
+							LOGDISPLAY_SPEC(0)(_T("Input ID [%d] 누락"), nextTabID);
+						}
+						//다음에 받을 ID를 세팅한다.
+						nextTabID = wTempID + 1;
+						//64 이상이면 0으로 
+						if (nextTabID >= 64)
+						{
+							nextTabID = 0;
+						}
+					}
 
 					CCounterInfo cntInfo;
 					cntInfo.nTabID = wTempID;
 					pCntQueInPtr->PushBack(cntInfo);
 
 					//DIO Input Log
-					LOGDISPLAY_SPEC(1)(_T("DIO ID Queue Size<%d>"), pCntQueInPtr->GetSize());
-
-					//체크박스 로그 출력
-					LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d]"), cntInfo.nTabID);
+					LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d] Queue Size<%d>, Recive TabID TotalCount<%d>"), 
+						cntInfo.nTabID, pCntQueInPtr->GetSize(), AprData.m_NowLotData.m_nInputTabIDTotalCnt);
 				
 					//이전 id 갱신
 					wLastInfo = wTempID;
 
 					//메모리 로그 기록
 					CString strMsg;
-					strMsg.Format(_T("Input ID[%d]"), cntInfo.nTabID);
+					strMsg.Format(_T("Input ID[%d], Recive TotalCount<%d>"), cntInfo.nTabID, AprData.m_NowLotData.m_nInputTabIDTotalCnt);
 					AprData.SaveMemoryLog(strMsg);
 					
 
