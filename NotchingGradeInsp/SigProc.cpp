@@ -1451,6 +1451,8 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	int nRet = 0;
 	ASSERT(pSeqData);
 	WORD btData[enSmsWordReadMaxSize];
+	memset(btData, 0, sizeof(btData));
+
 	WORD* pData = btData;
 	int nSize = enSmsWordReadMaxSize;
 	int nAddress = AprData.m_System.m_nWordIn + enSmsWordRead_RecipeNo;
@@ -1458,6 +1460,9 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
 		return -1;
 	}
+
+	memcpy(m_wMonitoringReadData_Siemens, btData, sizeof(btData));
+
 
 	// RecipeNo 
 	WORD btTemp = btData[enSmsWordRead_RecipeNo];
@@ -1586,6 +1591,8 @@ int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 	ASSERT(pSeqOutData);
 	// RecipeInfo
 	WORD btData[enSmsWordWriteMaxSize];
+	memset(btData, 0, sizeof(btData));
+
 	WORD* pData = btData;
 	int nSize = enSmsWordWriteMaxSize;
 	int nAddress = AprData.m_System.m_nWordOut + enWordWrite_DataReportV1_Ea;
@@ -1593,6 +1600,9 @@ int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
 		return -1;
 	}
+
+	memcpy(m_wMonitoringWriteData_Siemens, btData, sizeof(btData));
+
 
 	WORD btTemp;
 	btTemp = btData[enSmsWordWrite_DataReportV1_Ea];

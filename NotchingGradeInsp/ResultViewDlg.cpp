@@ -177,7 +177,7 @@ int CResultViewDlg::MakeGrid()
 				LOGFONT lf;
 				pFont = m_pResultList->GetFont();
 				pFont->GetLogFont(&lf);
-				CString strFontFace = _T("굴림");
+				CString strFontFace = _T("Arial");
 				lf.lfHeight = (long)(m_pResultList->GetRowHeight(0) * 1);
 				lf.lfWeight = FW_NORMAL;
 				::_tcsnccpy_s(lf.lfFaceName, _countof(lf.lfFaceName), strFontFace.GetBuffer(), _TRUNCATE);
@@ -294,10 +294,11 @@ int CResultViewDlg::UpdateGrid()
 	int nOldNumRows = m_pResultList->GetRowCount();
 	m_nRows = nOldNumRows + nSize; 
 
-	TRY{
+	TRY
+	{
 		m_pResultList->SetRowCount(m_nRows);
 	}
-		CATCH(CMemoryException, e)
+	CATCH(CMemoryException, e)
 	{
 		e->ReportError();
 		return -1;

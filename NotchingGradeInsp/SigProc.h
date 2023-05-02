@@ -153,15 +153,17 @@ public:
 	// [ Alarm Code ]
 	enum
 	{
-		en_Alarm_ContinueNg		= 0x0001,
-		en_Alarm_Heavy			= 0x0002,
-		en_Alarm_SectorNg		= 0x0004,
-		en_Aalrm_Dross_Top		= 0x0008,
-		en_Alarm_Dross_Btm		= 0x0010,
-		en_Alarm_FoilExp_Top	= 0x0020,
-		en_Alarm_FoilExp_Btm	= 0x0040,
-		en_Alarm_Spatter_Top	= 0x0080,
-		en_Alarm_Spatter_Btm	= 0x0100,
+		en_Alarm_ContinueNg			= 0x0001,
+		en_Alarm_Heavy				= 0x0002,
+		en_Alarm_SectorNg			= 0x0004,
+		en_Alarm_FoilExpIn_Top		= 0x0008,
+		en_Alarm_FoilExpIn_Btm		= 0x0010,
+		en_Alarm_FoilExpOut_Top		= 0x0020,
+		en_Alarm_FoilExpOut_Btm		= 0x0040,
+		en_Alarm_FoilExpBoth_Top	= 0x0080,
+		en_Alarm_FoilExpBoth_Btm	= 0x0100,
+		en_Alarm_Spatter_Top		= 0x0200,
+		en_Alarm_Spatter_Btm		= 0x0400,
 	};
 	//Wxxx.0 연속 불량 알람
 	//Wxxx.1 심각 불량 알람
@@ -331,6 +333,9 @@ private:
 	WORD	m_wMonitoringReadData_Melsec[enWordReadMaxSize];
 	WORD	m_wMonitoringWriteData_Melsec[enWordWriteMaxSize];
 
+	WORD	m_wMonitoringReadData_Siemens[enWordReadMaxSize];
+	WORD	m_wMonitoringWriteData_Siemens[enWordWriteMaxSize];
+
 	static CCriticalSection	m_cs;
 
 public:
@@ -387,6 +392,8 @@ public:
 	WORD GetMonitoringReadData_Melsec(int nPos) { return m_wMonitoringReadData_Melsec[nPos]; }
 	WORD GetMonitoringWriteData_Melsec(int nPos) { return m_wMonitoringWriteData_Melsec[nPos]; }
 
+	WORD GetMonitoringReadData_Siemens(int nPos) { return m_wMonitoringReadData_Siemens[nPos]; }
+	WORD GetMonitoringWriteData_Siemens(int nPos) { return m_wMonitoringWriteData_Siemens[nPos]; }
 
 public :
 	// Signal In

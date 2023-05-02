@@ -849,6 +849,40 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						{
 							if (AprData.m_pRecipeInfo->bNgStop == TRUE)
 							{
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpIn_Top)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpIn_Top;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpOut_Top)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpOut_Top;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpBoth_Top)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpBoth_Top;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_Surface_Top)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_Spatter_Top;
+								}
+
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpIn_Btm)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpIn_Btm;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpOut_Btm)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpOut_Btm;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpBoth_Btm)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpBoth_Btm;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_Surface_Btm)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_Spatter_Btm;
+								}
+							
 								bClearFlag = TRUE;; // 22.03.03 Ahn Add 
 								CSigProc* pSigProc = theApp.m_pSigProc;
 								pSigProc->SigOutAlarmExist(TRUE);

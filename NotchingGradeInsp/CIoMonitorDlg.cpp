@@ -191,7 +191,8 @@ int CIoMonitorDlg::GetAddressAndBitPos( int nMode, int nSigNo, int &nBitPos  )
 {
 	int nAddress = 0;
 
-	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
+	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
+	{
 		if (nMode == MODE_READ) { // Signal In
 			switch (nSigNo) {
 			case	en_In_Alive:
@@ -730,52 +731,100 @@ CString CIoMonitorDlg::GetInBitName(int nRow)
 
 	CString strRet;
 
-	int nPort = (nRow / 8);
-	unsigned short nBitPos = 0x00000001 << (nRow - (nPort*8));
-	if (nPort != 0)
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		nBitPos += 0x00000001 << (8 + (nPort-1) );
+		switch (nRow)
+		{
+		case	CSigProc::enSmsBitIn_Alive:
+			strRet = _T("Alive");
+			break;
+		case	CSigProc::enSmsBitIn_Ready:
+			strRet = _T("Ready");
+			break;
+		case	CSigProc::enSmsBitIn_Run:
+			strRet = _T("Run");
+			break;
+			//	case	CSigProc::enSmsBitIn_EncoderReset:		//사용 안함
+			//		strRet = _T("Encoder Zero Set");
+			//		break;
+		case	CSigProc::enSmsBitIn_TabZeroReset:
+			strRet = _T("Tab Zero Set");
+			break;
+		case	CSigProc::enSmsBitIn_InkMarkingActive:
+			strRet = _T("Ink Marking Active");
+			break;
+		case	CSigProc::enSmsBitIn_ConnectZone:
+			strRet = _T("Connect Zone Pass");
+			break;
+		case	CSigProc::enSmsBitIn_RecipeChange:
+			strRet = _T("Vision Recipe Change");
+			break;
+		case	CSigProc::enSmsBitIn_LotStartReq:
+			strRet = _T("Lot Start Request");
+			break;
+		case	CSigProc::enSmsBitIn_LotEndReq:
+			strRet = _T("Lot End Request");
+			break;
+		case	CSigProc::enSmsBitIn_AlarmResetReq:
+			strRet = _T("Alarm Reset");
+			break;
+		default:
+			strRet = _T("");
+			break;
+		}
+
+	}
+	else
+	{
+		int nPort = (nRow / 8);
+		unsigned short nBitPos = 0x00000001 << (nRow - (nPort * 8));
+		if (nPort != 0)
+		{
+			nBitPos += 0x00000001 << (8 + (nPort - 1));
+		}
+
+		switch (nBitPos)
+		{
+		case	CSigProc::enBitIn_Alive:
+			strRet = _T("Alive");
+			break;
+		case	CSigProc::enBitIn_Ready:
+			strRet = _T("Ready");
+			break;
+		case	CSigProc::enBitIn_Run:
+			strRet = _T("Run");
+			break;
+			//	case	CSigProc::enBitIn_EncoderReset:		//사용 안함
+			//		strRet = _T("Encoder Zero Set");
+			//		break;
+		case	CSigProc::enBitIn_TabZeroReset:
+			strRet = _T("Tab Zero Set");
+			break;
+		case	CSigProc::enBitIn_InkMarkingActive:
+			strRet = _T("Ink Marking Active");
+			break;
+		case	CSigProc::enBitIn_ConnectZone:
+			strRet = _T("Connect Zone Pass");
+			break;
+		case	CSigProc::enBitIn_RecipeChange:
+			strRet = _T("Vision Recipe Change");
+			break;
+		case	CSigProc::enBitIn_LotStartReq:
+			strRet = _T("Lot Start Request");
+			break;
+		case	CSigProc::enBitIn_LotEndReq:
+			strRet = _T("Lot End Request");
+			break;
+		case	CSigProc::enBitIn_AlarmResetReq:
+			strRet = _T("Alarm Reset");
+			break;
+		default:
+			strRet = _T("");
+			break;
+		}
 	}
 
-	switch (nBitPos)
-	{
-	case	CSigProc::enBitIn_Alive:
-		strRet = _T("Alive");
-		break;
-	case	CSigProc::enBitIn_Ready:
-		strRet = _T("Ready");
-		break;
-	case	CSigProc::enBitIn_Run:
-		strRet = _T("Run");
-		break;
-//	case	CSigProc::enBitIn_EncoderReset:		//사용 안함
-//		strRet = _T("Encoder Zero Set");
-//		break;
-	case	CSigProc::enBitIn_TabZeroReset:
-		strRet = _T("Tab Zero Set");
-		break;
-	case	CSigProc::enBitIn_InkMarkingActive:
-		strRet = _T("Ink Marking Active");
-		break;
-	case	CSigProc::enBitIn_ConnectZone:
-		strRet = _T("Connect Zone Pass");
-		break;
-	case	CSigProc::enBitIn_RecipeChange:
-		strRet = _T("Vision Recipe Change");
-		break;
-	case	CSigProc::enBitIn_LotStartReq:
-		strRet = _T("Lot Start Request");
-		break;
-	case	CSigProc::enBitIn_LotEndReq:
-		strRet = _T("Lot End Request");
-		break;
-	case	CSigProc::enBitIn_AlarmResetReq:
-		strRet = _T("Alarm Reset");
-		break;
-	default:
-		strRet = _T("");
-		break;
-	}
+
 
 
 
@@ -789,53 +838,95 @@ CString CIoMonitorDlg::GetOutBitName(int nRow)
 
 	CString strRet;
 
-	int nPort = (nRow / 8);
-	unsigned short nBitPos = 0x00000001 << (nRow - (nPort * 8));
-	if (nPort != 0)
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		nBitPos += 0x00000001 << (8 + (nPort - 1));
+		switch (nRow)
+		{
+		case	CSigProc::enSmsBitOut_Alive:
+			strRet = _T("Alive");
+			break;
+		case	CSigProc::enSmsBitOut_Ready:
+			strRet = _T("Ready");
+			break;
+			//	case	CSigProc::enSmsBitOut_EncoderSet:		//사용 안함
+			//		strRet = _T("Encoder Zero Set");
+			//		break;
+		case	CSigProc::enSmsBitOut_RecipeChangeAck:
+			strRet = _T("Recipe Change Ack");
+			break;
+		case	CSigProc::enSmsBitOut_LotStartReqAck:
+			strRet = _T("Lot Start Ack");
+			break;
+		case	CSigProc::enSmsBitOut_LotEndReqAck:
+			strRet = _T("Lot End Ack");
+			break;
+		case	CSigProc::enSmsBitOut_TabZeroReset:
+			strRet = _T("Tab Zero Set Ack");
+			break;
+		case	CSigProc::enSmsBitOut_AlarmResetAck:
+			strRet = _T("Alarm Reset Ack");
+			break;
+			//	case	CSigProc::enSmsBitOut_DiskSpaceWarning:		//사용 안함
+			//		strRet = _T("");
+			//		break;
+			//	case	CSigProc::enSmsBitOut_DiskSpaceAlarm:		//사용 안함
+			//		strRet = _T("");
+			//		break;
+
+		default:
+			strRet = _T("");
+			break;
+		}
+
 	}
-
-
-
-	switch (nBitPos)
+	else
 	{
-	case	CSigProc::enBitOut_Alive:
-		strRet = _T("Alive");
-		break;
-	case	CSigProc::enBitOut_Ready:
-		strRet = _T("Ready");
-		break;
-//	case	CSigProc::enBitOut_EncoderSet:		//사용 안함
-//		strRet = _T("Encoder Zero Set");
-//		break;
-	case	CSigProc::enBitOut_TabZeroReset:
-		strRet = _T("Tab Zero Set Ack");
-		break;
-//	case	CSigProc::enBitOut_DiskSpaceWarning:		//사용 안함
-//		strRet = _T("");
-//		break;
-//	case	CSigProc::enBitOut_DiskSpaceAlarm:		//사용 안함
-//		strRet = _T("");
-//		break;
-	case	CSigProc::enBitOut_RecipeChangeAck:
-		strRet = _T("Recipe Change Ack");
-		break;
-	case	CSigProc::enBitOut_LotStartReqAck:
-		strRet = _T("Lot Start Ack");
-		break;
-	case	CSigProc::enBitOut_LotEndReqAck:
-		strRet = _T("Lot End Ack");
-		break;
-	case	CSigProc::enBitOut_AlramResetAck:
-		strRet = _T("Alarm Reset Ack");
-		break;
+		int nPort = (nRow / 8);
+		unsigned short nBitPos = 0x00000001 << (nRow - (nPort * 8));
+		if (nPort != 0)
+		{
+			nBitPos += 0x00000001 << (8 + (nPort - 1));
+		}
 
-	default:
-		strRet = _T("");
-		break;
+		switch (nBitPos)
+		{
+		case	CSigProc::enBitOut_Alive:
+			strRet = _T("Alive");
+			break;
+		case	CSigProc::enBitOut_Ready:
+			strRet = _T("Ready");
+			break;
+			//	case	CSigProc::enBitOut_EncoderSet:		//사용 안함
+			//		strRet = _T("Encoder Zero Set");
+			//		break;
+		case	CSigProc::enBitOut_TabZeroReset:
+			strRet = _T("Tab Zero Set Ack");
+			break;
+			//	case	CSigProc::enBitOut_DiskSpaceWarning:		//사용 안함
+			//		strRet = _T("");
+			//		break;
+			//	case	CSigProc::enBitOut_DiskSpaceAlarm:		//사용 안함
+			//		strRet = _T("");
+			//		break;
+		case	CSigProc::enBitOut_RecipeChangeAck:
+			strRet = _T("Recipe Change Ack");
+			break;
+		case	CSigProc::enBitOut_LotStartReqAck:
+			strRet = _T("Lot Start Ack");
+			break;
+		case	CSigProc::enBitOut_LotEndReqAck:
+			strRet = _T("Lot End Ack");
+			break;
+		case	CSigProc::enBitOut_AlramResetAck:
+			strRet = _T("Alarm Reset Ack");
+			break;
+
+		default:
+			strRet = _T("");
+			break;
+		}
+
 	}
-
 
 
 	return strRet;
@@ -882,106 +973,203 @@ CString CIoMonitorDlg::GetInWordName(int nRow)
 {
 	CString strRet ;
 
-	nRow *= 2;
-
-	switch (nRow)
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-	case	CSigProc::enWordRead_RecipeNo:
-		strRet = _T("Recipe No");
-		break;
+		switch (nRow)
+		{
+		case	CSigProc::enSmsWordRead_RecipeNo:
+			strRet = _T("Recipe No");
+			break;
 
-	case	CSigProc::enWordRead_RecipeName:
-		strRet = _T("Recipe Name 1");
-		break;
-	case	CSigProc::enWordRead_RecipeName+2:
-		strRet = _T("Recipe Name 2");
-		break;
-	case	CSigProc::enWordRead_RecipeName+4:
-		strRet = _T("Recipe Name 3");
-		break;
-	case	CSigProc::enWordRead_RecipeName+6:
-		strRet = _T("Recipe Name 4");
-		break;
+		case	CSigProc::enSmsWordRead_RecipeName:
+			strRet = _T("Recipe Name 1");
+			break;
+		case	CSigProc::enSmsWordRead_RecipeName + 1:
+			strRet = _T("Recipe Name 2");
+			break;
+		case	CSigProc::enSmsWordRead_RecipeName + 2:
+			strRet = _T("Recipe Name 3");
+			break;
+		case	CSigProc::enSmsWordRead_RecipeName + 3:
+			strRet = _T("Recipe Name 4");
+			break;
 
-	case	CSigProc::enWordRead_CELL_ID:
-		strRet = _T("Lot ID 1");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+2:
-		strRet = _T("Lot ID 2");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+4:
-		strRet = _T("Lot ID 3");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+6:
-		strRet = _T("Lot ID 4");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+8:
-		strRet = _T("Lot ID 5");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+10:
-		strRet = _T("Lot ID 6");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+12:
-		strRet = _T("Lot ID 7");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+14:
-		strRet = _T("Lot ID 8");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+16:
-		strRet = _T("Lot ID 9");
-		break;
-	case	CSigProc::enWordRead_CELL_ID+18:
-		strRet = _T("Lot ID 10");
-		break;
+		case	CSigProc::enSmsWordRead_CELL_ID:
+			strRet = _T("Lot ID 1");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 1:
+			strRet = _T("Lot ID 2");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 2:
+			strRet = _T("Lot ID 3");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 3:
+			strRet = _T("Lot ID 4");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 4:
+			strRet = _T("Lot ID 5");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 5:
+			strRet = _T("Lot ID 6");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 6:
+			strRet = _T("Lot ID 7");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 7:
+			strRet = _T("Lot ID 8");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 8:
+			strRet = _T("Lot ID 9");
+			break;
+		case	CSigProc::enSmsWordRead_CELL_ID + 9:
+			strRet = _T("Lot ID 10");
+			break;
 
-	case	CSigProc::enWordRead_FoilExpInTopTarget:
-		strRet = _T("Foil Exp In Top Target");
-		break;
-	case	CSigProc::enWordRead_FoilExpInBtmTarget:
-		strRet = _T("Foil Exp In Bottom Target");
-		break;
-	case	CSigProc::enWordRead_FoilExpOutTopTarget:
-		strRet = _T("Foil Exp Out Top Target");
-		break;
-	case	CSigProc::enWordRead_FoilExpOutBtmTarget:
-		strRet = _T("Foil Exp Out Bottom Target");
-		break;
-	case	CSigProc::enWordRead_FoilExpBothTopTarget:
-		strRet = _T("Foil Exp Both Top Target");
-		break;
-	case	CSigProc::enWordRead_FoilExpBothBtmTarget:
-		strRet = _T("Foil Exp Both Bottom Target");
-		break;
-	case	CSigProc::enWordRead_SpeterTopTarget:
-		strRet = _T("Spatter Top Target");
-		break;
-	case	CSigProc::enWordRead_SpeterBtmTarget:
-		strRet = _T("Spatter Bottom Target");
-		break;
+		///////////////////////////////////////////////////////////////////////
+		// 임시 적용, 재정의 필요
+		case	CSigProc::enSmsWordRead_DrossTopTarget:
+			strRet = _T("Foil Exp In Top Target");
+			break;
+		case	CSigProc::enSmsWordRead_DrossBtmTarget:
+			strRet = _T("Foil Exp In Bottom Target");
+			break;
+		case	CSigProc::enSmsWordRead_FoilExpTopTarget:
+			strRet = _T("Foil Exp Out Top Target");
+			break;
+		case	CSigProc::enSmsWordRead_FoilExpBtmTarget:
+			strRet = _T("Foil Exp Out Bottom Target");
+			break;
+		case	CSigProc::enSmsWordRead_SpeterTopTarget:
+			strRet = _T("Foil Exp Both Top Target");
+			break;
+		case	CSigProc::enSmsWordRead_SpeterBtmTarget:
+			strRet = _T("Foil Exp Both Bottom Target");
+			break;
+//		case	CSigProc::enWordRead_SpeterTopTarget:
+//			strRet = _T("Spatter Top Target");
+//			break;
+//		case	CSigProc::enWordRead_SpeterBtmTarget:
+//			strRet = _T("Spatter Bottom Target");
+//			break;
 
-	case	CSigProc::enWordRead_PrmContinuousCnt:
-		strRet = _T("Continuous NG Count");
-		break;
-	case	CSigProc::enWordRead_PrmSectorNgTabCnt:
-		strRet = _T("Sector NG Count");
-		break;
-	case	CSigProc::enWordRead_PrmSectorBaseCnt:
-		strRet = _T("Sector Range Tab Count");
-		break;
 
-		
+		case	CSigProc::enSmsWordRead_AlarmExistAck:
+			strRet = _T("AlarmExistAck");
+			break;
+		case	CSigProc::enSmsWordRead_PrmContinuousCnt:
+			strRet = _T("Continuous NG Count");
+			break;
+		case	CSigProc::enSmsWordRead_PrmSectorNgTabCnt:
+			strRet = _T("Sector NG Count");
+			break;
+		case	CSigProc::enSmsWordRead_PrmSectorBaseCnt:
+			strRet = _T("Sector Range Tab Count");
+			break;
 
-	default :
-		strRet = _T("");
-		break;
+
+
+		default:
+			strRet = _T("");
+			break;
+		}
+
 	}
+	else
+	{
+		nRow *= 2;
+		switch (nRow)
+		{
+		case	CSigProc::enWordRead_RecipeNo:
+			strRet = _T("Recipe No");
+			break;
+
+		case	CSigProc::enWordRead_RecipeName:
+			strRet = _T("Recipe Name 1");
+			break;
+		case	CSigProc::enWordRead_RecipeName + 2:
+			strRet = _T("Recipe Name 2");
+			break;
+		case	CSigProc::enWordRead_RecipeName + 4:
+			strRet = _T("Recipe Name 3");
+			break;
+		case	CSigProc::enWordRead_RecipeName + 6:
+			strRet = _T("Recipe Name 4");
+			break;
+
+		case	CSigProc::enWordRead_CELL_ID:
+			strRet = _T("Lot ID 1");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 2:
+			strRet = _T("Lot ID 2");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 4:
+			strRet = _T("Lot ID 3");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 6:
+			strRet = _T("Lot ID 4");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 8:
+			strRet = _T("Lot ID 5");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 10:
+			strRet = _T("Lot ID 6");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 12:
+			strRet = _T("Lot ID 7");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 14:
+			strRet = _T("Lot ID 8");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 16:
+			strRet = _T("Lot ID 9");
+			break;
+		case	CSigProc::enWordRead_CELL_ID + 18:
+			strRet = _T("Lot ID 10");
+			break;
+
+		case	CSigProc::enWordRead_FoilExpInTopTarget:
+			strRet = _T("Foil Exp In Top Target");
+			break;
+		case	CSigProc::enWordRead_FoilExpInBtmTarget:
+			strRet = _T("Foil Exp In Bottom Target");
+			break;
+		case	CSigProc::enWordRead_FoilExpOutTopTarget:
+			strRet = _T("Foil Exp Out Top Target");
+			break;
+		case	CSigProc::enWordRead_FoilExpOutBtmTarget:
+			strRet = _T("Foil Exp Out Bottom Target");
+			break;
+		case	CSigProc::enWordRead_FoilExpBothTopTarget:
+			strRet = _T("Foil Exp Both Top Target");
+			break;
+		case	CSigProc::enWordRead_FoilExpBothBtmTarget:
+			strRet = _T("Foil Exp Both Bottom Target");
+			break;
+		case	CSigProc::enWordRead_SpeterTopTarget:
+			strRet = _T("Spatter Top Target");
+			break;
+		case	CSigProc::enWordRead_SpeterBtmTarget:
+			strRet = _T("Spatter Bottom Target");
+			break;
+
+		case	CSigProc::enWordRead_PrmContinuousCnt:
+			strRet = _T("Continuous NG Count");
+			break;
+		case	CSigProc::enWordRead_PrmSectorNgTabCnt:
+			strRet = _T("Sector NG Count");
+			break;
+		case	CSigProc::enWordRead_PrmSectorBaseCnt:
+			strRet = _T("Sector Range Tab Count");
+			break;
 
 
 
+		default:
+			strRet = _T("");
+			break;
+		}
 
-
-
-
+	}
 
 	return strRet;
 }
@@ -990,142 +1178,278 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 {
 	CString strRet;
 
-	nRow *= 2;
-
-	switch (nRow)
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-	case	CSigProc::enWordWrite_DataReportV1_Ea:
-		strRet = _T("Total Count");
-		break;
-	case	CSigProc::enWordWrite_DataReportV2_OK:
-		strRet = _T("OK Count");
-		break;
-	case	CSigProc::enWordWrite_DataReportV3_NG:
-		strRet = _T("NG Count");
-		break;
-	case	CSigProc::enWordWrite_DataReportV4_OkRate:
-		strRet = _T("OK Rate");
-		break;
-	case	CSigProc::enWordWrite_DataReportV5_NgRate:
-		strRet = _T("NG Rate");
-		break;
-	case	CSigProc::enWordWrite_DataReportV6_RunRate:
-		strRet = _T("Run Rate");
-		break;
+		switch (nRow)
+		{
+		case	CSigProc::enSmsWordWrite_DataReportV1_Ea:
+			strRet = _T("Total Count");
+			break;
+		case	CSigProc::enSmsWordWrite_DataReportV2_OK:
+			strRet = _T("OK Count");
+			break;
+		case	CSigProc::enSmsWordWrite_DataReportV3_NG:
+			strRet = _T("NG Count");
+			break;
+		case	CSigProc::enSmsWordWrite_DataReportV4_OkRate:
+			strRet = _T("OK Rate");
+			break;
+		case	CSigProc::enSmsWordWrite_DataReportV5_NgRate:
+			strRet = _T("NG Rate");
+			break;
+		case	CSigProc::enSmsWordWrite_DataReportV6_RunRate:
+			strRet = _T("Run Rate");
+			break;
+		case	CSigProc::enSmsWordWrite_Continue_Alarm_Cnt:
+			strRet = _T("Continuous Alarm Count");
+			break;
+		case	CSigProc::enSmsWordWrite_Heavy_Alarm_Cnt:
+			strRet = _T("Sector Alarm Count");
+			break;
+		case	CSigProc::enSmsWordWrite_DrossTop_Alarm_Cnt:
+			strRet = _T("Foil Exp In Top Alarm Count");
+			break;
+		case	CSigProc::enSmsWordWrite_DrossBtm_Alarm_Cnt:
+			strRet = _T("Foil Exp In Bottom Alarm Count");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpTop_Alarm_Cnt:
+			strRet = _T("Foil Exp Out Top Alarm Count");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpBtm_Alarm_Cnt:
+			strRet = _T("Foil Exp Out Bottom Alarm Count");
+			break;
+//		case	CSigProc::enSmsWordWrite_FoilExpBothTop_Alarm_Cnt:
+//			strRet = _T("Foil Exp Both Top Alarm Count");
+//			break;
+//		case	CSigProc::enSmsWordWrite_FoilExpBothBottom_Alarm_Cnt:
+//			strRet = _T("Foil Exp Both Bottom Alarm Count");
+//			break;
+		case	CSigProc::enSmsWordWrite_SpeterTop_Alarm_Cnt:
+			strRet = _T("Spatter Top Alarm Count");
+			break;
+		case	CSigProc::enSmsWordWrite_SpeterBtm_Alarm_Cnt:
+			strRet = _T("Spatter Bottom Alarm Count");
+			break;
+		case	CSigProc::enSmsWordWrite_DrossTopTarget:
+			strRet = _T("Foil Exp In Top Target");
+			break;
+		case	CSigProc::enSmsWordWrite_DrossBtmTarget:
+			strRet = _T("Foil Exp In Bottom Target");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpTopTarget:
+			strRet = _T("Foil Exp Out Top Target");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpBtmTarget:
+			strRet = _T("Foil Exp Out Bottom Target");
+			break;
+			//		case	CSigProc::enSmsWordWrite_FoilExpBothTopTarget:
+			//			strRet = _T("Foil Exp Both Top Target");
+			//			break;
+			//		case	CSigProc::enSmsWordWrite_FoilExpBothBottomTarget:
+			//			strRet = _T("Foil Exp Both Bottom Target");
+			//			break;
+		case	CSigProc::enSmsWordWrite_SpeterTopTarget:
+			strRet = _T("Spatter Top Target");
+			break;
+		case	CSigProc::enSmsWordWrite_SpeterBtmTarget:
+			strRet = _T("Spatter Bottom Target");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmExist:
+			strRet = _T("Alarm Exist");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer1:
+			strRet = _T("Alarm Code Buffer 1");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer2:
+			strRet = _T("Alarm Code Buffer 2");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer3:
+			strRet = _T("Alarm Code Buffer 3");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer4:
+			strRet = _T("Alarm Code Buffer 4");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer5:
+			strRet = _T("Alarm Code Buffer 5");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer6:
+			strRet = _T("Alarm Code Buffer 6");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer7:
+			strRet = _T("Alarm Code Buffer 7");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer8:
+			strRet = _T("Alarm Code Buffer 8");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer9:
+			strRet = _T("Alarm Code Buffer 9");
+			break;
+		case	CSigProc::enSmsWordWrite_Top_Defect_Count_Real:
+			strRet = _T("RealTime Top NG Count");
+			break;
+		case	CSigProc::enSmsWordWrite_Btm_Defect_Count_Real:
+			strRet = _T("RealTime Bottom NG Count");
+			break;
+		case	CSigProc::enSmsWordWrite_Top_Defect_Count_LotEnd:
+			strRet = _T("LotEnd Time Top NG Count");
+			break;
+		case	CSigProc::enSmsWordWrite_Btm_Defect_Count_LotEnd:
+			strRet = _T("LotEnd Time Bottom NG Count");
+			break;
+		case	CSigProc::en_SmsWordWrite_Cell_Trigger_ID:
+			strRet = _T("Cell ID");
+			break;
+		case	CSigProc::en_SmsWordWrite_Judge:
+			strRet = _T("OK/NG");
+			break;
+		case	CSigProc::en_SmsWordWrite_NG_Code:
+			strRet = _T("NG Code");
+			break;
 
-	case	CSigProc::enWordWrite_Continue_Alarm_Cnt:
-		strRet = _T("Continuous Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_Heavy_Alarm_Cnt:
-		strRet = _T("Sector Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_FoilExpInTop_Alarm_Cnt:
-		strRet = _T("Foil Exp In Top Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_FoilExpInBottom_Alarm_Cnt:
-		strRet = _T("Foil Exp In Bottom Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_FoilExpOutTop_Alarm_Cnt:
-		strRet = _T("Foil Exp Out Top Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_FoilExpOutBottom_Alarm_Cnt:
-		strRet = _T("Foil Exp Out Bottom Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_FoilExpBothTop_Alarm_Cnt:
-		strRet = _T("Foil Exp Both Top Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_FoilExpBothBottom_Alarm_Cnt:
-		strRet = _T("Foil Exp Both Bottom Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_SpeterTop_Alarm_Cnt:
-		strRet = _T("Spatter Top Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_SpeterBtm_Alarm_Cnt:
-		strRet = _T("Spatter Bottom Alarm Count");
-		break;
-	case	CSigProc::enWordWrite_Top_Defect_Count_Real:
-		strRet = _T("RealTime Top NG Count");
-		break;
-	case	CSigProc::enWordWrite_Btm_Defect_Count_Real:
-		strRet = _T("RealTime Bottom NG Count");
-		break;
-	case	CSigProc::enWordWrite_Top_Defect_Count_LotEnd:
-		strRet = _T("LotEnd Time Top NG Count");
-		break;
-	case	CSigProc::enWordWrite_Btm_Defect_Count_LotEnd:
-		strRet = _T("LotEnd Time Bottom NG Count");
-		break;
 
-	case	CSigProc::enWordWrite_FoilExpInTopTarget:
-		strRet = _T("Foil Exp In Top Target");
-		break;
-	case	CSigProc::enWordWrite_FoilExpInBottomTarget:
-		strRet = _T("Foil Exp In Bottom Target");
-		break;
-	case	CSigProc::enWordWrite_FoilExpOutTopTarget:
-		strRet = _T("Foil Exp Out Top Target");
-		break;
-	case	CSigProc::enWordWrite_FoilExpOutBottomTarget:
-		strRet = _T("Foil Exp Out Bottom Target");
-		break;
-	case	CSigProc::enWordWrite_FoilExpBothTopTarget:
-		strRet = _T("Foil Exp Both Top Target");
-		break;
-	case	CSigProc::enWordWrite_FoilExpBothBottomTarget:
-		strRet = _T("Foil Exp Both Bottom Target");
-		break;
-	case	CSigProc::enWordWrite_SpeterTopTarget:
-		strRet = _T("Spatter Top Target");
-		break;
-	case	CSigProc::enWordWrite_SpeterBtmTarget:
-		strRet = _T("Spatter Bottom Target");
-		break;
 
-	case	CSigProc::enWordWrite_PrmContinuousCnt:
-		strRet = _T("Continuous NG Count");
-		break;
-	case	CSigProc::enWordWrite_PrmSectorNgTabCnt:
-		strRet = _T("Sector NG Count");
-		break;
-	case	CSigProc::enWordWrite_PrmSectorBaseCnt:
-		strRet = _T("Sector Range Tab Count");
-		break;
+		default:
+			strRet = _T("");
+			break;
+		}
+	}
+	else
+	{
+		nRow *= 2;
+		switch (nRow)
+		{
+		case	CSigProc::enWordWrite_DataReportV1_Ea:
+			strRet = _T("Total Count");
+			break;
+		case	CSigProc::enWordWrite_DataReportV2_OK:
+			strRet = _T("OK Count");
+			break;
+		case	CSigProc::enWordWrite_DataReportV3_NG:
+			strRet = _T("NG Count");
+			break;
+		case	CSigProc::enWordWrite_DataReportV4_OkRate:
+			strRet = _T("OK Rate");
+			break;
+		case	CSigProc::enWordWrite_DataReportV5_NgRate:
+			strRet = _T("NG Rate");
+			break;
+		case	CSigProc::enWordWrite_DataReportV6_RunRate:
+			strRet = _T("Run Rate");
+			break;
 
-	case	CSigProc::enWordWrite_AlarmExist:
-		strRet = _T("Alarm Exist");
-		break;
-	case	CSigProc::enWordWrite_AlarmCode_Buffer1:
-		strRet = _T("Alarm Code Buffer 1");
-		break;
-	case	CSigProc::enWordWrite_AlarmCode_Buffer2:
-		strRet = _T("Alarm Code Buffer 2");
-		break;
-	case	CSigProc::enWordWrite_AlarmCode_Buffer3:
-		strRet = _T("Alarm Code Buffer 3");
-		break;
-	case	CSigProc::enWordWrite_AlarmCode_Buffer4:
-		strRet = _T("Alarm Code Buffer 4");
-		break;
-	case	CSigProc::enWordWrite_AlarmCode_Buffer5:
-		strRet = _T("Alarm Code Buffer 5");
-		break;
+		case	CSigProc::enWordWrite_Continue_Alarm_Cnt:
+			strRet = _T("Continuous Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_Heavy_Alarm_Cnt:
+			strRet = _T("Sector Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_FoilExpInTop_Alarm_Cnt:
+			strRet = _T("Foil Exp In Top Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_FoilExpInBottom_Alarm_Cnt:
+			strRet = _T("Foil Exp In Bottom Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_FoilExpOutTop_Alarm_Cnt:
+			strRet = _T("Foil Exp Out Top Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_FoilExpOutBottom_Alarm_Cnt:
+			strRet = _T("Foil Exp Out Bottom Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_FoilExpBothTop_Alarm_Cnt:
+			strRet = _T("Foil Exp Both Top Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_FoilExpBothBottom_Alarm_Cnt:
+			strRet = _T("Foil Exp Both Bottom Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_SpeterTop_Alarm_Cnt:
+			strRet = _T("Spatter Top Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_SpeterBtm_Alarm_Cnt:
+			strRet = _T("Spatter Bottom Alarm Count");
+			break;
+		case	CSigProc::enWordWrite_Top_Defect_Count_Real:
+			strRet = _T("RealTime Top NG Count");
+			break;
+		case	CSigProc::enWordWrite_Btm_Defect_Count_Real:
+			strRet = _T("RealTime Bottom NG Count");
+			break;
+		case	CSigProc::enWordWrite_Top_Defect_Count_LotEnd:
+			strRet = _T("LotEnd Time Top NG Count");
+			break;
+		case	CSigProc::enWordWrite_Btm_Defect_Count_LotEnd:
+			strRet = _T("LotEnd Time Bottom NG Count");
+			break;
 
-	case	CSigProc::en_WordWrite_Cell_Trigger_ID:
-		strRet = _T("Cell ID");
-		break;
-	case	CSigProc::en_WordWrite_Judge:
-		strRet = _T("OK/NG");
-		break;
-	case	CSigProc::en_WordWrite_NG_Code:
-		strRet = _T("NG Code");
-		break;
+		case	CSigProc::enWordWrite_FoilExpInTopTarget:
+			strRet = _T("Foil Exp In Top Target");
+			break;
+		case	CSigProc::enWordWrite_FoilExpInBottomTarget:
+			strRet = _T("Foil Exp In Bottom Target");
+			break;
+		case	CSigProc::enWordWrite_FoilExpOutTopTarget:
+			strRet = _T("Foil Exp Out Top Target");
+			break;
+		case	CSigProc::enWordWrite_FoilExpOutBottomTarget:
+			strRet = _T("Foil Exp Out Bottom Target");
+			break;
+		case	CSigProc::enWordWrite_FoilExpBothTopTarget:
+			strRet = _T("Foil Exp Both Top Target");
+			break;
+		case	CSigProc::enWordWrite_FoilExpBothBottomTarget:
+			strRet = _T("Foil Exp Both Bottom Target");
+			break;
+		case	CSigProc::enWordWrite_SpeterTopTarget:
+			strRet = _T("Spatter Top Target");
+			break;
+		case	CSigProc::enWordWrite_SpeterBtmTarget:
+			strRet = _T("Spatter Bottom Target");
+			break;
 
-	default :
-		strRet = _T("");
-		break;
+		case	CSigProc::enWordWrite_PrmContinuousCnt:
+			strRet = _T("Continuous NG Count");
+			break;
+		case	CSigProc::enWordWrite_PrmSectorNgTabCnt:
+			strRet = _T("Sector NG Count");
+			break;
+		case	CSigProc::enWordWrite_PrmSectorBaseCnt:
+			strRet = _T("Sector Range Tab Count");
+			break;
+
+		case	CSigProc::enWordWrite_AlarmExist:
+			strRet = _T("Alarm Exist");
+			break;
+		case	CSigProc::enWordWrite_AlarmCode_Buffer1:
+			strRet = _T("Alarm Code Buffer 1");
+			break;
+		case	CSigProc::enWordWrite_AlarmCode_Buffer2:
+			strRet = _T("Alarm Code Buffer 2");
+			break;
+		case	CSigProc::enWordWrite_AlarmCode_Buffer3:
+			strRet = _T("Alarm Code Buffer 3");
+			break;
+		case	CSigProc::enWordWrite_AlarmCode_Buffer4:
+			strRet = _T("Alarm Code Buffer 4");
+			break;
+		case	CSigProc::enWordWrite_AlarmCode_Buffer5:
+			strRet = _T("Alarm Code Buffer 5");
+			break;
+
+		case	CSigProc::en_WordWrite_Cell_Trigger_ID:
+			strRet = _T("Cell ID");
+			break;
+		case	CSigProc::en_WordWrite_Judge:
+			strRet = _T("OK/NG");
+			break;
+		case	CSigProc::en_WordWrite_NG_Code:
+			strRet = _T("NG Code");
+			break;
+
+		default:
+			strRet = _T("");
+			break;
+		}
 	}
 	
-
 	return strRet;
 }
 
@@ -1133,32 +1457,6 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 CString CIoMonitorDlg::GetInWordAddress(int nRow)
 {
 	CString strRet;
-
-	int nAddress = 0;// AprData.m_System.m_nWordIn;
-	switch (nRow)
-	{
-	case	en_InWord_RecipeNo:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordRead_RecipeNo, MODE_READ);
-		break;
-	case	en_InWord_RecipeName:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordRead_RecipeName, MODE_READ);
-		break;
-	case	en_InWord_LotId:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordRead_CELL_ID, MODE_READ);
-		break;
-	case	en_InWord_ContinuosCnt:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordRead_PrmContinuousCnt, MODE_READ);
-		break;
-	case	en_InWord_SectorNgCnt:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordRead_PrmSectorNgTabCnt, MODE_READ);
-		break;
-	case	en_InWord_SectorBaseCnt:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordRead_PrmSectorBaseCnt, MODE_READ);
-		break;
-	default:
-		nAddress = 0;
-		break;
-	}
 	
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
 	{
@@ -1166,7 +1464,7 @@ CString CIoMonitorDlg::GetInWordAddress(int nRow)
 	}
 	else
 	{
-		strRet.Format(_T("%d"), nAddress);
+		strRet.Format(_T("%04d"), AprData.m_System.m_nWordIn + nRow);
 	}
 	// 23.03.03 Son Modify End
 	return strRet;
@@ -1177,54 +1475,15 @@ CString CIoMonitorDlg::GetOutWordAddress(int nRow)
 {
 	CString strRet;
 
-	int nAddress = 0; // AprData.m_System.m_nWordOut;
-	switch (nRow)
-	{
-	case	en_OutWord_TabCount:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
-		break;
-	case	en_OutWord_OkCount:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV2_OK, MODE_WRITE);
-		break;
-	case	en_OutWord_NgCount:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV3_NG, MODE_WRITE);
-		break;
-	case	en_OutWord_OkRate:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV4_OkRate, MODE_WRITE);
-		break;
-	case	en_OutWord_NgRate:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV5_NgRate, MODE_WRITE);
-		break;
-	case	en_OutWord_TopDefCount:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_Real, MODE_WRITE);
-		break;
-	case	en_OutWord_BtmDefCount:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_Btm_Defect_Count_Real, MODE_WRITE);
-		break;
-	case	en_OutWord_TopDefCount_LotEnd:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
-		break;
-	case	en_OutWord_BtmDefCount_LotEnd:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_Btm_Defect_Count_LotEnd, MODE_WRITE);
-		break;
-	case	en_OutWord_Alarm:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_AlarmExist, MODE_WRITE);
-		break;
-	case	en_OutWord_Code:
-		nAddress = nAddress + CSigProc::GetWordAddress(CSigProc::enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
-		break;
-	default:
-		nAddress = 0;
-		break;
-	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
 	{
 		strRet.Format(_T("0x%04X"), AprData.m_System.m_nWordOut + (nRow * 2));
 	}
-	else {
-		strRet.Format(_T("%d"), nAddress);
+	else
+	{
+		strRet.Format(_T("%04d"), AprData.m_System.m_nWordOut + nRow);
 	}
-	// 23.03.03 Son Modify End
+
 	return strRet;
 }
 
@@ -1233,7 +1492,15 @@ CString CIoMonitorDlg::GetInWordData(int nRow)
 	CString strRet;
 
 	CSigProc* pSigProc = theApp.m_pSigProc;
-	strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringReadData_Melsec(nRow*2));
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringReadData_Siemens(nRow));
+	}
+	else
+	{
+		strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringReadData_Melsec(nRow * 2));
+	}
 
 	return strRet;
 }
@@ -1242,7 +1509,15 @@ CString CIoMonitorDlg::GetOutWordData(int nRow)
 	CString strRet;
 
 	CSigProc* pSigProc = theApp.m_pSigProc;
-	strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringWriteData_Melsec(nRow * 2));
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringWriteData_Siemens(nRow));
+	}
+	else
+	{
+		strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringWriteData_Melsec(nRow * 2));
+	}
+
 
 	return strRet;
 }
