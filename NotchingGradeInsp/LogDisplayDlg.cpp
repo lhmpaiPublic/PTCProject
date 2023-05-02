@@ -267,11 +267,11 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	);
 
 	CWin32File file;
-	while (CLogDisplayDlg::bCreate && pMain && pMain->m_isWorkingThread)
+	while (pMain && pMain->m_isWorkingThread)
 	{
 		//Do something...
 		Sleep(1);
-		if (strList->size() && listBox->m_hWnd)
+		if (CLogDisplayDlg::bCreate && strList->size() && listBox->m_hWnd)
 		{
 			CString tempStr = "";
 			for (int i = 0; i < strList->size(); i++)

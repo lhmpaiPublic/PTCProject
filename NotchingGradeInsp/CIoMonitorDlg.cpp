@@ -155,7 +155,6 @@ BOOL CIoMonitorDlg::OnInitDialog()
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	int nMaxBit = en_In_Max;
-	int i;
 
 //	for ( i = 0; i < nMaxBit; i++) {
 //		m_bmpSigIn[i][en_mode_on].SetBitmap(IDB_GREEN_LED_ON);
