@@ -157,20 +157,20 @@ BOOL CIoMonitorDlg::OnInitDialog()
 	int nMaxBit = en_In_Max;
 	int i;
 
-	for ( i = 0; i < nMaxBit; i++) {
-		m_bmpSigIn[i][en_mode_on].SetBitmap(IDB_GREEN_LED_ON);
-		m_bmpSigIn[i][en_mode_on].ShowWindow(SW_HIDE);
-		m_bmpSigIn[i][en_mode_off].SetBitmap(IDB_GREEN_LED_OFF);
-		m_bmpSigIn[i][en_mode_off].ShowWindow(SW_SHOW);
-	}
+//	for ( i = 0; i < nMaxBit; i++) {
+//		m_bmpSigIn[i][en_mode_on].SetBitmap(IDB_GREEN_LED_ON);
+//		m_bmpSigIn[i][en_mode_on].ShowWindow(SW_HIDE);
+//		m_bmpSigIn[i][en_mode_off].SetBitmap(IDB_GREEN_LED_OFF);
+//		m_bmpSigIn[i][en_mode_off].ShowWindow(SW_SHOW);
+//	}
 
-	nMaxBit = en_Out_Max;
-	for (i = 0; i < nMaxBit; i++) {
-		m_bmpSigOut[i][en_mode_on].SetBitmap(IDB_GREEN_LED_ON);
-		m_bmpSigOut[i][en_mode_on].ShowWindow(SW_HIDE);
-		m_bmpSigOut[i][en_mode_off].SetBitmap(IDB_GREEN_LED_OFF);
-		m_bmpSigOut[i][en_mode_off].ShowWindow(SW_SHOW);
-	}
+//	nMaxBit = en_Out_Max;
+//	for (i = 0; i < nMaxBit; i++) {
+//		m_bmpSigOut[i][en_mode_on].SetBitmap(IDB_GREEN_LED_ON);
+//		m_bmpSigOut[i][en_mode_on].ShowWindow(SW_HIDE);
+//		m_bmpSigOut[i][en_mode_off].SetBitmap(IDB_GREEN_LED_OFF);
+//		m_bmpSigOut[i][en_mode_off].ShowWindow(SW_SHOW);
+//	}
 
 	SetCheckIoTimer();
 

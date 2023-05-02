@@ -815,12 +815,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 
-				CString strMsg;
-				strMsg.Format(_T("ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_SeqDataOut.wCellTriggerID, AprData.m_NowLotData.m_SeqDataOut.wCellJudge, AprData.m_NowLotData.m_SeqDataOut.wCellNgCode);
-				AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-
 				//////////////////////////////////////////////////////////////////////////
 				// [ 레시피 설정값 전송 ]
 				// [ 목표값 ]
@@ -943,7 +937,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		KillAlivePulseTimer();
 		CSigProc* pSigProc = theApp.m_pSigProc;
 		pSigProc->SigOutAlivePulse(TRUE);
-		SetAlivePulseTimer(); //pyjtest
+		SetAlivePulseTimer();
 
 	}
 

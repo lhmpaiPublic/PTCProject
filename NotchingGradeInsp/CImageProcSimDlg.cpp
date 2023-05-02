@@ -1770,29 +1770,29 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 
 	//////////////////////////////////////////////////////////////////////////
 	/// pyjtest
-	{
-		CTabInfo RsvTabInfo;
-
-		int nBndElectrode = 0;
-		int nBneElectrodeBtm = 0;
-
-		//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
-		nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pImgPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
-
-
-		//Tab 정보를 저장할 vector 임시 객체
-		CImageProcess::_VEC_TAB_INFO vecTabInfo;
-		int nLevel = 0;
-		int nBtmLevel = 0;
-
-		//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
-		int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
-
-
-		CImageProcess::DivisionTab_FromImageToTabInfo(pImgPtr, pImgPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, 0, 0);
-
-		return;
-	}
+//	{
+//		CTabInfo RsvTabInfo;
+//
+//		int nBndElectrode = 0;
+//		int nBneElectrodeBtm = 0;
+//
+//		//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
+//		nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pImgPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
+//
+//
+//		//Tab 정보를 저장할 vector 임시 객체
+//		CImageProcess::_VEC_TAB_INFO vecTabInfo;
+//		int nLevel = 0;
+//		int nBtmLevel = 0;
+//
+//		//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
+//		int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
+//
+//
+//		CImageProcess::DivisionTab_FromImageToTabInfo(pImgPtr, pImgPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, 0, 0);
+//
+//		return;
+//	}
 
 	//////////////////////////////////////////////////////////////////////////
 

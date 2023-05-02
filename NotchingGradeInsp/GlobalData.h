@@ -140,10 +140,6 @@ public:
 
 	DWORD dwDummy4[10];
 
-	DWORD wCellTriggerID;
-	DWORD wCellJudge;
-	DWORD wCellNgCode;
-
 
 } _SEQ_OUT_DATA;
 // 22.08.19 Ahn Add Start
@@ -163,6 +159,13 @@ public:
 	DWORD dwTopNgLotEndCount;			// Lot End시 Top NG Count 
 	DWORD dwBottomNgLotEndCount;		// Lot End시 Bottom NG Count  18 개
 } _SEQ_OUT_DATA_LOT_END;
+
+typedef struct stCellJudge
+{
+	DWORD dwCellTriggerID;
+	DWORD dwCellJudge;
+	DWORD dwCellNgCode;
+} _CELL_JUDGE;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -200,11 +203,6 @@ public:
 	WORD wTopNgLotEndCount;
 	WORD wBottomNgLotEndCount;
 
-	WORD wCellTriggerID;
-	WORD wCellJudge;
-	WORD wCellNgCode;
-
-
 } _SEQ_OUT_DATA_SMS;
 
 typedef struct stSeqDataOutAllSms {
@@ -225,6 +223,13 @@ public:
 	WORD dwBottomNgLotEndCount;			// Lot End시 Bottom NG Count  18 개
 } _SEQ_OUT_DATA_LOT_END_SMS;
 
+
+typedef struct stCellJudgeSms
+{
+	WORD wCellTriggerID;
+	WORD wCellJudge;
+	WORD wCellNgCode;
+} _CELL_JUDGE_SMS;
 
 typedef struct GlobalSetingString
 {
@@ -268,13 +273,13 @@ public:
 	CTime	m_ctLastAcqTime;
 	BOOL	m_bProcError;
 
-	// 22.07.06 Ahn Add Start
 	_SEQ_OUT_DATA			m_SeqDataOut;
 	_SEQ_OUT_DATA_LOT_END	m_SeqDataLotEnd;
-	// 22.07.06 Ahn Add End
+	_CELL_JUDGE				m_stCellJudge;
 
 	_SEQ_OUT_DATA_SMS			m_SeqDataOutSms;
 	_SEQ_OUT_DATA_LOT_END_SMS	m_SeqDataLotEndSms;
+	_CELL_JUDGE_SMS				m_stCellJudgeSms;
 
 
 	// 22.07.11 Ahn Add Start
@@ -370,11 +375,9 @@ public :
 
 	CErrorStatus m_ErrStatus; // 22.05.19 Ahn Add 
 
+
+
 	int m_nSleep ;
-	// 22.08.05 Ahn Delete Start
-	//double dResoX[MAX_CAMERA_NO] ;
-	//double dResoY ;
-	// 22.08.05 Ahn Delete End
 
 	BOOL m_bProcMrFlag;
 

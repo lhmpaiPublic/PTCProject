@@ -4585,9 +4585,12 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 	pVecSector->clear();
 	int nLocalRet = 0;
 	nLocalRet = CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, pVecSector);
-	if (nLocalRet <= 0) return -1;
+	if (nLocalRet <= 0)
+		return -1;
+
 	nLocalRet = CImageProcess::CombineTabSector(pVecSector, *pRecipeInfo);
-	if (nLocalRet < 0) return -2;
+	if (nLocalRet < 0)
+		return -2;
 
 	int i = 0; 
 	int nSize = (int)pVecSector->size();
@@ -4607,6 +4610,17 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("<<FindTab_Negative>>이미지 Sector 에러 => 레시피에 설정한 TabWidth/2 값 보다 큰 TabWidth 가 없다."));
 
+
+		//pyjtest
+ //		CBitmapStd bmp(nWidth, nHeight);
+ //		bmp.SetImage(nWidth, nHeight, pImgPtr);
+ //
+ //		CTime time = CTime::GetCurrentTime();
+ //		CString str;
+ //		str.Format(_T("d:\\[pstSector]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
+ //		bmp.SaveBitmap(str);
+
+
 		return -3;
 	}
 
@@ -4620,21 +4634,22 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 	rcPrj.left = 0;
 	rcPrj.right = nWidth;
 
-	// 22.06.24 Ahn Modify Start AveMode:0 -> SumMode:1
 	//CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
 	//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nStartPos, 20, 0);
 	int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
 	// 경계 검출
 	int nUpper = 20 * nCount;
-	// 22.07.13 Ahn Modify Start
 	//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nStartPos, 20, 0);
 	int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nWidth, 20, 0);
-	// 22.07.13 Ahn Modify End
-	// 22.06.24 Ahn Modify End
-	// 22.01.05 Ahn Modify Start
 	*pnLevel = nBundary - pRecipeInfo->TabCond.nNegCoatHeight ;
-	// 22.01.05 Ahn Modify Start
 	
+
+//	CString strMsg;
+//	strMsg.Format(_T("pnLevel(%d) = nBundary(%d) - pRecipeInfo->TabCond.nNegCoatHeight(%d)"), nBundary - pRecipeInfo->TabCond.nNegCoatHeight, nBundary, pRecipeInfo->TabCond.nNegCoatHeight );
+//	AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+
 	delete[] pnPrjData;
 	return nRet;
 }
@@ -6144,7 +6159,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		, logCount, nTabFindPos, nWidth);
 
 	//모드가 양극일 경우 처리
-	if (AprData.m_System.m_nMachineMode == ANODE_MODE) { 
+	if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+	{ 
 	//22.09.15 Ahn Modify End
 		// 2/3 지점에서 수직선을 내려 Tab을 먼저 찾음.
 		// Tab 중심에서 수평선을 그어 흑연 코팅 끝을 확인하고, 어깨선 레벨을 찾음.
@@ -6154,6 +6170,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		//	return nLocalRet; // 21.12.28 Ahn Delete 
 		}
 		*pnLevel = nLevel;
+
+		CString strMsg;
+		strMsg.Format(_T("FindTab_Negative nLevel=%d, Return=%d"), nLevel, nLocalRet);
+		AprData.SaveDebugLog(strMsg); //pyjtest
+
 
 		//Image Tab  정보 출력 로그
 		LOGDISPLAY_CHECK(5)
@@ -6171,9 +6192,14 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		}
 	}
 	//모드가 음극일 경우 처리
-	else {
+	else
+	{
 		nLocalRet = CImageProcess::FindTabLevel_Simple(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
 		*pnLevel = nLevel;
+
+		CString strMsg;
+		strMsg.Format(_T("FindTabLevel_Simple nLevel=%d"), nLevel);
+		AprData.SaveDebugLog(strMsg); //pyjtest
 
 		//Image Tab  정보 출력 로그
 		LOGDISPLAY_CHECK(5)

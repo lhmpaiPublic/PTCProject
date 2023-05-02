@@ -914,16 +914,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						AprData.SaveMemoryLog(strMsg);
 
 
-						AprData.m_NowLotData.m_SeqDataOut.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
-						AprData.m_NowLotData.m_SeqDataOut.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
-						AprData.m_NowLotData.m_SeqDataOut.wCellNgCode = 1; // 임시, 정의되지 않음
-
-						AprData.m_NowLotData.m_SeqDataOutSms.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
-						AprData.m_NowLotData.m_SeqDataOutSms.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
-						AprData.m_NowLotData.m_SeqDataOutSms.wCellNgCode = 1; // 임시, 정의되지 않음
-
-
-
 						if ( (wOutPut & CAppDIO::eOut_MARK_SEL_01 ) || (wOutPut & CAppDIO::eOut_MARK_SEL_02) )
 						{
 							strMarking = _T("ON");
@@ -937,6 +927,42 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
 							pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
 						}
+
+
+						if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+						{
+							AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
+							AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+							AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode = 1; // 임시, 정의되지 않음
+
+							int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
+							short* pData = (short*)(&AprData.m_NowLotData.m_stCellJudgeSms);
+							int nSize = sizeof(_CELL_JUDGE_SMS) / sizeof(WORD);
+							pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+
+							CString strMsg;
+							strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID, AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge, AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode);
+							AprData.SaveDebugLog(strMsg); //pyjtest
+
+						}
+						else
+						{
+							AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID = pTopInfo->m_nTabId_CntBoard;
+							AprData.m_NowLotData.m_stCellJudge.dwCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+							AprData.m_NowLotData.m_stCellJudge.dwCellNgCode = 1; // 임시, 정의되지 않음
+
+							int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
+							int* pData = (int*)(&AprData.m_NowLotData.m_stCellJudge);
+							int nSize = sizeof(_CELL_JUDGE) / sizeof(int);
+							pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+
+							CString strMsg;
+							strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID, AprData.m_NowLotData.m_stCellJudge.dwCellJudge, AprData.m_NowLotData.m_stCellJudge.dwCellNgCode);
+							AprData.SaveDebugLog(strMsg); //pyjtest
+
+						}
+
+
 					}
 
 					{ // CSV 파일 작성
@@ -1035,9 +1061,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
 
-								CString strMsg;
-								strMsg.Format(_T("Save Image Path = %s"), pSaveInfo->m_strSavePath);
-								AprData.SaveDebugLog(strMsg); //pyjtest
+//								CString strMsg;
+//								strMsg.Format(_T("Save Image Path = %s"), pSaveInfo->m_strSavePath);
+//								AprData.SaveDebugLog(strMsg); //pyjtest
 
 
 							}
