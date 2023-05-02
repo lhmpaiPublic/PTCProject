@@ -31,9 +31,9 @@ CString strLogNameList =
 "0 Init_FromExecute_Error_0 1,"
 "1 CounterThread_1 0,"
 "2 PLC_Thread_2 0,"
-"3 사용안함 0,"
-"4 사용안함_4 0,"
-"5 Image_TabFind_ToResult 0,"
+"3 Non_3 0,"
+"4 Non_4 0,"
+"5 Image_TabFind_ToResult_5 0,"
 "6 InspView_TimerPorcStatus_6 0,"
 "100 END 0"
 ;
@@ -267,11 +267,11 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	);
 
 	CWin32File file;
-	while (CLogDisplayDlg::bCreate && pMain && pMain->m_isWorkingThread)
+	while (pMain && pMain->m_isWorkingThread)
 	{
 		//Do something...
 		Sleep(1);
-		if (strList->size() && listBox->m_hWnd)
+		if (CLogDisplayDlg::bCreate && strList->size() && listBox->m_hWnd)
 		{
 			CString tempStr = "";
 			for (int i = 0; i < strList->size(); i++)
