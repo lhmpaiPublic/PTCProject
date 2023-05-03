@@ -373,6 +373,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				LOGDISPLAY_SPEC(5)(_T("Logcount<%d> TabCutting Time [%.2lf]msec, 전극경계Top[%d], Bottom[%d] BtmLevel[%d]"),
 					TempLogCount, dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
 
+				//Image Cutting Tab 정보 출력 로그
+				LOGDISPLAY_SPEC(1)("Now Tab Find Count<%d>, TabID QueueCount<%d>",
+					nVecSize, pCntQueueInCtrl->GetSize());
+
 				//Tab 정보 크기 만큼 루프 돌다.
 				for (int i = 0; i < nVecSize; i++)
 				{
@@ -656,18 +660,22 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					strMsg.Format(_T("Find Image Tab TotalCount<%d>"), AprData.m_NowLotData.m_nTabCount);
 					AprData.SaveMemoryLog(strMsg);
 
-					if (AprData.m_NowLotData.m_nTabCount != AprData.m_NowLotData.m_nInputTabIDTotalCnt)
-					{
-						//메모리 로그 기록
-						strMsg = "";
-						strMsg.Format(_T("Recive TabID TotalCount<%d>, Find Image Tab TotalCount<%d>, CountDiff<%d>"), 
-							AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nTabCount, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nTabCount));
-						AprData.SaveMemoryLog(strMsg);
 
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(1)(_T("Recive TabID TotalCount<%d>, Find Image Tab TotalCount<%d>, CountDiff<%d>"),
-							AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nTabCount, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nTabCount));
-					}
+					//메모리 로그 기록
+					strMsg = "";
+					strMsg.Format(_T("Recive TabID TotalCount<%d>, Find Image Tab TotalCount<%d>, CountDiff<%d>-<%s>"), 
+						AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nTabCount, 
+						abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nTabCount)
+						, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nTabCount) ? "Big TabID":
+						(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nTabCount) ? "Big FindTab" : "TabID == FindTab");
+					AprData.SaveMemoryLog(strMsg);
+
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPEC(1)(_T("Recive TabID TotalCount<%d>, Find Image Tab TotalCount<%d>, CountDiff<%d>-<%s>"),
+						AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nTabCount,
+						abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nTabCount)
+						, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nTabCount) ? "Big TabID" :
+						(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nTabCount) ? "Big FindTab" : "TabID == FindTab");
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(5)("Logcount<%d> Next TabNo<%d>", TempLogCount, AprData.m_NowLotData.m_nTabCount);

@@ -102,7 +102,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 	WORD backupwInSignal = 0x00;
 
-	WORD nextTabID = -1;
+	WORD nextTabID = 255;
 
 	while (1) {
 		if (pThis == NULL) 
@@ -121,8 +121,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 		}
 		if (pThis->m_bRunFlag == FALSE)
 		{
-			//DIO Input Log
-			LOGDISPLAY_SPECTXT(1)(_T("DIO 안 읽음 : Run 아님"));
 
 			::Sleep(1);
 			continue;
@@ -143,6 +141,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				{
 					//DIO Input Log
 					LOGDISPLAY_SPEC(1)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
+					backupwInSignal = wInSignal;
 				}
 
 				// 22.04.06 Ahn Modify Start
@@ -160,7 +159,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 					//누락된 input 아이디를 찾는다.
 					//초기값이 없다면 nextTabID 입력만
-					if (nextTabID == -1)
+					if (nextTabID == 255)
 					{
 						nextTabID = wTempID+1;
 						if (nextTabID >= 64)
@@ -192,20 +191,22 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						}
 					}
 
+					int beforeQueueCount = pCntQueInPtr->GetSize();
 					CCounterInfo cntInfo;
 					cntInfo.nTabID = wTempID;
 					pCntQueInPtr->PushBack(cntInfo);
 
 					//DIO Input Log
-					LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d] Queue Size<%d>, Recive TabID TotalCount<%d>"), 
-						cntInfo.nTabID, pCntQueInPtr->GetSize(), AprData.m_NowLotData.m_nInputTabIDTotalCnt);
+					LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d] Queue Count<%d>-><%d>, Recive TabID TotalCount<%d>"), 
+						cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize(), AprData.m_NowLotData.m_nInputTabIDTotalCnt);
 				
 					//이전 id 갱신
 					wLastInfo = wTempID;
 
 					//메모리 로그 기록
 					CString strMsg;
-					strMsg.Format(_T("Input ID[%d], Recive TotalCount<%d>"), cntInfo.nTabID, AprData.m_NowLotData.m_nInputTabIDTotalCnt);
+					strMsg.Format(_T("Input ID[%d], Recive TotalCount<%d>, Queue Count<%d>-><%d>"), 
+						cntInfo.nTabID, AprData.m_NowLotData.m_nInputTabIDTotalCnt, beforeQueueCount, pCntQueInPtr->GetSize());
 					AprData.SaveMemoryLog(strMsg);
 					
 
