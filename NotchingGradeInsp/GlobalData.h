@@ -260,6 +260,8 @@ public:
 	int		m_nTabCountOK;
 	int		m_nLastTotalCnt;
 	int		m_nInputTabIDTotalCnt;
+	int		m_nImageCaptureTopTotalCnt;
+	int		m_nImageCaptureBottomTotalCnt;
 	// 22.06.29 Ahn Add Start
 	int		m_nTopNG;
 	int		m_nBottomNG;

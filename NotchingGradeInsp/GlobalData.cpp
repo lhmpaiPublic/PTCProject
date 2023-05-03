@@ -764,7 +764,10 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		// 22.08.05 Ahn Add End
 		strKey = _T("TOTAL_COUNT");
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
-		AprData.m_NowLotData.m_nInputTabIDTotalCnt = AprData.m_NowLotData.m_nTabCount = atoi(buff);		
+		AprData.m_NowLotData.m_nTabCount = atoi(buff);		
+		AprData.m_NowLotData.m_nInputTabIDTotalCnt = AprData.m_NowLotData.m_nTabCount;
+		AprData.m_NowLotData.m_nImageCaptureTopTotalCnt = AprData.m_NowLotData.m_nTabCount;
+		AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt = AprData.m_NowLotData.m_nTabCount;
 
 		strKey = _T("NG_COUNT");
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
@@ -1112,7 +1115,10 @@ int CGlobalData::CreateIndexFile(CString strBinFileName)
 
 void CLotInfo::ClearAllCount()
 {
-	m_nInputTabIDTotalCnt = m_nTabCount = 0 ;
+	m_nTabCount = 0 ;
+	m_nInputTabIDTotalCnt = m_nTabCount;
+	m_nImageCaptureTopTotalCnt = m_nTabCount;
+	m_nImageCaptureBottomTotalCnt = m_nTabCount;
 	m_nTabCountNG = 0 ;
 	m_nTabCountOK = 0 ;
 	m_nLastTotalCnt = 0 ;
