@@ -19,7 +19,8 @@ CStartDlg::CStartDlg(CWnd* pParent /*=nullptr*/, int nStartMode /*=0*/)
 	m_nStartMode = nStartMode;
 	lWait_Time = 3;
 
-	if (nStartMode == en_InspStart) {
+	if (nStartMode == en_InspStart)
+	{
 		lWait_Time = 5 ; 
 	}
 

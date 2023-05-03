@@ -42,7 +42,8 @@ double CTabRsltInfo::SortingDefect(int nMode)
 	int nSize = (int)m_vecDefInfo.size();
 
 	CDefectInfo* pSrc, * pTar, Temp;
-	for (int i = 0; i < nSize - 1 ; i++) {
+	for (int i = 0; i < nSize - 1 ; i++)
+	{
 		pSrc = m_vecDefInfo[i];
 		for (int j = i + 1; j < nSize; j++) {
 			pTar = m_vecDefInfo[j];
