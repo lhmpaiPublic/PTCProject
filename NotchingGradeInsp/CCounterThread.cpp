@@ -4,6 +4,7 @@
 #include "AppDIO.h"
 #include "CCounterQueueCtrl.h"
 #include "GlobalData.h"
+#include "SigProc.h"
 
 CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 {
@@ -129,91 +130,104 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 		// 입력 취득
 		if (pThis->m_pParent->IsInspection() == TRUE) 
 		{
-			BOOL bTriggerBit;
-			dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
-			if (bTriggerBit == TRUE) 
+			CSigProc* pSigProc = theApp.m_pSigProc;
+			if (pSigProc != NULL && (pSigProc->GetConnectZone() == FALSE))
 			{
-				WORD wInSignal = 0x00;
-				dio.InputWord(&wInSignal);
 
-				//DIO에서 받은 값이 이전 값과 다르면 찍는다.
-				if (backupwInSignal != wInSignal)
+				BOOL bTriggerBit;
+				dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
+				if (bTriggerBit == TRUE)
 				{
-					//DIO Input Log
-					LOGDISPLAY_SPEC(1)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
-					backupwInSignal = wInSignal;
-				}
+					WORD wInSignal = 0x00;
+					dio.InputWord(&wInSignal);
 
-				// 22.04.06 Ahn Modify Start
-				WORD wTempID;
-				wTempID = 0x3F & (wInSignal >> 1);
-
-				//이전에 받았던 id와 다르다면 추가
-				if ( wTempID != wLastInfo ) 
-				{
-					//받은 Trigger TabID 총 갯수 증가
-					AprData.m_NowLotData.m_nInputTabIDTotalCnt++;
-
-					//DIO Input Log
-					LOGDISPLAY_SPEC(1)(_T("DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
-
-					//누락된 input 아이디를 찾는다.
-					//초기값이 없다면 nextTabID 입력만
-					if (nextTabID == 255)
+					//DIO에서 받은 값이 이전 값과 다르면 찍는다.
+					if (backupwInSignal != wInSignal)
 					{
-						nextTabID = wTempID+1;
-						if (nextTabID >= 64)
-						{
-							nextTabID = 0;
-						}
-					}
-					//초기값 세팅 상태에서 만 검사한다.
-					else
-					{
-						//다음 들어올 ID와 받은 ID가 다르다면
-						//누락 로그 출력한다.
-						if (nextTabID != wTempID)
-						{
-							//메모리 로그 기록
-							CString strMsg;
-							strMsg.Format(_T("Input ID [%d] 누락"), nextTabID);
-							AprData.SaveMemoryLog(strMsg);
-
-							//DIO Input Log
-							LOGDISPLAY_SPEC(0)(_T("Input ID [%d] 누락"), nextTabID);
-						}
-						//다음에 받을 ID를 세팅한다.
-						nextTabID = wTempID + 1;
-						//64 이상이면 0으로 
-						if (nextTabID >= 64)
-						{
-							nextTabID = 0;
-						}
+						//DIO Input Log
+						LOGDISPLAY_SPEC(1)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
+						backupwInSignal = wInSignal;
 					}
 
-					int beforeQueueCount = pCntQueInPtr->GetSize();
-					CCounterInfo cntInfo;
-					cntInfo.nTabID = wTempID;
-					pCntQueInPtr->PushBack(cntInfo);
+					// 22.04.06 Ahn Modify Start
+					WORD wTempID;
+					wTempID = 0x3F & (wInSignal >> 1);
 
-					//DIO Input Log
-					LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d] Queue Count<%d>-><%d>, Recive TabID TotalCount<%d>"), 
-						cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize(), AprData.m_NowLotData.m_nInputTabIDTotalCnt);
-				
-					//이전 id 갱신
-					wLastInfo = wTempID;
+					//이전에 받았던 id와 다르다면 추가
+					if (wTempID != wLastInfo)
+					{
+						//받은 Trigger TabID 총 갯수 증가
+						AprData.m_NowLotData.m_nInputTabIDTotalCnt++;
 
-					//메모리 로그 기록
-					CString strMsg;
-					strMsg.Format(_T("Input ID[%d], Recive TotalCount<%d>, Queue Count<%d>-><%d>"), 
-						cntInfo.nTabID, AprData.m_NowLotData.m_nInputTabIDTotalCnt, beforeQueueCount, pCntQueInPtr->GetSize());
-					AprData.SaveMemoryLog(strMsg);
-					
+						//DIO Input Log
+						LOGDISPLAY_SPEC(1)(_T("DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
 
-					::Sleep(5);
+						//누락된 input 아이디를 찾는다.
+						//초기값이 없다면 nextTabID 입력만
+						if (nextTabID == 255)
+						{
+							nextTabID = wTempID + 1;
+							if (nextTabID >= 64)
+							{
+								nextTabID = 0;
+							}
+						}
+						//초기값 세팅 상태에서 만 검사한다.
+						else
+						{
+							//다음 들어올 ID와 받은 ID가 다르다면
+							//누락 로그 출력한다.
+							if (nextTabID != wTempID)
+							{
+								//메모리 로그 기록
+								CString strMsg;
+								strMsg.Format(_T("Input ID [%d] 누락"), nextTabID);
+								AprData.SaveMemoryLog(strMsg);
+
+								//DIO Input Log
+								LOGDISPLAY_SPEC(0)(_T("Input ID [%d] 누락"), nextTabID);
+							}
+							//다음에 받을 ID를 세팅한다.
+							nextTabID = wTempID + 1;
+							//64 이상이면 0으로 
+							if (nextTabID >= 64)
+							{
+								nextTabID = 0;
+							}
+						}
+
+						int beforeQueueCount = pCntQueInPtr->GetSize();
+						CCounterInfo cntInfo;
+						cntInfo.nTabID = wTempID;
+						pCntQueInPtr->PushBack(cntInfo);
+
+						//DIO Input Log
+						LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d] Queue Count<%d>-><%d>, Recive TabID TotalCount<%d>"),
+							cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize(), AprData.m_NowLotData.m_nInputTabIDTotalCnt);
+
+						//이전 id 갱신
+						wLastInfo = wTempID;
+
+						//메모리 로그 기록
+						CString strMsg;
+						strMsg.Format(_T("Input ID[%d], Recive TotalCount<%d>, Queue Count<%d>-><%d>"),
+							cntInfo.nTabID, AprData.m_NowLotData.m_nInputTabIDTotalCnt, beforeQueueCount, pCntQueInPtr->GetSize());
+						AprData.SaveMemoryLog(strMsg);
+
+
+						::Sleep(5);
+					}
+					// Cell 추적 Queue Data -> Local Queue 
+					//if(....)
 				}
-				// Cell 추적 Queue Data -> Local Queue 
-				//if(....)
+			}
+			else
+			{
+				//Connect Zone 상태일 때 버퍼를 비운다.
+				while (pCntQueInPtr->GetSize())
+					pCntQueInPtr->Pop();
+				//DIO Input Log
+				LOGDISPLAY_SPECTXT(1)(_T("Input TabID 무시 PLC 신호 == ConnectZone"));
 			}
 		}
 		else

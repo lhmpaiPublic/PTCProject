@@ -64,24 +64,17 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if (pCbInfo->IsRun() == FALSE) 
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 Run 오류"));
+			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 Run 상태 아님"));
 
 			return;
 		}
 
 
 		CSigProc* pSigProc = theApp.m_pSigProc;
-		if (pSigProc == NULL)
+		if ((pSigProc != NULL) && (pSigProc->GetConnectZone() == TRUE))
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink pSigProc(PLC 객체) 오류"));
-		}
-
-		BOOL bConnectZone = pSigProc->GetConnectZone();
-		if (bConnectZone == TRUE)
-		{
-			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 PLC Connect Zone 오류"));
+			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 PLC Connect Zone 상태 - 이미지 무시한다."));
 
 			return;
 		}

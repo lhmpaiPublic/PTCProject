@@ -162,7 +162,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) {
 
 			//Image Cutting Tab 정보 출력 로그
-			LOGDISPLAY_SPEC(5)("Logcount<%d> Top-Bottom Frame 사이즈 차가 5 이상이면 카메라 에러", TempLogCount);
+			LOGDISPLAY_SPEC(5)("Logcount<%d> Top-Bottom Frame 사이즈 차가 5 이상이면 엔코더 신호 에러", TempLogCount);
 
 			// 에러 처리 
 		//	pThis->SetFameSizeError(); // 
