@@ -4543,8 +4543,8 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 
 		BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 
-//		int nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
-		int nUpperBright = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];//pyjtest
+		int nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
+//		int nUpperBright = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];//pyjtest
 
 		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 		// 22.06.24 Ahn Moidyf End
