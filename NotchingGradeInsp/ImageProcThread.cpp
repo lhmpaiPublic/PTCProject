@@ -123,6 +123,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	int useTabID = 64;
 	//CCounterInfo 에 값이 없을때 미리 사용한 값 저장
 	std::queue<int> quUserTabID;
+	//Tab ID가 없었을 때 카운터
+	int TabIDEmptyCount = 0;
 
 	static int TempLogCount = 0;
 	while (1) {
@@ -389,6 +391,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					bool bNextTabId = false;
 					while (pCntQueueInCtrl->GetSize())
 					{
+						TabIDEmptyCount = 0;
 						//정보를 하나 가지고 온다.
 						cntInfo = pCntQueueInCtrl->Pop();
 						//미리 땡겨 쓴 Tab Id가 있다면
@@ -440,6 +443,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//다음에 들어올 id를 할당한다.
 					if (bNextTabId == false)
 					{
+						TabIDEmptyCount++;
+						AprData.m_NowLotData.m_nTabIDEmptyTotalCnt++;
 						//전에 사용했던 Tab id 모두 삭제
 						while (quUserTabID.size())
 							quUserTabID.pop();
@@ -455,7 +460,17 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							useTabID = 0;
 						}
+						//Image Cutting Tab 정보 출력 로그
+						LOGDISPLAY_SPEC(1)(_T("Tab ID Empty Count<%d>-Totalcount<%d>"),
+							TabIDEmptyCount, AprData.m_NowLotData.m_nTabIDEmptyTotalCnt);
 					}
+
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPEC(1)("Tab ID Empty Totalcount<%d>, TabID Overflow TotalCount<%d>, Diff<%d>-<%s>",
+						AprData.m_NowLotData.m_nTabIDEmptyTotalCnt, AprData.m_NowLotData.m_nTabIDOverflowTotalCnt
+						, (AprData.m_NowLotData.m_nTabIDEmptyTotalCnt - AprData.m_NowLotData.m_nTabIDOverflowTotalCnt)
+						, (AprData.m_NowLotData.m_nTabIDEmptyTotalCnt > AprData.m_NowLotData.m_nTabIDOverflowTotalCnt) ? "Big-TabEmpty" :
+						(AprData.m_NowLotData.m_nTabIDEmptyTotalCnt < AprData.m_NowLotData.m_nTabIDOverflowTotalCnt) ? "Big-TabOverflow" : "TabEmpty == TabOverflow");
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(5)(_T("Logcount<%d> 사용할 Trigger Tab Id<%d>"),
@@ -963,6 +978,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 										(AprData.m_System.m_bChkEnableMarker == FALSE) ? _T("SKIP") : _T("USE"),
 										(bMarkingActive == FALSE) ? _T("SKIP") : _T("USE")	);
 						AprData.SaveMemoryLog(strMsg);
+
+						// GEN 체크박스 Log 출력
+						LOGDISPLAY_SPEC(1)("Output : TabID[%d]-TabNo[%d]-Value[%d], Top-%s, Bottom-%s", 
+							pTopInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1, wOutPut
+							, (nTopJudge == JUDGE_NG) ? "NG" : "OK"
+							, (nBtmJudge == JUDGE_NG) ? "NG" : "OK");
 
 
 						if ( (wOutPut & CAppDIO::eOut_MARK_SEL_01 ) || (wOutPut & CAppDIO::eOut_MARK_SEL_02) )

@@ -262,6 +262,8 @@ public:
 	int		m_nInputTabIDTotalCnt;
 	int		m_nImageCaptureTopTotalCnt;
 	int		m_nImageCaptureBottomTotalCnt;
+	int		m_nTabIDEmptyTotalCnt;
+	int		m_nTabIDOverflowTotalCnt;
 	// 22.06.29 Ahn Add Start
 	int		m_nTopNG;
 	int		m_nBottomNG;
