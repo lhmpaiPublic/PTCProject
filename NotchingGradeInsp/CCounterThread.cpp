@@ -202,7 +202,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						pCntQueInPtr->PushBack(cntInfo);
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(5)(_T("DIO Trigger Input ID 받음[%d] Queue Count<%d>-><%d>, Recive TabID TotalCount<%d>"),
+						LOGDISPLAY_SPEC(1)(_T("DIO Trigger Input ID 받음[%d] Queue Count<%d>-><%d>, Recive TabID TotalCount<%d>"),
 							cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize(), AprData.m_NowLotData.m_nInputTabIDTotalCnt);
 
 						//이전 id 갱신

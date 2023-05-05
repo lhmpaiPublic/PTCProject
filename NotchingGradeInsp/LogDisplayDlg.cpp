@@ -178,7 +178,7 @@ BOOL CLogDisplayDlg::OnInitDialog()
 
 	//로그 끝으로 이동 기본 체크
 	bLogMoveLast = TRUE;
-	m_CheckMoveLastLog.SetCheck(BST_UNCHECKED);
+	m_CheckMoveLastLog.SetCheck(BST_CHECKED);
 	//Text Log 출력 여부
 	m_checkTextPrint.SetCheck(BST_CHECKED);
 	bTextLogPrint = true;

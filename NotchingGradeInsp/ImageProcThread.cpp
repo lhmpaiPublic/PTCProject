@@ -401,10 +401,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//비교해서 다르다면 빠져나간다.
 							if (beforeTabId != cntInfo.nTabID)
 							{
-								//전에 사용했던 Tab id 모두 삭제
-								while(quUserTabID.size())
-									quUserTabID.pop();
-
 								//사용할 Tab Id를 찾았다
 								bNextTabId = true;
 
@@ -444,6 +440,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//다음에 들어올 id를 할당한다.
 					if (bNextTabId == false)
 					{
+						//전에 사용했던 Tab id 모두 삭제
+						while (quUserTabID.size())
+							quUserTabID.pop();
+
 						//다음 아이디를 할당한다.
 						cntInfo.nTabID = useTabID;
 						//사용한 아이디를 backup 한다. 확인용
