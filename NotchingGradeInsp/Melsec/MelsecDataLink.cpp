@@ -750,6 +750,10 @@ void CMelsecDataLink::PioErrorProcess(int iRet, char* cap)
 		//에러로그
 		m_bOpened = FALSE; // 22.06.30 Ahn Add 
 		AprData.SaveErrorLog(cstr);
+
+		//Error Log
+		LOGDISPLAY_SPEC(0)(_T("MelsecDataLinkLibrary Error-<%s>"), cap);
+
 		// 22.10.13 Ahn Add Start
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, cstr);
 		// 22.10.13 Ahn Add End
