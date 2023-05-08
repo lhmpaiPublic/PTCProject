@@ -10,7 +10,6 @@
 
 CGlobalData	AprData ;
 
-
 CGlobalData::CGlobalData(void)
 {
 	::InitializeCriticalSection( &m_csSaveLog ) ;

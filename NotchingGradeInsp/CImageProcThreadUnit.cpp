@@ -143,6 +143,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				// 22.12.16 Ahn Modify End
 				// 22.02.24 Ahn Add End
 
+				//Log 출력
+				LOGDISPLAY_SPEC(1)("ImageResult <%s>Make Start : TabID<%d>, Tab Find TotalCount<%d>",
+					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", pFrmInfo->m_nTabId_CntBoard, pFrmInfo->nTabNo + 1);
+
 				// 23.02.20 Ahn Modify Start
 				//if (pFrmInfo->m_bErrorFlag == FALSE) {
 				
@@ -586,6 +590,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					delete pFrmInfo;
 					pFrmInfo = NULL;
 				}
+
+				//Log 출력
+				LOGDISPLAY_SPEC(1)("ImageResult <%s>Make End : TabID<%d>, Tab Find TotalCount<%d>", 
+					(pFrmInfo->m_nHeadNo == CAM_POS_TOP)? "Top":"Bottom", pFrmInfo->m_nTabId_CntBoard, pFrmInfo->nTabNo + 1);
 
 				// 처리 완료
 				//if (::WaitForSingleObject(pCtrl->m_hEventProcEnd, 0) != WAIT_OBJECT_0) {

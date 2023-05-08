@@ -675,6 +675,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					strMsg.Format(_T("Find Image Tab TotalCount<%d>"), AprData.m_NowLotData.m_nTabCount);
 					AprData.SaveMemoryLog(strMsg);
 
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPEC(1)("Use Input TabID-Top[%d]-Bottom[%d], TabNo-Top[%d]-Bottom[%d]", 
+						pInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard,  pInfo->nTabNo, pBtmInfo->nTabNo
+						);
+
 
 					//메모리 로그 기록
 					strMsg = "";
@@ -800,8 +805,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(5)("Top Logcount<%d> Bottom Logcount<%d> ========", pTopInfo->TempLogCount, pBtmInfo->TempLogCount);
-					LOGDISPLAY_SPEC(5)("Logcount<%d> ===== Top/Bottom Frame TabNo<%d> Trigger ID <%d>======================="
-						, TempLogCount, pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard);
+					LOGDISPLAY_SPEC(1)("Image Result Output : Top-TabID<%d>Bottom-TabID<%d>, Find TabNo<%d>"
+						, pTopInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1);
 
 					int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;			
 					int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
@@ -1167,7 +1172,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
 
 					//체크박스 로그 출력
-					LOGDISPLAY_SPEC(5)("Logcount<%d> DIO out_pulse : FALSE", TempLogCount);
+					LOGDISPLAY_SPEC(1)("TabID[%d]-TabNo[%d] - TacTime[%f]", 
+						pTopInfo->m_nTabId_CntBoard, pTopInfo->nTabNo+1, dTactTime);
 
 					// 22.02.17 Ahn Modify End
 

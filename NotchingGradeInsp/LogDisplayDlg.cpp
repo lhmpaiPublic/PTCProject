@@ -30,7 +30,7 @@ CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 CString strLogNameList =
 "0 Init_FromExecute_Error_0 1,"
 "1 TabID_ImageCount_TabCount_1 0,"
-"2 PLC_Thread_2 0,"
+"2 PLC_Live_BitData_2 0,"
 "3 Non_3 0,"
 "4 Non_4 0,"
 "5 Image_TabFind_ToResult_5 0,"
@@ -183,11 +183,11 @@ BOOL CLogDisplayDlg::OnInitDialog()
 	m_checkTextPrint.SetCheck(BST_CHECKED);
 	bTextLogPrint = true;
 
-	std::vector<CString> recVAl = StringParser(strLogNameList);
+	std::vector<CString> recVAl = CGlobalFunc::StringParser(strLogNameList, ',');
 
 	for (int i = 0; i < recVAl.size(); i++)
 	{
-		std::vector<CString> subVAl = StringParser(recVAl[i], ' ');
+		std::vector<CString> subVAl = CGlobalFunc::StringParser(recVAl[i], ' ');
 		if (subVAl.size() >= 2)
 		{
 			int num = _ttoi(subVAl[0]);
@@ -314,23 +314,6 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	}
 
 	return 0;
-}
-
-//스트링 특정 char로 파서하는 함수
-std::vector<CString> CLogDisplayDlg::StringParser(CString val, char s)
-{
-	std::vector<CString> parserVal;
-	parserVal.clear();
-
-	CString strSub;
-	int num = 0;
-	//파싱하여 vector 에 저장한다.
-	while (AfxExtractSubString(strSub, val, num++, s))
-	{
-		parserVal.push_back(strSub);
-	}
-
-	return parserVal;
 }
 
 void CLogDisplayDlg::ExitThread()
