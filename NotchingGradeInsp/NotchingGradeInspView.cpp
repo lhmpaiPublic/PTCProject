@@ -1177,8 +1177,6 @@ int CNotchingGradeInspView::CameraGrabStart()
 // Lot End
 int CNotchingGradeInspView::CameraGrabStop()
 {
-	//Log Camera Setting
-	LOGDISPLAY_SPECTXT(0)(_T("CNotchingGradeInspView::CameraGrabStop"));
 
 	int nRet = 0;
 	if (theApp.m_pImgProcCtrl != nullptr) {
@@ -1190,11 +1188,6 @@ int CNotchingGradeInspView::CameraGrabStop()
 			strLog.Format(_T("Camera Grab Stop"));
 			AprData.SaveErrorLog(strLog);
 			// 22.07.07 Ahn Add Test End
-		}
-		else
-		{
-			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(0)(_T("CNotchingGradeInspView::CameraGrabStop - Run상태가 아니다."));
 		}
 	}
 

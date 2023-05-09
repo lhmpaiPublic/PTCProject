@@ -123,8 +123,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	int useTabID = 64;
 	//CCounterInfo 에 값이 없을때 미리 사용한 값 저장
 	std::queue<int> quUserTabID;
-	//Tab ID가 없었을 때 카운터
-	int TabIDEmptyCount = 0;
 
 	static int TempLogCount = 0;
 	while (1) {
@@ -386,7 +384,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					bool bNextTabId = false;
 					while (pCntQueueInCtrl->GetSize())
 					{
-						TabIDEmptyCount = 0;
 						//정보를 하나 가지고 온다.
 						cntInfo = pCntQueueInCtrl->Pop();
 						//미리 땡겨 쓴 Tab Id가 있다면
@@ -438,7 +435,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//다음에 들어올 id를 할당한다.
 					if (bNextTabId == false)
 					{
-						TabIDEmptyCount++;
 						AprData.m_NowLotData.m_nTabIDEmptyTotalCnt++;
 						//전에 사용했던 Tab id 모두 삭제
 						while (quUserTabID.size())
@@ -456,8 +452,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							useTabID = 0;
 						}
 						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(1)(_T("Tab ID Empty Count<%d>-Totalcount<%d>"),
-							TabIDEmptyCount, AprData.m_NowLotData.m_nTabIDEmptyTotalCnt);
+						LOGDISPLAY_SPEC(1)(_T("Tab ID Empty Totalcount<%d>"),
+							AprData.m_NowLotData.m_nTabIDEmptyTotalCnt);
 					}
 
 					//Image Cutting Tab 정보 출력 로그
@@ -813,8 +809,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					// NG Tab 보고
 					if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG))
 					{
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("Logcount<%d> ================NG 처리 Trigger ID<%d>===================", TempLogCount, pTopInfo->m_nTabId_CntBoard);
 
 						WORD wAlarmCode = 0x0000;
 						bJudgeNG = TRUE;
@@ -932,7 +926,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					else
 					{
 						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("Logcount<%d> ==========OK 처리 Trigger ID<%d>===================", TempLogCount, pTopInfo->m_nTabId_CntBoard);
+						LOGDISPLAY_SPEC(5)("Logcount<%d> Image Result OK 처리 Tab ID<%d>", TempLogCount, pTopInfo->m_nTabId_CntBoard);
 
 						AprData.m_NowLotData.m_nTabCountOK++ ;
 						AprData.m_NowLotData.m_nContinueCount = 0 ; // 22.08.09 Ahn Add
@@ -964,10 +958,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2, TempLogCount);
 						dio.OutputWord(wOutPut);
-
-						//GEN 체크박스 Log 출력
-						LOGDISPLAY_SPEC(5)("Logcount<%d> DIO 마킹 신호를 보냄 => Trigger ID<%d>, OutPut Value<%d>",
-							TempLogCount, pTopInfo->m_nTabId_CntBoard, wOutPut);
 
 						Sleep(20);
 						dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
@@ -1168,7 +1158,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					//체크박스 로그 출력
 					LOGDISPLAY_SPEC(1)("TabID[%d]-TabNo[%d] - TacTime[%f]", 
-						pTopInfo->m_nTabId_CntBoard, pTopInfo->nTabNo+1, dTactTime);
+						pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo +1, dTactTime);
 
 					// 22.02.17 Ahn Modify End
 
