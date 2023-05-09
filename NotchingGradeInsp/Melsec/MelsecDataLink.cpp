@@ -763,9 +763,6 @@ void CMelsecDataLink::PioErrorProcess(int iRet, char* cap)
 		break;
 	}
 
-	//Error Log
-	LOGDISPLAY_SPEC(0)(_T("MelsecDataLinkLibrary Error-<%s>"), cap);
-
 	nowExecute = FALSE;
 
 	return;

@@ -673,9 +673,6 @@ int CMelsecEthernetSock::PacketSend(char* pBuff, int length, long lTimeOver)
 	if (m_Protocol == TCP_MODE) {
 		if (m_bConnected != TRUE) {
 			
-			//Error Log
-			LOGDISPLAY_SPECTXT(0)(_T("Melsec Connected Error"));
-
 			return (-2);
 		}
 	}
@@ -739,9 +736,6 @@ int CMelsecEthernetSock::DataRecv(char* pBuff, int length, long lTimeOver)
 	while (1) {
 		if (m_Protocol == TCP_MODE) {
 			if (m_bDisConnected == TRUE) {
-
-				//Error Log
-				LOGDISPLAY_SPECTXT(0)(_T("Melsec Connected Error"));
 
 				return (-1);
 			}
@@ -814,7 +808,7 @@ int CMelsecEthernetSock::SetError(DWORD code, CString* msg)
 {
 	int	nRet = -1;
 	DWORD	dwErrorCode = code;
-	CString	strErMsg;
+	CString	strErMsg="";
 
 	switch (dwErrorCode) {
 	case	WSANOTINITIALISED:
@@ -859,9 +853,6 @@ int CMelsecEthernetSock::SetError(DWORD code, CString* msg)
 		break;
 	}
 	if (msg != NULL) {
-		//Error Log
-		LOGDISPLAY_SPEC(0)(_T("Melsec Error-<%s>"), strErMsg);
-
 		*msg = strErMsg;
 	}
 	return (nRet);
