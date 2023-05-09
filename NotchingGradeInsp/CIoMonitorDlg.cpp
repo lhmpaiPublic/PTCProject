@@ -336,6 +336,7 @@ int CIoMonitorDlg::GetAddressAndBitPos( int nMode, int nSigNo, int &nBitPos  )
 }
 // 23.03.03 Ahn Add End
 
+
 int CIoMonitorDlg::RefreshAll()
 {
 	int nRet = 0;
@@ -349,6 +350,8 @@ int CIoMonitorDlg::RefreshAll()
 	pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
 
  	UpdateGridCtrl();
+
+
 
 	return nRet;
 }

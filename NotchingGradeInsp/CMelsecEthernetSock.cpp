@@ -174,10 +174,12 @@ BOOL CMelsecEthernetSock::MakeBodyCommand(int nMode, int nDevNo, int nDevCode, c
 int CMelsecEthernetSock::SendAndRecv(char* pSendBuff, int nCmdLen, char* pRecvBuff, int nRecvLen, long lTimeOver )
 {
 	if (pSendBuff == NULL) {
+
 		ASSERT(FALSE);
 		return (-1);
 	}
 	if (pRecvBuff == NULL) {
+
 		ASSERT(FALSE);
 		return (-1);
 	}
@@ -185,6 +187,7 @@ int CMelsecEthernetSock::SendAndRecv(char* pSendBuff, int nCmdLen, char* pRecvBu
 	ClearBuffer();
 
 	if (PacketSend(pSendBuff, nCmdLen, lTimeOver) != 0) {
+
 		return (-1);
 	}
 
@@ -669,7 +672,10 @@ int CMelsecEthernetSock::PacketSend(char* pBuff, int length, long lTimeOver)
 
 	if (m_Protocol == TCP_MODE) {
 		if (m_bConnected != TRUE) {
-			// -----비접속상태-----
+			
+			//Error Log
+			LOGDISPLAY_SPECTXT(0)(_T("Melsec Connected Error"));
+
 			return (-2);
 		}
 	}
@@ -703,6 +709,10 @@ int CMelsecEthernetSock::PacketSend(char* pBuff, int length, long lTimeOver)
 		::PumpMessages(NULL, NULL, WM_SOCKET_NOTIFY, WM_SOCKET_DEAD);
 		::Sleep(1);
 		if (ta.WhatTimeIsIt() > lTimeOver) {
+
+			//Error Log
+			LOGDISPLAY_SPECTXT(0)(_T("Melsec Send TimerOut Error"));
+
 			ret = -1;
 			break;
 		}
@@ -729,6 +739,10 @@ int CMelsecEthernetSock::DataRecv(char* pBuff, int length, long lTimeOver)
 	while (1) {
 		if (m_Protocol == TCP_MODE) {
 			if (m_bDisConnected == TRUE) {
+
+				//Error Log
+				LOGDISPLAY_SPECTXT(0)(_T("Melsec Connected Error"));
+
 				return (-1);
 			}
 		}
@@ -759,6 +773,9 @@ int CMelsecEthernetSock::DataRecv(char* pBuff, int length, long lTimeOver)
 		::PumpMessages(NULL, NULL, WM_SOCKET_NOTIFY, WM_SOCKET_DEAD);
 
 		if (ta.WhatTimeIsIt() > lTimeOver) {
+			//Error Log
+			LOGDISPLAY_SPECTXT(0)(_T("Melsec Receive TimerOut Error"));
+
 			return (-1);
 		}
 
@@ -842,6 +859,9 @@ int CMelsecEthernetSock::SetError(DWORD code, CString* msg)
 		break;
 	}
 	if (msg != NULL) {
+		//Error Log
+		LOGDISPLAY_SPEC(0)(_T("Melsec Error-<%s>"), strErMsg);
+
 		*msg = strErMsg;
 	}
 	return (nRet);

@@ -451,6 +451,7 @@
     <ClInclude Include="CRecipeSelectDlg.h" />
     <ClInclude Include="CRecipeSettingDlg.h" />
     <ClInclude Include="CRecipeTableCtrl.h" />
+    <ClInclude Include="GlobalFunc.h" />
     <ClInclude Include="RecipImportDlg.h" />
     <ClInclude Include="CResultDirectoryDlg.h" />
     <ClInclude Include="CResultFileManager.h" />
@@ -606,6 +607,7 @@
     <ClCompile Include="FrameInfo.cpp" />
     <ClCompile Include="FrameRsltInfo.cpp" />
     <ClCompile Include="GlobalData.cpp" />
+    <ClCompile Include="GlobalFunc.cpp" />
     <ClCompile Include="GrabberCtrl.cpp" />
     <ClCompile Include="GrabDalsaCameraLink.cpp" />
     <ClCompile Include="GraphDlg.cpp" />

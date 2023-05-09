@@ -4,8 +4,9 @@
 #include "FrameInfo.h"
 #include "GlobalData.h"
 #include "SigProc.h"
+#include "TimeAnalyzer.h"
 
-// Static Functions
+
 static void AcqCallback(SapXferCallbackInfo* pInfo)
 {
 	//	SapView* pView = (SapView*)pInfo->GetContext();
@@ -19,6 +20,14 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		//Log Camera Setting
 		LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 Object Pointer Receive 오류"));
 	}
+
+	AprData.m_NowLotData.m_nEnCoderTotalCnt++;
+
+	//Log Camera Setting
+	LOGDISPLAY_SPEC(1)(_T("EnCoder-TotalCount<%d>, TabID TotalCount<%d>, Diff<%d>"),
+		AprData.m_NowLotData.m_nEnCoderTotalCnt, AprData.m_NowLotData.m_nInputTabIDTotalCnt
+		, abs(AprData.m_NowLotData.m_nEnCoderTotalCnt - AprData.m_NowLotData.m_nInputTabIDTotalCnt));
+
 	
 	// 21.05.27 Ahn Add Start
 	if (pQueueCtrl != NULL){

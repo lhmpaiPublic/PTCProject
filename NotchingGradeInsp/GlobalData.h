@@ -259,11 +259,21 @@ public:
 	int		m_nTabCountNG;
 	int		m_nTabCountOK;
 	int		m_nLastTotalCnt;
+
+	//로그 분석을 위한 글로벌 변수
+	//Tab ID Total 갯수
 	int		m_nInputTabIDTotalCnt;
+	//TopCamera Call Image Event Total 갯수
 	int		m_nImageCaptureTopTotalCnt;
+	//BottomCamera Call Image Event Total 갯수
 	int		m_nImageCaptureBottomTotalCnt;
+	//Tab Image에 Tab ID 부여하지 못했을 때 Total 갯수
 	int		m_nTabIDEmptyTotalCnt;
+	//Tab ID Queue 가 Overflow Total 갯수
 	int		m_nTabIDOverflowTotalCnt;
+	//EnCoder 신호에 AcqCallback 호출 Total 갯수
+	int		m_nEnCoderTotalCnt;
+
 	// 22.06.29 Ahn Add Start
 	int		m_nTopNG;
 	int		m_nBottomNG;
