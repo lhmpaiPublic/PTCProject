@@ -918,21 +918,10 @@ int CSigProc::SigOutAlivePulse(int nInMode)
 
 	int nRet = SignalBitOut(nAddress, nMode);
 
-	if (nRet == -1)
-	{
-		//로그출력
-		LOGDISPLAY_SPECTXT(0)("Setting Out Alive Pulse Error");
-	}
-
-
 	return nRet;
 }
 int CSigProc::SigOutReady(int nMode)
 {
-
-	CString strMsg;
-	strMsg.Format(_T("SigOutReady Setting : %s"), nMode ? "Ready-On":"Ready-Off");
-	AprData.SaveDebugLog(strMsg); //pyjtest
 
 	//로그출력
 	LOGDISPLAY_SPEC(0)(_T("SigOutReady Setting : %s"), nMode ? "Ready-On" : "Ready-Off");
