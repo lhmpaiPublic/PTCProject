@@ -446,6 +446,12 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 				AfxMessageBox(_T("size error"));
 			}
 		}
+
+
+//		CString strMsg;
+//		strMsg.Format(_T("CMelsecDataLink::OutPort buff=%d port=%d"), buff, port);
+//		AprData.SaveDebugLog(strMsg); //pyjtest
+
 	}
 	ret = 0;
 	if (iRet != 0) {
@@ -888,6 +894,11 @@ int CMelsecDataLink::Out_Port_Bit(int nPort, BYTE bBitPos, int nMode)
 			nRet = -1;
 			//에러로그
 		}
+
+
+//		CString strMsg;
+//		strMsg.Format(_T("CMelsecDataLink::Out_Port_Bit data=%d nPort=%d"), data, nPort);
+//		AprData.SaveDebugLog(strMsg); //pyjtest
 	}
 	return (nRet);
 
