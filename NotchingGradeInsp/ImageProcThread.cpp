@@ -314,7 +314,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				int nBneElectrodeBtm = 0;
 #if defined( ANODE_MODE )
 				//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
-				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
+				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
 
 				//Image Cutting Tab 정보 출력 로그
 				LOGDISPLAY_SPEC(5)("Logcount<%d> TabFindPos 값 => 양극경우 CImageProcess::GetBoundaryOfElectorde 처리 값을  nBndElectrode 저장 ", TempLogCount);
@@ -331,20 +331,15 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				//Image Cutting Tab 정보 출력 로그
 				LOGDISPLAY_SPEC(5)("Logcount<%d> TabFindPos 값 =>  nBndElectrode<%d> + Recipe에 설정한 CeramicHeight 값<%d>으로 구한다.",
 					TempLogCount, nBndElectrode, AprData.m_pRecipeInfo->TabCond.nCeramicHeight);
-
-				// 22.11.18 Ahn Modify Start
-				//int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo );
 				
 				//이미지 프로세싱을 위한 클래스 
 				//이미지 Tab 정보에서 Tab을 그룹으로 나누기
 				int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo( pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL, TempLogCount);
 				
-				// 22.11.18 Ahn Modify End
-				// 21.12.28 Ahn Modify Start
-				//int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 
 				//Tab 정보 크기, Tab 정보가 없다면 에러처리
 				int nVecSize = (int)vecTabInfo.size();
+
 				//Image Cutting Tab 정보 출력 로그
 				LOGDISPLAY_SPEC(5)(_T("Logcount<%d> Top TabInfo 갯수<%d>"),
 					TempLogCount, nVecSize);

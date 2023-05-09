@@ -245,7 +245,7 @@ int CIoMonitorDlg::GetAddressAndBitPos( int nMode, int nSigNo, int &nBitPos  )
 				nAddress = CSigProc::enBitOut_TabZeroReset;
 				nBitPos = 5;
 				break;
-			case	en_Out_RcpChangeAck:
+			case	en_Out_DiskSpaceWarning:
 				nAddress = CSigProc::enBitOut_DiskSpaceWarning;
 				nBitPos = 8;
 				break;
@@ -253,7 +253,7 @@ int CIoMonitorDlg::GetAddressAndBitPos( int nMode, int nSigNo, int &nBitPos  )
 				nAddress = CSigProc::enBitOut_DiskSpaceAlarm;
 				nBitPos = 9;
 				break;
-			case	en_Out_DiskSpaceWarning:
+			case	en_Out_RcpChangeAck:
 				nAddress = CSigProc::enBitOut_RecipeChangeAck;
 				nBitPos = 18;
 				break;
@@ -312,13 +312,13 @@ int CIoMonitorDlg::GetAddressAndBitPos( int nMode, int nSigNo, int &nBitPos  )
 				nAddress = CSigProc::enSmsBitOut_TabZeroReset ;
 				break;
 			case	en_Out_RcpChangeAck:
-				nAddress = CSigProc::enSmsBitOut_DiskSpaceWarning ;
+				nAddress = CSigProc::enSmsBitOut_RecipeChangeAck;
 				break;
 			case	en_Out_DiskSpaceAlarm:
 				nAddress = CSigProc::enSmsBitOut_DiskSpaceAlarm ;
 				break;
 			case	en_Out_DiskSpaceWarning:
-				nAddress = CSigProc::enSmsBitOut_RecipeChangeAck ;
+				nAddress = CSigProc::enSmsBitOut_DiskSpaceWarning ;
 				break;
 			case	en_Out_LotStartAck:
 				nAddress = CSigProc::enSmsBitOut_LotStartReqAck ; 

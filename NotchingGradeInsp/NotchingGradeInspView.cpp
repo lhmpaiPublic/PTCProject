@@ -415,7 +415,8 @@ void CNotchingGradeInspView::OnInitialUpdate()
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 
 	SetSignalCheckTimer();
-	SetAlivePulseTimer();
+//	SetAlivePulseTimer();
+	StartThreadAliveSiginal();
 	SetLogTermTimer();
 	Set_I0Timer();	// 22.03.24 Ahn Add 
 
@@ -932,23 +933,23 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 	//////////////////////////////////////////////////////////////////////////
 	// [ Alive ]
-	if (nIDEvent == m_TID_Alive_Pulse)
-	{
-		KillAlivePulseTimer();
-		CSigProc* pSigProc = theApp.m_pSigProc;
-		pSigProc->SigOutAlivePulse(TRUE);
-		SetAlivePulseTimer();
-
-	}
-
-
+//	if (nIDEvent == m_TID_Alive_Pulse)
+//	{
+//		KillAlivePulseTimer();
+//		CSigProc* pSigProc = theApp.m_pSigProc;
+//		pSigProc->SigOutAlivePulse(TRUE);
+//		SetAlivePulseTimer();
+//
+//	}
 
 
 
 
-	if (m_TID_IO == nIDEvent)
-	{
-		Kill_IoTimer();
+
+
+//	if (m_TID_IO == nIDEvent)
+//	{
+//		Kill_IoTimer();
 
 		// 22.12.06 Ahn Delete Start
 		//CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
@@ -967,8 +968,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 // 			pSigProc->SigOutAlarmResetAck(FALSE);
 // 		}
 
-		Set_I0Timer();
-	}
+//		Set_I0Timer();
+//	}
 
 
 
@@ -1017,19 +1018,19 @@ void CNotchingGradeInspView::CheckDiskSpace()
 	// 22.07.04 Ahn Add End
 
 	// 22.08.05 Ahn Add Start
-	double dAlarmSize = 90.0;
-	double dWarningSize = 80.0;
-	if (dAlarmSize < dPercent) {
-		CString strMsg;
-		strMsg.Format(_T("디스크 사용량이 %1.lf%% 입니다. 디스크 공간을 확보해 주세요."), dPercent);
-		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityAlarm, strMsg);
-	}
-	else if (dWarningSize < dPercent) {
-		CString strMsg;
-		strMsg.Format(_T("디스크 사용량이 %1.lf %%입니다. 디스크 공간을 확보해 주세요."), dPercent);
-		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityWarning, strMsg);
-	}
-	// 22.08.05 Ahn Add End
+//	double dAlarmSize = 90.0;
+//	double dWarningSize = 80.0;
+//	if (dAlarmSize < dPercent) {
+//		CString strMsg;
+//		strMsg.Format(_T("디스크 사용량이 %1.lf%% 입니다. 디스크 공간을 확보해 주세요."), dPercent);
+//		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityAlarm, strMsg);
+//	}
+//	else if (dWarningSize < dPercent) {
+//		CString strMsg;
+//		strMsg.Format(_T("디스크 사용량이 %1.lf %%입니다. 디스크 공간을 확보해 주세요."), dPercent);
+//		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityWarning, strMsg);
+//	}
+
 }
 // 22.07.01 Ahn Add End
 
@@ -1661,4 +1662,40 @@ BOOL CNotchingGradeInspView::PreTranslateMessage(MSG* pMsg)
 	}
 
 	return CView::PreTranslateMessage(pMsg);
+}
+
+
+void CNotchingGradeInspView::StartThreadAliveSiginal()
+{
+	CWinThread* pThread = NULL;
+	if (pThread == NULL)
+	{
+		pThread = AfxBeginThread(AliveThread, this);
+
+		if (pThread == NULL)
+		{
+
+		}
+
+		pThread->m_bAutoDelete = TRUE;
+	}
+	else
+	{
+
+	}
+
+}
+
+UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
+{
+
+	while (true)
+	{
+		CSigProc* pSigProc = theApp.m_pSigProc;
+		pSigProc->SigOutAlivePulse(TRUE);
+
+		Sleep(500);
+	}
+
+	return 0;
 }

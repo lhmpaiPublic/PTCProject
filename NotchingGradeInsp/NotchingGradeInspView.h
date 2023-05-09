@@ -182,6 +182,9 @@ private :
 	int CheckInkMarkActive();
 	int CheckConnectZone();
 
+	void StartThreadAliveSiginal();
+	static UINT AliveThread(LPVOID lpParm);
+
 
 // 22.06.27 Ahn Add Start
 public :

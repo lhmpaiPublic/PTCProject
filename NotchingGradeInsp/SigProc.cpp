@@ -918,6 +918,11 @@ int CSigProc::SigOutAlivePulse(int nInMode)
 
 	int nRet = SignalBitOut(nAddress, nMode);
 
+//	CString strMsg;
+//	strMsg.Format(_T("Alive Signal %s"), (nMode==TRUE) ? _T("ON") : _T("OFF") );
+//	AprData.SaveDebugLog(strMsg); //pyjtest
+
+
 	if (nRet == -1)
 	{
 		//로그출력

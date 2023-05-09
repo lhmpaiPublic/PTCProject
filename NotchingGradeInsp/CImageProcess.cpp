@@ -4498,6 +4498,19 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("<<FindTabLevel_Simple>>이미지 Sector 에러 => 레시피에 설정한 TabWidth/2 값 보다 큰 TabWidth 가 없다."));
 
+
+		//pyjtest
+		CBitmapStd bmp(nWidth, nHeight);
+		bmp.SetImage(nWidth, nHeight, pImgPtr);
+
+		CTime time = CTime::GetCurrentTime();
+		CString str;
+		str.Format(_T("d:\\[pstSector-3]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
+		bmp.SaveBitmap(str);
+
+
+
+
 		return -3;
 	}
 
