@@ -4500,13 +4500,13 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 
 
 		//pyjtest
-		CBitmapStd bmp(nWidth, nHeight);
-		bmp.SetImage(nWidth, nHeight, pImgPtr);
-
-		CTime time = CTime::GetCurrentTime();
-		CString str;
-		str.Format(_T("d:\\[pstSector-3]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
-		bmp.SaveBitmap(str);
+//		CBitmapStd bmp(nWidth, nHeight);
+//		bmp.SetImage(nWidth, nHeight, pImgPtr);
+//		
+//		CTime time = CTime::GetCurrentTime();
+//		CString str;
+//		str.Format(_T("d:\\[pstSector-3]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
+//		bmp.SaveBitmap(str);
 
 
 

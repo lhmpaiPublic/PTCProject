@@ -6,10 +6,12 @@ int CSectorNgJudge::ResetAll()
 {
 	m_nNgCount = 0 ;
 
-	VEC_TAB_JUDGE::iterator iter;
-	for (iter = m_vecSector.begin(); iter != m_vecSector.end(); iter++) {
-		iter = m_vecSector.erase(iter);
-	}
+	m_vecSector.clear();
+
+//	VEC_TAB_JUDGE::iterator iter;
+//	for (iter = m_vecSector.begin(); iter != m_vecSector.end(); iter++) {
+//		iter = m_vecSector.erase(iter);
+//	}
 
 	return 0;
 }

@@ -104,8 +104,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				pFrmInfo->m_nFrameCount = nFrameCnt;
 				pFrmInfo->m_nBand = 1;
 				pFrmInfo->m_nHeadNo = pCbInfo->m_nHeadNo - 1;
-				pQueueCtrl->PushBack(pFrmInfo);
-				bSend = TRUE;
 
 				//이미지 생성 카운트
 				if (pFrmInfo->m_nHeadNo == 0)
@@ -162,6 +160,10 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				//Log Camera Setting
 				LOGDISPLAY_SPEC(5)(_T("AcqCallback Image Data : HeadNo<%d>(Top<0>,Bottom<1>), Image 누적 Count<%d>"),
 					pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
+
+
+				pQueueCtrl->PushBack(pFrmInfo);
+				bSend = TRUE;
 
 				if (bSend == FALSE) {
 					delete[]pImg;

@@ -726,6 +726,11 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				strNewLotID.TrimRight();
 				strOldLotID.TrimRight();
 
+				AprData.m_nCoutinuouCount = (int)AprData.m_SeqDataIN.wContinousCount;
+				AprData.m_nSectorNgCount = (int)AprData.m_SeqDataIN.wSectorNgCount;
+				AprData.m_nSectorBaseCount = (int)AprData.m_SeqDataIN.wSectorBaseCount;
+
+
 			}
 
 			{

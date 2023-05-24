@@ -359,7 +359,6 @@ public :
 	// 22.06.24 Ahn Add End
 	int LotEndProcess();
 
-
 	enum {
 		en_Mode_Start = 0,
 		en_Mode_Run,

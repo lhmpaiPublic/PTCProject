@@ -644,6 +644,7 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	return 0;
 }
 
+
 // 22.06.27 Ahn Add Start
 int CGlobalData::AddHistoryLot(CHistoryLotCtrl::_LOT_INFO& lotInfo)
 {

@@ -654,6 +654,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					pBtmInfo->m_dFrecuency = dFrequency;
 					// 22.12.09 Ahn Add End
 
+
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPEC(1)("Use Input TabID-Top[%d]-Bottom[%d], TabNo-Top[%d]-Bottom[%d]", 
+						pInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard,  pInfo->nTabNo, pBtmInfo->nTabNo
+						);
+
+
 					//스래드에 처리할 정보를 저장 TOP, BOTTOM
 					pThreadQue[CAM_POS_TOP]->push(pInfo) ;
 					pThreadQue[CAM_POS_BOTTOM]->push(pBtmInfo) ;
@@ -666,10 +673,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					strMsg.Format(_T("Find Image Tab TotalCount<%d>"), AprData.m_NowLotData.m_nTabCount);
 					AprData.SaveMemoryLog(strMsg);
 
-					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(1)("Use Input TabID-Top[%d]-Bottom[%d], TabNo-Top[%d]-Bottom[%d]", 
-						pInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard,  pInfo->nTabNo, pBtmInfo->nTabNo
-						);
+
 
 
 					//메모리 로그 기록
@@ -826,6 +830,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 		
 						// 22.08.09 Ahn Add Start
 						AprData.m_NowLotData.m_nContinueCount++ ;
+
+						CString strDbg;
+						strDbg.Format(_T("연속 알람 Count: %d"), AprData.m_NowLotData.m_nContinueCount);
+						AprData.SaveDebugLog(strDbg); //pyjtest
+
+
+
 						CTabJudge tab ;
 						tab.nJudge = JUDGE_NG ;
 						tab.nReason = wAlarmCode ;
@@ -836,9 +847,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						if ((AprData.m_NowLotData.m_nContinueCount >= AprData.m_nCoutinuouCount) && (AprData.m_nCoutinuouCount >= 2))
 						{
 							wAlarmCode |= CSigProc::en_Alarm_ContinueNg;
+
 							CString strMessage;
 							strMessage.Format(_T("연속 NG Alarm 발생. %d Tab연속 NG 발생"), AprData.m_NowLotData.m_nContinueCount);
 							AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
+							AprData.SaveDebugLog(strMessage); //pyjtest
+
+							//알람이 설정되었으면 초기화
+							AprData.m_NowLotData.m_nContinueCount = 0;
 
 							AprData.m_NowLotData.m_SeqDataOut.dwContinueAlarmCount++;
 						}
@@ -847,15 +863,25 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//if ((AprData.m_pRecipeInfo->nSectorCount > 0) && (AprData.m_pRecipeInfo->nAlarmCount > 0)) {
 						//	if (nSecterNgCount >= AprData.m_pRecipeInfo->nAlarmCount) {
 						int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_nSectorBaseCount);
+
+						strDbg.Format(_T("구간 알람 Count: %d"), nSecterNgCount);
+						AprData.SaveDebugLog(strDbg); //pyjtest
+
+
 						if ((AprData.m_nSectorNgCount > 0) && (AprData.m_nSectorBaseCount> 0))
 						{
 							// 22.09.22 Ahn Modify Start
 							if (nSecterNgCount >= AprData.m_nSectorNgCount)
 							{
 								wAlarmCode |= CSigProc::en_Alarm_SectorNg;
+
 								CString strMessage;
-								strMessage.Format(_T("구간 NG Alarm 발생. %d / %d Tab NG 발생"), nSecterNgCount, AprData.m_pRecipeInfo->nSectorCount);
+								strMessage.Format(_T("구간 NG Alarm 발생. 발생 개수:%d, 설정 개수:%d, 설정 거리:%d"), nSecterNgCount, AprData.m_nSectorNgCount, AprData.m_nSectorBaseCount);
 								AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
+								AprData.SaveDebugLog(strMessage); //pyjtest
+
+								//알람이 설정되었으면 초기화
+								AprData.m_NowLotData.m_secNgJudge.ResetAll();
 
 								AprData.m_NowLotData.m_SeqDataOut.dwSectorAlarmCount++;
 							}
@@ -1131,7 +1157,17 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							}
 						}
 					}
-					// 22.05.31 Ahn Add End
+
+
+					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
+					CTactTimeData data;
+					data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo ;
+					data.dTactTime = dTactTime ;
+					pTactCtrl->AddNewTactData(data) ;
+
+					//체크박스 로그 출력
+					LOGDISPLAY_SPEC(1)("TabID[%d]-TabNo[%d] - TacTime[%f]",
+						pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime);
 
 					pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
 					pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
@@ -1139,12 +1175,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					// GEN 체크박스 Log 출력
 					LOGDISPLAY_SPEC(5)("Logcount<%d> Top/Bottom 마킹정보를 pRsltQueueCtrl 저장", TempLogCount);
 
-					// 22.12.09 Ahn Add Start
-					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
-					CTactTimeData data;
-					data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo ;
-					data.dTactTime = dTactTime ;
-					pTactCtrl->AddNewTactData(data) ;
+
 
 					delete pUnitTop;
 					delete pUnitBtm;
@@ -1156,9 +1187,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					CAppDIO dio;
 					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
 
-					//체크박스 로그 출력
-					LOGDISPLAY_SPEC(1)("TabID[%d]-TabNo[%d] - TacTime[%f]", 
-						pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo +1, dTactTime);
 
 					// 22.02.17 Ahn Modify End
 
