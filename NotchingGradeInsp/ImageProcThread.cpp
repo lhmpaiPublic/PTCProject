@@ -413,6 +413,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								//다음에 사용할 id를 못찾았다.
 								bNextTabId = false;
 							}
+
+							//미리 사용한 Tab ID 정보 삭제
+							while (quUserTabID.size())
+								quUserTabID.pop();
 						}
 						//땡겨 쓴 id가 없다.
 						else
@@ -436,24 +440,30 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					if (bNextTabId == false)
 					{
 						AprData.m_NowLotData.m_nTabIDEmptyTotalCnt++;
-						//전에 사용했던 Tab id 모두 삭제
-						while (quUserTabID.size())
-							quUserTabID.pop();
-
-						//다음 아이디를 할당한다.
-						cntInfo.nTabID = useTabID;
-						//사용한 아이디를 backup 한다. 확인용
-						quUserTabID.push(useTabID);
-						//다음에 사용할 id : 1 증가 시켜 저장
-						useTabID++;
-						//Tab id는 0 ~ 63 까지 사용한다.
-						if (useTabID >= 64)
+						//2개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
+						if (quUserTabID.size() > 2)
 						{
-							useTabID = 0;
+							//다음 아이디를 할당한다.
+							cntInfo.nTabID = 64;
 						}
+						else
+						{
+							//다음 아이디를 할당한다.
+							cntInfo.nTabID = useTabID;
+							//다음에 사용할 id : 1 증가 시켜 저장
+							useTabID++;
+							//Tab id는 0 ~ 63 까지 사용한다.
+							if (useTabID >= 64)
+							{
+								useTabID = 0;
+							}
+						}
+						//사용한 아이디를 backup 한다. 확인용
+						quUserTabID.push(cntInfo.nTabID);
+						
 						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(1)(_T("Tab ID Empty Totalcount<%d>"),
-							AprData.m_NowLotData.m_nTabIDEmptyTotalCnt);
+						LOGDISPLAY_SPEC(1)(_T("Tab ID Empty Totalcount<%d> - Set TabID<%d>"),
+							AprData.m_NowLotData.m_nTabIDEmptyTotalCnt, cntInfo.nTabID);
 					}
 
 					//Image Cutting Tab 정보 출력 로그
