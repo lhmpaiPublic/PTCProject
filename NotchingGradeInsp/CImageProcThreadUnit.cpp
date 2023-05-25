@@ -144,7 +144,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				// 22.02.24 Ahn Add End
 
 				//Log 출력
-				LOGDISPLAY_SPEC(1)("ImageResult <%s>Make Start : TabID<%d>, Tab Find TotalCount<%d>",
+				LOGDISPLAY_SPEC(1)("*3**Result-Proc <%s> : TabID<%d>, Tab Find TotalCount<%d>",
 					(pFrameRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", pFrameRsltInfo->m_nTabId_CntBoard, pFrameRsltInfo->nTabNo + 1);
 
 				// 23.02.20 Ahn Modify Start

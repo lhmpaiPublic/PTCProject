@@ -81,7 +81,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 			return;
 		}
 		//Log Camera Setting
-		LOGDISPLAY_SPEC(1)(_T("EnCoder-TotalCount<%d>, TabID TotalCount<%d>, Diff<%d>"),
+		LOGDISPLAY_SPEC(1)(_T("*1**EnCoder-TotalCount<%d>, TabID TotalCount<%d>, Diff<%d>"),
 			AprData.m_NowLotData.m_nEnCoderTotalCnt, AprData.m_NowLotData.m_nInputTabIDTotalCnt
 			, abs(AprData.m_NowLotData.m_nEnCoderTotalCnt - AprData.m_NowLotData.m_nInputTabIDTotalCnt));
 

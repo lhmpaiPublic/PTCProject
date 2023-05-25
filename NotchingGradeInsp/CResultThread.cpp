@@ -688,6 +688,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					pRsltInfo->dSharpness = CImageProcess::GetIqSharpnessValue(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
 					pRsltInfo->nBrightAverage = CImageProcess::GetBrightAverage( pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
 					// 23.02.24 Ahn Add End
+
 					 
 					// 22.05.04 Test
 					CImageProcess::ResizeImage(pImgPtr, pResizePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nMagnif);
@@ -715,6 +716,8 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					// 22.06.09 Ahn Modify Start
 					if( pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE )
 					{
+						//이미지 저장
+						LOGDISPLAY_SPEC(1)("*5**Image Save : TabNo<%d>", pRsltInfo->nTabNo);
 
 						//이미지 저장 포맷
 						CString strImageFormat = AprData.getGSt()->GetOutImageFormat();

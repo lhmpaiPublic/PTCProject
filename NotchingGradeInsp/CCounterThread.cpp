@@ -156,7 +156,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						AprData.m_NowLotData.m_nInputTabIDTotalCnt++;
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(1)(_T("DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
+						LOGDISPLAY_SPEC(1)(_T("*0**DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
 
 						//누락된 input 아이디를 찾는다.
 						//초기값이 없다면 nextTabID 입력만
@@ -198,7 +198,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						pCntQueInPtr->PushBack(cntInfo);
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(1)(_T("DIO Trigger Input ID 받음[%d] Queue Count<%d>-><%d>, Recive TabID TotalCount<%d>"),
+						LOGDISPLAY_SPEC(1)(_T("Input ID 받음[%d] Queue Count<%d>-><%d>, Recive TabID TotalCount<%d>"),
 							cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize(), AprData.m_NowLotData.m_nInputTabIDTotalCnt);
 
 						//이전 id 갱신
