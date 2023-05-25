@@ -1310,37 +1310,13 @@ int CImageProcSimDlg::MakeGridData()
 				//strText.Format(_T("%s"), strTitle[nCol]);
 				//Item.strText = strText;
 				Item.strText = strTitle[nCol];
+
+				//폰트 픽셀 넓이 저정
+				CDC* dc = GetDC();
+				m_GridCtrlDef.setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+
 				m_GridCtrlDef.SetItem(&Item);
-				int nWidth = 70;
-				switch (nCol) {
-				case en_CimDef_Type:
-					nWidth = 70;
-					break;
-				case en_CimDef_Judge :
-				case en_CimDef_Count:
-				case en_CimDef_PosX:
-				case en_CimDef_PosY:
-					nWidth = 60;
-					break;
-				case en_CimDef_JuegeSize:
-				case en_CimDef_Distance :	// 22.04.15 Ahn Add
-				case en_CimDef_Width:
-				case en_CimDef_Height:
-					nWidth = 70;
-					break;
-				case en_CimDef_BriAve:
-				case en_CimDef_BriMax:
-				case en_CimDef_BriMin:
-				case en_CimDef_OrgAve:
-				case en_CimDef_OrgMax:
-				case en_CimDef_OrgMin:
-					nWidth = 50;
-					break;
-				default:
-					nWidth = 50;
-					break;
-				}
-				m_GridCtrlDef.SetColumnWidth(nCol, nWidth);
+
 			}
 
 			// fill rows/cols with text
@@ -1362,6 +1338,10 @@ int CImageProcSimDlg::MakeGridData()
 						strText.Format(_T("%d"), nRow * nCol);
 					Item.strText = strText;
 
+					//폰트 픽셀 넓이 저정
+					CDC* dc = GetDC();
+					m_GridCtrlDef.setGrideFontWidth(nCol, dc, strText, 2);
+
 					if (rand() % 10 == 1)
 					{
 						COLORREF clr = RGB(rand() % 128 + 128, rand() % 128 + 128, rand() % 128 + 128);
@@ -1372,6 +1352,9 @@ int CImageProcSimDlg::MakeGridData()
 					m_GridCtrlDef.SetItem(&Item);
 				}
 			}
+			// 크기 조정
+			m_GridCtrlDef.setGridFullColumnWidthVec();
+
 			//	m_GridCtrlDef.AutoSize();
 			m_GridCtrlDef.ShowWindow(SW_SHOW);
 		}
@@ -1413,21 +1396,13 @@ int CImageProcSimDlg::MakeGridData()
 			Item.col = nCol;
 
 			Item.strText = strTitle[nCol];
+
+			//폰트 픽셀 넓이 저정
+			CDC* dc = GetDC();
+			m_GridCtrlDef.setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+
 			pGridCtrl->SetItem(&Item);
-			int nWidth = 70;
-			switch (nCol) {
-			case	0:
-				nWidth = 80;
-				break;
-			case	1 :
-			case	2 :
-				nWidth = 80;
-				break;
-			default:
-				nWidth = 50;
-				break;
-			}
-			pGridCtrl->SetColumnWidth(nCol, nWidth);
+
 		}
 		int nHeight = 20;
 		pGridCtrl->SetRowHeight(0, nHeight);
@@ -1480,9 +1455,18 @@ int CImageProcSimDlg::MakeGridData()
 					strText.Format(_T(""));
 				}
 				Item.strText = strText;
+
+				//폰트 픽셀 넓이 저정
+				CDC* dc = GetDC();
+				pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
+
 				pGridCtrl->SetItem(&Item);
 			}
 		}
+
+		//크기 조정
+		pGridCtrl->setGridFullColumnWidthVec();
+
 		//	pGridCtrl->AutoSize();
 		pGridCtrl->ShowWindow(SW_SHOW);
 	}

@@ -332,27 +332,25 @@ int CSystemSettingDlg::MakeGridCtrl()
 		Item.mask = GVIF_TEXT;
 		Item.row = 0;
 		Item.col = nCol;
-		int nWidth = 100;
 		switch (nCol) {
 		case	 0:
 			Item.strText = _LANG( _T("파라메터명"), _T("Param Name") );
-			nWidth = 80;
 			break;
 		case	 1:
 			Item.strText = _LANG(_T("카메라 1"), _T("Camera 1"));
-			nWidth = 100;
 			break;
 		case	 2:
 			Item.strText = _LANG(_T("카메라 2"), _T("Camera 2"));
-			nWidth = 100;
 			break;
 		default:
 			Item.strText = _T("");
-			nWidth = 40;
 			break;
 		}
+		//폰트 픽셀 넓이 저정
+		CDC* dc = GetDC();
+		pGridCtrl->setGrideFontWidth(nCol, dc, Item.strText, 2);
+
 		pGridCtrl->SetItem(&Item);
-		pGridCtrl->SetColumnWidth(nCol, nWidth);
 	}
 	// 22.07.25 Ahn Modify Start
 	//CString strParamName[en_CamParamMax] = { _T("분해능X"), _T("Line Rate"), _T("노광시간"), _T("게인"), _T("뷰 폭"), _T("뷰 높이"), _T("뷰 오프셋")};
@@ -388,11 +386,17 @@ int CSystemSettingDlg::MakeGridCtrl()
 				//strText.Format(_T("%d"), nRow * nCol);
 			Item.strText = strText;
 
+			//폰트 픽셀 넓이 저정
+			CDC* dc = GetDC();
+			pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
 
 			pGridCtrl->SetItem(&Item);
 			pGridCtrl->SetRowHeight(nRow, nRowHeight);
 		}
 	}
+	//크기조정
+	pGridCtrl->setGridFullColumnWidthVec();
+
 	pGridCtrl->ShowWindow(SW_SHOW);
 	UpdateGrid();
 	return 0;

@@ -477,28 +477,19 @@ void CIoMonitorDlg::MakeGridCtrl()
 			Item.row = 0;
 			Item.col = nCol;
 			Item.strText = strTitle[nCol];
+
+			//폰트 픽셀 넓이 저정
+			CDC* dc = GetDC();
+			pGridCtrl->setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+
 			pGridCtrl->SetItem(&Item);
-			int nWidth = 70;
-			switch (nCol)
-			{
-			case	en_col_Name :
-				nWidth = 200;
-				break;
-			case	en_col_Address :
-				nWidth = 70;
-				break;
-			case	en_col_Data :
-				nWidth = 80;
-				break;
-			default:
-				nWidth = 50;
-				break;
-			}
-			pGridCtrl->SetColumnWidth(nCol, nWidth);
+
 			pGridCtrl->SetColAlignment(nCol, flexAlignLeftCenter /*flexAlignCenterCenter*/);
 		}
 		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
+	//크기 조정
+	pGridCtrl->setGridFullColumnWidthVec();
 
 
 
@@ -529,12 +520,18 @@ void CIoMonitorDlg::MakeGridCtrl()
 			}
 
 			Item.strText = strTemp;
+
+			//폰트 픽셀 넓이 저정
+			CDC* dc = GetDC();
+			pGridCtrl->setGrideFontWidth(nCol, dc, strTemp, 2);
+
 			pGridCtrl->SetItem(&Item);
 		}
 		int nHeight = 22;
 		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
-
+	//크기조정
+	pGridCtrl->setGridFullColumnWidthVec();
 
 	// Bit OUT
 	pGridCtrl = &m_GridBitOut;
@@ -561,12 +558,19 @@ void CIoMonitorDlg::MakeGridCtrl()
 			}
 
 			Item.strText = strTemp;
+
+			//폰트 픽셀 넓이 저정
+			CDC* dc = GetDC();
+			pGridCtrl->setGrideFontWidth(nCol, dc, strTemp, 2);
+
+
 			pGridCtrl->SetItem(&Item);
 		}
 		int nHeight = 22;
 		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
-
+	//크기조정
+	pGridCtrl->setGridFullColumnWidthVec();
 
 	//////////////////////////////////////////////////////////////////////////
 	// Word 입력 Data
@@ -594,11 +598,18 @@ void CIoMonitorDlg::MakeGridCtrl()
 			}
 
 			Item.strText = strTemp;
+
+			//폰트 픽셀 넓이 저정
+			CDC* dc = GetDC();
+			pGridCtrl->setGrideFontWidth(nCol, dc, strTemp, 2);
+
 			pGridCtrl->SetItem(&Item);
 		}
 		int nHeight = 22;
 		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
+	//크기조정
+	pGridCtrl->setGridFullColumnWidthVec();
 
 	// Word 출력 Data
 	pGridCtrl = &m_GridWordOut;
@@ -626,11 +637,18 @@ void CIoMonitorDlg::MakeGridCtrl()
 			}
 
 			Item.strText = strTemp;
+
+			//폰트 픽셀 넓이 저정
+			CDC* dc = GetDC();
+			pGridCtrl->setGrideFontWidth(nCol, dc, strTemp, 2);
+
 			pGridCtrl->SetItem(&Item);
 		}
 		int nHeight = 20 ;
 		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
+	//크기조정
+	pGridCtrl->setGridFullColumnWidthVec();
 }
 
 void CIoMonitorDlg::UpdateGridCtrl()

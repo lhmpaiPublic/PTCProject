@@ -545,20 +545,13 @@ void CImgDisplayDlg::MakeDefInfoGrid()
 		Item.row = 0;
 		Item.col = nCol;
 		Item.strText = strTitle[nCol];
+
+		//폰트 픽셀 넓이 저정
+		CDC* dc = GetDC();
+		pGridCtrl->setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+
 		pGridCtrl->SetItem(&Item);
-		int nWidth = 50;
-		switch (nCol) {
-		case	 0:
-			nWidth = 70;
-			break;
-		case	1:
-			nWidth = 100;
-			break;
-		default:
-			nWidth = 50;
-			break;
-		}
-		pGridCtrl->SetColumnWidth(nCol, nWidth);
+
 	}
 
 
@@ -598,10 +591,18 @@ void CImgDisplayDlg::MakeDefInfoGrid()
 		}
 
 		Item.strText = strText;
+
+		//폰트 픽셀 넓이 저정
+		CDC* dc = GetDC();
+		pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
+
 		pGridCtrl->SetItem(&Item);
 		int nHeight = 22;
 		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
+
+	//크기 조정
+	pGridCtrl->setGridFullColumnWidthVec();
 
 	pGridCtrl->SetRowHeight(0, 22);
 	pGridCtrl->ShowWindow(SW_SHOW);

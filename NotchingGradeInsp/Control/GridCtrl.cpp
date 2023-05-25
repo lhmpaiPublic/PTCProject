@@ -320,6 +320,9 @@ CGridCtrl::CGridCtrl(int nRows, int nCols, int nFixedRows, int nFixedCols)
 //KANG 22.06.17 Add Start
 	m_nEnsureVisibleType = 0;
 //KANG 22.06.17 Add End
+
+    //Gride 넓이 변화가 있을 때
+    bColumnWidthVecSetting = false;
 }
 
 CGridCtrl::~CGridCtrl()
@@ -3984,6 +3987,10 @@ BOOL CGridCtrl::SetColumnCount(int nCols)
     BOOL bResult = TRUE;
 
     ASSERT(nCols >= 0);
+
+    ColumnWidthVec.resize(nCols);
+    for (int i = 0; i < ColumnWidthVec.size(); i++)
+        ColumnWidthVec[i] = 0;
 
     if (nCols == GetColumnCount())
         return bResult;
@@ -8854,3 +8861,72 @@ void CGridCtrl::SetEnsureVisibleType(int nType)
 	m_nEnsureVisibleType = nType;
 }
 //KANG 22.05.31 Add End
+
+
+int CGridCtrl::getColumnWidthVec(int nCol)
+{
+    return ColumnWidthVec[nCol];
+}
+
+int CGridCtrl::getTotalColumnWidthVec()
+{
+    int nTotalVal = 0;
+    for (int i = 0; i < ColumnWidthVec.size(); i++)
+        nTotalVal += ColumnWidthVec[i];
+    return nTotalVal;
+}
+
+void CGridCtrl::setColumnWidthVec(int nCol, int nSize)
+{
+    int beforeWidth = getColumnWidthVec(nCol);
+    //기존세팅 컬륨의 넓이보다 크다면 변경
+    if (beforeWidth < nSize)
+    {
+        ColumnWidthVec[nCol] = nSize;
+        //그리드 넓이 변경 세팅
+        bColumnWidthVecSetting = true;
+    }
+
+    if (beforeWidth == 0)
+    {
+        SetColumnWidth(nCol, nSize);
+    }
+}
+
+int CGridCtrl::setGrideFontWidth(int nCol, CDC* dc, CString Text, int offset)
+{
+    int width = 0;
+    CSize fontSize = dc->GetTextExtent(Text);
+    width = fontSize.cx + offset;
+    setColumnWidthVec(nCol, width);
+    return width;
+}
+
+void CGridCtrl::setGridFullColumnWidthVec()
+{
+    //그리드 크기
+    CRect rc;
+    GetClientRect(rc);
+    int winWidth = rc.right - rc.left;
+    //그리드 넓이 변화가 있고, 부모보다 총 그리스 넓이가 작다면
+    if (bColumnWidthVecSetting && (getTotalColumnWidthVec() < winWidth))
+    {
+        //컬륨 갯수
+        int nColumnCount = (int)ColumnWidthVec.size();
+        //PLUS 넓이 계산
+        int remain = (winWidth - getTotalColumnWidthVec());
+        int plusWidth = remain / nColumnCount;
+        int remainVal = remain - (plusWidth * nColumnCount);
+
+        int iCol = 0;
+        for (; iCol < (int)ColumnWidthVec.size() - 1; iCol++)
+        {
+            SetColumnWidth(iCol, ColumnWidthVec[iCol] + plusWidth);
+        }
+        //나머지 넓이 끝으로 채운다.
+        SetColumnWidth(iCol, ColumnWidthVec[iCol] + plusWidth + remainVal);
+
+        //그래드 변경 세팅 제거
+        bColumnWidthVecSetting = false;
+    }
+}

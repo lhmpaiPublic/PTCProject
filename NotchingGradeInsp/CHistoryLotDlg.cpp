@@ -148,12 +148,9 @@ int CHistoryLotDlg::MakeHitoryGrid()
 			}
 			END_CATCH
 
-			// 22.07.05 Ahn Modify Start
-			//CString strTitle[en_Max_GridCols] = { _T("No."),_T("LOT_ID"),_T("모델명"),_T("날짜"),_T("시작시간"),_T("종료시간"),_T("OK 수량")
-			//									 ,_T("OK 비율"), _T("TOP NG 수"), _T("BOTTOM NG 수"), _T("마킹수"), _T("마킹율") };
-			CString strTitle[en_Max_GridCols] = { _T("No."),_T("Date"),_T("LotID"),_T("Lot Start"),_T("LotEnd"),_T("Total"),_T("OK Count")
+			// 
+			CString strTitle[en_Max_GridCols] = { _T("No."),_T("      Date     "),_T("     LotID     "),_T("Lot Start"),_T("LotEnd"),_T("Total"),_T("OK Count")
 													,_T("OK(%)"), _T("NG Count"), _T("NG(%)"), _T("Top FoilExp"), _T("BTM FoilExp"), _T("Ink Marking"), _T("Marking(%)")};
-			// 22.07.05 Ahn Modify End
 
 			for (nCol = 0; nCol < m_pHistoryList->GetColumnCount(); nCol++) {
 				CString strText;
@@ -162,37 +159,17 @@ int CHistoryLotDlg::MakeHitoryGrid()
 				Item.row = 0;
 				Item.col = nCol;
 				Item.strText = strTitle[nCol];
-				int nColWidth = 80;
-				switch (nCol) {
-				case	en_col_no :
-					nColWidth = 60 ;
-					break;
-				case	en_col_Date :
-					nColWidth = 100;
-					break;
-				case	en_col_LotId :
-					nColWidth = 110;
-					break;
-				case	en_col_StartTime :
-				case	en_col_EndTime :
-					nColWidth = 70;
-					break;
-				case	en_col_TotalCount :
-				case	en_col_OK_Count :
-				case	en_col_OK_Rate :
-				case	en_col_NG_Count :
-				case	en_col_NG_Rate :
-				case	en_col_Top_NG_Count :
-				case	en_col_Btm_NG_Count :
-				case	en_col_Marking_Count :
-				case	en_col_Marking_Rage :
-					nColWidth = 70;
-					break;
-				}
-				m_pHistoryList->SetColumnWidth(nCol, nColWidth);
+
+				//폰트 픽셀 넓이 저정
+				CDC* dc = GetDC();
+				m_pHistoryList->setGrideFontWidth(nCol, dc, strTitle[nCol], 20);
+
 				m_pHistoryList->SetItem(&Item);
 				m_pHistoryList->SetColAlignment(nCol, flexAlignCenterCenter);
 			}
+
+			//크기 조정
+			m_pHistoryList->setGridFullColumnWidthVec();
 
 			m_pHistoryList->SetRowHeight(0, nHeight);
 			//m_pHistoryList->AutoSize();

@@ -236,37 +236,16 @@ int CResultViewDlg::MakeGrid()
 				Item.col = nCol;
 				Item.strText = strTitle[ nCol ];		
 
-				// 22.06.30 Ahn Add Start
-				switch (nCol) {
-				case	en_col_No :
-					nColWidth = 80;
-					break;
-				case	en_col_InspTime :
-					nColWidth = 160;
-					break;
-				case	en_col_CELL_ID:
-					nColWidth = 80;
-					break;
-				case	en_col_LOT_ID :
-				case	en_col_DEF_TYPE:
-					nColWidth = 120;
-					break;
-				case	en_col_POSITION :
-				case	en_col_DEF_SIZE :
-				case	en_col_InkMarking :
-				case	en_col_JUDGE : // 22.11.21 Ahn Add
-				case	en_col_DefPosY : // 22.12.07 Ahn Add
-					nColWidth = 80;
-					break;
-				case	en_col_ImagePath :
-					nColWidth = 0;
-					break;
-				}
+				//폰트 픽셀 넓이 저정
+				CDC* dc = GetDC();
+				m_pResultList->setGrideFontWidth(nCol, dc, strTitle[nCol], 47);
+
 				// 22.06.30 Ahn Add End
 				m_pResultList->SetItem(&Item);
-				m_pResultList->SetColumnWidth(nCol, nColWidth);
 				m_pResultList->SetColAlignment(nCol, flexAlignCenterCenter);
 			}
+			//크기에 맞게 조정
+			m_pResultList->setGridFullColumnWidthVec();
 
 			m_pResultList->SetRowHeight(0, nHeight);
 		//	m_pResultList->AutoSize();

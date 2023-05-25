@@ -168,23 +168,13 @@ int CRecipeSelectDlg::MakeGridCtrl_RecipeTable()
 		Item.row = 0;
 		Item.col = nCol;
 		Item.strText = strTitle[nCol];
+
+		//폰트 픽셀 넓이 저정
+		CDC* dc = GetDC();
+		pGridCtrl->setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+
 		pGridCtrl->SetItem(&Item);
-		int nWidth = 50;
-		switch (nCol) {
-		case	 0:
-			nWidth = 40;
-			break;
-		case	1:
-			nWidth = 200;
-			break;
-		case	2:
-			nWidth = 100;
-			break;
-		default:
-			nWidth = 50;
-			break;
-		}
-		pGridCtrl->SetColumnWidth(nCol, nWidth);
+
 	}
 
 
@@ -221,11 +211,18 @@ int CRecipeSelectDlg::MakeGridCtrl_RecipeTable()
 			}
 			Item.strText = strText;
 
+			//폰트 픽셀 넓이 저정
+			CDC* dc = GetDC();
+			pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
+
 			pGridCtrl->SetItem(&Item);
 		}
 		int nHeight = 22;
 		pGridCtrl->SetRowHeight(nRow, nHeight);
 	}
+	//크기조정
+	pGridCtrl->setGridFullColumnWidthVec();
+
 	pGridCtrl->ShowWindow(SW_SHOW);
 	return 0;
 }

@@ -932,6 +932,23 @@ private:
 	void SetSpinCtrl( int row, int column ) ;
 	void SetCellClick( int row, int column , BOOL bDoubleClick ) ;
 
+ private:
+     //colume font  넓이
+     std::vector<int> ColumnWidthVec;
+     //그래드의 넓이 변화가 있는가 검사
+     bool bColumnWidthVecSetting;
+ public:
+     //
+     int getColumnWidthVec(int nCol);
+
+     int getTotalColumnWidthVec();
+     //
+     int CGridCtrl::setGrideFontWidth(int nCol, CDC* dc, CString Text, int offset = 2);
+     //
+     void setColumnWidthVec(int nCol, int nSize);
+     //그리드 최대 넓이에 맞게 세팅한다.
+     void setGridFullColumnWidthVec();
+
 };
 
 // Returns the default cell implementation for the given grid region

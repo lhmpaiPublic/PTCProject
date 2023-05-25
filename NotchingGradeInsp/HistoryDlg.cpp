@@ -1635,25 +1635,17 @@ int CHistoryDlg::MakeGridSearchList()
 			m_pSearchList->SetRows(nRows);
 			m_pSearchList->SetCols(nCols);
 
-			// 22.06.02 Ahn Modify Start
-			CString strTitle[en_MaxListCol] = { _T(""), _T("Time"), _T("LOT"), _T("Model"), _T("Lane"), _T("CELL"), _T("Top/Bottom"), _T("Type"), _T("Judge"), _T("X(um)"), _T("Y(um)"), _T("Marking"), _T("IMAGE") };
-			// 22.06.02 Ahn Modify End
-			m_pSearchList->SetColWidth(en_ListCol_No, 1000);
-			m_pSearchList->SetColWidth(en_ListCol_Time, 3000);
-			m_pSearchList->SetColWidth(en_ListCol_LotID, 2500);
-			m_pSearchList->SetColWidth(en_ListCol_Model, 2500);
-			m_pSearchList->SetColWidth(en_ListCol_Lane, 2000);
-			m_pSearchList->SetColWidth(en_ListCol_Cell, 1000);
-			m_pSearchList->SetColWidth(en_ListCol_TopBottom, 1500);
-			m_pSearchList->SetColWidth(en_ListCol_Type, 2000);
-			m_pSearchList->SetColWidth(en_ListCol_Rank, 1000);
-			m_pSearchList->SetColWidth(en_ListCol_XSize, 2000);
-			m_pSearchList->SetColWidth(en_ListCol_YSize, 2000);
-			m_pSearchList->SetColWidth(en_ListCol_Marking, 1000);
-			m_pSearchList->SetColWidth(en_ListCol_Link, 1500);
+			// header Name
+			CString strTitle[en_MaxListCol] = { _T(""), _T("       Time       "), _T("  LOT  "), _T("    Model    "), _T("     Lane     "), _T("   CELL   "), _T("   Top/Bottom   "), _T("    Type    "), _T("    Judge    "), _T("  X(um)  "), _T("  Y(um)  "), _T("     Marking     "), _T("    IMAGE    ") };
+
 
 			for (nCol = 0; nCol < m_pSearchList->GetColumnCount(); nCol++) {
 				m_pSearchList->SetColAlignment(nCol, 5);
+
+				//폰트 픽셀 넓이 저정
+				CDC* dc = GetDC();
+				m_pSearchList->setGrideFontWidth(nCol, dc, strTitle[nCol], 80);
+
 				m_pSearchList->SetTextMatrix(0, nCol, strTitle[nCol]);
 			}
 
@@ -1761,9 +1753,17 @@ int CHistoryDlg::MakeGridSearchList()
 					default:
 						break;
 					}
+
+					//폰트 픽셀 넓이 저정
+					CDC* dc = GetDC();
+					m_pSearchList->setGrideFontWidth(nCol, dc, strTitle[nCol], 80);
+
 					m_pSearchList->SetTextMatrix(nRow, nCol, strText);
 				}
 			}
+			//크기에 맞게 조정
+			m_pSearchList->setGridFullColumnWidthVec();
+
 			m_pSearchList->SetRedraw(TRUE);
 			m_pSearchList->AutoSizeRows();
 			m_pSearchList->ShowWindow(SW_SHOW);
