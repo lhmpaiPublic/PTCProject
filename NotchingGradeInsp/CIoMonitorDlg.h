@@ -121,7 +121,7 @@ public:
 		en_OutWord_Alarm				= 9,
 		en_OutWord_Code					= 10,
 
-		en_OutWord_Max					= 80,
+		en_OutWord_Max					= 100,
 	};
 
 private :
@@ -172,22 +172,6 @@ public:
 	afx_msg void OnBnClickedBtnDummyError();
 	// 22.10.05 Ahn Add End
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
-	afx_msg void OnDblclkStReadyOut();
-	afx_msg void OnDblclkStReadyOutOff();
-	afx_msg void OnDblclkStAlivePulseOut();
-	afx_msg void OnDblclkStAlivePulseOutOff();
-	afx_msg void OnDblclkStCntResetAck();
-	afx_msg void OnDblclkStCntResetAckOff();
-	afx_msg void OnDblclkStDiskSpaceAlarm();
-	afx_msg void OnDblclkStDiskSpaceAlarmOff();
-	afx_msg void OnDblclkStDiskSpaceError();
-	afx_msg void OnDblclkStDiskSpaceErrorOff();
-	afx_msg void OnDblclkStRadRecipeChangeAck();
-	afx_msg void OnDblclkStRadRecipeChangeAckOff();
-	afx_msg void OnDblclkStLotStartAck();
-	afx_msg void OnDblclkStLotStartAckOff();
-	afx_msg void OnDblclkStLotEndAck();
-	afx_msg void OnDblclkStLotEndAckOff();
 	afx_msg void OnBnClickedBtnDummyErrorClear();
 	afx_msg void OnMouseDblClickGridBitOut(NMHDR* pNMHDR, LRESULT* pResult);	 // 22.06.23 Ahn Add 
 

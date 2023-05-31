@@ -91,22 +91,6 @@ BEGIN_MESSAGE_MAP(CIoMonitorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_DATA_LOAD, &CIoMonitorDlg::OnBnClickedBtnDataLoad)
 	ON_BN_CLICKED(IDC_BTN_DUMMY_ERROR, &CIoMonitorDlg::OnBnClickedBtnDummyError)
 	ON_WM_SHOWWINDOW()
-	ON_STN_DBLCLK(IDC_ST_READY_OUT, &CIoMonitorDlg::OnDblclkStReadyOut)
-	ON_STN_DBLCLK(IDC_ST_READY_OUT_OFF, &CIoMonitorDlg::OnDblclkStReadyOutOff)
-	ON_STN_DBLCLK(IDC_ST_ALIVE_PULSE_OUT, &CIoMonitorDlg::OnDblclkStAlivePulseOut)
-	ON_STN_DBLCLK(IDC_ST_ALIVE_PULSE_OUT_OFF, &CIoMonitorDlg::OnDblclkStAlivePulseOutOff)
-	ON_STN_DBLCLK(IDC_ST_CNT_RESET_ACK, &CIoMonitorDlg::OnDblclkStCntResetAck)
-	ON_STN_DBLCLK(IDC_ST_CNT_RESET_ACK_OFF, &CIoMonitorDlg::OnDblclkStCntResetAckOff)
-	ON_STN_DBLCLK(IDC_ST_DISK_SPACE_ALARM, &CIoMonitorDlg::OnDblclkStDiskSpaceAlarm)
-	ON_STN_DBLCLK(IDC_ST_DISK_SPACE_ALARM_OFF, &CIoMonitorDlg::OnDblclkStDiskSpaceAlarmOff)
-	ON_STN_DBLCLK(IDC_ST_DISK_SPACE_ERROR, &CIoMonitorDlg::OnDblclkStDiskSpaceError)
-	ON_STN_DBLCLK(IDC_ST_DISK_SPACE_ERROR_OFF, &CIoMonitorDlg::OnDblclkStDiskSpaceErrorOff)
-	ON_STN_DBLCLK(IDC_ST_RAD_RECIPE_CHANGE_ACK, &CIoMonitorDlg::OnDblclkStRadRecipeChangeAck)
-	ON_STN_DBLCLK(IDC_ST_RAD_RECIPE_CHANGE_ACK_OFF, &CIoMonitorDlg::OnDblclkStRadRecipeChangeAckOff)
-	ON_STN_DBLCLK(IDC_ST_LOT_START_ACK, &CIoMonitorDlg::OnDblclkStLotStartAck)
-	ON_STN_DBLCLK(IDC_ST_LOT_START_ACK_OFF, &CIoMonitorDlg::OnDblclkStLotStartAckOff)
-	ON_STN_DBLCLK(IDC_ST_LOT_END_ACK, &CIoMonitorDlg::OnDblclkStLotEndAck)
-	ON_STN_DBLCLK(IDC_ST_LOT_END_ACK_OFF, &CIoMonitorDlg::OnDblclkStLotEndAckOff)
 	ON_BN_CLICKED(IDC_BTN_DUMMY_ERROR_CLEAR, &CIoMonitorDlg::OnBnClickedBtnDummyErrorClear)
 	ON_NOTIFY(NM_DBLCLK, IDC_GRID_BIT_OUT, &CIoMonitorDlg::OnMouseDblClickGridBitOut)	// 22.07.15 Ahn Add 
 
@@ -152,35 +136,8 @@ BOOL CIoMonitorDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();	
 
-
-	// TODO:  여기에 추가 초기화 작업을 추가합니다.
-	int nMaxBit = en_In_Max;
-
-//	for ( i = 0; i < nMaxBit; i++) {
-//		m_bmpSigIn[i][en_mode_on].SetBitmap(IDB_GREEN_LED_ON);
-//		m_bmpSigIn[i][en_mode_on].ShowWindow(SW_HIDE);
-//		m_bmpSigIn[i][en_mode_off].SetBitmap(IDB_GREEN_LED_OFF);
-//		m_bmpSigIn[i][en_mode_off].ShowWindow(SW_SHOW);
-//	}
-
-//	nMaxBit = en_Out_Max;
-//	for (i = 0; i < nMaxBit; i++) {
-//		m_bmpSigOut[i][en_mode_on].SetBitmap(IDB_GREEN_LED_ON);
-//		m_bmpSigOut[i][en_mode_on].ShowWindow(SW_HIDE);
-//		m_bmpSigOut[i][en_mode_off].SetBitmap(IDB_GREEN_LED_OFF);
-//		m_bmpSigOut[i][en_mode_off].ShowWindow(SW_SHOW);
-//	}
-
-	SetCheckIoTimer();
-
-	CSigProc* pSigProc = theApp.m_pSigProc;;
-	pSigProc->ReadBlockAllData( &m_localSeqDataIn );
-	pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
-
 	MakeGridCtrl();
-	UpdateGridCtrl();
-
-//	::SetWindowPos(GetSafeHwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW);
+	
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -336,18 +293,25 @@ int CIoMonitorDlg::GetAddressAndBitPos( int nMode, int nSigNo, int &nBitPos  )
 }
 // 23.03.03 Ahn Add End
 
-
 int CIoMonitorDlg::RefreshAll()
 {
 	int nRet = 0;
 
-	CSigProc* pSigProc = theApp.m_pSigProc;;
+	CSigProc* pSigProc = theApp.m_pSigProc;
 	memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_IN);
 	memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_OUT);
 	pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
 	pSigProc->ReadAllPort_BitOut(m_bSigBitOut);
 	pSigProc->ReadBlockAllData(&m_localSeqDataIn);
-	pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
+	{
+		pSigProc->ReadBlockWriteDataAll_Melsec(&m_localSeqDataOut);
+	}
+	else
+	{
+		pSigProc->ReadBlockWriteDataAll_Siemens(&m_localSeqDataOutSms);
+	}
 
  	UpdateGridCtrl();
 
@@ -377,9 +341,9 @@ void CIoMonitorDlg::DebugLedChange()
 
 void CIoMonitorDlg::OnBnClickedOk()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	KillCheckIoTimer();
 
-	//m_pParent->
+
 	CDialogEx::OnOK();
 }
 
@@ -789,6 +753,9 @@ CString CIoMonitorDlg::GetInBitName(int nRow)
 		case	CSigProc::enSmsBitIn_AlarmResetReq:
 			strRet = _T("Alarm Reset");
 			break;
+		case	CSigProc::enSmsBitIn_AlarmNgAck:
+			strRet = _T("Alarm NG Ack");
+			break;
 		default:
 			strRet = _T("");
 			break;
@@ -838,6 +805,9 @@ CString CIoMonitorDlg::GetInBitName(int nRow)
 			break;
 		case	CSigProc::enBitIn_AlarmResetReq:
 			strRet = _T("Alarm Reset");
+			break;
+		case	CSigProc::enBitIn_AlarmNgAck:
+			strRet = _T("Alarm NG Ack");
 			break;
 		default:
 			strRet = _T("");
@@ -1046,36 +1016,29 @@ CString CIoMonitorDlg::GetInWordName(int nRow)
 			strRet = _T("Lot ID 10");
 			break;
 
-		///////////////////////////////////////////////////////////////////////
-		// 임시 적용, 재정의 필요
-		case	CSigProc::enSmsWordRead_DrossTopTarget:
+		case	CSigProc::enSmsWordRead_FoilExpInTopTarget :
 			strRet = _T("Foil Exp In Top Target");
 			break;
-		case	CSigProc::enSmsWordRead_DrossBtmTarget:
+		case	CSigProc::enSmsWordRead_FoilExpInBtmTarget:
 			strRet = _T("Foil Exp In Bottom Target");
 			break;
-		case	CSigProc::enSmsWordRead_FoilExpTopTarget:
+		case	CSigProc::enSmsWordRead_FoilExpOutTopTarget:
 			strRet = _T("Foil Exp Out Top Target");
 			break;
-		case	CSigProc::enSmsWordRead_FoilExpBtmTarget:
+		case	CSigProc::enSmsWordRead_FoilExpOutBtmTarget:
 			strRet = _T("Foil Exp Out Bottom Target");
 			break;
-		case	CSigProc::enSmsWordRead_SpeterTopTarget:
+		case	CSigProc::enSmsWordRead_FoilExpBothTopTarget:
 			strRet = _T("Foil Exp Both Top Target");
 			break;
-		case	CSigProc::enSmsWordRead_SpeterBtmTarget:
+		case	CSigProc::enSmsWordRead_FoilExpBothBtmTarget:
 			strRet = _T("Foil Exp Both Bottom Target");
 			break;
-//		case	CSigProc::enWordRead_SpeterTopTarget:
-//			strRet = _T("Spatter Top Target");
-//			break;
-//		case	CSigProc::enWordRead_SpeterBtmTarget:
-//			strRet = _T("Spatter Bottom Target");
-//			break;
-
-
-		case	CSigProc::enSmsWordRead_AlarmExistAck:
-			strRet = _T("AlarmExistAck");
+		case	CSigProc::enSmsWordRead_SpeterTopTarget:
+			strRet = _T("Spatter Top Target");
+			break;
+		case	CSigProc::enSmsWordRead_SpeterBtmTarget:
+			strRet = _T("Spatter Bottom Target");
 			break;
 		case	CSigProc::enSmsWordRead_PrmContinuousCnt:
 			strRet = _T("Continuous NG Count");
@@ -1227,84 +1190,33 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 		case	CSigProc::enSmsWordWrite_Heavy_Alarm_Cnt:
 			strRet = _T("Sector Alarm Count");
 			break;
-		case	CSigProc::enSmsWordWrite_DrossTop_Alarm_Cnt:
+
+
+		case	CSigProc::enSmsWordWrite_FoilExpInTop_Alarm_Cnt:
 			strRet = _T("Foil Exp In Top Alarm Count");
 			break;
-		case	CSigProc::enSmsWordWrite_DrossBtm_Alarm_Cnt:
+		case	CSigProc::enSmsWordWrite_FoilExpInBtm_Alarm_Cnt:
 			strRet = _T("Foil Exp In Bottom Alarm Count");
 			break;
-		case	CSigProc::enSmsWordWrite_FoilExpTop_Alarm_Cnt:
+		case	CSigProc::enSmsWordWrite_FoilExpOutTop_Alarm_Cnt:
 			strRet = _T("Foil Exp Out Top Alarm Count");
 			break;
-		case	CSigProc::enSmsWordWrite_FoilExpBtm_Alarm_Cnt:
+		case	CSigProc::enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt:
 			strRet = _T("Foil Exp Out Bottom Alarm Count");
 			break;
-//		case	CSigProc::enSmsWordWrite_FoilExpBothTop_Alarm_Cnt:
-//			strRet = _T("Foil Exp Both Top Alarm Count");
-//			break;
-//		case	CSigProc::enSmsWordWrite_FoilExpBothBottom_Alarm_Cnt:
-//			strRet = _T("Foil Exp Both Bottom Alarm Count");
-//			break;
+		case	CSigProc::enSmsWordWrite_FoilExpBothTop_Alarm_Cnt:
+			strRet = _T("Foil Exp Both Top Alarm Count");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt:
+			strRet = _T("Foil Exp Both Bottom Alarm Count");
+			break;
 		case	CSigProc::enSmsWordWrite_SpeterTop_Alarm_Cnt:
 			strRet = _T("Spatter Top Alarm Count");
 			break;
 		case	CSigProc::enSmsWordWrite_SpeterBtm_Alarm_Cnt:
 			strRet = _T("Spatter Bottom Alarm Count");
 			break;
-		case	CSigProc::enSmsWordWrite_DrossTopTarget:
-			strRet = _T("Foil Exp In Top Target");
-			break;
-		case	CSigProc::enSmsWordWrite_DrossBtmTarget:
-			strRet = _T("Foil Exp In Bottom Target");
-			break;
-		case	CSigProc::enSmsWordWrite_FoilExpTopTarget:
-			strRet = _T("Foil Exp Out Top Target");
-			break;
-		case	CSigProc::enSmsWordWrite_FoilExpBtmTarget:
-			strRet = _T("Foil Exp Out Bottom Target");
-			break;
-			//		case	CSigProc::enSmsWordWrite_FoilExpBothTopTarget:
-			//			strRet = _T("Foil Exp Both Top Target");
-			//			break;
-			//		case	CSigProc::enSmsWordWrite_FoilExpBothBottomTarget:
-			//			strRet = _T("Foil Exp Both Bottom Target");
-			//			break;
-		case	CSigProc::enSmsWordWrite_SpeterTopTarget:
-			strRet = _T("Spatter Top Target");
-			break;
-		case	CSigProc::enSmsWordWrite_SpeterBtmTarget:
-			strRet = _T("Spatter Bottom Target");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmExist:
-			strRet = _T("Alarm Exist");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer1:
-			strRet = _T("Alarm Code Buffer 1");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer2:
-			strRet = _T("Alarm Code Buffer 2");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer3:
-			strRet = _T("Alarm Code Buffer 3");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer4:
-			strRet = _T("Alarm Code Buffer 4");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer5:
-			strRet = _T("Alarm Code Buffer 5");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer6:
-			strRet = _T("Alarm Code Buffer 6");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer7:
-			strRet = _T("Alarm Code Buffer 7");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer8:
-			strRet = _T("Alarm Code Buffer 8");
-			break;
-		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer9:
-			strRet = _T("Alarm Code Buffer 9");
-			break;
+
 		case	CSigProc::enSmsWordWrite_Top_Defect_Count_Real:
 			strRet = _T("RealTime Top NG Count");
 			break;
@@ -1317,6 +1229,87 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 		case	CSigProc::enSmsWordWrite_Btm_Defect_Count_LotEnd:
 			strRet = _T("LotEnd Time Bottom NG Count");
 			break;
+
+
+
+
+		case	CSigProc::enSmsWordWrite_FoilExpInTopTarget:
+			strRet = _T("Foil Exp In Top Target");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpInBtmTarget:
+			strRet = _T("Foil Exp In Bottom Target");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpOutTopTarget:
+			strRet = _T("Foil Exp Out Top Target");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpOutBtmTarget:
+			strRet = _T("Foil Exp Out Bottom Target");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpBothTopTarget:
+			strRet = _T("Foil Exp Both Top Target");
+			break;
+		case	CSigProc::enSmsWordWrite_FoilExpBothBtmTarget:
+			strRet = _T("Foil Exp Both Bottom Target");
+			break;
+		case	CSigProc::enSmsWordWrite_SpeterTopTarget:
+			strRet = _T("Spatter Top Target");
+			break;
+		case	CSigProc::enSmsWordWrite_SpeterBtmTarget:
+			strRet = _T("Spatter Bottom Target");
+			break;
+
+		case	CSigProc::enSmsWordWrite_PrmContinuousCnt:
+			strRet = _T("Continuous NG Count");
+			break;
+		case	CSigProc::enSmsWordWrite_PrmSectorNgTabCnt:
+			strRet = _T("Sector NG Count");
+			break;
+		case	CSigProc::enSmsWordWrite_PrmSectorBaseCnt:
+			strRet = _T("Sector Range Tab Count");
+			break;
+
+
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmExist:
+			strRet = _T("Alarm Exist");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer1:
+			strRet = _T("Alarm 01: Continuous NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer2:
+			strRet = _T("Alarm 02: Not Use");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer3:
+			strRet = _T("Alarm 03: Sector NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer4:
+			strRet = _T("Alarm 04: Foil Exp In Top NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer5:
+			strRet = _T("Alarm 05: Foil Exp In Bottom NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer6:
+			strRet = _T("Alarm 06: Foil Exp Out Top NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer7:
+			strRet = _T("Alarm 07: Foil Exp Out Bottom NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer8:
+			strRet = _T("Alarm 08: Foil Exp Both Top NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer9:
+			strRet = _T("Alarm 09: Foil Exp Both Bottom NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer10:
+			strRet = _T("Alarm 10: Spatter Top NG");
+			break;
+		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer11:
+			strRet = _T("Alarm 11: Spatter Bottom NG");
+			break;
+
+
+
+
 		case	CSigProc::en_SmsWordWrite_Cell_Trigger_ID:
 			strRet = _T("Cell ID");
 			break;
@@ -1576,125 +1569,10 @@ void CIoMonitorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 
 	if (bShow)
 	{
-		CSigProc* pSigProc = theApp.m_pSigProc;
-		pSigProc->ReadBlockAllData(&m_localSeqDataIn);
-		pSigProc->ReadBlockWriteDataAll(&m_localSeqDataOut);
-
-		UpdateGridCtrl();
+		SetCheckIoTimer();
 
 	}
 }
-
-void CIoMonitorDlg::OnDblclkStAlivePulseOut()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutAlivePulse(FALSE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStAlivePulseOutOff()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutAlivePulse(TRUE);
-}
-
-void CIoMonitorDlg::OnDblclkStReadyOut()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutReady(FALSE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStReadyOutOff()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutReady(TRUE);
-}
-
-void CIoMonitorDlg::OnDblclkStCntResetAck()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutTabZeroReset(FALSE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStCntResetAckOff()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutTabZeroReset(TRUE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStDiskSpaceAlarm()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutDiskCapacityAlarm(FALSE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStDiskSpaceAlarmOff()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutDiskCapacityAlarm(TRUE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStDiskSpaceError()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutDiskCapacityWarning(FALSE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStDiskSpaceErrorOff()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutDiskCapacityWarning(TRUE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStRadRecipeChangeAck()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStRadRecipeChangeAckOff()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutRecipeChangeAck(TRUE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStLotStartAck()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutLotStartAck(FALSE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStLotStartAckOff()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutLotStartAck(TRUE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStLotEndAck()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->sigOutLotEndAck(FALSE);
-}
-
-
-void CIoMonitorDlg::OnDblclkStLotEndAckOff()
-{
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->sigOutLotEndAck(TRUE);
-}
-
-
 void CIoMonitorDlg::OnBnClickedBtnDummyErrorClear()
 {
 	CSigProc* pSigProc = theApp.m_pSigProc;

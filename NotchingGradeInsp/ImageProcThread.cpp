@@ -954,7 +954,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 								nJudge = tab.nJudge ;
 								nCode = wAlarmCode ;
-								pSigProc->ReportJudge(nId, nJudge, nCode);
+//								pSigProc->ReportJudge(nId, nJudge, nCode);
 								// 22.12.12 Ahn Add End
 							}
 						}
@@ -984,6 +984,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						CSigProc* pSigProc = theApp.m_pSigProc;
 						bMarkingActive = pSigProc->GetInkMarkActive();
+//						bMarkingActive = TRUE; // PLC 강제 마킹 처리
+						
 						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) )
 						{
 							//체크박스 로그 출력
@@ -1201,10 +1203,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					// 22.02.17 Ahn Modify End
 
 					// 22.02.17 Ahn Modify Start
-					if (bClearFlag == TRUE){
-						CSigProc *pSigProc = theApp.m_pSigProc;
-						WORD wResetCode = 0x00;
-						pSigProc->WriteAlarmCode(wResetCode);
+					if (bClearFlag == TRUE)
+					{
+//						CSigProc *pSigProc = theApp.m_pSigProc;
+//						WORD wResetCode = 0x00;
+//						pSigProc->WriteAlarmCode(wResetCode);
 
 						AprData.SaveMemoryLog(_T("------ NG_STOP Signal OFF ------"));
 						bJudgeNG = FALSE;

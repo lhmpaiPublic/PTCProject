@@ -389,8 +389,8 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		short nAlarmCheck = 0x0001;
-		nNumOfData = 10;
-		short pData[10] = { 0, };
+		nNumOfData = 24;
+		short pData[24] = { 0, };
 		for (int i = 0; i < nNumOfData; i++)
 		{
 			if ((nAlarmCode & nAlarmCheck) != 0)
@@ -838,7 +838,34 @@ int CSigProc::SigInAlarmReset()
 	return nRet;
 }
 
+int CSigProc::SigInAlarmNgAck()
+{
+	int nRet = 0;
+	int nAddress;
 
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		nAddress = enSmsBitIn_AlarmNgAck;
+
+		short nInputData;
+		if (m_pPioCtrl->InPortByteThread(nAddress, nInputData) < 0)
+		{
+			nRet = -1;
+		}
+		else
+		{
+			nRet = nInputData;
+		}
+
+	}
+	else
+	{
+		nAddress = enBitIn_AlarmNgAck;
+		nRet = SignalPortCheck(nAddress);
+	}
+
+	return nRet;
+}
 
 int CSigProc::SigInConnectZone()
 {
@@ -1068,7 +1095,22 @@ int CSigProc::SigOutAlarmResetAck(int nMode)
 	return nRet;
 }
 
+int CSigProc::SigOutAlarmNgResetAck(int nMode)
+{
+	AprData.SaveDebugLog(_T("SigOutAlarmNgResetAck")); //pyjtest
 
+	int nRet = 0;
+	int nAddress;
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+		nAddress = enSmsBitOut_AlarmNgResetAck;
+	}
+	else {
+		nAddress = enBitOut_AlramNgResetAck;
+	}
+
+	nRet = SignalBitOut(nAddress, nMode);
+	return nRet;
+}
 
 
 	// 22.08.05 Ahn Add Start
@@ -1364,17 +1406,21 @@ int CSigProc::ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
 
 	btTemp = btData[enWordWrite_Top_Defect_Count_LotEnd];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
+	pSeqOutData->dwTopNgLotEndCount = (DWORD)btTemp;
 
 	btTemp = btData[enWordWrite_Btm_Defect_Count_LotEnd ];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
+	pSeqOutData->dwBottomNgLotEndCount = (DWORD)btTemp;
+
+
 
 	btTemp = btData[enWordWrite_AlarmExist];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
+	pSeqOutData->dwAlarmExist = (DWORD)btTemp;
 
 	btTemp = btData[enWordWrite_AlarmCode_Buffer1];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
-	// 23.03.03 Ahn Modify End
+	pSeqOutData->dwAlarmCode[0] = (DWORD)btTemp;
+
+
+
 
 	return 0;
 
@@ -1444,18 +1490,20 @@ int CSigProc::WriteBlockAllData(int nMode)
 	return nRet;
 }
 
-int CSigProc::ReadBlockWriteDataAll(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
-{
-	int nRet = 0;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
-		nRet = ReadBlockWriteDataAll_Melsec( pSeqOutDataAll);
-	}
-	else {
-		nRet = ReadBlockWriteDataAll_Siemens(pSeqOutDataAll);
-
-	}
-	return nRet;
-}
+//int CSigProc::ReadBlockWriteDataAll(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
+//{
+//	int nRet = 0;
+//	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
+//	{
+//		nRet = ReadBlockWriteDataAll_Melsec( pSeqOutDataAll);
+//	}
+//	else
+//	{
+//		nRet = ReadBlockWriteDataAll_Siemens(pSeqOutDataAll);
+//
+//	}
+//	return nRet;
+//}
 
 int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 {
@@ -1555,19 +1603,23 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	pSeqData->strCell_ID = strBuffer;
 
 
-	////////////////////////////////////////////////////////////////////////////
-	// 임시 적용, 지멘스 Address Map 재정의 필요
-	pwData = &btData[enSmsWordRead_DrossTopTarget];
-	pSeqData->wFoilExpBothTopTarget = *pwData;
-
-	pwData = &btData[enSmsWordRead_DrossBtmTarget];
-	pSeqData->wFoilExpBothBottomTarget = *pwData;
-
-	pwData = &btData[enSmsWordRead_FoilExpTopTarget];
+	pwData = &btData[enSmsWordRead_FoilExpInTopTarget];
 	pSeqData->wFoilExpInTopTarget = *pwData;
 
-	pwData = &btData[enSmsWordRead_FoilExpBtmTarget];
+	pwData = &btData[enSmsWordRead_FoilExpInBtmTarget];
 	pSeqData->wFoilExpInBottomTarget = *pwData;
+
+	pwData = &btData[enSmsWordRead_FoilExpOutTopTarget];
+	pSeqData->wFoilExpOutTopTarget = *pwData;
+
+	pwData = &btData[enSmsWordRead_FoilExpOutBtmTarget];
+	pSeqData->wFoilExpOutBottomTarget = *pwData;
+
+	pwData = &btData[enSmsWordRead_FoilExpBothTopTarget];
+	pSeqData->wFoilExpBothTopTarget = *pwData;
+
+	pwData = &btData[enSmsWordRead_FoilExpBothBtmTarget];
+	pSeqData->wFoilExpBothBottomTarget = *pwData;
 
 	pwData = &btData[enSmsWordRead_SpeterTopTarget];
 	pSeqData->wSpeterTopTarget = *pwData;
@@ -1594,9 +1646,9 @@ int CSigProc::WriteBlockAllData_Siemens(int nMode)
 	return nRet;
 }
 
-int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
+int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAll)
 {
-	_SEQ_OUT_DATA* pSeqOutData;
+	_SEQ_OUT_DATA_SMS* pSeqOutData;
 	pSeqOutData = &pSeqOutDataAll->m_SeqOutData;
 
 	ASSERT(pSeqOutData);
@@ -1606,7 +1658,7 @@ int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 
 	WORD* pData = btData;
 	int nSize = enSmsWordWriteMaxSize;
-	int nAddress = AprData.m_System.m_nWordOut + enWordWrite_DataReportV1_Ea;
+	int nAddress = AprData.m_System.m_nWordOut + enSmsWordWrite_DataReportV1_Ea;
 
 	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
 		return -1;
@@ -1617,64 +1669,125 @@ int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 
 	WORD btTemp;
 	btTemp = btData[enSmsWordWrite_DataReportV1_Ea];
-	pSeqOutData->dwDataReportV1 = (DWORD)btTemp;
+	pSeqOutData->wDataReportV1 = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_DataReportV2_OK];
-	pSeqOutData->dwDataReportV2 = (DWORD)btTemp;
+	pSeqOutData->wDataReportV2 = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_DataReportV3_NG];
-	pSeqOutData->dwDataReportV3 = (DWORD)btTemp;
+	pSeqOutData->wDataReportV3 = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_DataReportV4_OkRate];
-	pSeqOutData->dwDataReportV4 = (DWORD)btTemp;
+	pSeqOutData->wDataReportV4 = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_DataReportV5_NgRate];
+	pSeqOutData->wDataReportV5 = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_DataReportV6_RunRate];
-	pSeqOutData->dwDataReportV5 = (DWORD)btTemp;
+	pSeqOutData->wDataReportV6 = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_Continue_Alarm_Cnt];
-	pSeqOutData->dwDataReportV6 = (DWORD)btTemp;
+	pSeqOutData->wContinueAlarmCount = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_Heavy_Alarm_Cnt];
+	pSeqOutData->wSectorAlarmCount = (WORD)btTemp;
 
 
-	//////////////////////////////////////////////////////////////////////////
-	/// 임시 Address 맵 재 정의 후 수정 필요
-	btTemp = btData[enSmsWordWrite_DrossTop_Alarm_Cnt];
-	pSeqOutData->dwFoilExpBothTopCount = (DWORD)btTemp;
 
-	btTemp = btData[enSmsWordWrite_DrossBtm_Alarm_Cnt];
-	pSeqOutData->dwFoilExpBothBottomCount = (DWORD)btTemp;
 
-	btTemp = btData[enSmsWordWrite_FoilExpTop_Alarm_Cnt];
-	pSeqOutData->dwFoilExpInTopCount = (DWORD)btTemp;
+	btTemp = btData[enSmsWordWrite_FoilExpInTop_Alarm_Cnt];
+	pSeqOutData->wFoilExpInTopCount = (WORD)btTemp;
 
-	btTemp = btData[enSmsWordWrite_FoilExpBtm_Alarm_Cnt];
-	pSeqOutData->dwFoilExpOutTopCount = (DWORD)btTemp;
+	btTemp = btData[enSmsWordWrite_FoilExpInBtm_Alarm_Cnt];
+	pSeqOutData->wFoilExpInBottomCount = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpOutTop_Alarm_Cnt];
+	pSeqOutData->wFoilExpOutTopCount = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt];
+	pSeqOutData->wFoilExpOutBottomCount = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpBothTop_Alarm_Cnt];
+	pSeqOutData->wFoilExpBothTopCount = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt];
+	pSeqOutData->wFoilExpBothBottomCount = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_SpeterTop_Alarm_Cnt];
-	pSeqOutData->dwSpeterTopCount = (DWORD)btTemp;
-	//////////////////////////////////////////////////////////////////////////
-
-
+	pSeqOutData->wSpeterTopCount = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_SpeterBtm_Alarm_Cnt];
-	pSeqOutData->dwSpeterBottomCount = (DWORD)btTemp;
+	pSeqOutData->wSpeterBottomCount = (WORD)btTemp;
+
 
 	btTemp = btData[enSmsWordWrite_Top_Defect_Count_Real];
-	pSeqOutData->dwTopNgRealTimeCount = (DWORD)btTemp;
+	pSeqOutData->wTopNgRealTimeCount = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_Btm_Defect_Count_Real];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
+	pSeqOutData->wBottomNgRealTimeCount = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_Top_Defect_Count_LotEnd];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
+	pSeqOutData->wTopNgLotEndCount = (WORD)btTemp;
 
 	btTemp = btData[enSmsWordWrite_Btm_Defect_Count_LotEnd];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
+	pSeqOutData->wBottomNgLotEndCount = (WORD)btTemp;
+
+
+	
+	btTemp = btData[enSmsWordWrite_FoilExpInTopTarget];
+	pSeqOutData->wFoilExpInTopTarget = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpInBtmTarget];
+	pSeqOutData->wFoilExpInBottomTarget = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpOutTopTarget];
+	pSeqOutData->wFoilExpOutTopTarget = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpOutBtmTarget];
+	pSeqOutData->wFoilExpOutBottomTarget = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpBothTopTarget];
+	pSeqOutData->wFoilExpBothTopTarget = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_FoilExpBothBtmTarget];
+	pSeqOutData->wFoilExpBothBottomTarget = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_SpeterTopTarget];
+	pSeqOutData->wSpeterTopTarget = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_SpeterBtmTarget];
+	pSeqOutData->wSpeterBottomTarget = (WORD)btTemp;
+
+
+
+
+	btTemp = btData[enSmsWordWrite_PrmContinuousCnt];
+	pSeqOutData->wPrmContinuousCnt = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_PrmSectorNgTabCnt];
+	pSeqOutData->wPrmSectorNgTabCnt = (WORD)btTemp;
+
+	btTemp = btData[enSmsWordWrite_PrmSectorBaseCnt];
+	pSeqOutData->wPrmSectorBaseCnt = (WORD)btTemp;
+
+
+
+
+
 
 	btTemp = btData[enSmsWordWrite_AlarmExist];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
+	pSeqOutData->wAlarmExist = (WORD)btTemp;
 
-	btTemp = btData[enSmsWordWrite_AlarmCode_Buffer1];
-	pSeqOutData->dwBottomNgRealTimeCount = (DWORD)btTemp;
+	for(int i=0; i<24; i++ )
+	{
+		btTemp = btData[enSmsWordWrite_AlarmCode_Buffer1+i];
+		pSeqOutData->wAlarmCode[i] = (WORD)btTemp;
+	}
+
+
+
+
+
 
 	return 0;
 }
@@ -1703,19 +1816,23 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 				break;
 
 
-			////////////////////////////////////////////////////////////////
-			// 임시 적용, 지멘스 Address Map 재정의 필요
-			case	enWordRead_FoilExpBothTopTarget:
-				nRetAdd = enSmsWordRead_DrossTopTarget;
-				break;
-			case	enWordRead_FoilExpBothBtmTarget:
-				nRetAdd = enSmsWordRead_DrossBtmTarget;
-				break;
 			case	enWordRead_FoilExpInTopTarget:
-				nRetAdd = enSmsWordRead_FoilExpTopTarget;
+				nRetAdd = enSmsWordRead_FoilExpInTopTarget;
 				break;
 			case	enWordRead_FoilExpInBtmTarget:
-				nRetAdd = enSmsWordRead_FoilExpBtmTarget;
+				nRetAdd = enSmsWordRead_FoilExpInBtmTarget;
+				break;
+			case	enWordRead_FoilExpOutTopTarget:
+				nRetAdd = enSmsWordRead_FoilExpOutTopTarget;
+				break;
+			case	enWordRead_FoilExpOutBtmTarget:
+				nRetAdd = enSmsWordRead_FoilExpOutBtmTarget;
+				break;
+			case	enWordRead_FoilExpBothTopTarget:
+				nRetAdd = enSmsWordRead_FoilExpBothTopTarget;
+				break;
+			case	enWordRead_FoilExpBothBtmTarget:
+				nRetAdd = enSmsWordRead_FoilExpBothBtmTarget;
 				break;
 			case	enWordRead_SpeterTopTarget :
 				nRetAdd = enSmsWordRead_SpeterTopTarget;
@@ -1723,6 +1840,10 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordRead_SpeterBtmTarget :
 				nRetAdd = enSmsWordRead_SpeterBtmTarget;
 				break;
+
+
+
+
 			case	enWordRead_PrmContinuousCnt :
 				nRetAdd = enSmsWordRead_PrmContinuousCnt;
 				break;
@@ -1732,9 +1853,12 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordRead_PrmSectorBaseCnt :
 				nRetAdd = enSmsWordRead_PrmSectorBaseCnt;
 				break;
-			case	enWordRead_AlarmExistAck :
-				nRetAdd = enSmsWordRead_AlarmExistAck;
-				break;
+
+//			case	enWordRead_AlarmExistAck :
+//				nRetAdd = enSmsWordRead_AlarmExistAck;
+//				break;
+
+
 			default :
 				nRetAdd = enSmsWordReadMaxSize ;
 				break;
@@ -1770,19 +1894,28 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 				nRetAdd = enSmsWordWrite_Heavy_Alarm_Cnt;
 				break;
 
-			///////////////////////////////////////////////////////////////////////////
-			// 임시, 지멘스 Address 재 정의 후 수정 필요
+
+
+
+
+
 			case	enWordWrite_FoilExpInTop_Alarm_Cnt :
-				nRetAdd = enSmsWordWrite_DrossTop_Alarm_Cnt;
+				nRetAdd = enSmsWordWrite_FoilExpInTop_Alarm_Cnt;
 				break;
 			case	enWordWrite_FoilExpInBottom_Alarm_Cnt:
-				nRetAdd = enSmsWordWrite_DrossBtm_Alarm_Cnt;
+				nRetAdd = enSmsWordWrite_FoilExpInBtm_Alarm_Cnt;
 				break;
 			case	enWordWrite_FoilExpOutTop_Alarm_Cnt:
-				nRetAdd = enSmsWordWrite_FoilExpTop_Alarm_Cnt;
+				nRetAdd = enSmsWordWrite_FoilExpOutTop_Alarm_Cnt;
 				break;
 			case	enWordWrite_FoilExpOutBottom_Alarm_Cnt:
-				nRetAdd = enSmsWordWrite_FoilExpBtm_Alarm_Cnt;
+				nRetAdd = enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt;
+				break;
+			case	enWordWrite_FoilExpBothTop_Alarm_Cnt:
+				nRetAdd = enSmsWordWrite_FoilExpBothTop_Alarm_Cnt;
+				break;
+			case	enWordWrite_FoilExpBothBottom_Alarm_Cnt:
+				nRetAdd = enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt;
 				break;
 			case	enWordWrite_SpeterTop_Alarm_Cnt :
 				nRetAdd = enSmsWordWrite_SpeterTop_Alarm_Cnt;
@@ -1790,7 +1923,7 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordWrite_SpeterBtm_Alarm_Cnt :
 				nRetAdd = enSmsWordWrite_SpeterBtm_Alarm_Cnt;
 				break;
-			///////////////////////////////////////////////////////////////////////////
+
 
 
 			case	enWordWrite_Top_Defect_Count_Real :
@@ -1806,19 +1939,25 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 				nRetAdd = enSmsWordWrite_Btm_Defect_Count_LotEnd;
 				break;
 
-				///////////////////////////////////////////////////////////////////////////
-				// 임시, 지멘스 Address 재 정의 후 수정 필요
+
+
 			case	enWordWrite_FoilExpInTopTarget :
-				nRetAdd = enSmsWordWrite_DrossTopTarget;
+				nRetAdd = enSmsWordWrite_FoilExpInTopTarget;
 				break;
 			case	enWordWrite_FoilExpInBottomTarget:
-				nRetAdd = enSmsWordWrite_DrossBtmTarget;
+				nRetAdd = enSmsWordWrite_FoilExpInBtmTarget;
 				break;
 			case	enWordWrite_FoilExpOutTopTarget:
-				nRetAdd = enSmsWordWrite_FoilExpTopTarget;
+				nRetAdd = enSmsWordWrite_FoilExpOutTopTarget;
 				break;
 			case	enWordWrite_FoilExpOutBottomTarget :
-				nRetAdd = enSmsWordWrite_FoilExpBtmTarget;
+				nRetAdd = enSmsWordWrite_FoilExpOutBtmTarget;
+				break;
+			case	enWordWrite_FoilExpBothTopTarget:
+				nRetAdd = enSmsWordWrite_FoilExpBothTopTarget;
+				break;
+			case	enWordWrite_FoilExpBothBottomTarget:
+				nRetAdd = enSmsWordWrite_FoilExpBothBtmTarget;
 				break;
 			case	enWordWrite_SpeterTopTarget :
 				nRetAdd = enSmsWordWrite_SpeterTopTarget;
@@ -1826,7 +1965,19 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordWrite_SpeterBtmTarget :
 				nRetAdd = enSmsWordWrite_SpeterBtmTarget;
 				break;
-			///////////////////////////////////////////////////////////////////////////
+
+
+			case	enWordWrite_PrmContinuousCnt:
+				nRetAdd = enSmsWordWrite_PrmContinuousCnt;
+				break;
+			case	enWordWrite_PrmSectorNgTabCnt:
+				nRetAdd = enSmsWordWrite_PrmSectorNgTabCnt;
+				break;
+			case	enWordWrite_PrmSectorBaseCnt:
+				nRetAdd = enSmsWordWrite_PrmSectorBaseCnt;
+				break;
+
+
 
 			case	enWordWrite_AlarmExist :
 				nRetAdd = enSmsWordWrite_AlarmExist;
@@ -1846,6 +1997,10 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 			case	enWordWrite_AlarmCode_Buffer5 :
 				nRetAdd = enSmsWordWrite_AlarmCode_Buffer5;
 				break;
+
+
+
+
 
 			case	en_WordWrite_Cell_Trigger_ID :
 				nRetAdd = en_SmsWordWrite_Cell_Trigger_ID;

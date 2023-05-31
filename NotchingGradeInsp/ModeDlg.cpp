@@ -466,39 +466,18 @@ void CModeDlg::OnBnClickedBtnInspSim()
 
 void CModeDlg::OnBnClickedBtnLog()
 {
-	//pyjtest
-// 	CSigProc* pSigProc = theApp.m_pSigProc;
-// 
-// 	if(pSigProc->GetConnectZone() == FALSE )
-// 	{
-// 		pSigProc->SetConnectZone(TRUE);
-// 	}
-// 	else
-// 	{
-// 		pSigProc->SetConnectZone(FALSE);
-// 	}
-// 
-// 	return;
 
-
-
-
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//CSystemSettingDlg dlg;
-//	CDIOTestDlg dlg;
-//	dlg.DoModal();
-
-// 	CIoMonitorDlg dlg(this);
-// 	dlg.DoModal();
+	CIoMonitorDlg dlg(this);
+ 	dlg.DoModal();
 
 
 
 	// 22.08.03 Ahn Add Start
-	if (m_pIoMonitDlg == nullptr) {
-		m_pIoMonitDlg = new CIoMonitorDlg(this);
-		m_pIoMonitDlg->Create(IDD_DLG_IO_MONITOR, this);
-	}
-	m_pIoMonitDlg->ShowWindow(SW_SHOW);
+//	if (m_pIoMonitDlg == nullptr) {
+//		m_pIoMonitDlg = new CIoMonitorDlg(this);
+//		m_pIoMonitDlg->Create(IDD_DLG_IO_MONITOR, this);
+//	}
+//	m_pIoMonitDlg->ShowWindow(SW_SHOW);
 
 	// 22.08.03 Ahn Add End
 

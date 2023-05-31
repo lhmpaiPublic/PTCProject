@@ -43,6 +43,7 @@ public:
 		enBitIn_LotEndReq		= 0x00000210,	// B63D4
 
 		enBitIn_AlarmResetReq	= 0x00000220,	// B63D8 
+		enBitIn_AlarmNgAck		= 0x00000240,	
 	};
 
 	// [ BIT OUT ]
@@ -70,6 +71,7 @@ public:
 		enBitOut_LotStartReqAck	= 0x00000208,	// B6B53
 		enBitOut_LotEndReqAck	= 0x00000210,	// B6B54
 		enBitOut_AlramResetAck	= 0x00000220,	// B6B55
+		enBitOut_AlramNgResetAck= 0x00000240,	// B6B55
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -104,10 +106,9 @@ public:
 		enWordWrite_DataReportV4_OkRate = 0x0006, enWordWrite_DataReportV4_Len = 2,
 		enWordWrite_DataReportV5_NgRate = 0x0008, enWordWrite_DataReportV5_Len = 2,
 		enWordWrite_DataReportV6_RunRate = 0x000A, enWordWrite_DataReportV6_Len = 2,
-
-
 		enWordWrite_Continue_Alarm_Cnt = 0x000C, enWordWrite_Continue_Alarm_Cnt_Len = 2,
 		enWordWrite_Heavy_Alarm_Cnt = 0x000E, enWordWrite_Heavy_Alarm_Cnt_Len = 2,
+
 		enWordWrite_FoilExpInTop_Alarm_Cnt = 0x0010, enWordWrite_FoilExpInTop_Alarm_Cnt_Len = 2,
 		enWordWrite_FoilExpInBottom_Alarm_Cnt = 0x0012, enWordWrite_FoilExpInBtm_Alarm_Cnt_Len = 2,
 		enWordWrite_FoilExpOutTop_Alarm_Cnt = 0x0014, enWordWrite_FoilExpOutTop_Alarm_Cnt_Len = 2,
@@ -206,6 +207,7 @@ public:
 		enSmsBitIn_LotStartReq			= 8,	// 
 		enSmsBitIn_LotEndReq			= 9,	// 
 		enSmsBitIn_AlarmResetReq		= 10,	//  
+		enSmsBitIn_AlarmNgAck			= 11,	//  
 	};
 	enum {
 		enSmsBitOut_Alive				= 0,	// 
@@ -216,28 +218,35 @@ public:
 		enSmsBitOut_LotEndReqAck		= 5,	// 
 		enSmsBitOut_TabZeroReset		= 6,	// 
 		enSmsBitOut_AlarmResetAck		= 7,	// 
-		enSmsBitOut_DiskSpaceWarning	= 8,	// Address Map에 없음
-		enSmsBitOut_DiskSpaceAlarm		= 9,	// Address Map에 없음
+		enSmsBitOut_AlarmNgResetAck		= 8,	// 
+
+		enSmsBitOut_DiskSpaceWarning	= 9,	// Address Map에 없음
+		enSmsBitOut_DiskSpaceAlarm		= 10,	// Address Map에 없음
 	};
 	// Siemens Address End
 	// Siemens Word Address Start
 	enum{
-		enSmsWordRead_RecipeNo					= 0,		enSmsWordRead_RecipeNo_Len				= 1,				//	1
-		enSmsWordRead_RecipeName				= 1,		enSmsWordRead_RecipeName_Len			= 4,				//  5
-		enSmsWordRead_CELL_ID					= 5,		enSmsWordRead_CELL_ID_Len				= 10,				// 15
-		enSmsWordRead_DrossTopTarget			= 15,		enSmsWordRead_DrossTopTarget_Len		= 1,				// 16
-		enSmsWordRead_DrossBtmTarget			= 16,		enSmsWordRead_DrossBtmTarget_Len		= 1,				// 17
-		enSmsWordRead_FoilExpTopTarget			= 17,		enSmsWordRead_FoilExpTopTarget_Len		= 1,				// 18
-		enSmsWordRead_FoilExpBtmTarget			= 18,		enSmsWordRead_FoilExpBtmTarget_Len		= 1,				// 19
-		enSmsWordRead_SpeterTopTarget			= 19,		enSmsWordRead_SpeterTopTarget_Len		= 1,				// 20
-		enSmsWordRead_SpeterBtmTarget			= 20,		enSmsWordRead_SpeterBtmTarget_Len		= 1,				// 21
-		enSmsWordRead_LotInfoLength				= 21,
-		enSmsWordRead_AlarmExistAck				= 21,		enSmsWordRead_AlarmExistAck_Len			= 1,				// 22
-		enSmsWordRead_PrmContinuousCnt			= 22,		enSmsWordRead_PrmContinuousCnt_Len		= 1,
-		enSmsWordRead_PrmSectorNgTabCnt			= 23,		enSmsWordRead_PrmSectorNgTabCnt_Len		= 1,
-		enSmsWordRead_PrmSectorBaseCnt			= 24,		enSmsWordRead_PrmSectorBaseCnt_Len		= 1,
-		enSmsWordRead_ConnectZoneTabCount		= 25,		enSmsWordRead_ConnectZoneTabCount_Len		= 1,
-		enSmsWordReadMaxSize					= 26,
+		enSmsWordRead_RecipeNo					= 0,		enSmsWordRead_RecipeNo_Len				= 1,		
+		enSmsWordRead_RecipeName				= 1,		enSmsWordRead_RecipeName_Len			= 4,		
+		enSmsWordRead_CELL_ID					= 5,		enSmsWordRead_CELL_ID_Len				= 10,		
+
+		enSmsWordRead_FoilExpInTopTarget		= 20, enSmsWordRead_FoilExpInTopTarget_Len		= 1,			
+		enSmsWordRead_FoilExpInBtmTarget		= 21, enSmsWordRead_FoilExpInBtmTarget_Len		= 1,			
+		enSmsWordRead_FoilExpOutTopTarget		= 22, enSmsWordRead_FoilExpOutTopTarget_Len		= 1,			
+		enSmsWordRead_FoilExpOutBtmTarget		= 23, enSmsWordRead_FoilExpOutBtmTarget_Len		= 1,			
+		enSmsWordRead_FoilExpBothTopTarget		= 24, enSmsWordRead_FoilExpBothTopTarget_Len	= 1,
+		enSmsWordRead_FoilExpBothBtmTarget		= 25, enSmsWordRead_FoilExpBothBtmTarget_Len	= 1,
+		enSmsWordRead_SpeterTopTarget			= 26,		enSmsWordRead_SpeterTopTarget_Len		= 1,		
+		enSmsWordRead_SpeterBtmTarget			= 27,		enSmsWordRead_SpeterBtmTarget_Len		= 1,		
+
+		enSmsWordRead_PrmContinuousCnt			= 30,		enSmsWordRead_PrmContinuousCnt_Len		= 1,
+		enSmsWordRead_PrmSectorNgTabCnt			= 31,		enSmsWordRead_PrmSectorNgTabCnt_Len		= 1,
+		enSmsWordRead_PrmSectorBaseCnt			= 32,		enSmsWordRead_PrmSectorBaseCnt_Len		= 1,
+
+//		enSmsWordRead_AlarmExistAck				= 21,		enSmsWordRead_AlarmExistAck_Len			= 1,		
+//		enSmsWordRead_ConnectZoneTabCount		= 25,		enSmsWordRead_ConnectZoneTabCount_Len		= 1,
+		
+		enSmsWordReadMaxSize					= 33,
 	};
 
 	enum {
@@ -249,62 +258,72 @@ public:
 		enSmsWordWrite_DataReportV6_RunRate		= 5,		enSmsWordWrite_DataReportV6_Len			= 1,
 		enSmsWordWrite_Continue_Alarm_Cnt		= 6,		enSmsWordWrite_Continue_Alarm_Cnt_Len	= 1,
 		enSmsWordWrite_Heavy_Alarm_Cnt			= 7,		enSmsWordWrite_Heavy_Alarm_Cnt_Len		= 1,
-		enSmsWordWrite_DrossTop_Alarm_Cnt		= 8,		enSmsWordWrite_DrossTop_Alarm_Cnt_Len	= 1,
-		enSmsWordWrite_DrossBtm_Alarm_Cnt		= 9,		enSmsWordWrite_DrossBtm_Alarm_Cnt_Len	= 1,
-		enSmsWordWrite_FoilExpTop_Alarm_Cnt		= 10,		enSmsWordWrite_FoilExpTop_Alarm_Cnt_Len = 2,
-		enSmsWordWrite_FoilExpBtm_Alarm_Cnt		= 11,		enSmsWordWrite_FoilExpBtm_Alarm_Cnt_Len = 2,
-		enSmsWordWrite_SpeterTop_Alarm_Cnt		= 12,		enSmsWordWrite_SpeterTop_Alarm_Cnt_Len	= 2,
-		enSmsWordWrite_SpeterBtm_Alarm_Cnt		= 13,		enSmsWordWrite_SpeterBtm_Alarm_Cnt_Len	= 2,
-		enSmsWordWrite_DrossTopTarget			= 14,		enSmsWordWrite_DrossTopTarget_Len		= 1,
-		enSmsWordWrite_DrossBtmTarget			= 15,		enSmsWordWrite_DrossBtmTarget_Len		= 1,
-		enSmsWordWrite_FoilExpTopTarget			= 16,		enSmsWordWrite_FoilExpTopTarget_Len		= 1,
-		enSmsWordWrite_FoilExpBtmTarget			= 17,		enSmsWordWrite_FoilExpBtmTarget_Len		= 1,
-		enSmsWordWrite_SpeterTopTarget			= 18,		enSmsWordWrite_SpeterTopTarget_Len		= 1,
-		enSmsWordWrite_SpeterBtmTarget			= 19,		enSmsWordWrite_SpeterBtmTarget_Len		= 1,
-		enSmsWordWrite_AlarmExist				= 20,		enSmsWordWrite_AlarmExist_Len			= 1,
-		enSmsWordWrite_AlarmCode_Buffer1		= 21,		enSmsWordWrite_AlarmCode_Buffer1_Len	= 1,
-		enSmsWordWrite_AlarmCode_Buffer2		= 22,		enSmsWordWrite_AlarmCode_Buffer2_Len	= 1,
-		enSmsWordWrite_AlarmCode_Buffer3		= 23,		enSmsWordWrite_AlarmCode_Buffer3_Len	= 1,
-		enSmsWordWrite_AlarmCode_Buffer4		= 24,		enSmsWordWrite_AlarmCode_Buffer4_Len	= 1,
-		enSmsWordWrite_AlarmCode_Buffer5		= 25,		enSmsWordWrite_AlarmCode_Buffer5_Len	= 1,
-		enSmsWordWrite_AlarmCode_Buffer6 = 26, enSmsWordWrite_AlarmCode_Buffer6_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer7 = 27, enSmsWordWrite_AlarmCode_Buffer7_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer8 = 28, enSmsWordWrite_AlarmCode_Buffer8_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer9 = 29, enSmsWordWrite_AlarmCode_Buffer9_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer10 = 30, enSmsWordWrite_AlarmCode_Buffer10_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer11 = 31, enSmsWordWrite_AlarmCode_Buffer11_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer12 = 32, enSmsWordWrite_AlarmCode_Buffer12_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer13 = 33, enSmsWordWrite_AlarmCode_Buffer13_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer14 = 34, enSmsWordWrite_AlarmCode_Buffer14_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer15 = 35, enSmsWordWrite_AlarmCode_Buffer15_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer16 = 36, enSmsWordWrite_AlarmCode_Buffer16_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer17 = 37, enSmsWordWrite_AlarmCode_Buffer17_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer18 = 38, enSmsWordWrite_AlarmCode_Buffer18_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer19 = 39, enSmsWordWrite_AlarmCode_Buffer19_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer20 = 40, enSmsWordWrite_AlarmCode_Buffer20_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer21 = 41, enSmsWordWrite_AlarmCode_Buffer21_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer22 = 42, enSmsWordWrite_AlarmCode_Buffer22_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer23 = 43, enSmsWordWrite_AlarmCode_Buffer23_Len = 1,
-		enSmsWordWrite_AlarmCode_Buffer24 = 44, enSmsWordWrite_AlarmCode_Buffer24_Len = 1,
-
-		// 22.07.05 Ahn Add Start
-		enSmsWordWrite_Top_Defect_Count_Real = 45, enSmsWordWrite_Top_Defect_Count_Real_Len = 1,
-		enSmsWordWrite_Btm_Defect_Count_Real = 46, enSmsWordWrite_Btm_Defect_Count_Real_Len = 1,
-		enSmsWordWrite_Top_Defect_Count_LotEnd = 47, enSmsWordWrite_Top_Defect_Count_LotEnd_Len = 1,
-		enSmsWordWrite_Btm_Defect_Count_LotEnd = 48, enSmsWordWrite_Btm_Defect_Count_LotEnd_Len = 1,
-		// 22.07.05 Ahn Add End
-
-		// 22.12.12 Ahn Add Start - Judge Report
-		en_SmsWordWrite_Cell_Trigger_ID			= 49,		en_SmsWordWrite_Cell_Trigger_ID_Len		= 1,
-		en_SmsWordWrite_Judge					= 50,		en_SmsWordWrite_Judge_Len				= 1,
-		en_SmsWordWrite_NG_Code					= 51,		en_SmsWordWrite_NG_Code_Len				= 1,
-		// 22.12.12 Ahn Add End
-
-		enSmsWordWriteMaxSize = 52,
-
-		enSmsWordWrite_Size = 16,
 
 
+		enSmsWordWrite_FoilExpInTop_Alarm_Cnt = 8, enSmsWordWrite_FoilExpInTop_Alarm_Cnt_Len	= 1,
+		enSmsWordWrite_FoilExpInBtm_Alarm_Cnt = 9, enSmsWordWrite_FoilExpInBtm_Alarm_Cnt_Len	= 1,
+		enSmsWordWrite_FoilExpOutTop_Alarm_Cnt = 10, enSmsWordWrite_FoilExpOutTop_Alarm_Cnt_Len = 1,
+		enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt = 11, enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt_Len = 1,
+		enSmsWordWrite_FoilExpBothTop_Alarm_Cnt = 12, enSmsWordWrite_FoilExpBothTop_Alarm_Cnt_Len = 1,
+		enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt = 13, enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt_Len = 1,
+		enSmsWordWrite_SpeterTop_Alarm_Cnt		= 14,		enSmsWordWrite_SpeterTop_Alarm_Cnt_Len	= 1,
+		enSmsWordWrite_SpeterBtm_Alarm_Cnt		= 15,		enSmsWordWrite_SpeterBtm_Alarm_Cnt_Len	= 1,
+		
+		enSmsWordWrite_Top_Defect_Count_Real = 16, enSmsWordWrite_Top_Defect_Count_Real_Len = 1,
+		enSmsWordWrite_Btm_Defect_Count_Real = 17, enSmsWordWrite_Btm_Defect_Count_Real_Len = 1,
+		enSmsWordWrite_Top_Defect_Count_LotEnd = 18, enSmsWordWrite_Top_Defect_Count_LotEnd_Len = 1,
+		enSmsWordWrite_Btm_Defect_Count_LotEnd = 19, enSmsWordWrite_Btm_Defect_Count_LotEnd_Len = 1,
+
+
+
+		enSmsWordWrite_FoilExpInTopTarget = 20, enSmsWordWrite_FoilExpInTopTarget_Len		= 1,
+		enSmsWordWrite_FoilExpInBtmTarget = 21, enSmsWordWrite_FoilExpInBtmTarget_Len		= 1,
+		enSmsWordWrite_FoilExpOutTopTarget = 22, enSmsWordWrite_FoilExpOutTopTarget_Len		= 1,
+		enSmsWordWrite_FoilExpOutBtmTarget = 23, enSmsWordWrite_FoilExpOutBtmTarget_Len		= 1,
+		enSmsWordWrite_FoilExpBothTopTarget = 24, enSmsWordWrite_FoilExpBothTopTarget_Len = 1,
+		enSmsWordWrite_FoilExpBothBtmTarget = 25, enSmsWordWrite_FoilExpBothBtmTarget_Len = 1,
+		enSmsWordWrite_SpeterTopTarget			= 26,		enSmsWordWrite_SpeterTopTarget_Len		= 1,
+		enSmsWordWrite_SpeterBtmTarget			= 27,		enSmsWordWrite_SpeterBtmTarget_Len		= 1,
+		
+		enSmsWordWrite_PrmContinuousCnt = 28, enSmsWordWrite_PrmContinuousCnt_Len = 1,
+		enSmsWordWrite_PrmSectorNgTabCnt = 29, enSmsWordWrite_PrmSectorNgTabCnt_Len = 1,
+		enSmsWordWrite_PrmSectorBaseCnt = 30, enSmsWordWrite_PrmSectorBaseCnt_Len = 1,
+
+
+
+		enSmsWordWrite_AlarmExist				= 40,		enSmsWordWrite_AlarmExist_Len			= 1,
+		enSmsWordWrite_AlarmCode_Buffer1		= 41,		enSmsWordWrite_AlarmCode_Buffer1_Len	= 1,
+		enSmsWordWrite_AlarmCode_Buffer2		= 42,		enSmsWordWrite_AlarmCode_Buffer2_Len	= 1,
+		enSmsWordWrite_AlarmCode_Buffer3		= 43,		enSmsWordWrite_AlarmCode_Buffer3_Len	= 1,
+		enSmsWordWrite_AlarmCode_Buffer4		= 44,		enSmsWordWrite_AlarmCode_Buffer4_Len	= 1,
+		enSmsWordWrite_AlarmCode_Buffer5		= 45,		enSmsWordWrite_AlarmCode_Buffer5_Len	= 1,
+		enSmsWordWrite_AlarmCode_Buffer6 = 46, enSmsWordWrite_AlarmCode_Buffer6_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer7 = 47, enSmsWordWrite_AlarmCode_Buffer7_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer8 = 48, enSmsWordWrite_AlarmCode_Buffer8_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer9 = 49, enSmsWordWrite_AlarmCode_Buffer9_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer10 = 50, enSmsWordWrite_AlarmCode_Buffer10_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer11 = 51, enSmsWordWrite_AlarmCode_Buffer11_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer12 = 52, enSmsWordWrite_AlarmCode_Buffer12_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer13 = 53, enSmsWordWrite_AlarmCode_Buffer13_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer14 = 54, enSmsWordWrite_AlarmCode_Buffer14_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer15 = 55, enSmsWordWrite_AlarmCode_Buffer15_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer16 = 56, enSmsWordWrite_AlarmCode_Buffer16_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer17 = 57, enSmsWordWrite_AlarmCode_Buffer17_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer18 = 58, enSmsWordWrite_AlarmCode_Buffer18_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer19 = 59, enSmsWordWrite_AlarmCode_Buffer19_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer20 = 60, enSmsWordWrite_AlarmCode_Buffer20_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer21 = 61, enSmsWordWrite_AlarmCode_Buffer21_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer22 = 62, enSmsWordWrite_AlarmCode_Buffer22_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer23 = 63, enSmsWordWrite_AlarmCode_Buffer23_Len = 1,
+		enSmsWordWrite_AlarmCode_Buffer24 = 64, enSmsWordWrite_AlarmCode_Buffer24_Len = 1,
+
+
+		en_SmsWordWrite_Cell_Trigger_ID = 80, en_SmsWordWrite_Cell_Trigger_ID_Len = 1,
+		en_SmsWordWrite_Judge = 81, en_SmsWordWrite_Judge_Len = 1,
+		en_SmsWordWrite_NG_Code = 82, en_SmsWordWrite_NG_Code_Len = 1,
+
+
+		enSmsWordWriteMaxSize = 100,
 
 	};
 	// Siemens Word Address End
@@ -408,6 +427,7 @@ public :
 	int SigInAlarmReset();
 	int SigInInkMarkActive();
 	int SigInConnectZone();
+	int SigInAlarmNgAck();
 
 
 
@@ -423,19 +443,15 @@ public :
 	int SigOutDiskCapacityAlarm(int nMode);
 	int SigOutDiskCapacityWarning(int nMode);
 	int SigOutAlarmExist(int nMode);
+	int SigOutAlarmNgResetAck(int nMode);
 
 
 	// Word
 	int ReadBlockAllData(CSequenceData *pSeqData);
 	int WriteBlockAllData(int nMode);
-	// 22.08.12 Ahn Add Start
 	//int ReadBlockWriteData(_SEQ_OUT_DATA* pSeqOutData); // 23.03.03 Ahn Delete 
-	// 22.08.12 Ahn Add End
-	// 22.08.19 Ahn Add Start
-	int ReadBlockWriteDataAll(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
-	// 22.08.19 Ahn Add End
+//	int ReadBlockWriteDataAll(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
 
-	// 23.03.03 Ahn Add Start 
 	int ReadBlockAllData_Melsec(CSequenceData* pSeqData);
 	int WriteBlockAllData_Melsec(int nMode);
 	//int ReadBlockWriteData_Melsec(_SEQ_OUT_DATA* pSeqOutData); // 23.03.03 Ahn Delete 
@@ -444,7 +460,7 @@ public :
 	int ReadBlockAllData_Siemens(CSequenceData* pSeqData);
 	int WriteBlockAllData_Siemens(int nMode);
 	//int ReadBlockWriteData_Siemens(_SEQ_OUT_DATA* pSeqOutData); // 23.03.03 Ahn Delete 
-	int ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
+	int ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAll);
 	// 23.03.03 Ahn Add End
 
 

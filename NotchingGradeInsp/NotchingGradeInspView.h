@@ -112,6 +112,7 @@ protected:
 	BOOL m_bRecipeChagneFlag;
 	BOOL m_bInkMarkActiveFlag;
 	BOOL m_bConnectZoneFlag;
+	BOOL m_bAlarmNgAck;
 
 
 
@@ -181,6 +182,7 @@ private :
 	int CheckRecipeChange();
 	int CheckInkMarkActive();
 	int CheckConnectZone();
+	int CheckAlarmNgAck();
 
 	void StartThreadAliveSiginal();
 	static UINT AliveThread(LPVOID lpParm);

@@ -92,6 +92,7 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	m_bRecipeChagneFlag = FALSE;
 	m_bInkMarkActiveFlag = FALSE;
 	m_bConnectZoneFlag = FALSE;
+	m_bAlarmNgAck = FALSE;
 
 	m_nCamErrorResetCnt = 0;
 
@@ -486,7 +487,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		CheckRecipeChange();
 		CheckInkMarkActive();
 		CheckConnectZone();
-
+		CheckAlarmNgAck();
 
 
 
@@ -850,35 +851,54 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV4 = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDataReportV4;
 					AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV5 = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDataReportV5;
 					AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV6 = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwDataReportV6;
-
-
 					AprData.m_NowLotData.m_SeqDataOutSms.wContinueAlarmCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwContinueAlarmCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wHeavyAlarmCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSectorAlarmCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wDrossTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothTopCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wDrossBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopCount;
-					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wSectorAlarmCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSectorAlarmCount;
+
+
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpInTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpInBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpOutTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutTopCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpOutBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBothTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothTopCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBothBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterTopCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterBottomCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomCount;
+
 					AprData.m_NowLotData.m_SeqDataOutSms.wTopNgRealTimeCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwTopNgRealTimeCount;
 					AprData.m_NowLotData.m_SeqDataOutSms.wBottomNgRealTimeCount = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwBottomNgRealTimeCount;
 
 
 
-					//////////////////////////////////////////////////////////////////////////
-					/// 2023.04.19 pyj 지멘스 Address는 재 정의되지 않아 임시로 처리
-					AprData.m_NowLotData.m_SeqDataOutSms.wDrossTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothTopTarget;
-					AprData.m_NowLotData.m_SeqDataOutSms.wDrossBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomTarget;
-					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopTarget;
-					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpInTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpInBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpOutTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutTopTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpOutBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBothTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothTopTarget;
+					AprData.m_NowLotData.m_SeqDataOutSms.wFoilExpBothBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomTarget;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterTopTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterTopTarget;
 					AprData.m_NowLotData.m_SeqDataOutSms.wSpeterBottomTarget = (WORD)AprData.m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget;
-					//////////////////////////////////////////////////////////////////////////
+
+
+					AprData.m_NowLotData.m_SeqDataOutSms.wPrmContinuousCnt = (WORD)AprData.m_nCoutinuouCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wPrmSectorNgTabCnt = (WORD)AprData.m_nSectorNgCount;
+					AprData.m_NowLotData.m_SeqDataOutSms.wPrmSectorBaseCnt = (WORD)AprData.m_nSectorBaseCount;
+
 
 
 					short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
 					int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
-					pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+					if (pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
+					{
+						AprData.SaveDebugLog(_T("[DATA SEND] Error")); //pyjtest
+					}
+//					else
+//					{
+//						CString strMsg;
+//						strMsg.Format(_T("[DATA SEND] OK Tab Count=%d"), AprData.m_NowLotData.m_nTabCount);
+//						AprData.SaveDebugLog(strMsg); //pyjtest
+//					}
+
+
 
 				}
 				else
@@ -946,39 +966,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 //		SetAlivePulseTimer();
 //
 //	}
-
-
-
-
-
-
-//	if (m_TID_IO == nIDEvent)
-//	{
-//		Kill_IoTimer();
-
-		// 22.12.06 Ahn Delete Start
-		//CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-		//pFrame->ReflashAll();
-		// 22.12.06 Ahn Delete End
-
-
-		//pyjtest
-// 		CSigProc* pSigProc = theApp.m_pSigProc;
-// 		if (pSigProc->SigInAlarmReset() == TRUE)
-// 		{
-// 			pSigProc->SigOutAlarmResetAck(TRUE);
-// 
-// 			Sleep(200);
-// 
-// 			pSigProc->SigOutAlarmResetAck(FALSE);
-// 		}
-
-//		Set_I0Timer();
-//	}
-
-
-
-
 
 
 	if (m_TID_Long_Term == nIDEvent)
@@ -1518,8 +1505,8 @@ int CNotchingGradeInspView::CheckAlarmReset()
 		AprData.SaveDebugLog(_T("CheckAlarmReset ON"));
 
 		pSigProc->SigOutAlarmResetAck(TRUE);
-		pSigProc->WriteAlarmCode(0x0000);
-		pSigProc->SigOutAlarmExist(FALSE);
+//		pSigProc->WriteAlarmCode(0x0000);
+//		pSigProc->SigOutAlarmExist(FALSE);
 
 	}
 	if ((bSigIn == FALSE) && (m_bAlarmResetFlag == TRUE))
@@ -1534,6 +1521,33 @@ int CNotchingGradeInspView::CheckAlarmReset()
 	return nRet;
 }
 
+int CNotchingGradeInspView::CheckAlarmNgAck()
+{
+	int nRet = 0;
+	CSigProc* pSigProc = theApp.m_pSigProc;
+
+	BOOL bSigIn = (pSigProc->SigInAlarmNgAck() == 1) ? TRUE : FALSE;
+	if ((bSigIn == TRUE) && (m_bAlarmNgAck == FALSE))
+	{
+		m_bAlarmNgAck = TRUE;
+		AprData.SaveDebugLog(_T("CheckAlarmNgAck ON"));
+
+//		pSigProc->SigOutAlarmNgResetAck(TRUE);
+		pSigProc->WriteAlarmCode(0x0000);
+		pSigProc->SigOutAlarmExist(FALSE);
+
+	}
+	if ((bSigIn == FALSE) && (m_bAlarmNgAck == TRUE))
+	{
+		m_bAlarmNgAck = FALSE;
+		AprData.SaveDebugLog(_T("CheckAlarmNgAck OFF"));
+
+//		pSigProc->SigOutAlarmNgResetAck(FALSE);
+
+	}
+
+	return nRet;
+}
 
 int CNotchingGradeInspView::CheckRecipeChange()
 {

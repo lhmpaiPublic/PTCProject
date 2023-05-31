@@ -180,28 +180,42 @@ public:
 	WORD wDataReportV6;				// 가동률
 
 	WORD wContinueAlarmCount;			// 연속 알람 발생 수량
-	WORD wHeavyAlarmCount;			// 중알람 발생 수량
-	WORD wDrossTopCount;
-	WORD wDrossBottomCount;
-	WORD wFoilExpTopCount;
-	WORD wFoilExpBottomCount;
+	WORD wSectorAlarmCount;			// 구간 알람 발생 수량
+
+
+	WORD wFoilExpInTopCount;
+	WORD wFoilExpInBottomCount;
+	WORD wFoilExpOutTopCount;
+	WORD wFoilExpOutBottomCount;
+	WORD wFoilExpBothTopCount;
+	WORD wFoilExpBothBottomCount;
 	WORD wSpeterTopCount;
 	WORD wSpeterBottomCount;
 
-	WORD wDrossTopTarget;
-	WORD wDrossBottomTarget;
-	WORD wFoilExpTopTarget;
-	WORD wFoilExpBottomTarget;
+	WORD wTopNgRealTimeCount;			// 실시간 Tob NG Count
+	WORD wBottomNgRealTimeCount;		// 실시간 Bottom NG Count
+	WORD wTopNgLotEndCount;			// Lot End 시
+	WORD wBottomNgLotEndCount;		// Lot End 시
+
+	WORD wFoilExpInTopTarget;
+	WORD wFoilExpInBottomTarget;
+	WORD wFoilExpOutTopTarget;
+	WORD wFoilExpOutBottomTarget;
+	WORD wFoilExpBothTopTarget;
+	WORD wFoilExpBothBottomTarget;
 	WORD wSpeterTopTarget;
 	WORD wSpeterBottomTarget;
+
+	WORD wPrmContinuousCnt;
+	WORD wPrmSectorNgTabCnt;
+	WORD wPrmSectorBaseCnt;
+
+	WORD wDummy1[9];
 
 	WORD wAlarmExist;
 	WORD wAlarmCode[24];
 
-	WORD wTopNgRealTimeCount;			// 실시간 Tob NG Count
-	WORD wBottomNgRealTimeCount;		// 실시간 Bottom NG Count
-	WORD wTopNgLotEndCount;
-	WORD wBottomNgLotEndCount;
+	WORD wDummy4[15];
 
 } _SEQ_OUT_DATA_SMS;
 
