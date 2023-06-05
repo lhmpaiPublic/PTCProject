@@ -1988,11 +1988,11 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 	COLORREF color;
 	if(0) {
 		color = RGB(255, 0, 0);
-		strLine = _T("판정 : NG");
+		strLine = _T("JUDGE : NG");
 	}
 	else {
 		color = RGB(0, 255, 0);
-		strLine = _T("판정 : OK");
+		strLine = _T("JUDGE : OK");
 	}
 
 	//if (pRsltInfo->m_nHeadNo == CAM_POS_TOP) 

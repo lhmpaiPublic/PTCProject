@@ -173,10 +173,10 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 	COLORREF color;
 	if (pRsltInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
 		color = RGB(255, 0, 0);
-		strLine = _T("판정 : NG");
+		strLine = _T("JUDGE : NG");
 	}else{
 		color = RGB(0, 255, 0);
-		strLine = _T("판정 : OK");
+		strLine = _T("JUDGE : OK");
 	}
 
 	if (pRsltInfo->m_nHeadNo == CAM_POS_TOP) {
@@ -303,11 +303,11 @@ void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWid
 	COLORREF color;
 	if (pRsltInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
 		color = RGB(255, 0, 0);
-		strLine = _T("판정 : NG");
+		strLine = _T("JUDGE : NG");
 	}
 	else {
 		color = RGB(0, 255, 0);
-		strLine = _T("판정 : OK");
+		strLine = _T("JUDGE : OK");
 	}
 
 	if (pRsltInfo->m_nHeadNo == CAM_POS_TOP) {
