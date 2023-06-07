@@ -30,6 +30,9 @@ CString CSpcStatusInData::MakeStatusInDataText =
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcStatusInData::CSpcStatusInData(CSpcPlusManager* sMgr)
 {
+	//관리 클래스 객체 포인터
+	manager = sMgr;
+
 	m_Category = "STATUS";
 	m_TransferTimer = "20230403090002757";
 	m_EqpInspId = "W1ASTKM01-02";
@@ -52,4 +55,22 @@ CSpcStatusInData::CSpcStatusInData(CSpcPlusManager* sMgr)
 CSpcStatusInData::~CSpcStatusInData()
 {
 
+}
+
+//JSON 형식의 텍스트를 만든다.
+CString CSpcStatusInData::makeJSONText_Status()
+{
+	CString makeJSONText;
+	makeJSONText.Format(MakeStatusInDataText,
+		m_Category,
+		m_TransferTimer,
+		m_EqpInspId,
+		m_ProcessGroup,
+		m_ProcessName,
+		m_EqpId,
+		m_AgentSwVersion,
+		m_VisonType,
+		m_InspStatus
+	);
+	return makeJSONText;
 }

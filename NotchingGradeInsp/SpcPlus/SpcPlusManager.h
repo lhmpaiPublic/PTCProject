@@ -15,6 +15,9 @@ class CSpcPlusManager
 public:
 	CSpcPlusManager() ;
 	virtual ~CSpcPlusManager() ;
+
+	//JSON 형식의 파일 생성
+	virtual void makeJSONFile() {}
 };
 
 

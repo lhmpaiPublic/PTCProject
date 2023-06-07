@@ -13,7 +13,7 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-CString MakeSpecParaInDataText_1 =
+char* CSpcSpecParaInData::MakeSpecParaInDataText_1 =
 "		\"IN_DATA\": ["
 "			{"
 "				\"CATEGORY\": \"%s\","
@@ -25,10 +25,10 @@ CString MakeSpecParaInDataText_1 =
 "				\"MODIFIER\": \"%s\","
 "				\"MODIFIER_REASON\": \"%s\","
 "				\"PARA_INFO\": [";
-CString MakeSpecParaInDataText_2 =
+char* CSpcSpecParaInData::MakeSpecParaInDataText_2 =
 "				],"
 "				\"SPEC_INFO\": [";
-CString MakeSpecParaInDataText_3 =
+char* CSpcSpecParaInData::MakeSpecParaInDataText_3 =
 "				]"
 "			}"
 "		]";
@@ -37,6 +37,9 @@ CString MakeSpecParaInDataText_3 =
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcSpecParaInData::CSpcSpecParaInData(CSpcPlusManager* sMgr)
 {
+	//관리 클래스 객체 포인터
+	manager = sMgr;
+
 	m_Category = "SPEC_PARA";
 	m_EqpId = "W1ASTKM01-02";
 	m_EqpInspId = "W1ASTKM01-02";
@@ -59,4 +62,30 @@ CSpcSpecParaInData::CSpcSpecParaInData(CSpcPlusManager* sMgr)
 CSpcSpecParaInData::~CSpcSpecParaInData()
 {
 
+}
+
+//JSON 형식의 텍스트를 만든다.
+CString CSpcSpecParaInData::makeJSONText_SpecPara1()
+{
+	CString makeJSONText;
+	makeJSONText.Format(MakeSpecParaInDataText_1,
+		m_Category,
+		m_EqpId,
+		m_EqpInspId,
+		m_RecipeId,
+		m_InspRecipe,
+		m_InspSwVersion,
+		m_ModifyTime,
+		m_Modifier,
+		m_ModifyReason
+	);
+	return makeJSONText;
+}
+CString CSpcSpecParaInData::getJSONText_SpecPara2()
+{
+	return MakeSpecParaInDataText_2;
+}
+CString CSpcSpecParaInData::getJSONText_SpecParaTail() 
+{
+	return MakeSpecParaInDataText_3;
 }

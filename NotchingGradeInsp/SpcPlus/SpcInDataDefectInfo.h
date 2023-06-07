@@ -11,13 +11,16 @@
 #endif // _MSC_VER > 1000
 
 class CSpcPlusManager;
-class CSpcInDataDefectInfo
+class CSpcInDataDefectInfo : public CSpcInData
 {
 public:
 	CSpcInDataDefectInfo(CSpcPlusManager* sMgr = NULL) ;
 	virtual ~CSpcInDataDefectInfo() ;
 
 private:
+	//관리 클래스 객체 포인터
+	CSpcPlusManager* manager;
+
 	//결함 중 해당 결함의 순서	
 	CString	m_DefectIndex;
 	//Rule Base Defect Type(불량명 기입) → 통일화된 외관 불량명 기입	
@@ -89,7 +92,7 @@ private:
 	CString	m_DefectCropImageFileName;
 
 public:
-	static CString MakeInDataDefectInfoText;
+	static char* MakeInDataDefectInfoText;
 
 	//결함 중 해당 결함의 순서	
 	void setDefectIndex(CString	DefectIndex) { m_DefectIndex = DefectIndex; }
@@ -160,6 +163,9 @@ public:
 	void setDefectInOut(CString	 DefectInOut) { m_DefectInOut = DefectInOut; }
 	//외관 불량 Crop 이미지 파일명
 	void setDefectCropImageFileName(CString	DefectCropImageFileName) { m_DefectCropImageFileName = DefectCropImageFileName; }
+
+	//JSON 형식의 텍스트를 만든다.
+	CString makeJSONText_DefectInfo();
 
 };
 

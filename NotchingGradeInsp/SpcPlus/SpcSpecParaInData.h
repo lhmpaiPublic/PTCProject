@@ -10,8 +10,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "SpcInData.h"
-
 class CSpcPlusManager;
 class CSpcParaInfo;
 class CSpcSpecInfo;
@@ -22,6 +20,9 @@ public:
 	virtual ~CSpcSpecParaInData() ;
 
 private:
+	//관리 클래스 객체 포인터
+	CSpcPlusManager* manager;
+
 	//Message 종류	
 	CString	m_Category;
 	//MMD기준 설비ID 기입 
@@ -45,9 +46,9 @@ private:
 	CString	m_ModifyReason;
 
 public:
-	static CString MakeSpecParaInDataText_1;
-	static CString MakeSpecParaInDataText_2;
-	static CString MakeSpecParaInDataText_3;
+	static char* MakeSpecParaInDataText_1;
+	static char* MakeSpecParaInDataText_2;
+	static char* MakeSpecParaInDataText_3;
 
 	//Message 종류	
 	void setCategory(CString	Category) { m_Category = Category; }
@@ -70,6 +71,11 @@ public:
 	//변경 사유
 	//프로그램 Off/On 보고시 "RESTART"
 	void setModifyReason(CString	ModifyReason) { m_ModifyReason = ModifyReason; }
+
+	//JSON 형식의 텍스트를 만든다.
+	CString makeJSONText_SpecPara1();
+	CString getJSONText_SpecPara2();
+	CString getJSONText_SpecParaTail();
 
 };
 

@@ -11,13 +11,16 @@
 #endif // _MSC_VER > 1000
 
 class CSpcPlusManager;
-class CSpcSpecInfo
+class CSpcSpecInfo : public CSpcInData
 {
 public:
 	CSpcSpecInfo(CSpcPlusManager* sMgr = NULL) ;
 	virtual ~CSpcSpecInfo() ;
 
 private:
+	//관리 클래스 객체 포인터
+	CSpcPlusManager* manager;
+
 	//장비 Spec	
 	CString	m_SpecInspType;
 	//카메라 위치정보
@@ -26,10 +29,11 @@ private:
 	//측정항목명칭 or ROI 명칭  	
 	CString	m_SpecDetectonName;
 	//정의된 Spec Key : Value N개	
-	std::vector<CString>	m_SpecData;
+	CString	m_SpecData;
 
 public:
-	static CString MakeSpecInfoText;
+	static char* MakeSpecInfoText_1;
+	static char* MakeSpecInfoText_2;
 
 	//장비 Spec	
 	void setSpecInspType(CString	SpecInspType) { m_SpecInspType = SpecInspType; }
@@ -39,7 +43,10 @@ public:
 	//측정항목명칭 or ROI 명칭  	
 	void setSpecDetectonName(CString	SpecDetectonName) { m_SpecDetectonName = SpecDetectonName; }
 	//정의된 Spec Key : Value N개	
-	void setSpecData(CString	SpecData) { m_SpecData.push_back(SpecData); }
+	void appendSpec(CString	SpecKey, CString	SpecData);
+
+	//JSON 형식의 텍스트를 만든다.
+	CString makeJSONText_SpecInfo();
 
 };
 

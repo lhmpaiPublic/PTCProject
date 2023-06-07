@@ -24,6 +24,13 @@ public:
 	CSpcRefDs* m_SpcRefDs;
 	///In Data(송신 데이터) 객체 포인터	
 	CSpcAlarmInData* m_SpcAlarmInData;
+
+	//SPC Plus Header 객체 포인터	
+	CSpcHeader* getSpcHeader() { return m_SpcHeader; }
+	//SPC Reference Data Set 객체 포인터	
+	CSpcRefDs* getSpcRefDs() { return m_SpcRefDs; }
+	///In Data(송신 데이터) 객체 포인터	
+	CSpcAlarmInData* getSpcAlarmInData() { return m_SpcAlarmInData; }
 };
 
 

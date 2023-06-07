@@ -34,6 +34,8 @@
 
 #include "CDeleteResultFileThread.h" // 22.07.04 Ahn Add
 
+#include "SpcInspManager.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -115,6 +117,9 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 
 	//로그 출력창 활성화 키(Ctrl 눌림 확인용)
 	logControlKeyDown = false;
+
+	CSpcInspManager temp;
+	temp.makeJSONFile();
 }
 
 CNotchingGradeInspView::~CNotchingGradeInspView()

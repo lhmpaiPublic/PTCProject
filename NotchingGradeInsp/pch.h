@@ -28,5 +28,6 @@ using namespace Gdiplus;
 #include "LogDisplayDlg.h"
 
 #include "SpcPlusManager.h"
+#include "SpcInData.h"
 
 #endif //PCH_H

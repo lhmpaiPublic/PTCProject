@@ -10,8 +10,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "SpcInData.h"
-
 class CSpcPlusManager;
 class CSpcInDataIqInfo;
 class CSpcInDataDefectInfo;
@@ -22,6 +20,9 @@ public:
 	virtual ~CSpcInspInData() ;
 
 private:
+	//관리 클래스 객체 포인터
+	CSpcPlusManager* manager;
+
 	//Message 종류	
 	CString	m_Category;
 	//Trigger 받은 시간
@@ -80,18 +81,18 @@ private:
 	//해당 Cell의 외관 NG 개수	
 	CString	m_TotalAppearanceNgCount;
 	//외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입) 	
-	std::vector<CString>	m_AppearanceReasonAll;
+	CString	m_AppearanceReasonAll;
 	//현업에서 통용된 되는 외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입)	
-	std::vector<CString>	m_AppearanceReasonAllReal;
+	CString	m_AppearanceReasonAllReal;
 	//외관 대표 불량명(우선순위 대표 불량명 없을시 첫번째 검출 항목)	
 	CString	m_AppearanceReasonMain;
 	//해당 셀의 대표불량명을 실제 통용되는 명칭으로 기입	
 	CString	m_AppearanceReasonMainReal;
 
 public:
-	static CString MakeInspInDataText_1;
-	static CString MakeInspInDataText_2;
-	static CString MakeInspInDataText_3;
+	static char* MakeInspInDataText_1;
+	static char* MakeInspInDataText_2;
+	static char* MakeInspInDataText_3;
 
 	//Message 종류	
 	void setCategory(CString	Category) { m_Category = Category; }
@@ -146,22 +147,23 @@ public:
 	void setVirtualCellId(CString	 VirtualCellId) { m_VirtualCellId = VirtualCellId; }
 	//Cell 판정결과	
 	void setCellFinalJudge(CString	CellFinalJudge) { m_CellFinalJudge = CellFinalJudge; }
-	//이미지 퀄리티 정보	
-	//void setIqInfo(int idx, CSpcInDataIqInfo	IqInfo){m_IqInfo[idx] = IqInfo;}
 	//외관 판정 결과 OK/NG/DLNG여부 	
 	void setAppearanceJudgeResult(CString	AppearanceJudgeResult) { m_AppearanceJudgeResult = AppearanceJudgeResult; }
 	//해당 Cell의 외관 NG 개수	
 	void setTotalAppearanceNgCount(CString	TotalAppearanceNgCount) { m_TotalAppearanceNgCount = TotalAppearanceNgCount; }
 	//외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입) 	
-	void pushAppearanceReasonAll(CString	AppearanceReasonAll) { m_AppearanceReasonAll.push_back(AppearanceReasonAll); }
+	void appendAppearanceReasonAll(CString	AppearanceReasonAll) { m_AppearanceReasonAll.Append(AppearanceReasonAll); }
 	//현업에서 통용된 되는 외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입)	
-	void setAppearanceReasonAllReal(CString  AppearanceReasonAllReal) { m_AppearanceReasonAllReal.push_back(AppearanceReasonAllReal); }
+	void appendAppearanceReasonAllReal(CString  AppearanceReasonAllReal) { m_AppearanceReasonAllReal.Append(AppearanceReasonAllReal); }
 	//외관 대표 불량명(우선순위 대표 불량명 없을시 첫번째 검출 항목)	
 	void setAppearanceReasonMain(CString	AppearanceReasonMain) { m_AppearanceReasonMain = AppearanceReasonMain; }
 	//해당 셀의 대표불량명을 실제 통용되는 명칭으로 기입	
 	void setAppearanceReasonMainReal(CString	AppearanceReasonMainReal) { m_AppearanceReasonMainReal = AppearanceReasonMainReal; }
-	//결함정보	
-	//void setDefectInfo(int idx, CSpcInDataDefectInfo	DefectInfo) { m_DefectInfo[idx] = DefectInfo; }
+
+	//JSON 형식의 텍스트를 만든다.
+	CString makeJSONText_Insp1();
+	CString makeJSONText_Insp2();
+	CString getSONText_InspTail();
 };
 
 

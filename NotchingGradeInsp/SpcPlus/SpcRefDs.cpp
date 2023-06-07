@@ -14,18 +14,20 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 CString CSpcRefDs::MakeRefDsText_1 =
-"	\"refDS\" : {"
-"                       \"IN_DATA\": [";
+"   \"refDS\" : {\r\n"
+"                \"IN_DATA\": [\r\n";
 //+%s ~...InData
 CString CSpcRefDs::MakeRefDsText_2 =
-"						]"
-"	            }";
+"                   ]\r\n"
+"            }\r\n";
 
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcRefDs::CSpcRefDs(CSpcPlusManager* sMgr)
 {
+	//관리 클래스 객체 포인터
+	manager = sMgr;
 	if (sMgr)
 	{
 
@@ -38,4 +40,13 @@ CSpcRefDs::CSpcRefDs(CSpcPlusManager* sMgr)
 CSpcRefDs::~CSpcRefDs()
 {
 
+}
+
+CString CSpcRefDs::getJSONText_RefDsFront()
+{
+	return MakeRefDsText_1;
+}
+CString CSpcRefDs::getJSONText_RefDsTail()
+{
+	return MakeRefDsText_2;
 }

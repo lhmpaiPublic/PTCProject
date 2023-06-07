@@ -11,13 +11,16 @@
 #endif // _MSC_VER > 1000
 
 class CSpcPlusManager;
-class CSpcInDataIqInfo
+class CSpcInDataIqInfo : public CSpcInData
 {
 public:
 	CSpcInDataIqInfo(CSpcPlusManager* sMgr = NULL) ;
 	virtual ~CSpcInDataIqInfo() ;
 
 private:
+	//관리 클래스 객체 포인터
+	CSpcPlusManager* manager;
+
 	//Camera 위치(Top, Bottom) 
 	//디폴트 값 : "TOP"	
 	CString	m_IqCameraLocation;
@@ -51,7 +54,7 @@ private:
 	CString	m_ImageFileName;
 
 public:
-	static CString MakeInDataIqInfoText;
+	static char* MakeInDataIqInfoText;
 
 	//Camera 위치(Top, Bottom) 
 	//디폴트 값 : "TOP"		
@@ -84,6 +87,9 @@ public:
 	void setImageJudge(CString	 ImageJudge) { m_ImageJudge = ImageJudge; }
 	//Original Image 파일명 	
 	void setImageFileName(CString	ImageFileName) { m_ImageFileName = ImageFileName; }
+
+	//JSON 형식의 텍스트를 만든다.
+	CString makeJSONText_IqInfo();
 
 };
 

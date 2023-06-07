@@ -10,8 +10,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "SpcInData.h"
-
 class CSpcPlusManager;
 class CSpcAlarmInData : public CSpcInData
 {
@@ -20,6 +18,9 @@ public:
 	virtual ~CSpcAlarmInData() ;
 
 private:
+	//관리 클래스 객체 포인터
+	CSpcPlusManager* manager;
+
 	//Message 종류	
 	CString	m_Category;
 	//검사기 EM NO. 
@@ -68,7 +69,7 @@ private:
 	CString	m_AlarmOutToDate;
 
 public:
-	static CString MakeAlarmInDataText;
+	static char* MakeAlarmInDataText;
 
 	//Message 종류	
 	void setCategory(CString	Category) { m_Category = Category; }
@@ -116,6 +117,9 @@ public:
 	//알람 해제 시간
 	//YYYY(연) + MM(월) + DD일 + HH(시) + MM(분) + SS(초) + MMM(밀리초)	
 	void setAlarmOutToDate(CString	AlarmOutToDate) { m_AlarmOutToDate = AlarmOutToDate; }
+
+	//JSON 형식의 텍스트를 만든다.
+	CString makeJSONText_Alarm();
 	
 };
 

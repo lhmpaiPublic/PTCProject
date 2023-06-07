@@ -16,6 +16,9 @@ public:
 	CSpcInData() ;
 	virtual ~CSpcInData() ;
 
+	//JSON 형식의 텍스트 생성
+	virtual void makeJSON() {}
+
 };
 
 

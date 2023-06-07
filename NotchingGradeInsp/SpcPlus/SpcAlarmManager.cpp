@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "pch.h"
+#include "SpcPlus.h"
 #include "SpcAlarmManager.h"
 
 
@@ -16,7 +17,12 @@ static char THIS_FILE[]=__FILE__;
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcAlarmManager::CSpcAlarmManager()
 {
-
+	//SPC Plus Header 객체 포인터	
+	m_SpcHeader = new CSpcHeader(this);
+	//SPC Reference Data Set 객체 포인터	
+	m_SpcRefDs = new CSpcRefDs(this);
+	///In Data(송신 데이터) 객체 포인터	
+	m_SpcAlarmInData = new CSpcAlarmInData(this);
 }
 
 //소멸자
@@ -24,5 +30,13 @@ CSpcAlarmManager::CSpcAlarmManager()
 //객체가 메모리에서 제거되기전 필요한 정리 수행
 CSpcAlarmManager::~CSpcAlarmManager()
 {
-
+	//SPC Plus Header 객체 포인터	
+	if (m_SpcHeader)
+		delete m_SpcHeader;
+	//SPC Reference Data Set 객체 포인터	
+	if (m_SpcRefDs)
+		delete m_SpcRefDs;
+	///In Data(송신 데이터) 객체 포인터	
+	if (m_SpcAlarmInData)
+		delete m_SpcAlarmInData;
 }

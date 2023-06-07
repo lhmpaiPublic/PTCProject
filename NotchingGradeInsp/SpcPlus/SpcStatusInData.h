@@ -10,8 +10,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "SpcInData.h"
-
 class CSpcPlusManager;
 class CSpcStatusInData : public CSpcInData
 {
@@ -20,6 +18,9 @@ public:
 	virtual ~CSpcStatusInData() ;
 
 private:
+	//관리 클래스 객체 포인터
+	CSpcPlusManager* manager;
+
 	//Message 종류	
 	CString	m_Category;
 	//발생시간	
@@ -62,6 +63,9 @@ public:
 	//검사 Live Signal (1), 가동 불가 (0)
 	//가동 불가 사유로는 SW 외적인 요인에 의한 가동 불가 상태	
 	void setInspStatus(CString	InspStatus) { m_InspStatus = InspStatus; }
+
+	//JSON 형식의 텍스트를 만든다.
+	CString makeJSONText_Status();
 };
 
 

@@ -11,13 +11,16 @@
 #endif // _MSC_VER > 1000
 
 class CSpcPlusManager;
-class CSpcParaInfo
+class CSpcParaInfo : public CSpcInData
 {
 public:
 	CSpcParaInfo(CSpcPlusManager* sMgr = NULL) ;
 	virtual ~CSpcParaInfo() ;
 
 private:
+	//관리 클래스 객체 포인터
+	CSpcPlusManager* manager;
+
 	//검사유형
 	//DIMENSION/DEFECT/ALIGN	
 	CString	m_ParaInspType;
@@ -32,10 +35,11 @@ private:
 	//LG에서 Vision검사기 외관불량항목 표준화Rev1.7.ppt 발송내용참고, 코드명기입	
 	CString	m_ParaDetectionName;
 	//정의된 Para Key : Value N개	
-	std::vector<CString>	m_ParaData;
+	CString	m_ParaData;
 
 public:
-	static CString MakeParaInfoText;
+	static char* MakeParaInfoText_1;
+	static char* MakeParaInfoText_2;
 
 	//검사유형
 	//DIMENSION/DEFECT/ALIGN	
@@ -51,7 +55,10 @@ public:
 	//LG에서 Vision검사기 외관불량항목 표준화Rev1.7.ppt 발송내용참고, 코드명기입	
 	void setParaDetectionName(CString	ParaDetectionName) { m_ParaDetectionName = ParaDetectionName; }
 	//정의된 Para Key : Value N개	
-	void pushParaData(CString	ParaData) { m_ParaData.push_back(ParaData); }
+	void appendParaData(CString	ParaKey, CString	ParaData);
+
+	//JSON 형식의 텍스트를 만든다.
+	CString makeJSONText_ParaInfo();
 };
 
 

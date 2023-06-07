@@ -13,20 +13,30 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-CString CSpcSpecInfo::MakeSpecInfoText =
+char* CSpcSpecInfo::MakeSpecInfoText_1 =
 "					{"
 "						\"PARA_INSP_TYPE\": \"%s\","
 "						\"PARA_CAM_POSITION\": \"%s\","
 "						\"PARA_DETECTION_NAME\": \"%s\","
+"%s"
 "					},";
+
+char* CSpcSpecInfo::MakeSpecInfoText_2 =
+"						\"%s\": \"%s\"";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcSpecInfo::CSpcSpecInfo(CSpcPlusManager* sMgr)
 {
+	//관리 클래스 객체 포인터
+	manager = sMgr;
+
 	m_SpecInspType = "DEFECT";
 	m_SpecCamPosition = "TOP";
 	m_SpecDetectonName = "PINH";
+	m_SpecData = "";
+
+	appendSpec("SpecKey", "SpecData");
 
 	if (sMgr)
 	{
@@ -40,4 +50,35 @@ CSpcSpecInfo::CSpcSpecInfo(CSpcPlusManager* sMgr)
 CSpcSpecInfo::~CSpcSpecInfo()
 {
 
+}
+
+void CSpcSpecInfo::appendSpec(CString	SpecKey, CString	SpecData)
+{
+	CString makeSpecText;
+	makeSpecText.Format(MakeSpecInfoText_2,
+		SpecKey,
+		SpecData
+	);
+	if (m_SpecData.GetLength())
+	{
+		m_SpecData.Append(",\r\n");
+		m_SpecData.Append(makeSpecText);
+	}
+	else
+	{
+		m_SpecData.Append(makeSpecText);
+	}
+}
+
+//JSON 형식의 텍스트를 만든다.
+CString CSpcSpecInfo::makeJSONText_SpecInfo()
+{
+	CString makeJSONText;
+	makeJSONText.Format(MakeSpecInfoText_1,
+		m_SpecInspType,
+		m_SpecCamPosition,
+		m_SpecDetectonName,
+		m_SpecData
+	);
+	return makeJSONText;
 }

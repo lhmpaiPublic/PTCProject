@@ -31,6 +31,17 @@ public:
 	std::vector<CSpcParaInfo*> m_SpcParaInfo;
 	//변경 Spec 정보	
 	std::vector<CSpcSpecInfo*> m_SpcSpecInfo;
+
+	//SPC Plus Header 객체 포인터
+	CSpcHeader* getSpcHeader() { return m_SpcHeader; }
+	//SPC Reference Data Set 객체 포인터
+	CSpcRefDs* getSpcRefDs() { return m_SpcRefDs; }
+	///In Data(송신 데이터) 객체 포인터
+	CSpcSpecParaInData* getSpcInspInData() { return m_SpcSpecParaInData; }
+	//변경Para 정보	
+	std::vector<CSpcParaInfo*> getSpcParaInfo() { return m_SpcParaInfo; }
+	//변경 Spec 정보	
+	std::vector<CSpcSpecInfo*> getSpcSpecInfo() { return m_SpcSpecInfo; }
 };
 
 

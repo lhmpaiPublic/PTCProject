@@ -13,47 +13,50 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-CString CSpcInDataDefectInfo::MakeInDataDefectInfoText =
-"											{"
-"			                       				\"DEFECT_INDEX\": \"%s\","
-"			                       				\"DEFECT_TYPE_RULE_BASE_NAME\" : \"%s\","
-"			                       				\"DEFECT_TYPE_RULE_BASE_NAME_REAL\" : \"%s\","
-"			                       				\"DEFECT_CAMERA_TYPE\" : \"%s\","
-"			                       				\"DEFECT_CAMERA_LOCATION\" : \"%s\","
-"			                       				\"DEFECT_CAMERA_NUMBER\" : \"%s\","
-"			                       				\"DEFECT_SCREEN_NUMBER\" : \"%s\","
-"			                       				\"DEFECT_INSP_POSITION\" : \"%s\","
-"			                       				\"DEFECT_CRITERIA_POINT_X\" : \"%s\","
-"			                       				\"DEFECT_CRITERIA_POINT_Y\" : \"%s\","
-"			                       				\"DEFECT_RELATIVE_POINT_R_PX\" : \"%s\","
-"			                       				\"DEFECT_RELATIVE_POINT_ANGLE\" : \"%s\","
-"			                       				\"DEFECT_ABSOLUTE_IMG_X\" : \"%s\","
-"			                       				\"DEFECT_ABSOLUTE_IMG_Y\" : \"%s\","
-"			                       				\"DEFECT_IMG_WIDTH\" : \"%s\","
-"			                       				\"DEFECT_IMG_LENGTH\" : \"%s\","
-"			                       				\"DEFECT_AREA_PIXELS\" : \"%s\","
-"			                       				\"DEFECT_GRAY_LV_AVG\" : \"%s\","
-"			                       				\"DEFECT_GRAY_LV_MAX\" : \"%s\","
-"			                       				\"DEFECT_GRAY_LV_MIN\" : \"%s\","
-"			                       				\"DEFECT_GRAY_LV_RANGE\" : \"%s\","
-"			                       				\"DEFECT_GRAY_LV_STDDEV\" : \"%s\","
-"			                       				\"DEFECT_RATIO_WIDTH_LENGTH\" : \"%s\","
-"			                       				\"DEFECT_ANGLE\" : \"%s\","
-"			                       				\"DEFECT_ELONGATION\" : \"%s\","
-"			                       				\"DEFECT_BOUNDARY_PIXEL_LENGTH\" : \"%s\","
-"			                       				\"DEFECT_ROI_GRAY_LV_MAX\" : \"%s\","
-"			                       				\"DEFECT_ROI_GRAY_LV_AVG\" : \"%s\","
-"			                       				\"DEFECT_ROI_GRAY_LV_MIN\" : \"%s\","
-"			                       				\"DEFECT_ROI_GRAY_LV_MEDIAN\" : \"%s\","
-"			                       				\"DEFECT_ROI_GRAY_LV_STDDEV\" : \"%s\","
-"			                       				\"DEFECT_INOUT\" : \"%s\","
-"			                       				\"DEFECT_CROP_IMAGE_FILE_NAME\" : \"%s\""
-"											]";
+char* CSpcInDataDefectInfo::MakeInDataDefectInfoText =
+"                                          {\r\n"
+"                                               \"DEFECT_INDEX\": \"%s\",\r\n"
+"                                               \"DEFECT_TYPE_RULE_BASE_NAME\" : \"%s\",\r\n"
+"                                               \"DEFECT_TYPE_RULE_BASE_NAME_REAL\" : \"%s\",\r\n"
+"                                               \"DEFECT_CAMERA_TYPE\" : \"%s\",\r\n"
+"                                               \"DEFECT_CAMERA_LOCATION\" : \"%s\",\r\n"
+"                                               \"DEFECT_CAMERA_NUMBER\" : \"%s\",\r\n"
+"                                               \"DEFECT_SCREEN_NUMBER\" : \"%s\",\r\n"
+"                                               \"DEFECT_INSP_POSITION\" : \"%s\",\r\n"
+"                                               \"DEFECT_CRITERIA_POINT_X\" : \"%s\",\r\n"
+"                                               \"DEFECT_CRITERIA_POINT_Y\" : \"%s\",\r\n"
+"                                               \"DEFECT_RELATIVE_POINT_R_PX\" : \"%s\",\r\n"
+"                                               \"DEFECT_RELATIVE_POINT_ANGLE\" : \"%s\",\r\n"
+"                                               \"DEFECT_ABSOLUTE_IMG_X\" : \"%s\",\r\n"
+"                                               \"DEFECT_ABSOLUTE_IMG_Y\" : \"%s\",\r\n"
+"                                               \"DEFECT_IMG_WIDTH\" : \"%s\",\r\n"
+"                                               \"DEFECT_IMG_LENGTH\" : \"%s\",\r\n"
+"                                               \"DEFECT_AREA_PIXELS\" : \"%s\",\r\n"
+"                                               \"DEFECT_GRAY_LV_AVG\" : \"%s\",\r\n"
+"                                               \"DEFECT_GRAY_LV_MAX\" : \"%s\",\r\n"
+"                                               \"DEFECT_GRAY_LV_MIN\" : \"%s\",\r\n"
+"                                               \"DEFECT_GRAY_LV_RANGE\" : \"%s\",\r\n"
+"                                               \"DEFECT_GRAY_LV_STDDEV\" : \"%s\",\r\n"
+"                                               \"DEFECT_RATIO_WIDTH_LENGTH\" : \"%s\",\r\n"
+"                                               \"DEFECT_ANGLE\" : \"%s\",\r\n"
+"                                               \"DEFECT_ELONGATION\" : \"%s\",\r\n"
+"                                               \"DEFECT_BOUNDARY_PIXEL_LENGTH\" : \"%s\",\r\n"
+"                                               \"DEFECT_ROI_GRAY_LV_MAX\" : \"%s\",\r\n"
+"                                               \"DEFECT_ROI_GRAY_LV_AVG\" : \"%s\",\r\n"
+"                                               \"DEFECT_ROI_GRAY_LV_MIN\" : \"%s\",\r\n"
+"                                               \"DEFECT_ROI_GRAY_LV_MEDIAN\" : \"%s\",\r\n"
+"                                               \"DEFECT_ROI_GRAY_LV_STDDEV\" : \"%s\",\r\n"
+"                                               \"DEFECT_INOUT\" : \"%s\",\r\n"
+"                                               \"DEFECT_CROP_IMAGE_FILE_NAME\" : \"%s\"\r\n"
+"                                          }\r\n";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcInDataDefectInfo::CSpcInDataDefectInfo(CSpcPlusManager* sMgr)
 {
+	//관리 클래스 객체 포인터
+	manager = sMgr;
+
 	m_DefectIndex = "1";
 	m_DefectTypeRuleBaseName = "PINH";
 	m_DefectTypeRuleBaseNameReal = "Pinhole";
@@ -100,4 +103,46 @@ CSpcInDataDefectInfo::CSpcInDataDefectInfo(CSpcPlusManager* sMgr)
 CSpcInDataDefectInfo::~CSpcInDataDefectInfo()
 {
 
+}
+
+//JSON 형식의 텍스트를 만든다.
+CString CSpcInDataDefectInfo::makeJSONText_DefectInfo()
+{
+	CString makeJSONText;
+	makeJSONText.Format(MakeInDataDefectInfoText,
+			m_DefectIndex,
+			m_DefectTypeRuleBaseName,
+			m_DefectTypeRuleBaseNameReal,
+			m_DefectCameraType,
+			m_DefectCameraLocation,
+			m_DefectCameraNumber,
+			m_DefectScreenNumber,
+			m_DefectInspPosition,
+			m_DefectCriteriaPointX,
+			m_DefectCriteriaPointY,
+			m_DefectRelativePointRPx,
+			m_DefectRelativePointAngle,
+			m_DefectAbsoluteImgX,
+			m_DefectAbsoluteImgY,
+			m_DefectImgWidth,
+			m_DefectImgLength,
+			m_DefectAreaPixels,
+			m_DefectGrayLvAvg,
+			m_DefectGrayLvMax,
+			m_DefectGrayLvMin,
+			m_DefectGrayLvRange,
+			m_DefectGrayLvStddev,
+			m_DefectRatioWidthLength,
+			m_DefectAngle,
+			m_DefectElongation,
+			m_DefectBoundaryPixelLength,
+			m_DefectRoiGrayLvMax,
+			m_DefectRoiGrayLvAvg,
+			m_DefectRoiGrayLvMin,
+			m_DefectRoiGrayLvMedian,
+			m_DefectRoiGrayLvStddev,
+			m_DefectInOut,
+			m_DefectCropImageFileName
+		);
+	return makeJSONText;
 }

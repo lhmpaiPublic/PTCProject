@@ -13,7 +13,7 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-CString CSpcAlarmInData::MakeAlarmInDataText =
+char* CSpcAlarmInData::MakeAlarmInDataText =
 "            {"
 "                \"CATEGORY\": \"%s\","
 "                \"EQP_INSP_ID\": \"%s\","
@@ -38,6 +38,9 @@ CString CSpcAlarmInData::MakeAlarmInDataText =
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcAlarmInData::CSpcAlarmInData(CSpcPlusManager* sMgr)
 {
+	//관리 클래스 객체 포인터
+	manager = sMgr;
+
 	m_Category = "ALARM";
 	m_EqpInspId = "W1ASTKM01-02";
 	m_ProcessGroup = "ASSEMBLY";
@@ -68,4 +71,29 @@ CSpcAlarmInData::CSpcAlarmInData(CSpcPlusManager* sMgr)
 CSpcAlarmInData::~CSpcAlarmInData()
 {
 
+}
+
+CString CSpcAlarmInData::makeJSONText_Alarm()
+{
+	CString makeJSONText;
+	makeJSONText.Format(MakeAlarmInDataText,
+		m_Category,
+		m_EqpInspId,
+		m_ProcessGroup,
+		m_ProcessName,
+		m_MachineNumber,
+		m_LineNumber,
+		m_LaneNumber,
+		m_VisionType,
+		m_EqpId,
+		m_AlarmFlag,
+		m_AlarmInfoDate,
+		m_AlarmHost,
+		m_AlarmLevel,
+		m_AlarmCode,
+		m_AlarmName,
+		m_AlarmAllResetFlag,
+		m_AlarmOutToDate
+	);
+	return makeJSONText;
 }

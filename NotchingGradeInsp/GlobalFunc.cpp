@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "GlobalFunc.h"
+#include "Win32File.h"
 
 CGlobalFunc::CGlobalFunc(void) {}
 CGlobalFunc::~CGlobalFunc(void) {}
@@ -19,4 +20,11 @@ std::vector<CString> CGlobalFunc::StringParser(CString val, char s = ',')
     }
 
     return parserVal;
+}
+
+//JSON 파일 생성함수
+void CGlobalFunc::makeJSONFile(CString FilePath, CString FileName, CString msg)
+{
+	CWin32File file;
+	file.TextSave1Line(FilePath, FileName, msg, "at", FALSE, 999999999);
 }
