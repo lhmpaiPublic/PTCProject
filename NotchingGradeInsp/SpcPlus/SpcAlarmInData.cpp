@@ -14,25 +14,25 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 char* CSpcAlarmInData::MakeAlarmInDataText =
-"            {"
-"                \"CATEGORY\": \"%s\","
-"                \"EQP_INSP_ID\": \"%s\","
-"                \"PROCESS_GROUP\": \"%s\","
-"                \"PROCESS_NAME\": \"%s\","
-"                \"LINE_NUMBER\": \"%s\","
-"                \"MACHINE_NUMBER\": \"%s\","
-"                \"LANE_NUMBER\": \"%s\","
-"                \"VISION_TYPE\": \"%s\","
-"                \"EQP_ID\": \"%s\","
-"                \"ALARM_FLAG\": \"%s\","
-"                \"ALARM_INTO_DATE\": \"%s\","
-"                \"ALARM_HOST\": \"%s\","
-"                \"ALARM_LEVEL\": \"%s\","
-"                \"ALARM_CODE\": \"%s\","
-"                \"ALARM_NAME\": \"%s\","
-"                \"ALARM_ALL_RESET_FLAG\": \"%s\","
-"                \"ALARM_OUTTO_DATE\": \"%s\","
-"            }";
+"               {\r\n"
+"                     \"CATEGORY\": \"%s\",\r\n"
+"                     \"EQP_INSP_ID\": \"%s\",\r\n"
+"                     \"PROCESS_GROUP\": \"%s\",\r\n"
+"                     \"PROCESS_NAME\": \"%s\",\r\n"
+"                     \"LINE_NUMBER\": \"%s\",\r\n"
+"                     \"MACHINE_NUMBER\": \"%s\",\r\n"
+"                     \"LANE_NUMBER\": \"%s\",\r\n"
+"                     \"VISION_TYPE\": \"%s\",\r\n"
+"                     \"EQP_ID\": \"%s\",\r\n"
+"                     \"ALARM_FLAG\": \"%s\",\r\n"
+"                     \"ALARM_INTO_DATE\": \"%s\",\r\n"
+"                     \"ALARM_HOST\": \"%s\",\r\n"
+"                     \"ALARM_LEVEL\": \"%s\",\r\n"
+"                     \"ALARM_CODE\": \"%s\",\r\n"
+"                     \"ALARM_NAME\": \"%s\",\r\n"
+"                     \"ALARM_ALL_RESET_FLAG\": \"%s\",\r\n"
+"                     \"ALARM_OUTTO_DATE\": \"%s\",\r\n"
+"                  }\r\n";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등

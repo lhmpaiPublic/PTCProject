@@ -31,6 +31,9 @@ public:
 	CSpcRefDs* getSpcRefDs() { return m_SpcRefDs; }
 	///In Data(송신 데이터) 객체 포인터	
 	CSpcAlarmInData* getSpcAlarmInData() { return m_SpcAlarmInData; }
+
+	// JSON 형식의 파일 생성
+	virtual void makeJSONFile();
 };
 
 

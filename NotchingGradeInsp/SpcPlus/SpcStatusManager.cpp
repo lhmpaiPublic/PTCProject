@@ -40,3 +40,16 @@ CSpcStatusManager::~CSpcStatusManager()
 	if(m_SpcStatusInData)
 		m_SpcStatusInData;
 }
+
+// JSON 형식의 파일 생성
+void CSpcStatusManager::makeJSONFile()
+{
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcHeader->makeJSONText_Header());
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcRefDs->getJSONText_RefDsFront());
+
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcStatusInData->makeJSONText_Status());
+
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcRefDs->getJSONText_RefDsTail());
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcHeader->getJSONText_HeaderTail());
+
+}

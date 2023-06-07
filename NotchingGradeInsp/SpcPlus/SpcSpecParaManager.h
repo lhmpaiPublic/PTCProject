@@ -42,6 +42,9 @@ public:
 	std::vector<CSpcParaInfo*> getSpcParaInfo() { return m_SpcParaInfo; }
 	//변경 Spec 정보	
 	std::vector<CSpcSpecInfo*> getSpcSpecInfo() { return m_SpcSpecInfo; }
+
+	// JSON 형식의 파일 생성
+	virtual void makeJSONFile();
 };
 
 

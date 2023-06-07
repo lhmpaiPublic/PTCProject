@@ -14,17 +14,17 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 CString CSpcStatusInData::MakeStatusInDataText =
-"            {"
-"                \"CATEGORY\": \"%s\","
-"                \"TRANSFER_TIME\": \"%s\","
-"                \"EQP_INSP_ID\": \"\","
-"                \"PROCESS_GROUP\": \"%s\","
-"                \"PROCESS_NAME\": \"%s\","
-"                \"EQP_ID\": \"%s\","
-"                \"AGENT_SW_VERSION\": \"%s\","
-"                \"VISION_TYPE\": \"%s\","
-"                \"INSP_STATUS\": \"%s\""
-"            }";
+"               {\r\n"
+"                     \"CATEGORY\": \"%s\",\r\n"
+"                     \"TRANSFER_TIME\": \"%s\",\r\n"
+"                     \"EQP_INSP_ID\": \"\",\r\n"
+"                     \"PROCESS_GROUP\": \"%s\",\r\n"
+"                     \"PROCESS_NAME\": \"%s\",\r\n"
+"                     \"EQP_ID\": \"%s\",\r\n"
+"                     \"AGENT_SW_VERSION\": \"%s\",\r\n"
+"                     \"VISION_TYPE\": \"%s\",\r\n"
+"                     \"INSP_STATUS\": \"%s\"\r\n"
+"                 }\r\n";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등

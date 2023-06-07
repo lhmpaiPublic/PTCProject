@@ -40,3 +40,16 @@ CSpcAlarmManager::~CSpcAlarmManager()
 	if (m_SpcAlarmInData)
 		delete m_SpcAlarmInData;
 }
+
+// JSON 형식의 파일 생성
+void CSpcAlarmManager::makeJSONFile()
+{
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Alarm.txt", m_SpcHeader->makeJSONText_Header());
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Alarm.txt", m_SpcRefDs->getJSONText_RefDsFront());
+
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Alarm.txt", m_SpcAlarmInData->makeJSONText_Alarm());
+
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Alarm.txt", m_SpcRefDs->getJSONText_RefDsTail());
+	CGlobalFunc::makeJSONFile("D:\\JSON", "Alarm.txt", m_SpcHeader->getJSONText_HeaderTail());
+
+}
