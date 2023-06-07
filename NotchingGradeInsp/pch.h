@@ -27,4 +27,6 @@ using namespace Gdiplus;
 #include "GlobalFunc.h"
 #include "LogDisplayDlg.h"
 
+#include "SpcPlusManager.h"
+
 #endif //PCH_H

@@ -214,7 +214,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_WINSOCK_DEPRECATED_NO_WARNINGS; _DEBUG;%(PreprocessorDefinitions);GRAB_CAMERA_LINK;</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Control;$(ProjectDir)Dalsa;$(ProjectDir)Melsec;$(ProjectDir)SetValue;$(ProjectDir)AXL;$(ProjectDir)Dalsa$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;$(ProjectDir)ImgProcDll;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Control;$(ProjectDir)Dalsa;$(ProjectDir)Melsec;$(ProjectDir)SetValue;$(ProjectDir)AXL;$(ProjectDir)Dalsa$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;$(ProjectDir)ImgProcDll;$(ProjectDir)SpcPlus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -508,6 +508,24 @@
     <ClInclude Include="SetValue\SetValueFunc.h" />
     <ClInclude Include="SetValue\SetValueRes.h" />
     <ClInclude Include="SigProc.h" />
+    <ClInclude Include="SpcPlus\ISpcIf.h" />
+    <ClInclude Include="SpcPlus\SpcAlarmInData.h" />
+    <ClInclude Include="SpcPlus\SpcAlarmManager.h" />
+    <ClInclude Include="SpcPlus\SpcHeader.h" />
+    <ClInclude Include="SpcPlus\SpcInData.h" />
+    <ClInclude Include="SpcPlus\SpcInDataDefectInfo.h" />
+    <ClInclude Include="SpcPlus\SpcInDataIqInfo.h" />
+    <ClInclude Include="SpcPlus\SpcInspInData.h" />
+    <ClInclude Include="SpcPlus\SpcInspManager.h" />
+    <ClInclude Include="SpcPlus\SpcParaInfo.h" />
+    <ClInclude Include="SpcPlus\SpcPlus.h" />
+    <ClInclude Include="SpcPlus\SpcPlusManager.h" />
+    <ClInclude Include="SpcPlus\SpcRefDs.h" />
+    <ClInclude Include="SpcPlus\SpcSpecInfo.h" />
+    <ClInclude Include="SpcPlus\SpcSpecParaInData.h" />
+    <ClInclude Include="SpcPlus\SpcSpecParaManager.h" />
+    <ClInclude Include="SpcPlus\SpcStatusInData.h" />
+    <ClInclude Include="SpcPlus\SpcStatusManager.h" />
     <ClInclude Include="StdIoApi.h" />
     <ClInclude Include="StdIoAXL.h" />
     <ClInclude Include="StdIoCCLink.h" />
@@ -650,6 +668,22 @@
     <ClCompile Include="SetValue\SetValueEdit.cpp" />
     <ClCompile Include="SetValue\SetValueFunc.cpp" />
     <ClCompile Include="SigProc.cpp" />
+    <ClCompile Include="SpcPlus\SpcAlarmInData.cpp" />
+    <ClCompile Include="SpcPlus\SpcAlarmManager.cpp" />
+    <ClCompile Include="SpcPlus\SpcHeader.cpp" />
+    <ClCompile Include="SpcPlus\SpcInData.cpp" />
+    <ClCompile Include="SpcPlus\SpcInDataDefectInfo.cpp" />
+    <ClCompile Include="SpcPlus\SpcInDataIqInfo.cpp" />
+    <ClCompile Include="SpcPlus\SpcInspInData.cpp" />
+    <ClCompile Include="SpcPlus\SpcInspManager.cpp" />
+    <ClCompile Include="SpcPlus\SpcParaInfo.cpp" />
+    <ClCompile Include="SpcPlus\SpcPlusManager.cpp" />
+    <ClCompile Include="SpcPlus\SpcRefDs.cpp" />
+    <ClCompile Include="SpcPlus\SpcSpecInfo.cpp" />
+    <ClCompile Include="SpcPlus\SpcSpecParaInData.cpp" />
+    <ClCompile Include="SpcPlus\SpcSpecParaManager.cpp" />
+    <ClCompile Include="SpcPlus\SpcStatusInData.cpp" />
+    <ClCompile Include="SpcPlus\SpcStatusManager.cpp" />
     <ClCompile Include="StdIoApi.cpp" />
     <ClCompile Include="StdIoAXL.cpp" />
     <ClCompile Include="StdIoCCLink.cpp" />

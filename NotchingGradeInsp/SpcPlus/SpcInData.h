@@ -1,0 +1,22 @@
+﻿// SpcInData.h : CSpcInData 클래스
+//
+//////////////////////////////////////////////////////////////////////
+
+#if !defined SPCINDATA_H
+#define SPCINDATA_H
+
+
+#if _MSC_VER > 1000
+#pragma once
+#endif // _MSC_VER > 1000
+
+class CSpcInData
+{
+public:
+	CSpcInData() ;
+	virtual ~CSpcInData() ;
+
+};
+
+
+#endif // SPCINDATA_H
