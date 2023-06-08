@@ -19,6 +19,9 @@ CSpcSpecParaManager::CSpcSpecParaManager()
 {
 	//SPC Plus Header 객체 포인터	
 	m_SpcHeader = new CSpcHeader(this);
+	//Act Id 세팅
+	m_SpcHeader->setActId("SPEC_PARA");
+
 	//SPC Reference Data Set 객체 포인터	
 	m_SpcRefDs = new CSpcRefDs(this);
 	///In Data(송신 데이터) 객체 포인터	
@@ -62,12 +65,34 @@ void CSpcSpecParaManager::makeJSONFile()
 	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecParaInData->makeJSONText_SpecPara1());
 
 	for (int idx = 0; idx < (int)m_SpcParaInfo.size(); idx++)
-		CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcParaInfo[idx]->makeJSONText_ParaInfo());
+	{
+		CString rn = "";
+		if (idx < (m_SpcParaInfo.size() - 1))
+		{
+			rn = ",\r\n";
+		}
+		else
+		{
+			rn = "\r\n";
+		}
+		CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcParaInfo[idx]->makeJSONText_ParaInfo()+rn);
+	}
 
 	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecParaInData->getJSONText_SpecPara2());
 
 	for (int idx = 0; idx < (int)m_SpcSpecInfo.size(); idx++)
-		CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecInfo[idx]->makeJSONText_SpecInfo());
+	{
+		CString rn = "";
+		if (idx < (m_SpcSpecInfo.size() - 1))
+		{
+			rn = ",\r\n";
+		}
+		else
+		{
+			rn = "\r\n";
+		}
+		CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecInfo[idx]->makeJSONText_SpecInfo()+rn);
+	}
 
 	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecParaInData->getJSONText_SpecParaTail());
 
