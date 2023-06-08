@@ -29,7 +29,7 @@ char* CSpcInDataIqInfo::MakeInDataIqInfoText =
 "                                               \"IQ_EXPOSURE_TIME\" : \"%s\",\r\n"
 "                                               \"IMAGE_JUDGE\" : \"%s\",\r\n"
 "                                               \"IMAGE_FILE_NAME\" : \"%s\"\r\n"
-"                                        }\r\n";
+"                                        }";
 
 
 //생성자 : 클래스의 초기화 설계
@@ -39,7 +39,7 @@ CSpcInDataIqInfo::CSpcInDataIqInfo(CSpcPlusManager* sMgr)
 	//관리 클래스 객체 포인터
 	manager = sMgr;
 
-	m_IqCameraLocation = "TOP";
+	m_IqCameraLocation = SPCINFO->getCameraLocation();
 	m_IqCameraNumber = "1";
 	m_IqScreenNumber = "1";
 	m_IqScreenImageSizeX = "1024";
@@ -49,8 +49,8 @@ CSpcInDataIqInfo::CSpcInDataIqInfo(CSpcPlusManager* sMgr)
 	m_IqResolXValue = "0.000";
 	m_IqResolYValue = "0.000";
 	m_IqCamAngleValue = "0.000";
-	m_IqCameraGain = "0.000";
-	m_IqExposureTime = "0.000";
+	m_IqCameraGain = SPCINFO->getCameraGain();
+	m_IqExposureTime = SPCINFO->getCameraExposureTime();
 	m_ImageJudge = "NG";
 	m_ImageFileName = "FOIL-EXP_20230403090002974_A1ANTC203_ECCCF41122_NA_TOP_1_1_NG_NG.jpg";
 

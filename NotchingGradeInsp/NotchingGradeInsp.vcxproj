@@ -515,6 +515,7 @@
     <ClInclude Include="SpcPlus\SpcInData.h" />
     <ClInclude Include="SpcPlus\SpcInDataDefectInfo.h" />
     <ClInclude Include="SpcPlus\SpcInDataIqInfo.h" />
+    <ClInclude Include="SpcPlus\SpcInfo.h" />
     <ClInclude Include="SpcPlus\SpcInspInData.h" />
     <ClInclude Include="SpcPlus\SpcInspManager.h" />
     <ClInclude Include="SpcPlus\SpcParaInfo.h" />
@@ -674,6 +675,7 @@
     <ClCompile Include="SpcPlus\SpcInData.cpp" />
     <ClCompile Include="SpcPlus\SpcInDataDefectInfo.cpp" />
     <ClCompile Include="SpcPlus\SpcInDataIqInfo.cpp" />
+    <ClCompile Include="SpcPlus\SpcInfo.cpp" />
     <ClCompile Include="SpcPlus\SpcInspInData.cpp" />
     <ClCompile Include="SpcPlus\SpcInspManager.cpp" />
     <ClCompile Include="SpcPlus\SpcParaInfo.cpp" />

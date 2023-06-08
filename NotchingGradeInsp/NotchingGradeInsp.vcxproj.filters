@@ -558,6 +558,9 @@
     <ClInclude Include="SpcPlus\SpcInData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SpcPlus\SpcInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -996,6 +999,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SpcPlus\SpcInData.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpcPlus\SpcInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

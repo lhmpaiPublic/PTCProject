@@ -19,12 +19,21 @@ CSpcInspManager::CSpcInspManager()
 {
 	//SPC Plus Header 객체 포인터	
 	m_SpcHeader = new CSpcHeader(this);
+	//Act Id 세팅
+	m_SpcHeader->setActId("INSPECTION");
+
 	//SPC Reference Data Set 객체 포인터	
 	m_SpcRefDs = new CSpcRefDs(this);
 	///In Data(송신 데이터) 객체 포인터	
 	m_SpcInspInData = new CSpcInspInData(this);
 
+	//카메라 1번
 	CSpcInDataIqInfo* tempIq = new CSpcInDataIqInfo(this);
+	tempIq->setIqCameraNumber("1");
+	m_SpcInDataIqInfo.push_back(tempIq);
+	//카메라 2번
+	tempIq = new CSpcInDataIqInfo(this);
+	tempIq->setIqCameraNumber("2");
 	m_SpcInDataIqInfo.push_back(tempIq);
 
 	CSpcInDataDefectInfo* tempdefect = new CSpcInDataDefectInfo(this);
@@ -63,12 +72,34 @@ void CSpcInspManager::makeJSONFile()
 	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInspInData->makeJSONText_Insp1());
 
 	for (int idx = 0; idx < (int)m_SpcInDataIqInfo.size(); idx++)
-		CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInDataIqInfo[idx]->makeJSONText_IqInfo());
+	{
+		CString rn = "";
+		if (idx < (m_SpcInDataIqInfo.size()-1))
+		{
+			rn = ",\r\n";
+		}
+		else
+		{
+			rn = "\r\n";
+		}
+		CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInDataIqInfo[idx]->makeJSONText_IqInfo()+rn);
+	}
 
 	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInspInData->makeJSONText_Insp2());
 
 	for (int idx = 0; idx < (int)m_SpcInDataDefectInfo.size(); idx++)
-		CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInDataDefectInfo[idx]->makeJSONText_DefectInfo());
+	{
+		CString rn = "";
+		if (idx < (m_SpcInDataDefectInfo.size() - 1))
+		{
+			rn = ",\r\n";
+		}
+		else
+		{
+			rn = "\r\n";
+		}
+		CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInDataDefectInfo[idx]->makeJSONText_DefectInfo()+rn);
+	}
 
 	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInspInData->getSONText_InspTail());
 

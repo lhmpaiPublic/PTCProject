@@ -10,6 +10,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "SpcInfo.h"
 #include "SpcRefDs.h"
 #include "SpcAlarmInData.h"
 #include "SpcHeader.h"

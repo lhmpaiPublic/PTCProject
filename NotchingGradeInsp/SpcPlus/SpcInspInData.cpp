@@ -64,39 +64,37 @@ CSpcInspInData::CSpcInspInData(CSpcPlusManager* sMgr)
 	manager = sMgr;
 
 	m_Category = "INSP";
-	m_VisionInputTime = "20230403090002757";
-	m_VisionOutputTime = "20230403090002974";
+	m_VisionInputTime = CGlobalFunc::strLocalTime();
+	m_VisionOutputTime = m_VisionInputTime;
 	m_InspTactTime = "100.217";
 	m_InspProcessingTime = "4.776";
-	m_RecipeId = "default";
+	m_RecipeId = SPCINFO->getRecipeId();
 	m_NgOut = "N";
-	m_EqpId = "W1ASTKM01";
-	m_EqpInspId = "W1ASTKM01-02";
-	m_ProcessGroup = "ASSEMBLY";
-	m_ProcessName = "NTC";
-	m_LineNumber = "10";
-	m_MachineNumber = "1";
-	m_LaneNumber = "1";
-	m_VisionType = "FOIL-EXP";
-	m_ProcessDirection = "RIGHT";
-	m_LotId = "NA";
+	m_EqpId = SPCINFO->getEqpId();
+	m_EqpInspId = SPCINFO->getEqpInspId();
+	m_ProcessGroup = SPCINFO->getProcessGroup();
+	m_ProcessName = SPCINFO->getProcessName();
+	m_LineNumber = SPCINFO->getLineNumber();
+	m_MachineNumber = SPCINFO->getMachineNumber();
+	m_LaneNumber = SPCINFO->getLaneNumber();
+	m_VisionType = SPCINFO->getVisionType();
+	m_ProcessDirection = SPCINFO->getProcessDirection();
+	m_LotId = SPCINFO->getLotId();
 	m_CellId = "NA";
 	m_CellCountNo = "10";
 	m_VirtualCellId = "NA";
 	m_CellFinalJudge = "NG";
 	m_AppearanceJudgeResult = "NG";
-	m_TotalAppearanceNgCount = "2";
+	m_TotalAppearanceNgCount = "1";
 	m_AppearanceReasonAll = "";
 	m_AppearanceReasonAllReal = "";
 	m_AppearanceReasonMain = "PINH";
 	m_AppearanceReasonMainReal = "Pinhole";
 
 	appendAppearanceReasonAll("PINH");
-	appendAppearanceReasonAll(",");
 	appendAppearanceReasonAll("INPH");
 
 	appendAppearanceReasonAllReal("Pinhole");
-	appendAppearanceReasonAllReal(",");
 	appendAppearanceReasonAllReal("Insulation Pinhole");
 
 	if (sMgr)
@@ -111,6 +109,21 @@ CSpcInspInData::CSpcInspInData(CSpcPlusManager* sMgr)
 CSpcInspInData::~CSpcInspInData()
 {
 
+}
+
+//외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입) 	
+void CSpcInspInData::appendAppearanceReasonAll(CString	AppearanceReasonAll) 
+{ 
+	if (m_AppearanceReasonAll.GetLength())
+		m_AppearanceReasonAll.Append(",");
+	m_AppearanceReasonAll.Append(AppearanceReasonAll); 
+}
+//현업에서 통용된 되는 외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입)	
+void CSpcInspInData::appendAppearanceReasonAllReal(CString  AppearanceReasonAllReal) 
+{
+	if (m_AppearanceReasonAllReal.GetLength())
+		m_AppearanceReasonAllReal.Append(",");
+	m_AppearanceReasonAllReal.Append(AppearanceReasonAllReal);
 }
 
 //JSON 형식의 텍스트를 만든다.

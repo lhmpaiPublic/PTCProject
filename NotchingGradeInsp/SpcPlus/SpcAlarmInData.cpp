@@ -42,22 +42,22 @@ CSpcAlarmInData::CSpcAlarmInData(CSpcPlusManager* sMgr)
 	manager = sMgr;
 
 	m_Category = "ALARM";
-	m_EqpInspId = "W1ASTKM01-02";
-	m_ProcessGroup = "ASSEMBLY";
-	m_ProcessName = "NTC";
-	m_MachineNumber = "1";
-	m_LineNumber = "1";
-	m_LaneNumber = "1";
-	m_VisionType = "FOIL-EXP";
-	m_EqpId = "W1ASTKM01-02";
+	m_EqpInspId = SPCINFO->getEqpInspId();
+	m_ProcessGroup = SPCINFO->getProcessGroup();
+	m_ProcessName = SPCINFO->getProcessName();
+	m_MachineNumber = SPCINFO->getMachineNumber();
+	m_LineNumber = SPCINFO->getLineNumber();
+	m_LaneNumber = SPCINFO->getLaneNumber();
+	m_VisionType = SPCINFO->getVisionType();
+	m_EqpId = SPCINFO->getEqpId();
 	m_AlarmFlag = "FALSE";
-	m_AlarmInfoDate = "20230403090002757";
+	m_AlarmInfoDate = CGlobalFunc::strLocalTime();
 	m_AlarmHost = "VISION";
 	m_AlarmLevel = "LIGHT";
 	m_AlarmCode = "9999";
 	m_AlarmName = "--알람";
 	m_AlarmAllResetFlag = "TRUE";
-	m_AlarmOutToDate = "20230403090002757";
+	m_AlarmOutToDate = m_AlarmInfoDate;
 
 	if (sMgr)
 	{

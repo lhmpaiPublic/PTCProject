@@ -48,7 +48,7 @@ char* CSpcInDataDefectInfo::MakeInDataDefectInfoText =
 "                                               \"DEFECT_ROI_GRAY_LV_STDDEV\" : \"%s\",\r\n"
 "                                               \"DEFECT_INOUT\" : \"%s\",\r\n"
 "                                               \"DEFECT_CROP_IMAGE_FILE_NAME\" : \"%s\"\r\n"
-"                                          }\r\n";
+"                                          }";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
@@ -60,8 +60,8 @@ CSpcInDataDefectInfo::CSpcInDataDefectInfo(CSpcPlusManager* sMgr)
 	m_DefectIndex = "1";
 	m_DefectTypeRuleBaseName = "PINH";
 	m_DefectTypeRuleBaseNameReal = "Pinhole";
-	m_DefectCameraType = "LINE";
-	m_DefectCameraLocation = "TOP";
+	m_DefectCameraType = SPCINFO->getCameraType();
+	m_DefectCameraLocation = SPCINFO->getCameraLocation();
 	m_DefectCameraNumber = "1";
 	m_DefectScreenNumber = "1";
 	m_DefectInspPosition = "TAB-A";

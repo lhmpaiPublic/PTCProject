@@ -20,7 +20,7 @@ char* CSpcParaInfo::MakeParaInfoText_1 =
 "                                           \"PARA_CAM_POSITION\": \"%s\",\r\n"
 "                                           \"PARA_DETECTION_NAME\": \"%s\",\r\n"
 "%s"
-"                                     },\r\n";
+"                                     }";
 
 char* CSpcParaInfo::MakeParaInfoText_2 =
 "                                           \"%s\": \"%s\"\r\n";
@@ -62,6 +62,7 @@ void CSpcParaInfo::appendParaData(CString	ParaKey, CString	ParaData)
 		ParaKey,
 		ParaData
 	);
+	//추가된 값이 있으면 추가 라인을 내린다.
 	if (m_ParaData.GetLength())
 	{
 		m_ParaData.Append(",\r\n");
@@ -82,7 +83,7 @@ CString CSpcParaInfo::makeJSONText_ParaInfo()
 		m_ParaNo,
 		m_ParaCamPosition,
 		m_ParaDetectionName,
-		m_ParaData
+		(m_ParaData+CString("\r\n"))
 	);
 	return makeJSONText;
 }

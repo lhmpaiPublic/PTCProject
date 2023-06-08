@@ -152,9 +152,9 @@ public:
 	//해당 Cell의 외관 NG 개수	
 	void setTotalAppearanceNgCount(CString	TotalAppearanceNgCount) { m_TotalAppearanceNgCount = TotalAppearanceNgCount; }
 	//외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입) 	
-	void appendAppearanceReasonAll(CString	AppearanceReasonAll) { m_AppearanceReasonAll.Append(AppearanceReasonAll); }
+	void appendAppearanceReasonAll(CString	AppearanceReasonAll);
 	//현업에서 통용된 되는 외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입)	
-	void appendAppearanceReasonAllReal(CString  AppearanceReasonAllReal) { m_AppearanceReasonAllReal.Append(AppearanceReasonAllReal); }
+	void appendAppearanceReasonAllReal(CString  AppearanceReasonAllReal);
 	//외관 대표 불량명(우선순위 대표 불량명 없을시 첫번째 검출 항목)	
 	void setAppearanceReasonMain(CString	AppearanceReasonMain) { m_AppearanceReasonMain = AppearanceReasonMain; }
 	//해당 셀의 대표불량명을 실제 통용되는 명칭으로 기입	

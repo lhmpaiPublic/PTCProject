@@ -19,6 +19,9 @@ CSpcAlarmManager::CSpcAlarmManager()
 {
 	//SPC Plus Header 객체 포인터	
 	m_SpcHeader = new CSpcHeader(this);
+	//Act Id 세팅
+	m_SpcHeader->setActId("ALARM");
+
 	//SPC Reference Data Set 객체 포인터	
 	m_SpcRefDs = new CSpcRefDs(this);
 	///In Data(송신 데이터) 객체 포인터	

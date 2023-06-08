@@ -34,13 +34,13 @@ CSpcStatusInData::CSpcStatusInData(CSpcPlusManager* sMgr)
 	manager = sMgr;
 
 	m_Category = "STATUS";
-	m_TransferTimer = "20230403090002757";
-	m_EqpInspId = "W1ASTKM01-02";
-	m_ProcessGroup = "ASSEMBLY";
-	m_ProcessName = "NTC";
-	m_EqpId = "W1ASTKM01-02";
-	m_AgentSwVersion = "1.0";
-	m_VisonType = "FOIL-EXP";
+	m_TransferTimer = CGlobalFunc::strLocalTime();
+	m_EqpInspId = SPCINFO->getEqpInspId();
+	m_ProcessGroup = SPCINFO->getProcessGroup();
+	m_ProcessName = SPCINFO->getProcessName();
+	m_EqpId = SPCINFO->getEqpId();
+	m_AgentSwVersion = SPCINFO->getAgentSwVersion();
+	m_VisonType = SPCINFO->getVisionType();
 	m_InspStatus = "1";
 
 	if (sMgr)
