@@ -41,6 +41,9 @@ CSpcAlarmInData::CSpcAlarmInData(CSpcPlusManager* sMgr)
 	//관리 클래스 객체 포인터
 	manager = sMgr;
 
+	//객체 생성시간
+	m_CreateTime = CGlobalFunc::strLocalTime();
+
 	m_Category = "ALARM";
 	m_EqpInspId = SPCINFO->getEqpInspId();
 	m_ProcessGroup = SPCINFO->getProcessGroup();
@@ -101,11 +104,11 @@ CString CSpcAlarmInData::makeJSONText_Alarm()
 //파일저장경로를 넘긴다.
 CString CSpcAlarmInData::JsonFilePath()
 {
-	return SPCINFO->getAlarmPath() + m_AlarmInfoDate.Mid(0, 6);
+	return SPCINFO->getAlarmPath() + m_CreateTime.Mid(0, 6);
 }
 
 //파일명을 넘긴다.
 CString CSpcAlarmInData::JsonFileName()
 {
-	return m_AlarmInfoDate + CString("ALARM.JSON");
+	return m_CreateTime + CString("ALARM.JSON");
 }

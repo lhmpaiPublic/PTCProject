@@ -70,6 +70,8 @@ private:
 
 public:
 	static char* MakeAlarmInDataText;
+	//객체 생성시간
+	CString m_CreateTime;
 
 	//Message 종류	
 	void setCategory(CString	Category) { m_Category = Category; }

@@ -63,6 +63,9 @@ CSpcInspInData::CSpcInspInData(CSpcPlusManager* sMgr)
 	//관리 클래스 객체 포인터
 	manager = sMgr;
 
+	//객체 생성시간
+	m_CreateTime = CGlobalFunc::strLocalTime();
+
 	m_Category = "INSP";
 	m_VisionInputTime = CGlobalFunc::strLocalTime();
 	m_VisionOutputTime = m_VisionInputTime;
@@ -176,11 +179,11 @@ CString CSpcInspInData::getSONText_InspTail()
 //파일저장경로를 넘긴다.
 CString CSpcInspInData::JsonFilePath()
 {
-	return SPCINFO->getInspPath() + m_VisionInputTime.Mid(0, 6) + CString("\\") + m_VisionInputTime.Mid(6, 2) + CString("\\") + m_VisionInputTime.Mid(8, 2) + CString("\\") + m_LotId;
+	return SPCINFO->getInspPath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 }
 
 //파일명을 넘긴다.
 CString CSpcInspInData::JsonFileName()
 {
-	return m_VisionType + CString("_") + m_VisionInputTime + CString("_") + m_LineNumber + CString("_") + m_MachineNumber + CString("_") + m_EqpId + CString("_") + m_LotId + CString("_") + m_CellId + CString("_") + m_CellFinalJudge + CString(".JSON");
+	return m_VisionType + CString("_") + m_CreateTime + CString("_") + m_LineNumber + CString("_") + m_MachineNumber + CString("_") + m_EqpId + CString("_") + m_LotId + CString("_") + m_CellId + CString("_") + m_CellFinalJudge + CString(".JSON");
 }

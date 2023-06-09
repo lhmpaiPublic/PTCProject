@@ -93,6 +93,8 @@ public:
 	static char* MakeInspInDataText_1;
 	static char* MakeInspInDataText_2;
 	static char* MakeInspInDataText_3;
+	//객체 생성시간
+	CString m_CreateTime;
 
 	//Message 종류	
 	void setCategory(CString	Category) { m_Category = Category; }

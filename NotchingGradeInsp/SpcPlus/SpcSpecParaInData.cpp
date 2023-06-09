@@ -38,6 +38,9 @@ CSpcSpecParaInData::CSpcSpecParaInData(CSpcPlusManager* sMgr)
 	//관리 클래스 객체 포인터
 	manager = sMgr;
 
+	//객체 생성시간
+	m_CreateTime = CGlobalFunc::strLocalTime();
+
 	m_Category = "SPEC_PARA";
 	m_EqpId = SPCINFO->getEqpId();
 	m_EqpInspId = SPCINFO->getEqpInspId();
@@ -97,5 +100,5 @@ CString CSpcSpecParaInData::JsonFilePath()
 //파일명을 넘긴다.
 CString CSpcSpecParaInData::JsonFileName()
 {
-	return m_ModifyTime + CString("PARAM.JSON");
+	return m_CreateTime + CString("PARAM.JSON");
 }

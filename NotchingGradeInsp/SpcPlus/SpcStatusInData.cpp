@@ -33,6 +33,9 @@ CSpcStatusInData::CSpcStatusInData(CSpcPlusManager* sMgr)
 	//관리 클래스 객체 포인터
 	manager = sMgr;
 
+	//객체 생성시간
+	m_CreateTime = CGlobalFunc::strLocalTime();
+
 	m_Category = "STATUS";
 	m_TransferTimer = CGlobalFunc::strLocalTime();
 	m_EqpInspId = SPCINFO->getEqpInspId();
@@ -78,11 +81,11 @@ CString CSpcStatusInData::makeJSONText_Status()
 //파일저장경로를 넘긴다.
 CString CSpcStatusInData::JsonFilePath()
 {
-	return SPCINFO->getStatusPath()+ m_TransferTimer.Mid(0, 6);
+	return SPCINFO->getStatusPath()+ m_CreateTime.Mid(0, 6);
 }
 
 //파일명을 넘긴다.
 CString CSpcStatusInData::JsonFileName()
 {
-	return m_TransferTimer + CString("STATUS.JSON");
+	return m_CreateTime + CString("STATUS.JSON");
 }
