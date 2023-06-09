@@ -97,3 +97,15 @@ CString CSpcAlarmInData::makeJSONText_Alarm()
 	);
 	return makeJSONText;
 }
+
+//파일저장경로를 넘긴다.
+CString CSpcAlarmInData::JsonFilePath()
+{
+	return SPCINFO->getAlarmPath() + m_AlarmInfoDate.Mid(0, 6);
+}
+
+//파일명을 넘긴다.
+CString CSpcAlarmInData::JsonFileName()
+{
+	return m_AlarmInfoDate + CString("ALARM.JSON");
+}

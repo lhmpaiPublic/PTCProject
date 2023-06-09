@@ -164,6 +164,12 @@ public:
 	CString makeJSONText_Insp1();
 	CString makeJSONText_Insp2();
 	CString getSONText_InspTail();
+
+	//파일저장경로를 넘긴다.
+	CString JsonFilePath();
+
+	//파일명을 넘긴다.
+	CString JsonFileName();
 };
 
 

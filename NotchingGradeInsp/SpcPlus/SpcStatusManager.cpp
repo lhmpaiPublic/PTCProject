@@ -47,12 +47,17 @@ CSpcStatusManager::~CSpcStatusManager()
 // JSON 형식의 파일 생성
 void CSpcStatusManager::makeJSONFile()
 {
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcHeader->makeJSONText_Header());
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcRefDs->getJSONText_RefDsFront());
+	//파일 저장 경로
+	CString strPath = m_SpcStatusInData->JsonFilePath();
+	//파일명을 가져온다.
+	CString strJsonFileName = m_SpcStatusInData->JsonFileName();
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcStatusInData->makeJSONText_Status());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->makeJSONText_Header());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsFront());
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcRefDs->getJSONText_RefDsTail());
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Status.txt", m_SpcHeader->getJSONText_HeaderTail());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcStatusInData->makeJSONText_Status());
+
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
 
 }

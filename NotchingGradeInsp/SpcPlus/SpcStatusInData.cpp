@@ -74,3 +74,15 @@ CString CSpcStatusInData::makeJSONText_Status()
 	);
 	return makeJSONText;
 }
+
+//파일저장경로를 넘긴다.
+CString CSpcStatusInData::JsonFilePath()
+{
+	return SPCINFO->getStatusPath()+ m_TransferTimer.Mid(0, 6);
+}
+
+//파일명을 넘긴다.
+CString CSpcStatusInData::JsonFileName()
+{
+	return m_TransferTimer + CString("STATUS.JSON");
+}

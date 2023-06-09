@@ -39,12 +39,12 @@ CSpcSpecParaInData::CSpcSpecParaInData(CSpcPlusManager* sMgr)
 	manager = sMgr;
 
 	m_Category = "SPEC_PARA";
-	m_EqpId = "W1ASTKM01-02";
-	m_EqpInspId = "W1ASTKM01-02";
-	m_RecipeId = "default";
-	m_InspRecipe = "default";
-	m_InspSwVersion = "1.0";
-	m_ModifyTime = "20230403090002757";
+	m_EqpId = SPCINFO->getEqpId();
+	m_EqpInspId = SPCINFO->getEqpInspId();
+	m_RecipeId = SPCINFO->getRecipeId();
+	m_InspRecipe = SPCINFO->getRecipeId();
+	m_InspSwVersion = SPCINFO->getAgentSwVersion();
+	m_ModifyTime = CGlobalFunc::strLocalTime();
 	m_Modifier = "NA";
 	m_ModifyReason = "RESTART";
 
@@ -86,4 +86,16 @@ CString CSpcSpecParaInData::getJSONText_SpecPara2()
 CString CSpcSpecParaInData::getJSONText_SpecParaTail() 
 {
 	return MakeSpecParaInDataText_3;
+}
+
+//파일저장경로를 넘긴다.
+CString CSpcSpecParaInData::JsonFilePath()
+{
+	return SPCINFO->getSpecParaPath();
+}
+
+//파일명을 넘긴다.
+CString CSpcSpecParaInData::JsonFileName()
+{
+	return m_ModifyTime + CString("PARAM.JSON");
 }

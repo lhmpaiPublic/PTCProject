@@ -66,10 +66,15 @@ CSpcInspManager::~CSpcInspManager()
 // JSON 형식의 파일 생성
 void CSpcInspManager::makeJSONFile()
 {
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcHeader->makeJSONText_Header());
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcRefDs->getJSONText_RefDsFront());
+	//파일 저장 경로
+	CString strPath = m_SpcInspInData->JsonFilePath();
+	//파일명을 가져온다.
+	CString strJsonFileName = m_SpcInspInData->JsonFileName();
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInspInData->makeJSONText_Insp1());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->makeJSONText_Header());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsFront());
+
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->makeJSONText_Insp1());
 
 	for (int idx = 0; idx < (int)m_SpcInDataIqInfo.size(); idx++)
 	{
@@ -82,10 +87,10 @@ void CSpcInspManager::makeJSONFile()
 		{
 			rn = "\r\n";
 		}
-		CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInDataIqInfo[idx]->makeJSONText_IqInfo()+rn);
+		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInDataIqInfo[idx]->makeJSONText_IqInfo()+rn);
 	}
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInspInData->makeJSONText_Insp2());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->makeJSONText_Insp2());
 
 	for (int idx = 0; idx < (int)m_SpcInDataDefectInfo.size(); idx++)
 	{
@@ -98,12 +103,12 @@ void CSpcInspManager::makeJSONFile()
 		{
 			rn = "\r\n";
 		}
-		CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInDataDefectInfo[idx]->makeJSONText_DefectInfo()+rn);
+		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInDataDefectInfo[idx]->makeJSONText_DefectInfo()+rn);
 	}
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcInspInData->getSONText_InspTail());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->getSONText_InspTail());
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcRefDs->getJSONText_RefDsTail());
-	CGlobalFunc::makeJSONFile("D:\\JSON", "Insp.txt", m_SpcHeader->getJSONText_HeaderTail());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
 
 }

@@ -66,6 +66,12 @@ public:
 
 	//JSON 형식의 텍스트를 만든다.
 	CString makeJSONText_Status();
+
+	//파일저장경로를 넘긴다.
+	CString JsonFilePath();
+
+	//파일명을 넘긴다.
+	CString JsonFileName();
 };
 
 

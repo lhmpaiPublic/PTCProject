@@ -59,10 +59,15 @@ CSpcSpecParaManager::~CSpcSpecParaManager()
 // JSON 형식의 파일 생성
 void CSpcSpecParaManager::makeJSONFile()
 {
-	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcHeader->makeJSONText_Header());
-	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcRefDs->getJSONText_RefDsFront());
+	//파일 저장 경로
+	CString strPath = m_SpcSpecParaInData->JsonFilePath();
+	//파일명을 가져온다.
+	CString strJsonFileName = m_SpcSpecParaInData->JsonFileName();
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecParaInData->makeJSONText_SpecPara1());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->makeJSONText_Header());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsFront());
+
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->makeJSONText_SpecPara1());
 
 	for (int idx = 0; idx < (int)m_SpcParaInfo.size(); idx++)
 	{
@@ -75,10 +80,10 @@ void CSpcSpecParaManager::makeJSONFile()
 		{
 			rn = "\r\n";
 		}
-		CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcParaInfo[idx]->makeJSONText_ParaInfo()+rn);
+		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcParaInfo[idx]->makeJSONText_ParaInfo()+rn);
 	}
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecParaInData->getJSONText_SpecPara2());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->getJSONText_SpecPara2());
 
 	for (int idx = 0; idx < (int)m_SpcSpecInfo.size(); idx++)
 	{
@@ -91,12 +96,12 @@ void CSpcSpecParaManager::makeJSONFile()
 		{
 			rn = "\r\n";
 		}
-		CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecInfo[idx]->makeJSONText_SpecInfo()+rn);
+		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecInfo[idx]->makeJSONText_SpecInfo()+rn);
 	}
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcSpecParaInData->getJSONText_SpecParaTail());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->getJSONText_SpecParaTail());
 
-	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcRefDs->getJSONText_RefDsTail());
-	CGlobalFunc::makeJSONFile("D:\\JSON", "SpecPara.txt", m_SpcHeader->getJSONText_HeaderTail());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
+	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
 
 }

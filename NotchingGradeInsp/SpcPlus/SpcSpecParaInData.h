@@ -16,8 +16,8 @@ class CSpcSpecInfo;
 class CSpcSpecParaInData : public CSpcInData
 {
 public:
-	CSpcSpecParaInData(CSpcPlusManager* sMgr = NULL) ;
-	virtual ~CSpcSpecParaInData() ;
+	CSpcSpecParaInData(CSpcPlusManager* sMgr = NULL);
+	virtual ~CSpcSpecParaInData();
 
 private:
 	//관리 클래스 객체 포인터
@@ -72,10 +72,19 @@ public:
 	//프로그램 Off/On 보고시 "RESTART"
 	void setModifyReason(CString	ModifyReason) { m_ModifyReason = ModifyReason; }
 
+	//검사Para FILE 변경시간	
+	CString	getModifyTime() {return m_Modifier;}
+
 	//JSON 형식의 텍스트를 만든다.
 	CString makeJSONText_SpecPara1();
 	CString getJSONText_SpecPara2();
 	CString getJSONText_SpecParaTail();
+
+	//파일저장경로를 넘긴다.
+	CString JsonFilePath();
+
+	//파일명을 넘긴다.
+	CString JsonFileName();
 
 };
 
