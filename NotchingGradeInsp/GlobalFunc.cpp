@@ -82,3 +82,33 @@ CString CGlobalFunc::strLocalTime()
 
 	return strTime;
 }
+
+//스래드 종료
+void CGlobalFunc::ThreadExit(HANDLE* hThread, DWORD waitTime)
+{
+	BOOL bLoopFlag = 1;
+	while (bLoopFlag)
+	{
+		MSG msg;
+		// PumpMessages()
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		switch (MsgWaitForMultipleObjects(1, hThread, FALSE, waitTime, QS_ALLINPUT))
+		{
+		case WAIT_OBJECT_0:
+			bLoopFlag = 0;
+			break;
+		case WAIT_TIMEOUT:
+			//  TIMEOUT 처리
+		case WAIT_OBJECT_0 + 1:
+		default:
+			// PumpMessages()
+			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+	}
+}

@@ -511,6 +511,7 @@
     <ClInclude Include="SpcPlus\ISpcIf.h" />
     <ClInclude Include="SpcPlus\SpcAlarmInData.h" />
     <ClInclude Include="SpcPlus\SpcAlarmManager.h" />
+    <ClInclude Include="SpcPlus\SpcCreateJSONFileThread.h" />
     <ClInclude Include="SpcPlus\SpcHeader.h" />
     <ClInclude Include="SpcPlus\SpcInData.h" />
     <ClInclude Include="SpcPlus\SpcInDataDefectInfo.h" />
@@ -671,6 +672,7 @@
     <ClCompile Include="SigProc.cpp" />
     <ClCompile Include="SpcPlus\SpcAlarmInData.cpp" />
     <ClCompile Include="SpcPlus\SpcAlarmManager.cpp" />
+    <ClCompile Include="SpcPlus\SpcCreateJSONFileThread.cpp" />
     <ClCompile Include="SpcPlus\SpcHeader.cpp" />
     <ClCompile Include="SpcPlus\SpcInData.cpp" />
     <ClCompile Include="SpcPlus\SpcInDataDefectInfo.cpp" />

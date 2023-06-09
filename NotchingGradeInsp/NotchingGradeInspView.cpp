@@ -121,18 +121,6 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	//로그 출력창 활성화 키(Ctrl 눌림 확인용)
 	logControlKeyDown = false;
 
-	CSpcInspManager tempInsp;
-	tempInsp.makeJSONFile();
-
-	CSpcStatusManager tempStatus;
-	tempStatus.makeJSONFile();
-
-	CSpcAlarmManager tempAlarm;
-	tempAlarm.makeJSONFile();
-
-	CSpcSpecParaManager tempSpecPara;
-	tempSpecPara.makeJSONFile();
-
 }
 
 CNotchingGradeInspView::~CNotchingGradeInspView()

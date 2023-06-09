@@ -26,4 +26,7 @@ public:
 	//로컬 시간  string로 넘긴다.
 	static CString strLocalTime();
 
+	//스래드 종료
+	static void ThreadExit(HANDLE* hThread, DWORD waitTime);
+
 };

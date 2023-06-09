@@ -116,8 +116,8 @@ void CLogDisplayDlg::ExitLogDisplayDlg()
 	// 로그출력 창 생성
 	if (gInstObject != NULL)
 	{
-		bCreate = false;
 		delete gInstObject;
+		bCreate = false;
 		gInstObject = NULL;
 	}
 }
@@ -320,7 +320,8 @@ void CLogDisplayDlg::ExitThread()
 {
 	// source file
 	m_isWorkingThread = false;
-	WaitForSingleObject(m_pThread->m_hThread, 5000);
+	CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
+	//WaitForSingleObject(m_pThread->m_hThread, 5000);
 }
 
 
