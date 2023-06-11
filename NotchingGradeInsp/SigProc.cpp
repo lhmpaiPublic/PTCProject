@@ -457,7 +457,7 @@ int CSigProc::WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int n
 //			return (-1);
 //		}
 	}
-
+	return 0;
 }
 
 
