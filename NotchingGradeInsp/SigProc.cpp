@@ -357,26 +357,7 @@ WORD CSigProc::GetAlarmCode()
 // 22.03.28 Ahn Add Start
 int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 {
-	// 23.03.03 Ahn Modify Start
-	//int address = enWordWrite_AlarmCode_Buffer1;
-	int address = GetWordAddress(enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
-	// 23.03.03 Ahn Modify End
-
-
-// 	int nNumOfData = 1;
-// 	short* pData;
-// 	pData = (short*)&nAlarmCode;
-// 
-// 	if (m_pPioCtrl == NULL) {
-// 		//에러로그
-// 		return (-1);
-// 	}
-// 
-// 	if (m_pPioCtrl->WritePLC_Block_device(address, pData, nNumOfData) < 0) {
-// 		//에러로그
-// 		return (-1);
-// 	}
-
+//	int address = GetWordAddress(enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
 
 	int nNumOfData = 1;
 
@@ -388,14 +369,18 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
+		int address = GetWordAddress(enWordWrite_AlarmExist, MODE_WRITE);
+
 		short nAlarmCheck = 0x0001;
-		nNumOfData = 24;
-		short pData[24] = { 0, };
-		for (int i = 0; i < nNumOfData; i++)
+		nNumOfData = 25;  // Alarm Exist 1word + Alarm 24word
+		short pData[25] = { 0, };
+		for (int i = 1; i < nNumOfData; i++) // Array 0번 = Alarm Exist, Array 1번 부터 Alarm code
 		{
 			if ((nAlarmCode & nAlarmCheck) != 0)
 			{
-				pData[i] = 0x0001;
+				pData[0] = 0x0001; // Alarm Exist, NG가 한 개라도 있으면 Ture, 아니면 초기값 False
+
+				pData[i] = 0x0001; // Alarm Code
 			}
 			nAlarmCheck = nAlarmCheck << 1;
 		}
@@ -408,6 +393,8 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 	}
 	else
 	{
+		int address = GetWordAddress(enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
+
 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)&nAlarmCode, nNumOfData) < 0) {
 			//에러로그
 			return (-1);
@@ -418,29 +405,65 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 
 	return (0);
 }
-// 22.03.28 Ahn Add End
-// 23.03.03 Ahn Delete Start
-//// 22.03.24 Ahn Modify Strat
-//int CSigProc::WriteAlarmCode()
-//{
-//	int address = enWordWrite_AlarmCode_Buffer1;
-//	int nNumOfData = 1;
-////	short* pData;
-////	pData = (short*)&nAlarmCode;
+
+
+
+int CSigProc::WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode)
+{	// NG Alarm과 Cell Trigger ID, Judge, NG Code를 블럭으로 한번에 보냄
+
+//	int address = GetWordAddress(enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
+
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
+
+
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		int address = GetWordAddress(enWordWrite_AlarmExist, MODE_WRITE);
+
+		short nAlarmCheck = 0x0001;
+		int nSizeOfAlarmCode = 25;  // Alarm Exist 1word + Alarm 24word
+		int nSizeOfData = 43;
+		short pData[43] = { 0, };
+		for (int i = 1; i < nSizeOfAlarmCode; i++) // Array 0번 = Alarm Exist, Array 1번 부터 Alarm code
+		{
+			if ((nAlarmCode & nAlarmCheck) != 0)
+			{
+				pData[0] = 0x0001; // Alarm Exist, NG가 한 개라도 있으면 Ture, 아니면 초기값 False
+				pData[i] = 0x0001; // Alarm Code
+			}
+			nAlarmCheck = nAlarmCheck << 1;
+		}
+
+		pData[40] = (short)nID;
+		pData[41] = (short)nJudge;
+		pData[42] = (short)nNgCode;
+
+		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)&pData, nSizeOfData) < 0) {
+			//에러로그
+			return (-1);
+		}
+
+	}
+	else
+	{
+//		int address = GetWordAddress(enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
+//		int nNumOfData = 1;
 //
-//	if (m_pPioCtrl == NULL) {
-//		//에러로그
-//		return (-1);
-//	}
-////	if (m_pPioCtrl->WritePLC_Block_device(address, NULL, nNumOfData) < 0) {
-//	if( m_pPioCtrl->WriteAlarmCode(address) < 0 ) {
-//		//에러로그
-//		return (-1);
-//	}
-//	return (0);
-//}
-//// 22.03.24 Ahn Modify End
-// 23.03.03 Ahn Delete End
+//		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)&nAlarmCode, nNumOfData) < 0) {
+//			//에러로그
+//			return (-1);
+//		}
+	}
+
+}
+
+
+
+
+
 
 int CSigProc::WritePLC_Block_device(int address, short* pData, int nNumOfData)
 {
@@ -1164,22 +1187,23 @@ int CSigProc::SigOutAlarmExist(int nMode)
 	}
 
 
-// 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
-// 	{
-		short pData = (nMode==1) ? 0x01 : 0x00;
-		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& pData, nNumOfData) < 0) {
-			//에러로그
-			return (-1);
-		}
-// 	}
-// 	else
-// 	{
-// 		short pData = (nMode == 1) ? 0x01 : 0x00;
-// 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& pData, nNumOfData) < 0) {
-// 			//에러로그
-// 			return (-1);
-// 		}
-// 	}
+ 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+ 	{
+		// 지멘스 일때는 알람 코드와 같이 보냄
+//		short pData = (nMode==1) ? 0x01 : 0x00;  
+//		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& pData, nNumOfData) < 0) {
+//			//에러로그
+//			return (-1);
+//		}
+ 	}
+ 	else
+ 	{
+ 		short pData = (nMode == 1) ? 0x01 : 0x00;
+ 		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)& pData, nNumOfData) < 0) {
+ 			//에러로그
+ 			return (-1);
+ 		}
+ 	}
 
 
 

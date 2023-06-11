@@ -938,22 +938,33 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							
 								bClearFlag = TRUE;; // 22.03.03 Ahn Add 
 								CSigProc* pSigProc = theApp.m_pSigProc;
-								pSigProc->SigOutAlarmExist(TRUE);
-								pSigProc->WriteAlarmCode(wAlarmCode);
-								// 22.08.09 Ahn Add Start
+								
+								if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+								{
+									int nId = pTopInfo->m_nTabId_CntBoard;
+									int nJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+									int nNgCode = 1; // 임시, 정의되지 않음
+
+									pSigProc->WriteAlarmCodeAndJudge(wAlarmCode, nId, nJudge, nNgCode );
+								}
+								else
+								{
+									pSigProc->SigOutAlarmExist(TRUE);
+									pSigProc->WriteAlarmCode(wAlarmCode);
+								}
+
 								CString strLog;
 								strLog.Format(_T("!!!! NG_STOP Signal Output [0x%x]!!!!"), wAlarmCode) ;
 								AprData.SaveMemoryLog( strLog ) ;
-								// 22.08.09 Ahn Add End
-								// 22.12.12 Ahn Add Start
-								int nId, nJudge, nCode ;
-								nId = pTopInfo->m_nTabId_CntBoard ;
+
+//								int nId, nJudge, nCode ;
+//								nId = pTopInfo->m_nTabId_CntBoard ;
 
 								// Image Cutting Tab 정보 출력 로그
-								LOGDISPLAY_SPEC(5)("Logcount<%d> NG Stop 신호처리 Trigger Input ID Set <%d>", TempLogCount, nId);
+								LOGDISPLAY_SPEC(5)("Logcount<%d> NG Stop 신호처리 Trigger Input ID Set <%d>", TempLogCount, pTopInfo->m_nTabId_CntBoard);
 
-								nJudge = tab.nJudge ;
-								nCode = wAlarmCode ;
+//								nJudge = tab.nJudge ;
+//								nCode = wAlarmCode ;
 //								pSigProc->ReportJudge(nId, nJudge, nCode);
 								// 22.12.12 Ahn Add End
 							}
@@ -1031,18 +1042,18 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 						{
-							AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
-							AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
-							AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode = 1; // 임시, 정의되지 않음
-
-							int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
-							short* pData = (short*)(&AprData.m_NowLotData.m_stCellJudgeSms);
-							int nSize = sizeof(_CELL_JUDGE_SMS) / sizeof(WORD);
-							pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
-
-							CString strMsg;
-							strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID, AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge, AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode);
-							AprData.SaveDebugLog(strMsg); //pyjtest
+//							AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
+//							AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+//							AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode = 1; // 임시, 정의되지 않음
+//
+//							int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
+//							short* pData = (short*)(&AprData.m_NowLotData.m_stCellJudgeSms);
+//							int nSize = sizeof(_CELL_JUDGE_SMS) / sizeof(WORD);
+//							pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+//
+//							CString strMsg;
+//							strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID, AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge, AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode);
+//							AprData.SaveDebugLog(strMsg); //pyjtest
 
 						}
 						else

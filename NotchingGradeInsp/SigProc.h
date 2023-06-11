@@ -378,29 +378,16 @@ public:
 	int ReadPLC_Block_deviceR(int address, short* pData, int nNumOfData);
 	int WaitSignal(int iIntegration, BOOL mode, int timeout = 1000, BOOL bCheckAutoSignal = FALSE, BOOL bErrorProcess = TRUE, BOOL	bExtSt = FALSE);
 
-	// 23.03.03 Ahn Delete Start
-	//int WriteAlarmCode();
-	// 23.03.03 Ahn Delete End
-		// 22.03.24 Ahn Add Start
 	int SetAlarmCode(WORD nAlarmCode);
 	WORD GetAlarmCode();
-	// 22.03.24 Ahn Add End
-	// 22.03.28 Ahn Add Start
 	int WriteAlarmCode(WORD nAlarmCode);
-	// 22.03.28 Ahn Add End
+	int WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode);
 
-	// 22.03.23 Ahn Add Start
 	int ReadAllPort_BitIn( BOOL *pSigBitIn );
 	int ReadAllPort_BitOut( BOOL* pSigBitOut );
-	// 22.03.23 Ahn Add End
-
-	// 22.12.12 Ahn Add Start
 	int ReportJudge(int nID, int nJudge, int nCode);
-	// 22.12.12 Ahn Add End
 
-	// 23.03.03 Ahn Add Start
 	static int GetWordAddress( int nAddress, int nMode/*Read or Write*/);
-	// 23.03.03 Ahn Add End
 
 	void SetInkMarkAcktive(BOOL bUse) { m_bSigInkMarkAcrive = bUse; }
 	BOOL GetInkMarkActive() { return m_bSigInkMarkAcrive; }

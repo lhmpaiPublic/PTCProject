@@ -245,6 +245,21 @@ typedef struct stCellJudgeSms
 	WORD wCellNgCode;
 } _CELL_JUDGE_SMS;
 
+typedef struct stAlarmCodeAndCellJudgeSms
+{
+	WORD wAlarmExist;
+
+	WORD wAlarmCode[24];
+
+	WORD wDummy[15];
+
+	WORD wCellTriggerID;
+	WORD wCellJudge;
+	WORD wCellNgCode;
+
+} _ALARM_CODE_CELL_JUDGE_SMS;
+
+
 typedef struct GlobalSetingString
 {
 private:
@@ -309,6 +324,7 @@ public:
 	_SEQ_OUT_DATA_SMS			m_SeqDataOutSms;
 	_SEQ_OUT_DATA_LOT_END_SMS	m_SeqDataLotEndSms;
 	_CELL_JUDGE_SMS				m_stCellJudgeSms;
+	_ALARM_CODE_CELL_JUDGE_SMS	m_stAlarmCodeAndCellJudgeSms;
 
 
 	// 22.07.11 Ahn Add Start

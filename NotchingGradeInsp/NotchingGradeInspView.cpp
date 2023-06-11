@@ -1539,8 +1539,12 @@ int CNotchingGradeInspView::CheckAlarmNgAck()
 		AprData.SaveDebugLog(_T("CheckAlarmNgAck ON"));
 
 //		pSigProc->SigOutAlarmNgResetAck(TRUE);
-		pSigProc->WriteAlarmCode(0x0000);
-		pSigProc->SigOutAlarmExist(FALSE);
+
+//		pSigProc->WriteAlarmCode(0x0000);
+//		pSigProc->SigOutAlarmExist(FALSE);
+
+		memset(&AprData.m_NowLotData.m_stAlarmCodeAndCellJudgeSms, 0x0000, sizeof(_ALARM_CODE_CELL_JUDGE_SMS));
+		pSigProc->WriteAlarmCodeAndJudge(0x0000, 0, 0, 0);
 
 	}
 	if ((bSigIn == FALSE) && (m_bAlarmNgAck == TRUE))
