@@ -821,7 +821,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//로그 카운ㅌ 임시변수
 					int TempLogCount = pTopInfo->TempLogCount;
 
-					//SPC+ 객체 포인터 받는다.
+					//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
 					CSpcPlusManager* insp = pTopInfo->m_SpcInspMgr;
 
 					//Image Cutting Tab 정보 출력 로그

@@ -318,7 +318,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_WINSOCK_DEPRECATED_NO_WARNINGS; NDEBUG;%(PreprocessorDefinitions);GRAB_CAMERA_LINK;</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Control;$(ProjectDir)Dalsa;$(ProjectDir)Melsec;$(ProjectDir)SetValue;$(ProjectDir)AXL;$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Control;$(ProjectDir)Dalsa;$(ProjectDir)Melsec;$(ProjectDir)SetValue;$(ProjectDir)AXL;$(SAPERADIR)\Examples\Classes\Common;$(SAPERADIR)\externals\CorLib;$(SAPERADIR)\classes\Basic;$(SAPERADIR)\include;$(ProjectDir)SpcPlus;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ModuleOutputFile>$(IntDir)</ModuleOutputFile>
     </ClCompile>
     <Link>
