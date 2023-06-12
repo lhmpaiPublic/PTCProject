@@ -36,8 +36,6 @@ CSpcSpecInfo::CSpcSpecInfo(CSpcPlusManager* sMgr)
 	m_SpecDetectonName = "PINH";
 	m_SpecData = "";
 
-	appendSpec("SpecKey", "SpecData");
-
 	if (sMgr)
 	{
 

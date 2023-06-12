@@ -8,6 +8,10 @@
 #include "CAprHash.h"				// 22.05.25 Son Add
 #include "CHistoryLotCtrl.h"		// 22.06.27 Ahn Add
 
+//SPC+ 사용 해더파일
+#include "SpcStatusManager.h"
+#include "SpcStatusInData.h"
+
 CGlobalData	AprData ;
 
 CGlobalData::CGlobalData(void)
@@ -1106,7 +1110,19 @@ int CGlobalData::CreateIndexFile(CString strBinFileName)
 }
 // 22.05.25 Son Add End
 
+//SPC+ STATUS ===============================
+//검사기 상태가 변경될 때 호출
+//InspStatus = Live Signal : 1, 가동불가 : 0
+void CGlobalData::SpcPluusStatus(CString InspStatus)
+{
+	//SPC+ Status 객체 생성
+	CSpcStatusManager status;
+	//Status 값 세팅
+	status.getSpcInspInData()->setInspStatus(InspStatus);
 
+	//JSON 파일 생성
+	status.makeJSONFile();
+}
 
 
 void CLotInfo::ClearAllCount()

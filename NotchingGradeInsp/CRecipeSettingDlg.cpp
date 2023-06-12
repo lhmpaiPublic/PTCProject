@@ -16,6 +16,12 @@
 #include "CInitSystemSetting.h"
 #include "LogDisplayDlg.h"
 
+//SPC+ 사용 해더파일
+#include "SpcSpecParaManager.h"
+#include "SpcSpecParaInData.h"
+#include "SpcSpecInfo.h"
+#include "SpcParaInfo.h"
+
 // CRecipeSettingDlg 대화 상자
 
 IMPLEMENT_DYNAMIC(CRecipeSettingDlg, CDialogEx)
@@ -963,6 +969,35 @@ void CRecipeSettingDlg::OnBnClickedBtnSave()
 	m_pRecipeCtrl->SetRecipeInfo( m_pRecipeInfo );
 	m_pRecipeCtrl->SaveRecipe(strRecipeName);
 	SaveRecipeTable();
+
+	//SPC+ SPEC_PARA ======================================================
+	CSpcSpecParaManager SpecPara;
+	//inData 포인터 객체
+	CSpcSpecParaInData* SpecParaInData = SpecPara.getSpcInspInData();
+	//Spec 정보 세팅 포인터 객체
+	//변경Para 정보	
+	std::vector<CSpcParaInfo*>* ParaPtr = SpecPara.getSpcParaInfoPtr();
+	CSpcParaInfo* ParaInfo = new CSpcParaInfo(&SpecPara);
+	//추가적인 Para key:value
+	ParaInfo->appendParaData("TabParam", "10");
+
+	//Para 정보를 저장한다.
+	ParaPtr->push_back(ParaInfo);
+
+
+	//변경 Spec 정보	
+	std::vector<CSpcSpecInfo*>* SpecPtr = SpecPara.getSpcSpecInfoPtr();
+	CSpcSpecInfo* SpecInfo = new CSpcSpecInfo(&SpecPara);
+	//추가적인 Spec key:value
+	SpecInfo->appendSpec("CameraSpec", "NA");
+
+	//Spec 정보를 저장한다.
+	SpecPtr->push_back(SpecInfo);
+
+
+	SpecPara.makeJSONFile();
+	//======================================================================
+
 }
 
 int CRecipeSettingDlg::MakeGridCtrl()

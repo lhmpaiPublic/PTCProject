@@ -684,6 +684,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			else if (pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
+
+				//PCL Run Signal SPC+ Status 
+				AprData.SpcPluusStatus("1");
 			}
 
 			break;

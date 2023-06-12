@@ -27,11 +27,6 @@ CSpcSpecParaManager::CSpcSpecParaManager()
 	///In Data(송신 데이터) 객체 포인터	
 	m_SpcSpecParaInData = new CSpcSpecParaInData(this);
 
-	CSpcParaInfo* tempPara = new CSpcParaInfo(this);
-	m_SpcParaInfo.push_back(tempPara);
-
-	CSpcSpecInfo* tempSpec = new CSpcSpecInfo(this);
-	m_SpcSpecInfo.push_back(tempSpec);
 }
 
 //소멸자

@@ -39,9 +39,9 @@ public:
 	///In Data(송신 데이터) 객체 포인터
 	CSpcSpecParaInData* getSpcInspInData() { return m_SpcSpecParaInData; }
 	//변경Para 정보	
-	std::vector<CSpcParaInfo*> getSpcParaInfo() { return m_SpcParaInfo; }
+	std::vector<CSpcParaInfo*>* getSpcParaInfoPtr() { return &m_SpcParaInfo; }
 	//변경 Spec 정보	
-	std::vector<CSpcSpecInfo*> getSpcSpecInfo() { return m_SpcSpecInfo; }
+	std::vector<CSpcSpecInfo*>* getSpcSpecInfoPtr() { return &m_SpcSpecInfo; }
 
 	// JSON 형식의 파일 생성
 	virtual void makeJSONFile();

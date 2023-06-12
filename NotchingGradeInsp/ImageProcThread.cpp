@@ -22,6 +22,7 @@
 //SPC+ INSP 객체 생성을 위한 클래스
 #include "SpcPlusManager.h"
 #include "SpcInspManager.h"
+#include "SpcAlarmManager.h"
 #include "SpcCreateJSONFileThread.h"
 #include "SpcPlus.h"
 
@@ -381,8 +382,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				//Tab 정보 크기 만큼 루프 돌다.
 				for (int i = 0; i < nVecSize; i++)
 				{
-					//SPC+ INSP 객체
+					//SPC+ INSP===================================================================================================
+					//SPC+ INSP 객체 생성
 					CSpcInspManager* insp = new CSpcInspManager();
+
+					//============================================================================================================
 
 					//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 					CCounterInfo cntInfo;
@@ -865,6 +869,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//SPC+ 저장할 이미지 명을 입력(Bottom 이미지 명)
 					IqInfoBottom->setImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
 
+					//Defect ==== NG 발생된 정보 세팅
 					//결함 인덱스
 					int idxJudge = 1;
 					//Top Judge 이면
@@ -1033,6 +1038,18 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								{
 									wAlarmCode |= CSigProc::en_Alarm_Spatter_Btm;
 								}
+
+								//SPC+ ALARM===================================================================================================
+								//SPC+ ALARM 객체 생성
+								CSpcAlarmManager* alarm = new CSpcAlarmManager();
+								CSpcAlarmInData* alarmInData = alarm->getSpcAlarmInData();
+								//알람 발생 or 해제 MSG Flag : TRUE -> 알람발생
+								alarmInData->setAlarmFlag("TRUE");
+								alarmInData->setAlarmCode(CGlobalFunc::intToString(wAlarmCode));
+
+								//SPC+ 파일 생성을 위한 스래드에 추가한다.
+								CSpcCreateJSONFileThread::AddSpcPlusManager(alarm);
+								//============================================================================================================
 							
 								bClearFlag = TRUE;; // 22.03.03 Ahn Add 
 								CSigProc* pSigProc = theApp.m_pSigProc;

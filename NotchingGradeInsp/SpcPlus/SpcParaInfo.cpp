@@ -38,8 +38,6 @@ CSpcParaInfo::CSpcParaInfo(CSpcPlusManager* sMgr)
 	m_ParaDetectionName = "PINH";
 	m_ParaData = "";
 
-	appendParaData("Key", "Data");
-
 	if (sMgr)
 	{
 
