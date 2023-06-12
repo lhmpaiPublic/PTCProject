@@ -85,7 +85,7 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 		}
 		else
 		{
-			if(pMain->m_isWorkingThread)
+			if(pMain->m_isWorkingThread == false)
 				break;
 		}
 	}
