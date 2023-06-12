@@ -665,6 +665,9 @@ void CModeDlg::OnBnClickedRadRun()
 	EnableControl(TRUE);
 
 	m_pView->SetInspReady(TRUE);
+
+	//PCL Run Signal SPC+ Status 
+	AprData.SpcPluusStatus("1");
 }
 
 

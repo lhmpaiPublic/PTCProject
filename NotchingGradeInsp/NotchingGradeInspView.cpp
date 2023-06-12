@@ -34,10 +34,6 @@
 
 #include "CDeleteResultFileThread.h" // 22.07.04 Ahn Add
 
-#include "SpcInspManager.h"
-#include "SpcStatusManager.h"
-#include "SpcAlarmManager.h"
-#include "SpcSpecParaManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -684,9 +680,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			else if (pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
-
-				//PCL Run Signal SPC+ Status 
-				AprData.SpcPluusStatus("1");
 			}
 
 			break;
