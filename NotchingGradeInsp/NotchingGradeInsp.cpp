@@ -23,6 +23,7 @@
 #include "CDispErrorDlg.h"	// 22.06.29 Son Add
 #include "Win32File.h" // 22.11.25 Ahn Add
 #include "resource.h"
+#include "SpcCreateJSONFileThread.h"
 
 #pragma comment( lib, "version.lib")
 
@@ -151,7 +152,11 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, 0);
 	}
 
+	//로그창을 이용한 출력 기능 모듈을 생성한다.
 	CLogDisplayDlg::CreateLogDisplayDlg();
+
+	//JSON파일 생성을 위한 스래드 모듈을 생성한다.
+	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
 
 	//CDebugSetDlg DebugSet;
 	//if (DebugSet.DoModal() == IDOK) {
@@ -233,7 +238,11 @@ int CNotchingGradeInspApp::ExitInstance()
 
 	GdiplusShutdown(m_gdiplusToken);
 
+	//생성된 로그창 기능 모듈을 소멸한다.
 	CLogDisplayDlg::ExitLogDisplayDlg();
+
+	//JSON파일 생성을 위한 스래드 모듈을 소멸한다.
+	CSpcCreateJSONFileThread::ExitSpcCreateJSONFileThread();
 
 	return CWinAppEx::ExitInstance();
 }

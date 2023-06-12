@@ -19,6 +19,11 @@
 #include "CImageProcThreadUnit.h"
 #include "AppDIO.h"
 
+//SPC+ INSP 객체 생성을 위한 클래스
+#include "SpcPlusManager.h"
+#include "SpcInspManager.h"
+#include "SpcCreateJSONFileThread.h"
+
 // 22.05.31 Ahn Add Start
 #include "CImageSaveQueueCtrl.h"
 // 22.05.31 Ahn Add End
@@ -375,6 +380,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				//Tab 정보 크기 만큼 루프 돌다.
 				for (int i = 0; i < nVecSize; i++)
 				{
+					//SPC+ INSP 객체
+					CSpcInspManager* insp = new CSpcInspManager();
+
 					//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 					CCounterInfo cntInfo;
 
@@ -550,8 +558,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//프레임 정보 임시 객체(Top 프레임 정보 처리)
 					CFrameInfo* pInfo;
 					pInfo = new CFrameInfo;
+
 					//임시 로그 카운터
 					pInfo->TempLogCount = TempLogCount;
+
+					//SPc+ 객체를 Top에 만 추가한다.
+					pInfo->m_SpcInspMgr = insp;
 
 					//Tab정보에서 Top 이미지 데이터 세팅
 					pInfo->SetImgPtr(pTabInfo->pImgPtr);
@@ -805,8 +817,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					CFrameRsltInfo *pTopInfo = pUnitTop->GetResultPtr();
 					CFrameRsltInfo *pBtmInfo = pUnitBtm->GetResultPtr();
+
 					//로그 카운ㅌ 임시변수
 					int TempLogCount = pTopInfo->TempLogCount;
+
+					//SPC+ 객체 포인터 받는다.
+					CSpcPlusManager* insp = pTopInfo->m_SpcInspMgr;
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(5)("Top Logcount<%d> Bottom Logcount<%d> ========", pTopInfo->TempLogCount, pBtmInfo->TempLogCount);
@@ -1181,6 +1197,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 					}
 
+					//SPC+ 파일 생성을 위한 스래드에 추가한다.
+					CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
 
 					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
 					CTactTimeData data;

@@ -27,6 +27,8 @@ CSpcCreateJSONFileThread* CSpcCreateJSONFileThread::gInst()
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcCreateJSONFileThread::CSpcCreateJSONFileThread()
 {
+	//스래드를 생성한다.
+	CreateThread();
 }
 
 //소멸자
@@ -34,6 +36,7 @@ CSpcCreateJSONFileThread::CSpcCreateJSONFileThread()
 //객체가 메모리에서 제거되기전 필요한 정리 수행
 CSpcCreateJSONFileThread::~CSpcCreateJSONFileThread()
 {
+	//스래드를 소멸한다.
 	ExitThread();
 }
 

@@ -57,4 +57,7 @@ void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 	}
 
 	m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
+
+	//SPC+ 객체도 복사한다.
+	m_SpcInspMgr = pFrmInfo->m_SpcInspMgr;
 }

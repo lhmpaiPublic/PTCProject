@@ -11,6 +11,9 @@ CFrameInfo::CFrameInfo(void)
 	// 23.02.20 Ahn Add Start
 	m_bOverFlow = FALSE;
 	// 23.02.20 Ahn Add End
+
+	//SPC+ INSP 객체 포인터를 NULL 초기화한다.
+	m_SpcInspMgr = NULL;
 }
 
 CFrameInfo::~CFrameInfo(void)
