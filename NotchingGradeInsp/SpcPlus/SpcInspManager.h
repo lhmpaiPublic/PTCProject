@@ -21,6 +21,12 @@ public:
 	CSpcInspManager();
 	virtual ~CSpcInspManager();
 
+	enum TopBottomSelect
+	{
+		IQINFO_TOP,
+		IQINFO_BOTTOM
+	};
+
 	//SPC Plus Header 객체 포인터
 	CSpcHeader* m_SpcHeader;
 	//SPC Reference Data Set 객체 포인터
@@ -39,9 +45,10 @@ public:
 	///In Data(송신 데이터) 객체 포인터
 	CSpcInspInData* getSpcInspInData() { return m_SpcInspInData; }
 	//이미지 퀄리티 정보 객체 포인터
-	std::vector<CSpcInDataIqInfo*> getSpcInDataIqInfo() { return m_SpcInDataIqInfo; }
+	CSpcInDataIqInfo* getSpcInDataIqInfo(TopBottomSelect select);
 	//결함정보 객체 포인터
 	std::vector<CSpcInDataDefectInfo*> getSpcInDataDefectInfo() { return m_SpcInDataDefectInfo; }
+	void addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefectInfo) { m_SpcInDataDefectInfo.push_back(SpcInDataDefectInfo); }
 
 	// JSON 형식의 파일 생성
 	virtual void makeJSONFile();

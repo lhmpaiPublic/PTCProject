@@ -29,4 +29,15 @@ public:
 	//스래드 종료
 	static void ThreadExit(HANDLE* hThread, DWORD waitTime);
 
+	//int to CString
+	static CString intToString(int  val);
+
+	//CString to int
+	static int StringToint(CString val);
+
+	//double to CString
+	static CString floatToString(double  val);
+
+	//CString to double
+	static double StringTofloat(CString val);
 };

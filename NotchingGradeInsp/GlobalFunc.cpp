@@ -112,3 +112,35 @@ void CGlobalFunc::ThreadExit(HANDLE* hThread, DWORD waitTime)
 		}
 	}
 }
+
+//int to CString
+CString CGlobalFunc::intToString(int  val)
+{
+	CString rVal;
+	rVal.Format(_T("%d"), val);
+	return rVal;
+}
+
+//CString to int
+int CGlobalFunc::StringToint(CString val) 
+{
+	int rVal;
+	rVal = _ttoi(val);
+	return rVal;
+}
+
+//float to CString
+CString CGlobalFunc::floatToString(double  val)
+{
+	CString rVal;
+	rVal.Format(_T("%.3f"), val);
+	return rVal;
+}
+
+//CString to float
+double CGlobalFunc::StringTofloat(CString val)
+{
+	double rVal;
+	rVal = _ttof(val);
+	return rVal;
+}

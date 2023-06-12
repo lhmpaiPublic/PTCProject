@@ -36,8 +36,6 @@ CSpcInspManager::CSpcInspManager()
 	tempIq->setIqCameraNumber("2");
 	m_SpcInDataIqInfo.push_back(tempIq);
 
-	CSpcInDataDefectInfo* tempdefect = new CSpcInDataDefectInfo(this);
-	m_SpcInDataDefectInfo.push_back(tempdefect);
 }
 
 //소멸자
@@ -62,6 +60,14 @@ CSpcInspManager::~CSpcInspManager()
 		delete m_SpcInDataDefectInfo[idx];
 
 }
+//이미지 퀄리티 정보 객체 포인터
+CSpcInDataIqInfo* CSpcInspManager::getSpcInDataIqInfo(TopBottomSelect select) 
+{ 
+	return m_SpcInDataIqInfo[select]; 
+}
+//결함정보 객체 포인터
+
+
 
 // JSON 형식의 파일 생성
 void CSpcInspManager::makeJSONFile()

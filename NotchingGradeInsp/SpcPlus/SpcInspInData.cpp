@@ -89,16 +89,10 @@ CSpcInspInData::CSpcInspInData(CSpcPlusManager* sMgr)
 	m_CellFinalJudge = "NG";
 	m_AppearanceJudgeResult = "NG";
 	m_TotalAppearanceNgCount = "1";
-	m_AppearanceReasonAll = "";
-	m_AppearanceReasonAllReal = "";
+	m_AppearanceReasonAll = "PINH";
+	m_AppearanceReasonAllReal = "Pinhole";
 	m_AppearanceReasonMain = "PINH";
 	m_AppearanceReasonMainReal = "Pinhole";
-
-	appendAppearanceReasonAll("PINH");
-	appendAppearanceReasonAll("INPH");
-
-	appendAppearanceReasonAllReal("Pinhole");
-	appendAppearanceReasonAllReal("Insulation Pinhole");
 
 	if (sMgr)
 	{

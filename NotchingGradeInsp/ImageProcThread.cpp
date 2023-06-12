@@ -23,6 +23,7 @@
 #include "SpcPlusManager.h"
 #include "SpcInspManager.h"
 #include "SpcCreateJSONFileThread.h"
+#include "SpcPlus.h"
 
 // 22.05.31 Ahn Add Start
 #include "CImageSaveQueueCtrl.h"
@@ -821,8 +822,89 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//로그 카운ㅌ 임시변수
 					int TempLogCount = pTopInfo->TempLogCount;
 
+					//SPC+ INSP===================================================================================================
 					//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
-					CSpcPlusManager* insp = pTopInfo->m_SpcInspMgr;
+					CSpcInspManager* insp = dynamic_cast<CSpcInspManager *>(pTopInfo->m_SpcInspMgr);
+					//InData ===
+					//셀 카운트 번호
+					insp->getSpcInspInData()->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));
+					//Cell 판정결과
+					CString CellFinalJudge = ((pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) || (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)) ? "NG" : "OK";
+					insp->getSpcInspInData()->setCellFinalJudge(CellFinalJudge);
+					//외관 판정 결과
+					insp->getSpcInspInData()->setAppearanceJudgeResult(CellFinalJudge);
+					//외관 NG 개수
+					int TopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
+					int BottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
+					insp->getSpcInspInData()->setTotalAppearanceNgCount(CGlobalFunc::intToString(TopJudge + BottomJudge));
+
+
+					//IqInfo ===Tab 보이는 카메라 1
+					//Top 객체
+					CSpcInDataIqInfo* IqInfoTop = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_TOP);
+					//이미지 X Size [pxl]
+					IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nWidth));
+					//이미지 Y Size [pxl]
+					IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nHeight));
+					//판정결과
+					CString IqTopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
+					IqInfoTop->setImageJudge(IqTopJudge);
+					//SPC+ 저장할 이미지 명을 입력(Top 이미지 명)
+					IqInfoTop->setImageFileName(pTopInfo->m_pTabRsltInfo->m_chImageFile);
+
+					//IqInfo ===Tab 없는 카메라
+					//Bottom 객체
+					CSpcInDataIqInfo* IqInfoBottom = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_BOTTOM);
+					//이미지 X Size [pxl]
+					IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nWidth));
+					//이미지 Y Size [pxl]
+					IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nHeight));
+					//판정결과
+					CString IqBottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
+					IqInfoBottom->setImageJudge(IqBottomJudge);
+					//SPC+ 저장할 이미지 명을 입력(Bottom 이미지 명)
+					IqInfoBottom->setImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
+
+					//결함 인덱스
+					int idxJudge = 1;
+					//Top Judge 이면
+					if (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)
+					{
+						//Top 정보 객체 생성
+						CSpcInDataDefectInfo* SpcInDataDefectInfoTop = new CSpcInDataDefectInfo(insp);
+						//결함의 순서
+						SpcInDataDefectInfoTop->setDefectIndex(CGlobalFunc::intToString(idxJudge));
+						//카메라 번호 : Tab 있으면 1 없으면 2
+						SpcInDataDefectInfoTop->setDefectCameraNumber("1");
+						//외관 불량 Crop 이미지 파일명 Top
+						SpcInDataDefectInfoTop->setDefectCropImageFileName(pTopInfo->m_pTabRsltInfo->m_chImageFile);
+
+						//추가한다.
+						insp->addSpcInDataDefectInfo(SpcInDataDefectInfoTop);
+
+						//결함이면 1개 증가
+						idxJudge++;
+					}
+
+					//Bottom Judge 이면
+					if (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)
+					{
+						//Bottom 정보 객체 생성
+						CSpcInDataDefectInfo* SpcInDataDefectInfoBottom = new CSpcInDataDefectInfo(insp);
+						//결함의 순서
+						SpcInDataDefectInfoBottom->setDefectIndex(CGlobalFunc::intToString(idxJudge));
+						//카메라 번호 : Tab 있으면 1 없으면 2
+						SpcInDataDefectInfoBottom->setDefectCameraNumber("2");
+						//외관 불량 Crop 이미지 파일명 Bottom
+						SpcInDataDefectInfoBottom->setDefectCropImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
+
+						//추가한다.
+						insp->addSpcInDataDefectInfo(SpcInDataDefectInfoBottom);
+					}
+
+					//SPC+ 파일 생성을 위한 스래드에 추가한다.
+					CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
+					//===========================================================================================================
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(5)("Top Logcount<%d> Bottom Logcount<%d> ========", pTopInfo->TempLogCount, pBtmInfo->TempLogCount);
@@ -1196,9 +1278,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							}
 						}
 					}
-
-					//SPC+ 파일 생성을 위한 스래드에 추가한다.
-					CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
 
 					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
 					CTactTimeData data;
