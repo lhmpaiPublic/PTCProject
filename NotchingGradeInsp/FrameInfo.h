@@ -66,6 +66,8 @@ public :
 	BOOL	m_bOverFlow;
 	// 23.02.20 Ahn Add End
 
+#ifdef SPCPLUS_CREATE
 	//SPC+ INSP 객체 포인터
 	CSpcPlusManager* m_SpcInspMgr;
+#endif /SPCPLUS_CREATE
 };

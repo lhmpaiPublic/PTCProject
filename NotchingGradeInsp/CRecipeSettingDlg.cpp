@@ -16,11 +16,13 @@
 #include "CInitSystemSetting.h"
 #include "LogDisplayDlg.h"
 
+#ifdef SPCPLUS_CREATE
 //SPC+ 사용 해더파일
 #include "SpcSpecParaManager.h"
 #include "SpcSpecParaInData.h"
 #include "SpcSpecInfo.h"
 #include "SpcParaInfo.h"
+#endif //SPCPLUS_CREATE
 
 // CRecipeSettingDlg 대화 상자
 
@@ -970,6 +972,7 @@ void CRecipeSettingDlg::OnBnClickedBtnSave()
 	m_pRecipeCtrl->SaveRecipe(strRecipeName);
 	SaveRecipeTable();
 
+#ifdef SPCPLUS_CREATE
 	//SPC+ SPEC_PARA ======================================================
 	CSpcSpecParaManager SpecPara;
 	//inData 포인터 객체
@@ -984,7 +987,6 @@ void CRecipeSettingDlg::OnBnClickedBtnSave()
 	//Para 정보를 저장한다.
 	ParaPtr->push_back(ParaInfo);
 
-
 	//변경 Spec 정보	
 	std::vector<CSpcSpecInfo*>* SpecPtr = SpecPara.getSpcSpecInfoPtr();
 	CSpcSpecInfo* SpecInfo = new CSpcSpecInfo(&SpecPara);
@@ -997,6 +999,7 @@ void CRecipeSettingDlg::OnBnClickedBtnSave()
 
 	SpecPara.makeJSONFile();
 	//======================================================================
+#endif //SPCPLUS_CREATE
 
 }
 

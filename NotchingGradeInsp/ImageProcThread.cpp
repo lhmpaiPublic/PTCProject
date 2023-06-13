@@ -19,12 +19,14 @@
 #include "CImageProcThreadUnit.h"
 #include "AppDIO.h"
 
+#ifdef SPCPLUS_CREATE
 //SPC+ INSP 객체 생성을 위한 클래스
 #include "SpcPlusManager.h"
 #include "SpcInspManager.h"
 #include "SpcAlarmManager.h"
 #include "SpcCreateJSONFileThread.h"
 #include "SpcPlus.h"
+#endif //SPCPLUS_CREATE
 
 // 22.05.31 Ahn Add Start
 #include "CImageSaveQueueCtrl.h"
@@ -382,11 +384,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				//Tab 정보 크기 만큼 루프 돌다.
 				for (int i = 0; i < nVecSize; i++)
 				{
+#ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
 					//SPC+ INSP 객체 생성
 					CSpcInspManager* insp = new CSpcInspManager();
 
 					//============================================================================================================
+#endif //SPCPLUS_CREATE
 
 					//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 					CCounterInfo cntInfo;
@@ -567,8 +571,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//임시 로그 카운터
 					pInfo->TempLogCount = TempLogCount;
 
+#ifdef SPCPLUS_CREATE
 					//SPc+ 객체를 Top에 만 추가한다.
 					pInfo->m_SpcInspMgr = insp;
+#endif //SPCPLUS_CREATE
 
 					//Tab정보에서 Top 이미지 데이터 세팅
 					pInfo->SetImgPtr(pTabInfo->pImgPtr);
@@ -826,6 +832,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//로그 카운ㅌ 임시변수
 					int TempLogCount = pTopInfo->TempLogCount;
 
+#ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
 					//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
 					CSpcInspManager* insp = dynamic_cast<CSpcInspManager *>(pTopInfo->m_SpcInspMgr);
@@ -910,6 +917,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//SPC+ 파일 생성을 위한 스래드에 추가한다.
 					CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
 					//===========================================================================================================
+#endif //SPCPLUS_CREATE
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(5)("Top Logcount<%d> Bottom Logcount<%d> ========", pTopInfo->TempLogCount, pBtmInfo->TempLogCount);
@@ -1039,6 +1047,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									wAlarmCode |= CSigProc::en_Alarm_Spatter_Btm;
 								}
 
+#ifdef SPCPLUS_CREATE
 								//SPC+ ALARM===================================================================================================
 								//SPC+ ALARM 객체 생성
 								CSpcAlarmManager* alarm = new CSpcAlarmManager();
@@ -1050,6 +1059,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								//SPC+ 파일 생성을 위한 스래드에 추가한다.
 								CSpcCreateJSONFileThread::AddSpcPlusManager(alarm);
 								//============================================================================================================
+#endif //SPCPLUS_CREATE
 							
 								bClearFlag = TRUE;; // 22.03.03 Ahn Add 
 								CSigProc* pSigProc = theApp.m_pSigProc;

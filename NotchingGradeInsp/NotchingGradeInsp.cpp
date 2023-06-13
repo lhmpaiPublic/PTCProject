@@ -155,8 +155,10 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	//로그창을 이용한 출력 기능 모듈을 생성한다.
 	CLogDisplayDlg::CreateLogDisplayDlg();
 
-	//JSON파일 생성을 위한 스래드 모듈을 생성한다.
+#ifdef SPCPLUS_CREATE
+	//SPC+ JSON파일 생성을 위한 스래드 모듈을 생성한다.
 	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
+#endif //SPCPLUS_CREATE
 
 	//CDebugSetDlg DebugSet;
 	//if (DebugSet.DoModal() == IDOK) {
@@ -241,8 +243,10 @@ int CNotchingGradeInspApp::ExitInstance()
 	//생성된 로그창 기능 모듈을 소멸한다.
 	CLogDisplayDlg::ExitLogDisplayDlg();
 
-	//JSON파일 생성을 위한 스래드 모듈을 소멸한다.
+#ifdef SPCPLUS_CREATE
+	//SPC+ JSON파일 생성을 위한 스래드 모듈을 소멸한다.
 	CSpcCreateJSONFileThread::ExitSpcCreateJSONFileThread();
+#endif //SPCPLUS_CREATE
 
 	return CWinAppEx::ExitInstance();
 }

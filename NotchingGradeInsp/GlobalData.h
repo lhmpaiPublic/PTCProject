@@ -502,10 +502,13 @@ public :
 	//글로벌 스트링 세팅 객체를 넘긴다.
 	_GLOBAL_SETTING_STRING* getGSt() { return &m_globalStr; }
 
+#ifdef SPCPLUS_CREATE
 	//SPC+ STATUS ===============================
 	//검사기 상태가 변경될 때 호출
 	//InspStatus = Live Signal : 1, 가동불가 : 0
 	void SpcPluusStatus(CString InspStatus);
+#endif //SPCPLUS_CREATE
+
 protected :
 	void InitRecipe();
 

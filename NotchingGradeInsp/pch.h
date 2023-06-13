@@ -24,6 +24,9 @@ using namespace Gdiplus;
 #pragma comment(lib, "AxL.lib")
 #endif
 
+//SPC+ 생성을 위한 플래그
+//#define SPCPLUS_CREATE
+
 #include "GlobalFunc.h"
 #include "LogDisplayDlg.h"
 
