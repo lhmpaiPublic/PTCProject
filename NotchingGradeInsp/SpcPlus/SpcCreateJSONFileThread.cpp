@@ -60,9 +60,9 @@ void CSpcCreateJSONFileThread::ExitSpcCreateJSONFileThread()
 	// 로그출력 창 생성
 	if (gInstObject != NULL)
 	{
+		bCreate = false;
 		delete gInstObject;
 		gInstObject = NULL;
-		bCreate = false;
 	}
 }
 

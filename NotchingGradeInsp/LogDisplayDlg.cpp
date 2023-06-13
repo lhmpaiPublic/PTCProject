@@ -116,8 +116,8 @@ void CLogDisplayDlg::ExitLogDisplayDlg()
 	// 로그출력 창 생성
 	if (gInstObject != NULL)
 	{
-		delete gInstObject;
 		bCreate = false;
+		delete gInstObject;
 		gInstObject = NULL;
 	}
 }
