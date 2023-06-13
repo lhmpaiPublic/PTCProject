@@ -84,6 +84,8 @@ public:
 	// 22.06.30 Ahn Add Start
 	BOOL IsOpened();
 	// 22.06.30 Ahn Add End
+
+
 private:
 	static CCriticalSection	m_csPioThread;
 	CWinThread* m_pThread;

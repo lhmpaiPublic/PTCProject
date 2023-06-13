@@ -1198,7 +1198,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 
 					//SPC+ 파일 생성을 위한 스래드에 추가한다.
-					CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
+					//CSpcCreateJSONFileThread::AddSpcPlusManager(insp); // spc+ 생성 부분
 
 					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
 					CTactTimeData data;

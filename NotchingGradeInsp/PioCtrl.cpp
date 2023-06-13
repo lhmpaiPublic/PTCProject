@@ -71,7 +71,8 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 
 		CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 		int nPort = AprData.m_System.m_nPLCPort;
-		pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut );
+		pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);
+		//pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort );
 
 		PioTheadRun();
 	}
