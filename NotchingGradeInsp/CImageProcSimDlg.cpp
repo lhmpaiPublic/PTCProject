@@ -1927,15 +1927,38 @@ void CImageProcSimDlg::OnBnClickedBtnTest()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (m_bLoadImage == FALSE) return;
 	
-	// 23.02.03 Ahn Modify Start
-	//InspectionAuto(); // Foil 노출 검사.	
-	int nLocalRet = ProcessFoilExpInRect();
-	// Image Crop 및 결과 저장.
-	if (nLocalRet >= 0) {
-		SaveCropAndResultSave() ;
+
+	//////////////////////////////////////////////////////////////////////////
+	// 검사 전 선택된 레시피 다시 로드 함
+	int nSelNo = m_cmbRecipeSelect.GetCurSel();
+	m_cmbRecipeSelect.SetCurSel(nSelNo);
+
+	CString strRcpName;
+	m_cmbRecipeSelect.GetWindowText(strRcpName);
+
+	CRecipeCtrl rcpCtrl;
+	if (m_pRecipeInfo != nullptr) {
+		rcpCtrl.LoadRecipe(m_pRecipeInfo, strRcpName);
 	}
-	// 23.02.03 Ahn Modify End
+	//////////////////////////////////////////////////////////////////////////
+
+	UpdateRecipeGrid();
+
+
+	// 23.02.03 Ahn Modify Start
+	InspectionAuto(); // Foil 노출 검사.	
+
+
+
+//	int nLocalRet = ProcessFoilExpInRect();
+//	// Image Crop 및 결과 저장.
+//	if (nLocalRet >= 0) {
+//		SaveCropAndResultSave() ;
+//	}
+//	// 23.02.03 Ahn Modify End
 	
+	Invalidate(FALSE);
+
 }
 
 // 23.02.06 Ahn Test start

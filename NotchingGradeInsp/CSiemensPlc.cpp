@@ -4,21 +4,18 @@
 #include "LogDisplayDlg.h"
 
 
-// 23.03.03 Ahn Modify Start
-//CSiemensPlc::CSiemensPlc(CString strIPAddress, int nPort /*= 4000*/)
-CSiemensPlc::CSiemensPlc(CString strIPAddress, int nPort /*= 4000*/, int nOffsetIn/*= 0*/, int nOffsetOut/*= 100*/, int nWordIn/*=20*/, int nWordOut/*=120*/)
-// 23.03.03 Ahn Modify End
+CSiemensPlc::CSiemensPlc(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort /*= 4000*/, int nOffsetIn/*= 0*/, int nOffsetOut/*= 100*/, int nWordIn/*=20*/, int nWordOut/*=120*/)
 	: m_strIPAddress(strIPAddress)
 	, m_nPort(nPort)
+	, m_nReConnetTimeOut(nReConnetTimeOut)
+	, m_pReceiveMsgWnd(pReceiveMsgWnd)
 	, m_pLGIS_Plc(NULL)
 {
 
-	// 23.03.03 Ahn Add Start
 	m_wOffset_In = nOffsetIn ;	//!< 입력 신호 Offset
 	m_wOffset_Out = nOffsetOut;	//!< 출력 신호 Offset
 	m_wOffsetWord_In = nWordIn ;
 	m_wOffsetWord_Out = nWordOut ;
-	// 23.03.03 Ahn Add End
 
 	OpenPio();
 
@@ -28,7 +25,6 @@ CSiemensPlc::CSiemensPlc(CString strIPAddress, int nPort /*= 4000*/, int nOffset
 
 CSiemensPlc::~CSiemensPlc()
 {
-
 	ClosePio();
 }
 
@@ -40,13 +36,25 @@ void CSiemensPlc::SetSlaveId(int nId)
 	}
 }
 
-void CSiemensPlc::SetTimeOut(int nTimeOut)
+void CSiemensPlc::SetReceiveMsgWnd(CWnd* pWnd)
 {
 	if (m_pLGIS_Plc)
 	{
-		m_pLGIS_Plc->SetTimeOut(nTimeOut);
+		m_pReceiveMsgWnd = pWnd;
+		m_pLGIS_Plc->SetReceiveMsgWnd(m_pReceiveMsgWnd);
+	}
+
+}
+
+void CSiemensPlc::SetReConnetTimeOut(int nTimeOut)
+{
+	if (m_pLGIS_Plc)
+	{
+		m_nReConnetTimeOut = nTimeOut;
+		m_pLGIS_Plc->SetReConnetTimeOut(m_nReConnetTimeOut);
 	}
 }
+
 
 int CSiemensPlc::WriteDataReg(int offset, short data[], int num)
 {
@@ -128,17 +136,54 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 BOOL CSiemensPlc::IsOpened()
 {
 	if (m_pLGIS_Plc)
-		return m_pLGIS_Plc->IsConnected();
+		return m_pLGIS_Plc->CheckConnection();
 
 	return false;
+}
+
+CString CSiemensPlc::GetErrorMsg()
+{
+	if (IsOpened())
+	{
+		if (m_pLGIS_Plc->m_bErr)
+			return m_pLGIS_Plc->m_strErrorMsg;
+		else
+			return CString();
+	}
+	else
+	{
+		if (m_pLGIS_Plc)
+			return m_pLGIS_Plc->m_strErrorMsg;
+	}
+
+	return _T("Not created PLC handle");
+}
+
+int CSiemensPlc::GetErrorNo()
+{
+	if (IsOpened())
+	{
+		if (m_pLGIS_Plc->m_bErr)
+			return m_pLGIS_Plc->m_nErrNo;
+		else
+			PLC_OK;
+	}
+	else
+	{
+		if (m_pLGIS_Plc)
+			return m_pLGIS_Plc->m_nErrNo;
+	}
+
+	return CONNECTION_ERROR;
 }
 
 int CSiemensPlc::OpenPio(void)
 {
 	ClosePio();
-	m_pLGIS_Plc = new CLGIS_Plc((std::string)CT2CA(m_strIPAddress), m_nPort);
+//	m_pLGIS_Plc = new CLGIS_Plc((std::string)CT2CA(m_strIPAddress), m_nReConnetTimeOut, m_pReceiveMsgWnd, m_nPort);
+	m_pLGIS_Plc = new CLGIS_Plc(m_strIPAddress, m_nPort, m_nReConnetTimeOut, m_pReceiveMsgWnd );
 	
-	if (!m_pLGIS_Plc->Connect())
+	if (!m_pLGIS_Plc->CheckConnection())
 	{
 		ClosePio();
 		//로그출력
@@ -152,7 +197,7 @@ int CSiemensPlc::ClosePio(void)
 {
 	if (m_pLGIS_Plc)
 	{
-		m_pLGIS_Plc->Close();
+//		m_pLGIS_Plc->Close();
 		delete m_pLGIS_Plc;
 		m_pLGIS_Plc = NULL;
 	}
