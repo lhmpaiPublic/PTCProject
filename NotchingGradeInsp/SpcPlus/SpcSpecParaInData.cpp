@@ -100,5 +100,5 @@ CString CSpcSpecParaInData::JsonFilePath()
 //파일명을 넘긴다.
 CString CSpcSpecParaInData::JsonFileName()
 {
-	return m_CreateTime + CString("PARAM.JSON");
+	return m_CreateTime + CString("_") + CString("PARAM.JSON");
 }

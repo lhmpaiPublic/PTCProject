@@ -87,5 +87,5 @@ CString CSpcStatusInData::JsonFilePath()
 //파일명을 넘긴다.
 CString CSpcStatusInData::JsonFileName()
 {
-	return m_CreateTime + CString("STATUS.JSON");
+	return m_CreateTime + CString("_") + CString("STATUS.JSON");
 }

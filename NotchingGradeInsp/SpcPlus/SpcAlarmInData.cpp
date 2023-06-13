@@ -110,5 +110,5 @@ CString CSpcAlarmInData::JsonFilePath()
 //파일명을 넘긴다.
 CString CSpcAlarmInData::JsonFileName()
 {
-	return m_CreateTime + CString("ALARM.JSON");
+	return m_CreateTime + CString("_") + CString("ALARM.JSON");
 }
