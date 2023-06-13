@@ -58,8 +58,8 @@ CSpcInDataDefectInfo::CSpcInDataDefectInfo(CSpcPlusManager* sMgr)
 	manager = sMgr;
 
 	m_DefectIndex = "1";
-	m_DefectTypeRuleBaseName = "PINH";
-	m_DefectTypeRuleBaseNameReal = "Pinhole";
+	m_DefectTypeRuleBaseName = SPCINFO->getDefectTypeRuleBaseName();
+	m_DefectTypeRuleBaseNameReal = SPCINFO->getDefectTypeRuleBaseNameReal();
 	m_DefectCameraType = SPCINFO->getCameraType();
 	m_DefectCameraLocation = SPCINFO->getCameraLocation();
 	m_DefectCameraNumber = "1";
@@ -89,7 +89,7 @@ CSpcInDataDefectInfo::CSpcInDataDefectInfo(CSpcPlusManager* sMgr)
 	m_DefectRoiGrayLvMedian = "0.000";
 	m_DefectRoiGrayLvStddev = "0.000";
 	m_DefectInOut = "IN";
-	m_DefectCropImageFileName = "FOIL-EXP_20230403090002974_A1ANTC203_ECCCF41122_NA_TOP_1_1_NG_NG.jpg";
+	m_DefectCropImageFileName = "";
 
 	if (sMgr)
 	{

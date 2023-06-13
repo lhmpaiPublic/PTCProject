@@ -49,6 +49,20 @@ private:
 	CString	m_CameraExposureTime;
 	//카메라 종류_BarType, LineScan, Mono Area, Color Area	
 	CString	m_CameraType;
+	//Image 직진도 Value(카메라 엥글)
+	CString	m_CamAngleValue;
+	//Image Focus Value	
+	CString	m_IqFocusValue;
+	//Image Bright Value	
+	CString	m_IqBrightValue;
+	//Image 해상도 x축 Value[um]	
+	CString	m_IqResolXValue;
+	//Image 해상도 y축 Value	
+	CString	m_IqResolYValue;
+	//외관 불량명	
+	CString	m_DefectTypeRuleBaseName;
+	//불량의 실제 명칭	
+	CString	m_DefectTypeRuleBaseNameReal;
 	//Agent Sw Version	
 	CString	m_AgentSwVersion;
 	//외관불량 JSON 파일 경로	
@@ -93,6 +107,20 @@ public:
 	CString getCameraExposureTime() { return m_CameraExposureTime; }
 	//카메라 종류_BarType, LineScan, Mono Area, Color Area	
 	CString getCameraType() { return m_CameraType; }
+	//Image 직진도 Value(카메라 엥글)
+	CString getCamAngleValue() { return m_CamAngleValue; }
+	//Image Focus Value	
+	CString getIqFocusValue() { return m_IqFocusValue; }
+	//Image Bright Value	
+	CString getIqBrightValue () { return m_IqBrightValue; }
+	//Image 해상도 x축 Value[um]	
+	CString getIqResolXValue() { return m_IqResolXValue; }
+	//Image 해상도 y축 Value	
+	CString getIqResolYValue() { return m_IqResolYValue; }
+	//외관 불량명	
+	CString getDefectTypeRuleBaseName() { return m_DefectTypeRuleBaseName; }
+	//불량의 실제 명칭	
+	CString getDefectTypeRuleBaseNameReal() { return m_DefectTypeRuleBaseNameReal; }
 	//Agent Sw Version	
 	CString getAgentSwVersion() { return m_AgentSwVersion; }
 
@@ -135,6 +163,20 @@ public:
 	void setCameraExposureTime(CString CameraExposureTime) { m_CameraExposureTime = CameraExposureTime; }
 	//카메라 종류_BarType, LineScan, Mono Area, Color Area	
 	void setCameraType(CString CameraType) { m_CameraType = CameraType; }
+	//Image 직진도 Value(카메라 엥글)
+	void setCamAngleValue(CString CamAngleValue) { m_CamAngleValue = CamAngleValue; }
+	//Image Focus Value	
+	void setIqFocusValue(CString IqFocusValue) { m_IqFocusValue = IqFocusValue; }
+	//Image Bright Value	
+	void setIqBrightValue(CString IqBrightValue) { m_IqBrightValue = IqBrightValue; }
+	//Image 해상도 x축 Value[um]	
+	void setIqResolXValue(CString IqResolXValue) { m_IqResolXValue = IqResolXValue; }
+	//Image 해상도 y축 Value	
+	void setIqResolYValue(CString IqResolYValue) { m_IqResolYValue = IqResolYValue; }
+	//외관 불량명	
+	void setDefectTypeRuleBaseName(CString DefectTypeRuleBaseName) { m_DefectTypeRuleBaseName = DefectTypeRuleBaseName; }
+	//불량의 실제 명칭	
+	void setDefectTypeRuleBaseNameReal(CString DefectTypeRuleBaseNameReal) { m_DefectTypeRuleBaseNameReal = DefectTypeRuleBaseNameReal; }
 	//Agent Sw Version	
 	void setAgentSwVersion(CString AgentSwVersion) { m_AgentSwVersion = AgentSwVersion; }
 	//외관불량 JSON 파일 경로	

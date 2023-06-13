@@ -72,6 +72,20 @@ void CSpcInfo::LoadSpcPlusInfo()
 	m_CameraExposureTime = CGlobalFunc::ReadIniFile("CAMERA", "CAMERA_EXPOSURE_TIME", szProfilePath);
 	//카메라 종류_BarType, LineScan, Mono Area, Color Area	
 	m_CameraType = CGlobalFunc::ReadIniFile("CAMERA", "CAMERA_TYPE", szProfilePath);
+
+	//Image Focus Value	
+	m_IqFocusValue = CGlobalFunc::ReadIniFile("IQIMAGEINFO", "IQ_FOCUS_VALUE", szProfilePath);
+	//Image Bright Value	
+	m_IqBrightValue = CGlobalFunc::ReadIniFile("IQIMAGEINFO", "IQ_BRIGHT_VALUE", szProfilePath);
+	//Image 해상도 x축 Value[um]	
+	m_IqResolXValue = CGlobalFunc::ReadIniFile("IQIMAGEINFO", "IQ_RESOL_X_VALUE", szProfilePath);
+	//Image 해상도 y축 Value	
+	m_IqResolYValue = CGlobalFunc::ReadIniFile("IQIMAGEINFO", "IQ_RESOL_Y_VALUE", szProfilePath);
+	//외관 불량명	
+	m_DefectTypeRuleBaseName = CGlobalFunc::ReadIniFile("DEFECTINFO", "DEFECT_TYPE_RULE_BASE_NAME", szProfilePath);
+	//불량의 실제 명칭	
+	m_DefectTypeRuleBaseNameReal = CGlobalFunc::ReadIniFile("DEFECTINFO", "DEFECT_TYPE_RULE_BASE_NAME_REAL", szProfilePath);
+
 	//Agent Sw Version	
 	m_AgentSwVersion = CGlobalFunc::ReadIniFile("SOFTWARE", "AGENT_SW_VERSION", szProfilePath);
 

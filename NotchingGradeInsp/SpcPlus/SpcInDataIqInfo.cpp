@@ -44,15 +44,15 @@ CSpcInDataIqInfo::CSpcInDataIqInfo(CSpcPlusManager* sMgr)
 	m_IqScreenNumber = "1";
 	m_IqScreenImageSizeX = "1024";
 	m_IqScreenImageSizeY = "1024";
-	m_IqFocusValue = "0.000";
-	m_IqBrightValue = "0.000";
-	m_IqResolXValue = "0.000";
-	m_IqResolYValue = "0.000";
-	m_IqCamAngleValue = "0.000";
+	m_IqFocusValue = SPCINFO->getIqFocusValue();
+	m_IqBrightValue = SPCINFO->getIqBrightValue();
+	m_IqResolXValue = SPCINFO->getIqResolXValue();
+	m_IqResolYValue = SPCINFO->getIqResolYValue();
+	m_IqCamAngleValue = SPCINFO->getCamAngleValue();
 	m_IqCameraGain = SPCINFO->getCameraGain();
 	m_IqExposureTime = SPCINFO->getCameraExposureTime();
 	m_ImageJudge = "NG";
-	m_ImageFileName = "FOIL-EXP_20230403090002974_A1ANTC203_ECCCF41122_NA_TOP_1_1_NG_NG.jpg";
+	m_ImageFileName = "";
 
 	if (sMgr)
 	{
