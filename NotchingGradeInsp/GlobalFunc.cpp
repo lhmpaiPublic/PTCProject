@@ -130,10 +130,10 @@ int CGlobalFunc::StringToint(CString val)
 }
 
 //float to CString
-CString CGlobalFunc::floatToString(double  val)
+CString CGlobalFunc::floatToString(double  val, CString format)
 {
 	CString rVal;
-	rVal.Format(_T("%.3f"), val);
+	rVal.Format(format, val);
 	return rVal;
 }
 

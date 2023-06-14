@@ -19,6 +19,7 @@
 #include "CImageProcThreadUnit.h"
 #include "AppDIO.h"
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 //SPC+ INSP 객체 생성을 위한 클래스
 #include "SpcPlusManager.h"
@@ -384,6 +385,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				//Tab 정보 크기 만큼 루프 돌다.
 				for (int i = 0; i < nVecSize; i++)
 				{
+
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
 					//SPC+ INSP 객체 생성
@@ -571,6 +574,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//임시 로그 카운터
 					pInfo->TempLogCount = TempLogCount;
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPc+ 객체를 Top에 만 추가한다.
 					//Tab 있는 이미지 Frame  정보
@@ -611,6 +615,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
 					CFrameInfo* pBtmInfo;
 					pBtmInfo = new CFrameInfo;
+
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPc+ 객체를 Top에 만 추가한다.
 					//Tab 없는 이미지  Frame 정보
@@ -838,6 +844,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//로그 카운ㅌ 임시변수
 					int TempLogCount = pTopInfo->TempLogCount;
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
 					//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
@@ -895,8 +902,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						SpcInDataDefectInfoTop->setDefectIndex(CGlobalFunc::intToString(idxJudge));
 						//카메라 번호 : Tab 있으면 1 없으면 2
 						SpcInDataDefectInfoTop->setDefectCameraNumber("1");
-						//외관 불량 Crop 이미지 파일명 Top
-						SpcInDataDefectInfoTop->setDefectCropImageFileName(pTopInfo->m_pTabRsltInfo->m_chImageFile);
 
 						//추가한다.
 						insp->addSpcInDataDefectInfo(SpcInDataDefectInfoTop);
@@ -914,8 +919,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						SpcInDataDefectInfoBottom->setDefectIndex(CGlobalFunc::intToString(idxJudge));
 						//카메라 번호 : Tab 있으면 1 없으면 2
 						SpcInDataDefectInfoBottom->setDefectCameraNumber("2");
-						//외관 불량 Crop 이미지 파일명 Bottom
-						SpcInDataDefectInfoBottom->setDefectCropImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
 
 						//추가한다.
 						insp->addSpcInDataDefectInfo(SpcInDataDefectInfoBottom);
@@ -1051,6 +1054,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									wAlarmCode |= CSigProc::en_Alarm_Spatter_Btm;
 								}
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 								//SPC+ ALARM===================================================================================================
 								//SPC+ ALARM 객체 생성

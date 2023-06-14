@@ -24,6 +24,7 @@ using namespace Gdiplus;
 #pragma comment(lib, "AxL.lib")
 #endif
 
+//SPC 객체 소스에서 컴파일 여부 결정
 //SPC+ 생성을 위한 플래그
 //#define SPCPLUS_CREATE
 

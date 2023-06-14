@@ -82,11 +82,27 @@ bool CSpcInspManager::getCreateJSONFile()
 }
 
 //이미지 퀄리티 정보 객체 포인터
-CSpcInDataIqInfo* CSpcInspManager::getSpcInDataIqInfo(TopBottomSelect select) 
+CSpcInDataIqInfo* CSpcInspManager::getSpcInDataIqInfo(IqTopBottomSelect select)
 { 
 	return m_SpcInDataIqInfo[select]; 
 }
+
+
 //결함정보 객체 포인터
+CSpcInDataDefectInfo* CSpcInspManager::getSpcInDataDefectInfo(DefectTopBottomSelect camNo)
+{
+	CSpcInDataDefectInfo* SpcInDataDefectInfo = NULL;
+
+	for (int idx = 0; idx < m_SpcInDataDefectInfo.size(); idx++)
+	{
+		if (m_SpcInDataDefectInfo[idx]->getDefectCameraNumber_int() == camNo)
+		{
+			SpcInDataDefectInfo = m_SpcInDataDefectInfo[idx];
+		}
+	}
+
+	return SpcInDataDefectInfo;
+}
 
 
 

@@ -57,9 +57,9 @@ CSpcInDataDefectInfo::CSpcInDataDefectInfo(CSpcPlusManager* sMgr)
 	//관리 클래스 객체 포인터
 	manager = sMgr;
 
-	m_DefectIndex = "1";
-	m_DefectTypeRuleBaseName = SPCINFO->getDefectTypeRuleBaseName();
-	m_DefectTypeRuleBaseNameReal = SPCINFO->getDefectTypeRuleBaseNameReal();
+	m_DefectIndex = "0";
+	m_DefectTypeRuleBaseName = "";
+	m_DefectTypeRuleBaseNameReal = "";
 	m_DefectCameraType = SPCINFO->getCameraType();
 	m_DefectCameraLocation = SPCINFO->getCameraLocation();
 	m_DefectCameraNumber = "1";

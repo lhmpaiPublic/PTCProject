@@ -12,6 +12,7 @@ CFrameInfo::CFrameInfo(void)
 	m_bOverFlow = FALSE;
 	// 23.02.20 Ahn Add End
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//SPC+ INSP 객체 포인터를 NULL 초기화한다.
 	m_SpcInspMgr = NULL;

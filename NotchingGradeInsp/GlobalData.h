@@ -502,6 +502,7 @@ public :
 	//글로벌 스트링 세팅 객체를 넘긴다.
 	_GLOBAL_SETTING_STRING* getGSt() { return &m_globalStr; }
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//SPC+ STATUS ===============================
 	//검사기 상태가 변경될 때 호출

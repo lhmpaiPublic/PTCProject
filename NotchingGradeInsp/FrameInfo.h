@@ -66,6 +66,7 @@ public :
 	BOOL	m_bOverFlow;
 	// 23.02.20 Ahn Add End
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//SPC+ INSP 객체 포인터
 	CSpcPlusManager* m_SpcInspMgr;

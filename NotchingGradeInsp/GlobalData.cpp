@@ -8,12 +8,14 @@
 #include "CAprHash.h"				// 22.05.25 Son Add
 #include "CHistoryLotCtrl.h"		// 22.06.27 Ahn Add
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 //SPC+ 사용 해더파일
 #include "SpcPlusManager.h"
 #include "SpcStatusManager.h"
 #include "SpcStatusInData.h"
 #endif //SPCPLUS_CREATE
+
 
 CGlobalData	AprData ;
 
@@ -1113,6 +1115,7 @@ int CGlobalData::CreateIndexFile(CString strBinFileName)
 }
 // 22.05.25 Son Add End
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 //SPC+ STATUS ===============================
 //검사기 상태가 변경될 때 호출

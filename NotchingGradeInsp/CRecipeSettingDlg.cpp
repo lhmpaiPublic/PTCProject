@@ -16,6 +16,7 @@
 #include "CInitSystemSetting.h"
 #include "LogDisplayDlg.h"
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 //SPC+ 사용 해더파일
 #include "SpcSpecParaManager.h"
@@ -972,6 +973,7 @@ void CRecipeSettingDlg::OnBnClickedBtnSave()
 	m_pRecipeCtrl->SaveRecipe(strRecipeName);
 	SaveRecipeTable();
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//SPC+ SPEC_PARA ======================================================
 	CSpcSpecParaManager SpecPara;

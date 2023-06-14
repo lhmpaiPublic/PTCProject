@@ -10,10 +10,12 @@
 #include "CCropImgQueueCtrl.h"
 //#include "CDefectInfo.h" // 22.06.23 Ahn Add Start
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 //SPC+ 사용을 위한 해더파일
 #include "SpcInspManager.h"
 #include "SpcCreateJSONFileThread.h"
+#include "SpcInDataDefectInfo.h"
 #endif //SPCPLUS_CREATE
 
 CResultThread::CResultThread(CImageProcessCtrl* pParent, int nHeadNo)
@@ -512,8 +514,13 @@ void CResultThread::CaptureImage(HWND HWnd, CString strPath)
 
 #endif
 
-// 22.05.25 Ahn Add Start
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl* pQueueCtrl, CDefectQueueCtrl* pDefectQueue, CSpcInspManager* insp)
+#else
 void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl* pQueueCtrl, CDefectQueueCtrl* pDefectQueue)
+#endif //SPCPLUS_CREATE
+
 {
 	ASSERT(pDefectQueue);
 	ASSERT(pQueueCtrl);
@@ -620,6 +627,48 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 			pDefInfo->bMarking = pTabInfo->m_bMarkingFlag ;
 			// 22.09.15 Ahn Add End
 
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+			//SPC+ INSP===================================================================================================
+			//Defect Info 객체 포인터가 NULL이 아니면
+			if (insp)
+			{
+				//Top 정보 객체 생성
+				CSpcInDataDefectInfo* SpcInDataDefectInfo = new CSpcInDataDefectInfo(insp);
+				//결함의 순서
+				//결함 정보 객체의 갯수 + 1
+				int DefectIdx = insp->getSpcInDataDefectInfoSize() + 1;
+				SpcInDataDefectInfo->setDefectIndex(CGlobalFunc::intToString(DefectIdx));
+				//Rule Base Defect Type(불량명 기입) 
+				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
+				CString DefectTypeRuleBaseName = (pDefInfo->nType == 0) ? "Foil Exposure" : (pDefInfo->nType == 1) ? "Foil ExposureOut" : "Surface";
+				SpcInDataDefectInfo->setDefectTypeRuleBaseName(DefectTypeRuleBaseName);
+				SpcInDataDefectInfo->setDefectTypeRuleBaseNameReal(DefectTypeRuleBaseName);
+				//Camera Number
+				//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
+				SpcInDataDefectInfo->setDefectCameraNumber((pDefInfo->nHeadNo == 0)? "1": "2");
+
+				//Image 기준 불량 발생 위치 X [pxl]_절대 위치 Image좌,상단(0,0)
+				SpcInDataDefectInfo->setDefectAbsoluteImgX(CGlobalFunc::floatToString(pDefInfo->dSizeX));
+				//Image 기준 불량 발생 위치 Y [pxl]_절대 위치 Image좌,상단(0,0)
+				SpcInDataDefectInfo->setDefectAbsoluteImgY(CGlobalFunc::floatToString(pDefInfo->dSizeY));
+
+				//Image 기준 Defect의 Width [pxl]
+				SpcInDataDefectInfo->setDefectImgWidth(CGlobalFunc::intToString(pDefInfo->nSizeX));
+				//Image 기준 Defect의 Length [pxl]
+				SpcInDataDefectInfo->setDefectImgLength(CGlobalFunc::intToString(pDefInfo->nSizeY));
+				//Image 기준 불량 발생 면적 [pxl]
+				SpcInDataDefectInfo->setDefectAreaPixels(CGlobalFunc::intToString(pDefInfo->nSize));
+
+				//Crop Image 파일명
+				SpcInDataDefectInfo->setDefectCropImageFileName(strFileName);
+
+				//추가한다.
+				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
+
+			}
+#endif //SPCPLUS_CREATE
+
 			// 22.06.23 Ahn Add Start
 			CDefectInfo* pDefRsltInfo = new CDefectInfo;
 			// 22.08.10 Ahn Modify Start
@@ -665,10 +714,12 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 		{
 			CFrameRsltInfo* pRsltInfo = (CFrameRsltInfo*)pQueueResult->Pop();
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 			//SPC+ INSP===================================================================================================
 			//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
 			CSpcInspManager* insp = dynamic_cast<CSpcInspManager*>(pRsltInfo->m_SpcInspMgr);
+
 #endif //SPCPLUS_CREATE
 
 			if (pRsltInfo == NULL) 
@@ -756,6 +807,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							, strTime
 							, strImageFormat
 						);
+
 						if ( strPath.GetLength() > 0 ) 
 						{
 							// 23.02.06 Ahn Modify Start
@@ -772,7 +824,13 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 					// 22.05.25 Ahn Add Start
 					// 일단 다남겨
-					SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue) ; // 22.06.23 Ahn Modify
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+					SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue, insp) ;
+#else
+					SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue);
+#endif //SPCPLUS_CREATE
 					// 22.05.25 Ahn Add End
 					delete[] pResizePtr ;
 				}
@@ -792,6 +850,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
 				LOGDISPLAY_SPEC(0)("저장할 이미지 정보가 없다");
 			}
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE			
 			//SPC+ INSP===================================================================================================
 			//SPC+ 파일 생성을 위한 스래드에 추가한다.
@@ -800,14 +859,14 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 			if (insp->getCreateJSONFile())
 			{
 				//SPC+ 정보 출력 로그
-				LOGDISPLAY_SPEC(3)("SPC+=====Frame Kind : %s = TabCount : %d === JSON 생성 OK ", (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->m_nTabId_CntBoard);
+				LOGDISPLAY_SPEC(3)("SPC+=====Frame Kind : %s = Cell Count : %d === JSON 생성 OK ", (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
 
 				CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
 			}
 			else
 			{
 				//SPC+ 정보 출력 로그
-				LOGDISPLAY_SPEC(3)("SPC+=====Frame Kind : %s = TabCount : %d === JSON 생성 NONE", (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->m_nTabId_CntBoard);
+				LOGDISPLAY_SPEC(3)("SPC+=====Frame Kind : %s = Cell Count : %d === JSON 생성 NONE", (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
 			}
 			//===========================================================================================================
 #endif //SPCPLUS_CREATE

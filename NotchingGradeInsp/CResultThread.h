@@ -15,6 +15,11 @@ class CDefectQueueCtrl;
 class CBitmapStd;
 // 23.02.06 Ahn Add End
 
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+class CSpcInspManager;
+#endif //SPCPLUS_CREATE
+
 class CResultThread
 {
 public:
@@ -46,8 +51,14 @@ public :
 	static void DrawString(CDC* pDC, int x, int y, COLORREF color, CString strLine);
 	static void CaptureImage(HWND hWnd, CString strPath);
 	// 22.02.25 Ahn Add End 
-	// 22.06.10 Ahn Add Start
-	static void SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl *pQueueCtrl, CDefectQueueCtrl* pDefectQueue);
+	
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+	//SPC+ DefectInfo 객체 추가
+	static void SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl *pQueueCtrl, CDefectQueueCtrl* pDefectQueue, CSpcInspManager* insp);
+#else
+	static void SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl* pQueueCtrl, CDefectQueueCtrl* pDefectQueue);
+#endif //SPCPLUS_CREATE
 	// 22.06.10 Ahn Add End
 
 	// 23.02.03 Ahn Add Start

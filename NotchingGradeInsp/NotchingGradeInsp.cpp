@@ -155,6 +155,7 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	//로그창을 이용한 출력 기능 모듈을 생성한다.
 	CLogDisplayDlg::CreateLogDisplayDlg();
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//SPC+ JSON파일 생성을 위한 스래드 모듈을 생성한다.
 	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
@@ -243,6 +244,7 @@ int CNotchingGradeInspApp::ExitInstance()
 	//생성된 로그창 기능 모듈을 소멸한다.
 	CLogDisplayDlg::ExitLogDisplayDlg();
 
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//SPC+ JSON파일 생성을 위한 스래드 모듈을 소멸한다.
 	CSpcCreateJSONFileThread::ExitSpcCreateJSONFileThread();
