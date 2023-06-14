@@ -17,6 +17,11 @@ static char THIS_FILE[]=__FILE__;
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcInspManager::CSpcInspManager()
 {
+	//동기화 객체 초기화
+	::InitializeCriticalSection(&m_csQueue);
+	//JSON Data 추가 완료 여부 확인
+	m_CreateJSONFile = 2;
+
 	//SPC Plus Header 객체 포인터	
 	m_SpcHeader = new CSpcHeader(this);
 	//Act Id 세팅
@@ -43,6 +48,9 @@ CSpcInspManager::CSpcInspManager()
 //객체가 메모리에서 제거되기전 필요한 정리 수행
 CSpcInspManager::~CSpcInspManager()
 {
+	//동기화 객체 메모리 삭제
+	::DeleteCriticalSection(&m_csQueue);
+
 	//SPC Plus Header 객체 포인터	
 	if (m_SpcHeader)
 		delete m_SpcHeader;
@@ -60,6 +68,19 @@ CSpcInspManager::~CSpcInspManager()
 		delete m_SpcInDataDefectInfo[idx];
 
 }
+
+//JSON Data 추가 완료 여부 확인
+bool CSpcInspManager::getCreateJSONFile()
+{
+	bool b = false;
+	::EnterCriticalSection(&m_csQueue);
+	m_CreateJSONFile--;
+	if (m_CreateJSONFile == 0)
+		b = true;
+	::LeaveCriticalSection(&m_csQueue);
+	return b;
+}
+
 //이미지 퀄리티 정보 객체 포인터
 CSpcInDataIqInfo* CSpcInspManager::getSpcInDataIqInfo(TopBottomSelect select) 
 { 

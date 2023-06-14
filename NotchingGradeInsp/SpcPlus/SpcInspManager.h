@@ -17,9 +17,21 @@ class CSpcInDataIqInfo;
 class CSpcInDataDefectInfo;
 class CSpcInspManager : public CSpcPlusManager
 {
+	//동기화 객체
+	CRITICAL_SECTION m_csQueue;
+	//JSON Data 추가 완료 여부 확인
+	//Tab, Tab없는 스래드에서 동시에 접근해서 값을 넣을 때 변수값을 증가 시킨다. 2 초기화하고 
+	//get 할 때 1씩 감소한다.
+	int m_CreateJSONFile;
 public:
 	CSpcInspManager();
 	virtual ~CSpcInspManager();
+
+	//JSON Data 추가 완료 여부 확인
+	void setCreateJSONFile(int  CreateJSONFile) { m_CreateJSONFile = CreateJSONFile; }
+
+	//JSON Data 추가 완료 여부 확인
+	bool getCreateJSONFile();
 
 	enum TopBottomSelect
 	{

@@ -573,6 +573,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 #ifdef SPCPLUS_CREATE
 					//SPc+ 객체를 Top에 만 추가한다.
+					//Tab 있는 이미지 Frame  정보
 					pInfo->m_SpcInspMgr = insp;
 #endif //SPCPLUS_CREATE
 
@@ -610,6 +611,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
 					CFrameInfo* pBtmInfo;
 					pBtmInfo = new CFrameInfo;
+#ifdef SPCPLUS_CREATE
+					//SPc+ 객체를 Top에 만 추가한다.
+					//Tab 없는 이미지  Frame 정보
+					pBtmInfo->m_SpcInspMgr = insp;
+#endif //SPCPLUS_CREATE
 
 					//Tab정보에서 Bottom 이미지 데이터 세팅
 					pBtmInfo->SetImgPtr(pTabInfo->pImgBtmPtr);
@@ -835,6 +841,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 #ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
 					//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
+					//Tab  있는 포인터 만 값을 세팅 하면 같이 변한다.
 					CSpcInspManager* insp = dynamic_cast<CSpcInspManager *>(pTopInfo->m_SpcInspMgr);
 					//InData ===
 					//셀 카운트 번호
@@ -914,9 +921,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						insp->addSpcInDataDefectInfo(SpcInDataDefectInfoBottom);
 					}
 
-					//SPC+ 파일 생성을 위한 스래드에 추가한다.
-					CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
-					//===========================================================================================================
 #endif //SPCPLUS_CREATE
 
 					//Image Cutting Tab 정보 출력 로그

@@ -17,7 +17,7 @@ static char THIS_FILE[]=__FILE__;
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcPlusManager::CSpcPlusManager()
 {
-
+	
 }
 
 //소멸자
@@ -25,5 +25,5 @@ CSpcPlusManager::CSpcPlusManager()
 //객체가 메모리에서 제거되기전 필요한 정리 수행
 CSpcPlusManager::~CSpcPlusManager()
 {
-
+	
 }

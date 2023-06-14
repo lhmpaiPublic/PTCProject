@@ -31,7 +31,7 @@ CString strLogNameList =
 "0 Init_FromExecute_Error_0 1,"
 "1 TabID_ImageCount_TabCount_1 1,"
 "2 PLC_Live_BitData_2 0,"
-"3 Non_3 0,"
+"3 SPCPlus_3 1,"
 "4 Non_4 0,"
 "5 Image_TabFind_ToResult_5 0,"
 "6 InspView_TimerPorcStatus_6 0,"
