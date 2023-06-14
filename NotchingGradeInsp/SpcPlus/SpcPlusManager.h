@@ -12,6 +12,7 @@
 
 class CSpcPlusManager
 {
+
 public:
 	CSpcPlusManager() ;
 	virtual ~CSpcPlusManager() ;

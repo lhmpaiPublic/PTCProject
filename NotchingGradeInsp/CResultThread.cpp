@@ -10,6 +10,12 @@
 #include "CCropImgQueueCtrl.h"
 //#include "CDefectInfo.h" // 22.06.23 Ahn Add Start
 
+#ifdef SPCPLUS_CREATE
+//SPC+ 사용을 위한 해더파일
+#include "SpcInspManager.h"
+#include "SpcCreateJSONFileThread.h"
+#endif //SPCPLUS_CREATE
+
 CResultThread::CResultThread(CImageProcessCtrl* pParent, int nHeadNo)
 {
 	m_pParent = pParent;
@@ -658,6 +664,13 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 		if (nSize > 0) 
 		{
 			CFrameRsltInfo* pRsltInfo = (CFrameRsltInfo*)pQueueResult->Pop();
+
+#ifdef SPCPLUS_CREATE
+			//SPC+ INSP===================================================================================================
+			//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
+			CSpcInspManager* insp = dynamic_cast<CSpcInspManager*>(pRsltInfo->m_SpcInspMgr);
+#endif //SPCPLUS_CREATE
+
 			if (pRsltInfo == NULL) 
 			{
 				continue;
@@ -779,6 +792,25 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
 				LOGDISPLAY_SPEC(0)("저장할 이미지 정보가 없다");
 			}
+#ifdef SPCPLUS_CREATE			
+			//SPC+ INSP===================================================================================================
+			//SPC+ 파일 생성을 위한 스래드에 추가한다.
+			//Create JSON 여부를 판단하고 세팅한다.
+			//Tab 있는 Frame과 Tab 없는 Frame 이 JSON INSP 1개를 생성하기 때문에 필요함
+			if (insp->getCreateJSONFile())
+			{
+				//SPC+ 정보 출력 로그
+				LOGDISPLAY_SPEC(3)("SPC+=====Frame Kind : %s = TabCount : %d === JSON 생성 OK ", (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->m_nTabId_CntBoard);
+
+				CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
+			}
+			else
+			{
+				//SPC+ 정보 출력 로그
+				LOGDISPLAY_SPEC(3)("SPC+=====Frame Kind : %s = TabCount : %d === JSON 생성 NONE", (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->m_nTabId_CntBoard);
+			}
+			//===========================================================================================================
+#endif //SPCPLUS_CREATE
 			pRsltInfo->m_pTabRsltInfo = NULL;
 			delete pRsltInfo;
 			pRsltInfo = NULL;
