@@ -981,6 +981,77 @@ int CSigProc::SigOutAlivePulse(int nInMode)
 
 	return nRet;
 }
+
+int CSigProc::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
+{
+	// 23.02.02 Ahn Add Start
+	//int nAddress = enBitOut_Alive;
+	int nRet = 0;
+	int nMode = 0;
+	int nAddress;
+	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+	{
+		nAddress = enSmsBitOut_Alive;
+
+		if (m_bSmsAlive == TRUE)
+		{
+			m_bSmsAlive = FALSE;
+			nMode = FALSE;
+		}
+		else
+		{
+			m_bSmsAlive = TRUE;
+			nMode = TRUE;
+		}
+
+		short nData[2]; // [0] : Alive, [1] : Ready
+		nData[0] = (nMode == 1) ? 1 : 0;
+		nData[1] = (bIsReady == 1) ? 1 : 0;
+		short* pData = (short*)(&nData);
+		int nSize = sizeof(nData) / sizeof(short);
+		nRet = WritePLC_Block_device(nAddress + AprData.m_System.m_nBitOut, pData, nSize);
+
+	}
+	else
+	{
+		nAddress = enBitOut_Alive;
+
+		// 23.02.02 Ahn Add End
+		int nLocalRet = SignalBitOut(nAddress, -1);
+		if (nInMode == FALSE)
+		{
+			nMode = FALSE;
+		}
+		else
+		{
+			if (nLocalRet == TRUE)
+			{
+				nMode = FALSE;
+			}
+			else
+			{
+				nMode = TRUE;
+			}
+		}
+
+		nRet = SignalBitOut(nAddress, nMode);
+	}
+
+
+	//	CString strMsg;
+	//	strMsg.Format(_T("Alive Signal %s"), (nMode==TRUE) ? _T("ON") : _T("OFF") );
+	//	AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+	if (nRet == -1)
+	{
+		//로그출력
+		LOGDISPLAY_SPECTXT(0)("Setting Out Alive Pulse + Ready Error");
+	}
+
+	return nRet;
+}
+
 int CSigProc::SigOutReady(int nMode)
 {
 

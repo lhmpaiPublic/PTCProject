@@ -420,6 +420,7 @@ public :
 
 	// Signal Out
 	int SigOutAlivePulse(int nMode);
+	int SigOutAlivePulseReady(int nInMode, BOOL bIsReady);
 	int SigOutReady(int nMode);
 	int SigOutEncoderZeroSet(int nMde);
 	int SigOutRecipeChangeAck(int nMode);

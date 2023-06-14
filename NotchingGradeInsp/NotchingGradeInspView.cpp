@@ -1706,11 +1706,13 @@ void CNotchingGradeInspView::StartThreadAliveSiginal()
 
 UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
 {
+	CNotchingGradeInspView* pThis = (CNotchingGradeInspView*)lpParm;
+	CSigProc* pSigProc = theApp.m_pSigProc;
 
 	while (true)
 	{
-		CSigProc* pSigProc = theApp.m_pSigProc;
-		pSigProc->SigOutAlivePulse(TRUE);
+		//pSigProc->SigOutAlivePulse(TRUE);
+		pSigProc->SigOutAlivePulseReady(TRUE, pThis->IsInspReady() );
 
 		Sleep(500);
 	}

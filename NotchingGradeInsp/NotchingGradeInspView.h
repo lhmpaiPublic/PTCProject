@@ -26,6 +26,7 @@ protected: // serialization에서만 만들어집니다.
 public:
 	CNotchingGradeInspDoc* GetDocument() const;
 
+
 protected:
 	bool logControlKeyDown;
 	CInspDlg*		m_pInspDlg;
