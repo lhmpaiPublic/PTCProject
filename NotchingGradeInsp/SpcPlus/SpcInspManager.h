@@ -67,7 +67,9 @@ public:
 	//결함정보 객체 포인터
 	CSpcInDataDefectInfo* getSpcInDataDefectInfo(DefectTopBottomSelect camNo);
 	//결함정보 객체를 추가한다.
-	void addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefectInfo) { m_SpcInDataDefectInfo.push_back(SpcInDataDefectInfo); }
+	//동기화 객체
+	CRITICAL_SECTION m_csDefectInfoQueue;
+	void addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefectInfo);
 	//SpcInDataDefectInfo 크기
 	int getSpcInDataDefectInfoSize() { return (int)m_SpcInDataDefectInfo.size(); }
 

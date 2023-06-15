@@ -22,6 +22,9 @@ CSpcInspManager::CSpcInspManager()
 	//JSON Data 추가 완료 여부 확인
 	m_CreateJSONFile = 2;
 
+	//동기화 객체 초기화
+	::InitializeCriticalSection(&m_csDefectInfoQueue);
+
 	//SPC Plus Header 객체 포인터	
 	m_SpcHeader = new CSpcHeader(this);
 	//Act Id 세팅
@@ -50,6 +53,8 @@ CSpcInspManager::~CSpcInspManager()
 {
 	//동기화 객체 메모리 삭제
 	::DeleteCriticalSection(&m_csQueue);
+	//동기화 객체 메모리 삭제
+	::DeleteCriticalSection(&m_csDefectInfoQueue);
 
 	//SPC Plus Header 객체 포인터	
 	if (m_SpcHeader)
@@ -154,4 +159,12 @@ void CSpcInspManager::makeJSONFile()
 	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
 	CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
 
+}
+
+//결함정보 객체를 추가한다.
+void CSpcInspManager::addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefectInfo) 
+{ 
+	::EnterCriticalSection(&m_csDefectInfoQueue);
+	m_SpcInDataDefectInfo.push_back(SpcInDataDefectInfo); 
+	::LeaveCriticalSection(&m_csDefectInfoQueue);
 }
