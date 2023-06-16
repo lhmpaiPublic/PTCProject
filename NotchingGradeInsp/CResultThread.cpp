@@ -887,7 +887,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				//Defect 명 중복을 제거하고 넘긴다.
 				std::vector<CString> DefectKindNameUnique = insp->getDefectKindNameUnique();
 				//불량명을 추가한다.
-				for (int idx = 0; idx < DefectKindNameUnique.size(); idx)
+				for (int idx = 0; idx < DefectKindNameUnique.size(); idx++)
 				{
 					InspInData->appendAppearanceReasonAll(DefectKindNameUnique[idx]);
 					InspInData->appendAppearanceReasonAllReal(DefectKindNameUnique[idx]);
