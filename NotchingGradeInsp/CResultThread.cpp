@@ -550,6 +550,16 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 	strTabJudge = (pTabInfo->m_nJudge == JUDGE_NG) ? _T("NG") : _T("OK");
 	// 22.12.15 Ahn Add End
 
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ INSP===================================================================================================
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo CellNo<%d>, CAM<%s>, Defect Info Count<%d>"
+		, pTabInfo->m_nTabNo
+		, (pTabInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM"
+		, nDefCount);
+	//===========================================================================================================
+#endif //SPCPLUS_CREATE
 
 	for (int i = 0; i < nDefCount; i++) {
 		pDefInfo = pTabInfo->GetDefectInfo(i);
@@ -859,14 +869,18 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 			if (insp->getCreateJSONFile())
 			{
 				//SPC+ 정보 출력 로그
-				LOGDISPLAY_SPEC(3)("SPC+=====Frame Kind : %s = Cell Count : %d === JSON 생성 OK ", (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
+				LOGDISPLAY_SPEC(3)("SPC+=====FrameCount<%d>, Frame Kind : %s = Cell Count : %d === JSON 생성 OK "
+					, pRsltInfo->m_nFrameCount
+					, (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
 
 				CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
 			}
 			else
 			{
 				//SPC+ 정보 출력 로그
-				LOGDISPLAY_SPEC(3)("SPC+=====Frame Kind : %s = Cell Count : %d === JSON 생성 NONE", (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
+				LOGDISPLAY_SPEC(3)("SPC+=====FrameCount<%d>, Frame Kind : %s = Cell Count : %d === JSON 생성 NONE"
+					, pRsltInfo->m_nFrameCount
+					,(pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
 			}
 			//===========================================================================================================
 #endif //SPCPLUS_CREATE

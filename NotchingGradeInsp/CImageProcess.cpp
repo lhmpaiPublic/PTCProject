@@ -5736,6 +5736,17 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 	//int nFrameCnt = pTabRsltInfo->nFrameCount ;
 	//// 22.11.21 Ahn Add End
 
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ INSP===================================================================================================
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo CellNo<%d>, CAM<%s>, BlockData Count<%d>"
+		, pTabRsltInfo->m_nTabNo
+		,(pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP":"BOTTOM"
+		,nSize);
+	//===========================================================================================================
+#endif //SPCPLUS_CREATE
+
 	int nCount = 0; 
 	for (int i = 0; i < nSize; i++)
 	{
@@ -5773,6 +5784,19 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 		pDefInfo->sysTime = pTabRsltInfo->sysTime ;		
 		::_tcsnccpy_s( pDefInfo->szLotID, _countof(pDefInfo->szLotID), AprData.m_NowLotData.m_strLotNo.GetBuffer(0), _TRUNCATE);
 		// 22.05.25 Ahn Add End
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+		//SPC+ INSP===================================================================================================
+		//SPC+ 정보 출력 로그
+		LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo CellNo<%d>, CAM<%s>, BlockData Type<%s>"
+			, pTabRsltInfo->m_nTabNo
+			, (pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM"
+			, (pData->nType == en_ModeFoilExp) ? "ModeFoilExp" :
+			(pData->nType == en_ModeFoilExpOut) ? "ModeFoilExpOut" :
+			(pData->nType == en_ModeSurface) ? "ModeSurface" : "ModeFoilBoth");
+		//===========================================================================================================
+#endif //SPCPLUS_CREATE
 
 		// 22.05.10 Ahn Add Start
 		if( pData->nType == en_ModeSurface )
@@ -5850,7 +5874,9 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 #ifdef SPCPLUS_CREATE			
 						//SPC+ INSP===================================================================================================
 						//SPC+ 정보 출력 로그
-						LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo Delete Case : (pRecipeInfo->dIgnoreDistance(%d) < pDefInfo->dDistance( %d))\r\n : (pRecipeInfo->dIgnoreDistance(%d) > 0)\r\n(pDefInfo->dSizeX(%d) > pRecipeInfo->dIgnoreSize(%d)\r\n (pRecipeInfo->dIgnoreSize(%d) > 0) ====="
+						LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo CellNo<%d>, CAM<%s>, Delete Case : (pRecipeInfo->dIgnoreDistance(%d) < pDefInfo->dDistance( %d))\r\n : (pRecipeInfo->dIgnoreDistance(%d) > 0)\r\n(pDefInfo->dSizeX(%d) > pRecipeInfo->dIgnoreSize(%d)\r\n (pRecipeInfo->dIgnoreSize(%d) > 0) ====="
+							, pTabRsltInfo->m_nTabNo
+							, (pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM"
 							, pRecipeInfo->dIgnoreDistance 
 							, pDefInfo->dDistance
 							, pRecipeInfo->dIgnoreDistance
