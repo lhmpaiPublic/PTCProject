@@ -890,40 +890,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//SPC+ 저장할 이미지 명을 입력(Bottom 이미지 명)
 					IqInfoBottom->setImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
 
-					//Defect ==== NG 발생된 정보 세팅
-					//결함 인덱스
-					int idxJudge = 1;
-					//Top Judge 이면
-					if (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)
-					{
-						//Top 정보 객체 생성
-						CSpcInDataDefectInfo* SpcInDataDefectInfoTop = new CSpcInDataDefectInfo(insp);
-						//결함의 순서
-						SpcInDataDefectInfoTop->setDefectIndex(CGlobalFunc::intToString(idxJudge));
-						//카메라 번호 : Tab 있으면 1 없으면 2
-						SpcInDataDefectInfoTop->setDefectCameraNumber("1");
-
-						//추가한다.
-						insp->addSpcInDataDefectInfo(SpcInDataDefectInfoTop);
-
-						//결함이면 1개 증가
-						idxJudge++;
-					}
-
-					//Bottom Judge 이면
-					if (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)
-					{
-						//Bottom 정보 객체 생성
-						CSpcInDataDefectInfo* SpcInDataDefectInfoBottom = new CSpcInDataDefectInfo(insp);
-						//결함의 순서
-						SpcInDataDefectInfoBottom->setDefectIndex(CGlobalFunc::intToString(idxJudge));
-						//카메라 번호 : Tab 있으면 1 없으면 2
-						SpcInDataDefectInfoBottom->setDefectCameraNumber("2");
-
-						//추가한다.
-						insp->addSpcInDataDefectInfo(SpcInDataDefectInfoBottom);
-					}
-
 #endif //SPCPLUS_CREATE
 
 					//Image Cutting Tab 정보 출력 로그

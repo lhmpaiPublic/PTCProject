@@ -36,7 +36,7 @@ public:
 	static int StringToint(CString val);
 
 	//double to CString
-	static CString floatToString(double  val, CString format = CString(_T("%%.3f")));
+	static CString floatToString(double  val, CString format = CString(_T("%.3f")));
 
 	//CString to double
 	static double StringTofloat(CString val);

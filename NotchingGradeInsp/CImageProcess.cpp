@@ -5845,7 +5845,21 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 					if ((pRecipeInfo->dIgnoreDistance < pDefInfo->dDistance) && (pRecipeInfo->dIgnoreDistance > 0) 
 						&& (( pDefInfo->dSizeX < pRecipeInfo->dIgnoreSize ) && (pRecipeInfo->dIgnoreSize > 0)))
 					{
-					// 22.09.14 Ahn Modify End
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+						//SPC+ INSP===================================================================================================
+						//SPC+ 정보 출력 로그
+						LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo Delete Case : (pRecipeInfo->dIgnoreDistance(%d) < pDefInfo->dDistance( %d))\r\n : (pRecipeInfo->dIgnoreDistance(%d) > 0)\r\n(pDefInfo->dSizeX(%d) > pRecipeInfo->dIgnoreSize(%d)\r\n (pRecipeInfo->dIgnoreSize(%d) > 0) ====="
+							, pRecipeInfo->dIgnoreDistance 
+							, pDefInfo->dDistance
+							, pRecipeInfo->dIgnoreDistance
+							, pDefInfo->dSizeX
+							, pRecipeInfo->dIgnoreSize
+							, pRecipeInfo->dIgnoreSize);
+						//===========================================================================================================
+#endif //SPCPLUS_CREATE
+
 						pDefInfo->dJudgeSize = pDefInfo->dSizeX;
 						pDefInfo->nRank = JUDGE_OK;
 						pDefInfo->bDeleteFlag = TRUE;
