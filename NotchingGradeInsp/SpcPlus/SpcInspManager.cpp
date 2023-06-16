@@ -22,7 +22,10 @@ CSpcInspManager::CSpcInspManager()
 	//JSON Data 추가 완료 여부 확인
 	m_CreateJSONFile = 2;
 
-	//동기화 객체 초기화
+	//결함 종류 저장소 동기화 객체 초기화
+	::InitializeCriticalSection(&m_csDefectKindNameVec);
+
+	//결함정보 저장소 동기화 객체 초기화
 	::InitializeCriticalSection(&m_csDefectInfoQueue);
 
 	//SPC Plus Header 객체 포인터	
@@ -55,6 +58,9 @@ CSpcInspManager::~CSpcInspManager()
 	::DeleteCriticalSection(&m_csQueue);
 	//동기화 객체 메모리 삭제
 	::DeleteCriticalSection(&m_csDefectInfoQueue);
+
+	//결함 종류 저장소 동기화 객체 초기화
+	::DeleteCriticalSection(&m_csDefectKindNameVec);
 
 	//SPC Plus Header 객체 포인터	
 	if (m_SpcHeader)
@@ -94,6 +100,14 @@ bool CSpcInspManager::getCreateJSONFile()
 		b = true;
 	::LeaveCriticalSection(&m_csQueue);
 	return b;
+}
+
+//Defect 명 종료 중복확인용
+void CSpcInspManager::addDefectKindName(CString DefectKindName)
+{
+	::EnterCriticalSection(&m_csDefectKindNameVec);
+	m_DefectKindName.push_back(DefectKindName);
+	::LeaveCriticalSection(&m_csDefectKindNameVec);
 }
 
 //이미지 퀄리티 정보 객체 포인터
@@ -182,7 +196,5 @@ void CSpcInspManager::addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefe
 //SpcInDataDefectInfo 크기
 int CSpcInspManager::getSpcInDataDefectInfoSize()
 { 
-	::EnterCriticalSection(&m_csDefectInfoQueue);
 	return (int)m_SpcInDataDefectInfo.size(); 
-	::LeaveCriticalSection(&m_csDefectInfoQueue);
 }

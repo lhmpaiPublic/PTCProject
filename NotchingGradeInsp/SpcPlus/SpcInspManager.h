@@ -25,6 +25,8 @@ class CSpcInspManager : public CSpcPlusManager
 	int m_CreateJSONFile;
 
 	//Defect 명 종료 중복확인용
+	//동기화 객체
+	CRITICAL_SECTION m_csDefectKindNameVec;
 	std::vector<CString> m_DefectKindName;
 public:
 	CSpcInspManager();
@@ -37,7 +39,9 @@ public:
 	bool getCreateJSONFile();
 
 	//Defect 명 종료 중복확인용
-	std::vector<CString>* getDefectKindName(){ return &m_DefectKindName; }
+	void addDefectKindName(CString DefectKindName);
+	//Defect 총갯수
+	int getDefectKindNameSize() { return (int)m_DefectKindName.size(); }
 	//Defect 명 중복을 제거하고 넘긴다.
 	std::vector<CString> getDefectKindNameUnique();
 

@@ -676,7 +676,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 
 				//불량명 전체를 저장한다.
 				//상위에 추가할 내용
-				insp->getDefectKindName()->push_back(DefectTypeRuleBaseName);
+				insp->addDefectKindName(DefectTypeRuleBaseName);
 
 				//추가한다.
 				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
@@ -882,7 +882,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				///In Data(송신 데이터) 객체 포인터
 				CSpcInspInData* InspInData = insp->getSpcInspInData();
 				//총 Defect 갯수
-				InspInData->setTotalAppearanceNgCount(CGlobalFunc::intToString((int)insp->getDefectKindName()->size()));
+				InspInData->setTotalAppearanceNgCount(CGlobalFunc::intToString(insp->getDefectKindNameSize()));
 				//Defec명 추가
 				//Defect 명 중복을 제거하고 넘긴다.
 				std::vector<CString> DefectKindNameUnique = insp->getDefectKindNameUnique();
