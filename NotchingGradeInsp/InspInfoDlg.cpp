@@ -224,8 +224,10 @@ void CInspInfoDlg::ReflashAll()
 	// 22.08.05 Ahn Modify Start
 	//GetDlgItem(IDC_ED_RECIPE_NAME)->SetWindowTextA(AprData.m_NowLotData.m_strRecipeName);
 	//GetDlgItem(IDC_ED_NEXT_RECIPE_NAME)->SetWindowTextA(AprData.m_NowLotData.m_strNextRecipeName);
-	m_strEdRecipeName = AprData.m_NowLotData.m_strRecipeName;
-	m_strNextRecipeName = AprData.m_NowLotData.m_strNextRecipeName;
+	m_strEdRecipeName.GetBufferSetLength(AprData.m_NowLotData.m_strRecipeName.GetLength() + 1);
+	strcpy_s((LPSTR)(LPCTSTR)m_strEdRecipeName, m_strEdRecipeName.GetLength(), (LPCTSTR)AprData.m_NowLotData.m_strRecipeName);
+	m_strNextRecipeName.GetBufferSetLength(AprData.m_NowLotData.m_strNextRecipeName.GetLength() + 1);
+	strcpy_s((LPSTR)(LPCTSTR)m_strNextRecipeName, m_strNextRecipeName.GetLength(), (LPCTSTR)AprData.m_NowLotData.m_strNextRecipeName);
 	// 22.08.05 Ahn Modify End
 	UpdateData(FALSE);
 }
