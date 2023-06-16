@@ -15,6 +15,7 @@
 //SPC+ 사용을 위한 해더파일
 #include "SpcInspManager.h"
 #include "SpcCreateJSONFileThread.h"
+#include "SpcInspInData.h"
 #include "SpcInDataDefectInfo.h"
 #endif //SPCPLUS_CREATE
 
@@ -673,6 +674,10 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 				//Crop Image 파일명
 				SpcInDataDefectInfo->setDefectCropImageFileName(strFileName);
 
+				//불량명 전체를 저장한다.
+				//상위에 추가할 내용
+				insp->getDefectKindName()->push_back(DefectTypeRuleBaseName);
+
 				//추가한다.
 				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
 
@@ -873,6 +878,28 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					, pRsltInfo->m_nFrameCount
 					, (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
 
+				//InData 객체를 가져온다.
+				///In Data(송신 데이터) 객체 포인터
+				CSpcInspInData* InspInData = insp->getSpcInspInData();
+				//총 Defect 갯수
+				InspInData->setTotalAppearanceNgCount(CGlobalFunc::intToString((int)insp->getDefectKindName()->size()));
+				//Defec명 추가
+				//Defect 명 중복을 제거하고 넘긴다.
+				std::vector<CString> DefectKindNameUnique = insp->getDefectKindNameUnique();
+				//불량명을 추가한다.
+				for (int idx = 0; idx < DefectKindNameUnique.size(); idx)
+				{
+					InspInData->appendAppearanceReasonAll(DefectKindNameUnique[idx]);
+					InspInData->appendAppearanceReasonAllReal(DefectKindNameUnique[idx]);
+					if (idx == 0)
+					{
+						//외관 대표 불량명(우선순위 대표 불량명 없을시 첫번째 검출 항목)	
+						InspInData->setAppearanceReasonMain(DefectKindNameUnique[idx]);
+						InspInData->setAppearanceReasonMainReal(DefectKindNameUnique[idx]);
+					}
+				}
+
+				//JSON 파일 생성을 위한 스래드에 추가한다.
 				CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
 			}
 			else

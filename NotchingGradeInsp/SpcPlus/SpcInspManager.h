@@ -23,6 +23,9 @@ class CSpcInspManager : public CSpcPlusManager
 	//Tab, Tab없는 스래드에서 동시에 접근해서 값을 넣을 때 변수값을 증가 시킨다. 2 초기화하고 
 	//get 할 때 1씩 감소한다.
 	int m_CreateJSONFile;
+
+	//Defect 명 종료 중복확인용
+	std::vector<CString> m_DefectKindName;
 public:
 	CSpcInspManager();
 	virtual ~CSpcInspManager();
@@ -32,6 +35,11 @@ public:
 
 	//JSON Data 추가 완료 여부 확인
 	bool getCreateJSONFile();
+
+	//Defect 명 종료 중복확인용
+	std::vector<CString>* getDefectKindName(){ return &m_DefectKindName; }
+	//Defect 명 중복을 제거하고 넘긴다.
+	std::vector<CString> getDefectKindNameUnique();
 
 	enum IqTopBottomSelect
 	{
@@ -71,7 +79,7 @@ public:
 	CRITICAL_SECTION m_csDefectInfoQueue;
 	void addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefectInfo);
 	//SpcInDataDefectInfo 크기
-	int getSpcInDataDefectInfoSize() { return (int)m_SpcInDataDefectInfo.size(); }
+	int getSpcInDataDefectInfoSize();
 
 	// JSON 형식의 파일 생성
 	virtual void makeJSONFile();

@@ -74,6 +74,16 @@ CSpcInspManager::~CSpcInspManager()
 
 }
 
+//Defect 명 중복을 제거하고 넘긴다.
+std::vector<CString> CSpcInspManager::getDefectKindNameUnique()
+{
+	//요소를 정렬한다.
+	std::sort(m_DefectKindName.begin(), m_DefectKindName.end());
+	//중복을 제거하면서 쓰래기도 제거한다.
+	m_DefectKindName.erase(std::unique(m_DefectKindName.begin(), m_DefectKindName.end()), m_DefectKindName.end());
+	return m_DefectKindName;
+}
+
 //JSON Data 추가 완료 여부 확인
 bool CSpcInspManager::getCreateJSONFile()
 {
@@ -166,5 +176,13 @@ void CSpcInspManager::addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefe
 { 
 	::EnterCriticalSection(&m_csDefectInfoQueue);
 	m_SpcInDataDefectInfo.push_back(SpcInDataDefectInfo); 
+	::LeaveCriticalSection(&m_csDefectInfoQueue);
+}
+
+//SpcInDataDefectInfo 크기
+int CSpcInspManager::getSpcInDataDefectInfoSize()
+{ 
+	::EnterCriticalSection(&m_csDefectInfoQueue);
+	return (int)m_SpcInDataDefectInfo.size(); 
 	::LeaveCriticalSection(&m_csDefectInfoQueue);
 }
