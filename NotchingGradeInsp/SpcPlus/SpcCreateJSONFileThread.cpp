@@ -73,6 +73,8 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 	std::queue<CSpcPlusManager*>* SpcList = pMain->getSpcList();
 	while (pMain)
 	{
+		if (CGlobalFunc::isPeekMessage() == WM_NULL)
+		{
 		//Do something...
 		if (CLogDisplayDlg::bCreate && SpcList->size())
 		{
@@ -87,6 +89,11 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 		{
 			if(pMain->m_isWorkingThread == false)
 				break;
+		}
+		}
+		else if (CGlobalFunc::isPeekMessage() == WM_QUIT)
+		{
+			break;
 		}
 	}
 

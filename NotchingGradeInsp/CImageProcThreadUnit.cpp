@@ -464,7 +464,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				}
 
 				//Save 상태값 초기화
-				BOOL bSave = FALSE;
+				BOOL bSave = TRUE;
 
 				// 22.11.21 Ahn Modify Start - JUDGE_GRAY
 				//if ( (nJudge == JUDGE_NG) || (bSaveOkDef == TRUE ) ){

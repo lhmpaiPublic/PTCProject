@@ -478,7 +478,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 	{
 		CSigProc* pSigProc = theApp.m_pSigProc;
 
-		KillSignalCheckTimer();
+		//KillSignalCheckTimer();
 
 		//////////////////////////////////////////////////////////////////////////
 		//  Lot Start, Lot End, Tab Count Reset 감시 ]
@@ -952,7 +952,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 		}
 
-		SetSignalCheckTimer();
+		//SetSignalCheckTimer();
 	}
 
 
