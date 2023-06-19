@@ -40,4 +40,7 @@ public:
 
 	//CString to double
 	static double StringTofloat(CString val);
+
+	//스래드 메시지 큐 확인용 함수
+	static WORD isPeekMessage();
 };

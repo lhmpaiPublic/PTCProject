@@ -144,3 +144,22 @@ double CGlobalFunc::StringTofloat(CString val)
 	rVal = _ttof(val);
 	return rVal;
 }
+
+
+//스래드 메시지 큐 확인용 함수
+WORD CGlobalFunc::isPeekMessage()
+{
+	WORD msgval = WM_NULL;
+	MSG msg;
+	// PumpMessages()
+	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) 
+	{
+		msgval = msg.message;
+		if (msg.message != WM_QUIT)
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+	return msgval;
+}

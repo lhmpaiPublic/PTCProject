@@ -706,218 +706,224 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 	while (1) 
 	{
-		if (pThis == NULL) 
+		if (CGlobalFunc::isPeekMessage() == WM_NULL)
 		{
-			//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-			LOGDISPLAY_SPEC(0)("Overlay  CResultThread 객체 NULL 에러");
-
-			break;
-		}
-		int nSize = pQueueResult->GetSize();
-		if (pThis->m_bKill == TRUE) 
-		{
-			if (nSize <= 0) 
+			if (pThis == NULL)
 			{
 				//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-				LOGDISPLAY_SPEC(0)("Overlay  CResultThread 종료 메시지 - 아직 결과를 다 처리했을때 종료");
+				LOGDISPLAY_SPEC(0)("Overlay  CResultThread 객체 NULL 에러");
 
 				break;
 			}
-		}
+			int nSize = pQueueResult->GetSize();
+			if (pThis->m_bKill == TRUE)
+			{
+				if (nSize <= 0)
+				{
+					//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
+					LOGDISPLAY_SPEC(0)("Overlay  CResultThread 종료 메시지 - 아직 결과를 다 처리했을때 종료");
 
-		if (nSize > 0) 
-		{
-			CFrameRsltInfo* pRsltInfo = (CFrameRsltInfo*)pQueueResult->Pop();
+					break;
+				}
+			}
 
-//SPC 객체 소스에서 컴파일 여부 결정
+			if (nSize > 0)
+			{
+				CFrameRsltInfo* pRsltInfo = (CFrameRsltInfo*)pQueueResult->Pop();
+
+				//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 			//SPC+ INSP===================================================================================================
 			//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
-			CSpcInspManager* insp = dynamic_cast<CSpcInspManager*>(pRsltInfo->m_SpcInspMgr);
+				CSpcInspManager* insp = dynamic_cast<CSpcInspManager*>(pRsltInfo->m_SpcInspMgr);
 
 #endif //SPCPLUS_CREATE
 
-			if (pRsltInfo == NULL) 
-			{
-				continue;
-			}
+				if (pRsltInfo == NULL)
+				{
+					continue;
+				}
 
-			int nHeadNo = pRsltInfo->m_nHeadNo;
-			BYTE* pImgPtr = pRsltInfo->GetImagePtr();
-			if (pImgPtr != NULL) 
-			{
+				int nHeadNo = pRsltInfo->m_nHeadNo;
+				BYTE* pImgPtr = pRsltInfo->GetImagePtr();
+				if (pImgPtr != NULL)
+				{
 #if defined( IMAGE_DRAW_NOTIFY_VERSION )
-				pThis->m_pParent->SetLastBmpStd(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nHeadNo);
+					pThis->m_pParent->SetLastBmpStd(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nHeadNo);
 #else
 #if defined( IMAGE_DRAW_DIRECT_VERSION )
-				HWND hWnd = pThis->m_DisphWnd;
-				if( hWnd != NULL ) // 22.04.01 Ahn Add 
-				{
-					BYTE* pResizePtr;
-					int nMagnif = 8;
-					int nReWidth = (pRsltInfo->m_nWidth / nMagnif);
-					int nReHeight = (pRsltInfo->m_nHeight / nMagnif);
-					int nReSize = nReWidth * nReHeight;
-					pResizePtr = new BYTE[nReSize];
-
-					// 23.02.24 Ahn Add Start
-					CPoint cpSharpness;
-					cpSharpness.x = pRsltInfo->m_nTabLevel;
-					cpSharpness.y = pRsltInfo->m_nTabLeft / 2 ;
-					pRsltInfo->dSharpness = CImageProcess::GetIqSharpnessValue(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
-					pRsltInfo->nBrightAverage = CImageProcess::GetBrightAverage( pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
-					// 23.02.24 Ahn Add End
-
-					 
-					// 22.05.04 Test
-					CImageProcess::ResizeImage(pImgPtr, pResizePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nMagnif);
-					
-					// 22.12.19 Ahn Delete Start - Overlay Image
-					CBitmapStd bmpStd;
-					if (nSize > IMAGE_DISPLAY_SKIP_COUNT ) 
+					HWND hWnd = pThis->m_DisphWnd;
+					if (hWnd != NULL) // 22.04.01 Ahn Add 
 					{
-						if ((pRsltInfo->nTabNo % (IMAGE_DISPLAY_SKIP_COUNT-1)) == 0)
+						BYTE* pResizePtr;
+						int nMagnif = 8;
+						int nReWidth = (pRsltInfo->m_nWidth / nMagnif);
+						int nReHeight = (pRsltInfo->m_nHeight / nMagnif);
+						int nReSize = nReWidth * nReHeight;
+						pResizePtr = new BYTE[nReSize];
+
+						// 23.02.24 Ahn Add Start
+						CPoint cpSharpness;
+						cpSharpness.x = pRsltInfo->m_nTabLevel;
+						cpSharpness.y = pRsltInfo->m_nTabLeft / 2;
+						pRsltInfo->dSharpness = CImageProcess::GetIqSharpnessValue(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
+						pRsltInfo->nBrightAverage = CImageProcess::GetBrightAverage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
+						// 23.02.24 Ahn Add End
+
+
+						// 22.05.04 Test
+						CImageProcess::ResizeImage(pImgPtr, pResizePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nMagnif);
+
+						// 22.12.19 Ahn Delete Start - Overlay Image
+						CBitmapStd bmpStd;
+						if (nSize > IMAGE_DISPLAY_SKIP_COUNT)
+						{
+							if ((pRsltInfo->nTabNo % (IMAGE_DISPLAY_SKIP_COUNT - 1)) == 0)
+							{
+								// 23.02.06 Ahn Modify Start
+								// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
+								SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
+								// 23.02.06 Ahn Modify End
+							}
+						}
+						else
 						{
 							// 23.02.06 Ahn Modify Start
 							// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
 							SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
 							// 23.02.06 Ahn Modify End
 						}
+
+						// 22.06.09 Ahn Modify Start
+						if (pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE)
+						{
+							//이미지 저장
+							LOGDISPLAY_SPEC(1)("*5**Image Save : TabNo<%d>", pRsltInfo->nTabNo);
+
+							//이미지 저장 포맷
+							CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
+
+							CString strPath;
+							CString strTime;
+							strTime.Format(_T("%04d%02d%02d_%02d%02d%02d.%d")
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wYear
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wMonth
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wDay
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wHour
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wMinute
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wSecond
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wMilliseconds
+							);
+							strPath.Format(_T("%s\\Overlay\\%s_%s_%s%s")
+								, pRsltInfo->m_pTabRsltInfo->m_chImagePath
+								, AprData.m_NowLotData.m_strLotNo
+								// 23.02.08 Ahn Modify Start
+								//, ( pRsltInfo->m_pTabRsltInfo->m_nTabNo == CAM_POS_TOP ) ? _T("TOP") : _T("BOTTOM")
+								, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BOTTOM")
+								// 23.02.08 Ahn Modify Start
+								, strTime
+								, strImageFormat
+							);
+
+							if (strPath.GetLength() > 0)
+							{
+								// 23.02.06 Ahn Modify Start
+								//CaptureImage( hWnd, strPath );
+								bmpStd.SaveBitmap(strPath);
+								// 23.02.06 Ahn Modify Start
+							}
+							else
+							{
+								//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
+								LOGDISPLAY_SPEC(0)("Overlay 이미지 저장 Path가 없다.");
+							}
+						}
+
+						// 22.05.25 Ahn Add Start
+						// 일단 다남겨
+
+	//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+						SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue, insp);
+#else
+						SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue);
+#endif //SPCPLUS_CREATE
+						// 22.05.25 Ahn Add End
+						delete[] pResizePtr;
 					}
 					else
 					{
-						// 23.02.06 Ahn Modify Start
-						// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
-						SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
-						// 23.02.06 Ahn Modify End
+						//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
+						LOGDISPLAY_SPEC(0)("Overlay 이미지 디스플레이 VIEW 객체 HWND가 없다.");
 					}
 
-					// 22.06.09 Ahn Modify Start
-					if( pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE )
-					{
-						//이미지 저장
-						LOGDISPLAY_SPEC(1)("*5**Image Save : TabNo<%d>", pRsltInfo->nTabNo);
+					pThis->m_pDefDataCtrl->PushBackTabQueue(pRsltInfo->m_pTabRsltInfo);
+#endif
 
-						//이미지 저장 포맷
-						CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
-
-						CString strPath;
-						CString strTime;
-						strTime.Format(_T("%04d%02d%02d_%02d%02d%02d.%d")
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wYear
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wMonth
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wDay
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wHour
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wMinute
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wSecond
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wMilliseconds
-						);
-						strPath.Format( _T("%s\\Overlay\\%s_%s_%s%s")
-							, pRsltInfo->m_pTabRsltInfo->m_chImagePath
-							, AprData.m_NowLotData.m_strLotNo
-							// 23.02.08 Ahn Modify Start
-							//, ( pRsltInfo->m_pTabRsltInfo->m_nTabNo == CAM_POS_TOP ) ? _T("TOP") : _T("BOTTOM")
-							, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BOTTOM")
-							// 23.02.08 Ahn Modify Start
-							, strTime
-							, strImageFormat
-						);
-
-						if ( strPath.GetLength() > 0 ) 
-						{
-							// 23.02.06 Ahn Modify Start
-							//CaptureImage( hWnd, strPath );
-							bmpStd.SaveBitmap(strPath);
-							// 23.02.06 Ahn Modify Start
-						}
-						else
-						{
-							//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-							LOGDISPLAY_SPEC(0)("Overlay 이미지 저장 Path가 없다.");
-						}
-					}
-
-					// 22.05.25 Ahn Add Start
-					// 일단 다남겨
-
-//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE	
-					SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue, insp) ;
-#else
-					SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue);
-#endif //SPCPLUS_CREATE
-					// 22.05.25 Ahn Add End
-					delete[] pResizePtr ;
+#endif 
 				}
 				else
 				{
 					//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-					LOGDISPLAY_SPEC(0)("Overlay 이미지 디스플레이 VIEW 객체 HWND가 없다.");
+					LOGDISPLAY_SPEC(0)("저장할 이미지 정보가 없다");
 				}
-
-				 pThis->m_pDefDataCtrl->PushBackTabQueue(pRsltInfo->m_pTabRsltInfo);
-#endif
-
-#endif 
-			}
-			else
-			{
-				//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-				LOGDISPLAY_SPEC(0)("저장할 이미지 정보가 없다");
-			}
-//SPC 객체 소스에서 컴파일 여부 결정
+				//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE			
 			//SPC+ INSP===================================================================================================
 			//SPC+ 파일 생성을 위한 스래드에 추가한다.
 			//Create JSON 여부를 판단하고 세팅한다.
 			//Tab 있는 Frame과 Tab 없는 Frame 이 JSON INSP 1개를 생성하기 때문에 필요함
-			if (insp->getCreateJSONFile())
-			{
-				//SPC+ 정보 출력 로그
-				LOGDISPLAY_SPEC(3)("SPC+=====FrameCount<%d>, Frame Kind : %s = Cell Count : %d === JSON 생성 OK "
-					, pRsltInfo->m_nFrameCount
-					, (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
-
-				//InData 객체를 가져온다.
-				///In Data(송신 데이터) 객체 포인터
-				CSpcInspInData* InspInData = insp->getSpcInspInData();
-				//총 Defect 갯수
-				InspInData->setTotalAppearanceNgCount(CGlobalFunc::intToString(insp->getDefectKindNameSize()));
-				//Defec명 추가
-				//Defect 명 중복을 제거하고 넘긴다.
-				std::vector<CString> DefectKindNameUnique = insp->getDefectKindNameUnique();
-				//불량명을 추가한다.
-				for (int idx = 0; idx < DefectKindNameUnique.size(); idx++)
+				if (insp->getCreateJSONFile())
 				{
-					InspInData->appendAppearanceReasonAll(DefectKindNameUnique[idx]);
-					InspInData->appendAppearanceReasonAllReal(DefectKindNameUnique[idx]);
-					if (idx == 0)
+					//SPC+ 정보 출력 로그
+					LOGDISPLAY_SPEC(3)("SPC+=====FrameCount<%d>, Frame Kind : %s = Cell Count : %d === JSON 생성 OK "
+						, pRsltInfo->m_nFrameCount
+						, (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
+
+					//InData 객체를 가져온다.
+					///In Data(송신 데이터) 객체 포인터
+					CSpcInspInData* InspInData = insp->getSpcInspInData();
+					//총 Defect 갯수
+					InspInData->setTotalAppearanceNgCount(CGlobalFunc::intToString(insp->getDefectKindNameSize()));
+					//Defec명 추가
+					//Defect 명 중복을 제거하고 넘긴다.
+					std::vector<CString> DefectKindNameUnique = insp->getDefectKindNameUnique();
+					//불량명을 추가한다.
+					for (int idx = 0; idx < DefectKindNameUnique.size(); idx++)
 					{
-						//외관 대표 불량명(우선순위 대표 불량명 없을시 첫번째 검출 항목)	
-						InspInData->setAppearanceReasonMain(DefectKindNameUnique[idx]);
-						InspInData->setAppearanceReasonMainReal(DefectKindNameUnique[idx]);
+						InspInData->appendAppearanceReasonAll(DefectKindNameUnique[idx]);
+						InspInData->appendAppearanceReasonAllReal(DefectKindNameUnique[idx]);
+						if (idx == 0)
+						{
+							//외관 대표 불량명(우선순위 대표 불량명 없을시 첫번째 검출 항목)	
+							InspInData->setAppearanceReasonMain(DefectKindNameUnique[idx]);
+							InspInData->setAppearanceReasonMainReal(DefectKindNameUnique[idx]);
+						}
 					}
+
+					//JSON 파일 생성을 위한 스래드에 추가한다.
+					CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
 				}
-
-				//JSON 파일 생성을 위한 스래드에 추가한다.
-				CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
-			}
-			else
-			{
-				//SPC+ 정보 출력 로그
-				LOGDISPLAY_SPEC(3)("SPC+=====FrameCount<%d>, Frame Kind : %s = Cell Count : %d === JSON 생성 NONE"
-					, pRsltInfo->m_nFrameCount
-					,(pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
-			}
-			//===========================================================================================================
+				else
+				{
+					//SPC+ 정보 출력 로그
+					LOGDISPLAY_SPEC(3)("SPC+=====FrameCount<%d>, Frame Kind : %s = Cell Count : %d === JSON 생성 NONE"
+						, pRsltInfo->m_nFrameCount
+						, (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
+				}
+				//===========================================================================================================
 #endif //SPCPLUS_CREATE
-			pRsltInfo->m_pTabRsltInfo = NULL;
-			delete pRsltInfo;
-			pRsltInfo = NULL;
+				pRsltInfo->m_pTabRsltInfo = NULL;
+				delete pRsltInfo;
+				pRsltInfo = NULL;
+			}
+			Sleep(AprData.m_nSleep);
 		}
-		Sleep(AprData.m_nSleep);
+		else if(CGlobalFunc::isPeekMessage() == WM_QUIT)
+		{
+			break;
+		}
 	}
-
 	AfxEndThread(0);
 	pThis->m_bKill = FALSE;
 
