@@ -463,8 +463,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+				//SPC+ ALARM===================================================================================================
 				//Save 상태값 초기화
 				BOOL bSave = TRUE;
+#else
+				BOOL bSave = FALSE;
+
 
 				// 22.11.21 Ahn Modify Start - JUDGE_GRAY
 				//if ( (nJudge == JUDGE_NG) || (bSaveOkDef == TRUE ) ){
@@ -495,6 +501,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						}
 					}
 				}
+#endif //SPCPLUS_CREATE
+
+
 #if defined(DEBUG)
 				if (pFrmInfo->nTabNo == 0) {
 					bSave = TRUE;
