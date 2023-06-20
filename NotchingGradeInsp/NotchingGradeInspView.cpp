@@ -987,11 +987,16 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 void CNotchingGradeInspView::ReDrawMap( BOOL bModeRect, CRect rcRange )
 {
 	if(m_pDefMapDlg != nullptr){
-		if (bModeRect == FALSE) {
-			m_pDefMapDlg->Invalidate(FALSE);
-		}
-		else {
-			m_pDefMapDlg->InvalidateRect(rcRange);
+		//처리할 Draw Defect이 있으면
+		if (theApp.m_pImgProcCtrl->GetDefectDataCtrlPtr()->GetDrawDefectList()->size())
+		{
+			if (bModeRect == FALSE) {
+				m_pDefMapDlg->Invalidate(FALSE);
+			}
+			else {
+				m_pDefMapDlg->InvalidateRect(rcRange);
+			}
+			m_pDefMapDlg->UpdateWindow();
 		}
 	}
 }
