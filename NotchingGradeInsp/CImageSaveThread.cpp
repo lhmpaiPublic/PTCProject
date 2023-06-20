@@ -59,8 +59,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 	while (1)
 	{
-		if (CGlobalFunc::isPeekMessage() == WM_NULL)
-		{
 		if (pThis == NULL)
 		{
 			LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-1 Thread 종료"));
@@ -137,11 +135,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 
 		Sleep(10);
-		}
-		else if (CGlobalFunc::isPeekMessage() == WM_QUIT)
-		{
-			break;
-		}
 	}
 	
 

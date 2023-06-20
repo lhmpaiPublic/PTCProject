@@ -810,532 +810,525 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	BOOL bClearFlag = FALSE;
 
 	while (1) {
-		if (CGlobalFunc::isPeekMessage() == WM_NULL)
-		{
-			if (pThis == NULL) {
-				break;
-			}
-			if (pThis->m_bKill == TRUE) {
-				break;
-			}
+		if (pThis == NULL) {
+			break;
+		}
+		if (pThis->m_bKill == TRUE) {
+			break;
+		}
 
-			//Top/Botton에 Tab 정보가 저장된 정보가 있을 경우
-			//위 함수 CtrlThreadImgCuttingTab Tab 정보를 찾는 스래드에서
-			//GetThreadQueuePtr(i) Queue 에 push 되면 처리를 탄다.
-			//처리를 하여 결과 정보 저장 Queue pRsltQueueCtrl 에 저장된다.
-			if (!pThdQue[CAM_POS_TOP]->IsEmpty() && !pThdQue[CAM_POS_BOTTOM]->IsEmpty()) {
-				pUnitTop = pThdQue[CAM_POS_TOP]->pop();
-				pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
+		//Top/Botton에 Tab 정보가 저장된 정보가 있을 경우
+		//위 함수 CtrlThreadImgCuttingTab Tab 정보를 찾는 스래드에서
+		//GetThreadQueuePtr(i) Queue 에 push 되면 처리를 탄다.
+		//처리를 하여 결과 정보 저장 Queue pRsltQueueCtrl 에 저장된다.
+		if (!pThdQue[CAM_POS_TOP]->IsEmpty() && !pThdQue[CAM_POS_BOTTOM]->IsEmpty()) {
+			pUnitTop = pThdQue[CAM_POS_TOP]->pop();
+			pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
 
-				while (1) 
-				{
+			while (1) 
+			{
 
-					if (pThis->m_bKill == TRUE) {
-						break;
-					}
+				if (pThis->m_bKill == TRUE) {
+					break;
+				}
 
-					// 22.12.09 Ahn Add Start
-					LARGE_INTEGER stTime ;
+				// 22.12.09 Ahn Add Start
+				LARGE_INTEGER stTime ;
+				// 22.12.09 Ahn Add End
+				if ( (pUnitTop->IsProcEnd() == TRUE) && (pUnitBtm->IsProcEnd() == TRUE) ){
+
+					CFrameRsltInfo *pTopInfo = pUnitTop->GetResultPtr();
+					CFrameRsltInfo *pBtmInfo = pUnitBtm->GetResultPtr();
+
+					//로그 카운ㅌ 임시변수
+					int TempLogCount = pTopInfo->TempLogCount;
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+					//SPC+ INSP===================================================================================================
+					//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
+					//Tab  있는 포인터 만 값을 세팅 하면 같이 변한다.
+					CSpcInspManager* insp = dynamic_cast<CSpcInspManager *>(pTopInfo->m_SpcInspMgr);
+					//InData ===
+					//셀 카운트 번호
+					insp->getSpcInspInData()->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));
+					//Cell 판정결과
+					CString CellFinalJudge = ((pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) || (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)) ? "NG" : "OK";
+					insp->getSpcInspInData()->setCellFinalJudge(CellFinalJudge);
+					//외관 판정 결과
+					insp->getSpcInspInData()->setAppearanceJudgeResult(CellFinalJudge);
+					//외관 NG 개수
+					int TopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
+					int BottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
+					insp->getSpcInspInData()->setTotalAppearanceNgCount(CGlobalFunc::intToString(TopJudge + BottomJudge));
+
+
+					//IqInfo ===Tab 보이는 카메라 1
+					//Top 객체
+					CSpcInDataIqInfo* IqInfoTop = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_TOP);
+					//이미지 X Size [pxl]
+					IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nWidth));
+					//이미지 Y Size [pxl]
+					IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nHeight));
+					//판정결과
+					CString IqTopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
+					IqInfoTop->setImageJudge(IqTopJudge);
+					//SPC+ 저장할 이미지 명을 입력(Top 이미지 명)
+					IqInfoTop->setImageFileName(pTopInfo->m_pTabRsltInfo->m_chImageFile);
+
+					//IqInfo ===Tab 없는 카메라
+					//Bottom 객체
+					CSpcInDataIqInfo* IqInfoBottom = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_BOTTOM);
+					//이미지 X Size [pxl]
+					IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nWidth));
+					//이미지 Y Size [pxl]
+					IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nHeight));
+					//판정결과
+					CString IqBottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
+					IqInfoBottom->setImageJudge(IqBottomJudge);
+					//SPC+ 저장할 이미지 명을 입력(Bottom 이미지 명)
+					IqInfoBottom->setImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
+
+#endif //SPCPLUS_CREATE
+
+					//Image Cutting Tab 정보 출력 로그
+					LOGDISPLAY_SPEC(5)("Top Logcount<%d> Bottom Logcount<%d> ========", pTopInfo->TempLogCount, pBtmInfo->TempLogCount);
+					LOGDISPLAY_SPEC(1)("*4*1*Image Result Output : Top-TabID<%d>Bottom-TabID<%d>, Find TabNo<%d>"
+						, pTopInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1);
+
+					int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;			
+					int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
+
+					// 22.12.09 Ahn Add Start 
+					stTime = pTopInfo->m_stTime ;
 					// 22.12.09 Ahn Add End
-					if ( (pUnitTop->IsProcEnd() == TRUE) && (pUnitBtm->IsProcEnd() == TRUE) ){
 
-						CFrameRsltInfo *pTopInfo = pUnitTop->GetResultPtr();
-						CFrameRsltInfo *pBtmInfo = pUnitBtm->GetResultPtr();
+					// NG Tab 보고
+					if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG))
+					{
 
-						//로그 카운ㅌ 임시변수
-						int TempLogCount = pTopInfo->TempLogCount;
-
-	//SPC 객체 소스에서 컴파일 여부 결정
-	#ifdef SPCPLUS_CREATE
-						//SPC+ INSP===================================================================================================
-						//SPC+ 객체 포인터 받는다.(정보를 추가하기 위해)
-						//Tab  있는 포인터 만 값을 세팅 하면 같이 변한다.
-						CSpcInspManager* insp = dynamic_cast<CSpcInspManager *>(pTopInfo->m_SpcInspMgr);
-						//InData ===
-						//셀 카운트 번호
-						insp->getSpcInspInData()->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));
-						//Cell 판정결과
-						CString CellFinalJudge = ((pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) || (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)) ? "NG" : "OK";
-						insp->getSpcInspInData()->setCellFinalJudge(CellFinalJudge);
-						//외관 판정 결과
-						insp->getSpcInspInData()->setAppearanceJudgeResult(CellFinalJudge);
-						//외관 NG 개수
-						int TopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
-						int BottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
-						insp->getSpcInspInData()->setTotalAppearanceNgCount(CGlobalFunc::intToString(TopJudge + BottomJudge));
-
-
-						//IqInfo ===Tab 보이는 카메라 1
-						//Top 객체
-						CSpcInDataIqInfo* IqInfoTop = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_TOP);
-						//이미지 X Size [pxl]
-						IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nWidth));
-						//이미지 Y Size [pxl]
-						IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nHeight));
-						//판정결과
-						CString IqTopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
-						IqInfoTop->setImageJudge(IqTopJudge);
-						//SPC+ 저장할 이미지 명을 입력(Top 이미지 명)
-						IqInfoTop->setImageFileName(pTopInfo->m_pTabRsltInfo->m_chImageFile);
-
-						//IqInfo ===Tab 없는 카메라
-						//Bottom 객체
-						CSpcInDataIqInfo* IqInfoBottom = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_BOTTOM);
-						//이미지 X Size [pxl]
-						IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nWidth));
-						//이미지 Y Size [pxl]
-						IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nHeight));
-						//판정결과
-						CString IqBottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
-						IqInfoBottom->setImageJudge(IqBottomJudge);
-						//SPC+ 저장할 이미지 명을 입력(Bottom 이미지 명)
-						IqInfoBottom->setImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
-
-	#endif //SPCPLUS_CREATE
-
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("Top Logcount<%d> Bottom Logcount<%d> ========", pTopInfo->TempLogCount, pBtmInfo->TempLogCount);
-						LOGDISPLAY_SPEC(1)("*4*1*Image Result Output : Top-TabID<%d>Bottom-TabID<%d>, Find TabNo<%d>"
-							, pTopInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1);
-
-						int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;			
-						int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
-
-						// 22.12.09 Ahn Add Start 
-						stTime = pTopInfo->m_stTime ;
-						// 22.12.09 Ahn Add End
-
-						// NG Tab 보고
-						if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG))
+						WORD wAlarmCode = 0x0000;
+						bJudgeNG = TRUE;
+						if (nTopJudge == JUDGE_NG)
 						{
-
-							WORD wAlarmCode = 0x0000;
-							bJudgeNG = TRUE;
-							if (nTopJudge == JUDGE_NG)
-							{
-								wAlarmCode = pTopInfo->m_pTabRsltInfo->m_wNgReason;
-								AprData.m_NowLotData.m_nTopNG++;
-							}
-							if (nBtmJudge == JUDGE_NG)
-							{
-								wAlarmCode |= pBtmInfo->m_pTabRsltInfo->m_wNgReason;
-								AprData.m_NowLotData.m_nBottomNG++ ;
-							}
-							AprData.m_NowLotData.m_nTabCountNG++ ;
+							wAlarmCode = pTopInfo->m_pTabRsltInfo->m_wNgReason;
+							AprData.m_NowLotData.m_nTopNG++;
+						}
+						if (nBtmJudge == JUDGE_NG)
+						{
+							wAlarmCode |= pBtmInfo->m_pTabRsltInfo->m_wNgReason;
+							AprData.m_NowLotData.m_nBottomNG++ ;
+						}
+						AprData.m_NowLotData.m_nTabCountNG++ ;
 		
-							// 22.08.09 Ahn Add Start
-							AprData.m_NowLotData.m_nContinueCount++ ;
+						// 22.08.09 Ahn Add Start
+						AprData.m_NowLotData.m_nContinueCount++ ;
 
-							CString strDbg;
-							strDbg.Format(_T("연속 알람 Count: %d"), AprData.m_NowLotData.m_nContinueCount);
-							AprData.SaveDebugLog(strDbg); //pyjtest
+						CString strDbg;
+						strDbg.Format(_T("연속 알람 Count: %d"), AprData.m_NowLotData.m_nContinueCount);
+						AprData.SaveDebugLog(strDbg); //pyjtest
 
 
 
-							CTabJudge tab ;
-							tab.nJudge = JUDGE_NG ;
-							tab.nReason = wAlarmCode ;
-							tab.nTabNo = pTopInfo->nTabNo ;
-							// 22.08.10 Ahn Modify Start
-							//int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_pRecipeInfo->nSectorCount) ;
-							//if ( (AprData.m_NowLotData.m_nContinueCount >= AprData.m_pRecipeInfo->nContinousNgCount) && (AprData.m_pRecipeInfo->nContinousNgCount > 2) ) {
-							if ((AprData.m_NowLotData.m_nContinueCount >= AprData.m_nCoutinuouCount) && (AprData.m_nCoutinuouCount >= 2))
+						CTabJudge tab ;
+						tab.nJudge = JUDGE_NG ;
+						tab.nReason = wAlarmCode ;
+						tab.nTabNo = pTopInfo->nTabNo ;
+						// 22.08.10 Ahn Modify Start
+						//int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_pRecipeInfo->nSectorCount) ;
+						//if ( (AprData.m_NowLotData.m_nContinueCount >= AprData.m_pRecipeInfo->nContinousNgCount) && (AprData.m_pRecipeInfo->nContinousNgCount > 2) ) {
+						if ((AprData.m_NowLotData.m_nContinueCount >= AprData.m_nCoutinuouCount) && (AprData.m_nCoutinuouCount >= 2))
+						{
+							wAlarmCode |= CSigProc::en_Alarm_ContinueNg;
+
+							CString strMessage;
+							strMessage.Format(_T("연속 NG Alarm 발생. %d Tab연속 NG 발생"), AprData.m_NowLotData.m_nContinueCount);
+							AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
+							AprData.SaveDebugLog(strMessage); //pyjtest
+
+							//알람이 설정되었으면 초기화
+							AprData.m_NowLotData.m_nContinueCount = 0;
+
+							AprData.m_NowLotData.m_SeqDataOut.dwContinueAlarmCount++;
+						}
+
+						// 22.08.10 Ahn Modify End
+						//if ((AprData.m_pRecipeInfo->nSectorCount > 0) && (AprData.m_pRecipeInfo->nAlarmCount > 0)) {
+						//	if (nSecterNgCount >= AprData.m_pRecipeInfo->nAlarmCount) {
+						int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_nSectorBaseCount);
+
+						strDbg.Format(_T("구간 알람 Count: %d"), nSecterNgCount);
+						AprData.SaveDebugLog(strDbg); //pyjtest
+
+
+						if ((AprData.m_nSectorNgCount > 0) && (AprData.m_nSectorBaseCount> 0))
+						{
+							// 22.09.22 Ahn Modify Start
+							if (nSecterNgCount >= AprData.m_nSectorNgCount)
 							{
-								wAlarmCode |= CSigProc::en_Alarm_ContinueNg;
+								wAlarmCode |= CSigProc::en_Alarm_SectorNg;
 
 								CString strMessage;
-								strMessage.Format(_T("연속 NG Alarm 발생. %d Tab연속 NG 발생"), AprData.m_NowLotData.m_nContinueCount);
+								strMessage.Format(_T("구간 NG Alarm 발생. 발생 개수:%d, 설정 개수:%d, 설정 거리:%d"), nSecterNgCount, AprData.m_nSectorNgCount, AprData.m_nSectorBaseCount);
 								AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
 								AprData.SaveDebugLog(strMessage); //pyjtest
 
 								//알람이 설정되었으면 초기화
-								AprData.m_NowLotData.m_nContinueCount = 0;
+								AprData.m_NowLotData.m_secNgJudge.ResetAll();
 
-								AprData.m_NowLotData.m_SeqDataOut.dwContinueAlarmCount++;
+								AprData.m_NowLotData.m_SeqDataOut.dwSectorAlarmCount++;
 							}
+						}
+						// 22.08.09 Ahn Add End
 
-							// 22.08.10 Ahn Modify End
-							//if ((AprData.m_pRecipeInfo->nSectorCount > 0) && (AprData.m_pRecipeInfo->nAlarmCount > 0)) {
-							//	if (nSecterNgCount >= AprData.m_pRecipeInfo->nAlarmCount) {
-							int nSecterNgCount = AprData.m_NowLotData.m_secNgJudge.AddNgTab(tab, AprData.m_nSectorBaseCount);
-
-							strDbg.Format(_T("구간 알람 Count: %d"), nSecterNgCount);
-							AprData.SaveDebugLog(strDbg); //pyjtest
-
-
-							if ((AprData.m_nSectorNgCount > 0) && (AprData.m_nSectorBaseCount> 0))
+						if (AprData.m_System.m_bEnableNgStop == TRUE)
+						{
+							if (AprData.m_pRecipeInfo->bNgStop == TRUE)
 							{
-								// 22.09.22 Ahn Modify Start
-								if (nSecterNgCount >= AprData.m_nSectorNgCount)
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpIn_Top)
 								{
-									wAlarmCode |= CSigProc::en_Alarm_SectorNg;
-
-									CString strMessage;
-									strMessage.Format(_T("구간 NG Alarm 발생. 발생 개수:%d, 설정 개수:%d, 설정 거리:%d"), nSecterNgCount, AprData.m_nSectorNgCount, AprData.m_nSectorBaseCount);
-									AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
-									AprData.SaveDebugLog(strMessage); //pyjtest
-
-									//알람이 설정되었으면 초기화
-									AprData.m_NowLotData.m_secNgJudge.ResetAll();
-
-									AprData.m_NowLotData.m_SeqDataOut.dwSectorAlarmCount++;
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpIn_Top;
 								}
-							}
-							// 22.08.09 Ahn Add End
-
-							if (AprData.m_System.m_bEnableNgStop == TRUE)
-							{
-								if (AprData.m_pRecipeInfo->bNgStop == TRUE)
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpOut_Top)
 								{
-									if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpIn_Top)
-									{
-										wAlarmCode |= CSigProc::en_Alarm_FoilExpIn_Top;
-									}
-									if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpOut_Top)
-									{
-										wAlarmCode |= CSigProc::en_Alarm_FoilExpOut_Top;
-									}
-									if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpBoth_Top)
-									{
-										wAlarmCode |= CSigProc::en_Alarm_FoilExpBoth_Top;
-									}
-									if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_Surface_Top)
-									{
-										wAlarmCode |= CSigProc::en_Alarm_Spatter_Top;
-									}
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpOut_Top;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpBoth_Top)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpBoth_Top;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_Surface_Top)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_Spatter_Top;
+								}
 
-									if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpIn_Btm)
-									{
-										wAlarmCode |= CSigProc::en_Alarm_FoilExpIn_Btm;
-									}
-									if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpOut_Btm)
-									{
-										wAlarmCode |= CSigProc::en_Alarm_FoilExpOut_Btm;
-									}
-									if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpBoth_Btm)
-									{
-										wAlarmCode |= CSigProc::en_Alarm_FoilExpBoth_Btm;
-									}
-									if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_Surface_Btm)
-									{
-										wAlarmCode |= CSigProc::en_Alarm_Spatter_Btm;
-									}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpIn_Btm)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpIn_Btm;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpOut_Btm)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpOut_Btm;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_FoilExpBoth_Btm)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_FoilExpBoth_Btm;
+								}
+								if (pTopInfo->m_pTabRsltInfo->m_wNgReason & CTabRsltBase::en_Reason_Surface_Btm)
+								{
+									wAlarmCode |= CSigProc::en_Alarm_Spatter_Btm;
+								}
 
-	//SPC 객체 소스에서 컴파일 여부 결정
-	#ifdef SPCPLUS_CREATE
-									//SPC+ ALARM===================================================================================================
-									//SPC+ ALARM 객체 생성
-									CSpcAlarmManager* alarm = new CSpcAlarmManager();
-									CSpcAlarmInData* alarmInData = alarm->getSpcAlarmInData();
-									//알람 발생 or 해제 MSG Flag : TRUE -> 알람발생
-									alarmInData->setAlarmFlag("TRUE");
-									alarmInData->setAlarmCode(CGlobalFunc::intToString(wAlarmCode));
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+								//SPC+ ALARM===================================================================================================
+								//SPC+ ALARM 객체 생성
+								CSpcAlarmManager* alarm = new CSpcAlarmManager();
+								CSpcAlarmInData* alarmInData = alarm->getSpcAlarmInData();
+								//알람 발생 or 해제 MSG Flag : TRUE -> 알람발생
+								alarmInData->setAlarmFlag("TRUE");
+								alarmInData->setAlarmCode(CGlobalFunc::intToString(wAlarmCode));
 
-									//SPC+ 파일 생성을 위한 스래드에 추가한다.
-									CSpcCreateJSONFileThread::AddSpcPlusManager(alarm);
-									//============================================================================================================
-	#endif //SPCPLUS_CREATE
+								//SPC+ 파일 생성을 위한 스래드에 추가한다.
+								CSpcCreateJSONFileThread::AddSpcPlusManager(alarm);
+								//============================================================================================================
+#endif //SPCPLUS_CREATE
 							
-									bClearFlag = TRUE;; // 22.03.03 Ahn Add 
-									CSigProc* pSigProc = theApp.m_pSigProc;
+								bClearFlag = TRUE;; // 22.03.03 Ahn Add 
+								CSigProc* pSigProc = theApp.m_pSigProc;
 								
-									if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
-									{
-										int nId = pTopInfo->m_nTabId_CntBoard;
-										int nJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
-										int nNgCode = 1; // 임시, 정의되지 않음
+								if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+								{
+									int nId = pTopInfo->m_nTabId_CntBoard;
+									int nJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+									int nNgCode = 1; // 임시, 정의되지 않음
 
-										pSigProc->WriteAlarmCodeAndJudge(wAlarmCode, nId, nJudge, nNgCode );
-									}
-									else
-									{
-										pSigProc->SigOutAlarmExist(TRUE);
-										pSigProc->WriteAlarmCode(wAlarmCode);
-									}
-
-									CString strLog;
-									strLog.Format(_T("!!!! NG_STOP Signal Output [0x%x]!!!!"), wAlarmCode) ;
-									AprData.SaveMemoryLog( strLog ) ;
-
-	//								int nId, nJudge, nCode ;
-	//								nId = pTopInfo->m_nTabId_CntBoard ;
-
-									// Image Cutting Tab 정보 출력 로그
-									LOGDISPLAY_SPEC(5)("Logcount<%d> NG Stop 신호처리 Trigger Input ID Set <%d>", TempLogCount, pTopInfo->m_nTabId_CntBoard);
-
-	//								nJudge = tab.nJudge ;
-	//								nCode = wAlarmCode ;
-	//								pSigProc->ReportJudge(nId, nJudge, nCode);
-									// 22.12.12 Ahn Add End
+									pSigProc->WriteAlarmCodeAndJudge(wAlarmCode, nId, nJudge, nNgCode );
 								}
+								else
+								{
+									pSigProc->SigOutAlarmExist(TRUE);
+									pSigProc->WriteAlarmCode(wAlarmCode);
+								}
+
+								CString strLog;
+								strLog.Format(_T("!!!! NG_STOP Signal Output [0x%x]!!!!"), wAlarmCode) ;
+								AprData.SaveMemoryLog( strLog ) ;
+
+//								int nId, nJudge, nCode ;
+//								nId = pTopInfo->m_nTabId_CntBoard ;
+
+								// Image Cutting Tab 정보 출력 로그
+								LOGDISPLAY_SPEC(5)("Logcount<%d> NG Stop 신호처리 Trigger Input ID Set <%d>", TempLogCount, pTopInfo->m_nTabId_CntBoard);
+
+//								nJudge = tab.nJudge ;
+//								nCode = wAlarmCode ;
+//								pSigProc->ReportJudge(nId, nJudge, nCode);
+								// 22.12.12 Ahn Add End
 							}
+						}
+					}
+					else
+					{
+						//Image Cutting Tab 정보 출력 로그
+						LOGDISPLAY_SPEC(5)("Logcount<%d> Image Result OK 처리 Tab ID<%d>", TempLogCount, pTopInfo->m_nTabId_CntBoard);
+
+						AprData.m_NowLotData.m_nTabCountOK++ ;
+						AprData.m_NowLotData.m_nContinueCount = 0 ; // 22.08.09 Ahn Add
+						AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_pRecipeInfo->nSectorCount);
+					}
+					// 결과 Queue에 보냄
+
+					// Counter 신호 출력
+					WORD wOutPut;	
+					CString strMarking = _T("OFF");
+					{
+						CAppDIO dio;
+						int nMarkSel1 = 0 ;
+						int nMarkSel2 = 0 ;
+
+						// 22.07.19 Ahn Modify Start
+						GetMarkingFlag(AprData.m_pRecipeInfo, nTopJudge, nBtmJudge, pTopInfo->m_pTabRsltInfo->m_wNgReason, pBtmInfo->m_pTabRsltInfo->m_wNgReason, nMarkSel1, nMarkSel2 );
+						// 22.07.19 Ahn Modify End
+
+						CSigProc* pSigProc = theApp.m_pSigProc;
+						bMarkingActive = pSigProc->GetInkMarkActive();
+//						bMarkingActive = TRUE; // PLC 강제 마킹 처리
+						
+						if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) )
+						{
+							//체크박스 로그 출력
+							LOGDISPLAY_SPEC(5)("Logcount<%d> 불량도 마킹 안함", TempLogCount);
+							nMarkSel1 = 0;
+							nMarkSel2 = 0; 
+						}
+
+						wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2, TempLogCount);
+						dio.OutputWord(wOutPut);
+
+						Sleep(20);
+						dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+
+						CString strMsg;
+						strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),
+										pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo+1,
+										(AprData.m_System.m_bChkEnableMarker == FALSE) ? _T("SKIP") : _T("USE"),
+										(bMarkingActive == FALSE) ? _T("SKIP") : _T("USE")	);
+						AprData.SaveMemoryLog(strMsg);
+
+						// GEN 체크박스 Log 출력
+						LOGDISPLAY_SPEC(1)("*4*2*Output : TabID[%d]-TabNo[%d]-Value[%d], Top-%s, Bottom-%s", 
+							pTopInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1, wOutPut
+							, (nTopJudge == JUDGE_NG) ? "NG" : "OK"
+							, (nBtmJudge == JUDGE_NG) ? "NG" : "OK");
+
+
+						if ( (wOutPut & CAppDIO::eOut_MARK_SEL_01 ) || (wOutPut & CAppDIO::eOut_MARK_SEL_02) )
+						{
+							strMarking = _T("ON");
+							pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
+							pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
+							AprData.m_NowLotData.m_nMarkingCount++; // 22.06.29 Ahn Add 
 						}
 						else
 						{
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPEC(5)("Logcount<%d> Image Result OK 처리 Tab ID<%d>", TempLogCount, pTopInfo->m_nTabId_CntBoard);
-
-							AprData.m_NowLotData.m_nTabCountOK++ ;
-							AprData.m_NowLotData.m_nContinueCount = 0 ; // 22.08.09 Ahn Add
-							AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_pRecipeInfo->nSectorCount);
+							strMarking = _T("OFF");
+							pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
+							pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
 						}
-						// 결과 Queue에 보냄
 
-						// Counter 신호 출력
-						WORD wOutPut;	
-						CString strMarking = _T("OFF");
+
+						if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 						{
-							CAppDIO dio;
-							int nMarkSel1 = 0 ;
-							int nMarkSel2 = 0 ;
+//							AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
+//							AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+//							AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode = 1; // 임시, 정의되지 않음
+//
+//							int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
+//							short* pData = (short*)(&AprData.m_NowLotData.m_stCellJudgeSms);
+//							int nSize = sizeof(_CELL_JUDGE_SMS) / sizeof(WORD);
+//							pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+//
+//							CString strMsg;
+//							strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID, AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge, AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode);
+//							AprData.SaveDebugLog(strMsg); //pyjtest
 
-							// 22.07.19 Ahn Modify Start
-							GetMarkingFlag(AprData.m_pRecipeInfo, nTopJudge, nBtmJudge, pTopInfo->m_pTabRsltInfo->m_wNgReason, pBtmInfo->m_pTabRsltInfo->m_wNgReason, nMarkSel1, nMarkSel2 );
-							// 22.07.19 Ahn Modify End
+						}
+						else
+						{
+							AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID = pTopInfo->m_nTabId_CntBoard;
+							AprData.m_NowLotData.m_stCellJudge.dwCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
+							AprData.m_NowLotData.m_stCellJudge.dwCellNgCode = 1; // 임시, 정의되지 않음
 
-							CSigProc* pSigProc = theApp.m_pSigProc;
-							bMarkingActive = pSigProc->GetInkMarkActive();
-	//						bMarkingActive = TRUE; // PLC 강제 마킹 처리
-						
-							if( (AprData.m_System.m_bChkEnableMarker == FALSE) || ( bMarkingActive == FALSE ) )
-							{
-								//체크박스 로그 출력
-								LOGDISPLAY_SPEC(5)("Logcount<%d> 불량도 마킹 안함", TempLogCount);
-								nMarkSel1 = 0;
-								nMarkSel2 = 0; 
-							}
-
-							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2, TempLogCount);
-							dio.OutputWord(wOutPut);
-
-							Sleep(20);
-							dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+							int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
+							int* pData = (int*)(&AprData.m_NowLotData.m_stCellJudge);
+							int nSize = sizeof(_CELL_JUDGE) / sizeof(int);
+							pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 
 							CString strMsg;
-							strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),
-											pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo+1,
-											(AprData.m_System.m_bChkEnableMarker == FALSE) ? _T("SKIP") : _T("USE"),
-											(bMarkingActive == FALSE) ? _T("SKIP") : _T("USE")	);
-							AprData.SaveMemoryLog(strMsg);
-
-							// GEN 체크박스 Log 출력
-							LOGDISPLAY_SPEC(1)("*4*2*Output : TabID[%d]-TabNo[%d]-Value[%d], Top-%s, Bottom-%s", 
-								pTopInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1, wOutPut
-								, (nTopJudge == JUDGE_NG) ? "NG" : "OK"
-								, (nBtmJudge == JUDGE_NG) ? "NG" : "OK");
-
-
-							if ( (wOutPut & CAppDIO::eOut_MARK_SEL_01 ) || (wOutPut & CAppDIO::eOut_MARK_SEL_02) )
-							{
-								strMarking = _T("ON");
-								pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
-								pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
-								AprData.m_NowLotData.m_nMarkingCount++; // 22.06.29 Ahn Add 
-							}
-							else
-							{
-								strMarking = _T("OFF");
-								pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
-								pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
-							}
-
-
-							if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
-							{
-	//							AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
-	//							AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
-	//							AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode = 1; // 임시, 정의되지 않음
-	//
-	//							int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
-	//							short* pData = (short*)(&AprData.m_NowLotData.m_stCellJudgeSms);
-	//							int nSize = sizeof(_CELL_JUDGE_SMS) / sizeof(WORD);
-	//							pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
-	//
-	//							CString strMsg;
-	//							strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID, AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge, AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode);
-	//							AprData.SaveDebugLog(strMsg); //pyjtest
-
-							}
-							else
-							{
-								AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID = pTopInfo->m_nTabId_CntBoard;
-								AprData.m_NowLotData.m_stCellJudge.dwCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
-								AprData.m_NowLotData.m_stCellJudge.dwCellNgCode = 1; // 임시, 정의되지 않음
-
-								int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
-								int* pData = (int*)(&AprData.m_NowLotData.m_stCellJudge);
-								int nSize = sizeof(_CELL_JUDGE) / sizeof(int);
-								pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
-
-								CString strMsg;
-								strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID, AprData.m_NowLotData.m_stCellJudge.dwCellJudge, AprData.m_NowLotData.m_stCellJudge.dwCellNgCode);
-								AprData.SaveDebugLog(strMsg); //pyjtest
-
-							}
-
+							strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID, AprData.m_NowLotData.m_stCellJudge.dwCellJudge, AprData.m_NowLotData.m_stCellJudge.dwCellNgCode);
+							AprData.SaveDebugLog(strMsg); //pyjtest
 
 						}
 
-						{ // CSV 파일 작성
-							CString strCsvFileName;
-							CString strFilePath;
-							strFilePath.Format(_T("%s\\"), AprData.m_strNowCsvPath);
 
-							strCsvFileName.Format(_T("%s.csv"), AprData.m_NowLotData.m_strLotNo);
-							CString strResult;
-							SYSTEMTIME* pSysTime;
-							pSysTime = &(pTopInfo->m_pTabRsltInfo->sysTime);	
-
-							int nSurfaceNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_NG];
-							int nFoilExpNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_NG]
-								+ pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_NG];
-							double 	dTopMaxSize = pTopInfo->m_pTabRsltInfo->m_dMaxSizeDef;
-							double 	dBtmMaxSize = pBtmInfo->m_pTabRsltInfo->m_dMaxSizeDef;
-
-							int nSurfaceGrayCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_GRAY];
-							int nFoilExpGrayCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_GRAY]
-								+ pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_GRAY];
-
-							CString strMarking;
-							CString strMarkReason = _T("") ;
-							if (pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag || pTopInfo->m_pTabRsltInfo->m_bMarkingFlag) {
-								strMarking.Format(_T("○"));
-							}
-							else {
-								strMarking.Format(_T("Χ"));
-							}
-							CString strTime;
-							CString strJudge = _T("OK") ;
-							CString strBtmJudge = _T("OK");
-							CString strTopJudge = _T("OK");
-							strTime.Format(_T("%02d:%02d:%02d(%03d)"), pSysTime->wHour, pSysTime->wMinute, pSysTime->wSecond, pSysTime->wMilliseconds );
-							if (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
-								strJudge = _T("NG");
-								strTopJudge = _T("NG");
-							}
-							if (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
-								strJudge = _T("NG");
-								strBtmJudge = _T("NG");
-							}
-							// LotID, /*Total Count*/, Cell_No, Time, Pos(Top,Bottom),Top Judge,Bottom Judge,Surface Exposure, DefR, DefTheta, Top DefectSize, BTM Def Size
-							//,  Top Surface max Size, Btm Surface Max Size, InkMarking, InkMarkingReason
-							// 23.01.06 Ahn Modify Start
-							//strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s\r\n")
-							strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%d,%d\r\n")
-								// 23.01.06 Ahn Modify End
-								, AprData.m_NowLotData.m_strLotNo
-								, pTopInfo->nTabNo + 1
-								, strTime
-								, strJudge
-								, strTopJudge
-								, strBtmJudge
-								, nSurfaceNgCnt
-								, nFoilExpNgCnt
-								, dTopMaxSize
-								, dBtmMaxSize
-								, strMarking
-								, strMarkReason
-								// 23.01.06 Ahn Add Start
-								, nSurfaceGrayCnt
-								, nFoilExpGrayCnt
-								// 23.01.06 Ahn Add End
-							);
-							CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE) ;
-						}
-
-						// 22.05.31 Ahn Add Start - Image Save Thread 
-						for (int i = 0; i < MAX_CAMERA_NO; i++)
-						{
-							CFrameRsltInfo* pFrmRsltInfo;
-							if (i == CAM_POS_TOP)
-							{
-								pFrmRsltInfo = pTopInfo;
-							}
-							else
-							{
-								pFrmRsltInfo = pBtmInfo;
-							}
-							// 22.08.09 Ahn Move Start
-							int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
-							// 22.08.09 Ahn Move End
-							if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE)
-							{
-								if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE)
-								{
-									pFrmRsltInfo->m_nWidth;
-									CImgSaveInfo *pSaveInfo = new CImgSaveInfo ;
-									BYTE* pImgSavePtr;
-									pImgSavePtr = new BYTE[nImgSize];
-									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE)* nImgSize);
-									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
-									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
-									pImgSaveQueueCtrl->PushBack(pSaveInfo);
-
-
-	//								CString strMsg;
-	//								strMsg.Format(_T("Save Image Path = %s"), pSaveInfo->m_strSavePath);
-	//								AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-								}
-							}
-						}
-
-						double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
-						CTactTimeData data;
-						data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo ;
-						data.dTactTime = dTactTime ;
-						pTactCtrl->AddNewTactData(data) ;
-
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(1)("*4*3*TabID[%d]-TabNo[%d] - TacTime[%f]",
-							pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime);
-
-						pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
-						pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
-
-						// GEN 체크박스 Log 출력
-						LOGDISPLAY_SPEC(5)("Logcount<%d> Top/Bottom 마킹정보를 pRsltQueueCtrl 저장", TempLogCount);
-
-
-
-						delete pUnitTop;
-						delete pUnitBtm;
-
-						AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
-
-						// 22.04.06 Ahn Modify Start
-						Sleep(10);
-						CAppDIO dio;
-						dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
-
-
-						// 22.02.17 Ahn Modify End
-
-						// 22.02.17 Ahn Modify Start
-						if (bClearFlag == TRUE)
-						{
-	//						CSigProc *pSigProc = theApp.m_pSigProc;
-	//						WORD wResetCode = 0x00;
-	//						pSigProc->WriteAlarmCode(wResetCode);
-
-							AprData.SaveMemoryLog(_T("------ NG_STOP Signal OFF ------"));
-							bJudgeNG = FALSE;
-							bClearFlag = FALSE;// 22.03.28 Ahn Add
-							Sleep(5);
-						}
-
-						break;
 					}
-					Sleep(AprData.m_nSleep);
+
+					{ // CSV 파일 작성
+						CString strCsvFileName;
+						CString strFilePath;
+						strFilePath.Format(_T("%s\\"), AprData.m_strNowCsvPath);
+
+						strCsvFileName.Format(_T("%s.csv"), AprData.m_NowLotData.m_strLotNo);
+						CString strResult;
+						SYSTEMTIME* pSysTime;
+						pSysTime = &(pTopInfo->m_pTabRsltInfo->sysTime);	
+
+						int nSurfaceNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_NG];
+						int nFoilExpNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_NG]
+							+ pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][RANK_NG] +pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_NG];
+						double 	dTopMaxSize = pTopInfo->m_pTabRsltInfo->m_dMaxSizeDef;
+						double 	dBtmMaxSize = pBtmInfo->m_pTabRsltInfo->m_dMaxSizeDef;
+
+						int nSurfaceGrayCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_GRAY];
+						int nFoilExpGrayCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_GRAY]
+							+ pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_GRAY] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_GRAY];
+
+						CString strMarking;
+						CString strMarkReason = _T("") ;
+						if (pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag || pTopInfo->m_pTabRsltInfo->m_bMarkingFlag) {
+							strMarking.Format(_T("○"));
+						}
+						else {
+							strMarking.Format(_T("Χ"));
+						}
+						CString strTime;
+						CString strJudge = _T("OK") ;
+						CString strBtmJudge = _T("OK");
+						CString strTopJudge = _T("OK");
+						strTime.Format(_T("%02d:%02d:%02d(%03d)"), pSysTime->wHour, pSysTime->wMinute, pSysTime->wSecond, pSysTime->wMilliseconds );
+						if (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
+							strJudge = _T("NG");
+							strTopJudge = _T("NG");
+						}
+						if (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
+							strJudge = _T("NG");
+							strBtmJudge = _T("NG");
+						}
+						// LotID, /*Total Count*/, Cell_No, Time, Pos(Top,Bottom),Top Judge,Bottom Judge,Surface Exposure, DefR, DefTheta, Top DefectSize, BTM Def Size
+						//,  Top Surface max Size, Btm Surface Max Size, InkMarking, InkMarkingReason
+						// 23.01.06 Ahn Modify Start
+						//strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s\r\n")
+						strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%d,%d\r\n")
+							// 23.01.06 Ahn Modify End
+							, AprData.m_NowLotData.m_strLotNo
+							, pTopInfo->nTabNo + 1
+							, strTime
+							, strJudge
+							, strTopJudge
+							, strBtmJudge
+							, nSurfaceNgCnt
+							, nFoilExpNgCnt
+							, dTopMaxSize
+							, dBtmMaxSize
+							, strMarking
+							, strMarkReason
+							// 23.01.06 Ahn Add Start
+							, nSurfaceGrayCnt
+							, nFoilExpGrayCnt
+							// 23.01.06 Ahn Add End
+						);
+						CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE) ;
+					}
+
+					// 22.05.31 Ahn Add Start - Image Save Thread 
+					for (int i = 0; i < MAX_CAMERA_NO; i++)
+					{
+						CFrameRsltInfo* pFrmRsltInfo;
+						if (i == CAM_POS_TOP)
+						{
+							pFrmRsltInfo = pTopInfo;
+						}
+						else
+						{
+							pFrmRsltInfo = pBtmInfo;
+						}
+						// 22.08.09 Ahn Move Start
+						int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
+						// 22.08.09 Ahn Move End
+						if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE)
+						{
+							if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE)
+							{
+								pFrmRsltInfo->m_nWidth;
+								CImgSaveInfo *pSaveInfo = new CImgSaveInfo ;
+								BYTE* pImgSavePtr;
+								pImgSavePtr = new BYTE[nImgSize];
+								memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE)* nImgSize);
+								pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+								pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+								pImgSaveQueueCtrl->PushBack(pSaveInfo);
+
+
+//								CString strMsg;
+//								strMsg.Format(_T("Save Image Path = %s"), pSaveInfo->m_strSavePath);
+//								AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+							}
+						}
+					}
+
+					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
+					CTactTimeData data;
+					data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo ;
+					data.dTactTime = dTactTime ;
+					pTactCtrl->AddNewTactData(data) ;
+
+					//체크박스 로그 출력
+					LOGDISPLAY_SPEC(1)("*4*3*TabID[%d]-TabNo[%d] - TacTime[%f]",
+						pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime);
+
+					pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
+					pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
+
+					// GEN 체크박스 Log 출력
+					LOGDISPLAY_SPEC(5)("Logcount<%d> Top/Bottom 마킹정보를 pRsltQueueCtrl 저장", TempLogCount);
+
+
+
+					delete pUnitTop;
+					delete pUnitBtm;
+
+					AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
+
+					// 22.04.06 Ahn Modify Start
+					Sleep(10);
+					CAppDIO dio;
+					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
+
+
+					// 22.02.17 Ahn Modify End
+
+					// 22.02.17 Ahn Modify Start
+					if (bClearFlag == TRUE)
+					{
+//						CSigProc *pSigProc = theApp.m_pSigProc;
+//						WORD wResetCode = 0x00;
+//						pSigProc->WriteAlarmCode(wResetCode);
+
+						AprData.SaveMemoryLog(_T("------ NG_STOP Signal OFF ------"));
+						bJudgeNG = FALSE;
+						bClearFlag = FALSE;// 22.03.28 Ahn Add
+						Sleep(5);
+					}
+
+					break;
 				}
+				Sleep(AprData.m_nSleep);
 			}
-			Sleep(AprData.m_nSleep);
 		}
-		else if (CGlobalFunc::isPeekMessage() == WM_QUIT)
-		{
-			break;
-		}
+		Sleep(AprData.m_nSleep);
 	}
 
 	AfxEndThread(0);

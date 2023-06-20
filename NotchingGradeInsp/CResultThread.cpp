@@ -706,7 +706,8 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 	while (1) 
 	{
-		if (CGlobalFunc::isPeekMessage() == WM_NULL)
+		HWND hWnd = pThis->m_DisphWnd;
+		if (CGlobalFunc::isPeekMessage(hWnd) == WM_NULL)
 		{
 			if (pThis == NULL)
 			{
@@ -752,7 +753,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					pThis->m_pParent->SetLastBmpStd(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nHeadNo);
 #else
 #if defined( IMAGE_DRAW_DIRECT_VERSION )
-					HWND hWnd = pThis->m_DisphWnd;
+					
 					if (hWnd != NULL) // 22.04.01 Ahn Add 
 					{
 						BYTE* pResizePtr;
@@ -913,15 +914,12 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				}
 				//===========================================================================================================
 #endif //SPCPLUS_CREATE
+
 				pRsltInfo->m_pTabRsltInfo = NULL;
 				delete pRsltInfo;
 				pRsltInfo = NULL;
 			}
 			Sleep(AprData.m_nSleep);
-		}
-		else if(CGlobalFunc::isPeekMessage() == WM_QUIT)
-		{
-			break;
 		}
 	}
 	AfxEndThread(0);

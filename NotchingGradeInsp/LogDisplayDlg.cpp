@@ -269,8 +269,6 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	CWin32File file;
 	while (pMain && pMain->m_isWorkingThread)
 	{
-		if (CGlobalFunc::isPeekMessage() == WM_NULL)
-		{
 		//Do something...
 		Sleep(1);
 		if (CLogDisplayDlg::bCreate && strList->size() && listBox->m_hWnd)
@@ -312,11 +310,6 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 
 				file.TextSave1Line(FilePath, FileName, tempStr, "at", FALSE, 999999999);
 			}
-		}
-		}
-		else if (CGlobalFunc::isPeekMessage() == WM_QUIT)
-		{
-			break;
 		}
 	}
 

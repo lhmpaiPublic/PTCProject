@@ -153,21 +153,31 @@ void CCropImageViewDlg::OnTimer(UINT_PTR nIDEvent)
 			//strLogFullPath = strLogPath + strLogFile;
 			// 22.12.24 Ahn Test End
 
-			while(pQueue->IsEmpty()==FALSE) {
-				CCropImgData data = pQueue->Pop();
-				if (data.m_bEnable == TRUE) {
-					// 22.12.24 Ahn Test Start
-					//CString strMsg;
-					//strMsg.Format(_T("%s, %s\r\n"), data.m_strDispName, data.m_strFileName );
-					//CWin32File::TextSave1Line(strLogPath, strLogFile, strMsg, _T("at"), FALSE);
-					// 22.12.24 Ahn Test End
+			while(pQueue->IsEmpty()==FALSE) 
+			{
+				if(CGlobalFunc::isPeekMessage(m_hWnd) == WM_NULL)
+				{
+					CCropImgData data = pQueue->Pop();
+					if (data.m_bEnable == TRUE) {
+						// 22.12.24 Ahn Test Start
+						//CString strMsg;
+						//strMsg.Format(_T("%s, %s\r\n"), data.m_strDispName, data.m_strFileName );
+						//CWin32File::TextSave1Line(strLogPath, strLogFile, strMsg, _T("at"), FALSE);
+						// 22.12.24 Ahn Test End
 
-					m_CropThumbCtrl.AddImageBufferMode(data.m_strFileName, data.m_strDispName);
-					m_CropThumbCtrl.Invalidate(FALSE);
-					m_CropThumbCtrl.OnRefresh();
+						m_CropThumbCtrl.AddImageBufferMode(data.m_strFileName, data.m_strDispName);
+						m_CropThumbCtrl.Invalidate(FALSE);
+						m_CropThumbCtrl.OnRefresh();
+					}
+					nCount++;
 				}
-				nCount++;
-				if (nCount > 10) break;
+				
+				if (nCount > 10)
+				{
+					if (pQueue->GetSize()) 
+						pQueue->Pop();
+					break;
+				}
 			}
 			// 22.12.23 Ahn Modify End
 		}

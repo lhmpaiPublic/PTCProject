@@ -37,8 +37,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	char szPos[2][8] = { "TOP","BTM" };
 
 	while (TRUE) {
-		if (CGlobalFunc::isPeekMessage() == WM_NULL)
-		{
 		//ImageProc: 이미지 처리 스래드가 종료 이벤트가 발생했는가 체크
 		if (::WaitForSingleObject(pCtrl->m_hEventKillThread, 0) == WAIT_OBJECT_0) {
 			break;
@@ -611,11 +609,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 			} //Proc Start 이벤트 샐행 루프 빠져나감
 		} //Proc End 이벤트 
 		Sleep(AprData.m_nSleep);
-		}
-		else if (CGlobalFunc::isPeekMessage() == WM_QUIT)
-		{
-			break;
-		}
 	}
 
 	//이미지 처리 스래드 유효성을  FALSE 설정
