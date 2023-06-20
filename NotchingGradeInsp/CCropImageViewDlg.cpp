@@ -166,8 +166,8 @@ void CCropImageViewDlg::OnTimer(UINT_PTR nIDEvent)
 						// 22.12.24 Ahn Test End
 
 						m_CropThumbCtrl.AddImageBufferMode(data.m_strFileName, data.m_strDispName);
-						m_CropThumbCtrl.Invalidate(FALSE);
 						m_CropThumbCtrl.OnRefresh();
+						m_CropThumbCtrl.Invalidate(FALSE);
 					}
 					nCount++;
 				}
@@ -179,7 +179,7 @@ void CCropImageViewDlg::OnTimer(UINT_PTR nIDEvent)
 					break;
 				}
 			}
-			// 22.12.23 Ahn Modify End
+			m_CropThumbCtrl.UpdateWindow();
 		}
 		UpdateData(FALSE);
 		SetCropViewTimer();
