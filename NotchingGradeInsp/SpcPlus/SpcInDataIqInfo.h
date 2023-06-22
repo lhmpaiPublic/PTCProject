@@ -54,17 +54,6 @@ private:
 	//Original Image 파일명 	
 	CString	m_ImageFileName;
 
-	//============파일을 생성하기 위한 정보 데이터 키 없는 데이터 정보 ======
-	//카메라 위치_Top, Bottom, Side
-	//디폴트 값 : "TOP"	
-	CString	m_CameraLocation;
-	//Camera Number(상부 또는 하부 카메라 n개인 경우) (""5. CAM NUM 규칙"" Sheet 참고)
-	//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
-	CString	m_CameraNumber;
-	//1개 Camera에서 2장 Image 생성시 구분 인자
-	//디폴트 값 : "1"
-	CString	m_ScreenNumber;
-
 public:
 	static char* MakeInDataIqInfoText;
 
@@ -99,28 +88,6 @@ public:
 	void setImageJudge(CString	 ImageJudge) { m_ImageJudge = ImageJudge; }
 	//Original Image 파일명 	
 	void setImageFileName(CString	ImageFileName) { m_ImageFileName = ImageFileName; }
-
-	//============파일을 생성하기 위한 정보 데이터 키 없는 데이터 정보 ======
-	//카메라 위치_Top, Bottom, Side
-	//디폴트 값 : "TOP"	
-	void setCameraLocation(CString CameraLocation) { m_CameraLocation = CameraLocation; }
-	//Camera Number(상부 또는 하부 카메라 n개인 경우) (""5. CAM NUM 규칙"" Sheet 참고)
-	//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
-	void setCameraNumber(CString CameraNumber) { m_CameraNumber = CameraNumber; }
-	//1개 Camera에서 2장 Image 생성시 구분 인자
-	//디폴트 값 : "1"
-	void setScreenNumber(CString ScreenNumber) { m_ScreenNumber = ScreenNumber; }
-
-	//============파일을 생성하기 위한 정보 데이터 키 없는 데이터 정보 ======
-	//카메라 위치_Top, Bottom, Side
-	//디폴트 값 : "TOP"	
-	CString getCameraLocation() { return m_CameraLocation; }
-	//Camera Number(상부 또는 하부 카메라 n개인 경우) (""5. CAM NUM 규칙"" Sheet 참고)
-	//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
-	CString getCameraNumber() { return m_CameraNumber; }
-	//1개 Camera에서 2장 Image 생성시 구분 인자
-	//디폴트 값 : "1"
-	CString getScreenNumber() { return m_ScreenNumber; }
 
 	//JSON 형식의 텍스트를 만든다.
 	CString makeJSONText_IqInfo();

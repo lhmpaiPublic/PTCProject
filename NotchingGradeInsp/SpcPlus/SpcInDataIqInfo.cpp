@@ -55,10 +55,6 @@ CSpcInDataIqInfo::CSpcInDataIqInfo(CSpcPlusManager* sMgr)
 	m_ImageJudge = "NG";
 	m_ImageFileName = "";
 
-	m_CameraLocation = SPCINFO->getCameraLocation();
-	m_CameraNumber = "1";
-	m_ScreenNumber = "1";
-
 	if (sMgr)
 	{
 
@@ -100,5 +96,5 @@ CString CSpcInDataIqInfo::ImagIqFileName()
 {
 	//①검사기종류_②파일생성시간_③설비ID_④RECIPE_ID_⑤LOT_ID_⑥Cell ID_⑦카메라 위치_⑧카메라 번호_⑨스크린 번호_⑩검사위치_⑮ 이미지판정결과_⑫ 최종판정결과
 	CSpcInspInData* InspInData = manager->getSpcInspInData();
-	return InspInData->getVisionType() + CString("_") + InspInData->getCreateTime() + CString("_") + InspInData->getEqpId() + CString("_") + InspInData->getLotId() + CString("_") + InspInData->getCellId() + CString("_") + m_CameraLocation + CString("_") + m_CameraNumber + CString("_") + m_ScreenNumber + CString("_") + m_ImageJudge + CString("_") + InspInData->getCellFinalJudge() + CString(".JPG");
+	return InspInData->getVisionType() + CString("_") + InspInData->getCreateTime() + CString("_") + InspInData->getEqpId() + CString("_") + InspInData->getLotId() + CString("_") + InspInData->getCellId() + CString("_") + m_IqCameraLocation + CString("_") + m_IqCameraNumber + CString("_") + m_IqScreenNumber + CString("_") + m_ImageJudge + CString("_") + InspInData->getCellFinalJudge() + CString(".JPG");
 }
