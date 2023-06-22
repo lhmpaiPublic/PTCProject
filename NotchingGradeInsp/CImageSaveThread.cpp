@@ -107,6 +107,11 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
 
 				int nJpgQuality; 
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+				nJpgQuality = pSaveInfo->m_nJpgQuality;
+#else
 				if (pQueuePtr->GetSize() > 2)
 				{
 					nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10 ;
@@ -115,6 +120,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				{
 					nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
 				}
+#endif //SPCPLUS_CREATE
 
 				bmp.SetJpegQuality(nJpgQuality);
 

@@ -862,6 +862,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					int BottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
 					insp->getSpcInspInData()->setTotalAppearanceNgCount(CGlobalFunc::intToString(TopJudge + BottomJudge));
 
+					//Insp InData 객체 포인터
+					CSpcInspInData* InspInData = insp->getSpcInspInData();
 
 					//IqInfo ===Tab 보이는 카메라 1
 					//Top 객체
@@ -874,7 +876,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					CString IqTopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
 					IqInfoTop->setImageJudge(IqTopJudge);
 					//SPC+ 저장할 이미지 명을 입력(Top 이미지 명)
-					IqInfoTop->setImageFileName(pTopInfo->m_pTabRsltInfo->m_chImageFile);
+					CString IqImageFileNameTop = IqInfoTop->ImagIqFileName();
+					IqInfoTop->setImageFileName(IqImageFileNameTop);
 
 					//IqInfo ===Tab 없는 카메라
 					//Bottom 객체
@@ -887,7 +890,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					CString IqBottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
 					IqInfoBottom->setImageJudge(IqBottomJudge);
 					//SPC+ 저장할 이미지 명을 입력(Bottom 이미지 명)
-					IqInfoBottom->setImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
+					CString IqImageFileNameBottom = IqInfoBottom->ImagIqFileName();
+					IqInfoBottom->setImageFileName(IqImageFileNameBottom);
 
 #endif //SPCPLUS_CREATE
 
@@ -1241,6 +1245,41 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE) ;
 					}
 
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+					//SPC+ IMAGE Save===================================================================================================
+					CString strFilePath = InspInData->ImageFilePath();
+					for (int i = 0; i < MAX_CAMERA_NO; i++)
+					{
+						CFrameRsltInfo* pFrmRsltInfo;
+						CString ImageFileName = IqImageFileNameBottom;
+						if (i == CAM_POS_TOP)
+						{
+							pFrmRsltInfo = pTopInfo;
+							ImageFileName = IqImageFileNameTop;
+
+						}
+						else
+						{
+							pFrmRsltInfo = pBtmInfo;
+							ImageFileName = IqImageFileNameBottom;
+						}
+						
+						int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
+						if (nImgSize)
+						{
+							pFrmRsltInfo->m_nWidth;
+							CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
+							BYTE* pImgSavePtr;
+							pImgSavePtr = new BYTE[nImgSize];
+							memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+							pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, 30);
+							pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strFilePath, ImageFileName);
+							pImgSaveQueueCtrl->PushBack(pSaveInfo);
+						}
+					}
+#else
 					// 22.05.31 Ahn Add Start - Image Save Thread 
 					for (int i = 0; i < MAX_CAMERA_NO; i++)
 					{
@@ -1278,6 +1317,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							}
 						}
 					}
+#endif //SPCPLUS_CREATE
 
 					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
 					CTactTimeData data;

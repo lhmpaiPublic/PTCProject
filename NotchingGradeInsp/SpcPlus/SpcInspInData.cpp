@@ -84,7 +84,7 @@ CSpcInspInData::CSpcInspInData(CSpcPlusManager* sMgr)
 	m_ProcessDirection = SPCINFO->getProcessDirection();
 	m_LotId = SPCINFO->getLotId();
 	m_CellId = "NA";
-	m_CellCountNo = "10";
+	m_CellCountNo = "0";
 	m_VirtualCellId = "NA";
 	m_CellFinalJudge = "NG";
 	m_AppearanceJudgeResult = "NG";
@@ -93,6 +93,9 @@ CSpcInspInData::CSpcInspInData(CSpcPlusManager* sMgr)
 	m_AppearanceReasonAllReal = "";
 	m_AppearanceReasonMain = "";
 	m_AppearanceReasonMainReal = "";
+
+	m_InspPositionTop = SPCINFO->getInspPositionTop();
+	m_InspPositionBottom = SPCINFO->getInspPositionBottom();
 
 	if (sMgr)
 	{
@@ -180,4 +183,10 @@ CString CSpcInspInData::JsonFilePath()
 CString CSpcInspInData::JsonFileName()
 {
 	return m_VisionType + CString("_") + m_CreateTime + CString("_") + m_LineNumber + CString("_") + m_MachineNumber + CString("_") + m_EqpId + CString("_") + m_LotId + CString("_") + m_CellId + CString("_") + m_CellFinalJudge + CString(".JSON");
+}
+
+//INSP 이미지 저장경로를 넘긴다.
+CString CSpcInspInData::ImageFilePath()
+{
+	return SPCINFO->getInspImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 }

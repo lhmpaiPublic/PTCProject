@@ -64,6 +64,10 @@ void CSpcInfo::LoadSpcPlusInfo()
 	m_ProcessDirection = CGlobalFunc::ReadIniFile("PROCESS", "PROCESS_DIRECTION", szProfilePath);
 	//물류 진행방향	
 	m_RecipeId = CGlobalFunc::ReadIniFile("PROCESS", "RECIPE_ID", szProfilePath);
+	//검사 위치 TOP
+	m_InspPositionTop = CGlobalFunc::ReadIniFile("PROCESS", "INSP_POSITION_TOP", szProfilePath);
+	//검사위치 BOTTOM
+	m_InspPositionBottom = CGlobalFunc::ReadIniFile("PROCESS", "INSP_POSITION_BOTTOM", szProfilePath);
 	//Camera 위치(Top, Bottom) 	
 	m_CameraLocation = CGlobalFunc::ReadIniFile("CAMERA", "CAMERA_LOCATION", szProfilePath);
 	//카메라 Gain value(카메라 조정 값)	
@@ -97,4 +101,6 @@ void CSpcInfo::LoadSpcPlusInfo()
 	m_AlarmPath = CGlobalFunc::ReadIniFile("FILEPATH", "ALARM_PATH", szProfilePath);
 	//Status JSON 파일 경로	
 	m_StatusPath = CGlobalFunc::ReadIniFile("FILEPATH", "STATUS_PATH", szProfilePath);
+	//INSP Image 파일 경로	
+	m_InspImagePath = CGlobalFunc::ReadIniFile("FILEPATH", "INSP_IMGPATH", szProfilePath);
 }

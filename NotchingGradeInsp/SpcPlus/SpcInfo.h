@@ -41,6 +41,10 @@ private:
 	CString	m_ProcessDirection;
 	//검사 Recipe Id
 	CString m_RecipeId;
+	//검사 위치 TOP
+	CString m_InspPositionTop;
+	//검사위치 BOTTOM
+	CString m_InspPositionBottom;
 	//Camera 위치(Top, Bottom) 	
 	CString	m_CameraLocation;
 	//카메라 Gain value(카메라 조정 값)	
@@ -74,6 +78,9 @@ private:
 	//Status JSON 파일 경로	
 	CString	m_StatusPath;
 
+	//INSP Image 파일 경로	
+	CString	m_InspImagePath;
+
 	//Spc Plus 정보 파일을 읽어서 저장한다.
 	void LoadSpcPlusInfo();
 public:
@@ -99,6 +106,10 @@ public:
 	CString getProcessDirection() { return m_ProcessDirection; }
 	//검사 Recipe Id
 	CString getRecipeId() { return m_RecipeId; }
+	//검사 위치 TOP
+	CString getInspPositionTop() { return m_InspPositionTop; }
+	//검사위치 BOTTOM
+	CString getInspPositionBottom() { return m_InspPositionBottom; }
 	//Camera 위치(Top, Bottom) 	
 	CString getCameraLocation() { return m_CameraLocation; }
 	//카메라 Gain value(카메라 조정 값)	
@@ -133,6 +144,9 @@ public:
 	//Status JSON 파일 경로	
 	CString getStatusPath() { return m_StatusPath; }
 
+	//INSP Image 파일 경로	
+	CString	getInspImagePath() { return m_InspImagePath; }
+
 	//설비ID	
 	void setEqpId(CString EqpId) { m_EqpId = EqpId; }
 	//검사기ID
@@ -155,6 +169,10 @@ public:
 	void setProcessDirection(CString ProcessDirection) { m_ProcessDirection = ProcessDirection; }
 	//검사 Recipe Id
 	void setRecipeId(CString RecipeId) { m_RecipeId = RecipeId; }
+	//검사 위치 TOP
+	void setInspPositionTop(CString InspPositionTop) {m_InspPositionTop = InspPositionTop; }
+	//검사위치 BOTTOM
+	void setInspPositionBottom(CString InspPositionBottom) {m_InspPositionBottom = InspPositionBottom; }
 	//Camera 위치(Top, Bottom) 	
 	void setCameraLocation(CString CameraLocation) { m_CameraLocation = CameraLocation; }
 	//카메라 Gain value(카메라 조정 값)	
@@ -187,6 +205,8 @@ public:
 	void setAlarmPath(CString AlarmPath) { m_AlarmPath = AlarmPath; }
 	//Status JSON 파일 경로	
 	void setStatusPath(CString StatusPath) {m_StatusPath = StatusPath; }
+	//INSP Image 파일 경로	
+	void setInspImagePath(CString InspImagePath) { m_InspImagePath = InspImagePath; }
 
 };
 

@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "SpcPlus.h"
 #include "SpcInDataIqInfo.h"
+#include "SpcInspManager.h"
 
 
 #ifdef _DEBUG
@@ -37,7 +38,7 @@ char* CSpcInDataIqInfo::MakeInDataIqInfoText =
 CSpcInDataIqInfo::CSpcInDataIqInfo(CSpcPlusManager* sMgr)
 {
 	//관리 클래스 객체 포인터
-	manager = sMgr;
+	manager = dynamic_cast<CSpcInspManager*>(sMgr);
 
 	m_IqCameraLocation = SPCINFO->getCameraLocation();
 	m_IqCameraNumber = "1";
@@ -53,6 +54,10 @@ CSpcInDataIqInfo::CSpcInDataIqInfo(CSpcPlusManager* sMgr)
 	m_IqExposureTime = SPCINFO->getCameraExposureTime();
 	m_ImageJudge = "NG";
 	m_ImageFileName = "";
+
+	m_CameraLocation = SPCINFO->getCameraLocation();
+	m_CameraNumber = "1";
+	m_ScreenNumber = "1";
 
 	if (sMgr)
 	{
@@ -89,4 +94,11 @@ CString CSpcInDataIqInfo::makeJSONText_IqInfo()
 		m_ImageFileName
 	);
 	return makeJSONText;
+}
+//INSP 이미지 파일명을 넘긴다.
+CString CSpcInDataIqInfo::ImagIqFileName()
+{
+	//①검사기종류_②파일생성시간_③설비ID_④RECIPE_ID_⑤LOT_ID_⑥Cell ID_⑦카메라 위치_⑧카메라 번호_⑨스크린 번호_⑩검사위치_⑮ 이미지판정결과_⑫ 최종판정결과
+	CSpcInspInData* InspInData = manager->getSpcInspInData();
+	return InspInData->getVisionType() + CString("_") + InspInData->getCreateTime() + CString("_") + InspInData->getEqpId() + CString("_") + InspInData->getLotId() + CString("_") + InspInData->getCellId() + CString("_") + m_CameraLocation + CString("_") + m_CameraNumber + CString("_") + m_ScreenNumber + CString("_") + m_ImageJudge + CString("_") + InspInData->getCellFinalJudge() + CString(".JPG");
 }

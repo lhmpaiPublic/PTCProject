@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "SpcPlus.h"
 #include "SpcInDataDefectInfo.h"
+#include "SpcInspManager.h"
 
 
 #ifdef _DEBUG
@@ -55,7 +56,7 @@ char* CSpcInDataDefectInfo::MakeInDataDefectInfoText =
 CSpcInDataDefectInfo::CSpcInDataDefectInfo(CSpcPlusManager* sMgr)
 {
 	//관리 클래스 객체 포인터
-	manager = sMgr;
+	manager = dynamic_cast<CSpcInspManager*>(sMgr);
 
 	m_DefectIndex = "0";
 	m_DefectTypeRuleBaseName = "";
@@ -64,7 +65,7 @@ CSpcInDataDefectInfo::CSpcInDataDefectInfo(CSpcPlusManager* sMgr)
 	m_DefectCameraLocation = SPCINFO->getCameraLocation();
 	m_DefectCameraNumber = "1";
 	m_DefectScreenNumber = "1";
-	m_DefectInspPosition = "TAB-A";
+	m_DefectInspPosition = SPCINFO->getInspPositionTop();
 	m_DefectCriteriaPointX = "0.000";
 	m_DefectCriteriaPointY = "0.000";
 	m_DefectRelativePointRPx = "0.000";
@@ -145,4 +146,12 @@ CString CSpcInDataDefectInfo::makeJSONText_DefectInfo()
 			m_DefectCropImageFileName
 		);
 	return makeJSONText;
+}
+
+//INSP 이미지 파일명을 넘긴다.
+CString CSpcInDataDefectInfo::ImagCropFileName()
+{
+	//①검사기종류_②파일생성시간_③설비ID_④RECIPE_ID_⑤LOT_ID_⑥Cell ID_⑦카메라 위치_⑧카메라 번호_⑨스크린 번호_⑩검사위치_⑪최종판정결과_⑫불량명_⑬불량좌표X_⑭불량좌표Y.JPG
+	CSpcInspInData* InspInData = manager->getSpcInspInData();
+	return InspInData->getVisionType() + CString("_") + InspInData->getCreateTime() + CString("_") + InspInData->getEqpId() + CString("_") + InspInData->getLotId() + CString("_") + InspInData->getCellId() + CString("_") + m_DefectCameraLocation + CString("_") + m_DefectCameraNumber + CString("_") + m_DefectScreenNumber + CString("_") + m_DefectInspPosition + CString("_") + InspInData->getCellFinalJudge() + CString("_") + m_DefectTypeRuleBaseName + CString("_") + m_DefectAbsoluteImgX + CString("_") + m_DefectAbsoluteImgY + CString(".JPG");
 }

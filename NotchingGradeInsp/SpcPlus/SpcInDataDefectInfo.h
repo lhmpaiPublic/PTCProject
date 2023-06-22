@@ -11,6 +11,7 @@
 #endif // _MSC_VER > 1000
 
 class CSpcPlusManager;
+class CSpcInspManager;
 class CSpcInDataDefectInfo : public CSpcInData
 {
 public:
@@ -19,7 +20,7 @@ public:
 
 private:
 	//관리 클래스 객체 포인터
-	CSpcPlusManager* manager;
+	CSpcInspManager* manager;
 
 	//결함 중 해당 결함의 순서	
 	CString	m_DefectIndex;
@@ -241,6 +242,9 @@ public:
 
 	//JSON 형식의 텍스트를 만든다.
 	CString makeJSONText_DefectInfo();
+
+	//INSP 이미지 파일명을 넘긴다.
+	CString ImagCropFileName();
 
 };
 
