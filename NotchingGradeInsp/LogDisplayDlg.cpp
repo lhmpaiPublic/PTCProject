@@ -7,6 +7,9 @@
 #include "afxdialogex.h"
 #include "Win32File.h"
 
+//유저메시지 - Log 화면 출력 메시지
+#define  WM_LOGMSGPRINT WM_USER + 12
+
 #define LOGTEXTFILENAME "NotchingGradeInsp.txt"
 
 #define LOGTEXTFILEFOLDER CString("NotchingLog")
@@ -155,6 +158,7 @@ BEGIN_MESSAGE_MAP(CLogDisplayDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUT_CLIPBOARDCOPY, &CLogDisplayDlg::OnBnClickedButClipboardcopy)
 	ON_BN_CLICKED(IDC_CHECK_LOGSELECT, &CLogDisplayDlg::OnBnClickedCheckLogselect)
 	ON_BN_CLICKED(IDC_CHECK_TextPrint, &CLogDisplayDlg::OnBnClickedCheckTextprint)
+	ON_MESSAGE(WM_LOGMSGPRINT, &CLogDisplayDlg::OnLogMsgPrint)
 END_MESSAGE_MAP()
 
 
@@ -278,15 +282,8 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 			{
 				CString popStr = pMain->GetLogDisplayMessage();
 #ifdef LOGDISPLAY_LISTBOX
-				listBox->AddString(popStr);
-				if (*pMain->getLogMoveLast())
-				{
-					listBox->SetTopIndex(listBox->GetCount() - 1);
-				}
-				if (listBox->GetCount() >= LISTBOX_CLEARCOUNT)
-				{
-					listBox->ResetContent();
-				}
+				CString* pSendStr = new CString(popStr);
+				pMain->PostMessage(WM_LOGMSGPRINT, (WPARAM)pSendStr);
 #endif //LOGDISPLAY_LISTBOX
 				tempStr += popStr + CString("\r\n");
 			}
@@ -438,4 +435,23 @@ void CLogDisplayDlg::OnBnClickedCheckTextprint()
 	{
 		bTextLogPrint = FALSE;
 	}
+}
+
+LRESULT CLogDisplayDlg::OnLogMsgPrint(WPARAM wParam, LPARAM lParam)
+{
+	CString* logStr = (CString*)wParam;
+	if (logStr)
+	{
+		m_ListLog.AddString(*logStr);
+		delete logStr;
+		if (getLogMoveLast())
+		{
+			m_ListLog.SetTopIndex(m_ListLog.GetCount() - 1);
+		}
+		if (m_ListLog.GetCount() >= LISTBOX_CLEARCOUNT)
+		{
+			m_ListLog.ResetContent();
+		}
+	}
+	return 0;
 }
