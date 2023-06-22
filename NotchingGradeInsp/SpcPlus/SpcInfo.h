@@ -63,6 +63,8 @@ private:
 	CString	m_IqResolXValue;
 	//Image 해상도 y축 Value	
 	CString	m_IqResolYValue;
+	//Image JPG 퀄리티 정보	
+	CString	m_IqJpgQuality;
 	//외관 불량명	
 	CString	m_DefectTypeRuleBaseName;
 	//불량의 실제 명칭	
@@ -128,6 +130,8 @@ public:
 	CString getIqResolXValue() { return m_IqResolXValue; }
 	//Image 해상도 y축 Value	
 	CString getIqResolYValue() { return m_IqResolYValue; }
+	//Image JPG 퀄리티 정보	
+	CString getIqJpgQuality() { return m_IqJpgQuality; }
 	//외관 불량명	
 	CString getDefectTypeRuleBaseName() { return m_DefectTypeRuleBaseName; }
 	//불량의 실제 명칭	
@@ -191,6 +195,8 @@ public:
 	void setIqResolXValue(CString IqResolXValue) { m_IqResolXValue = IqResolXValue; }
 	//Image 해상도 y축 Value	
 	void setIqResolYValue(CString IqResolYValue) { m_IqResolYValue = IqResolYValue; }
+	//Image JPG 퀄리티 정보	
+	void setIqJpgQuality(CString IqJpgQuality) { m_IqJpgQuality = IqJpgQuality; }
 	//외관 불량명	
 	void setDefectTypeRuleBaseName(CString DefectTypeRuleBaseName) { m_DefectTypeRuleBaseName = DefectTypeRuleBaseName; }
 	//불량의 실제 명칭	

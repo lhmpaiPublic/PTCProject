@@ -1249,24 +1249,28 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPC+ IMAGE Save===================================================================================================
-					CString strFilePath = InspInData->ImageFilePath();
+					CString strSPCFilePath = InspInData->ImageFilePath();
+					int SPCImageQuality = CGlobalFunc::StringToint(SPCINFO->getIqJpgQuality());
 					for (int i = 0; i < MAX_CAMERA_NO; i++)
 					{
 						CFrameRsltInfo* pFrmRsltInfo;
-						CString ImageFileName = IqImageFileNameBottom;
+
+						CString SPCImageFileName = "";
 						if (i == CAM_POS_TOP)
 						{
 							pFrmRsltInfo = pTopInfo;
-							ImageFileName = IqImageFileNameTop;
+							SPCImageFileName = IqImageFileNameTop;
 
 						}
 						else
 						{
 							pFrmRsltInfo = pBtmInfo;
-							ImageFileName = IqImageFileNameBottom;
+							SPCImageFileName = IqImageFileNameBottom;
 						}
 						
 						int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
+
+						//SPC+ 전송용 이미지 파일 저장 정보
 						if (nImgSize)
 						{
 							pFrmRsltInfo->m_nWidth;
@@ -1274,9 +1278,30 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							BYTE* pImgSavePtr;
 							pImgSavePtr = new BYTE[nImgSize];
 							memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
-							pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, 30);
-							pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strFilePath, ImageFileName);
+							//퀄리티 정보를  세팅한다.
+							pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, SPCImageQuality);
+							pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
 							pImgSaveQueueCtrl->PushBack(pSaveInfo);
+						}
+
+						//기존 이미지 저장정보
+						if (nImgSize && pFrmRsltInfo->m_bSaveFlag)
+						{
+							if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE)
+							{
+								if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE)
+								{
+									pFrmRsltInfo->m_nWidth;
+									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
+									BYTE* pImgSavePtr;
+									pImgSavePtr = new BYTE[nImgSize];
+									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+									pImgSaveQueueCtrl->PushBack(pSaveInfo);
+
+								}
+							}
 						}
 					}
 #else

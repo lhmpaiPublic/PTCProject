@@ -466,6 +466,34 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//SPC+ ALARM===================================================================================================
 				//Save 상태값 초기화
 				BOOL bSave = TRUE;
+				pFrmInfo->m_bSaveFlag = FALSE;
+
+				//Judge GRAY 또는 NG이면 bSave TRUE 모든 파일 저장
+				if ((nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG))
+				{
+					pFrmInfo->m_bSaveFlag = TRUE;
+				}
+				//Judge가 OK이면bSaveOnlyNgTab가 FALsE 이고, nBmpSaveInterval이 0이상일 때 저장
+				else
+				{
+					if (AprData.m_pRecipeInfo->bSaveOnlyNgTab != TRUE)
+					{
+						//비트맵 이미지 저장 레벨이 0 이상이면
+						if (AprData.m_pRecipeInfo->nBmpSaveInterval > 0)
+						{
+							//비트맵 레벨이 1이면 저장
+							if (AprData.m_pRecipeInfo->nBmpSaveInterval == 1)
+							{
+								pFrmInfo->m_bSaveFlag = TRUE;
+							}
+							//비트맵 레벨이 1이 아니면 체크 : Tab 번호를 레벨로 나눈다
+							else if ((pFrmInfo->nTabNo % AprData.m_pRecipeInfo->nBmpSaveInterval) == 0)
+							{
+								pFrmInfo->m_bSaveFlag = TRUE;
+							}
+						}
+					}
+				}
 #else
 				BOOL bSave = FALSE;
 

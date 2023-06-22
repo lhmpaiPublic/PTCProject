@@ -85,6 +85,8 @@ void CSpcInfo::LoadSpcPlusInfo()
 	m_IqResolXValue = CGlobalFunc::ReadIniFile("IQIMAGEINFO", "IQ_RESOL_X_VALUE", szProfilePath);
 	//Image 해상도 y축 Value	
 	m_IqResolYValue = CGlobalFunc::ReadIniFile("IQIMAGEINFO", "IQ_RESOL_Y_VALUE", szProfilePath);
+	//Image JPG 퀄리티 정보	
+	m_IqJpgQuality = CGlobalFunc::ReadIniFile("IQIMAGEINFO", "IQ_JPG_QUALITY", szProfilePath);
 	//외관 불량명	
 	m_DefectTypeRuleBaseName = CGlobalFunc::ReadIniFile("DEFECTINFO", "DEFECT_TYPE_RULE_BASE_NAME", szProfilePath);
 	//불량의 실제 명칭	
