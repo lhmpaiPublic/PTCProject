@@ -850,24 +850,26 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//Tab  있는 포인터 만 값을 세팅 하면 같이 변한다.
 					CSpcInspManager* insp = dynamic_cast<CSpcInspManager *>(pTopInfo->m_SpcInspMgr);
 					//InData ===
+					//Insp InData 객체 포인터
+					CSpcInspInData* InspInData = insp->getSpcInspInData();
 					//셀 카운트 번호
-					insp->getSpcInspInData()->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));
+					InspInData->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));
 					//Cell 판정결과
 					CString CellFinalJudge = ((pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) || (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)) ? "NG" : "OK";
-					insp->getSpcInspInData()->setCellFinalJudge(CellFinalJudge);
+					InspInData->setCellFinalJudge(CellFinalJudge);
 					//외관 판정 결과
-					insp->getSpcInspInData()->setAppearanceJudgeResult(CellFinalJudge);
+					InspInData->setAppearanceJudgeResult(CellFinalJudge);
 					//외관 NG 개수
 					int TopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
 					int BottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
-					insp->getSpcInspInData()->setTotalAppearanceNgCount(CGlobalFunc::intToString(TopJudge + BottomJudge));
-
-					//Insp InData 객체 포인터
-					CSpcInspInData* InspInData = insp->getSpcInspInData();
+					InspInData->setTotalAppearanceNgCount(CGlobalFunc::intToString(TopJudge + BottomJudge));
 
 					//IqInfo ===Tab 보이는 카메라 1
 					//Top 객체
 					CSpcInDataIqInfo* IqInfoTop = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_TOP);
+					//Camera Number(상부 또는 하부 카메라 n개인 경우) (""5. CAM NUM 규칙"" Sheet 참고
+					//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
+					IqInfoTop->setIqCameraNumber("1");
 					//이미지 X Size [pxl]
 					IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nWidth));
 					//이미지 Y Size [pxl]
@@ -882,6 +884,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//IqInfo ===Tab 없는 카메라
 					//Bottom 객체
 					CSpcInDataIqInfo* IqInfoBottom = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_BOTTOM);
+					//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
+					IqInfoTop->setIqCameraNumber("2");
 					//이미지 X Size [pxl]
 					IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nWidth));
 					//이미지 Y Size [pxl]

@@ -601,6 +601,9 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 
 				//Top 정보 객체 생성
 				CSpcInDataDefectInfo* SpcInDataDefectInfo = new CSpcInDataDefectInfo(insp);
+				//Camera Number(상부 또는 하부 카메라 n개인 경우) (""5. CAM NUM 규칙"" Sheet 참고)
+				//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
+				SpcInDataDefectInfo->setDefectCameraNumber((pTabInfo->m_nHeadNo == 0) ? _T("1") : _T("2"));
 				//결함의 순서
 				//결함 정보 객체의 갯수 + 1
 				int DefectIdx = insp->getSpcInDataDefectInfoSize() + 1;
