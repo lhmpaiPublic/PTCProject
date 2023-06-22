@@ -885,7 +885,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//Bottom 객체
 					CSpcInDataIqInfo* IqInfoBottom = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_BOTTOM);
 					//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
-					IqInfoTop->setIqCameraNumber("2");
+					IqInfoBottom->setIqCameraNumber("2");
 					//이미지 X Size [pxl]
 					IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nWidth));
 					//이미지 Y Size [pxl]
