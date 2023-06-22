@@ -103,6 +103,8 @@ void CSpcInfo::LoadSpcPlusInfo()
 	m_AlarmPath = CGlobalFunc::ReadIniFile("FILEPATH", "ALARM_PATH", szProfilePath);
 	//Status JSON 파일 경로	
 	m_StatusPath = CGlobalFunc::ReadIniFile("FILEPATH", "STATUS_PATH", szProfilePath);
-	//INSP Image 파일 경로	
-	m_InspImagePath = CGlobalFunc::ReadIniFile("FILEPATH", "INSP_IMGPATH", szProfilePath);
+	//INSP Ok Image 파일 경로	
+	m_InspOkImagePath = CGlobalFunc::ReadIniFile("FILEPATH", "INSP_OK_IMGPATH", szProfilePath);
+	//INSP Ng Image 파일 경로	
+	m_InspNgImagePath = CGlobalFunc::ReadIniFile("FILEPATH", "INSP_NG_IMGPATH", szProfilePath);
 }

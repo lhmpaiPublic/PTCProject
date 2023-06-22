@@ -188,5 +188,10 @@ CString CSpcInspInData::JsonFileName()
 //INSP 이미지 저장경로를 넘긴다.
 CString CSpcInspInData::ImageFilePath()
 {
-	return SPCINFO->getInspImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
+	CString path = SPCINFO->getInspOkImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
+	if (m_CellFinalJudge == "NG")
+	{
+		path = SPCINFO->getInspNgImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
+	}
+	return path;
 }

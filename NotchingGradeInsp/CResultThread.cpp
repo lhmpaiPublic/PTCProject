@@ -637,7 +637,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 				//추가한다.
 				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
 
-				strFilePath = InspInData->ImageFilePath();
+				strFilePath = InspInData->ImageFilePath()+CString("\\");
 
 			}
 #else

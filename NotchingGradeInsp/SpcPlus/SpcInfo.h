@@ -80,8 +80,10 @@ private:
 	//Status JSON 파일 경로	
 	CString	m_StatusPath;
 
-	//INSP Image 파일 경로	
-	CString	m_InspImagePath;
+	//INSP Ok Image 파일 경로	
+	CString	m_InspOkImagePath;
+	//INSP Ng Image 파일 경로	
+	CString	m_InspNgImagePath;
 
 	//Spc Plus 정보 파일을 읽어서 저장한다.
 	void LoadSpcPlusInfo();
@@ -148,8 +150,10 @@ public:
 	//Status JSON 파일 경로	
 	CString getStatusPath() { return m_StatusPath; }
 
-	//INSP Image 파일 경로	
-	CString	getInspImagePath() { return m_InspImagePath; }
+	//INSP Ok Image 파일 경로	
+	CString	getInspOkImagePath() { return m_InspOkImagePath; }
+	//INSP Ng Image 파일 경로	
+	CString	getInspNgImagePath() { return m_InspNgImagePath; }
 
 	//설비ID	
 	void setEqpId(CString EqpId) { m_EqpId = EqpId; }
@@ -211,8 +215,10 @@ public:
 	void setAlarmPath(CString AlarmPath) { m_AlarmPath = AlarmPath; }
 	//Status JSON 파일 경로	
 	void setStatusPath(CString StatusPath) {m_StatusPath = StatusPath; }
-	//INSP Image 파일 경로	
-	void setInspImagePath(CString InspImagePath) { m_InspImagePath = InspImagePath; }
+	//INSP Ok Image 파일 경로	
+	void setInspOkImagePath(CString InspOkImagePath) { m_InspOkImagePath = InspOkImagePath; }
+	//INSP Ng Image 파일 경로	
+	void setInspNgImagePath(CString InspNgImagePath) { m_InspNgImagePath = InspNgImagePath; }
 
 };
 
