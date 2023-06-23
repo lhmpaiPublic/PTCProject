@@ -389,6 +389,11 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					 LOGDISPLAY_SPEC(5)(_T("Logcount<%d> <<CtrlImageProcThread>>에러 - [Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"),
 						 TempLogCount, pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
 
+					 if (pFrmInfo->m_bOverFlow == TRUE)
+					 {
+						 AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+					 }
+
 				}
 
 				// 23.02.20 Ahn Add End
