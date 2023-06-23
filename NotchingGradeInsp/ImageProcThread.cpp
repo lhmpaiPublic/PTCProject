@@ -1118,7 +1118,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						AprData.m_NowLotData.m_nTabCountOK++ ;
 						AprData.m_NowLotData.m_nContinueCount = 0 ; // 22.08.09 Ahn Add
-						AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_pRecipeInfo->nSectorCount);
+						AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_nSectorBaseCount/*AprData.m_pRecipeInfo->nSectorCount*/);
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Result OK :: Find Tab Count <%d>"), AprData.m_NowLotData.m_nTabCountOK);
 
