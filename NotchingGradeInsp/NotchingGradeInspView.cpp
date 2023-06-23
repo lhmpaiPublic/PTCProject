@@ -448,7 +448,7 @@ void CNotchingGradeInspView::SigInitialize()
 
 	pSigProc->SigOutEncoderZeroSet(FALSE);
 	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->sigOutLotEndAck(FALSE);
+	pSigProc->SigOutLotEndAck(FALSE);
 	pSigProc->SigOutLotStartAck(FALSE);
 	pSigProc->SigOutRecipeChangeAck(FALSE);
 	pSigProc->WriteAlarmCode(0x0000);
@@ -465,7 +465,7 @@ void CNotchingGradeInspView::ResetSignal()
 	pSigProc->SigOutReady(FALSE);
 	pSigProc->SigOutEncoderZeroSet(FALSE);
 	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->sigOutLotEndAck(FALSE);
+	pSigProc->SigOutLotEndAck(FALSE);
 	pSigProc->SigOutLotStartAck(FALSE);
 	pSigProc->SigOutRecipeChangeAck(FALSE);
 	pSigProc->SigOutAlivePulse(FALSE);
@@ -540,7 +540,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => Initialize");
 //			pSigProc->SigOutReady(FALSE);
 			pSigProc->SigOutEncoderZeroSet(FALSE);
-			pSigProc->sigOutLotEndAck(FALSE);
+			pSigProc->SigOutLotEndAck(FALSE);
 			pSigProc->SigOutLotStartAck(FALSE);
 			pSigProc->SigOutRecipeChangeAck(FALSE);
 			pSigProc->WriteAlarmCode(0x0000);
@@ -761,7 +761,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 			// 			pSigProc->SigOutLotStartAck(FALSE);
-			// 			pSigProc->sigOutLotEndAck(FALSE);
+			// 			pSigProc->SigOutLotEndAck(FALSE);
 			// 			pSigProc->SigOutTabZeroReset(FALSE);
 
 			m_bEncoderReset = FALSE;
@@ -1333,9 +1333,9 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 	int nRet = 0;
 	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	if ((pSigProc->SigInLotEnd() == TRUE) && (pSigProc->sigOutLotEndAck(-1) == FALSE))
+	if ((pSigProc->SigInLotEnd() == TRUE) && (pSigProc->SigOutLotEndAck(-1) == FALSE))
 	{
-		pSigProc->sigOutLotEndAck(TRUE);
+		pSigProc->SigOutLotEndAck(TRUE);
 
 		CameraGrabStop();
 
@@ -1374,7 +1374,7 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		pFrame->ResetAndRefreshAll();
 
-		pSigProc->sigOutLotEndAck(FALSE);
+		pSigProc->SigOutLotEndAck(FALSE);
 
 	}
 	return nRet;
@@ -1395,7 +1395,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 ON"));
 
-		pSigProc->sigOutLotEndAck(TRUE);
+		pSigProc->SigOutLotEndAck(TRUE);
 		CameraGrabStop();
 		AprData.LotEndProcess();
 
@@ -1416,7 +1416,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		m_bLotEndFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 OFF"));
 
-		pSigProc->sigOutLotEndAck(FALSE);
+		pSigProc->SigOutLotEndAck(FALSE);
 	}
 
 

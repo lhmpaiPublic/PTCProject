@@ -1099,7 +1099,7 @@ int CSigProc::SigOutEncoderZeroSet(int nMode)
 }
 int CSigProc::SigOutRecipeChangeAck(int nMode)
 {
-	AprData.SaveDebugLog(_T("SigOutRecipeChangeAck")); //pyjtest
+	AprData.SaveDebugLog_Format(_T("SigOutRecipeChangeAck : %d"), nMode); //pyjtest
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1117,7 +1117,7 @@ int CSigProc::SigOutRecipeChangeAck(int nMode)
 }
 int CSigProc::SigOutLotStartAck(int nMode)
 {
-	AprData.SaveDebugLog(_T("SigOutLotStartAck")); //pyjtest
+	AprData.SaveDebugLog_Format(_T("SigOutLotStartAck : %d"), nMode); //pyjtest
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1133,9 +1133,9 @@ int CSigProc::SigOutLotStartAck(int nMode)
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
 }
-int CSigProc::sigOutLotEndAck(int nMode)
+int CSigProc::SigOutLotEndAck(int nMode)
 {
-	AprData.SaveDebugLog(_T("sigOutLotEndAck")); //pyjtest
+	AprData.SaveDebugLog_Format(_T("SigOutLotEndAck : %d"), nMode); //pyjtest
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1154,7 +1154,7 @@ int CSigProc::sigOutLotEndAck(int nMode)
 // 22.02.23 Ahn Add Start
 int CSigProc::SigOutTabZeroReset(int nMode)
 {
-	AprData.SaveDebugLog(_T("SigOutTabZeroReset")); //pyjtest
+	AprData.SaveDebugLog_Format(_T("SigOutTabZeroReset : %d"), nMode); //pyjtest
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1174,7 +1174,7 @@ int CSigProc::SigOutTabZeroReset(int nMode)
 
 int CSigProc::SigOutAlarmResetAck(int nMode)
 {
-	AprData.SaveDebugLog(_T("SigOutAlarmResetAck")); //pyjtest
+	AprData.SaveDebugLog_Format(_T("SigOutAlarmResetAck : %d"), nMode); //pyjtest
 
 	int nRet = 0;
 	int nAddress;
@@ -1191,7 +1191,7 @@ int CSigProc::SigOutAlarmResetAck(int nMode)
 
 int CSigProc::SigOutAlarmNgResetAck(int nMode)
 {
-	AprData.SaveDebugLog(_T("SigOutAlarmNgResetAck")); //pyjtest
+	AprData.SaveDebugLog_Format(_T("SigOutAlarmNgResetAck : %d"), nMode); //pyjtest
 
 	int nRet = 0;
 	int nAddress;
