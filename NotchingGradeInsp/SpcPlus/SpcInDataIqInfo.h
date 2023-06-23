@@ -11,6 +11,7 @@
 #endif // _MSC_VER > 1000
 
 class CSpcPlusManager;
+class CSpcInspManager;
 class CSpcInDataIqInfo : public CSpcInData
 {
 public:
@@ -19,7 +20,7 @@ public:
 
 private:
 	//관리 클래스 객체 포인터
-	CSpcPlusManager* manager;
+	CSpcInspManager* manager;
 
 	//Camera 위치(Top, Bottom) 
 	//디폴트 값 : "TOP"	
@@ -90,6 +91,9 @@ public:
 
 	//JSON 형식의 텍스트를 만든다.
 	CString makeJSONText_IqInfo();
+
+	//INSP 이미지 파일명을 넘긴다.
+	CString ImagIqFileName();
 
 };
 

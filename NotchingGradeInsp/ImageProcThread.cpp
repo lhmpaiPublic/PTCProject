@@ -850,22 +850,26 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//Tab  있는 포인터 만 값을 세팅 하면 같이 변한다.
 					CSpcInspManager* insp = dynamic_cast<CSpcInspManager *>(pTopInfo->m_SpcInspMgr);
 					//InData ===
+					//Insp InData 객체 포인터
+					CSpcInspInData* InspInData = insp->getSpcInspInData();
 					//셀 카운트 번호
-					insp->getSpcInspInData()->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));
+					InspInData->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));
 					//Cell 판정결과
 					CString CellFinalJudge = ((pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) || (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)) ? "NG" : "OK";
-					insp->getSpcInspInData()->setCellFinalJudge(CellFinalJudge);
+					InspInData->setCellFinalJudge(CellFinalJudge);
 					//외관 판정 결과
-					insp->getSpcInspInData()->setAppearanceJudgeResult(CellFinalJudge);
+					InspInData->setAppearanceJudgeResult(CellFinalJudge);
 					//외관 NG 개수
 					int TopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
 					int BottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? 1 : 0;
-					insp->getSpcInspInData()->setTotalAppearanceNgCount(CGlobalFunc::intToString(TopJudge + BottomJudge));
-
+					InspInData->setTotalAppearanceNgCount(CGlobalFunc::intToString(TopJudge + BottomJudge));
 
 					//IqInfo ===Tab 보이는 카메라 1
 					//Top 객체
 					CSpcInDataIqInfo* IqInfoTop = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_TOP);
+					//Camera Number(상부 또는 하부 카메라 n개인 경우) (""5. CAM NUM 규칙"" Sheet 참고
+					//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
+					IqInfoTop->setIqCameraNumber("1");
 					//이미지 X Size [pxl]
 					IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nWidth));
 					//이미지 Y Size [pxl]
@@ -874,11 +878,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					CString IqTopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
 					IqInfoTop->setImageJudge(IqTopJudge);
 					//SPC+ 저장할 이미지 명을 입력(Top 이미지 명)
-					IqInfoTop->setImageFileName(pTopInfo->m_pTabRsltInfo->m_chImageFile);
+					CString IqImageFileNameTop = IqInfoTop->ImagIqFileName();
+					IqInfoTop->setImageFileName(IqImageFileNameTop);
 
 					//IqInfo ===Tab 없는 카메라
 					//Bottom 객체
 					CSpcInDataIqInfo* IqInfoBottom = insp->getSpcInDataIqInfo(CSpcInspManager::IQINFO_BOTTOM);
+					//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
+					IqInfoBottom->setIqCameraNumber("2");
 					//이미지 X Size [pxl]
 					IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nWidth));
 					//이미지 Y Size [pxl]
@@ -887,7 +894,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					CString IqBottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
 					IqInfoBottom->setImageJudge(IqBottomJudge);
 					//SPC+ 저장할 이미지 명을 입력(Bottom 이미지 명)
-					IqInfoBottom->setImageFileName(pBtmInfo->m_pTabRsltInfo->m_chImageFile);
+					CString IqImageFileNameBottom = IqInfoBottom->ImagIqFileName();
+					IqInfoBottom->setImageFileName(IqImageFileNameBottom);
 
 #endif //SPCPLUS_CREATE
 
@@ -1241,6 +1249,66 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE) ;
 					}
 
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+					//SPC+ IMAGE Save===================================================================================================
+					CString strSPCFilePath = InspInData->ImageFilePath();
+					int SPCImageQuality = CGlobalFunc::StringToint(SPCINFO->getIqJpgQuality());
+					for (int i = 0; i < MAX_CAMERA_NO; i++)
+					{
+						CFrameRsltInfo* pFrmRsltInfo;
+
+						CString SPCImageFileName = "";
+						if (i == CAM_POS_TOP)
+						{
+							pFrmRsltInfo = pTopInfo;
+							SPCImageFileName = IqImageFileNameTop;
+
+						}
+						else
+						{
+							pFrmRsltInfo = pBtmInfo;
+							SPCImageFileName = IqImageFileNameBottom;
+						}
+						
+						int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
+
+						//SPC+ 전송용 이미지 파일 저장 정보
+						if (nImgSize)
+						{
+							pFrmRsltInfo->m_nWidth;
+							CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
+							BYTE* pImgSavePtr;
+							pImgSavePtr = new BYTE[nImgSize];
+							memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+							//퀄리티 정보를  세팅한다.
+							pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, SPCImageQuality);
+							pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
+							pImgSaveQueueCtrl->PushBack(pSaveInfo);
+						}
+
+						//기존 이미지 저장정보
+						if (nImgSize && pFrmRsltInfo->m_bSaveFlag)
+						{
+							if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE)
+							{
+								if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE)
+								{
+									pFrmRsltInfo->m_nWidth;
+									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
+									BYTE* pImgSavePtr;
+									pImgSavePtr = new BYTE[nImgSize];
+									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+									pImgSaveQueueCtrl->PushBack(pSaveInfo);
+
+								}
+							}
+						}
+					}
+#else
 					// 22.05.31 Ahn Add Start - Image Save Thread 
 					for (int i = 0; i < MAX_CAMERA_NO; i++)
 					{
@@ -1278,6 +1346,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							}
 						}
 					}
+#endif //SPCPLUS_CREATE
 
 					double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency) ;
 					CTactTimeData data;

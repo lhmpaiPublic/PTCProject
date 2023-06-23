@@ -17,6 +17,9 @@ public:
 	//임시 로그 카운터
 	int TempLogCount;
 
+	//이미지 저장여부 판단 플래그
+	bool m_bSaveFlag;
+
 	enum {
 		en_TopFrame = 0,
 		en_BottomFrame = 1,

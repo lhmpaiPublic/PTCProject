@@ -565,10 +565,8 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 	for (int i = 0; i < nDefCount; i++) {
 		pDefInfo = pTabInfo->GetDefectInfo(i);
 
-		if (pDefInfo != NULL) {			
-			// 22.11.28 Ahn Modify Start
-			// if (pDefInfo->nRank != JUDGE_NG) continue;
-			if (pDefInfo->nRank < JUDGE_GRAY) continue;
+		if (pDefInfo != NULL) 
+		{			
 			// 22.11.28 Ahn Modify End
 			CRect rcCrop ;
 			CPoint cpNgPos = pTabInfo->GetDefectCenterPos(i);
@@ -581,7 +579,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 			//// 22.11.21 Ahn Modify Start - JUDGE_GRAY
 			//strJudge = (pDefInfo->nRank == 0) ? _T("OK") : _T("NG");
 			//// 22.11.21 Ahn Modify End
-			strJudge = (pDefInfo->nRank == JUDGE_NG) ? _T("NG") : _T("OK");
+			strJudge = (pDefInfo->nRank == JUDGE_NG) ? _T("NG") : (pDefInfo->nRank == JUDGE_OK) ? _T("OK") : _T("GRAY");
 			// 23.02.08 Ahn Modify Start
 
 			rcCrop.left = cpNgPos.x - 128;
@@ -591,10 +589,65 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 
 			strDefType = (pDefInfo->nType == en_ModeSurface) ? _T("Surface") : _T("FoilExp");
 
-			// 22.12.15 Ahn Add Start
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+			//SPC+ INSP===================================================================================================
+			CString strFilePath = "";
+			//Defect Info 객체 포인터가 NULL이 아니면
+			if (insp)
+			{
+				//Insp InData 객체 포인터
+				CSpcInspInData* InspInData = insp->getSpcInspInData();
+
+				//Top 정보 객체 생성
+				CSpcInDataDefectInfo* SpcInDataDefectInfo = new CSpcInDataDefectInfo(insp);
+				//Camera Number(상부 또는 하부 카메라 n개인 경우) (""5. CAM NUM 규칙"" Sheet 참고)
+				//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
+				SpcInDataDefectInfo->setDefectCameraNumber((pTabInfo->m_nHeadNo == 0) ? _T("1") : _T("2"));
+				//결함의 순서
+				//결함 정보 객체의 갯수 + 1
+				int DefectIdx = insp->getSpcInDataDefectInfoSize() + 1;
+				SpcInDataDefectInfo->setDefectIndex(CGlobalFunc::intToString(DefectIdx));
+				//Rule Base Defect Type(불량명 기입) 
+				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
+				CString DefectTypeRuleBaseName = (pDefInfo->nType == 0) ? "Foil-Exposure" : (pDefInfo->nType == 1) ? "Foil-ExposureOut" : "Surface";
+				SpcInDataDefectInfo->setDefectTypeRuleBaseName(DefectTypeRuleBaseName);
+				SpcInDataDefectInfo->setDefectTypeRuleBaseNameReal(DefectTypeRuleBaseName);
+				//Camera Number
+				//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
+				SpcInDataDefectInfo->setDefectCameraNumber((pDefInfo->nHeadNo == 0) ? "1" : "2");
+
+				//Image 기준 불량 발생 위치 X [pxl]_절대 위치 Image좌,상단(0,0)
+				SpcInDataDefectInfo->setDefectAbsoluteImgX(CGlobalFunc::floatToString(pDefInfo->dSizeX));
+				//Image 기준 불량 발생 위치 Y [pxl]_절대 위치 Image좌,상단(0,0)
+				SpcInDataDefectInfo->setDefectAbsoluteImgY(CGlobalFunc::floatToString(pDefInfo->dSizeY));
+
+				//Image 기준 Defect의 Width [pxl]
+				SpcInDataDefectInfo->setDefectImgWidth(CGlobalFunc::intToString(pDefInfo->nSizeX));
+				//Image 기준 Defect의 Length [pxl]
+				SpcInDataDefectInfo->setDefectImgLength(CGlobalFunc::intToString(pDefInfo->nSizeY));
+				//Image 기준 불량 발생 면적 [pxl]
+				SpcInDataDefectInfo->setDefectAreaPixels(CGlobalFunc::intToString(pDefInfo->nSize));
+
+				//Crop Image 파일명
+				strFileName = SpcInDataDefectInfo->ImagCropFileName();
+				SpcInDataDefectInfo->setDefectCropImageFileName(strFileName);
+
+				//불량명 전체를 저장한다.
+				//상위에 추가할 내용
+				insp->addDefectKindName(DefectTypeRuleBaseName);
+
+				//추가한다.
+				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
+
+				strFilePath = InspInData->ImageFilePath()+CString("\\");
+
+			}
+#else
+						// 22.12.15 Ahn Add Start
 			//strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s_%d_%s.jpg")
 			strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s_%s_%d_%s.jpg")
-			// 22.12.15 Ahn Add End
+				// 22.12.15 Ahn Add End
 				, INSPECTION_TYPE
 				, strTime
 				, AprData.m_System.m_strMachineID
@@ -608,7 +661,10 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 			);
 
 			CString strFilePath;
-			strFilePath.Format(_T("%s\\%s\\%s\\%s\\CROP\\"), AprData.m_strImagePath, strJudge, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo );
+			strFilePath.Format(_T("%s\\%s\\%s\\%s\\CROP\\"), AprData.m_strImagePath, strJudge, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
+			
+#endif //SPCPLUS_CREATE
+
 			CImageProcess::SaveCropImage(pImgPtr, nWidth, nHeight, rcCrop, strFilePath, strFileName);
 
 			// 22.06.10 Ahn Add Star
@@ -637,52 +693,6 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 			// 22.09.15 Ahn Add Start
 			pDefInfo->bMarking = pTabInfo->m_bMarkingFlag ;
 			// 22.09.15 Ahn Add End
-
-//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE	
-			//SPC+ INSP===================================================================================================
-			//Defect Info 객체 포인터가 NULL이 아니면
-			if (insp)
-			{
-				//Top 정보 객체 생성
-				CSpcInDataDefectInfo* SpcInDataDefectInfo = new CSpcInDataDefectInfo(insp);
-				//결함의 순서
-				//결함 정보 객체의 갯수 + 1
-				int DefectIdx = insp->getSpcInDataDefectInfoSize() + 1;
-				SpcInDataDefectInfo->setDefectIndex(CGlobalFunc::intToString(DefectIdx));
-				//Rule Base Defect Type(불량명 기입) 
-				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
-				CString DefectTypeRuleBaseName = (pDefInfo->nType == 0) ? "Foil Exposure" : (pDefInfo->nType == 1) ? "Foil ExposureOut" : "Surface";
-				SpcInDataDefectInfo->setDefectTypeRuleBaseName(DefectTypeRuleBaseName);
-				SpcInDataDefectInfo->setDefectTypeRuleBaseNameReal(DefectTypeRuleBaseName);
-				//Camera Number
-				//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
-				SpcInDataDefectInfo->setDefectCameraNumber((pDefInfo->nHeadNo == 0)? "1": "2");
-
-				//Image 기준 불량 발생 위치 X [pxl]_절대 위치 Image좌,상단(0,0)
-				SpcInDataDefectInfo->setDefectAbsoluteImgX(CGlobalFunc::floatToString(pDefInfo->dSizeX));
-				//Image 기준 불량 발생 위치 Y [pxl]_절대 위치 Image좌,상단(0,0)
-				SpcInDataDefectInfo->setDefectAbsoluteImgY(CGlobalFunc::floatToString(pDefInfo->dSizeY));
-
-				//Image 기준 Defect의 Width [pxl]
-				SpcInDataDefectInfo->setDefectImgWidth(CGlobalFunc::intToString(pDefInfo->nSizeX));
-				//Image 기준 Defect의 Length [pxl]
-				SpcInDataDefectInfo->setDefectImgLength(CGlobalFunc::intToString(pDefInfo->nSizeY));
-				//Image 기준 불량 발생 면적 [pxl]
-				SpcInDataDefectInfo->setDefectAreaPixels(CGlobalFunc::intToString(pDefInfo->nSize));
-
-				//Crop Image 파일명
-				SpcInDataDefectInfo->setDefectCropImageFileName(strFileName);
-
-				//불량명 전체를 저장한다.
-				//상위에 추가할 내용
-				insp->addDefectKindName(DefectTypeRuleBaseName);
-
-				//추가한다.
-				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
-
-			}
-#endif //SPCPLUS_CREATE
 
 			// 22.06.23 Ahn Add Start
 			CDefectInfo* pDefRsltInfo = new CDefectInfo;
@@ -795,56 +805,42 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							// 23.02.06 Ahn Modify End
 						}
 
-						// 22.06.09 Ahn Modify Start
-						if (pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE)
-						{
-							//이미지 저장
-							LOGDISPLAY_SPEC(1)("*5**Image Save : TabNo<%d>", pRsltInfo->nTabNo);
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
 
 							//이미지 저장 포맷
-							CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
+						CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
 
-							CString strPath;
-							CString strTime;
-							strTime.Format(_T("%04d%02d%02d_%02d%02d%02d.%d")
-								, pRsltInfo->m_pTabRsltInfo->sysTime.wYear
-								, pRsltInfo->m_pTabRsltInfo->sysTime.wMonth
-								, pRsltInfo->m_pTabRsltInfo->sysTime.wDay
-								, pRsltInfo->m_pTabRsltInfo->sysTime.wHour
-								, pRsltInfo->m_pTabRsltInfo->sysTime.wMinute
-								, pRsltInfo->m_pTabRsltInfo->sysTime.wSecond
-								, pRsltInfo->m_pTabRsltInfo->sysTime.wMilliseconds
-							);
-							strPath.Format(_T("%s\\Overlay\\%s_%s_%s%s")
-								, pRsltInfo->m_pTabRsltInfo->m_chImagePath
-								, AprData.m_NowLotData.m_strLotNo
-								// 23.02.08 Ahn Modify Start
-								//, ( pRsltInfo->m_pTabRsltInfo->m_nTabNo == CAM_POS_TOP ) ? _T("TOP") : _T("BOTTOM")
-								, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BOTTOM")
-								// 23.02.08 Ahn Modify Start
-								, strTime
-								, strImageFormat
-							);
+						CString strPath;
+						CString strTime;
+						strTime.Format(_T("%04d%02d%02d_%02d%02d%02d.%d")
+							, pRsltInfo->m_pTabRsltInfo->sysTime.wYear
+							, pRsltInfo->m_pTabRsltInfo->sysTime.wMonth
+							, pRsltInfo->m_pTabRsltInfo->sysTime.wDay
+							, pRsltInfo->m_pTabRsltInfo->sysTime.wHour
+							, pRsltInfo->m_pTabRsltInfo->sysTime.wMinute
+							, pRsltInfo->m_pTabRsltInfo->sysTime.wSecond
+							, pRsltInfo->m_pTabRsltInfo->sysTime.wMilliseconds
+						);
+						strPath.Format(_T("%s\\Overlay\\%s_%s_%s%s")
+							, pRsltInfo->m_pTabRsltInfo->m_chImagePath
+							, AprData.m_NowLotData.m_strLotNo
+							// 23.02.08 Ahn Modify Start
+							//, ( pRsltInfo->m_pTabRsltInfo->m_nTabNo == CAM_POS_TOP ) ? _T("TOP") : _T("BOTTOM")
+							, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BOTTOM")
+							// 23.02.08 Ahn Modify Start
+							, strTime
+							, strImageFormat
+						);
 
-							if (strPath.GetLength() > 0)
-							{
-								// 23.02.06 Ahn Modify Start
-								//CaptureImage( hWnd, strPath );
-								bmpStd.SaveBitmap(strPath);
-								// 23.02.06 Ahn Modify Start
-							}
-							else
-							{
-								//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-								LOGDISPLAY_SPEC(0)("Overlay 이미지 저장 Path가 없다.");
-							}
+						if (strPath.GetLength() > 0)
+						{
+							// 23.02.06 Ahn Modify Start
+							//CaptureImage( hWnd, strPath );
+							bmpStd.SaveBitmap(strPath);
+							// 23.02.06 Ahn Modify Start
 						}
 
-						// 22.05.25 Ahn Add Start
-						// 일단 다남겨
-
-	//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE	
 						SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue, insp);
 #else
 						SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue);

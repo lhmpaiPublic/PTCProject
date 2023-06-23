@@ -9,8 +9,11 @@ public :
 	int m_nHeight;
 	int m_nBitCnt;
 
+	//이미지 저장 퀄리티 정보
+	int m_nJpgQuality;
+
 	BYTE* GetImgPtr() { return m_pImagePtr; };
-	void SetImgPtr(BYTE* pImgPtr, int nWidth, int nHeight) { m_pImagePtr = pImgPtr; m_nWidth = nWidth; m_nHeight = nHeight; };
+	void SetImgPtr(BYTE* pImgPtr, int nWidth, int nHeight, int nJpgQuality = 100) { m_pImagePtr = pImgPtr; m_nWidth = nWidth; m_nHeight = nHeight; m_nJpgQuality = nJpgQuality; };
 };
 
 class CImageSaveQueueCtrl

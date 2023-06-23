@@ -41,6 +41,10 @@ private:
 	CString	m_ProcessDirection;
 	//검사 Recipe Id
 	CString m_RecipeId;
+	//검사 위치 TOP
+	CString m_InspPositionTop;
+	//검사위치 BOTTOM
+	CString m_InspPositionBottom;
 	//Camera 위치(Top, Bottom) 	
 	CString	m_CameraLocation;
 	//카메라 Gain value(카메라 조정 값)	
@@ -59,6 +63,8 @@ private:
 	CString	m_IqResolXValue;
 	//Image 해상도 y축 Value	
 	CString	m_IqResolYValue;
+	//Image JPG 퀄리티 정보	
+	CString	m_IqJpgQuality;
 	//외관 불량명	
 	CString	m_DefectTypeRuleBaseName;
 	//불량의 실제 명칭	
@@ -73,6 +79,11 @@ private:
 	CString	m_AlarmPath;
 	//Status JSON 파일 경로	
 	CString	m_StatusPath;
+
+	//INSP Ok Image 파일 경로	
+	CString	m_InspOkImagePath;
+	//INSP Ng Image 파일 경로	
+	CString	m_InspNgImagePath;
 
 	//Spc Plus 정보 파일을 읽어서 저장한다.
 	void LoadSpcPlusInfo();
@@ -99,6 +110,10 @@ public:
 	CString getProcessDirection() { return m_ProcessDirection; }
 	//검사 Recipe Id
 	CString getRecipeId() { return m_RecipeId; }
+	//검사 위치 TOP
+	CString getInspPositionTop() { return m_InspPositionTop; }
+	//검사위치 BOTTOM
+	CString getInspPositionBottom() { return m_InspPositionBottom; }
 	//Camera 위치(Top, Bottom) 	
 	CString getCameraLocation() { return m_CameraLocation; }
 	//카메라 Gain value(카메라 조정 값)	
@@ -117,6 +132,8 @@ public:
 	CString getIqResolXValue() { return m_IqResolXValue; }
 	//Image 해상도 y축 Value	
 	CString getIqResolYValue() { return m_IqResolYValue; }
+	//Image JPG 퀄리티 정보	
+	CString getIqJpgQuality() { return m_IqJpgQuality; }
 	//외관 불량명	
 	CString getDefectTypeRuleBaseName() { return m_DefectTypeRuleBaseName; }
 	//불량의 실제 명칭	
@@ -132,6 +149,11 @@ public:
 	CString getAlarmPath() { return m_AlarmPath; }
 	//Status JSON 파일 경로	
 	CString getStatusPath() { return m_StatusPath; }
+
+	//INSP Ok Image 파일 경로	
+	CString	getInspOkImagePath() { return m_InspOkImagePath; }
+	//INSP Ng Image 파일 경로	
+	CString	getInspNgImagePath() { return m_InspNgImagePath; }
 
 	//설비ID	
 	void setEqpId(CString EqpId) { m_EqpId = EqpId; }
@@ -155,6 +177,10 @@ public:
 	void setProcessDirection(CString ProcessDirection) { m_ProcessDirection = ProcessDirection; }
 	//검사 Recipe Id
 	void setRecipeId(CString RecipeId) { m_RecipeId = RecipeId; }
+	//검사 위치 TOP
+	void setInspPositionTop(CString InspPositionTop) {m_InspPositionTop = InspPositionTop; }
+	//검사위치 BOTTOM
+	void setInspPositionBottom(CString InspPositionBottom) {m_InspPositionBottom = InspPositionBottom; }
 	//Camera 위치(Top, Bottom) 	
 	void setCameraLocation(CString CameraLocation) { m_CameraLocation = CameraLocation; }
 	//카메라 Gain value(카메라 조정 값)	
@@ -173,6 +199,8 @@ public:
 	void setIqResolXValue(CString IqResolXValue) { m_IqResolXValue = IqResolXValue; }
 	//Image 해상도 y축 Value	
 	void setIqResolYValue(CString IqResolYValue) { m_IqResolYValue = IqResolYValue; }
+	//Image JPG 퀄리티 정보	
+	void setIqJpgQuality(CString IqJpgQuality) { m_IqJpgQuality = IqJpgQuality; }
 	//외관 불량명	
 	void setDefectTypeRuleBaseName(CString DefectTypeRuleBaseName) { m_DefectTypeRuleBaseName = DefectTypeRuleBaseName; }
 	//불량의 실제 명칭	
@@ -187,6 +215,10 @@ public:
 	void setAlarmPath(CString AlarmPath) { m_AlarmPath = AlarmPath; }
 	//Status JSON 파일 경로	
 	void setStatusPath(CString StatusPath) {m_StatusPath = StatusPath; }
+	//INSP Ok Image 파일 경로	
+	void setInspOkImagePath(CString InspOkImagePath) { m_InspOkImagePath = InspOkImagePath; }
+	//INSP Ng Image 파일 경로	
+	void setInspNgImagePath(CString InspNgImagePath) { m_InspNgImagePath = InspNgImagePath; }
 
 };
 

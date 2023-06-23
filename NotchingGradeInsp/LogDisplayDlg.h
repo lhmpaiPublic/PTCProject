@@ -105,6 +105,7 @@ public:
 	//텍스트 로그 출력 여부
 	bool* getTextLogPrint() { return &bTextLogPrint; }
 	bool bTextLogPrint;
+	afx_msg LRESULT OnLogMsgPrint(WPARAM wParam, LPARAM lParam);
 };
 
 //로그 항상 출력(초기화 또는 버튼, 에러 같은 특정 확인용)
