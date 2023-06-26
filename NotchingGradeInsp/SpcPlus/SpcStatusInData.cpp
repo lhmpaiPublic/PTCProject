@@ -15,17 +15,17 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 CString CSpcStatusInData::MakeStatusInDataText =
-"               {\r\n"
-"                     \"CATEGORY\": \"%s\",\r\n"
-"                     \"TRANSFER_TIME\": \"%s\",\r\n"
-"                     \"EQP_INSP_ID\": \"\",\r\n"
-"                     \"PROCESS_GROUP\": \"%s\",\r\n"
-"                     \"PROCESS_NAME\": \"%s\",\r\n"
-"                     \"EQP_ID\": \"%s\",\r\n"
-"                     \"AGENT_SW_VERSION\": \"%s\",\r\n"
-"                     \"VISION_TYPE\": \"%s\",\r\n"
-"                     \"INSP_STATUS\": \"%s\"\r\n"
-"                 }\r\n";
+"      {\r\n"
+"        \"CATEGORY\": \"%s\",\r\n"
+"        \"TRANSFER_TIME\": \"%s\",\r\n"
+"        \"EQP_INSP_ID\": \"\",\r\n"
+"        \"PROCESS_GROUP\": \"%s\",\r\n"
+"        \"PROCESS_NAME\": \"%s\",\r\n"
+"        \"EQP_ID\": \"%s\",\r\n"
+"        \"AGENT_SW_VERSION\": \"%s\",\r\n"
+"        \"VISION_TYPE\": \"%s\",\r\n"
+"        \"INSP_STATUS\": \"%s\"\r\n"
+"      }\r\n";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
@@ -83,7 +83,10 @@ CString CSpcStatusInData::makeJSONText_Status()
 CString CSpcStatusInData::JsonFilePath()
 {
 	CString path = SPCINFO->getStatusPath()+ m_CreateTime.Mid(0, 6);
-	CWin32File::CreateDirectory(path);
+	if (CWin32File::Exists(path) == FALSE)
+	{
+		CWin32File::CreateDirectory(path);
+	}
 	return path;
 }
 

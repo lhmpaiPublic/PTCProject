@@ -15,22 +15,22 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 char* CSpcInDataIqInfo::MakeInDataIqInfoText =
-"                                         {\r\n"
-"                                               \"IQ_CAMERA_LOCATION\": \"%s\",\r\n"
-"                                               \"IQ_CAMERA_NUMBER\" : \"%s\",\r\n"
-"                                               \"IQ_SCREEN_NUMBER\" : \"%s\",\r\n"
-"                                               \"IQ_SCREEN_IMAGE_SIZE_X\" : \"%s\",\r\n"
-"                                               \"IQ_SCREEN_IMAGE_SIZE_Y\" : \"%s\",\r\n"
-"                                               \"IQ_FOCUS_VALUE\" : \"%s\",\r\n"
-"                                               \"IQ_BRIGHT_VALUE\" : \"%s\",\r\n"
-"                                               \"IQ_RESOL_X_VALUE\" : \"%s\",\r\n"
-"                                               \"IQ_RESOL_Y_VALUE\" : \"%s\",\r\n"
-"                                               \"IQ_CAM_ANGLE_VALUE\" : \"%s\",\r\n"
-"                                               \"IQ_CAMERA_GAIN\" : \"%s\",\r\n"
-"                                               \"IQ_EXPOSURE_TIME\" : \"%s\",\r\n"
-"                                               \"IMAGE_JUDGE\" : \"%s\",\r\n"
-"                                               \"IMAGE_FILE_NAME\" : \"%s\"\r\n"
-"                                        }";
+"          {\r\n"
+"            \"IQ_CAMERA_LOCATION\": \"%s\",\r\n"
+"            \"IQ_CAMERA_NUMBER\" : \"%s\",\r\n"
+"            \"IQ_SCREEN_NUMBER\" : \"%s\",\r\n"
+"            \"IQ_SCREEN_IMAGE_SIZE_X\" : \"%s\",\r\n"
+"            \"IQ_SCREEN_IMAGE_SIZE_Y\" : \"%s\",\r\n"
+"            \"IQ_FOCUS_VALUE\" : \"%s\",\r\n"
+"            \"IQ_BRIGHT_VALUE\" : \"%s\",\r\n"
+"            \"IQ_RESOL_X_VALUE\" : \"%s\",\r\n"
+"            \"IQ_RESOL_Y_VALUE\" : \"%s\",\r\n"
+"            \"IQ_CAM_ANGLE_VALUE\" : \"%s\",\r\n"
+"            \"IQ_CAMERA_GAIN\" : \"%s\",\r\n"
+"            \"IQ_EXPOSURE_TIME\" : \"%s\",\r\n"
+"            \"IMAGE_JUDGE\" : \"%s\",\r\n"
+"            \"IMAGE_FILE_NAME\" : \"%s\"\r\n"
+"          }";
 
 
 //생성자 : 클래스의 초기화 설계

@@ -14,16 +14,16 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 char* CSpcParaInfo::MakeParaInfoText_1 =
-"                                     {\r\n"
-"                                           \"PARA_INSP_TYPE\": \"%s\",\r\n"
-"                                           \"PARA_NO\" : \"%s\",\r\n"
-"                                           \"PARA_CAM_POSITION\": \"%s\",\r\n"
-"                                           \"PARA_DETECTION_NAME\": \"%s\",\r\n"
+"          {\r\n"
+"            \"PARA_INSP_TYPE\": \"%s\",\r\n"
+"            \"PARA_NO\" : \"%s\",\r\n"
+"            \"PARA_CAM_POSITION\": \"%s\",\r\n"
+"            \"PARA_DETECTION_NAME\": \"%s\",\r\n"
 "%s"
-"                                     }";
+"          }";
 
 char* CSpcParaInfo::MakeParaInfoText_2 =
-"                                           \"%s\": \"%s\"\r\n";
+"            \"%s\": \"%s\"\r\n";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등

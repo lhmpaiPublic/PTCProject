@@ -15,22 +15,22 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 char* CSpcSpecParaInData::MakeSpecParaInDataText_1 =
-"                         {\r\n"
-"                                  \"CATEGORY\": \"%s\",\r\n"
-"                                  \"EQP_ID\": \"%s\",\r\n"
-"                                  \"EQP_INSP_ID\": \"%s\",\r\n"
-"                                  \"RECIPE_ID\" : \"%s\",\r\n"
-"                                  \"INSP_SW_VERSION\": \"%s\",\r\n"
-"                                  \"MODIFY_TIME\": \"%s\",\r\n"
-"                                  \"MODIFIER\": \"%s\",\r\n"
-"                                  \"MODIFIER_REASON\": \"%s\",\r\n"
-"                                  \"PARA_INFO\": [\r\n";
+"      {\r\n"
+"        \"CATEGORY\": \"%s\",\r\n"
+"        \"EQP_ID\": \"%s\",\r\n"
+"        \"EQP_INSP_ID\": \"%s\",\r\n"
+"        \"RECIPE_ID\" : \"%s\",\r\n"
+"        \"INSP_SW_VERSION\": \"%s\",\r\n"
+"        \"MODIFY_TIME\": \"%s\",\r\n"
+"        \"MODIFIER\": \"%s\",\r\n"
+"        \"MODIFIER_REASON\": \"%s\",\r\n"
+"        \"PARA_INFO\": [\r\n";
 char* CSpcSpecParaInData::MakeSpecParaInDataText_2 =
-"                                  ],\r\n"
-"                                  \"SPEC_INFO\": [\r\n";
+"        ],\r\n"
+"        \"SPEC_INFO\": [\r\n";
 char* CSpcSpecParaInData::MakeSpecParaInDataText_3 =
-"                                  ]\r\n"
-"                         }\r\n";
+"        ]\r\n"
+"      }\r\n";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
@@ -96,7 +96,10 @@ CString CSpcSpecParaInData::getJSONText_SpecParaTail()
 CString CSpcSpecParaInData::JsonFilePath()
 {
 	CString path = SPCINFO->getSpecParaPath();
-	CWin32File::CreateDirectory(path);
+	if (CWin32File::Exists(path) == FALSE)
+	{
+		CWin32File::CreateDirectory(path);
+	}
 	return path;
 }
 

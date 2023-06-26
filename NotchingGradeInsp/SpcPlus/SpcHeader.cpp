@@ -15,10 +15,10 @@ static char THIS_FILE[]=__FILE__;
 
 char* CSpcHeader::MakeHeaderText_1 =
 "{\r\n"
-"   \"TXN_ID\": \"%s\",\r\n"
-"   \"inDTName\" : \"%s\",\r\n"
-"   \"outDTName\" : \"%s\",\r\n"
-"   \"actID\" : \"%s\",\r\n";
+"  \"TXN_ID\": \"%s\",\r\n"
+"  \"inDTName\" : \"%s\",\r\n"
+"  \"outDTName\" : \"%s\",\r\n"
+"  \"actID\" : \"%s\",\r\n";
 //+%s RefDs
 char* CSpcHeader::MakeHeaderText_2 =
 "}";

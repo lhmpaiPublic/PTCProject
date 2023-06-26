@@ -14,12 +14,12 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 CString CSpcRefDs::MakeRefDsText_1 =
-"   \"refDS\" : {\r\n"
-"           \"IN_DATA\": [\r\n";
+"  \"refDS\" : {\r\n"
+"    \"IN_DATA\": [\r\n";
 //+%s ~...InData
 CString CSpcRefDs::MakeRefDsText_2 =
-"             ]\r\n"
-"      }\r\n";
+"    ]\r\n"
+"  }\r\n";
 
 
 //생성자 : 클래스의 초기화 설계

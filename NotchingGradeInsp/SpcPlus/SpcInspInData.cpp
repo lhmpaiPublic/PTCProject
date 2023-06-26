@@ -16,47 +16,47 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 char* CSpcInspInData::MakeInspInDataText_1 =
-"                         {\r\n"
-"                                  \"CATEGORY\": \"%s\",\r\n"
-"                                  \"VISION_INPUT_TIME\" : \"%s\",\r\n"
-"                                  \"VISION_OUTPUT_TIME\" : \"%s\",\r\n"
-"                                  \"INSP_TACTTIME\" : \"%s\",\r\n"
-"                                  \"INSP_PROCESSING_TIME\" : \"%s\",\r\n"
-"                                  \"RECIPE_ID\" : \"%s\",\r\n"
-"                                  \"NG_OUT\" : \"%s\",\r\n"
-"                                  \"EQP_ID\" : \"%s\",\r\n"
-"                                  \"EQP_INSP_ID\" : \"%s\",\r\n"
-"                                  \"PROCESS_GROUP\" : \"%s\",\r\n"
-"                                  \"PROCESS_NAME\" : \"%s\",\r\n"
-"                                  \"LINE_NUMBER\" : \"%s\",\r\n"
-"                                  \"MACHINE_NUMBER\" : \"%s\",\r\n"
-"                                  \"LANE_NUMBER\" : \"%s\",\r\n"
-"                                  \"VISION_TYPE\" : \"%s\",\r\n"
-"                                  \"PROCESS_DIRECTION\" : \"%s\",\r\n"
-"                                  \"LOT_ID\" : \"%s\",\r\n"
-"                                  \"CELL_ID\" : \"%s\",\r\n"
-"                                  \"CELL_COUNT_NO\" : \"%s\",\r\n"
-"                                  \"VIRTUAL_CELL_ID\" : \"%s\",\r\n"
-"                                  \"CELL_FINAL_JUDGE\" : \"%s\",\r\n"
-"                                  \"IQ_INFO\": [\r\n";
+"      {\r\n"
+"        \"CATEGORY\": \"%s\",\r\n"
+"        \"VISION_INPUT_TIME\" : \"%s\",\r\n"
+"        \"VISION_OUTPUT_TIME\" : \"%s\",\r\n"
+"        \"INSP_TACTTIME\" : \"%s\",\r\n"
+"        \"INSP_PROCESSING_TIME\" : \"%s\",\r\n"
+"        \"RECIPE_ID\" : \"%s\",\r\n"
+"        \"NG_OUT\" : \"%s\",\r\n"
+"        \"EQP_ID\" : \"%s\",\r\n"
+"        \"EQP_INSP_ID\" : \"%s\",\r\n"
+"        \"PROCESS_GROUP\" : \"%s\",\r\n"
+"        \"PROCESS_NAME\" : \"%s\",\r\n"
+"        \"LINE_NUMBER\" : \"%s\",\r\n"
+"        \"MACHINE_NUMBER\" : \"%s\",\r\n"
+"        \"LANE_NUMBER\" : \"%s\",\r\n"
+"        \"VISION_TYPE\" : \"%s\",\r\n"
+"        \"PROCESS_DIRECTION\" : \"%s\",\r\n"
+"        \"LOT_ID\" : \"%s\",\r\n"
+"        \"CELL_ID\" : \"%s\",\r\n"
+"        \"CELL_COUNT_NO\" : \"%s\",\r\n"
+"        \"VIRTUAL_CELL_ID\" : \"%s\",\r\n"
+"        \"CELL_FINAL_JUDGE\" : \"%s\",\r\n"
+"        \"IQ_INFO\": [\r\n";
 //+"%s"	 IQ_INFO
 char* CSpcInspInData::MakeInspInDataText_2 =
-"                                  ]\r\n"
-"                                  \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
-"                                  \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
-"                                  \"APPEARANCE_REASON_ALL\" : [\r\n"
-"                                  \"%s\"\r\n"
-"                                  ] ,\r\n"
-"                                  \"APPEARANCE_REASON_ALL_REAL\" : [\r\n"
-"                                  \"%s\"\r\n"
-"                                  ] ,\r\n"
-"                                  \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
-"                                  \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
-"                                  \"DEFECT_INFO\": [\r\n";
+"        ],\r\n"
+"        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
+"        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
+"        \"APPEARANCE_REASON_ALL\" : [\r\n"
+"          \"%s\"\r\n"
+"        ],\r\n"
+"        \"APPEARANCE_REASON_ALL_REAL\" : [\r\n"
+"          \"%s\"\r\n"
+"        ],\r\n"
+"        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
+"        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
+"        \"DEFECT_INFO\": [\r\n";
 //+"%s"	DEFECT_INFO
 char* CSpcInspInData::MakeInspInDataText_3 =
-"                                ]\r\n"
-"                          }\r\n";
+"        ]\r\n"
+"      }\r\n";
 
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
@@ -179,7 +179,10 @@ CString CSpcInspInData::getSONText_InspTail()
 CString CSpcInspInData::JsonFilePath()
 {
 	CString path = SPCINFO->getInspPath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
-	CWin32File::CreateDirectory(path);
+	if (CWin32File::Exists(path) == FALSE)
+	{
+		CWin32File::CreateDirectory(path);
+	}
 	return path;
 }
 
@@ -197,6 +200,9 @@ CString CSpcInspInData::ImageFilePath()
 	{
 		path = SPCINFO->getInspNgImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 	}
-	CWin32File::CreateDirectory(path);
+	if (CWin32File::Exists(path) == FALSE)
+	{
+		CWin32File::CreateDirectory(path);
+	}
 	return path;
 }
