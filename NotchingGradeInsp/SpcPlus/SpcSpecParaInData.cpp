@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "SpcPlus.h"
 #include "SpcSpecParaInData.h"
+#include "Win32File.h"
 
 
 #ifdef _DEBUG
@@ -94,7 +95,9 @@ CString CSpcSpecParaInData::getJSONText_SpecParaTail()
 //파일저장경로를 넘긴다.
 CString CSpcSpecParaInData::JsonFilePath()
 {
-	return SPCINFO->getSpecParaPath();
+	CString path = SPCINFO->getSpecParaPath();
+	CWin32File::CreateDirectory(path);
+	return path;
 }
 
 //파일명을 넘긴다.

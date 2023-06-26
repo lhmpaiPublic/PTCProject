@@ -5,6 +5,8 @@
 #include "pch.h"
 #include "SpcPlus.h"
 #include "SpcInspInData.h"
+#include "Win32File.h"
+
 
 
 #ifdef _DEBUG
@@ -176,7 +178,9 @@ CString CSpcInspInData::getSONText_InspTail()
 //파일저장경로를 넘긴다.
 CString CSpcInspInData::JsonFilePath()
 {
-	return SPCINFO->getInspPath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
+	CString path = SPCINFO->getInspPath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
+	CWin32File::CreateDirectory(path);
+	return path;
 }
 
 //파일명을 넘긴다.
@@ -193,5 +197,6 @@ CString CSpcInspInData::ImageFilePath()
 	{
 		path = SPCINFO->getInspNgImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 	}
+	CWin32File::CreateDirectory(path);
 	return path;
 }

@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "SpcPlus.h"
 #include "SpcAlarmInData.h"
+#include "Win32File.h"
 
 
 #ifdef _DEBUG
@@ -104,7 +105,9 @@ CString CSpcAlarmInData::makeJSONText_Alarm()
 //파일저장경로를 넘긴다.
 CString CSpcAlarmInData::JsonFilePath()
 {
-	return SPCINFO->getAlarmPath() + m_CreateTime.Mid(0, 6);
+	CString path = SPCINFO->getAlarmPath() + m_CreateTime.Mid(0, 6);
+	CWin32File::CreateDirectory(path);
+	return path;
 }
 
 //파일명을 넘긴다.

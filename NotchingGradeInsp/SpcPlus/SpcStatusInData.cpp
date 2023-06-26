@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "SpcPlus.h"
 #include "SpcStatusInData.h"
+#include "Win32File.h"
 
 
 #ifdef _DEBUG
@@ -81,7 +82,9 @@ CString CSpcStatusInData::makeJSONText_Status()
 //파일저장경로를 넘긴다.
 CString CSpcStatusInData::JsonFilePath()
 {
-	return SPCINFO->getStatusPath()+ m_CreateTime.Mid(0, 6);
+	CString path = SPCINFO->getStatusPath()+ m_CreateTime.Mid(0, 6);
+	CWin32File::CreateDirectory(path);
+	return path;
 }
 
 //파일명을 넘긴다.
