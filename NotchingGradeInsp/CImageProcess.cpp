@@ -6162,7 +6162,14 @@ int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nW
 
 	int nLastSavePos = nStartPos; 
 
-	for (int i = 0; i < nSize; i++) {
+	if( nSize > 0 )
+	{
+		AprData.SaveDebugLog_Format( _T("<DivisionTab_byFixSize> <CTabInfo> m_bErrorFlag=1") );
+	}
+
+
+	for (int i = 0; i < nSize; i++)
+	{
 		CTabInfo tabInfo;
 		tabInfo.m_bErrorFlag = TRUE;
 		tabInfo.nImageLength = nFixSize;
@@ -6401,6 +6408,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			tabInfo.nRight = pResvTabInfo->nImageLength;
 			tabInfo.nImageLength = pResvTabInfo->nImageLength;
 			tabInfo.m_bErrorFlag = TRUE;
+
+			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag );
+
 			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength];
 			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength];
 			// 22.11.18 Ahn Add Start
@@ -6436,6 +6446,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			tabInfo.nRight = pResvTabInfo->nImageLength + nSendLength ;
 			tabInfo.nImageLength = pResvTabInfo->nImageLength + nSendLength ;
 			tabInfo.m_bErrorFlag = TRUE;
+
+			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag);
+
 			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength];
 			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength];
 			// 22.11.18 Ahn Add Start

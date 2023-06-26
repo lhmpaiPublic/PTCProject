@@ -425,7 +425,7 @@ public :
 	int SigOutEncoderZeroSet(int nMde);
 	int SigOutRecipeChangeAck(int nMode);
 	int SigOutLotStartAck(int nMode);
-	int sigOutLotEndAck(int nMode);
+	int SigOutLotEndAck(int nMode);
 	int SigOutTabZeroReset(int nMode);
 	int SigOutAlarmResetAck(int nMode);
 	int SigOutDiskCapacityAlarm(int nMode);

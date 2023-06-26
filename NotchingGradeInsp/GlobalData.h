@@ -27,10 +27,10 @@ public :
 		en_ResultSaveError	= 0x000006,
 		en_ContinuousNg		= 0x000007,
 		en_SectorNg			= 0x000008,
-		// 22.10.13 Ahn Add Start
 		en_MelsecError		= 0x000009,
 		en_DioError			= 0x000010,
-		// 22.10.13 Ahn Add End
+		en_ProcessError		= 0x000011,
+
 
 		en_DiskCapacityAlarm	= 0x100001,
 		en_DiskCapacityWarning  = 0x100002,
@@ -44,6 +44,7 @@ public :
 		// Heavy Error
 		case	en_CameraError:
 		case	en_GrabberError:
+		case	en_ProcessError:
 			m_bInitialReq = TRUE;
 			break;
 		case	 en_DiskCapacityAlarm:

@@ -97,8 +97,8 @@ BOOL CDispErrorDlg::OnInitDialog()
 
 	m_Cnt = 0;
 	SetWindowText(_T("ERROR"));
-	GetDlgItem(IDC_ED_MSGSTR)->SetWindowTextA(_T("시스템 이상"));
-	GetDlgItem(IDOK)->SetWindowTextA(_T("에러 리셋"));
+	GetDlgItem(IDC_ED_MSGSTR)->SetWindowTextA(_LANG(_T("시스템 이상"), _T("SYSTEM ERROR")));
+	GetDlgItem(IDOK)->SetWindowTextA(_T("RESET"));
 
 	Data2Dlg();
 

@@ -508,11 +508,11 @@ int CNotchingGradeInspApp::ErrOutput(LPCSTR ptstr, int nErrorType )
 		break;
 	}
 
-	//if (m_pDispErrorDlg != NULL) {
-	//	if (m_pDispErrorDlg->AddMessage(str) == FALSE) {
-	//		return -1;
-	//	}
-	//}
+	if (m_pDispErrorDlg != NULL) {
+		if (m_pDispErrorDlg->AddMessage(str) == FALSE) {
+			return -1;
+		}
+	}
 	return 0;
 }
 // 22.06.29 Son Add End
