@@ -18,7 +18,7 @@ CString CSpcStatusInData::MakeStatusInDataText =
 "      {\r\n"
 "        \"CATEGORY\": \"%s\",\r\n"
 "        \"TRANSFER_TIME\": \"%s\",\r\n"
-"        \"EQP_INSP_ID\": \"\",\r\n"
+"        \"EQP_INSP_ID\": \"%s\",\r\n"
 "        \"PROCESS_GROUP\": \"%s\",\r\n"
 "        \"PROCESS_NAME\": \"%s\",\r\n"
 "        \"EQP_ID\": \"%s\",\r\n"
