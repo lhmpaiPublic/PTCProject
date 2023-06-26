@@ -75,7 +75,6 @@ CString CSpcSpecParaInData::makeJSONText_SpecPara1()
 		m_EqpId,
 		m_EqpInspId,
 		m_RecipeId,
-		m_InspRecipe,
 		m_InspSwVersion,
 		m_ModifyTime,
 		m_Modifier,
