@@ -6725,6 +6725,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			nLastSavePos = nLastSavePos + tabInfo.nImageLength;
 			pVecTabInfo->push_back(tabInfo);
 
+
 			//Image Tab  정보 출력 로그
 			LOGDISPLAY_SPEC(5)("Logcount<%d> Sector %d Tab Info => TabLeft : %d, TabRight : %d, nCenter : %d, nImageLength : %d, FrameCount : %d, nTabStartPosInFrame : %d",
 				logCount, i, tabInfo.nTabLeft, tabInfo.nTabRight, tabInfo.nCenter, tabInfo.nImageLength, tabInfo.nFrameCount, tabInfo.nTabStartPosInFrame);

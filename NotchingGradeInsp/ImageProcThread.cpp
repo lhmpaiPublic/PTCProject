@@ -299,6 +299,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			BYTE* pHeadPtr = pFrmInfo_Top->GetImagePtr();
 			BYTE* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
 
+
+
 			// 22.02.22 Ahn Add Start
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 			if (btLastBtmImg == NULL) {
@@ -500,6 +502,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					CTabInfo* pTabInfo = &vecTabInfo[i];
 
 
+					if (pTabInfo->pImgPtr == NULL)
+					{
+						int a = 0;
+					}
+
 					//Tab 정보에서 Left 크기, Right 크기
 					int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
 					int nRight = pTabInfo->nRight - pTabInfo->nTabRight;
@@ -609,6 +616,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//Tab정보에서 Top 이미지 데이터 세팅
 					pInfo->SetImgPtr(pTabInfo->pImgPtr);
+
+					if (pTabInfo->pImgPtr == NULL)
+					{
+						int a = 0;
+					}
+
+
 					//이미지 데이터 높이
 					pInfo->m_nHeight = pTabInfo->nImageLength;
 					//Top 번호

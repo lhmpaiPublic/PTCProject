@@ -75,7 +75,7 @@ int CSiemensPlc::WriteDataReg(int offset, short data[], int num)
 			{
 				strMsg.Format(_T("Siemens Write Error"));
 				AprData.SaveErrorLog(strMsg);
-				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
+//				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
 
 				//Error Log
 				LOGDISPLAY_SPECTXT(0)(_T("Siemens Write Error"));
@@ -114,7 +114,7 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 			{
 				strMsg.Format(_T("Siemens Read Error"));
 				AprData.SaveErrorLog(strMsg);
-				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
+//				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
 
 				//Error Log
 				LOGDISPLAY_SPECTXT(0)(_T("Siemens Read Error"));
