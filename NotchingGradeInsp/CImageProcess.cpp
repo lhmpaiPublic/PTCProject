@@ -4547,12 +4547,7 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 		rcPrj.left = 0;
 		rcPrj.right = nWidth;
 
-		// 22.06.24 Ahn Modify Start
-		//CImageProcess::GetProjection( pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, FALSE ) ;
 		int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, TRUE);
-		// 22.06.03 Ahn Modify Start
-		//*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], en_FindFromLeft);
-		//int nUpperBright = nCount * pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; 
 
 		BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 
@@ -4560,7 +4555,6 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 //		int nUpperBright = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];//pyjtest
 
 		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
-		// 22.06.24 Ahn Moidyf End
 
 		delete[] pnPrjData;
 		pnPrjData = NULL;
