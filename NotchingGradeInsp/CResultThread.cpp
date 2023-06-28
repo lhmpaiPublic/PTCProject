@@ -535,7 +535,6 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 	//strMidPath.Format(_T("%04d%02d\\%02d\\%02d\\%s")
 	//	, pTabInfo->sysTime.wYear, pTabInfo->sysTime.wMonth
 	//	, pTabInfo->sysTime.wDay, pTabInfo->sysTime.wHour, AprData.m_NowLotData.m_strLotNo);
-	CString strFileName;
 
 	CString strTime;
 	strTime.Format(_T("%04d%02d%02d_%02d%02d%02d%03d")
@@ -592,10 +591,11 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
 			//SPC+ INSP===================================================================================================
-			CString strFilePath = "";
 			//Defect Info 객체 포인터가 NULL이 아니면
 			if (insp)
 			{
+				CString strSpcCropFileName = "";
+				CString strSpcCropFilePath = "";
 				//Insp InData 객체 포인터
 				CSpcInspInData* InspInData = insp->getSpcInspInData();
 
@@ -630,8 +630,8 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 				SpcInDataDefectInfo->setDefectAreaPixels(CGlobalFunc::intToString(pDefInfo->nSize));
 
 				//Crop Image 파일명
-				strFileName = SpcInDataDefectInfo->ImagCropFileName();
-				SpcInDataDefectInfo->setDefectCropImageFileName(strFileName);
+				strSpcCropFileName = SpcInDataDefectInfo->ImagCropFileName();
+				SpcInDataDefectInfo->setDefectCropImageFileName(strFistrSpcCropFileNameleName);
 
 				//불량명 전체를 저장한다.
 				//상위에 추가할 내용
@@ -640,12 +640,16 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 				//추가한다.
 				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
 
-				strFilePath = InspInData->ImageFilePath()+CString("\\");
+				strSpcCropFilePath = InspInData->ImageFilePath()+CString("\\");
+
+				CImageProcess::SaveCropImage(pImgPtr, nWidth, nHeight, rcCrop, strSpcCropFilePath, strSpcCropFileName);
 
 			}
-#else
-						// 22.12.15 Ahn Add Start
-			//strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s_%d_%s.jpg")
+
+#endif //SPCPLUS_CREATE
+
+			//기존 CROP IMAGE
+			CString strFileName;
 			strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s_%s_%d_%s.jpg")
 				// 22.12.15 Ahn Add End
 				, INSPECTION_TYPE
@@ -662,8 +666,6 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 
 			CString strFilePath;
 			strFilePath.Format(_T("%s\\%s\\%s\\%s\\CROP\\"), AprData.m_strImagePath, strJudge, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
-			
-#endif //SPCPLUS_CREATE
 
 			CImageProcess::SaveCropImage(pImgPtr, nWidth, nHeight, rcCrop, strFilePath, strFileName);
 
@@ -807,51 +809,42 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
-
-							//이미지 저장 포맷
-						CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
-
-						CString strPath;
-						CString strTime;
-						strTime.Format(_T("%04d%02d%02d_%02d%02d%02d.%d")
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wYear
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wMonth
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wDay
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wHour
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wMinute
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wSecond
-							, pRsltInfo->m_pTabRsltInfo->sysTime.wMilliseconds
-						);
-						strPath.Format(_T("%s\\Overlay\\%s_%s_%s%s")
-							, pRsltInfo->m_pTabRsltInfo->m_chImagePath
-							, AprData.m_NowLotData.m_strLotNo
-							// 23.02.08 Ahn Modify Start
-							//, ( pRsltInfo->m_pTabRsltInfo->m_nTabNo == CAM_POS_TOP ) ? _T("TOP") : _T("BOTTOM")
-							, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BOTTOM")
-							// 23.02.08 Ahn Modify Start
-							, strTime
-							, strImageFormat
-						);
-
-						if (strPath.GetLength() > 0)
-						{
-							// 23.02.06 Ahn Modify Start
-							//CaptureImage( hWnd, strPath );
-							bmpStd.SaveBitmap(strPath);
-							// 23.02.06 Ahn Modify Start
-						}
-
 						SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue, insp);
 #else
 						SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue);
 #endif //SPCPLUS_CREATE
-						// 22.05.25 Ahn Add End
+
+						// Overlay 저장
+						if (pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE)
+						{
+							//이미지 저장 포맷
+							CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
+
+							CString strPath;
+							CString strTime;
+							strTime.Format(_T("%04d%02d%02d_%02d%02d%02d.%d")
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wYear
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wMonth
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wDay
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wHour
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wMinute
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wSecond
+								, pRsltInfo->m_pTabRsltInfo->sysTime.wMilliseconds
+							);
+							strPath.Format(_T("%s\\Overlay\\%s_%s_%s%s")
+								, pRsltInfo->m_pTabRsltInfo->m_chImagePath
+								, AprData.m_NowLotData.m_strLotNo
+								, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BOTTOM")
+								, strTime
+								, strImageFormat
+							);
+							if (strPath.GetLength() > 0)
+							{
+								bmpStd.SaveBitmap(strPath);
+							}
+						}
+						
 						delete[] pResizePtr;
-					}
-					else
-					{
-						//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-						LOGDISPLAY_SPEC(0)("Overlay 이미지 디스플레이 VIEW 객체 HWND가 없다.");
 					}
 
 					pThis->m_pDefDataCtrl->PushBackTabQueue(pRsltInfo->m_pTabRsltInfo);
