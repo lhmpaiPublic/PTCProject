@@ -77,6 +77,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		{
 			//Log Camera Setting
 			LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink AcqCallback함수 PLC Connect Zone 상태 - 이미지 무시한다."));
+			AprData.SaveDebugLog_Format(_T("<AcqCallback> Connect Zone TURE") );
 
 			return;
 		}

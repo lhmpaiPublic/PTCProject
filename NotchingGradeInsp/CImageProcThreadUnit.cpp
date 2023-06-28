@@ -161,78 +161,75 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					LOGDISPLAY_SPEC(5)("Logcount<%d> pFrmInfo->m_bErrorFlag == FALSE 경우", TempLogCount);
 
 
-					/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					// Tab Level
-					int nTabLevelLeft = 0;
-					int nTabLevelRight = 0;
-
-					CRect rect;
-					int nPrjWidth = 2000;
-					if (nWidth < 2000)
-					{
-						nPrjWidth = nWidth;
-					}
-					rect.left = nWidth - nPrjWidth;
-					rect.right = nWidth;
-					rect.top = 0;
-					rect.bottom = nHeight - 1;
-					int nSamplingSize = nHeight / 100;
-					int* pnPrj = new int[nPrjWidth];
-
-					// Tab Left
-					rect.top = 100;
-					rect.bottom = nTabLeft - AprData.m_pRecipeInfo->TabCond.nRadiusH;
-					if (rect.bottom < 0)
-					{
-						AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Left] Error - Invalid Find Area"));
-
-						pFrmInfo->m_bErrorFlag = TRUE;
-					}
-
-
-					BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[nHeadNo] == 1) ? FALSE : TRUE;
-					CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-					nTabLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
-					nTabLevelLeft += rect.left;
-
-
-
-
-					// Tab Right
-					rect.top = nTabRight + AprData.m_pRecipeInfo->TabCond.nRadiusH;
-					rect.bottom = nHeight - 100;
-					if (rect.top < 0 || rect.bottom < rect.top)
-					{
-						AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Right] Error - Invalid Find Area"));
-
-						pFrmInfo->m_bErrorFlag = TRUE;
-					}
-
-					CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-					nTabLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
-					nTabLevelRight += rect.left;
-
-
-					nTabLevel = (nTabLevelLeft + nTabLevelRight) / 2;
-
-					if (pnPrj != NULL)
-					{
-						delete[] pnPrj;
-					}
-
-					AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> nTabLevel=%d"), nTabLevel);
-
-					/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
 
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같다면 실행
 					if (pFrmInfo->m_nHeadNo == CAM_POS_TOP) {
 						
+
+						/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+						// Tab Level
+						int nTabLevelLeft = 0;
+						int nTabLevelRight = 0;
+
+						CRect rect;
+						int nPrjWidth = 2000;
+						if (nWidth < 2000)
+						{
+							nPrjWidth = nWidth;
+						}
+						rect.left = nWidth - nPrjWidth;
+						rect.right = nWidth;
+						rect.top = 0;
+						rect.bottom = nHeight - 1;
+						int nSamplingSize = nHeight / 100;
+						int* pnPrj = new int[nPrjWidth];
+
+						// Tab Left
+						rect.top = 100;
+						rect.bottom = nTabLeft - AprData.m_pRecipeInfo->TabCond.nRadiusH;
+						if (rect.bottom < 0)
+						{
+							AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Left] Error - Invalid Find Area"));
+
+							pFrmInfo->m_bErrorFlag = TRUE;
+						}
+
+
+						BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[nHeadNo] == 1) ? FALSE : TRUE;
+						CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
+						nTabLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
+						nTabLevelLeft += rect.left;
+
+
+
+
+						// Tab Right
+						rect.top = nTabRight + AprData.m_pRecipeInfo->TabCond.nRadiusH;
+						rect.bottom = nHeight - 100;
+						if (rect.top < 0 || rect.bottom < rect.top)
+						{
+							AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Right] Error - Invalid Find Area"));
+
+							pFrmInfo->m_bErrorFlag = TRUE;
+						}
+
+						CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
+						nTabLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
+						nTabLevelRight += rect.left;
+
+
+						nTabLevel = (nTabLevelLeft + nTabLevelRight) / 2;
+
+						if (pnPrj != NULL)
+						{
+							delete[] pnPrj;
+						}
+
+						AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Top nTabLevel=%d"), nTabLevel);
+
+						/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 						//이미지 OK/NG 판정 결과 생성 스래드
 						LOGDISPLAY_SPEC(5)("Logcount<%d> pFrmInfo->m_nHeadNo == CAM_POS_TOP 경우", TempLogCount);
 
@@ -358,7 +355,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					{
 						//이미지 OK/NG 판정 결과 생성 스래드
 						LOGDISPLAY_SPEC(5)("Logcount<%d> pFrmInfo->m_nHeadNo == CAM_POS_BOTTOM 경우", TempLogCount);
-						
+						AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Btm nLevel=%d"), nTabLevel);
+
+
 						//실행시간 체크 시작
 						ctAna.StopWatchStart();
 						// 22.05.30 Ahn Modify Start
