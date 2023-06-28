@@ -53,4 +53,6 @@ public:
 	afx_msg void OnSelectImage(NMHDR* pNMHDR, LRESULT* pResult);	 // 22.07.01 Ahn Add 
 	afx_msg void OnChangeDispExpand(NMHDR* pNMHDR, LRESULT* pResult);	 //KANG 22.07.08 Add
 	afx_msg void OnChangeDispThumbnail(NMHDR* pNMHDR, LRESULT* pResult); //KANG 22.07.08 Add
+	//Crop Image를 그리기 위한 메시지 처리
+	afx_msg LRESULT OnCropImageDraw(WPARAM wParam = 0, LPARAM lParam = 0);
 };
