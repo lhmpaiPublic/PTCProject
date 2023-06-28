@@ -631,7 +631,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 
 				//Crop Image 파일명
 				strSpcCropFileName = SpcInDataDefectInfo->ImagCropFileName();
-				SpcInDataDefectInfo->setDefectCropImageFileName(strFistrSpcCropFileNameleName);
+				SpcInDataDefectInfo->setDefectCropImageFileName(strSpcCropFileName);
 
 				//불량명 전체를 저장한다.
 				//상위에 추가할 내용
