@@ -14,6 +14,10 @@
 // 22.12.23 Ahn Test End
 // CCropImageViewDlg 대화 상자
 
+#include "BitmapStd.h"
+//유저메시지 - Crop Image 화면 출력 메시지
+#define  WM_CROPIMAGEDRAW WM_USER + 14
+
 IMPLEMENT_DYNAMIC(CCropImageViewDlg, CDialogEx)
 
 #define T_ID_CROP_VIEW_TIMER	112
@@ -61,6 +65,7 @@ BEGIN_MESSAGE_MAP(CCropImageViewDlg, CDialogEx)
 	ON_NOTIFY(NM_CLICK, IDC_CROP_THUMBNAIL, OnSelectImage)		// 22.07.01 Ahn Add 
 	ON_NOTIFY(NM_DBLCLK, IDC_CROP_THUMBNAIL, OnChangeDispExpand)		//KANG 22.07.08 Add
 	ON_NOTIFY(NM_DBLCLK, IDC_EXPAND_VIEW, OnChangeDispThumbnail)		//KANG 22.07.08 Add
+	ON_MESSAGE(WM_CROPIMAGEDRAW, &CCropImageViewDlg::OnCropImageDraw) //Crop Image를 그리기 위한 메시지
 END_MESSAGE_MAP()
 
 
@@ -134,52 +139,20 @@ void CCropImageViewDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == T_ID_CROP_VIEW_TIMER) {
 		KillCropViewTimer();
 
-		CCropImgQueueCtrl *pQueue = theApp.m_pImgProcCtrl->GetCropImageQueuePtr();
-		if (pQueue != NULL) {
-			// 22.12.23 Ahn Modify Start
-			//if (pQueue->IsEmpty() == FALSE) {
-			//	CCropImgData data = pQueue->Pop();
-			//	if (data.m_bEnable == TRUE) {
-			//		m_CropThumbCtrl.AddImageBufferMode(data.m_strFileName, data.m_strDispName);
-			//		m_CropThumbCtrl.Invalidate(FALSE);
-			//		m_CropThumbCtrl.OnRefresh();
-			//	}
-			//}
-			int nCount = 0;
-			// 22.12.24 Ahn Test Start
-			//CString strLogPath = _T("D:\\");
-			//CString strLogFile = _T("DefCropList.txt");
-			//CString strLogFullPath;
-			//strLogFullPath = strLogPath + strLogFile;
-			// 22.12.24 Ahn Test End
+		CCropImgQueueCtrl* pQueue = theApp.m_pImgProcCtrl->GetCropImageQueuePtr();
+		if (pQueue != NULL)
+		{
 
-			while(pQueue->IsEmpty()==FALSE) 
+			while (pQueue->IsEmpty() == FALSE)
 			{
-				if(CGlobalFunc::isPeekMessage(m_hWnd) == WM_NULL)
+				CCropImgData data = pQueue->Pop();
+				if (data.m_bEnable == TRUE)
 				{
-					CCropImgData data = pQueue->Pop();
-					if (data.m_bEnable == TRUE) {
-						// 22.12.24 Ahn Test Start
-						//CString strMsg;
-						//strMsg.Format(_T("%s, %s\r\n"), data.m_strDispName, data.m_strFileName );
-						//CWin32File::TextSave1Line(strLogPath, strLogFile, strMsg, _T("at"), FALSE);
-						// 22.12.24 Ahn Test End
+					m_CropThumbCtrl.AddImageBufferMode(data.m_strFileName, data.m_strDispName);
+					SendMessage(WM_CROPIMAGEDRAW);
 
-						m_CropThumbCtrl.AddImageBufferMode(data.m_strFileName, data.m_strDispName);
-						m_CropThumbCtrl.OnRefresh();
-						m_CropThumbCtrl.Invalidate(FALSE);
-					}
-					nCount++;
-				}
-				
-				if (nCount > 10)
-				{
-					if (pQueue->GetSize()) 
-						pQueue->Pop();
-					break;
 				}
 			}
-			m_CropThumbCtrl.UpdateWindow();
 		}
 		UpdateData(FALSE);
 		SetCropViewTimer();
@@ -262,4 +235,12 @@ void CCropImageViewDlg::OnChangeDispThumbnail(NMHDR* pNMHDR, LRESULT* pResult)
 	m_CropThumbCtrl.ShowWindow(SW_SHOW);
 	SetCropViewTimer();
 }
-//KANG 22.07.08 Add End
+
+LRESULT CCropImageViewDlg::OnCropImageDraw(WPARAM wParam, LPARAM lParam)
+{
+	m_CropThumbCtrl.OnRefresh();
+	m_CropThumbCtrl.Invalidate(FALSE);
+	UpdateWindow();
+		
+	return 0;
+}
