@@ -680,7 +680,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		case	en_Ready:
 			//OnTimer 로그출력
 			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => Ready");
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Ready"));
 
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE)
 			{
@@ -689,6 +688,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			else if (pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
+				AprData.SaveDebugLog_Format(_T("<OnTimer> en_Ready, Run ON"));
 			}
 
 			break;

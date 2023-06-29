@@ -8969,7 +8969,7 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 		int nThresMax = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
 
 		// 22.05.30 Ahn Modify Start
-		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLineLevel, nThresMax, CImageProcess::en_FindLeft);
+		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLineLevel,  CImageProcess::en_FindLeft);
 		// 22.05.30 Ahn Modify End
 	}
 
