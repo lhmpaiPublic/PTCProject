@@ -34,6 +34,9 @@ public:
 	HWND m_DisphWnd;//[GRABBER_COUNT];
 	typedef std::vector< CFrameRsltInfo* > _VEC_RSLT_INFO;
 
+	// 동기화 이벤트 객체
+	HANDLE getEvent_ResultThread() { return pEvent_ResultThread; }
+	void setEvent_ResultThread() { SetEvent(pEvent_ResultThread); }
 protected:
 	BOOL	m_bKill;
 	int		m_nThreadId;
@@ -41,6 +44,8 @@ protected:
 	int		m_nHeadNo;
 	CDefectDataCtrl* m_pDefDataCtrl;
 
+	//동기화 이벤트 객체
+	HANDLE pEvent_ResultThread;
 protected:
 	static UINT CtrlThreadResultProc(LPVOID pParam);
 

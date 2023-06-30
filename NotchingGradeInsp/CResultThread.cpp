@@ -42,6 +42,10 @@ void CResultThread::Begin()
 
 	//	m_DisphWnd = NULL;
 	if (m_pThread == NULL) {
+
+		//이벤트 객체 생성
+		pEvent_ResultThread = CreateEvent(NULL, FALSE, FALSE, NULL);
+
 		m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlThreadResultProc,
 			(LPVOID)this,
 			THREAD_PRIORITY_HIGHEST,
@@ -57,19 +61,12 @@ void CResultThread::Begin()
 }
 void CResultThread::Kill(void)
 {
-	DWORD	dwCode;
-	LONG	ret;
-
-	if (m_pThread != NULL) {
-		// 긚깒긞긤륉뫴롦벦
-		ret = ::GetExitCodeThread(m_pThread->m_hThread, &dwCode);
-		if (ret && dwCode == STILL_ACTIVE) {
-			// -----긚깒긞긤벍띿뭷-----
-			m_bKill = TRUE;
-			WaitForSingleObject(m_pThread->m_hThread, INFINITE);
-		}
-		delete m_pThread;
-		m_pThread = NULL;
+	// source file
+	if (m_pThread)
+	{
+		setEvent_ResultThread();
+		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
+		m_pThread->m_hThread = NULL;
 	}
 
 }
@@ -709,6 +706,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 }
 // 22.05.25 Ahn Add End
 
+#define RESULTTHREAD_TIMEOUT 50
 UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 {
 	CResultThread* pThis = (CResultThread*)pParam;
@@ -716,11 +714,20 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 	CCropImgQueueCtrl* pCropImgQue = pThis->m_pParent->GetCropImageQueuePtr();
 	CDefectQueueCtrl* pDefectQueue = pThis->m_pParent->GetDefectQueuePtr(); // 22.06.23 Ahn Add
 
+	UINT ret = 0;
 	while (1) 
 	{
-		HWND hWnd = pThis->m_DisphWnd;
-		if (CGlobalFunc::isPeekMessage(hWnd) == WM_NULL)
+		//타임 주기 이벤트
+		ret = WaitForSingleObject(pThis->getEvent_ResultThread(), RESULTTHREAD_TIMEOUT);
+
+		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
+			return 0;
+		}
+		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
+		{
+			HWND hWnd = pThis->m_DisphWnd;
+
 			if (pThis == NULL)
 			{
 				//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
@@ -908,7 +915,10 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				delete pRsltInfo;
 				pRsltInfo = NULL;
 			}
-			Sleep(AprData.m_nSleep);
+		}
+		else
+		{
+			break;
 		}
 	}
 	AfxEndThread(0);

@@ -37,20 +37,6 @@ void CCounterThread::Begin()
 }
 void CCounterThread::Kill(void)
 {
-	//DWORD	dwCode;
-	//LONG	ret;
-
-	//if (m_pThread != NULL) {
-	//	// 긚깒긞긤륉뫴롦벦
-	//	ret = ::GetExitCodeThread(m_pThread->m_hThread, &dwCode);
-	//	if (ret && dwCode == STILL_ACTIVE) {
-	//		// -----긚깒긞긤벍띿뭷-----
-	//		m_bKill = TRUE;
-	//		WaitForSingleObject(m_pThread->m_hThread, INFINITE);
-	//	}
-	//	delete m_pThread;
-	//	m_pThread = NULL;
-	//}
 	if (m_pThread)
 	{
 		setEvent_CounterThread();

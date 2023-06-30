@@ -165,3 +165,4 @@ WORD CGlobalFunc::isPeekMessage(HWND hWnd)
 	}
 	return msgval;
 }
+
