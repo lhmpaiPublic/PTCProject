@@ -706,7 +706,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 }
 // 22.05.25 Ahn Add End
 
-#define RESULTTHREAD_TIMEOUT 50
+#define RESULTTHREAD_TIMEOUT 10
 UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 {
 	CResultThread* pThis = (CResultThread*)pParam;
