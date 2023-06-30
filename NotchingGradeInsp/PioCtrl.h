@@ -85,7 +85,9 @@ public:
 	BOOL IsOpened();
 	// 22.06.30 Ahn Add End
 
-
+	// 동기화 이벤트 객체
+	HANDLE getEvent_PioCtrl() { return pEvent_PioCtrl; }
+	void setEvent_PioCtrl() { SetEvent(pEvent_PioCtrl); }
 private:
 	static CCriticalSection	m_csPioThread;
 	CWinThread* m_pThread;
@@ -95,5 +97,7 @@ private:
 	CMelsecBase* pAprPio;
 	// 22.03.17 Ahn Modify End
 
+	//동기화 이벤트 객체
+	HANDLE pEvent_PioCtrl;
 };
 

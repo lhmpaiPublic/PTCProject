@@ -22,11 +22,16 @@ protected: // serialization에서만 만들어집니다.
 	CNotchingGradeInspView() noexcept;
 	DECLARE_DYNCREATE(CNotchingGradeInspView)
 
+	//동기화 이벤트 객체
+	HANDLE pEvent_NotchingGradeInspView;
+	CWinThread* pThread;
 // 특성입니다.
 public:
 	CNotchingGradeInspDoc* GetDocument() const;
 
-
+	// 동기화 이벤트 객체
+	HANDLE getEvent_NotchingGradeInspView() { return pEvent_NotchingGradeInspView; }
+	void setEvent_NotchingGradeInspView() { SetEvent(pEvent_NotchingGradeInspView); }
 protected:
 	bool logControlKeyDown;
 	CInspDlg*		m_pInspDlg;

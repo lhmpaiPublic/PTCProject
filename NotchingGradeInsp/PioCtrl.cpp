@@ -178,6 +178,9 @@ void CPioCtrl::PioTheadRun()
 
 	PioDataIF.EndFlag = FALSE;
 
+	//이벤트 객체 생성
+	pEvent_PioCtrl = CreateEvent(NULL, FALSE, FALSE, NULL);
+
 	if ((m_pThread = AfxBeginThread((AFX_THREADPROC)ThreadProc_InPortCheck,
 		(LPVOID)this,
 		THREAD_PRIORITY_LOWEST,
@@ -196,17 +199,12 @@ void CPioCtrl::PioTheadRun()
 void CPioCtrl::PioTheadStop()
 {
 
-	DWORD	dwCode;
-	LONG	ret;
-
-	if (m_pThread != NULL) {
-		ret = ::GetExitCodeThread(m_pThread->m_hThread, &dwCode);
-		if (ret && dwCode == STILL_ACTIVE) {
-			PioDataIF.EndFlag = TRUE;
-			WaitForSingleObject(m_pThread->m_hThread, INFINITE);
-		}
-		delete m_pThread;
-		m_pThread = NULL;
+	// source file
+	if (m_pThread)
+	{
+		setEvent_PioCtrl();
+		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
+		m_pThread->m_hThread = NULL;
 	}
 
 
@@ -350,6 +348,8 @@ bool CPioCtrl::PioPortProcess(int port, BYTE data, int stus)
 }
 
 
+//스래드 타임아웃 시간
+#define PIOCTRL_THREADTIMEOUT 100
 UINT ThreadProc_InPortCheck(LPVOID Param)
 {
 	int	i;
@@ -374,75 +374,87 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 		nBuffSms[i] = 0;
 	}
 
+	UINT ret = 0;
 	while (TRUE)
 	{
-		if (ctrl->pAprPio == NULL)
+		//타임 주기 이벤트
+		ret = WaitForSingleObject(ctrl->getEvent_PioCtrl(), PIOCTRL_THREADTIMEOUT);
+		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
-			//PLC Thread
-			LOGDISPLAY_SPEC(0)(_T("PLC 객체가 없다 "));
-
-			break;
+			return 0;
 		}
-	
-		if (data->EndFlag == TRUE)
+		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
-			//PLC Thread
-			LOGDISPLAY_SPEC(0)(_T("PLC Run EndFlag TRUE(종료)"));
-			break;
-		}
-		
-		if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
-		{
-			//PLC Thread
-			LOGDISPLAY_SPEC(2)(_T("PLC Siemens Run"));
-
-//			DWORD dwStart = GetTickCount();
-
-
-			if (ctrl->ReadPLC_Block_device(AprData.m_System.m_nBitIn, (short*)nBuffSms, MAX_SMS_IO_IN) != -1)
+			if (ctrl->pAprPio == NULL)
 			{
-				CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
-				memcpy(data->InputDataSms, nBuffSms, sizeof(data->InputDataSms));
-				
+				//PLC Thread
+				LOGDISPLAY_SPEC(0)(_T("PLC 객체가 없다 "));
+
+				break;
+			}
+
+			if (data->EndFlag == TRUE)
+			{
+				//PLC Thread
+				LOGDISPLAY_SPEC(0)(_T("PLC Run EndFlag TRUE(종료)"));
+				break;
+			}
+
+			if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+			{
+				//PLC Thread
+				LOGDISPLAY_SPEC(2)(_T("PLC Siemens Run"));
+
+				//			DWORD dwStart = GetTickCount();
+
+
+				if (ctrl->ReadPLC_Block_device(AprData.m_System.m_nBitIn, (short*)nBuffSms, MAX_SMS_IO_IN) != -1)
+				{
+					CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
+					memcpy(data->InputDataSms, nBuffSms, sizeof(data->InputDataSms));
+
+				}
+
+
+
+				// 			DWORD dwEnd = GetTickCount() - dwStart;
+				// 
+				// 			CString strMsg;
+				// 			strMsg.Format(_T("[ThreadProc_InPortCheck] ReadPLC_Block_device = %d ms, PLC Alive = %d"), dwEnd, data->InputDataSms[0]);
+				// 			AprData.SaveDebugLog(strMsg); //pyjtest
+
+
+
+
+
+			}
+			else
+			{
+				for (i = 0; i < MAX_PORT; i++)
+				{
+					if (data->CheckPortFlag[i] != TRUE)
+					{
+						continue;
+					}
+					ctrl->pAprPio->InPort(i, &buff[i]);
+				}
+
+				//PLC Thread
+				LOGDISPLAY_SPEC(2)(_T("PLC Melsec Run"));
+
+				{
+					CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
+					memcpy(data->InputData, buff, sizeof(data->InputData));
+				}
 			}
 
 
-
-// 			DWORD dwEnd = GetTickCount() - dwStart;
-// 
-// 			CString strMsg;
-// 			strMsg.Format(_T("[ThreadProc_InPortCheck] ReadPLC_Block_device = %d ms, PLC Alive = %d"), dwEnd, data->InputDataSms[0]);
-// 			AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-
-
-
+			::PumpMessages();
 		}
 		else
 		{
-			for (i = 0; i < MAX_PORT; i++)
-			{
-				if (data->CheckPortFlag[i] != TRUE)
-				{
-					continue;
-				}
-				ctrl->pAprPio->InPort(i, &buff[i]);
-			}
-
-			//PLC Thread
-			LOGDISPLAY_SPEC(2)(_T("PLC Melsec Run"));
-
-			{
-				CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
-				memcpy(data->InputData, buff, sizeof(data->InputData));
-			}
+			break;
 		}
-
-
-		::PumpMessages();
-
-		::Sleep(100);
 
 	}
 

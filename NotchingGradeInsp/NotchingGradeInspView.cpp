@@ -190,6 +190,13 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 	// 22.11.24 Ahn Add End
 
 	CloseDebugImgAcqDlg();
+
+	if (pThread)
+	{
+		setEvent_NotchingGradeInspView();
+		CGlobalFunc::ThreadExit(&pThread->m_hThread, 5000);
+		pThread->m_hThread = NULL;
+	}
 }
 
 BOOL CNotchingGradeInspView::PreCreateWindow(CREATESTRUCT& cs)
@@ -1700,9 +1707,12 @@ BOOL CNotchingGradeInspView::PreTranslateMessage(MSG* pMsg)
 
 void CNotchingGradeInspView::StartThreadAliveSiginal()
 {
-	CWinThread* pThread = NULL;
+	pThread = NULL;
 	if (pThread == NULL)
 	{
+		//이벤트 객체 생성
+		pEvent_NotchingGradeInspView = CreateEvent(NULL, FALSE, FALSE, NULL);
+
 		pThread = AfxBeginThread(AliveThread, this);
 
 		if (pThread == NULL)
@@ -1719,17 +1729,31 @@ void CNotchingGradeInspView::StartThreadAliveSiginal()
 
 }
 
+//스래드 타임아웃 시간
+#define NOTCHINGGRADEINSPVIEW_THREADTIMEOUT 500
 UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
 {
 	CNotchingGradeInspView* pThis = (CNotchingGradeInspView*)lpParm;
 	CSigProc* pSigProc = theApp.m_pSigProc;
 
+	UINT ret = 0;
 	while (true)
 	{
-		//pSigProc->SigOutAlivePulse(TRUE);
-		pSigProc->SigOutAlivePulseReady(TRUE, pThis->IsInspReady() );
-
-		Sleep(500);
+		//타임 주기 이벤트
+		ret = WaitForSingleObject(pThis->getEvent_NotchingGradeInspView(), NOTCHINGGRADEINSPVIEW_THREADTIMEOUT);
+		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
+		{
+			return 0;
+		}
+		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
+		{
+			//pSigProc->SigOutAlivePulse(TRUE);
+			pSigProc->SigOutAlivePulseReady(TRUE, pThis->IsInspReady());
+		}
+		else
+		{
+			break;
+		}
 	}
 
 	return 0;
