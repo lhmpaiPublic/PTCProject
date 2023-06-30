@@ -88,7 +88,7 @@ void CCounterThread::ThreadRun(BOOL bRunFlag)
 
 
 //스래드 타임아웃 시간
-#define COUNTERINFOTHREAD_TIMEOUT 100
+#define COUNTERINFOTHREAD_TIMEOUT 30
 UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 {
 	CCounterThread* pThis = (CCounterThread*)pParam;
