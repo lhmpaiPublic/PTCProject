@@ -123,8 +123,12 @@ void CSpcCreateJSONFileThread::CreateThread()
 //스래드 종료함수
 void CSpcCreateJSONFileThread::ExitThread()
 {
-	setEvent_SpcCreateJSONFileThread();
-	CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
+	if (m_pThread)
+	{
+		setEvent_SpcCreateJSONFileThread();
+		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
+		m_pThread->m_hThread = NULL;
+	}
 	::DeleteCriticalSection(&m_csQueue);
 }
 

@@ -15,6 +15,8 @@ public:
 	void ThreadRun(BOOL bRunFlag );
 	// 22.04.06 Ahn Add End
 
+	//동기화 이벤트 객체
+	HANDLE pEvent_CounterThread;
 protected:
 	BOOL	m_bKill;
 	int		m_nThreadId;
@@ -30,5 +32,9 @@ public :
 	static int GeTabIdFormCounter();
 //	static WORD GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nType1, int nType2, int nMarkSel1, int nMarkSel2);
 	static int GetTabId_FromSignal(WORD wInPutSignal);
+
+	// 동기화 이벤트 객체
+	HANDLE getEvent_CounterThread() { return pEvent_CounterThread; }
+	void setEvent_CounterThread() { SetEvent(pEvent_CounterThread); }
 };
 

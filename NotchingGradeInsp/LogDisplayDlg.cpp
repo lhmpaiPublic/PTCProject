@@ -275,6 +275,7 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	UINT ret = 0;
 	while (pMain)
 	{
+		//타임 주기 이벤트
 		ret = WaitForSingleObject(pMain->getEvent_LogDisplayDlg(), LOGDISPLAYDLG_THREADTIMEOUT);
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
@@ -330,9 +331,12 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 void CLogDisplayDlg::ExitThread()
 {
 	// source file
-	setEvent_LogDisplayDlg();
-	CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
-	m_pThread->m_hThread = NULL;
+	if (m_pThread)
+	{
+		setEvent_LogDisplayDlg();
+		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
+		m_pThread->m_hThread = NULL;
+	}
 }
 
 
