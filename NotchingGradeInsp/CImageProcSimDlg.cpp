@@ -767,13 +767,7 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 	int nTabLeft;
 	int nTabRight;
 
-	// 22.01.06 Ahn Modify Start
-	//if (bNegativeMode == TRUE){
-	// 22.09.15 Ahn Modify Start
-	//if(AprData.m_System.m_nMachineMode == CATHODE_MODE ){
 	if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
-	// 22.09.15 Ahn Modify End
-	// 22.01.06 Ahn Modify End
 		int nTabFindPos = ( nWidth - 220 ) ;
 		vecSec.clear();
 		nLocalRet = CImageProcess::FindTab_Negative(pImgPtr, nWidth, nHeight, nTabFindPos, m_pRecipeInfo, &vecSec, &nLevel);
@@ -785,14 +779,8 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 		nTabLeft = vecSec[0].nStartPos;
 		nTabRight = vecSec[0].nEndPos;
 
-		// 22.01.12 Ahn Add Start
-		// Left & Right Sholder Level find
-		
-		// 22.01.12 Ahn Add End
-
 	}
 	else {
-//		CImageProcess::FindTabLevel(pImgPtr, nWidth, nHeight, &nLevel, m_pRecipeInfo->TabCond, m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_TOP], CImageProcess::en_FindLeft);
 		CRect rect;
 		int nPrjWidth = 2000;
 		// 22.09.20 Ahn Add Start
@@ -807,35 +795,11 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 		int nSamplingSize = nHeight / 100;
 		int* pnPrj = new int[nPrjWidth];
 
-		// 22.05.30 Ahn Delete Start
-		//CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-		//int nBndryElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], CImageProcess::en_FindFromLeft) + rect.left ;
-
-		//int nTabFindStPos = nBndryElectrode + m_pRecipeInfo->TabCond.nCeramicHeight - 40;
-		//int nTabFindEdPos = nBndryElectrode + m_pRecipeInfo->TabCond.nCeramicHeight;
-
-		//int thMin = (int)(m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2;
-		//int thMax = m_pRecipeInfo->TabCond.nCeramicBrightHigh[CAM_POS_TOP];
-
-		//if ((nTabFindStPos < 0) || (nTabFindEdPos > nWidth)) {
-		//	MessageBox(_T("Tab Level 이상"));
-		//	delete[] pnPrj;
-		//	return -2;
-		//}
-		//CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nTabFindStPos, nTabFindEdPos, thMin, thMax, &vecSec);
-		// 22.05.30 Ahn Delete End
-		// 22.05.30 Ahn Add Start
 		int nTabFindStPos = (nWidth - 420);
 		int nTabFindEdPos = nWidth - 1 ;
-		int thMin = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] ;
+		int thMin = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];
 		int thMax = 255;// m_pRecipeInfo->TabCond.nCeramicBrightHigh[CAM_POS_TOP];
 		CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nTabFindStPos, nTabFindEdPos, thMin, thMax, &vecSec);
-		// 22.05.30 Ahn Add End
-
-		// 22.08.09 Ahn Add Start
-		//CImageProcess::FindTabLevel(pImgPtr, size.cx, size.cy, &nLevel, pThreadPrm->pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_TOP], CImageProcess::en_FindLeft);
-		//CImageProcess::GetTabHeadPos(pImgPtr, size.cx, size.cy, pThreadPrm->pRecipeInfo, nLeft, nRight, nLevel);
-		// 22.08.09 Ahn Add End
 
 		CImageProcess::_VEC_TAB_INFO vecTabInfo;
 		CImageProcess::ConvertSectToTabInfo(vecSec, &vecTabInfo, 0, m_pRecipeInfo->TabCond);
@@ -851,7 +815,7 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 		// 22.05.09 Ahn Add Start
 		rect.top = 100;
 		rect.bottom = nTabLeft - m_pRecipeInfo->TabCond.nRadiusH;
-		if (rect.bottom < 0) {
+		if (rect.bottom < rect.top) {
 			delete[] pnPrj;
 			return -3;
 		}
@@ -860,9 +824,6 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 		CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
 		nLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], CImageProcess::en_FindFromRight, bUseDarkRoll);
 		nLevel += rect.left;
-
-
-
 
 
 		// Level2 - Tab Right
@@ -874,40 +835,13 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 			return -4;
 		}
 
+
 		CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
 		int nLevel2 = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], CImageProcess::en_FindFromRight, bUseDarkRoll);
 		nLevel2 += rect.left;
 
 
 		nLevel = (nLevel + nLevel2) / 2;
-
-
-
-		/*
-		int nCenterPos = (int)((nTabLeft + nTabRight) / 2);
-
-
-		CRect rcPrj;
-		int* pnPrjData;
-		pnPrjData = new int[nWidth];
-		memset(pnPrjData, 0x00, sizeof(int) * nWidth);
-		rcPrj.top = nCenterPos - 20;
-		rcPrj.bottom = nCenterPos + 20;
-		rcPrj.left = 0;
-		rcPrj.right = nWidth;
-
-
-
-		int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
-
-		BOOL bUseDarkRoll = (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
-
-		int nUpperBright = nCount * ((m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
-
-
-		nLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
-		*/
-
 
 
 		delete[] pnPrj;
@@ -920,8 +854,7 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 
 	long lTime = cta.WhatTimeIsIt();
 	strTime.Format("MeanProc[%d], ", lTime);
-	//int nLevel, nTabLeft, nTabRight;
-	//CTabInfo TabInfo;
+
 	m_strProcTime = _T("Proc Time[msec], ");
 	m_strProcTime += strTime;
 
@@ -3178,10 +3111,7 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	int nMeanRightOffset;
 	int nTabRoundOffsetR;
 
-	// 22.05.30 Ahn Modify Start
-	//nLeftOffset = (int)((double)m_pRecipeInfo->TabCond.nNegVGrooveHeight );
 	nLeftOffset = m_pRecipeInfo->TabCond.nNegVGrooveHeight + m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP] ;
-	// 22.05.30 Ahn Modify End
 	nMeanLeftOffest = m_pRecipeInfo->TabCond.nNegCoatHeight ;
 	nMeanRightOffset = 50;
 	nTabRoundOffsetR = m_pRecipeInfo->TabCond.nNegCoatHeight;
@@ -3190,27 +3120,17 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	CRect rcAll;
 	CRect rcLeft;
 	CRect rcRight;
-	// 22.01.05 Ahn Modify Start
-	//rcAll.left = rcRight.left = rcLeft.left = nLevel - m_pRecipeInfo->TabCond.nCeramicHeight;
 	rcAll.left = rcRight.left = rcLeft.left = nLevel - nLeftOffset;
-	// 22.01.05 Ahn Modify End
-
-
 	rcAll.right = nLevel + (int)(m_pRecipeInfo->TabCond.nRadiusW);
 
-	// 23.01.20 Ahn Add Start
-	//rcRight.right = rcLeft.right = nLevel + 100;
 	int nOutRange = m_pRecipeInfo->TabCond.nNegCoatHeight ;
 	rcRight.right = rcLeft.right = nLevel + nOutRange;
-	// 23.01.20 Ahn Add ENd
 
 	CRect rcEdgeMean;
 	rcEdgeMean.bottom = nHeight;
 	rcEdgeMean.top = 0;
-	// 22.01.05 Ahn Add Start
 	rcEdgeMean.left = nLevel - nMeanLeftOffest;
 	rcEdgeMean.right = nLevel + nMeanRightOffset;
-	// 22.01.05 Ahn Add End
 
 	// 22.11.07 Ahn Modify Start
 	if ((rcAll.right > nWidth) || (rcAll.left < 0)) {
@@ -3220,12 +3140,8 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 	rcAll.top = rcLeft.top = 0;
 	rcAll.bottom = rcRight.bottom = nHeight;
-	// 22.05.30 Ahn Modify Start
-	//rcLeft.bottom = tabPos.cx - 50; //m_pRecipeInfo->nFoilExpInspWidth[ CAM_POS_TOP ] ; 
-	//rcRight.top = tabPos.cy + 50;//m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 	rcLeft.bottom = tabPos.cx - 200; //m_pRecipeInfo->nFoilExpInspWidth[ CAM_POS_TOP ] ; 
 	rcRight.top = tabPos.cy + 200;//m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
-	// 22.05.30 Ahn Modify End
 
 	CRect rcLeftRnd;
 	CRect rcRightRnd;
