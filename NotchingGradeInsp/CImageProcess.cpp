@@ -4580,13 +4580,7 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 	if (nEndPos > nWidth) {
 		nEndPos = nWidth;
 	}
-	// 23.02.14 Ahn Modify Start
-	//// 22.11.07 Ahn Modify Start
-	////int thMin = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; //(int)(pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2;
-	//int thMin = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP];// 40; // pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; //(int)(pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2;
-	//// 22.11.07 Ahn Modify End
 	int thMin = pRecipeInfo->TabCond.nTabMinBright; // pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];
-	// 23.02.14 Ahn Modify End
 	int thMax = 255;
 
 	pVecSector->clear();
@@ -4617,17 +4611,6 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("<<FindTab_Negative>>이미지 Sector 에러 => 레시피에 설정한 TabWidth/2 값 보다 큰 TabWidth 가 없다."));
 
-
-		//pyjtest
- //		CBitmapStd bmp(nWidth, nHeight);
- //		bmp.SetImage(nWidth, nHeight, pImgPtr);
- //
- //		CTime time = CTime::GetCurrentTime();
- //		CString str;
- //		str.Format(_T("d:\\[pstSector]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
- //		bmp.SaveBitmap(str);
-
-
 		return -3;
 	}
 
@@ -4641,21 +4624,12 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 	rcPrj.left = 0;
 	rcPrj.right = nWidth;
 
-	//CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
-	//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nStartPos, 20, 0);
 	int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
 	// 경계 검출
 	int nUpper = 20 * nCount;
-	//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nStartPos, 20, 0);
 	int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nWidth, 20, 0);
 	*pnLevel = nBundary - pRecipeInfo->TabCond.nNegCoatHeight ;
 	
-
-//	CString strMsg;
-//	strMsg.Format(_T("pnLevel(%d) = nBundary(%d) - pRecipeInfo->TabCond.nNegCoatHeight(%d)"), nBundary - pRecipeInfo->TabCond.nNegCoatHeight, nBundary, pRecipeInfo->TabCond.nNegCoatHeight );
-//	AprData.SaveDebugLog(strMsg); //pyjtest
-
-
 
 	delete[] pnPrjData;
 	return nRet;
@@ -7149,13 +7123,11 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	ctAna.StopWatchStart();
 #endif
 
-	int nOffset = 50;
-
 	int nLeftOffset;
 	int nRightOffset = 100 ; 
 	int nTabRoundOffsetR;
 
-	nLeftOffset = (int)((double)pRecipeInfo->TabCond.nNegCoatHeight * 1.5);
+	nLeftOffset = pRecipeInfo->TabCond.nNegVGrooveHeight; //(int)((double)pRecipeInfo->TabCond.nNegCoatHeight * 1.5);
 	nTabRoundOffsetR = pRecipeInfo->TabCond.nNegCoatHeight;
 
 	CRect rcAll;
@@ -7367,9 +7339,9 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	}
 
 	roiFoilExp.SetRect(rcLeft);
-	roiFoilExp.SetRect(rcRight);
-
 	CImageProcess::Threshold_RoundMask(pDiffPtr, &roiFoilExp, &vecLeftRndInfo, nWidth, nHeight, nFoilExpInspWidth, nFoilExpThLower, nFoileExpMaskOffset, nMaskRight, en_ModeFoilExp, FALSE);
+
+	roiFoilExp.SetRect(rcRight);
 	CImageProcess::Threshold_RoundMask(pDiffPtr, &roiFoilExp, &vecRightRndInfo, nWidth, nHeight, nFoilExpInspWidth, nFoilExpThLower, nFoileExpMaskOffset, nMaskRight, en_ModeFoilExp, FALSE);
 
 #if defined( SAVE_TACT_LOG ) 
@@ -8442,17 +8414,9 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 
 	int nLeftOffset;
 	
-// 22.06.22 Ahn Delete Start
-//	int nMeanLeftOffest;
-//	int nMeanRightOffset;
-// 22.06.22 Ahn Delete End
 	int nTabRoundOffsetR;
 
-	nLeftOffset = pRecipeInfo->TabCond.nNegCoatHeight + pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-	// 22.06.22 Ahn Delete Start
-	//nMeanLeftOffest = pRecipeInfo->TabCond.nNegCoatHeight;
-	//nMeanRightOffset = 50;
-	// 22.06.22 Ahn Delete End
+	nLeftOffset = pRecipeInfo->TabCond.nNegVGrooveHeight + pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
 	nTabRoundOffsetR = pRecipeInfo->TabCond.nNegCoatHeight;
 
 	CRect rcAll;
@@ -8461,14 +8425,6 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	rcAll.left = rcRight.left = rcLeft.left = nLineLevel - nLeftOffset;
 	rcAll.right = nLineLevel + (int)(pRecipeInfo->TabCond.nRadiusW);
 	rcRight.right = rcLeft.right = nLineLevel + 100;
-
-	// 22.06.22 Ahn Delete Start
-	//CRect rcEdgeMean;
-	//rcEdgeMean.bottom = nHeight;
-	//rcEdgeMean.top = 0;
-	//rcEdgeMean.left = nLineLevel - nMeanLeftOffest;
-	//rcEdgeMean.right = nLineLevel + nMeanRightOffset;
-	// 22.06.22 Ahn Delete Start
 
 	if ((rcAll.right > nWidth) || (rcAll.left < 0)) {
 		return -1;
