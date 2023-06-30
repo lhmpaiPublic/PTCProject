@@ -50,7 +50,7 @@ void CImageSaveThread::Kill(void)
 }
 
 //스래드 타임아웃 시간
-#define IMAGESAVETHREAD_TIMEOUT 50
+#define IMAGESAVETHREAD_TIMEOUT 3
 UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 {
 	CImageSaveThread* pThis = (CImageSaveThread*)pParam;
@@ -89,7 +89,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 			//Save Count 
 			int SaveCount = 0;
-			while ((pQueuePtr->IsEmpty() == FALSE) && (SaveCount < 5))
+			while ((pQueuePtr->IsEmpty() == FALSE) && (SaveCount < 30))
 			{
 				SaveCount++;
 				// Image 하나 가지고 오고 삭제함.
