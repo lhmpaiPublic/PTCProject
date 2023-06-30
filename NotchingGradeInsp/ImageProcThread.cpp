@@ -42,6 +42,7 @@ CImageProcThread::CImageProcThread(CImageProcessCtrl *pParent)
 {
 	m_pParent = pParent ;
 	m_pThread = NULL ;
+	m_CreateMode = 0;
 }
 
 CImageProcThread::~CImageProcThread(void)
@@ -51,7 +52,7 @@ CImageProcThread::~CImageProcThread(void)
 void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : Image Proc Mode 
 {
 	m_bKill = FALSE ;
-
+	m_CreateMode = nMode;
 	//이벤트 객체 생성
 	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, FALSE, FALSE, NULL);
 	pEvent_ImageProcThread_Result = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -82,17 +83,19 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 }
 void CImageProcThread::Kill( void ) 
 {
-	DWORD	dwCode ;
-	LONG	ret ;
-
-	if ( m_pThread != NULL ) {
-		ret = ::GetExitCodeThread( m_pThread->m_hThread, &dwCode ) ;
-		if ( ret && dwCode == STILL_ACTIVE ) {
-			m_bKill = TRUE ;
-			WaitForSingleObject( m_pThread->m_hThread, INFINITE ) ;
+	// source file
+	if (m_pThread)
+	{
+		if (m_CreateMode == 0)
+		{
+			setEvent_ImageProcThread_TabFind();
 		}
-		delete m_pThread ;
-		m_pThread = NULL ;
+		else
+		{
+			setEvent_ImageProcThread_Result();
+		}
+		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
+		m_pThread->m_hThread = NULL;
 	}
 
 }
@@ -1342,7 +1345,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-					//SPC+ IMAGE Save===================================================================================================
+						//SPC+ IMAGE Save===================================================================================================
 						CString strSPCFilePath = InspInData->ImageFilePath();
 						int SPCImageQuality = CGlobalFunc::StringToint(SPCINFO->getIqJpgQuality());
 						for (int i = 0; i < MAX_CAMERA_NO; i++)

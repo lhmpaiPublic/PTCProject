@@ -21,7 +21,11 @@ void CImageSaveThread::Begin(void)
 	m_bKill = FALSE;
 
 	//	m_DisphWnd = NULL ;
-	if (m_pThread == NULL) {
+	if (m_pThread == NULL)
+	{
+		//이벤트 객체 생성
+		pEvent_ImageSaveThread = CreateEvent(NULL, FALSE, FALSE, NULL);
+
 		m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlThreadImgSave,
 			(LPVOID)this,
 			THREAD_PRIORITY_HIGHEST,
@@ -37,112 +41,121 @@ void CImageSaveThread::Begin(void)
 
 void CImageSaveThread::Kill(void)
 {
-	DWORD	dwCode;
-	LONG	ret;
-
-	if (m_pThread != NULL) {
-		ret = ::GetExitCodeThread(m_pThread->m_hThread, &dwCode);
-		if (ret && dwCode == STILL_ACTIVE) {
-			m_bKill = TRUE;
-			WaitForSingleObject(m_pThread->m_hThread, INFINITE);
-		}
-		delete m_pThread;
-		m_pThread = NULL;
+	if (m_pThread)
+	{
+		setEvent_ImageSaveThread();
+		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
+		m_pThread->m_hThread = NULL;
 	}
 }
 
+//스래드 타임아웃 시간
+#define IMAGESAVETHREAD_TIMEOUT 50
 UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 {
 	CImageSaveThread* pThis = (CImageSaveThread*)pParam;
-	CImageProcessCtrl* pParent = pThis->m_pParent ;
-	CImageSaveQueueCtrl* pQueuePtr = pParent->GetImageSaveQueuePtr() ;
+	CImageProcessCtrl* pParent = pThis->m_pParent;
+	CImageSaveQueueCtrl* pQueuePtr = pParent->GetImageSaveQueuePtr();
 
+	UINT ret = 0;
 	while (1)
 	{
-		if (pThis == NULL)
+		//타임 주기 이벤트
+		ret = WaitForSingleObject(pThis->getEvent_ImageSaveThread(), IMAGESAVETHREAD_TIMEOUT);
+		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
-			LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-1 Thread 종료"));
-			break;
+			return 0;
 		}
-
-		if (pThis->m_bKill == TRUE)
-		{
-			LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-2 Thread 종료"));
-			break;
-		}
-
-		if (pQueuePtr == NULL)
-		{
-			LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-3 Thread 종료"));
-			break;
-		}
-
-		if (pQueuePtr->IsEmpty() == FALSE )
+		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
 
-			// Image 하나 가지고 오고 삭제함.
-			CImgSaveInfo* pSaveInfo = pQueuePtr->Pop() ;
-			if( pSaveInfo == NULL ) continue ;
-
-			if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
+			if (pThis == NULL)
 			{
-				//Image Save Log
-				LOGDISPLAY_SPECTXT(0)(_T("넓이가 0 또는 높이가 0이면 Image 저정 정보 삭제"));
-
-				BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
-				delete[]pImgPtr;
-				pImgPtr = NULL;
-
-				delete pSaveInfo;
-				pSaveInfo = NULL;
-				continue ;
+				LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-1 Thread 종료"));
+				break;
 			}
 
-			if (pSaveInfo->m_strSavePath.GetLength() > 0)
+			if (pThis->m_bKill == TRUE)
 			{
-				BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
+				LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-2 Thread 종료"));
+				break;
+			}
 
-				CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
-				bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr() );
-				// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
+			if (pQueuePtr == NULL)
+			{
+				LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-3 Thread 종료"));
+				break;
+			}
 
-				int nJpgQuality; 
+			if (pQueuePtr->IsEmpty() == FALSE)
+			{
 
-//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE
-				nJpgQuality = pSaveInfo->m_nJpgQuality;
-#else
-				if (pQueuePtr->GetSize() > 2)
+				// Image 하나 가지고 오고 삭제함.
+				CImgSaveInfo* pSaveInfo = pQueuePtr->Pop();
+				if (pSaveInfo == NULL) continue;
+
+				if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
 				{
-					nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10 ;
+					//Image Save Log
+					LOGDISPLAY_SPECTXT(0)(_T("넓이가 0 또는 높이가 0이면 Image 저정 정보 삭제"));
+
+					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
+					delete[]pImgPtr;
+					pImgPtr = NULL;
+
+					delete pSaveInfo;
+					pSaveInfo = NULL;
+					continue;
+				}
+
+				if (pSaveInfo->m_strSavePath.GetLength() > 0)
+				{
+					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
+
+					CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
+					bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr());
+					// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
+
+					int nJpgQuality;
+
+					//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+					nJpgQuality = pSaveInfo->m_nJpgQuality;
+#else
+					if (pQueuePtr->GetSize() > 2)
+					{
+						nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10;
+					}
+					else
+					{
+						nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
+					}
+#endif //SPCPLUS_CREATE
+
+					bmp.SetJpegQuality(nJpgQuality);
+
+					bmp.SaveBitmap(pSaveInfo->m_strSavePath);
+
+					delete[]pImgPtr;
+					pImgPtr = NULL;
 				}
 				else
 				{
-					nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
+					//Image Save Log
+					LOGDISPLAY_SPECTXT(0)(_T("이미지를 저장할 Path가 없다."));
 				}
-#endif //SPCPLUS_CREATE
 
-				bmp.SetJpegQuality(nJpgQuality);
-
-				bmp.SaveBitmap(pSaveInfo->m_strSavePath);
-
-				delete []pImgPtr;
-				pImgPtr = NULL;
-			}
-			else
-			{
-				//Image Save Log
-				LOGDISPLAY_SPECTXT(0)(_T("이미지를 저장할 Path가 없다."));
+				delete pSaveInfo;
+				pSaveInfo = NULL;
 			}
 
-			delete pSaveInfo;
-			pSaveInfo = NULL;
 		}
-
-
-		Sleep(10);
+		else
+		{
+			break;
+		}
 	}
-	
+
 
 	AfxEndThread(0);
 	pThis->m_bKill = FALSE;

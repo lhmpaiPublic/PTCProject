@@ -68,6 +68,8 @@ protected :
 	//동기화 이벤트 객체
 	HANDLE pEvent_ImageProcThread_TabFind;
 	HANDLE pEvent_ImageProcThread_Result;
+	//생성모드
+	int m_CreateMode;
 protected:
 	//이미지 분석처리를 위한 스래드 함수
 	static UINT CtrlThreadImgProc( LPVOID pParam ) ;
