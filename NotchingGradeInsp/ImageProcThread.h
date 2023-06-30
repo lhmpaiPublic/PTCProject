@@ -54,11 +54,20 @@ public:
 
 	typedef std::vector< ST_SECTOR > VEC_SECTOR;
 
+	// 동기화 이벤트 객체
+	HANDLE getEvent_ImageProcThread_TabFind() { return pEvent_ImageProcThread_TabFind; }
+	void setEvent_ImageProcThread_TabFind() { SetEvent(pEvent_ImageProcThread_TabFind); }
+
+	HANDLE getEvent_ImageProcThread_Result() { return pEvent_ImageProcThread_Result; }
+	void setEvent_ImageProcThread_Result() { SetEvent(pEvent_ImageProcThread_Result); }
 protected :
 	BOOL	m_bKill ;
 	int		m_nThreadId ;
-	CWinThread* m_pThread ;				//!< 긚깒긞긤(CWinThread *)x1
+	CWinThread* m_pThread ;				//!< 스래드 객체
 
+	//동기화 이벤트 객체
+	HANDLE pEvent_ImageProcThread_TabFind;
+	HANDLE pEvent_ImageProcThread_Result;
 protected:
 	//이미지 분석처리를 위한 스래드 함수
 	static UINT CtrlThreadImgProc( LPVOID pParam ) ;
