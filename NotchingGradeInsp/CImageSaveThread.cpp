@@ -87,12 +87,14 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				break;
 			}
 
-			if (pQueuePtr->IsEmpty() == FALSE)
+			//Save Count 
+			int SaveCount = 0;
+			while ((pQueuePtr->IsEmpty() == FALSE) && (SaveCount < 5))
 			{
-
+				SaveCount++;
 				// Image 하나 가지고 오고 삭제함.
 				CImgSaveInfo* pSaveInfo = pQueuePtr->Pop();
-				if (pSaveInfo == NULL) continue;
+				if (pSaveInfo == NULL) break;
 
 				if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
 				{
@@ -139,12 +141,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					delete[]pImgPtr;
 					pImgPtr = NULL;
 				}
-				else
-				{
-					//Image Save Log
-					LOGDISPLAY_SPECTXT(0)(_T("이미지를 저장할 Path가 없다."));
-				}
-
 				delete pSaveInfo;
 				pSaveInfo = NULL;
 			}
