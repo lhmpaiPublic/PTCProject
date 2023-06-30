@@ -87,6 +87,7 @@ CString CGlobalFunc::strLocalTime()
 void CGlobalFunc::ThreadExit(HANDLE* hThread, DWORD waitTime)
 {
 	BOOL bLoopFlag = 1;
+	UINT ret = 0;
 	while (bLoopFlag)
 	{
 		MSG msg;
@@ -95,9 +96,10 @@ void CGlobalFunc::ThreadExit(HANDLE* hThread, DWORD waitTime)
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		switch (MsgWaitForMultipleObjects(1, hThread, FALSE, waitTime, QS_ALLINPUT))
+		switch (ret = MsgWaitForMultipleObjects(1, hThread, FALSE, waitTime, QS_ALLINPUT))
 		{
 		case WAIT_OBJECT_0:
+		case WAIT_FAILED:
 			bLoopFlag = 0;
 			break;
 		case WAIT_TIMEOUT:

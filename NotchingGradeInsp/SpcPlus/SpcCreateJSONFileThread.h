@@ -22,11 +22,12 @@ class CSpcCreateJSONFileThread
 
 	//스래드 생성 인스턴스 객체
 	CWinThread* m_pThread;
-	//스래드를 계속 유지 여부 설정 변수
-	bool m_isWorkingThread;
 
 	//동기화 객체
 	CRITICAL_SECTION m_csQueue;
+
+	//동기화 이벤트 객체
+	HANDLE pEvent_SpcCreateJSONFileThread;
 public:
 	CSpcCreateJSONFileThread() ;
 	virtual ~CSpcCreateJSONFileThread() ;
@@ -57,6 +58,10 @@ public:
 	void CreateThread();
 	//스래드 종료함수
 	void ExitThread();
+
+	//동기화 이벤트 객체
+	HANDLE getEvent_SpcCreateJSONFileThread() { return pEvent_SpcCreateJSONFileThread; }
+	void setEvent_SpcCreateJSONFileThread() { SetEvent(pEvent_SpcCreateJSONFileThread); }
 
 };
 

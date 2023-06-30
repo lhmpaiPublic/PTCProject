@@ -23,6 +23,9 @@ class CLogDisplayDlg : public CDialogEx
 	static CMap<int, int, BOOL, BOOL> m_LogPrintStatMap;
 
 	static BOOL bCreate;
+
+	//동기화 이벤트 객체
+	HANDLE pEvent_LogDisplayDlg;
 public:
 	CLogDisplayDlg(CWnd* pParent = nullptr);   // 표준 생성자입니다.
 	virtual ~CLogDisplayDlg();
@@ -58,8 +61,6 @@ protected:
 
 	//스래드 생성 인스턴스 객체
 	CWinThread* m_pThread;
-	//스래드를 계속 유지 여부 설정 변수
-	bool m_isWorkingThread;
 public:
 	//로그 ListBox에 출력
 	static UINT ThreadProc(LPVOID param);
@@ -82,6 +83,10 @@ public:
 
 	//클립보드 복사
 	void CopyStrToClipboard(CString str);
+
+	// 동기화 이벤트 객체
+	HANDLE getEvent_LogDisplayDlg(){ return pEvent_LogDisplayDlg; }
+	void setEvent_LogDisplayDlg() { SetEvent(pEvent_LogDisplayDlg); }
 public:
 	//리스트 박스 객체
 	CListBox m_ListLog;

@@ -135,8 +135,8 @@ CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 
 CLogDisplayDlg::~CLogDisplayDlg()
 {
-	getListBox()->m_hWnd = NULL;
 	::DeleteCriticalSection(&m_csQueueLog);
+	ExitThread();
 }
 
 void CLogDisplayDlg::DoDataExchange(CDataExchange* pDX)
@@ -172,9 +172,9 @@ BOOL CLogDisplayDlg::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	// 
 	::SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-	//source file
-	m_isWorkingThread = true;
 
+	//이벤트 객체 생성
+	pEvent_LogDisplayDlg = CreateEvent(NULL, FALSE, FALSE, NULL);
 	//스래드 생성
 	m_pThread = AfxBeginThread(ThreadProc, this);
 
@@ -255,6 +255,7 @@ CString CLogDisplayDlg::GetLogDisplayMessage()
 }
 
 //source file
+#define LOGDISPLAYDLG_THREADTIMEOUT 30
 UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 {
 	CLogDisplayDlg* pMain = (CLogDisplayDlg*)param;
@@ -271,54 +272,67 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	);
 
 	CWin32File file;
-	while (pMain && pMain->m_isWorkingThread)
+	UINT ret = 0;
+	while (pMain)
 	{
-		//Do something...
-		Sleep(1);
-		if (CLogDisplayDlg::bCreate && strList->size() && listBox->m_hWnd)
+		ret = WaitForSingleObject(pMain->getEvent_LogDisplayDlg(), LOGDISPLAYDLG_THREADTIMEOUT);
+
+		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
-			CString tempStr = "";
-			for (int i = 0; i < strList->size(); i++)
+			return 0;
+		}
+		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
+		{
+			//Do something...
+			if (CLogDisplayDlg::bCreate && strList->size() && listBox->m_hWnd)
 			{
-				CString popStr = pMain->GetLogDisplayMessage();
+				CString tempStr = "";
+				for (int i = 0; i < strList->size(); i++)
+				{
+					CString popStr = pMain->GetLogDisplayMessage();
+					tempStr += popStr + CString("\r\n");
+				}
 #ifdef LOGDISPLAY_LISTBOX
-				CString* pSendStr = new CString(popStr);
+				CString* pSendStr = new CString(tempStr);
 				pMain->PostMessage(WM_LOGMSGPRINT, (WPARAM)pSendStr);
 #endif //LOGDISPLAY_LISTBOX
-				tempStr += popStr + CString("\r\n");
-			}
+				//텍스트 로그 출력
+				if (pMain->getTextLogPrint())
+				{
 
-			//텍스트 로그 출력
-			if (pMain->getTextLogPrint())
-			{
+					CString FileName;
+					SYSTEMTIME	sysTime;
+					::GetLocalTime(&sysTime);
 
-				CString FileName;
-				SYSTEMTIME	sysTime;
-				::GetLocalTime(&sysTime);
+					FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
+						, LOGTEXTFILENAME
+						, sysTime.wYear
+						, sysTime.wMonth
+						, sysTime.wDay
+						, sysTime.wHour
+						, sysTime.wMinute
+					);
 
-				FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
-					, LOGTEXTFILENAME
-					, sysTime.wYear
-					, sysTime.wMonth
-					, sysTime.wDay
-					, sysTime.wHour
-					, sysTime.wMinute
-				);
-
-				file.TextSave1Line(FilePath, FileName, tempStr, "at", FALSE, 999999999);
+					file.TextSave1Line(FilePath, FileName, tempStr, "at", FALSE, 999999999);
+				}
 			}
 		}
+		else
+		{
+			break;
+		}
+		
 	}
-
+	AfxEndThread(0);
 	return 0;
 }
 
 void CLogDisplayDlg::ExitThread()
 {
 	// source file
-	m_isWorkingThread = false;
+	setEvent_LogDisplayDlg();
 	CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
-	//WaitForSingleObject(m_pThread->m_hThread, 5000);
+	m_pThread->m_hThread = NULL;
 }
 
 
@@ -442,15 +456,18 @@ LRESULT CLogDisplayDlg::OnLogMsgPrint(WPARAM wParam, LPARAM lParam)
 	CString* logStr = (CString*)wParam;
 	if (logStr)
 	{
-		m_ListLog.AddString(*logStr);
-		delete logStr;
-		if (getLogMoveLast())
+		if (m_ListLog)
 		{
-			m_ListLog.SetTopIndex(m_ListLog.GetCount() - 1);
-		}
-		if (m_ListLog.GetCount() >= LISTBOX_CLEARCOUNT)
-		{
-			m_ListLog.ResetContent();
+			m_ListLog.AddString(*logStr);
+			delete logStr;
+			if (getLogMoveLast())
+			{
+				m_ListLog.SetTopIndex(m_ListLog.GetCount() - 1);
+			}
+			if (m_ListLog.GetCount() >= LISTBOX_CLEARCOUNT)
+			{
+				m_ListLog.ResetContent();
+			}
 		}
 	}
 	return 0;

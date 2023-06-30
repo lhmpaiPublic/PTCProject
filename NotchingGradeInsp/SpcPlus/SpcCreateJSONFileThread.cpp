@@ -67,27 +67,45 @@ void CSpcCreateJSONFileThread::ExitSpcCreateJSONFileThread()
 }
 
 //로그 ListBox에 출력
+#define SPCCREATEJSONFILETHREAD_TIMEOUT 200
 UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 {
 	CSpcCreateJSONFileThread* pMain = (CSpcCreateJSONFileThread*)param;
 	std::queue<CSpcPlusManager*>* SpcList = pMain->getSpcList();
+	UINT ret;
 	while (pMain)
 	{
-		//Do something...
-		if (CLogDisplayDlg::bCreate && SpcList->size())
+		ret = WaitForSingleObject(pMain->getEvent_SpcCreateJSONFileThread(), SPCCREATEJSONFILETHREAD_TIMEOUT);
+
+		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
-			CSpcPlusManager* obj = pMain->popSpcPlus();
-			if (obj)
+			return 0;
+		}
+		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
+		{
+			//Do something...
+			while (true)
 			{
-				obj->makeJSONFile();
-				delete obj;
-			}
+				if (CLogDisplayDlg::bCreate && SpcList->size())
+				{
+					CSpcPlusManager* obj = pMain->popSpcPlus();
+					if (obj)
+					{
+						obj->makeJSONFile();
+						delete obj;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}			
 		}
 		else
 		{
-			if(pMain->m_isWorkingThread == false)
-				break;
+			break;
 		}
+		
 	}
 
 	return 0;
@@ -97,16 +115,15 @@ void CSpcCreateJSONFileThread::CreateThread()
 {
 	::InitializeCriticalSection(&m_csQueue);
 
-	//source file
-	m_isWorkingThread = true;
-
+	//이벤트 객체 생성
+	pEvent_SpcCreateJSONFileThread = CreateEvent(NULL, FALSE, FALSE, NULL);
 	//스래드 생성
 	m_pThread = AfxBeginThread(ThreadProc, this);
 }
 //스래드 종료함수
 void CSpcCreateJSONFileThread::ExitThread()
 {
-	m_isWorkingThread = false;
+	setEvent_SpcCreateJSONFileThread();
 	CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
 	::DeleteCriticalSection(&m_csQueue);
 }
