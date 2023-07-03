@@ -8,6 +8,24 @@
 
 CImageProcessCtrl* CGrabDalsaCameraLink::m_pImageProcessCtrl = NULL;
 
+//프레임 처리시간 객체를 세팅한다.
+#include "ImageProcThread.h"
+LARGE_INTEGER stTime ;
+double dFrecuency = 0.0;
+
+double GetDiffTime(LARGE_INTEGER stTime, double dFrequency)
+{
+	LARGE_INTEGER edTime;
+	QueryPerformanceCounter(&edTime);
+
+	double	dv0, dv1;
+	dv0 = (double)stTime.LowPart + ((double)stTime.HighPart * (double)0xffffffff);
+	dv1 = (double)edTime.LowPart + ((double)edTime.HighPart * (double)0xffffffff);
+	double	dtimev;
+	dtimev = (dv1 - dv0) / dFrequency * (double)1000.0;
+	return (dtimev);
+}
+
 static void AcqCallback(SapXferCallbackInfo* pInfo)
 {
 	//	SapView* pView = (SapView*)pInfo->GetContext();
@@ -166,7 +184,24 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 
 				pQueueCtrl->PushBack(pFrmInfo);
+				double dTactTime = GetDiffTime(stTime, dFrecuency);
 				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
+				//Log Camera Setting
+				LOGDISPLAY_SPEC(4)(_T("AcqCallback Image Data TacTime <%f>"),
+					dTactTime);
+
+				// 22.12.09 Ahn Add Start
+						//프레임 처리 시간 세팅
+				LARGE_INTEGER tmp;
+				LARGE_INTEGER start;
+				QueryPerformanceFrequency(&tmp);
+				double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
+				QueryPerformanceCounter(&start);
+
+				//프레임 처리시간 객체를 세팅한다.
+				stTime = start;
+				dFrecuency = dFrequency;
+
 				bSend = TRUE;
 
 				if (bSend == FALSE) {
@@ -180,6 +215,9 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
 {
+	memset(&stTime, 0, sizeof(LARGE_INTEGER ));
+	QueryPerformanceCounter(&stTime);
+	dFrecuency = 0.0;
 	//부모객체 생성 포인터
 	m_pImageProcessCtrl = pImageProcessCtrl;
 
