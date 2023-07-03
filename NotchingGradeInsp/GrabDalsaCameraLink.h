@@ -40,13 +40,15 @@ public :
 	void SetRun(BOOL bRun) { m_bRunFlag = bRun; } ;
 };
 
-
+class CImageProcessCtrl;
 class CGrabDalsaCameraLink :public CGrabberCtrl
 {
 public :
-	CGrabDalsaCameraLink();
+	CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl);
 	~CGrabDalsaCameraLink();
 
+	//콜백에서 사용할 static 전역 객체
+	static CImageProcessCtrl* m_pImageProcessCtrl;
 private :
 	HWND m_DispHwnd;
 

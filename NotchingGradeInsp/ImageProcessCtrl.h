@@ -34,6 +34,8 @@ public:
 	CImageProcessCtrl(void);
 	~CImageProcessCtrl(void);
 
+	int Top_FrameCtn;
+	int Bottom_FrameCtn;
 private :
 	CGrabberCtrl* m_pGrabCtrl[GRABBER_COUNT];
 	int m_nImgProcIdx[GRABBER_COUNT];
@@ -182,6 +184,10 @@ public :
 	// 22.06.23 Ahn Add Start
 	CDefectQueueCtrl* GetDefectQueuePtr();
 	// 22.06.23 Ahn Add End
+
+	//CamType : Top 0, Bottom 1 카메라 이미지를 받았을 때
+	//FrameCtn : Camera에서 이벤트로 받은 이미지 번호 : Top, Bottom 각각
+	void GrabDalsaCameraLink(int CamType, int FrameCnt);
 
 #if defined( IMAGE_DRAW_DIRECT_VERSION )
 	void SetImgDispHWnd(HWND pHWnd, int nHeadNo);

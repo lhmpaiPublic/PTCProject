@@ -134,6 +134,9 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 	}
 	// 22.05.31 Ahn Add Start
 
+	Top_FrameCtn = -1;
+	Bottom_FrameCtn = -1;
+
 #if defined( IMAGE_DRAW_NOTIFY_VERSION )
 
 	for (i = 0; i < GRABBER_COUNT; i++) {
@@ -220,7 +223,7 @@ int CImageProcessCtrl::Initialize(HWND hWnd, int nIndex )
 	// 카메라 장비 이벤트 연결하여 이미지를 받기
 	//nIndex 0 : Top , 1 : Bottom
 	if (m_pGrabCtrl[ nIndex ] == NULL) {
-		m_pGrabCtrl[nIndex] = new CGrabDalsaCameraLink();
+		m_pGrabCtrl[nIndex] = new CGrabDalsaCameraLink(this);
 	}
 	
 	//이미지 인텍스
@@ -908,4 +911,26 @@ CTacTimeDataCtrl* CImageProcessCtrl::GetTactDataCtrlPtr()
 // 22.12.09 Ahn Add End
 
 
+//CamType : Top 0, Bottom 1 카메라 이미지를 받았을 때
+//FrameCtn : Camera에서 이벤트로 받은 이미지 번호 : Top, Bottom 각각
+void CImageProcessCtrl::GrabDalsaCameraLink(int CamType, int FrameCnt)
+{
+	if (CamType == 0)
+	{
+		Top_FrameCtn = FrameCnt;
+	}
+	else
+	{
+		Bottom_FrameCtn = FrameCnt;
+	}
 
+	if ((Top_FrameCtn != -1) && (Bottom_FrameCtn != -1))
+	{
+		//Log Camera Setting
+		LOGDISPLAY_SPEC(4)(_T("AcqCallback Image Data : Top_FrameCnt<%d>, Bottom_FrameCnt<%d>"),
+			Top_FrameCtn, Bottom_FrameCtn);
+		Top_FrameCtn = -1;
+		Bottom_FrameCtn = -1;
+		m_pImgCutTabThread->setEvent_ImageProcThread_TabFind();
+	}
+}

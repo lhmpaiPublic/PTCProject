@@ -4,7 +4,9 @@
 #include "FrameInfo.h"
 #include "GlobalData.h"
 #include "SigProc.h"
+#include "ImageProcessCtrl.h"
 
+CImageProcessCtrl* CGrabDalsaCameraLink::m_pImageProcessCtrl = NULL;
 
 static void AcqCallback(SapXferCallbackInfo* pInfo)
 {
@@ -164,6 +166,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 
 				pQueueCtrl->PushBack(pFrmInfo);
+				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 				bSend = TRUE;
 
 				if (bSend == FALSE) {
@@ -175,8 +178,11 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 	}		
 }
 
-CGrabDalsaCameraLink::CGrabDalsaCameraLink()
+CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
 {
+	//부모객체 생성 포인터
+	m_pImageProcessCtrl = pImageProcessCtrl;
+
 	m_DispHwnd = NULL ;
 	m_pAcq = NULL ;
 	m_pAcqDevice = NULL ;

@@ -86,6 +86,7 @@ void CImageProcThread::Kill( void )
 	// source file
 	if (m_pThread)
 	{
+		m_bKill = TRUE;
 		if (m_CreateMode == 0)
 		{
 			setEvent_ImageProcThread_TabFind();
@@ -148,13 +149,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	while (1)
 	{
 		//타임 주기 이벤트
-		ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), IMAGEPROCTHREAD_TABFIND_TIMEOUT);
+		ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), INFINITE);
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
 			return 0;
 		}
-		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
+		else if (ret == WAIT_OBJECT_0) //TIMEOUT시 명령
 		{
 
 			//로그카운트 증가
