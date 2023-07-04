@@ -715,10 +715,17 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 	CDefectQueueCtrl* pDefectQueue = pThis->m_pParent->GetDefectQueuePtr(); // 22.06.23 Ahn Add
 
 	UINT ret = 0;
+	//스래드 대기 여부
+	BOOL bThreadWait = TRUE;
 	while (1) 
 	{
 		//타임 주기 이벤트
-		ret = WaitForSingleObject(pThis->getEvent_ResultThread(), RESULTTHREAD_TIMEOUT);
+		//대기 상태일 때
+		if (bThreadWait)
+			ret = WaitForSingleObject(pThis->getEvent_ResultThread(), RESULTTHREAD_TIMEOUT);
+		//대기하지 않고 바로 처리한다.
+		else
+			ret = WAIT_TIMEOUT;
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
@@ -915,6 +922,13 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				delete pRsltInfo;
 				pRsltInfo = NULL;
 			}
+			//큐에 데이터가 있으면 기다리지 않고 실행하도록 설정
+			if (pQueueResult->GetSize())
+				bThreadWait = FALSE;
+			//없으면 대기
+			else
+				bThreadWait = TRUE;
+
 		}
 		else
 		{

@@ -57,6 +57,8 @@ public:
 	// 동기화 이벤트 객체
 	HANDLE getEvent_ImageProcThread_TabFind() { return pEvent_ImageProcThread_TabFind; }
 	void setEvent_ImageProcThread_TabFind() { SetEvent(pEvent_ImageProcThread_TabFind); }
+	void resetEvent_ImageProcThread_TabFind() { ResetEvent(pEvent_ImageProcThread_TabFind); }
+	void resume_ImageProcThread_TabFind() { m_pThread->ResumeThread(); }
 
 	HANDLE getEvent_ImageProcThread_Result() { return pEvent_ImageProcThread_Result; }
 	void setEvent_ImageProcThread_Result() { SetEvent(pEvent_ImageProcThread_Result); }

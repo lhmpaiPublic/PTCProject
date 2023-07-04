@@ -932,5 +932,6 @@ void CImageProcessCtrl::GrabDalsaCameraLink(int CamType, int FrameCnt)
 		Top_FrameCtn = -1;
 		Bottom_FrameCtn = -1;
 		m_pImgCutTabThread->setEvent_ImageProcThread_TabFind();
+		m_pImgCutTabThread->resume_ImageProcThread_TabFind();
 	}
 }

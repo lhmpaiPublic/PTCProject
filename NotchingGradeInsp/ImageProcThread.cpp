@@ -54,7 +54,7 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 	m_bKill = FALSE ;
 	m_CreateMode = nMode;
 	//이벤트 객체 생성
-	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, FALSE, FALSE, NULL);
+	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, TRUE, FALSE, NULL);
 	pEvent_ImageProcThread_Result = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 //	m_DisphWnd = NULL ;
@@ -146,10 +146,17 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	static int TempLogCount = 0;
 
 	UINT ret = 0;
+	//스래드 대기 여부
+	BOOL bThreadWait = TRUE;
 	while (1)
 	{
 		//타임 주기 이벤트
-		ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), INFINITE);
+		//대기 상태일 때
+		if (bThreadWait)
+			ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), INFINITE);
+		//대기하지 않고 바로 처리한다.
+		else
+			ret = WAIT_OBJECT_0;
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
@@ -812,7 +819,23 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				double dSecond = ctAna.WhatTimeIsIt_Double();
 				AprData.SetTactTime_1(dSecond);
 			}
-			//::Sleep(AprData.m_nSleep);
+			//Top Frame 크기
+			nSizeFrmL = pQueueFrame_Top->GetSize();
+			//Bottom Frame 크기
+			nSizeFrmR = pQueueFrame_Bottom->GetSize();
+
+			//큐에 데이터가 있으면 기다리지 않고 실행하도록 설정
+			if (nSizeFrmL && nSizeFrmR)
+			{
+				bThreadWait = FALSE;
+			}
+			//없으면 대기
+			else
+			{
+				//Reset 호출
+				pThis->resetEvent_ImageProcThread_TabFind();
+				bThreadWait = TRUE;
+			}
 		}
 		else
 		{
