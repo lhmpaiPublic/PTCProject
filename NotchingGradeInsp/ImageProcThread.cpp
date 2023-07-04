@@ -962,8 +962,15 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//InData ===
 						//Insp InData 객체 포인터
 						CSpcInspInData* InspInData = insp->getSpcInspInData();
+						//Cell 추적 PLC에서 받은 ID (VIRTUAL_CELL_ID와 동일값 작성)	
+						CString	CellId = "";
+						CellId.Format(_T("%02d"), pTopInfo->m_nTabId_CntBoard);
+						InspInData->setCellId(CellId);
 						//셀 카운트 번호
 						InspInData->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));
+						//Cell 추적 PLC에서 받은 ID (CELL_ID와 동일값 작성)	
+						CString	 VirtualCellId = CellId;
+						InspInData->setVirtualCellId(VirtualCellId);
 						//Cell 판정결과
 						CString CellFinalJudge = ((pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) || (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG)) ? "NG" : "OK";
 						InspInData->setCellFinalJudge(CellFinalJudge);
