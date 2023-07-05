@@ -32,7 +32,7 @@ char* CSpcAlarmInData::MakeAlarmInDataText =
 "        \"ALARM_CODE\": \"%s\",\r\n"
 "        \"ALARM_NAME\": \"%s\",\r\n"
 "        \"ALARM_ALL_RESET_FLAG\": \"%s\",\r\n"
-"        \"ALARM_OUTTO_DATE\": \"%s\",\r\n"
+"        \"ALARM_OUTTO_DATE\": \"%s\"\r\n"
 "      }\r\n";
 
 //생성자 : 클래스의 초기화 설계
