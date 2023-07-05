@@ -262,7 +262,7 @@ int CLightControl::SetLevel(int unit, int ch, int nLevel)
 	if (SetLevel_8Bit(unit, ch, (BYTE)nLevel) < 0) {
 		CString strMsg;
 		strMsg.Format(_LANG(_T("조명값 변경 이상 발생."), _T("Set lamp level alarm.")));
-		AprData.m_ErrStatus.SetError(CErrorStatus::en_LampError, strMsg); //GMLV 음극 조명 컨트롤러 1개만 있어서 에러 발생, 임시 막음
+//		AprData.m_ErrStatus.SetError(CErrorStatus::en_LampError, strMsg); //GMLV 음극 조명 컨트롤러 1개만 있어서 에러 발생, 임시 막음
 	}
 	// 22.12.22 Ahn Modify End
 	return 0;
