@@ -94,10 +94,11 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 						obj->makeJSONFile();
 						delete obj;
 					}
-					else
-					{
-						break;
-					}
+					
+				}
+				else
+				{
+					break;
 				}
 			}			
 		}

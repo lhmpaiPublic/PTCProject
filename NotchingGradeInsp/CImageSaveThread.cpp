@@ -50,7 +50,7 @@ void CImageSaveThread::Kill(void)
 }
 
 //스래드 타임아웃 시간
-#define IMAGESAVETHREAD_TIMEOUT 50
+#define IMAGESAVETHREAD_TIMEOUT 20
 UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 {
 	CImageSaveThread* pThis = (CImageSaveThread*)pParam;
