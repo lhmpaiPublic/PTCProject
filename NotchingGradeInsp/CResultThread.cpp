@@ -610,9 +610,6 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 				CString DefectTypeRuleBaseName = (pDefInfo->nType == 0) ? "Foil-Exposure" : (pDefInfo->nType == 1) ? "Foil-ExposureOut" : "Surface";
 				SpcInDataDefectInfo->setDefectTypeRuleBaseName(DefectTypeRuleBaseName);
 				SpcInDataDefectInfo->setDefectTypeRuleBaseNameReal(DefectTypeRuleBaseName);
-				//Camera Number
-				//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
-				SpcInDataDefectInfo->setDefectCameraNumber((pDefInfo->nHeadNo == 0) ? "1" : "2");
 
 				//Image 기준 불량 발생 위치 X [pxl]_절대 위치 Image좌,상단(0,0)
 				SpcInDataDefectInfo->setDefectAbsoluteImgX(CGlobalFunc::floatToString(pDefInfo->dSizeX));
