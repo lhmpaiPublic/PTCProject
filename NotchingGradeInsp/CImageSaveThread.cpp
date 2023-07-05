@@ -50,7 +50,7 @@ void CImageSaveThread::Kill(void)
 }
 
 //스래드 타임아웃 시간
-#define IMAGESAVETHREAD_TIMEOUT 20
+#define IMAGESAVETHREAD_TIMEOUT 5
 UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 {
 	CImageSaveThread* pThis = (CImageSaveThread*)pParam;
@@ -95,58 +95,60 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				break;
 			}
 
-			// Image 하나 가지고 오고 삭제함.
-			CImgSaveInfo* pSaveInfo = pQueuePtr->Pop();
-			if (pSaveInfo == NULL) break;
-
-			if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
+			while (pQueuePtr->GetSize())
 			{
-				//Image Save Log
-				LOGDISPLAY_SPECTXT(0)(_T("넓이가 0 또는 높이가 0이면 Image 저정 정보 삭제"));
+				// Image 하나 가지고 오고 삭제함.
+				CImgSaveInfo* pSaveInfo = pQueuePtr->Pop();
+				if (pSaveInfo == NULL) break;
 
-				BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
-				delete[]pImgPtr;
-				pImgPtr = NULL;
+				if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
+				{
+					//Image Save Log
+					LOGDISPLAY_SPECTXT(0)(_T("넓이가 0 또는 높이가 0이면 Image 저정 정보 삭제"));
 
-				delete pSaveInfo;
-				pSaveInfo = NULL;
-				continue;
-			}
+					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
+					delete[]pImgPtr;
+					pImgPtr = NULL;
 
-			if (pSaveInfo->m_strSavePath.GetLength() > 0)
-			{
-				BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
+					delete pSaveInfo;
+					pSaveInfo = NULL;
+					continue;
+				}
 
-				CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
-				bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr());
-				// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
+				if (pSaveInfo->m_strSavePath.GetLength() > 0)
+				{
+					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 
-				int nJpgQuality;
+					CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
+					bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr());
+					// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
 
-				//SPC 객체 소스에서 컴파일 여부 결정
+					int nJpgQuality;
+
+					//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-				nJpgQuality = pSaveInfo->m_nJpgQuality;
+					nJpgQuality = pSaveInfo->m_nJpgQuality;
 #else
-				if (pQueuePtr->GetSize() > 2)
-				{
-					nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10;
-				}
-				else
-				{
-					nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
-				}
+					if (pQueuePtr->GetSize() > 2)
+					{
+						nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10;
+					}
+					else
+					{
+						nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
+					}
 #endif //SPCPLUS_CREATE
 
-				bmp.SetJpegQuality(nJpgQuality);
+					bmp.SetJpegQuality(nJpgQuality);
 
-				bmp.SaveBitmap(pSaveInfo->m_strSavePath);
+					bmp.SaveBitmap(pSaveInfo->m_strSavePath);
 
-				delete[]pImgPtr;
-				pImgPtr = NULL;
+					delete[]pImgPtr;
+					pImgPtr = NULL;
+				}
+				delete pSaveInfo;
+				pSaveInfo = NULL;
 			}
-			delete pSaveInfo;
-			pSaveInfo = NULL;
-
 			//큐에 데이터가 있으면 기다리지 않고 실행하도록 설정
 			if (pQueuePtr->GetSize())
 				bThreadWait = FALSE;
