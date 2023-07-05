@@ -77,7 +77,7 @@ enum {
 //#define		DEBUG_MELSEC_ETHERNET // 멜섹 사용시 커맨드 확인용 디버그 디파인
 
 // 22.06.26 Ahn Add Start
-#define		MAX_CROP_IMAGE_QUEUE_SIZE	53
+#define		MAX_CROP_IMAGE_QUEUE_SIZE	54
 #define		MAX_SAVE_LOT_INFO_SIZE	30 
 // 22.06.26 Ahn Add End
 
