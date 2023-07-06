@@ -28,6 +28,7 @@ class CSpcInspManager : public CSpcPlusManager
 	//동기화 객체
 	CRITICAL_SECTION m_csDefectKindNameVec;
 	std::vector<CString> m_DefectKindName;
+
 public:
 	CSpcInspManager();
 	virtual ~CSpcInspManager();
@@ -84,6 +85,11 @@ public:
 	void addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefectInfo);
 	//SpcInDataDefectInfo 크기
 	int getSpcInDataDefectInfoSize();
+
+	//결함정보 객체에 index를 부여한다.
+	//카메라0, 1 번의 모든 Defect 정보 갯수 vector에 담고 JSON파일 생성전에 부여한다.
+	//중간에 부여시 동기화가 필요해 시스템에 부하발생
+	void setIndexSpcInDataDefectInfo();
 
 	// JSON 형식의 파일 생성
 	virtual void makeJSONFile();

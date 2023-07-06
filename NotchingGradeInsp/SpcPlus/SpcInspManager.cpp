@@ -59,7 +59,7 @@ CSpcInspManager::~CSpcInspManager()
 	//동기화 객체 메모리 삭제
 	::DeleteCriticalSection(&m_csDefectInfoQueue);
 
-	//결함 종류 저장소 동기화 객체 초기화
+	//결함 종류 저장소 동기화 객체 삭제
 	::DeleteCriticalSection(&m_csDefectKindNameVec);
 
 	//SPC Plus Header 객체 포인터	
@@ -167,6 +167,7 @@ void CSpcInspManager::makeJSONFile()
 	for (int idx = 0; idx < (int)m_SpcInDataDefectInfo.size(); idx++)
 	{
 		CString rn = "";
+		//인덱스가 데이터 사이즈보다 작을 때는 ,(ah
 		if (idx < (m_SpcInDataDefectInfo.size() - 1))
 		{
 			rn = ",\r\n";
@@ -197,4 +198,16 @@ void CSpcInspManager::addSpcInDataDefectInfo(CSpcInDataDefectInfo* SpcInDataDefe
 int CSpcInspManager::getSpcInDataDefectInfoSize()
 { 
 	return (int)m_SpcInDataDefectInfo.size(); 
+}
+
+//결함정보 객체에 index를 부여한다.
+//카메라0, 1 번의 모든 Defect 정보 갯수 vector에 담고 JSON파일 생성전에 부여한다.
+//중간에 부여시 동기화가 필요해 시스템에 부하발생
+void CSpcInspManager::setIndexSpcInDataDefectInfo()
+{
+	for (int idx = 0; idx < (int)m_SpcInDataDefectInfo.size(); idx++)
+	{
+		//결함 중 해당 결함의 순서	
+		m_SpcInDataDefectInfo[idx]->setDefectIndex(CGlobalFunc::intToString(idx+1));
+	}
 }

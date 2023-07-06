@@ -601,10 +601,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 				//Camera Number(상부 또는 하부 카메라 n개인 경우) (""5. CAM NUM 규칙"" Sheet 참고)
 				//Tab이 보이는 카메라는 1번, Tab이 없으면 2번
 				SpcInDataDefectInfo->setDefectCameraNumber((pTabInfo->m_nHeadNo == 0) ? _T("1") : _T("2"));
-				//결함의 순서
-				//결함 정보 객체의 갯수 + 1
-				int DefectIdx = insp->getSpcInDataDefectInfoSize() + 1;
-				SpcInDataDefectInfo->setDefectIndex(CGlobalFunc::intToString(DefectIdx));
+
 				//Rule Base Defect Type(불량명 기입) 
 				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
 				CString DefectTypeRuleBaseName = (pDefInfo->nType == 0) ? "Foil-Exposure" : (pDefInfo->nType == 1) ? "Foil-ExposureOut" : "Surface";
@@ -901,6 +898,10 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							InspInData->setAppearanceReasonMainReal(DefectKindNameUnique[idx]);
 						}
 					}
+
+					//결함의 순서에 index를 부여한다.
+					//Defect 정보가 0번 카메라, 1번 카메라 정보를 모두 받고 JSON파일를 만들기 전 세팅한다.
+					insp->setIndexSpcInDataDefectInfo();
 
 					//JSON 파일 생성을 위한 스래드에 추가한다.
 					CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
