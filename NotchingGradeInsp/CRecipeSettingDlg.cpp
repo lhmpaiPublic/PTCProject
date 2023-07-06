@@ -320,10 +320,10 @@ BOOL CRecipeSettingDlg::OnInitDialog()
 	//	}
 	//}
 
-	m_TabDetectCond.InsertItem(1, _T("TOP Cond"));
+	m_TabDetectCond.InsertItem(1, _T("TAB Cond"));
 	m_TabDetectCond.InsertItem(2, _T("BTM Cond"));
 
-	m_TabInfo.InsertItem(1, _T("TOP Cond"));
+	m_TabInfo.InsertItem(1, _T("TAB Cond"));
 	m_TabInfo.InsertItem(2, _T("BTM Cond"));
 
 	DisplayLanguage(); // 22.09.16 Ahn Add 
@@ -1045,7 +1045,7 @@ int CRecipeSettingDlg::MakeGridCtrl()
 		pGridCtrl->SetFont(m_pFontGrid, TRUE);
 		pGridCtrl->SetRowHeight( 0, nHeight);
 
-		CString strTitle[en_Light_Cols] = { _T("SORT"), _T("TOP"), _T("BOTTOM") };
+		CString strTitle[en_Light_Cols] = { _T("SORT"), _T("TAB"), _T("BOTTOM") };
 		for (nCol = 0; nCol < pGridCtrl->GetColumnCount(); nCol++) {
 			CString strText;
 			GV_ITEM Item;
@@ -1209,7 +1209,7 @@ void CRecipeSettingDlg::OnClickGridCtrlLight(NMHDR* pNMHDR, LRESULT* pResult)
 		int nColNo = iCol - 1;
 
 		CString strName = _T("MAIN");
-		CString strCamName = _T("TOP");
+		CString strCamName = _T("TAB");
 		if (iRealNo == 1) {
 			strName = _T("SUB");
 		}
@@ -2640,7 +2640,7 @@ void CRecipeSettingDlg::DisplayLanguage()
 	}
 	pWnd = GetDlgItem(IDC_ST_TOP_COAT_HEIGHT);
 	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("Top코팅높이"), _T("Tob shoulder coat size")));
+		pWnd->SetWindowTextA(_LANG(_T("Tab코팅높이"), _T("Tab shoulder coat size")));
 	}
 	pWnd = GetDlgItem(IDC_ST_BTM_COAT_HEIGHT);
 	if (pWnd != nullptr) {

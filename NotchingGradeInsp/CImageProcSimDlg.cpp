@@ -216,7 +216,10 @@ void CImageProcSimDlg::OpenImage()
 		return;
 	}
 
-	if( (m_strSrcFileName.Find(_T("HeadNo[0]"), 0) > 0) || (m_strSrcFileName.Find(_T("TOP"), 0) > 0) ){ // 22.05.31 Ahn Modify
+	if( (m_strSrcFileName.Find(_T("HeadNo[0]"), 0) > 0)
+		|| (m_strSrcFileName.Find(_T("TAB"), 0) > 0 )
+		|| (m_strSrcFileName.Find(_T("TOP"), 0) > 0) )
+	{
 		m_bModeTop = TRUE;
 	}
 	else {
@@ -2131,7 +2134,7 @@ int CImageProcSimDlg::SaveCropAndResultSave()
 
 	int nCelNo = atoi(strCellNo);
 	int nPos = 0;
-	if (strPos.Compare(_T("TOP")) == 0) {
+	if (strPos.Compare(_T("TAB")) == 0) {
 		nPos = CAM_POS_TOP;
 	}
 

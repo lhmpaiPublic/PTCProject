@@ -895,7 +895,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	BOOL bBitmapSave = FALSE;
 	BOOL bJudgeNG = FALSE;
 	char szJudge[2][4] = { "OK", "NG" };
-	char szPos[2][8] = { "TOP","BTM" };
+	char szPos[2][8] = { "TAB","BTM" };
 
 	BOOL bMarkingActive = FALSE;
 	BOOL bClearFlag = FALSE;

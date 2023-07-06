@@ -323,7 +323,7 @@ int CResultViewDlg::UpdateGrid()
 					strText.Format( _T("%d"), pInfo->nTabNo + 1 ) ;
 					break;
 				case	en_col_POSITION:
-					strText = ( ( pInfo->nHeadNo == 0 ) ? _T("TOP") : _T("BOTTOM") ) ;
+					strText = ( ( pInfo->nHeadNo == 0 ) ? _T("TAB") : _T("BOTTOM") ) ;
 					break;
 				case	en_col_DEF_TYPE:
 					strText.Format(_T("%s"), ( pInfo->nType == TYPE_SURFACE ) ? _T("SURFACE") : _T("FOIL_EXP") );
@@ -846,7 +846,7 @@ void CResultViewDlg::LoadLastLotData()
 				//CropData.m_bEnable = TRUE;
 				//CropData.m_strFileName.Format(_T("%s"),(*iter)->szImgFileName);
 				//CropData.m_strDispName.Format(_T("%s_%d_%d"), strPos, (*iter)->nTabNo + 1, (*iter)->nDefNo + 1);
-				strPos.Format(_T("%s"), (iter->nHeadNo == 0) ? _T("TOP") : _T("BTM"));
+				strPos.Format(_T("%s"), (iter->nHeadNo == 0) ? _T("TAB") : _T("BTM"));
 				CropData.m_bEnable = TRUE;
 				CropData.m_strFileName.Format(_T("%s"), iter->szImgFileName);
 				CropData.m_strDispName.Format(_T("%s_%d_%d"), strPos, iter->nTabNo + 1, iter->nDefNo + 1);

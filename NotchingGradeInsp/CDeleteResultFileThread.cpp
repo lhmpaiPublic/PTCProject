@@ -128,10 +128,10 @@ BOOL CDeleteResultFileThread::GetMostOlderDateOfResult(int& nYearMonth, int& nDa
 			strPath = AprData.m_strImagePath + _T("\\NG");
 			break;
 		case	en_RecipeLog:
-			strPath = AprData.m_strImagePath + _T("\\RECIPE_LOG");
+			strPath = AprData.m_strResultPath + _T("\\RECIPE_LOG");
 			break;
 		case	en_InspLog:
-			strPath = AprData.m_strImagePath + _T("\\LOG");
+			strPath = AprData.m_strResultPath + _T("\\LOG");
 			break;
 		}
 		winFile.GetFolderList(strPath, strYmList);
@@ -199,10 +199,10 @@ BOOL CDeleteResultFileThread::DeleteDir_CapaOverMode(int nYearMonth, int nDay, B
 			strPath = AprData.m_strImagePath + _T("\\NG");
 			break;
 		case	en_RecipeLog:
-			strPath = AprData.m_strImagePath + _T("\\RECIPE_LOG");
+			strPath = AprData.m_strResultPath + _T("\\RECIPE_LOG");
 			break;
 		case	en_InspLog :
-			strPath = AprData.m_strImagePath + _T("\\LOG");
+			strPath = AprData.m_strResultPath + _T("\\LOG");
 			break;
 		}
 
@@ -219,7 +219,9 @@ BOOL CDeleteResultFileThread::DeleteDir_CapaOverMode(int nYearMonth, int nDay, B
 			nFolderCount = CWin32File::GetFolderCount(strDelYm);
 			if (nFolderCount <= 0) {
 				::RemoveDirectory(strDelYm);
+				AprData.SaveDebugLog_Format(_T("[ Delete Logs ] Reason : DiskCapaOver = %s"), strDelYm);
 			}
+			AprData.SaveDebugLog_Format(_T("[ Delete Logs ] Reason : DiskCapaOver = %s"), strDeleteFile );
 
 		}
 	}
@@ -250,10 +252,18 @@ UINT CDeleteResultFileThread::CtrlDeleteRsltFileThread(LPVOID pParam)
 
 	// 용량이 80%를 초과하면 오래된 날짜 순으로 삭제함.
 	BOOL bDiskCapaOver = FALSE;
-	double dSize = 80.0 ;
+	double dSize = AprData.m_System.m_nDiskCapacity; //80.0 ;
 	bDiskCapaOver = CheckDiskCapacityOver( dSize ) ;
+
+
+	AprData.SaveDebugLog_Format(_T("[ Delete Logs ] Period(day) = %d, Disk Capa = %d"), AprData.m_System.m_nResultSavePeriod, AprData.m_System.m_nDiskCapacity);
+
+
 	if( bDiskCapaOver == TRUE ){
 		// 가장 오래된 날짜를 찾아 해당 날짜를 삭제함.
+		if (AprData.m_System.m_nDiskCapacity <= 0)
+			return 0;
+
 		int nYearMonth;
 		int nDay ;
 		while ( bDiskCapaOver ){
@@ -270,6 +280,10 @@ UINT CDeleteResultFileThread::CtrlDeleteRsltFileThread(LPVOID pParam)
 		}
 	}
 	else {
+		if (AprData.m_System.m_nResultSavePeriod <= 0)
+			return 0;
+
+
 		for (int i = 0; i < en_MaxDelPath; i++){
 			if (pThis == NULL) {
 				break;
@@ -294,10 +308,10 @@ UINT CDeleteResultFileThread::CtrlDeleteRsltFileThread(LPVOID pParam)
 				break;
 				// 22.07.22 Ahn Add Start
 			case	en_RecipeLog:
-				strPath = AprData.m_strImagePath + _T("\\RECIPE_LOG");
+				strPath = AprData.m_strResultPath + _T("\\RECIPE_LOG");
 				break;
 			case	en_InspLog :
-				strPath = AprData.m_strImagePath + _T("\\LOG");
+				strPath = AprData.m_strResultPath + _T("\\LOG");
 				break;
 				// 22.07.22 Ahn Add End
 			}
@@ -474,6 +488,9 @@ int CDeleteResultFileThread::DeleteDir_byMonth(CString strTarPath, SYSTEMTIME st
 					DeleteDir_byDay(strDeleteFile, stDelTime, FALSE, pStop);
 					// 빈 Directory 삭제
 					DeleteEmptyDir(strDeleteFile);
+
+					AprData.SaveDebugLog_Format(_T("[ Delete Logs ] Reason : Old Data = %s"), strDeleteFile);
+
 				}
 				else if ((stDelTime.wYear == nYear) && (stDelTime.wMonth == nMonth)) {
 					DeleteDir_byDay(strDeleteFile, stDelTime, TRUE, pStop);
@@ -481,6 +498,7 @@ int CDeleteResultFileThread::DeleteDir_byMonth(CString strTarPath, SYSTEMTIME st
 					DeleteEmptyDir(strDeleteFile);
 				}
 			}
+
 		}
 		else {
 			::DeleteFile(strDeleteFile);
