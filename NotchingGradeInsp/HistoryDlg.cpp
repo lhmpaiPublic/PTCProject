@@ -1636,7 +1636,7 @@ int CHistoryDlg::MakeGridSearchList()
 			m_pSearchList->SetCols(nCols);
 
 			// header Name
-			CString strTitle[en_MaxListCol] = { _T(""), _T("       Time       "), _T("  LOT  "), _T("    Model    "), _T("     Lane     "), _T("   CELL   "), _T("   Top/Bottom   "), _T("    Type    "), _T("    Judge    "), _T("  X(um)  "), _T("  Y(um)  "), _T("     Marking     "), _T("    IMAGE    ") };
+			CString strTitle[en_MaxListCol] = { _T(""), _T("       Time       "), _T("  LOT  "), _T("    Model    "), _T("     Lane     "), _T("   CELL   "), _T("   Tab/Bottom   "), _T("    Type    "), _T("    Judge    "), _T("  X(um)  "), _T("  Y(um)  "), _T("     Marking     "), _T("    IMAGE    ") };
 
 
 			for (nCol = 0; nCol < m_pSearchList->GetColumnCount(); nCol++) {

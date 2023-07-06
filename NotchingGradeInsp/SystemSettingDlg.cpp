@@ -1128,7 +1128,7 @@ void CSystemSettingDlg::OnEnSetfocusEdResultSavePeriod()
 	CString strMsg;
 
 	int nMax = 365;
-	int nMin = 10;
+	int nMin = 0;
 	setValue.SetValue(strMsg, m_nEdSavePeriod, nMax, nMin);
 	DataControl(MODE_WRITE);
 

@@ -234,7 +234,7 @@ void CDebugImageAcqDlg::OnBnClickedBtnInitialize()
 			// 23.02.16 Ahn Test Start
 			int nTabNo = atoi(strTabNo);
 
-			if (strPos.Compare("TOP") == 0) {
+			if (strPos.Compare("TAB") == 0) {
 				unit.nPosition = 0;
 			}
 			else {

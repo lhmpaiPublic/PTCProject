@@ -539,7 +539,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 		, pTabInfo->sysTime.wHour, pTabInfo->sysTime.wMinute, pTabInfo->sysTime.wSecond, pTabInfo->sysTime.wMilliseconds);
 
 	CString strPos;
-	strPos.Format(_T("%s"), (pTabInfo->m_nHeadNo == 0) ? _T("TOP") : _T("BTM"));
+	strPos.Format(_T("%s"), (pTabInfo->m_nHeadNo == 0) ? _T("TAB") : _T("BTM"));
 	CString strDefType;
 
 	// 22.12.15 Ahn Add Start
@@ -848,7 +848,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							strPath.Format(_T("%s\\Overlay\\%s_%s_%s%s")
 								, pRsltInfo->m_pTabRsltInfo->m_chImagePath
 								, AprData.m_NowLotData.m_strLotNo
-								, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BOTTOM")
+								, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TAB") : _T("BOTTOM")
 								, strTime
 								, strImageFormat
 							);

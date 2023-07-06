@@ -150,7 +150,7 @@ int CHistoryLotDlg::MakeHitoryGrid()
 
 			// 
 			CString strTitle[en_Max_GridCols] = { _T("No."),_T("      Date     "),_T("     LotID     "),_T("Lot Start"),_T("LotEnd"),_T("Total"),_T("OK Count")
-													,_T("OK(%)"), _T("NG Count"), _T("NG(%)"), _T("Top FoilExp"), _T("BTM FoilExp"), _T("Ink Marking"), _T("Marking(%)")};
+													,_T("OK(%)"), _T("NG Count"), _T("NG(%)"), _T("Tab FoilExp"), _T("BTM FoilExp"), _T("Ink Marking"), _T("Marking(%)")};
 
 			for (nCol = 0; nCol < m_pHistoryList->GetColumnCount(); nCol++) {
 				CString strText;

@@ -165,7 +165,7 @@ int CExcelResultFileCtrl::SaveExcelOneLine(KExcel* pExcel, int nRow, int nTotalC
 		, defInfo.tLotStartTime.wHour, defInfo.tLotStartTime.wMinute, defInfo.tLotStartTime.wSecond, defInfo.tLotStartTime.wMilliseconds);
 	pExcel->SetValue(nRow, en_colInspTime + 1, strTime);
 
-	pExcel->SetValue(nRow, en_colPosition + 1, ((defInfo.nTopBottom == 0) ? _T("TOP") : _T("BOTTOM")));
+	pExcel->SetValue(nRow, en_colPosition + 1, ((defInfo.nTopBottom == 0) ? _T("TAB") : _T("BOTTOM")));
 	// 22.11.21 Ahn Modify Start - JUDGE_GRAY
 	//pExcel->SetValue(nRow, en_colJudge + 1, (defInfo.nRank == 0 ? _T("OK") : _T("NG")));
 	pExcel->SetValue(nRow, en_colJudge + 1, (defInfo.nRank == JUDGE_NG ? _T("NG") : _T("OK")));

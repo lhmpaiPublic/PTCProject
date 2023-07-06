@@ -1017,25 +1017,25 @@ CString CIoMonitorDlg::GetInWordName(int nRow)
 			break;
 
 		case	CSigProc::enSmsWordRead_FoilExpInTopTarget :
-			strRet = _T("Foil Exp In Top Target");
+			strRet = _T("Foil Exp In Tab Target");
 			break;
 		case	CSigProc::enSmsWordRead_FoilExpInBtmTarget:
 			strRet = _T("Foil Exp In Bottom Target");
 			break;
 		case	CSigProc::enSmsWordRead_FoilExpOutTopTarget:
-			strRet = _T("Foil Exp Out Top Target");
+			strRet = _T("Foil Exp Out Tab Target");
 			break;
 		case	CSigProc::enSmsWordRead_FoilExpOutBtmTarget:
 			strRet = _T("Foil Exp Out Bottom Target");
 			break;
 		case	CSigProc::enSmsWordRead_FoilExpBothTopTarget:
-			strRet = _T("Foil Exp Both Top Target");
+			strRet = _T("Foil Exp Both Tab Target");
 			break;
 		case	CSigProc::enSmsWordRead_FoilExpBothBtmTarget:
 			strRet = _T("Foil Exp Both Bottom Target");
 			break;
 		case	CSigProc::enSmsWordRead_SpeterTopTarget:
-			strRet = _T("Spatter Top Target");
+			strRet = _T("Spatter Tab Target");
 			break;
 		case	CSigProc::enSmsWordRead_SpeterBtmTarget:
 			strRet = _T("Spatter Bottom Target");
@@ -1112,25 +1112,25 @@ CString CIoMonitorDlg::GetInWordName(int nRow)
 			break;
 
 		case	CSigProc::enWordRead_FoilExpInTopTarget:
-			strRet = _T("Foil Exp In Top Target");
+			strRet = _T("Foil Exp In Tab Target");
 			break;
 		case	CSigProc::enWordRead_FoilExpInBtmTarget:
 			strRet = _T("Foil Exp In Bottom Target");
 			break;
 		case	CSigProc::enWordRead_FoilExpOutTopTarget:
-			strRet = _T("Foil Exp Out Top Target");
+			strRet = _T("Foil Exp Out Tab Target");
 			break;
 		case	CSigProc::enWordRead_FoilExpOutBtmTarget:
 			strRet = _T("Foil Exp Out Bottom Target");
 			break;
 		case	CSigProc::enWordRead_FoilExpBothTopTarget:
-			strRet = _T("Foil Exp Both Top Target");
+			strRet = _T("Foil Exp Both Tab Target");
 			break;
 		case	CSigProc::enWordRead_FoilExpBothBtmTarget:
 			strRet = _T("Foil Exp Both Bottom Target");
 			break;
 		case	CSigProc::enWordRead_SpeterTopTarget:
-			strRet = _T("Spatter Top Target");
+			strRet = _T("Spatter Tab Target");
 			break;
 		case	CSigProc::enWordRead_SpeterBtmTarget:
 			strRet = _T("Spatter Bottom Target");
@@ -1193,38 +1193,38 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 
 
 		case	CSigProc::enSmsWordWrite_FoilExpInTop_Alarm_Cnt:
-			strRet = _T("Foil Exp In Top Alarm Count");
+			strRet = _T("Foil Exp In Tab Alarm Count");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpInBtm_Alarm_Cnt:
 			strRet = _T("Foil Exp In Bottom Alarm Count");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpOutTop_Alarm_Cnt:
-			strRet = _T("Foil Exp Out Top Alarm Count");
+			strRet = _T("Foil Exp Out Tab Alarm Count");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt:
 			strRet = _T("Foil Exp Out Bottom Alarm Count");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpBothTop_Alarm_Cnt:
-			strRet = _T("Foil Exp Both Top Alarm Count");
+			strRet = _T("Foil Exp Both Tab Alarm Count");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt:
 			strRet = _T("Foil Exp Both Bottom Alarm Count");
 			break;
 		case	CSigProc::enSmsWordWrite_SpeterTop_Alarm_Cnt:
-			strRet = _T("Spatter Top Alarm Count");
+			strRet = _T("Spatter Tab Alarm Count");
 			break;
 		case	CSigProc::enSmsWordWrite_SpeterBtm_Alarm_Cnt:
 			strRet = _T("Spatter Bottom Alarm Count");
 			break;
 
 		case	CSigProc::enSmsWordWrite_Top_Defect_Count_Real:
-			strRet = _T("RealTime Top NG Count");
+			strRet = _T("RealTime Tab NG Count");
 			break;
 		case	CSigProc::enSmsWordWrite_Btm_Defect_Count_Real:
 			strRet = _T("RealTime Bottom NG Count");
 			break;
 		case	CSigProc::enSmsWordWrite_Top_Defect_Count_LotEnd:
-			strRet = _T("LotEnd Time Top NG Count");
+			strRet = _T("LotEnd Time Tab NG Count");
 			break;
 		case	CSigProc::enSmsWordWrite_Btm_Defect_Count_LotEnd:
 			strRet = _T("LotEnd Time Bottom NG Count");
@@ -1234,25 +1234,25 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 
 
 		case	CSigProc::enSmsWordWrite_FoilExpInTopTarget:
-			strRet = _T("Foil Exp In Top Target");
+			strRet = _T("Foil Exp In Tab Target");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpInBtmTarget:
 			strRet = _T("Foil Exp In Bottom Target");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpOutTopTarget:
-			strRet = _T("Foil Exp Out Top Target");
+			strRet = _T("Foil Exp Out Tab Target");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpOutBtmTarget:
 			strRet = _T("Foil Exp Out Bottom Target");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpBothTopTarget:
-			strRet = _T("Foil Exp Both Top Target");
+			strRet = _T("Foil Exp Both Tab Target");
 			break;
 		case	CSigProc::enSmsWordWrite_FoilExpBothBtmTarget:
 			strRet = _T("Foil Exp Both Bottom Target");
 			break;
 		case	CSigProc::enSmsWordWrite_SpeterTopTarget:
-			strRet = _T("Spatter Top Target");
+			strRet = _T("Spatter Tab Target");
 			break;
 		case	CSigProc::enSmsWordWrite_SpeterBtmTarget:
 			strRet = _T("Spatter Bottom Target");
@@ -1283,25 +1283,25 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 			strRet = _T("Alarm 03: Sector NG");
 			break;
 		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer4:
-			strRet = _T("Alarm 04: Foil Exp In Top NG");
+			strRet = _T("Alarm 04: Foil Exp In Tab NG");
 			break;
 		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer5:
 			strRet = _T("Alarm 05: Foil Exp In Bottom NG");
 			break;
 		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer6:
-			strRet = _T("Alarm 06: Foil Exp Out Top NG");
+			strRet = _T("Alarm 06: Foil Exp Out Tab NG");
 			break;
 		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer7:
 			strRet = _T("Alarm 07: Foil Exp Out Bottom NG");
 			break;
 		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer8:
-			strRet = _T("Alarm 08: Foil Exp Both Top NG");
+			strRet = _T("Alarm 08: Foil Exp Both Tab NG");
 			break;
 		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer9:
 			strRet = _T("Alarm 09: Foil Exp Both Bottom NG");
 			break;
 		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer10:
-			strRet = _T("Alarm 10: Spatter Top NG");
+			strRet = _T("Alarm 10: Spatter Tab NG");
 			break;
 		case	CSigProc::enSmsWordWrite_AlarmCode_Buffer11:
 			strRet = _T("Alarm 11: Spatter Bottom NG");
@@ -1358,62 +1358,62 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 			strRet = _T("Sector Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_FoilExpInTop_Alarm_Cnt:
-			strRet = _T("Foil Exp In Top Alarm Count");
+			strRet = _T("Foil Exp In Tab Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_FoilExpInBottom_Alarm_Cnt:
 			strRet = _T("Foil Exp In Bottom Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_FoilExpOutTop_Alarm_Cnt:
-			strRet = _T("Foil Exp Out Top Alarm Count");
+			strRet = _T("Foil Exp Out Tab Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_FoilExpOutBottom_Alarm_Cnt:
 			strRet = _T("Foil Exp Out Bottom Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_FoilExpBothTop_Alarm_Cnt:
-			strRet = _T("Foil Exp Both Top Alarm Count");
+			strRet = _T("Foil Exp Both Tab Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_FoilExpBothBottom_Alarm_Cnt:
 			strRet = _T("Foil Exp Both Bottom Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_SpeterTop_Alarm_Cnt:
-			strRet = _T("Spatter Top Alarm Count");
+			strRet = _T("Spatter Tab Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_SpeterBtm_Alarm_Cnt:
 			strRet = _T("Spatter Bottom Alarm Count");
 			break;
 		case	CSigProc::enWordWrite_Top_Defect_Count_Real:
-			strRet = _T("RealTime Top NG Count");
+			strRet = _T("RealTime Tab NG Count");
 			break;
 		case	CSigProc::enWordWrite_Btm_Defect_Count_Real:
 			strRet = _T("RealTime Bottom NG Count");
 			break;
 		case	CSigProc::enWordWrite_Top_Defect_Count_LotEnd:
-			strRet = _T("LotEnd Time Top NG Count");
+			strRet = _T("LotEnd Time Tab NG Count");
 			break;
 		case	CSigProc::enWordWrite_Btm_Defect_Count_LotEnd:
 			strRet = _T("LotEnd Time Bottom NG Count");
 			break;
 
 		case	CSigProc::enWordWrite_FoilExpInTopTarget:
-			strRet = _T("Foil Exp In Top Target");
+			strRet = _T("Foil Exp In Tab Target");
 			break;
 		case	CSigProc::enWordWrite_FoilExpInBottomTarget:
 			strRet = _T("Foil Exp In Bottom Target");
 			break;
 		case	CSigProc::enWordWrite_FoilExpOutTopTarget:
-			strRet = _T("Foil Exp Out Top Target");
+			strRet = _T("Foil Exp Out Tab Target");
 			break;
 		case	CSigProc::enWordWrite_FoilExpOutBottomTarget:
 			strRet = _T("Foil Exp Out Bottom Target");
 			break;
 		case	CSigProc::enWordWrite_FoilExpBothTopTarget:
-			strRet = _T("Foil Exp Both Top Target");
+			strRet = _T("Foil Exp Both Tab Target");
 			break;
 		case	CSigProc::enWordWrite_FoilExpBothBottomTarget:
 			strRet = _T("Foil Exp Both Bottom Target");
 			break;
 		case	CSigProc::enWordWrite_SpeterTopTarget:
-			strRet = _T("Spatter Top Target");
+			strRet = _T("Spatter Tab Target");
 			break;
 		case	CSigProc::enWordWrite_SpeterBtmTarget:
 			strRet = _T("Spatter Bottom Target");

@@ -34,7 +34,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	// Judge 설정 값
 	char szJudge[2][4] = { "OK", "NG" };
 	//TOP/BOTTOM 설정 값
-	char szPos[2][8] = { "TOP","BTM" };
+	char szPos[2][8] = { "TAB","BTM" };
 
 	while (TRUE) {
 		//ImageProc: 이미지 처리 스래드가 종료 이벤트가 발생했는가 체크
@@ -709,7 +709,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						, AprData.m_System.m_strMachineID
 						, AprData.m_NowLotData.m_strLotNo
 						, pFrmInfo->nTabNo + 1
-						, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TOP") : _T("BTM")
+						, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TAB") : _T("BTM")
 						, strJudge
 						, strImageFormat
 					);
