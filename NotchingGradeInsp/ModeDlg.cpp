@@ -666,12 +666,6 @@ void CModeDlg::OnBnClickedRadRun()
 
 	m_pView->SetInspReady(TRUE);
 
-//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE
-	//SPC+ PCL Run Signal Status 
-	AprData.SpcPluusStatus("1");
-#endif //SPCPLUS_CREATE
-
 }
 
 

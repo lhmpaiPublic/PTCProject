@@ -15,9 +15,9 @@ static char THIS_FILE[]=__FILE__;
 
 char* CSpcSpecInfo::MakeSpecInfoText_1 =
 "          {\r\n"
-"            \"PARA_INSP_TYPE\": \"%s\",\r\n"
-"            \"PARA_CAM_POSITION\": \"%s\",\r\n"
-"            \"PARA_DETECTION_NAME\": \"%s\",\r\n"
+"            \"SPEC_INSP_TYPE\": \"%s\",\r\n"
+"            \"SPEC_CAM_POSITION\": \"%s\",\r\n"
+"            \"SPEC_DETECTION_NAME\": \"%s\",\r\n"
 "%s"
 "          }";
 

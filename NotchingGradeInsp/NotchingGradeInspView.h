@@ -93,6 +93,10 @@ protected:
 	void CheckDiskSpace();	// 22.07.01 Ahn Add Start
 
 	UINT_PTR m_TID_IO_Check;
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+	UINT_PTR m_SpcStatus;
+#endif //SPCPLUS_CREATE
 	BOOL SetSignalCheckTimer();
 	BOOL KillSignalCheckTimer();
 

@@ -33,6 +33,8 @@
 #include "CDebugLotCtrlDlg.h" // 22.06.27 Ahn Add
 
 #include "CDeleteResultFileThread.h" // 22.07.04 Ahn Add
+#include "SpcStatusManager.h"
+#include "SpcStatusInData.h"
 
 
 #ifdef _DEBUG
@@ -43,6 +45,10 @@
 #define T_ID_IO_ALIVE	102
 #define T_ID_LONG_TERM	103 
 #define T_ID_IO			104
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+#define T_SPCSTATUS			105
+#endif //SPCPLUS_CREATE
 // CNotchingGradeInspView
 
 IMPLEMENT_DYNCREATE(CNotchingGradeInspView, CView)
@@ -197,6 +203,14 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		CGlobalFunc::ThreadExit(&pThread->m_hThread, 5000);
 		pThread->m_hThread = NULL;
 	}
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+	if (m_SpcStatus != 0) {
+		KillTimer(m_SpcStatus);
+		m_SpcStatus = 0;
+	}
+#endif //SPCPLUS_CREATE
 }
 
 BOOL CNotchingGradeInspView::PreCreateWindow(CREATESTRUCT& cs)
@@ -322,6 +336,11 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 			m_pInspDlg->ShowWindow(SW_HIDE);
 		}
 	}
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+	m_SpcStatus = SetTimer(T_SPCSTATUS, 10000, NULL);
+#endif //SPCPLUS_CREATE
 
 	return 0;
 }
@@ -970,10 +989,17 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		}
 
 		//SetSignalCheckTimer();
+
 	}
 
-
-
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+	if (nIDEvent == m_SpcStatus)
+	{
+		//SPC+ PCL Run Signal Status 
+		AprData.SpcPluusStatus("1");
+	}
+#endif //SPCPLUS_CREATE
 
 	//////////////////////////////////////////////////////////////////////////
 	// [ Alive ]
