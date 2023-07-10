@@ -14,8 +14,6 @@ class CFrameInfo
 public:
 	CFrameInfo(void);
 	~CFrameInfo(void);
-	//임시 로그 카운터
-	int TempLogCount;
 
 	//이미지 저장여부 판단 플래그
 	bool m_bSaveFlag;

@@ -266,9 +266,6 @@ int CMelsecEthernet::OpenPio(void)
 			DWORD dwErrCode = ::GetLastError();
 			strError = ::FormatErrorMsg(dwErrCode);
 
-			//로그출력
-			LOGDISPLAY_SPEC(0)(_T("Melsec Open 에러-1 - 에러<%s>"), strError);
-
 			return (-1);
 		}
 		bRet = m_pEthernetSock->Connect( m_strIpAddress, MELSEC_TCP_PORT);
@@ -278,8 +275,6 @@ int CMelsecEthernet::OpenPio(void)
 			CString strError;
 			strError = ::FormatErrorMsg(::GetLastError());
 
-			//로그출력
-			LOGDISPLAY_SPEC(0)(_T("Melsec Open 에러-2 - 에러<%s>"), strError);
 			return (-1);
 		}
 		bRet = m_pEthernetSock->Connect(m_strIpAddress, MELSEC_UDP_PORT);
@@ -345,8 +340,6 @@ int CMelsecEthernet::OpenPio(void)
 			strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
 			break;
 		}
-		//로그출력
-		LOGDISPLAY_SPEC(0)(_T("Melsec Open 에러-3 - 에러<%s>"), strErMsg);
 		return (-1);
 	}
 

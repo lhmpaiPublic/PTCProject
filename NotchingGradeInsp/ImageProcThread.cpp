@@ -143,8 +143,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//CCounterInfo 에 값이 없을때 미리 사용한 값 저장
 	std::queue<int> quUserTabID;
 
-	static int TempLogCount = 0;
-
 	UINT ret = 0;
 	//스래드 대기 여부
 	BOOL bThreadWait = TRUE;
@@ -165,8 +163,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		else if (ret == WAIT_OBJECT_0) //TIMEOUT시 명령
 		{
 
-			//로그카운트 증가
-			TempLogCount++;
 			if (pThis == NULL) {
 				break;
 			}
@@ -200,11 +196,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT)
 			{
 
-				//Image Cutting Tab 정보 출력 로그
-				LOGDISPLAY_SPEC(5)("Logcount<%d> Top-Bottom Frame 사이즈 차가 5 이상이면 엔코더 신호 에러", TempLogCount);
-
 				// 에러 처리 
-			//	pThis->SetFameSizeError(); // 
+				//	pThis->SetFameSizeError(); // 
 				CString strErrMsg;
 				strErrMsg.Format(_T("프레임 사이즈 이상 : Top [%d], Bottom[%d], 검사 상태 [%d], 종료 처리!!!!"), nSizeFrmL, nSizeFrmR, pThis->m_pParent->IsInspection());
 				//	AprData.SaveErrorLog(strErrMsg);
@@ -239,13 +232,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			{
 #endif
 
-				//Image Cutting Tab 정보 출력 로그
-				LOGDISPLAY_SPEC(5)("Logcount<%d> =====================================================================", TempLogCount);
-				LOGDISPLAY_SPEC(5)("Logcount<%d> 카메라에서 읽은 Top Frame 크기<%d>, Bottom Frame 크기<%d>"
-					, TempLogCount, nSizeFrmL, nSizeFrmR);
-				//Image Cutting Tab 정보 출력 로그
-				LOGDISPLAY_SPEC(5)("Logcount<%d> Top-Bottom Frame 정보 처리 구간", TempLogCount);
-
 				// 22.02.22 Ahn Modify End
 				//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Top 객체를 가져온다.
 				CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
@@ -254,10 +240,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				int nHeight = pFrmInfo_Top->m_nHeight;
 				int nFrmWIdth = pFrmInfo_Top->m_nWidth;
 				int nWidth = nFrmWIdth;
-
-				//Image Cutting Tab 정보 출력 로그
-				LOGDISPLAY_SPEC(5)("Logcount<%d> Top 이미지 크기 값 =>  높이 : nHeight<%d>, 넓이 : nWidth<%d> ",
-					TempLogCount, nHeight, nWidth);
 
 				// 22.02.22 Ahn Add Start
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
@@ -297,8 +279,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Bottom 객체를 가져온다.
 				CFrameInfo* pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
 
-				//Image Cutting Tab 정보 출력 로그
-				LOGDISPLAY_SPEC(5)("Logcount<%d> Queue에 저장된 Frame_Bottom  FrameInfo를 Pop한다.===남은 크기<%d> ", TempLogCount, pQueueFrame_Bottom->GetSize());
 #else
 				CFrameInfo* pFrmInfo_Bottom = new CFrameInfo();
 				BYTE* pImg = new BYTE[nWidth * nHeight];
@@ -321,10 +301,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				int nFrameCountL = pFrmInfo_Top->m_nFrameCount;
 				//Bottom Frame 번호
 				int nFrameCountR = pFrmInfo_Bottom->m_nFrameCount;
-
-				//Image Cutting Tab 정보 출력 로그
-				LOGDISPLAY_SPEC(5)("Logcount<%d> Top Frame 번호<%d>, Bottom Frame 번호<%d> ",
-					TempLogCount, nFrameCountL, nFrameCountR);
 
 				// 22.11.30 Ahn Modify Start
 				AprData.m_NowLotData.m_nFrameCount = pFrmInfo_Top->m_nFrameCount;
@@ -360,8 +336,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
 
-					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(5)("Logcount<%d> TabFindPos 값 => 양극경우 CImageProcess::GetBoundaryOfElectorde 처리 값을  nBndElectrode 저장 ", TempLogCount);
 #endif
 					// 22.05.09 Ahn Add End
 					//Tab 정보를 저장할 vector 임시 객체
@@ -372,30 +346,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
 					int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
 
-					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(5)("Logcount<%d> TabFindPos 값 =>  nBndElectrode<%d> + Recipe에 설정한 CeramicHeight 값<%d>으로 구한다.",
-						TempLogCount, nBndElectrode, AprData.m_pRecipeInfo->TabCond.nCeramicHeight);
-
 					//이미지 프로세싱을 위한 클래스 
 					//이미지 Tab 정보에서 Tab을 그룹으로 나누기
-					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL, TempLogCount);
+					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
 
 
 					//Tab 정보 크기, Tab 정보가 없다면 에러처리
 					int nVecSize = (int)vecTabInfo.size();
-
-					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(5)(_T("Logcount<%d> Top TabInfo 갯수<%d>"),
-						TempLogCount, nVecSize);
 
 					BOOL bErrorAll = FALSE;
 					if (nVecSize <= 0)
 					{
 						// 강제 분할 
 						bErrorAll = TRUE;
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)(_T("Logcount<%d> CtrlThreadImgCuttingTab - 찾은 Tab정보 없음 processing NG 마킹 처리"),
-							TempLogCount);
 					}
 #if defined( ANODE_MODE )
 					//양극일 경우 Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
@@ -409,10 +372,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					CString strLog;
 					strLog.Format(_T("TabCutting Time [%.2lf]msec, 전극경계Top[%d], Bottom[%d] BtmLevel[%d]"), dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
 					AprData.SaveTactLog(strLog);
-
-					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(5)(_T("Logcount<%d> TabCutting Time [%.2lf]msec, 전극경계Top[%d], Bottom[%d] BtmLevel[%d]"),
-						TempLogCount, dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(1)("*2*1*Now Tab Find Count<%d>, TabID QueueCount<%d>",
@@ -529,10 +488,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							, (AprData.m_NowLotData.m_nTabIDEmptyTotalCnt > AprData.m_NowLotData.m_nTabIDOverflowTotalCnt) ? "Big-TabEmpty" :
 							(AprData.m_NowLotData.m_nTabIDEmptyTotalCnt < AprData.m_NowLotData.m_nTabIDOverflowTotalCnt) ? "Big-TabOverflow" : "TabEmpty == TabOverflow");
 
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)(_T("Logcount<%d> 사용할 Trigger Tab Id<%d>"),
-							TempLogCount, cntInfo.nTabID);
-
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[i];
 
@@ -549,8 +504,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							// 22.05.03 Ahn Modify End
 							pTabInfo->m_bErrorFlag = TRUE;
 							nErrorNo = 1;
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPECTXT(1)("^^TabFind-NGSet Kind : Left가 레시피 설정 반지름 보다 작거나 Right 가 레시피 설정 반지름 보다 작다");
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Tab 반지름 Error(nLeft:%d<%d or nRight:%d<%d)"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLeft, AprData.m_pRecipeInfo->TabCond.nRadiusW, nRight, AprData.m_pRecipeInfo->TabCond.nRadiusW);
@@ -563,8 +516,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							pTabInfo->m_bErrorFlag = TRUE;
 							AprData.m_NowLotData.m_bProcError = FALSE;
 							nErrorNo = 2;
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPECTXT(1)("^^TabFind-NGSet Kind : Left가 레시피 설정 반지름 보다 작거나 Right 가 레시피 설정 반지름 보다 작다으면서 시스템 설정 m_bFirstTabDoNotProc가 TRUE");
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Inital 상태 or 첫 Tab"),
 								pTabInfo->m_bErrorFlag, nErrorNo);
@@ -577,8 +528,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
 							nErrorNo = 3;
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPECTXT(1)("^^TabFind-NGSet Kind : Tab 정보 구하기에서 못 구했을 때");
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Tab 정보 없음"),
 								pTabInfo->m_bErrorFlag, nErrorNo);
@@ -594,9 +543,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							pTabInfo->m_bErrorFlag = TRUE;
 							nErrorNo = 4;
 
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPEC(1)("^^TabFind-NGSet Kind: nLevel 이미지 바운드리 값이 잘못되었을 때<%d>", nLevel);
-
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: nLevel Error (nLevel:%d <= 0)"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLevel);
 
@@ -611,19 +557,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							pTabInfo->m_bErrorFlag = TRUE;
 							nErrorNo = 5;
 
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPEC(1)("^^TabFind-NGSet Kind : nLevel 이미지 바운드리 값<%d>이 (이미지 넓이<%d>-100) 보다 클 경우",
-								nLevel, nWidth);
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: nLevel Error (nLevel:%d >= (nWidth:%d - 100 ))"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLevel, nWidth);
 
 						}
 						// 22.09.30 Ahn Add End
-
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("Logcount<%d> 구한 Tab 정보 => ImageLength<%d>, FrameCount<%d>, TabStartPosInFrame<%d>, TabLeft<%d>, TabRight<%d>, ErrorFlag<%d>",
-							TempLogCount, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, pTabInfo->m_bErrorFlag);
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> nVecSize:%d/%d, ImageLength:%d, FrameCount:%d, TabStartPosInFrame:%d, TabLeft:%d, TabRight:%d, nLevel:%d"),
 							i, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel);
@@ -632,9 +571,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//프레임 정보 임시 객체(Top 프레임 정보 처리)
 						CFrameInfo* pInfo;
 						pInfo = new CFrameInfo;
-
-						//임시 로그 카운터
-						pInfo->TempLogCount = TempLogCount;
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -668,9 +604,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pInfo->m_nTabLeft = pTabInfo->nTabLeft;
 						pInfo->m_nTabRight = pTabInfo->nTabRight;
 						pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
-
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("Logcount<%d> TopFrame Trigger Input ID Set <%d>", TempLogCount, pInfo->m_nTabId_CntBoard);
 
 						pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 						pInfo->m_nBndElectrode = nBndElectrode;
@@ -708,9 +641,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pBtmInfo->m_nInspMode = CFrameInfo::en_BottomFrame;
 						pBtmInfo->m_nTabId_CntBoard = cntInfo.nTabID;
 
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("Logcount<%d> BottomFrame Trigger Input ID Set <%d>", TempLogCount, pInfo->m_nTabId_CntBoard);
-
 						pBtmInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 
 						//Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
@@ -740,10 +670,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							|| ((nSizeFrmL > IMAGE_PROC_SKIP_COUNT) && (nSizeFrmR > IMAGE_PROC_SKIP_COUNT))) {
 							pInfo->m_bErrorFlag = TRUE;
 							pBtmInfo->m_bErrorFlag = TRUE;
-
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPEC(5)("Logcount<%d> Top/Bottom Overflow TopFrame<%d>, BottonFrame<%d>, TopQueueCnt<%d>, BottonQueueCnt<%d>"
-								, TempLogCount, nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt);
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> Top/Bottom Overflow TopFrameCnt:%d, BottonFrameCnt:%d, TopQueueCnt:%d, BottonQueueCnt:%d > IMAGE_PROC_SKIP_COUNT:%d"),
 								nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt, IMAGE_PROC_SKIP_COUNT);
@@ -804,8 +730,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nTabCount) ? "Big TabID" :
 							(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nTabCount) ? "Big FindTab" : "TabID == FindTab");
 
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("Logcount<%d> Next TabNo<%d>", TempLogCount, AprData.m_NowLotData.m_nTabCount);
 					}
 					//처리한 Tab 정보를 삭제한다.
 					vecTabInfo.clear();
@@ -950,9 +874,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Process Start :: Board Tab ID <Top:%d/Btm:%d>, Find Tab ID <%d>"),
 							pTopInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1);
 
-						//로그 카운ㅌ 임시변수
-						int TempLogCount = pTopInfo->TempLogCount;
-
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
@@ -1016,11 +937,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 #endif //SPCPLUS_CREATE
 
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(5)("Top Logcount<%d> Bottom Logcount<%d> ========", pTopInfo->TempLogCount, pBtmInfo->TempLogCount);
-						LOGDISPLAY_SPEC(1)("*4*1*Image Result Output : Top-TabID<%d>Bottom-TabID<%d>, Find TabNo<%d>"
-							, pTopInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1);
-
 						int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;
 						int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
 
@@ -1067,7 +983,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								wAlarmCode |= CSigProc::en_Alarm_ContinueNg;
 
 								CString strMessage;
-								strMessage.Format(_T("연속 NG Alarm 발생. %d Tab연속 NG 발생"), AprData.m_NowLotData.m_nContinueCount);
+								strMessage.Format(_T("Alarm : Continuous NG = Tab Count %d NG"), AprData.m_NowLotData.m_nContinueCount);
 								AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
 								AprData.SaveDebugLog(strMessage); //pyjtest
 
@@ -1094,7 +1010,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									wAlarmCode |= CSigProc::en_Alarm_SectorNg;
 
 									CString strMessage;
-									strMessage.Format(_T("구간 NG Alarm 발생. 발생 개수:%d, 설정 개수:%d, 설정 거리:%d"), nSecterNgCount, AprData.m_nSectorNgCount, AprData.m_nSectorBaseCount);
+									strMessage.Format(_T("Alarm : Section NG = NG Count :%d , Setting Count : %d, Setting Distance : %d"), nSecterNgCount, AprData.m_nSectorNgCount, AprData.m_nSectorBaseCount);
 									AprData.m_ErrStatus.SetError(CErrorStatus::en_ContinuousNg, strMessage);
 									AprData.SaveDebugLog(strMessage); //pyjtest
 
@@ -1183,8 +1099,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									//								int nId, nJudge, nCode ;
 									//								nId = pTopInfo->m_nTabId_CntBoard ;
 
-																	// Image Cutting Tab 정보 출력 로그
-									LOGDISPLAY_SPEC(5)("Logcount<%d> NG Stop 신호처리 Trigger Input ID Set <%d>", TempLogCount, pTopInfo->m_nTabId_CntBoard);
 
 									//								nJudge = tab.nJudge ;
 									//								nCode = wAlarmCode ;
@@ -1195,8 +1109,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 						else
 						{
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPEC(5)("Logcount<%d> Image Result OK 처리 Tab ID<%d>", TempLogCount, pTopInfo->m_nTabId_CntBoard);
 
 							AprData.m_NowLotData.m_nTabCountOK++;
 							AprData.m_NowLotData.m_nContinueCount = 0; // 22.08.09 Ahn Add
@@ -1225,13 +1137,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							if ((AprData.m_System.m_bChkEnableMarker == FALSE) || (bMarkingActive == FALSE))
 							{
-								//체크박스 로그 출력
-								LOGDISPLAY_SPEC(5)("Logcount<%d> 불량도 마킹 안함", TempLogCount);
 								nMarkSel1 = 0;
 								nMarkSel2 = 0;
 							}
 
-							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2, TempLogCount);
+							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
 							dio.OutputWord(wOutPut);
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>, Tab Cnt<%d>"),
@@ -1247,12 +1157,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								(AprData.m_System.m_bChkEnableMarker == FALSE) ? _T("SKIP") : _T("USE"),
 								(bMarkingActive == FALSE) ? _T("SKIP") : _T("USE"));
 							AprData.SaveMemoryLog(strMsg);
-
-							// GEN 체크박스 Log 출력
-							LOGDISPLAY_SPEC(1)("*4*2*Output : TabID[%d]-TabNo[%d]-Value[%d], Top-%s, Bottom-%s",
-								pTopInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1, wOutPut
-								, (nTopJudge == JUDGE_NG) ? "NG" : "OK"
-								, (nBtmJudge == JUDGE_NG) ? "NG" : "OK");
 
 
 							if ((wOutPut & CAppDIO::eOut_MARK_SEL_01) || (wOutPut & CAppDIO::eOut_MARK_SEL_02))
@@ -1491,10 +1395,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
 						pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
 
-						// GEN 체크박스 Log 출력
-						LOGDISPLAY_SPEC(5)("Logcount<%d> Top/Bottom 마킹정보를 pRsltQueueCtrl 저장", TempLogCount);
-
-
 
 						delete pUnitTop;
 						delete pUnitBtm;
@@ -1556,7 +1456,7 @@ double CImageProcThread::GetDiffTime(LARGE_INTEGER stTime, double dFrequency)
 // 22.12.09 Ahn Add End
 
 
-WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2, int LogCount)
+WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2)
 {
 	WORD wOutput = 0x00;
 
@@ -1594,15 +1494,10 @@ WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, in
 			wOutput |= CAppDIO::eOut_MARK_SEL_02;
 			break;
 		}
-		//체크박스 출력 로그
-		LOGDISPLAY_SPEC(5)("Logcount<%d> NG - Marking 설정 OUTPUT<%d>", LogCount, wOutput);
 	}
 
 	//wOutput |= CAppDIO::eOut_PULSE; // 22.04.07 Ahn Delete 
 	wOutput |= (nTabId << 2) & CAppDIO::eInOut_ID_Mask; // 3F = 1111 1100
-
-	//체크박스 출력 로그
-	LOGDISPLAY_SPEC(5)("Logcount<%d> Trigger OUTPUT<%d> TabId<%d>", LogCount, wOutput, nTabId);
 
 	return wOutput;
 }

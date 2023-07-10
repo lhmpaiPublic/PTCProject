@@ -926,9 +926,6 @@ void CImageProcessCtrl::GrabDalsaCameraLink(int CamType, int FrameCnt)
 
 	if ((Top_FrameCtn != -1) && (Bottom_FrameCtn != -1))
 	{
-		//Log Camera Setting
-		LOGDISPLAY_SPEC(4)(_T("AcqCallback Image Data : Top_FrameCnt<%d>, Bottom_FrameCnt<%d>"),
-			Top_FrameCtn, Bottom_FrameCtn);
 		Top_FrameCtn = -1;
 		Bottom_FrameCtn = -1;
 		m_pImgCutTabThread->setEvent_ImageProcThread_TabFind();

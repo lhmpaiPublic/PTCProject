@@ -1756,7 +1756,7 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 		int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
 
 
-		CImageProcess::DivisionTab_FromImageToTabInfo(pImgPtr, pImgPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, 0, 0);
+		CImageProcess::DivisionTab_FromImageToTabInfo(pImgPtr, pImgPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, 0);
 
 		return;
 	}

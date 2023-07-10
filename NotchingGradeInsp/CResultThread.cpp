@@ -731,9 +731,6 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 			if (pThis == NULL)
 			{
-				//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-				LOGDISPLAY_SPEC(0)("Overlay  CResultThread 객체 NULL 에러");
-
 				break;
 			}
 			int nSize = pQueueResult->GetSize();
@@ -741,9 +738,6 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 			{
 				if (nSize <= 0)
 				{
-					//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-					LOGDISPLAY_SPEC(0)("Overlay  CResultThread 종료 메시지 - 아직 결과를 다 처리했을때 종료");
-
 					break;
 				}
 			}
@@ -863,7 +857,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				else
 				{
 					//이미지 프로세싱 결과를 처리하는 스래드(이미지 저장등)
-					LOGDISPLAY_SPEC(0)("저장할 이미지 정보가 없다");
+					LOGDISPLAY_SPEC(0)("**ERROR Image Save ** 저장할 이미지 정보가 없다");
 				}
 				//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE			

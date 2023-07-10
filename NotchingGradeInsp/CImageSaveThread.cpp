@@ -104,7 +104,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
 				{
 					//Image Save Log
-					LOGDISPLAY_SPECTXT(0)(_T("넓이가 0 또는 높이가 0이면 Image 저정 정보 삭제"));
+					LOGDISPLAY_SPECTXT(0)(_T("저장 이미지 정보 : 넓이가 0 또는 높이가 0이다"));
 
 					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 					delete[]pImgPtr;

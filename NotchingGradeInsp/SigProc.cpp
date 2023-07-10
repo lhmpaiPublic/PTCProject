@@ -973,12 +973,6 @@ int CSigProc::SigOutAlivePulse(int nInMode)
 //	AprData.SaveDebugLog(strMsg); //pyjtest
 
 
-	if (nRet == -1)
-	{
-		//로그출력
-		LOGDISPLAY_SPECTXT(0)("Setting Out Alive Pulse Error");
-	}
-
 	return nRet;
 }
 
@@ -1043,20 +1037,11 @@ int CSigProc::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 	//	AprData.SaveDebugLog(strMsg); //pyjtest
 
 
-	if (nRet == -1)
-	{
-		//로그출력
-		LOGDISPLAY_SPECTXT(0)("Setting Out Alive Pulse + Ready Error");
-	}
-
 	return nRet;
 }
 
 int CSigProc::SigOutReady(int nMode)
 {
-
-	//로그출력
-	LOGDISPLAY_SPEC(0)(_T("SigOutReady Setting : %s"), nMode ? "Ready-On" : "Ready-Off");
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1070,12 +1055,6 @@ int CSigProc::SigOutReady(int nMode)
 	}
 	// 23.02.02 Ahn Add End
 	nRet = SignalBitOut(nAddress, nMode);
-
-	if (nRet == -1)
-	{
-		//로그출력
-		LOGDISPLAY_SPECTXT(0)("Setting Out Ready Error");
-	}
 
 	return nRet;
 }

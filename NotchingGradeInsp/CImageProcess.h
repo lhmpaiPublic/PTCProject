@@ -446,7 +446,7 @@ public:
 
 	// 22.11.18 Ahn Modify Start
 	//static int DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int *pnLevel, CRecipeInfo& recipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* VecTabInfo );
-	static int DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int* pnLevel, CRecipeInfo& recipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* VecTabInfo, int nFrameCount, int logCount);
+	static int DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int* pnLevel, CRecipeInfo& recipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* VecTabInfo, int nFrameCount);
 	// 22.11.18 Ahn Modify End
 	static int DivisionTab_byFixSize(BYTE* pImgPtr, BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, _VEC_TAB_INFO* VecTabInfo);
 

@@ -528,8 +528,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		switch (m_nStatus)
 		{
 		case	en_CameraReset:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => CameraReset");
 			AprData.SaveDebugLog_Format(_T("<OnTimer> en_CameraReset"));
 			m_nCamErrorResetCnt++;
 			if (GrabberResetReqest() == 0)
@@ -563,8 +561,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			// 22.05.19 Ahn Add End
 		case	en_Initialize:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => Initialize");
 			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Initialize"));
 
 //			pSigProc->SigOutReady(FALSE);
@@ -583,8 +579,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_InspStop:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => InspStop");
 			AprData.SaveDebugLog_Format(_T("<OnTimer> en_InspStop"));
 
 			if (IsInspReady() == TRUE)
@@ -618,8 +612,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_WaitReady:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => WaitReady");
 			AprData.SaveDebugLog_Format(_T("<OnTimer> en_WaitReady"));
 
 			if (IsInspReady() == FALSE)
@@ -704,8 +696,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_Ready:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => Ready");
 
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE)
 			{
@@ -724,8 +714,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_PrepareRun:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => PrepareRun");
 			AprData.SaveDebugLog_Format(_T("<OnTimer> en_PrepareRun"));
 
 			if (m_pDeleteThread != nullptr)
@@ -812,8 +800,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_Run:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => Run");
 			if (IsInspReady() == FALSE)
 			{
 				// Stop 버튼을 누른경우.
@@ -972,8 +958,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_LotChange:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => LotChange");
 			m_nStatus = en_Initialize;
 			break;
 
@@ -982,8 +966,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_ErrorStop:
-			//OnTimer 로그출력
-			LOGDISPLAY_SPECTXT(6)("CNotchingGradeInspView::OnTimer => ErrorStop");
 			break;
 
 		}
