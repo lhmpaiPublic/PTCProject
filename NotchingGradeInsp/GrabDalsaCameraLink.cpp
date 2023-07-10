@@ -296,6 +296,9 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 			//디버그 출력
 			TRACE(strMsg);
 			serverFound = TRUE;
+
+			//Log Camera Setting
+			LOGDISPLAY_SPEC(0)(_T("**Cam Server ** serverIndex = %d, serverName = %s "), m_nServerIndex, serverName);
 		}
 	}
 
@@ -325,6 +328,9 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 		SapManager::GetResourceName(acqServerName, SapManager::ResourceAcq, deviceIndex, deviceName, sizeof(deviceName));
 		strMsg.Format(_T("%d: %s\n"), deviceIndex + 1, deviceName);
 		TRACE(strMsg);
+
+		//Log Camera Setting
+		LOGDISPLAY_SPEC(0)(_T("** %s Server Cam Device ** deviceIndex = %d, deviceName = %s "), acqServerName, deviceIndex, deviceName);
 
 	}
 
