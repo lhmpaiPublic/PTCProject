@@ -190,7 +190,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 
 				//Image Capture 정보 출력 로그
-				LOGDISPLAY_SPEC(1)(_T("Grab Image Receive Tactime <%f>"), dTactTime);
+				LOGDISPLAY_SPEC(1)(_T("Grab Image Receive Pos<%s> Tactime <%f>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP":"BOTTOM" , dTactTime);
 
 				// 22.12.09 Ahn Add Start
 						//프레임 처리 시간 세팅
@@ -219,7 +219,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 	{
 		++nImageNoneExit;
 		//Image Capture 정보 출력 로그
-		LOGDISPLAY_SPEC(1)(_T("Grab == Errorm : Image 정보가 없다. <%d>"), nImageNoneExit);
+		LOGDISPLAY_SPEC(1)(_T("Grab == Error : Image 정보가 없다. <%d>"), nImageNoneExit);
 	}
 }
 
