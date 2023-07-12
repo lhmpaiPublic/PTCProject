@@ -35,7 +35,7 @@ CString strLogNameList =
 "1 TabID_ImageCount_TabCount_1 1,"
 "2 PLC_Live_BitData_2 0,"
 "3 SPCPlus_3 1,"
-"4 Non_4 0,"
+"4 TACTIME_4 1,"
 "5 Non_5 0,"
 "6 Non_6 0,"
 "100 END 0"
@@ -291,12 +291,13 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 				for (int i = 0; i < strList->size(); i++)
 				{
 					CString popStr = pMain->GetLogDisplayMessage();
+#ifdef LOGDISPLAY_LISTBOX
+					CString* pSendStr = new CString(popStr);
+					pMain->PostMessage(WM_LOGMSGPRINT, (WPARAM)pSendStr);
+#endif //LOGDISPLAY_LISTBOX
 					tempStr += popStr + CString("\r\n");
 				}
-#ifdef LOGDISPLAY_LISTBOX
-				CString* pSendStr = new CString(tempStr);
-				pMain->PostMessage(WM_LOGMSGPRINT, (WPARAM)pSendStr);
-#endif //LOGDISPLAY_LISTBOX
+
 				//텍스트 로그 출력
 				if (pMain->getTextLogPrint())
 				{

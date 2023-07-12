@@ -940,6 +940,20 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;
 						int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
 
+						//======TacTime 출력 ========================================================================
+						pTopInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
+						pBtmInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
+
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(4)("TacTime Top========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultSendPLC[%f] ",
+							pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, pTopInfo->m_tacTimeList[0], pTopInfo->m_tacTimeList[1], pTopInfo->m_tacTimeList[2]);
+						
+
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(4)("TacTime Bottom========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultSendPLC[%f] ",
+							pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, pBtmInfo->m_tacTimeList[0], pBtmInfo->m_tacTimeList[1], pBtmInfo->m_tacTimeList[2]);
+						//==============================================================================================
+
 						// 22.12.09 Ahn Add Start 
 						stTime = pTopInfo->m_stTime;
 						// 22.12.09 Ahn Add End
@@ -1210,17 +1224,20 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						}
 
-						double dTactTime_Top = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
+						//======TacTime 출력 ========================================================================
+						double dTactTime_Top = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
 
 						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(1)("**TacTime Top========= TabID[%d]-TabNo[%d] - TacTime[%f]",
-							pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime_Top);
+						LOGDISPLAY_SPEC(1)("**ResultProc - TacTime Top========= TabNo[%d] - TacTime[%f]",
+							pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime_Top);
 
-						double dTactTime_Bottom = GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
+						double dTactTime_Bottom = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
 
 						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(1)("**TacTime Bottom========= TabID[%d]-TabNo[%d] - TacTime[%f]",
-							pBtmInfo->m_nTabId_CntBoard, pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime_Bottom);
+						LOGDISPLAY_SPEC(1)("**ResultProc - TTacTime Bottom========= TabNo[%d] - TacTime[%f]",
+							pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime_Bottom);
+						//==============================================================================================
+
 
 						{ // CSV 파일 작성
 							CString strCsvFileName;
@@ -1394,7 +1411,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 #endif //SPCPLUS_CREATE
 
-						double dTactTime = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
+						double dTactTime = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
 						CTactTimeData data;
 						data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo;
 						data.dTactTime = dTactTime;
@@ -1434,7 +1451,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						break;
 					}
-					//Sleep(AprData.m_nSleep);
 					WaitForSingleObject(pEvent_ResultWaitepEvent, IMAGEPROCTHREAD_RESULTWAITE_TIMEOUT);
 				}
 			}
@@ -1451,22 +1467,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 	return 0;
 }
-
-// 22.12.09 Ahn Add Start
-double CImageProcThread::GetDiffTime(LARGE_INTEGER stTime, double dFrequency)
-{
-	LARGE_INTEGER edTime;
-	QueryPerformanceCounter(&edTime);
-
-	double	dv0, dv1;
-	dv0 = (double)stTime.LowPart + ((double)stTime.HighPart * (double)0xffffffff);
-	dv1 = (double)edTime.LowPart + ((double)edTime.HighPart * (double)0xffffffff);
-	double	dtimev;
-	dtimev = (dv1 - dv0) / dFrequency * (double)1000.0;
-	return (dtimev);
-}
-// 22.12.09 Ahn Add End
-
 
 WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2)
 {

@@ -67,6 +67,11 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					break;
 				}
 
+				//======TacTime 출력 용========================================================================
+				pFrmInfo->m_tacTimeList[0] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
+
+				//============================================================================================
+
 				//이미지 넓이
 				int nWidth = pFrmInfo->m_nWidth;
 				//이미지 높이
@@ -664,6 +669,11 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				//파일저장 프레임 결과 정보에 저장한다.
 				pFrameRsltInfo->Copy(pFrmInfo);
+
+				//======TacTime 출력 ========================================================================
+				pFrmInfo->m_tacTimeList[1] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
+
+				//============================================================================================
 
 				//프레임 정보 로컬 객체 삭제
 				if (pFrmInfo != NULL) {

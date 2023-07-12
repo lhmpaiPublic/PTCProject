@@ -75,6 +75,9 @@ private :
 	long			m_lStartFrameNo;
 
 public:
+	//TacTime 출력 변수
+	static LARGE_INTEGER stTime;
+	static double dFrecuency;
 
 	int Open( HWND hWnd, CQueueCtrl* pQueueFrmPtr, int nServerIdx );
 	int Close();
