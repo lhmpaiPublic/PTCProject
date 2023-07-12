@@ -1210,6 +1210,18 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						}
 
+						double dTactTime_Top = GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
+
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(1)("**TacTime Top========= TabID[%d]-TabNo[%d] - TacTime[%f]",
+							pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime_Top);
+
+						double dTactTime_Bottom = GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
+
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(1)("**TacTime Bottom========= TabID[%d]-TabNo[%d] - TacTime[%f]",
+							pBtmInfo->m_nTabId_CntBoard, pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime_Bottom);
+
 						{ // CSV 파일 작성
 							CString strCsvFileName;
 							CString strFilePath;
