@@ -144,14 +144,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 						, pFrmInfo->m_nFrameCount);
 					AprData.SaveMemoryLog(strMsg);
 
-					//Image Capture 정보 출력 로그
-					LOGDISPLAY_SPEC(1)(_T("TabID TotalCount<%d>, Image CaptureCount<%d>, ID-Capture-Diff<%d>-<%s>  FramePos<%s>, FrameCount<%d>"),
-						AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nImageCaptureTopTotalCnt
-						, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nImageCaptureTopTotalCnt)
-						, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nImageCaptureTopTotalCnt) ? "Big TabID" :
-						(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nImageCaptureTopTotalCnt) ? "Big ImagCpture" : "TabID==ImageCaptrue"
-						, (pFrmInfo->m_nHeadNo == 0) ? "TopFrame" : "BottomFrame"
-						, pFrmInfo->m_nFrameCount);
 				}
 				else
 				{
@@ -167,14 +159,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 						, pFrmInfo->m_nFrameCount);
 					AprData.SaveMemoryLog(strMsg);
 
-					//Image Capture 정보 출력 로그
-					LOGDISPLAY_SPEC(1)(_T("TabID TotalCount<%d>, Image CaptureCount<%d>, ID-Capture-Diff<%d>-<%s>  FramePos<%s>, FrameCount<%d>"),
-						AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt
-						, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt)
-						, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt) ? "Big TabID" :
-						(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt) ? "Big ImagCpture" : "TabID==ImageCaptrue"
-						, (pFrmInfo->m_nHeadNo == 0) ? "TopFrame" : "BottomFrame"
-						, pFrmInfo->m_nFrameCount);
 				}
 
 				CString strMsg = "";
