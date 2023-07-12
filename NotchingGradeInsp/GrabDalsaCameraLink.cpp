@@ -26,6 +26,7 @@ double GetDiffTime(LARGE_INTEGER stTime, double dFrequency)
 	return (dtimev);
 }
 
+int nImageNoneExit = 0;
 static void AcqCallback(SapXferCallbackInfo* pInfo)
 {
 	//	SapView* pView = (SapView*)pInfo->GetContext();
@@ -33,6 +34,8 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 	SapView* pView = pCbInfo->m_SapViewPtr;
 	CQueueCtrl* pQueueCtrl = pCbInfo->m_pQueuePtr ;
 	BYTE* pWave = pCbInfo->m_pWave;
+
+	bool bImageExit = false;
 
 	if ((pCbInfo == NULL) || (pView == NULL) || (pQueueCtrl == NULL) || (pWave == NULL))
 	{
@@ -178,9 +181,16 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);
 
+				//얻은 이미지 정보를 TabFind 스래드로 전달하기 위해 queue 에 넣는다.
 				pQueueCtrl->PushBack(pFrmInfo);
+
 				double dTactTime = GetDiffTime(stTime, dFrecuency);
+
+				//이미지 Top Bottom 모두 받으면 TabFind 스래드가 실행하도록 이벤트를 발생한다.
 				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
+
+				//Image Capture 정보 출력 로그
+				LOGDISPLAY_SPEC(1)(_T("Grab Image Receive Tactime <%f>"), dTactTime);
 
 				// 22.12.09 Ahn Add Start
 						//프레임 처리 시간 세팅
@@ -199,10 +209,18 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				if (bSend == FALSE) {
 					delete[]pImg;
 				}
+				bImageExit = true;
 			}
 		}
-		//pBuffer->SetState(nIndex, SapBuffer::StateEmpty);
-	}		
+		
+	}	
+
+	if (bImageExit == false)
+	{
+		++nImageNoneExit;
+		//Image Capture 정보 출력 로그
+		LOGDISPLAY_SPEC(1)(_T("Grab == Errorm : Image 정보가 없다. <%d>"), nImageNoneExit);
+	}
 }
 
 CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
