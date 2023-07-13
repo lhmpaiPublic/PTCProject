@@ -759,6 +759,7 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 BOOL CImageProcThreadUnit::InitInstance()
 {
 	// TODO:  여기에서 각 스레드에 대한 초기화를 수행합니다.
+	m_nTimerID = ::SetTimer(NULL, 0, 10, NULL);
 	return TRUE;
 }
 
@@ -769,12 +770,16 @@ int CImageProcThreadUnit::ExitInstance()
 }
 
 BEGIN_MESSAGE_MAP(CImageProcThreadUnit, CWinThread)
+	ON_THREAD_MESSAGE(WM_TIMER, OnTimer) // added by hand
 END_MESSAGE_MAP()
 
 
 // CImageProcThreadUnit 메시지 처리기
-
-
+void CImageProcThreadUnit::OnTimer(WPARAM nTimerId, LPARAM nDummy)
+{
+	//Log 출력
+	LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::OnTimer");
+}
 
 int CImageProcThreadUnit::Begin()
 {
@@ -798,6 +803,8 @@ int CImageProcThreadUnit::Begin()
 }
 int CImageProcThreadUnit::Kill()
 {
+	::KillTimer(NULL, m_nTimerID);
+
 	if (m_pThread != NULL) {
 		//ImageProc: 스래드 종료 이벤트 발생
 		::SetEvent(m_hEventKillThread);

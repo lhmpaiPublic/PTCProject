@@ -51,6 +51,8 @@ public:
 	};
 
 protected:
+	UINT_PTR m_nTimerID;
+	afx_msg void OnTimer(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 };
 
