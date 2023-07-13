@@ -13,7 +13,7 @@
 #include "TimeAnalyzer.h"
 #include "LogDisplayDlg.h"
 
-#define MAX_DEADROCKTIME 20
+#define MAX_DEADROCKTIME 500
 
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
@@ -186,7 +186,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0);
 								nTabLevel = nBundary - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
 
-								if (nTabLevel <= 0)
+								if (nTabLevel <= 0 || nTabLevel >= nWidth-1 )
 								{
 									nTabLevel = pFrmInfo->m_nTabLevel;
 								}
@@ -269,15 +269,16 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 
 
+								nTabLevelLeft += rect.left;
+								nTabLevelRight += rect.left;
 
-								if (nTabLevelLeft <= 0 || nTabLevelRight <= 0)
+								if (nTabLevelLeft <= nPrjWidth+1 || nTabLevelRight <= nPrjWidth+1
+									|| nTabLevelLeft >= nWidth-1 || nTabLevelRight >= nWidth-1 )
 								{
 									nTabLevel = pFrmInfo->m_nTabLevel;
 								}
 								else
 								{
-									nTabLevelLeft += rect.left;
-									nTabLevelRight += rect.left;
 									nTabLevel = (nTabLevelLeft + nTabLevelRight) / 2;
 								}
 
@@ -448,7 +449,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					 {
 						 AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [Overflow Error] System Stop!!"));
 
-						 //AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+						 AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
 					 }
 
 				}
@@ -707,6 +708,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 IMPLEMENT_DYNCREATE(CImageProcThreadUnit, CWinThread)
 
+CImageProcThreadUnit* CImageProcThreadUnit::gImageProcThreadUnit = NULL;
 CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 {
 //	m_pQueueCtrl = pQueueCtrl;
@@ -763,6 +765,7 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 BOOL CImageProcThreadUnit::InitInstance()
 {
 	// TODO:  여기에서 각 스레드에 대한 초기화를 수행합니다.
+	gImageProcThreadUnit = this;
 	//Log 출력
 	LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::Run - InitInstance");
 	return TRUE;
@@ -797,7 +800,7 @@ int CImageProcThreadUnit::Begin()
 			::SetEvent(m_hEventProcStart);
 
 			//감시 스래드 생성
-			CreateThread();
+//			CreateThread();
 			m_hDeadRockFindThread = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 		}
 
@@ -811,6 +814,7 @@ int CImageProcThreadUnit::Run()
 	int ret = WaitForSingleObject(m_hEventKilled, MAX_DEADROCKTIME);
 	if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 	{
+		SetEventProcEnd();
 		//Log 출력
 		LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::Run - time out ");
 	}
@@ -825,6 +829,7 @@ int CImageProcThreadUnit::Kill()
 		//종료이벤트 발생 후 남은 처리를 기다린다.
 		WaitForSingleObject(m_hEventKilled, INFINITE);
 	}
+	ExitInstance();
 	return 0;
 }
 

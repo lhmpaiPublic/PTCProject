@@ -6073,6 +6073,9 @@ int CImageProcess::CheckRect(CRect* pRect, int nWidth, int nHeight)
 {
 	int nRet = 0;
 
+	if (pRect->left == pRect->right) pRect->right = pRect->left + 1;
+	if (pRect->top == pRect->bottom) pRect->bottom = pRect->top + 1;
+
 	if (pRect->left < 0) pRect->left = 0;
 	if (pRect->right > nWidth) pRect->right = nWidth;
 	if (pRect->top < 0) pRect->top = 0;

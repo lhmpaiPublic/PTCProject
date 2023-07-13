@@ -296,7 +296,7 @@ void CSetValueDlg::OnOK()
 		CDialog::OnOK() ;
 	} else {
 		CString	warnmsg = _T( "" ) ;
-		warnmsg.Format( _LANG( "Please confirm the input.(%lf?%lf)", "볺쀍귩둴봃궢궲돷궠궋갏(%lf?%lf)" )
+		warnmsg.Format( _LANG( "Please confirm the input.(%lf~%lf)", "(%lf~%lf)" )
 			, ( double)m_MinValue, ( double)m_MaxValue ) ;
 		AfxMessageBox( warnmsg, ( MB_OK | MB_ICONEXCLAMATION ) ) ;
 		m_InputValueText.SetFocus() ;
