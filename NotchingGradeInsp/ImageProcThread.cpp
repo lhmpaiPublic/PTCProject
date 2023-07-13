@@ -700,7 +700,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						// 22.12.09 Ahn Add End
 
 
-						double TabFind_TacTime = CGlobalFunc::GetDiffTime(tmp_TabFind, dFrequency_TabFind);
+						double TabFind_TacTime = CGlobalFunc::GetDiffTime(start_TabFind, dFrequency_TabFind);
 						//Image Cutting Tab 정보 출력 로그
 						LOGDISPLAY_SPEC(4)("*TacTime - TabFind : TabID-[%d], TabNo-[%d], TacTime[%f]",
 							pInfo->m_nTabId_CntBoard,  pInfo->nTabNo, TabFind_TacTime
