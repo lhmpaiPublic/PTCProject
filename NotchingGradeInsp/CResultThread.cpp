@@ -614,11 +614,12 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 				SpcInDataDefectInfo->setDefectAbsoluteImgY(CGlobalFunc::floatToString(pDefInfo->dSizeY));
 
 				//Image 기준 Defect의 Width [pxl]
-				SpcInDataDefectInfo->setDefectImgWidth(CGlobalFunc::intToString(pDefInfo->nSizeX));
+				SpcInDataDefectInfo->setDefectImgWidth(CGlobalFunc::floatToString(pDefInfo->nSizeX));
 				//Image 기준 Defect의 Length [pxl]
-				SpcInDataDefectInfo->setDefectImgLength(CGlobalFunc::intToString(pDefInfo->nSizeY));
+				SpcInDataDefectInfo->setDefectImgLength(CGlobalFunc::floatToString(pDefInfo->nSizeY));
 				//Image 기준 불량 발생 면적 [pxl]
-				SpcInDataDefectInfo->setDefectAreaPixels(CGlobalFunc::intToString(pDefInfo->nSize));
+				SpcInDataDefectInfo->setDefectAreaPixels(CGlobalFunc::floatToString(pDefInfo->nSize));
+
 
 				//Crop Image 파일명
 				strSpcCropFileName = SpcInDataDefectInfo->ImagCropFileName();

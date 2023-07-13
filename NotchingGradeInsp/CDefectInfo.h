@@ -9,9 +9,9 @@ public:
 	int nTabNo;				// Cell 번호
 	int nDefNo;				// 결함 번호.
 	int nDefectMode;		// 결함
-	int nSize;				// 
-	int nSizeX;
-	int nSizeY;
+	double nSize;				// 
+	double nSizeX;
+	double nSizeY;
 	int nMaxBright;
 	int nMinBright;
 	int nAvgBright;
