@@ -13,6 +13,8 @@
 #include "TimeAnalyzer.h"
 #include "LogDisplayDlg.h"
 
+#define MAX_DEADROCKTIME 20
+
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
@@ -698,6 +700,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	//CFrameInfo 객체의 Kill 이벤트 설정
 	::SetEvent(pCtrl->m_hEventKilled);
 
+	//종료 감시 스드래 이벤트 
+	pCtrl->SetEventDeadRockFindThread();
 	return 0;
 }
 
@@ -759,27 +763,22 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 BOOL CImageProcThreadUnit::InitInstance()
 {
 	// TODO:  여기에서 각 스레드에 대한 초기화를 수행합니다.
-	m_nTimerID = ::SetTimer(NULL, 0, 10, NULL);
+	//Log 출력
+	LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::Run - InitInstance");
 	return TRUE;
 }
 
 int CImageProcThreadUnit::ExitInstance()
 {
 	// TODO:  여기에서 각 스레드에 대한 정리를 수행합니다.
+	//Log 출력
+	LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::Run - ExitInstance ");
 	return CWinThread::ExitInstance();
 }
 
 BEGIN_MESSAGE_MAP(CImageProcThreadUnit, CWinThread)
-	ON_THREAD_MESSAGE(WM_TIMER, OnTimer) // added by hand
 END_MESSAGE_MAP()
 
-
-// CImageProcThreadUnit 메시지 처리기
-void CImageProcThreadUnit::OnTimer(WPARAM nTimerId, LPARAM nDummy)
-{
-	//Log 출력
-	LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::OnTimer");
-}
 
 int CImageProcThreadUnit::Begin()
 {
@@ -796,15 +795,30 @@ int CImageProcThreadUnit::Begin()
 			m_pThread->ResumeThread();
 			//Start 처리 이벤트 발생
 			::SetEvent(m_hEventProcStart);
+
+			//감시 스래드 생성
+			CreateThread();
+			m_hDeadRockFindThread = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 		}
 
 	}
 	return 0;
 }
+
+int CImageProcThreadUnit::Run()
+{
+	//일정한 시간을 기다려도 처리하지 못했을 때 종료 처리한다.
+	int ret = WaitForSingleObject(m_hEventKilled, MAX_DEADROCKTIME);
+	if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
+	{
+		//Log 출력
+		LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::Run - time out ");
+	}
+	return 0;
+}
+
 int CImageProcThreadUnit::Kill()
 {
-	::KillTimer(NULL, m_nTimerID);
-
 	if (m_pThread != NULL) {
 		//ImageProc: 스래드 종료 이벤트 발생
 		::SetEvent(m_hEventKillThread);

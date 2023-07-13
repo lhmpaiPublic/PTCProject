@@ -31,6 +31,8 @@ protected:
 	CWinThread* m_pThread;
 	int m_nErrorCode;
 
+	//스래드 데드락 감시 스래드 이벤트
+	HANDLE	m_hDeadRockFindThread;
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
@@ -50,9 +52,12 @@ public:
 		::SetEvent(m_hEventProcEnd);
 	};
 
+	void SetEventDeadRockFindThread() {
+		::SetEvent(m_hDeadRockFindThread);
+	};
+
+	virtual int Run();
 protected:
-	UINT_PTR m_nTimerID;
-	afx_msg void OnTimer(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 };
 
