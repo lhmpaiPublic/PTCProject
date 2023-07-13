@@ -833,8 +833,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	BOOL bClearFlag = FALSE;
 
 	UINT ret = 0;
-	//이벤트 객체 생성(결과 기다리기 이벤트
-	HANDLE pEvent_ResultWaitepEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+
 	while (1)
 	{
 		//타임 주기 이벤트
@@ -872,7 +871,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					// 22.12.09 Ahn Add Start
 					LARGE_INTEGER stTime;
 					// 22.12.09 Ahn Add End
-					if ((pUnitTop->IsProcEnd() == TRUE) && (pUnitBtm->IsProcEnd() == TRUE))
+
+					//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
+					//일정한 시간이 지나도 처리하지 못했을 때
+					if (pUnitTop->eventProcEnd_WaitTime() && pUnitBtm->eventProcEnd_WaitTime())
 					{
 
 
@@ -1459,7 +1461,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						break;
 					}
-					WaitForSingleObject(pEvent_ResultWaitepEvent, IMAGEPROCTHREAD_RESULTWAITE_TIMEOUT);
 				}
 			}
 			//Sleep(AprData.m_nSleep);

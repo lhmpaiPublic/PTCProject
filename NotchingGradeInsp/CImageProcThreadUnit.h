@@ -28,11 +28,12 @@ protected:
 	HANDLE	m_hEventKilled;
 	HANDLE	m_hSendResult;
 
+	//m_hEventProcEnd의 타임아웃 카운트
+	int ProcEnd_WaitCount;
+
 	CWinThread* m_pThread;
 	int m_nErrorCode;
 
-	//스래드 데드락 감시 스래드 이벤트
-	HANDLE	m_hDeadRockFindThread;
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
@@ -44,6 +45,9 @@ public:
 	int Begin();
 	int Kill();
 	BOOL IsProcEnd();
+	//EVENT 결과 
+	BOOL eventProcEnd_WaitTime();
+
 	int ForceStop();	
 	void SendResult();
 	CFrameRsltInfo* GetResultPtr() {return m_pFrmRsltInfo; } ;
@@ -52,11 +56,6 @@ public:
 		::SetEvent(m_hEventProcEnd);
 	};
 
-	void SetEventDeadRockFindThread() {
-		::SetEvent(m_hDeadRockFindThread);
-	};
-
-	virtual int Run();
 protected:
 	DECLARE_MESSAGE_MAP()
 };

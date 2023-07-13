@@ -13,7 +13,8 @@
 #include "TimeAnalyzer.h"
 #include "LogDisplayDlg.h"
 
-#define MAX_DEADROCKTIME 20
+#define WAITEVENTTIME_PROCEND 5
+#define MAX_WAITEVENTTIME_PROCEND 200
 
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
@@ -68,11 +69,11 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					pCtrl->m_nErrorCode = -1;
 					break;
 				}
-
 				//======TacTime 출력 용========================================================================
 				pFrmInfo->m_tacTimeList[0] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
+				
+				 //============================================================================================
 
-				//============================================================================================
 
 				//이미지 넓이
 				int nWidth = pFrmInfo->m_nWidth;
@@ -669,13 +670,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
-				//======TacTime 출력 ========================================================================
-				pFrmInfo->m_tacTimeList[1] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
-
-				//============================================================================================
-
 				//파일저장 프레임 결과 정보에 저장한다.
 				pFrameRsltInfo->Copy(pFrmInfo);
+
+				//======TacTime 출력 ========================================================================
+				pFrmInfo->m_tacTimeList[1] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
+				
+				//============================================================================================
+
 
 				//프레임 정보 로컬 객체 삭제
 				if (pFrmInfo != NULL) {
@@ -700,8 +702,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	//CFrameInfo 객체의 Kill 이벤트 설정
 	::SetEvent(pCtrl->m_hEventKilled);
 
-	//종료 감시 스드래 이벤트 
-	pCtrl->SetEventDeadRockFindThread();
 	return 0;
 }
 
@@ -725,6 +725,8 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 	m_pFrmInfo = pFrmInfo;
 	m_pThread = NULL;
 	m_nErrorCode = 0;
+
+	ProcEnd_WaitCount = 0;
 }
 
 CImageProcThreadUnit::~CImageProcThreadUnit()
@@ -763,21 +765,21 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 BOOL CImageProcThreadUnit::InitInstance()
 {
 	// TODO:  여기에서 각 스레드에 대한 초기화를 수행합니다.
-	//Log 출력
-	LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::Run - InitInstance");
 	return TRUE;
 }
 
 int CImageProcThreadUnit::ExitInstance()
 {
 	// TODO:  여기에서 각 스레드에 대한 정리를 수행합니다.
-	//Log 출력
-	LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::Run - ExitInstance ");
 	return CWinThread::ExitInstance();
 }
 
 BEGIN_MESSAGE_MAP(CImageProcThreadUnit, CWinThread)
 END_MESSAGE_MAP()
+
+
+// CImageProcThreadUnit 메시지 처리기
+
 
 
 int CImageProcThreadUnit::Begin()
@@ -795,28 +797,11 @@ int CImageProcThreadUnit::Begin()
 			m_pThread->ResumeThread();
 			//Start 처리 이벤트 발생
 			::SetEvent(m_hEventProcStart);
-
-			//감시 스래드 생성
-			CreateThread();
-			m_hDeadRockFindThread = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 		}
 
 	}
 	return 0;
 }
-
-int CImageProcThreadUnit::Run()
-{
-	//일정한 시간을 기다려도 처리하지 못했을 때 종료 처리한다.
-	int ret = WaitForSingleObject(m_hEventKilled, MAX_DEADROCKTIME);
-	if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
-	{
-		//Log 출력
-		LOGDISPLAY_SPEC(1)("CImageProcThreadUnit::Run - time out ");
-	}
-	return 0;
-}
-
 int CImageProcThreadUnit::Kill()
 {
 	if (m_pThread != NULL) {
@@ -836,6 +821,25 @@ BOOL CImageProcThreadUnit::IsProcEnd()
 	}
 	return FALSE;
 }
+
+//EVENT 결과 
+BOOL CImageProcThreadUnit::eventProcEnd_WaitTime()
+{
+	BOOL b = FALSE;
+	++ProcEnd_WaitCount;
+	DWORD ret = ::WaitForSingleObject(m_hEventProcEnd, WAITEVENTTIME_PROCEND);
+	if(ret == WAIT_OBJECT_0)
+		b = TRUE;
+	if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
+	{
+		//파일저장 프레임 결과 정보에 저장한다.
+		m_pFrmRsltInfo->Copy(m_pFrmInfo);
+		m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
+		b = TRUE;
+	}
+	return b;
+}
+
 int CImageProcThreadUnit::ForceStop()
 {
 	::SetEvent(m_hEventForceStop);
