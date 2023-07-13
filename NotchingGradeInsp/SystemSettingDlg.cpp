@@ -676,7 +676,7 @@ void CSystemSettingDlg::OnClickGridCtrlCamParam(NMHDR* pNMHDR, LRESULT* pResult)
 		case	en_CamAquisitionRate :
 			guidemsg = _LANG( _T("카메라 Line Rate를 입력해 주세요."), _T("Please enter the camera line rate.") );
 			dTmpValue = atof(szTemp.GetBuffer());
-			setvalue.SetValue(guidemsg, dTmpValue, 100000.0, 300.0);
+			setvalue.SetValue(guidemsg, dTmpValue, 1000000.0, 300.0);
 			szTemp.Format(_T("%lf"), dTmpValue);
 			pGridCtrl->SetTextMatrix(iRow, iCol, szTemp);
 			m_SysSetting.m_dCamLineRate[nCameraNo] = dTmpValue;

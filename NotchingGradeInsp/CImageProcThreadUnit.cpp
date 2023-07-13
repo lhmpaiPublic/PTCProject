@@ -16,6 +16,7 @@
 #define WAITEVENTTIME_PROCEND 5
 #define MAX_WAITEVENTTIME_PROCEND 200
 
+
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
@@ -187,7 +188,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0);
 								nTabLevel = nBundary - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
 
-								if (nTabLevel <= 0)
+								if (nTabLevel <= 0 || nTabLevel >= nWidth-1 )
 								{
 									nTabLevel = pFrmInfo->m_nTabLevel;
 								}
@@ -270,15 +271,16 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 
 
+								nTabLevelLeft += rect.left;
+								nTabLevelRight += rect.left;
 
-								if (nTabLevelLeft <= 0 || nTabLevelRight <= 0)
+								if (nTabLevelLeft <= nPrjWidth+1 || nTabLevelRight <= nPrjWidth+1
+									|| nTabLevelLeft >= nWidth-1 || nTabLevelRight >= nWidth-1 )
 								{
 									nTabLevel = pFrmInfo->m_nTabLevel;
 								}
 								else
 								{
-									nTabLevelLeft += rect.left;
-									nTabLevelRight += rect.left;
 									nTabLevel = (nTabLevelLeft + nTabLevelRight) / 2;
 								}
 
@@ -709,7 +711,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 }
 
 IMPLEMENT_DYNCREATE(CImageProcThreadUnit, CWinThread)
-
 CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 {
 //	m_pQueueCtrl = pQueueCtrl;
@@ -805,6 +806,7 @@ int CImageProcThreadUnit::Begin()
 	}
 	return 0;
 }
+
 int CImageProcThreadUnit::Kill()
 {
 	if (m_pThread != NULL) {
@@ -813,6 +815,7 @@ int CImageProcThreadUnit::Kill()
 		//종료이벤트 발생 후 남은 처리를 기다린다.
 		WaitForSingleObject(m_hEventKilled, INFINITE);
 	}
+	ExitInstance();
 	return 0;
 }
 
@@ -838,6 +841,10 @@ BOOL CImageProcThreadUnit::eventProcEnd_WaitTime()
 		//파일저장 프레임 결과 정보에 저장한다.
 		m_pFrmRsltInfo->Copy(m_pFrmInfo);
 		m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
+		m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
+
+		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> eventProcEnd_WaitTime TimeOut"));
+
 		b = TRUE;
 	}
 	return b;
