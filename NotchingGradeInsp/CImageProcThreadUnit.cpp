@@ -13,6 +13,10 @@
 #include "TimeAnalyzer.h"
 #include "LogDisplayDlg.h"
 
+#define WAITEVENTTIME_PROCEND 5
+#define MAX_WAITEVENTTIME_PROCEND 200
+
+
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
@@ -66,6 +70,11 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					pCtrl->m_nErrorCode = -1;
 					break;
 				}
+				//======TacTime 출력 용========================================================================
+				pFrmInfo->m_tacTimeList[0] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
+				
+				 //============================================================================================
+
 
 				//이미지 넓이
 				int nWidth = pFrmInfo->m_nWidth;
@@ -179,7 +188,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0);
 								nTabLevel = nBundary - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
 
-								if (nTabLevel <= 0)
+								if (nTabLevel <= 0 || nTabLevel >= nWidth-1 )
 								{
 									nTabLevel = pFrmInfo->m_nTabLevel;
 								}
@@ -262,15 +271,16 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 
 
+								nTabLevelLeft += rect.left;
+								nTabLevelRight += rect.left;
 
-								if (nTabLevelLeft <= 0 || nTabLevelRight <= 0)
+								if (nTabLevelLeft <= nPrjWidth+1 || nTabLevelRight <= nPrjWidth+1
+									|| nTabLevelLeft >= nWidth-1 || nTabLevelRight >= nWidth-1 )
 								{
 									nTabLevel = pFrmInfo->m_nTabLevel;
 								}
 								else
 								{
-									nTabLevelLeft += rect.left;
-									nTabLevelRight += rect.left;
 									nTabLevel = (nTabLevelLeft + nTabLevelRight) / 2;
 								}
 
@@ -665,6 +675,12 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//파일저장 프레임 결과 정보에 저장한다.
 				pFrameRsltInfo->Copy(pFrmInfo);
 
+				//======TacTime 출력 ========================================================================
+				pFrmInfo->m_tacTimeList[1] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
+				
+				//============================================================================================
+
+
 				//프레임 정보 로컬 객체 삭제
 				if (pFrmInfo != NULL) {
 					delete pFrmInfo;
@@ -675,6 +691,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				// 처리 완료
 				//if (::WaitForSingleObject(pCtrl->m_hEventProcEnd, 0) != WAIT_OBJECT_0) {
 				//	::SetEvent(pCtrl->m_hEventProcEnd);
+
+				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> SetEventProcEnd : nHeadNo = %d"), nHeadNo);
+
 				pCtrl->SetEventProcEnd();
 				break;
 				//}
@@ -692,7 +711,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 }
 
 IMPLEMENT_DYNCREATE(CImageProcThreadUnit, CWinThread)
-
 CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 {
 //	m_pQueueCtrl = pQueueCtrl;
@@ -711,6 +729,8 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 	m_pFrmInfo = pFrmInfo;
 	m_pThread = NULL;
 	m_nErrorCode = 0;
+
+	ProcEnd_WaitCount = 0;
 }
 
 CImageProcThreadUnit::~CImageProcThreadUnit()
@@ -786,6 +806,7 @@ int CImageProcThreadUnit::Begin()
 	}
 	return 0;
 }
+
 int CImageProcThreadUnit::Kill()
 {
 	if (m_pThread != NULL) {
@@ -794,6 +815,7 @@ int CImageProcThreadUnit::Kill()
 		//종료이벤트 발생 후 남은 처리를 기다린다.
 		WaitForSingleObject(m_hEventKilled, INFINITE);
 	}
+	ExitInstance();
 	return 0;
 }
 
@@ -805,6 +827,29 @@ BOOL CImageProcThreadUnit::IsProcEnd()
 	}
 	return FALSE;
 }
+
+//EVENT 결과 
+BOOL CImageProcThreadUnit::eventProcEnd_WaitTime()
+{
+	BOOL b = FALSE;
+	++ProcEnd_WaitCount;
+	DWORD ret = ::WaitForSingleObject(m_hEventProcEnd, WAITEVENTTIME_PROCEND);
+	if(ret == WAIT_OBJECT_0)
+		b = TRUE;
+	if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
+	{
+		//파일저장 프레임 결과 정보에 저장한다.
+		m_pFrmRsltInfo->Copy(m_pFrmInfo);
+		m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
+		m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
+
+		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> eventProcEnd_WaitTime TimeOut"));
+
+		b = TRUE;
+	}
+	return b;
+}
+
 int CImageProcThreadUnit::ForceStop()
 {
 	::SetEvent(m_hEventForceStop);

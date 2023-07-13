@@ -9,6 +9,7 @@
 //Frame의 시작 Pixel 좌표
 //m_pImagePtr : 이미지 데이터 값
 //m_bOverFlow 오버플로우 체크
+#define MAX_TACTIMELIST 5
 class CFrameInfo
 {
 public:
@@ -61,6 +62,8 @@ public :
 	//SYSTEMTIME m_sysStTime;
 	LARGE_INTEGER m_stTime ;
 	double		  m_dFrecuency ;
+	//각 구간별 tactime
+	double m_tacTimeList[MAX_TACTIMELIST];
 	// 22.12.09 Ahn Add End
 
 	// 23.02.20 Ahn Add Start

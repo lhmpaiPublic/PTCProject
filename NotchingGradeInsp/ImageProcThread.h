@@ -86,6 +86,4 @@ protected:
 	//Surface < FoilExp < FoilExpOut 우선순위 선택됨
 	static int GetMarkingFlag(CRecipeInfo* pRecipeInfo, int nTopJudge, int nBtmJudge, WORD wTopReson, WORD wBtmReson, int& nMarkSel1, int& nMarkSel2 );
 
-	// 비교처리 시간
-	static double GetDiffTime(LARGE_INTEGER stTime, double dFrequency);
 };

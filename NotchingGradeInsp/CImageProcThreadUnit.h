@@ -18,6 +18,7 @@ class CImageProcThreadUnit : public CWinThread
 	CImageProcThreadUnit(CFrameInfo *pFrmInfo = NULL);           // 동적 만들기에 사용되는 protected 생성자입니다.
 	virtual ~CImageProcThreadUnit();
 
+	static CImageProcThreadUnit* gImageProcThreadUnit;
 protected:
 
 	HANDLE	m_hEventProcStart;
@@ -27,6 +28,9 @@ protected:
 	HANDLE	m_hEventForceStop;
 	HANDLE	m_hEventKilled;
 	HANDLE	m_hSendResult;
+
+	//m_hEventProcEnd의 타임아웃 카운트
+	int ProcEnd_WaitCount;
 
 	CWinThread* m_pThread;
 	int m_nErrorCode;
@@ -42,12 +46,16 @@ public:
 	int Begin();
 	int Kill();
 	BOOL IsProcEnd();
+	//EVENT 결과 
+	BOOL eventProcEnd_WaitTime();
+
 	int ForceStop();	
 	void SendResult();
 	CFrameRsltInfo* GetResultPtr() {return m_pFrmRsltInfo; } ;
 
 	void SetEventProcEnd() {
 		::SetEvent(m_hEventProcEnd);
+		ExitInstance();
 	};
 
 protected:

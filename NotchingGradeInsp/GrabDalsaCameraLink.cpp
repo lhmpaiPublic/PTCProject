@@ -5,27 +5,16 @@
 #include "GlobalData.h"
 #include "SigProc.h"
 #include "ImageProcessCtrl.h"
+#include "GlobalFunc.h"
 
 CImageProcessCtrl* CGrabDalsaCameraLink::m_pImageProcessCtrl = NULL;
 
 //프레임 처리시간 객체를 세팅한다.
 #include "ImageProcThread.h"
-LARGE_INTEGER stTime ;
-double dFrecuency = 0.0;
+LARGE_INTEGER CGrabDalsaCameraLink::stTime ;
+double CGrabDalsaCameraLink::dFrecuency = 0.0;
 
-double GetDiffTime(LARGE_INTEGER stTime, double dFrequency)
-{
-	LARGE_INTEGER edTime;
-	QueryPerformanceCounter(&edTime);
-
-	double	dv0, dv1;
-	dv0 = (double)stTime.LowPart + ((double)stTime.HighPart * (double)0xffffffff);
-	dv1 = (double)edTime.LowPart + ((double)edTime.HighPart * (double)0xffffffff);
-	double	dtimev;
-	dtimev = (dv1 - dv0) / dFrequency * (double)1000.0;
-	return (dtimev);
-}
-
+int nImageNoneExit = 0;
 static void AcqCallback(SapXferCallbackInfo* pInfo)
 {
 	//	SapView* pView = (SapView*)pInfo->GetContext();
@@ -33,6 +22,8 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 	SapView* pView = pCbInfo->m_SapViewPtr;
 	CQueueCtrl* pQueueCtrl = pCbInfo->m_pQueuePtr ;
 	BYTE* pWave = pCbInfo->m_pWave;
+
+	bool bImageExit = false;
 
 	if ((pCbInfo == NULL) || (pView == NULL) || (pQueueCtrl == NULL) || (pWave == NULL))
 	{
@@ -141,14 +132,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 						, pFrmInfo->m_nFrameCount);
 					AprData.SaveMemoryLog(strMsg);
 
-					//Image Capture 정보 출력 로그
-					LOGDISPLAY_SPEC(1)(_T("TabID TotalCount<%d>, Image CaptureCount<%d>, ID-Capture-Diff<%d>-<%s>  FramePos<%s>, FrameCount<%d>"),
-						AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nImageCaptureTopTotalCnt
-						, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nImageCaptureTopTotalCnt)
-						, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nImageCaptureTopTotalCnt) ? "Big TabID" :
-						(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nImageCaptureTopTotalCnt) ? "Big ImagCpture" : "TabID==ImageCaptrue"
-						, (pFrmInfo->m_nHeadNo == 0) ? "TopFrame" : "BottomFrame"
-						, pFrmInfo->m_nFrameCount);
 				}
 				else
 				{
@@ -164,26 +147,21 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 						, pFrmInfo->m_nFrameCount);
 					AprData.SaveMemoryLog(strMsg);
 
-					//Image Capture 정보 출력 로그
-					LOGDISPLAY_SPEC(1)(_T("TabID TotalCount<%d>, Image CaptureCount<%d>, ID-Capture-Diff<%d>-<%s>  FramePos<%s>, FrameCount<%d>"),
-						AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt
-						, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt)
-						, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt) ? "Big TabID" :
-						(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt) ? "Big ImagCpture" : "TabID==ImageCaptrue"
-						, (pFrmInfo->m_nHeadNo == 0) ? "TopFrame" : "BottomFrame"
-						, pFrmInfo->m_nFrameCount);
 				}
 
 				CString strMsg = "";
 				strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);
 
+				//얻은 이미지 정보를 TabFind 스래드로 전달하기 위해 queue 에 넣는다.
 				pQueueCtrl->PushBack(pFrmInfo);
-				double dTactTime = GetDiffTime(stTime, dFrecuency);
-				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 
-				// 22.12.09 Ahn Add Start
-						//프레임 처리 시간 세팅
+				//==== Tab Time ====================================================================================================
+				double dTactTime = CGlobalFunc::GetDiffTime(CGrabDalsaCameraLink::stTime, CGrabDalsaCameraLink::dFrecuency);
+				//Image Capture 정보 출력 로그
+				LOGDISPLAY_SPEC(4)(_T("Grab Image Receive Pos<%s> Tactime <%f>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", dTactTime);
+
+				//프레임 처리 시간 세팅
 				LARGE_INTEGER tmp;
 				LARGE_INTEGER start;
 				QueryPerformanceFrequency(&tmp);
@@ -191,25 +169,42 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				QueryPerformanceCounter(&start);
 
 				//프레임 처리시간 객체를 세팅한다.
-				stTime = start;
-				dFrecuency = dFrequency;
+				CGrabDalsaCameraLink::stTime = start;
+				CGrabDalsaCameraLink::dFrecuency = dFrequency;
+				//================================================================================================================================
+
+				//이미지 Top Bottom 모두 받으면 TabFind 스래드가 실행하도록 이벤트를 발생한다.
+				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 
 				bSend = TRUE;
 
 				if (bSend == FALSE) {
 					delete[]pImg;
 				}
+				bImageExit = true;
 			}
 		}
-		//pBuffer->SetState(nIndex, SapBuffer::StateEmpty);
-	}		
+		
+	}	
+
+	if (bImageExit == false)
+	{
+		++nImageNoneExit;
+		//Image Capture 정보 출력 로그
+		LOGDISPLAY_SPEC(1)(_T("Grab == Error : Image 정보가 없다. <%d>"), nImageNoneExit);
+	}
 }
 
 CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
 {
+	//== Tac Time ==================================================================
 	memset(&stTime, 0, sizeof(LARGE_INTEGER ));
 	QueryPerformanceCounter(&stTime);
-	dFrecuency = 0.0;
+	LARGE_INTEGER tmp;
+	QueryPerformanceFrequency(&tmp);
+	dFrecuency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
+	//==============================================================================
+
 	//부모객체 생성 포인터
 	m_pImageProcessCtrl = pImageProcessCtrl;
 

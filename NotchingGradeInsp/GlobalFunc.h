@@ -43,4 +43,8 @@ public:
 
 	//스래드 메시지 큐 확인용 함수
 	static WORD isPeekMessage(HWND hWnd);
+
+
+	//Tac Time 계산 식
+	static double GetDiffTime(LARGE_INTEGER stTime, double dFrequency);
 };
