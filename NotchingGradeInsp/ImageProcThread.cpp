@@ -232,6 +232,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			{
 #endif
 
+				//TabFind TacTime
+				LARGE_INTEGER tmp_TabFind;
+				LARGE_INTEGER start_TabFind;
+				QueryPerformanceFrequency(&tmp_TabFind);
+				double dFrequency_TabFind = (double)tmp_TabFind.LowPart + ((double)tmp_TabFind.HighPart * (double)0xffffffff);
+				QueryPerformanceCounter(&start_TabFind);
+
 				// 22.02.22 Ahn Modify End
 				//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Top 객체를 가져온다.
 				CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
@@ -693,9 +700,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						// 22.12.09 Ahn Add End
 
 
+						double TabFind_TacTime = CGlobalFunc::GetDiffTime(tmp_TabFind, dFrequency_TabFind);
 						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(1)("*2*2*Use-ID : TabID-Top[%d]-Bottom[%d], TabNo-Top[%d]-Bottom[%d]",
-							pInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard, pInfo->nTabNo, pBtmInfo->nTabNo
+						LOGDISPLAY_SPEC(4)("*TacTime - TabFind : TabID-[%d], TabNo-[%d], TacTime[%f]",
+							pInfo->m_nTabId_CntBoard,  pInfo->nTabNo, TabFind_TacTime
 							);
 
 

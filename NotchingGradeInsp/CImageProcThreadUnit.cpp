@@ -667,13 +667,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
-				//파일저장 프레임 결과 정보에 저장한다.
-				pFrameRsltInfo->Copy(pFrmInfo);
-
 				//======TacTime 출력 ========================================================================
 				pFrmInfo->m_tacTimeList[1] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
 
 				//============================================================================================
+
+				//파일저장 프레임 결과 정보에 저장한다.
+				pFrameRsltInfo->Copy(pFrmInfo);
 
 				//프레임 정보 로컬 객체 삭제
 				if (pFrmInfo != NULL) {

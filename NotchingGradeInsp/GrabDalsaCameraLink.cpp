@@ -156,16 +156,12 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				//얻은 이미지 정보를 TabFind 스래드로 전달하기 위해 queue 에 넣는다.
 				pQueueCtrl->PushBack(pFrmInfo);
 
+				//==== Tab Time ====================================================================================================
 				double dTactTime = CGlobalFunc::GetDiffTime(CGrabDalsaCameraLink::stTime, CGrabDalsaCameraLink::dFrecuency);
-
-				//이미지 Top Bottom 모두 받으면 TabFind 스래드가 실행하도록 이벤트를 발생한다.
-				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
-
 				//Image Capture 정보 출력 로그
-				LOGDISPLAY_SPEC(4)(_T("Grab Image Receive Pos<%s> Tactime <%f>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP":"BOTTOM" , dTactTime);
+				LOGDISPLAY_SPEC(4)(_T("Grab Image Receive Pos<%s> Tactime <%f>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", dTactTime);
 
-				// 22.12.09 Ahn Add Start
-						//프레임 처리 시간 세팅
+				//프레임 처리 시간 세팅
 				LARGE_INTEGER tmp;
 				LARGE_INTEGER start;
 				QueryPerformanceFrequency(&tmp);
@@ -175,6 +171,10 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				//프레임 처리시간 객체를 세팅한다.
 				CGrabDalsaCameraLink::stTime = start;
 				CGrabDalsaCameraLink::dFrecuency = dFrequency;
+				//================================================================================================================================
+
+				//이미지 Top Bottom 모두 받으면 TabFind 스래드가 실행하도록 이벤트를 발생한다.
+				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 
 				bSend = TRUE;
 
@@ -197,9 +197,14 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
 {
+	//== Tac Time ==================================================================
 	memset(&stTime, 0, sizeof(LARGE_INTEGER ));
 	QueryPerformanceCounter(&stTime);
-	dFrecuency = 0.0;
+	LARGE_INTEGER tmp;
+	QueryPerformanceFrequency(&tmp);
+	dFrecuency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
+	//==============================================================================
+
 	//부모객체 생성 포인터
 	m_pImageProcessCtrl = pImageProcessCtrl;
 
