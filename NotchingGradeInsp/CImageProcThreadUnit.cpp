@@ -689,6 +689,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				// 처리 완료
 				//if (::WaitForSingleObject(pCtrl->m_hEventProcEnd, 0) != WAIT_OBJECT_0) {
 				//	::SetEvent(pCtrl->m_hEventProcEnd);
+
+				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> SetEventProcEnd : nHeadNo = %d"), nHeadNo);
+
 				pCtrl->SetEventProcEnd();
 				break;
 				//}
