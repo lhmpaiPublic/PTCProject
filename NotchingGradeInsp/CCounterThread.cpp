@@ -88,7 +88,7 @@ void CCounterThread::ThreadRun(BOOL bRunFlag)
 
 
 //스래드 타임아웃 시간
-#define COUNTERINFOTHREAD_TIMEOUT 30
+#define COUNTERINFOTHREAD_TIMEOUT 5
 UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 {
 	CCounterThread* pThis = (CCounterThread*)pParam;
@@ -215,8 +215,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								cntInfo.nTabID, AprData.m_NowLotData.m_nInputTabIDTotalCnt, beforeQueueCount, pCntQueInPtr->GetSize());
 							AprData.SaveMemoryLog(strMsg);
 
-
-							::Sleep(5);
 						}
 						// Cell 추적 Queue Data -> Local Queue 
 						//if(....)

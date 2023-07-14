@@ -5864,26 +5864,6 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				{
 					pTabRsltInfo->m_nJudge = JUDGE_NG;
 
-
-// 					if (pDefInfo->nType == en_ModeFoilExp)
-// 					{
-// 						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExp_Top : CTabRsltBase::en_Reason_FoilExp_Btm); // 22.07.08 Ahn Add
-// 
-// 						CString strMsg;
-// 						strMsg.Format(_T("[NG] en_ModeFoilExp : Head No = %d"));
-// 						AprData.SaveDebugLog(strMsg); //pyjtest
-// 					}
-// 					else
-// 					{
-// 						pTabRsltInfo->m_wNgReason |= ((pDefInfo->nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpOut_Top : CTabRsltBase::en_Reason_FoilExpOut_Btm); // 22.07.08 Ahn Add
-// 
-// 						CString strMsg;
-// 						strMsg.Format(_T("[NG] en_ModeFoilExp Out : Head No = %d"));
-// 						AprData.SaveDebugLog(strMsg); //pyjtest
-// 					}
-
-
-
 					CString strMsg;
 					switch (pDefInfo->nType)
 					{

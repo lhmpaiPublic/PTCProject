@@ -484,7 +484,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							AprData.m_NowLotData.m_nTabIDEmptyTotalCnt++;
 							//2개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
-							if (quUserTabID.size() > 2)
+							if (quUserTabID.size() > 5)
 							{
 								//다음 아이디를 할당한다.
 								cntInfo.nTabID = 64;

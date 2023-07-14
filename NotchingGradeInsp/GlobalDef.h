@@ -99,7 +99,7 @@ enum {
 // 22.03.25 Ahn Add End
 
 // 22.05.18 Ahn Add Start
-#define		IMAGE_PROC_SKIP_COUNT		2
+#define		IMAGE_PROC_SKIP_COUNT		5
 #define		IMAGE_DISPLAY_SKIP_COUNT	5
 #define		FRAME_ACQ_ERROR_CHK_CNT		5	
 // 22.05.18 Ahn Add End
