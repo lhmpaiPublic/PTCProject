@@ -173,9 +173,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					(pFrameRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", pFrameRsltInfo->m_nTabId_CntBoard, pFrameRsltInfo->nTabNo + 1);
 
 				
+
+
 				//에러 ? 또는 Over Flow 가 아니면
 				if ((pFrmInfo->m_bErrorFlag == FALSE) && (pFrmInfo->m_bOverFlow == FALSE))
 				{
+
+					DWORD dwTic = 0;
+
 
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같다면 실행
 					if (pFrmInfo->m_nHeadNo == CAM_POS_TOP)
@@ -191,7 +196,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//양극이면
 							if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 							{
-
+								dwTic = GetTickCount();
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 								// Tab Level
 								int* pnPrj = new int[nWidth];
@@ -220,7 +225,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									delete[] pnPrj;
 								}
 
-								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <NEGATIVE> Top nTabLevel=%d"), nTabLevel);
+								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <NEGATIVE> Top nTabLevel=%d, %d ms"), nTabLevel, GetTickCount() - dwTic );
 
 
 
@@ -243,7 +248,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//음극이면 ImageProcessTopSide_AreaDiff 실행
 							else
 							{
-
+								dwTic = GetTickCount();
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 								// Tab Level
 								int nTabLevelLeft = 0;
@@ -310,7 +315,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								}
 
 
-								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <POSITIVE> Top nTabLevel=%d"), nTabLevel);
+								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <POSITIVE> Top nTabLevel=%d, %d ms"), nTabLevel, GetTickCount() - dwTic );
 
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

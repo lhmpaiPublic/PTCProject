@@ -739,7 +739,7 @@ int CImageDispDlg::GetPickBitmap(CImgClipedBmp& clipbmp)
 		pd += nOffsetX * nNumOfByteCount;
 		if (xpitch == 1) {
 			ASSERT((xe - xs + 1) >= 0);
-			memcpy(pd, ps, (sizeof(BYTE) * (xe - xs + 1) * nNumOfByteCount));
+			CopyMemory(pd, ps, (sizeof(BYTE) * (xe - xs + 1) * nNumOfByteCount));
 		}
 		else {
 			if (bitcnt == 24) {

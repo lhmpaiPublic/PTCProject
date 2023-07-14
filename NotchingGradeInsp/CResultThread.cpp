@@ -446,7 +446,7 @@ void CResultThread::SaveResultImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* 
 
 	CResultThread::DrawImage_Test( &cdcSave, pRsltInfo, nWidth, nHeight, nMagnif );
 
-	memcpy(pbyteBmpBits, pbyteTmpMemDC, (nWidth * nHeight) * 3);
+	CopyMemory(pbyteBmpBits, pbyteTmpMemDC, (nWidth * nHeight) * 3);
 
 	// 23.02.09 Ahn Add Start
 	CRect rcClient;
@@ -772,7 +772,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					if (hWnd != NULL) // 22.04.01 Ahn Add 
 					{
 						BYTE* pResizePtr;
-						int nMagnif = 8;
+						int nMagnif = 10; //8;
 						int nReWidth = (pRsltInfo->m_nWidth / nMagnif);
 						int nReHeight = (pRsltInfo->m_nHeight / nMagnif);
 						int nReSize = nReWidth * nReHeight;
@@ -800,6 +800,8 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 								// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
 								SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
 								// 23.02.06 Ahn Modify End
+
+
 							}
 						}
 						else
@@ -808,6 +810,8 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
 							SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
 							// 23.02.06 Ahn Modify End
+
+
 						}
 
 //SPC 객체 소스에서 컴파일 여부 결정
