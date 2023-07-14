@@ -957,6 +957,18 @@ UINT CImageProcThreadUnit::CtrlImageProcThread_Exception(LPVOID pParam)
 			// Top 결과 정보  m_pTabRsltInfo  /NG 설정
 			pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
 			pFrameRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((pFrameRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
+
+			//NG 로그 출력한다.
+					 //DEBUG_LOG.txt
+			AprData.SaveDebugLog_Format(_T("<<CtrlImageProcThread>>에러 - [Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"),
+				pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
+
+			if (pFrmInfo->m_bOverFlow == TRUE)
+			{
+				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [Overflow Error] System Stop!!"));
+
+				AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+			}
 		}
 
 		//Tact 타임을 로그로 저장한다.
