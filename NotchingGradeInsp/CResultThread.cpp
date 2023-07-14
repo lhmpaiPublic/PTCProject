@@ -566,8 +566,8 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 			// 22.11.28 Ahn Modify End
 			CRect rcCrop ;
 			CPoint cpNgPos = pTabInfo->GetDefectCenterPos(i);
-			int nSizeX = pDefInfo->nSizeX ;
-			int nSizeY = pDefInfo->nSizeY ;
+			int nSizeX = (int)pDefInfo->nSizeX ;
+			int nSizeY = (int)pDefInfo->nSizeY ;
 			int nSizeL = 128 ;
 			CString strJudge;
 

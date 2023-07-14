@@ -21,22 +21,26 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 	::EnterCriticalSection(&m_csQueue);
 	ASSERT(pFrmInfo);
 
+	//이미지 저리 결과 마킹 최종 결과를 생성하기 위한 스래드 생성
+	CImageProcThreadUnit* pThread = new CImageProcThreadUnit(pFrmInfo);
+
 	//스래드 저장큐의 갯수를 가져와서 MAX_THREAD_QUEUE_SIZE 작을 때 저장한다.
 	int nSize = (int)m_pThradQue.size();
 	// 큐가 오버되었으면
-	if (MAX_THREAD_QUEUE_SIZE <= nSize) {
-		// 23.02.10 Ahn Add Start
-		
+	if (MAX_THREAD_QUEUE_SIZE <= nSize) 
+	{
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, nSize, MAX_THREAD_QUEUE_SIZE) ;
 
 		//저장큐가 Over Flow 값 설정
 		pFrmInfo->m_bOverFlow = TRUE;
-	}
 
-	//이미지 저리 결과 마킹 최종 결과를 생성하기 위한 스래드 생성
-	CImageProcThreadUnit* pThread = new CImageProcThreadUnit( pFrmInfo );
-	pThread->Begin();
+		pThread->Begin_Exception();
+	}
+	else
+	{
+		pThread->Begin();
+	}
 
 	//스래드객체 저장큐에 저장
 	m_pThradQue.push(pThread);

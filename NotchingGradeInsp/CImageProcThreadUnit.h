@@ -14,6 +14,8 @@ class CImageProcThreadUnit : public CWinThread
 	//이미지 프로세싱 처리 결과를 이용하여 마키 설정 및 통신처리를 위한 스래드 함수
 	//최종 OK , NG 판정 처리
 	static UINT CtrlImageProcThread(LPVOID pParam);
+	//오버플로우 발생 시 예외처리 처리함수
+	static UINT CtrlImageProcThread_Exception(LPVOID pParam);
 
 	CImageProcThreadUnit(CFrameInfo *pFrmInfo = NULL);           // 동적 만들기에 사용되는 protected 생성자입니다.
 	virtual ~CImageProcThreadUnit();
@@ -44,6 +46,7 @@ public:
 	CFrameRsltInfo* m_pFrmRsltInfo;
 
 	int Begin();
+	int Begin_Exception();
 	int Kill();
 	BOOL IsProcEnd();
 	//EVENT 결과 
