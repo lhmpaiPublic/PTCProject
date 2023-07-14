@@ -32,9 +32,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		return;
 	}
 
-	//AcqCallback 호출 카운터
-	AprData.m_NowLotData.m_nEnCoderTotalCnt++;
-
 	// 21.05.27 Ahn Add Start
 	if (pQueueCtrl != NULL){
 		int nEventCnt = pInfo->GetEventCount();		
@@ -92,10 +89,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 			return;
 		}
-		//Log Camera Setting
-		LOGDISPLAY_SPEC(1)(_T("*1**EnCoder-TotalCount<%d>, TabID TotalCount<%d>, Diff<%d>"),
-			AprData.m_NowLotData.m_nEnCoderTotalCnt, AprData.m_NowLotData.m_nInputTabIDTotalCnt
-			, abs(AprData.m_NowLotData.m_nEnCoderTotalCnt - AprData.m_NowLotData.m_nInputTabIDTotalCnt));
 
 		if ( pQueueCtrl != NULL )
 		{
@@ -117,38 +110,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				pFrmInfo->m_nBand = 1;
 				pFrmInfo->m_nHeadNo = pCbInfo->m_nHeadNo - 1;
 
-				//이미지 생성 카운트
-				if (pFrmInfo->m_nHeadNo == 0)
-				{
-					AprData.m_NowLotData.m_nImageCaptureTopTotalCnt++;
-					//메모리 로그 기록
-					CString strMsg = "";
-					strMsg.Format(_T("TabID TotalCount<%d>, Image CaptureCount<%d>, ID-Capture-Diff<%d>-<%s> FramePos<%s>, FrameCount<%d>"),
-						AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nImageCaptureTopTotalCnt
-						, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nImageCaptureTopTotalCnt)
-						, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nImageCaptureTopTotalCnt) ? "Big TabID" :
-						(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nImageCaptureTopTotalCnt) ? "Big ImagCpture" : "TabID==ImageCaptrue"
-						, (pFrmInfo->m_nHeadNo == 0) ? "TopFrame" : "BottomFrame"
-						, pFrmInfo->m_nFrameCount);
-					AprData.SaveMemoryLog(strMsg);
-
-				}
-				else
-				{
-					AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt++;
-					//메모리 로그 기록
-					CString strMsg = "";
-					strMsg.Format(_T("TabID TotalCount<%d>, Image CaptureCount<%d>, ID-Capture-Diff<%d>-<%s> FramePos<%s>, FrameCount<%d>"),
-						AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt
-						, abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt)
-						, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt) ? "Big TabID" :
-						(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt) ? "Big ImagCpture" : "TabID==ImageCaptrue"
-						, (pFrmInfo->m_nHeadNo == 0) ? "TopFrame" : "BottomFrame"
-						, pFrmInfo->m_nFrameCount);
-					AprData.SaveMemoryLog(strMsg);
-
-				}
-
 				CString strMsg = "";
 				strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);
@@ -156,10 +117,12 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				//얻은 이미지 정보를 TabFind 스래드로 전달하기 위해 queue 에 넣는다.
 				pQueueCtrl->PushBack(pFrmInfo);
 
-				//==== Tab Time ====================================================================================================
+				//==== Tac Time ====================================================================================================
 				double dTactTime = CGlobalFunc::GetDiffTime(CGrabDalsaCameraLink::stTime, CGrabDalsaCameraLink::dFrecuency);
+
 				//Image Capture 정보 출력 로그
-				LOGDISPLAY_SPEC(4)(_T("Grab Image Receive Pos<%s> Tactime <%f>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", dTactTime);
+				LOGDISPLAY_SPEC(4)(_T("Grab Image Receive Pos<%s> FrameCount<%d> Tactime <%f>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", nFrameCnt, dTactTime);
+				//===================================================================================================================================
 
 				//프레임 처리 시간 세팅
 				LARGE_INTEGER tmp;

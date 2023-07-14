@@ -9,7 +9,7 @@
 //Frame의 시작 Pixel 좌표
 //m_pImagePtr : 이미지 데이터 값
 //m_bOverFlow 오버플로우 체크
-#define MAX_TACTIMELIST 5
+#define MAX_TACTIMELIST 10
 class CFrameInfo
 {
 public:

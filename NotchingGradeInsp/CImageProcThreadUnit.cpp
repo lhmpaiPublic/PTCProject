@@ -168,11 +168,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				// 22.12.16 Ahn Modify End
 				// 22.02.24 Ahn Add End
 
-				//Log 출력
-				LOGDISPLAY_SPEC(1)("*3**Result-Proc <%s> : TabID<%d>, Tab Find TotalCount<%d>",
-					(pFrameRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", pFrameRsltInfo->m_nTabId_CntBoard, pFrameRsltInfo->nTabNo + 1);
-
-				
 				//에러 ? 또는 Over Flow 가 아니면
 				if ((pFrmInfo->m_bErrorFlag == FALSE) && (pFrmInfo->m_bOverFlow == FALSE))
 				{

@@ -482,7 +482,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//다음에 들어올 id를 할당한다.
 						if (bNextTabId == false)
 						{
-							AprData.m_NowLotData.m_nTabIDEmptyTotalCnt++;
 							//2개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
 							if (quUserTabID.size() > 5)
 							{
@@ -504,17 +503,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//사용한 아이디를 backup 한다. 확인용
 							quUserTabID.push(cntInfo.nTabID);
 
-							//Image Cutting Tab 정보 출력 로그
-							LOGDISPLAY_SPEC(1)(_T("Tab ID Empty Totalcount<%d> - Set TabID<%d>"),
-								AprData.m_NowLotData.m_nTabIDEmptyTotalCnt, cntInfo.nTabID);
 						}
-
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(1)("Tab ID Empty Totalcount<%d>, TabID Overflow TotalCount<%d>, Diff<%d>-<%s>",
-							AprData.m_NowLotData.m_nTabIDEmptyTotalCnt, AprData.m_NowLotData.m_nTabIDOverflowTotalCnt
-							, (AprData.m_NowLotData.m_nTabIDEmptyTotalCnt - AprData.m_NowLotData.m_nTabIDOverflowTotalCnt)
-							, (AprData.m_NowLotData.m_nTabIDEmptyTotalCnt > AprData.m_NowLotData.m_nTabIDOverflowTotalCnt) ? "Big-TabEmpty" :
-							(AprData.m_NowLotData.m_nTabIDEmptyTotalCnt < AprData.m_NowLotData.m_nTabIDOverflowTotalCnt) ? "Big-TabOverflow" : "TabEmpty == TabOverflow");
 
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[i];
@@ -740,25 +729,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						strMsg.Format(_T("Find Image Tab TotalCount<%d>"), AprData.m_NowLotData.m_nTabCount);
 						AprData.SaveMemoryLog(strMsg);
 
-
-
-
-						//메모리 로그 기록
-						strMsg = "";
-						strMsg.Format(_T("Recive TabID TotalCount<%d>, Find Image Tab TotalCount<%d>, CountDiff<%d>-<%s>"),
-							AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nTabCount,
-							abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nTabCount)
-							, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nTabCount) ? "Big TabID" :
-							(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nTabCount) ? "Big FindTab" : "TabID == FindTab");
-						AprData.SaveMemoryLog(strMsg);
-
-						//Image Cutting Tab 정보 출력 로그
-						LOGDISPLAY_SPEC(1)(_T("*2*3*Recive TabID TotalCount<%d>, Find Image Tab TotalCount<%d>, CountDiff<%d>-<%s>"),
-							AprData.m_NowLotData.m_nInputTabIDTotalCnt, AprData.m_NowLotData.m_nTabCount,
-							abs(AprData.m_NowLotData.m_nInputTabIDTotalCnt - AprData.m_NowLotData.m_nTabCount)
-							, (AprData.m_NowLotData.m_nInputTabIDTotalCnt > AprData.m_NowLotData.m_nTabCount) ? "Big TabID" :
-							(AprData.m_NowLotData.m_nInputTabIDTotalCnt < AprData.m_NowLotData.m_nTabCount) ? "Big FindTab" : "TabID == FindTab");
-
 					}
 					//처리한 Tab 정보를 삭제한다.
 					vecTabInfo.clear();
@@ -902,6 +872,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
 
+						//======TacTime 출력 ========================================================================
+						pTopInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
+						pBtmInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
+						//=================================================================================================
+
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Process Start :: Board Tab ID <Top:%d/Btm:%d>, Find Tab ID <%d>"),
 							pTopInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1);
 
@@ -970,20 +945,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;
 						int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
-
-						//======TacTime 출력 ========================================================================
-						pTopInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
-						pBtmInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
-
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(4)("TacTime Top========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultSendPLC[%f] ",
-							pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, pTopInfo->m_tacTimeList[0], pTopInfo->m_tacTimeList[1], pTopInfo->m_tacTimeList[2]);
-						
-
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(4)("TacTime Bottom========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultSendPLC[%f] ",
-							pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, pBtmInfo->m_tacTimeList[0], pBtmInfo->m_tacTimeList[1], pBtmInfo->m_tacTimeList[2]);
-						//==============================================================================================
 
 						// 22.12.09 Ahn Add Start 
 						stTime = pTopInfo->m_stTime;
@@ -1255,21 +1216,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						}
 
-						//======TacTime 출력 ========================================================================
-						double dTactTime_Top = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
-
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(1)("**ResultProc - TacTime Top========= TabNo[%d] - TacTime[%f]",
-							pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime_Top);
-
-						double dTactTime_Bottom = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
-
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(1)("**ResultProc - TTacTime Bottom========= TabNo[%d] - TacTime[%f]",
-							pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime_Bottom);
-						//==============================================================================================
-
-
 						{ // CSV 파일 작성
 							CString strCsvFileName;
 							CString strFilePath;
@@ -1451,6 +1397,20 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//체크박스 로그 출력
 						LOGDISPLAY_SPEC(1)("*4*3*TabID[%d]-TabNo[%d] - TacTime[%f]",
 							pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime);
+
+						//======TacTime 출력 ========================================================================
+						pTopInfo->m_tacTimeList[3] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
+						pBtmInfo->m_tacTimeList[3] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
+
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(4)("TacTime Top========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultStart[%f] - ResultEnd[%f]",
+							pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, pTopInfo->m_tacTimeList[0], pTopInfo->m_tacTimeList[1], pTopInfo->m_tacTimeList[2], pBtmInfo->m_tacTimeList[3]);
+
+
+						//체크박스 로그 출력
+						LOGDISPLAY_SPEC(4)("TacTime Bottom========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultStart[%f] - ResultEnd[%f]",
+							pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, pBtmInfo->m_tacTimeList[0], pBtmInfo->m_tacTimeList[1], pBtmInfo->m_tacTimeList[2], pBtmInfo->m_tacTimeList[3]);
+						//==============================================================================================
 
 						pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
 						pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);

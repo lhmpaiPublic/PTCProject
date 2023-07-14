@@ -767,12 +767,6 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strKey = _T("TOTAL_COUNT");
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_nTabCount = atoi(buff);		
-		AprData.m_NowLotData.m_nInputTabIDTotalCnt = AprData.m_NowLotData.m_nTabCount;
-		AprData.m_NowLotData.m_nImageCaptureTopTotalCnt = AprData.m_NowLotData.m_nTabCount;
-		AprData.m_NowLotData.m_nImageCaptureBottomTotalCnt = AprData.m_NowLotData.m_nTabCount;
-		AprData.m_NowLotData.m_nTabIDEmptyTotalCnt = 0;
-		AprData.m_NowLotData.m_nTabIDOverflowTotalCnt = 0;
-		AprData.m_NowLotData.m_nEnCoderTotalCnt = AprData.m_NowLotData.m_nTabCount;
 
 		strKey = _T("NG_COUNT");
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
@@ -1136,12 +1130,6 @@ void CGlobalData::SpcPluusStatus(CString InspStatus)
 void CLotInfo::ClearAllCount()
 {
 	m_nTabCount = 0 ;
-	m_nInputTabIDTotalCnt = m_nTabCount;
-	m_nImageCaptureTopTotalCnt = m_nTabCount;
-	m_nImageCaptureBottomTotalCnt = m_nTabCount;
-	m_nTabIDEmptyTotalCnt = 0;
-	m_nTabIDOverflowTotalCnt = 0;
-	m_nEnCoderTotalCnt = m_nTabCount;
 
 	m_nTabCountNG = 0 ;
 	m_nTabCountOK = 0 ;

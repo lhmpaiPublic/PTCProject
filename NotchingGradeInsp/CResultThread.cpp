@@ -745,6 +745,13 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 			if (nSize > 0)
 			{
+				//프레임 처리 시간 세팅
+				LARGE_INTEGER tmp;
+				LARGE_INTEGER loc_stTime;
+				QueryPerformanceFrequency(&tmp);
+				double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
+				QueryPerformanceCounter(&loc_stTime);
+
 				CFrameRsltInfo* pRsltInfo = (CFrameRsltInfo*)pQueueResult->Pop();
 
 				//SPC 객체 소스에서 컴파일 여부 결정
@@ -911,9 +918,17 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				//===========================================================================================================
 #endif //SPCPLUS_CREATE
 
+				//==== Tac Time ========================================================================================================================================
+				double dTactTime = CGlobalFunc::GetDiffTime(loc_stTime, dFrequency);
+
+				//Image Capture 정보 출력 로그
+				LOGDISPLAY_SPEC(4)(_T("Result Pos<%s> TabNo<%d> Tactime <%f>"), (pRsltInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo, dTactTime);
+				//=======================================================================================================================================================
+
 				pRsltInfo->m_pTabRsltInfo = NULL;
 				delete pRsltInfo;
 				pRsltInfo = NULL;
+
 			}
 			//큐에 데이터가 있으면 기다리지 않고 실행하도록 설정
 			if (pQueueResult->GetSize())

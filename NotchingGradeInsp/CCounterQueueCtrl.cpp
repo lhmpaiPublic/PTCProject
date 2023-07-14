@@ -36,11 +36,7 @@ int CCounterQueueCtrl::PushBack(CCounterInfo CntInfo)
 	// 21.12.27 Ahn Add Start
 	int nSize = (int)m_CntInfo.size();;
 	if (m_nMaxQueueSize < nSize) {
-		AprData.m_NowLotData.m_nTabIDOverflowTotalCnt++;
 		CCounterInfo CntInfobefore = Pop();
-		//체크박스 로그 출력
-		LOGDISPLAY_SPEC(1)(_T("DIO Overflow TotalCount<%d> input ID[%d] Pop=delete"), 
-			AprData.m_NowLotData.m_nTabIDOverflowTotalCnt, CntInfobefore.nTabID);
 	}
 	// 21.12.27 Ahn Add End
 

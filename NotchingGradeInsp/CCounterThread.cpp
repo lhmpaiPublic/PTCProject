@@ -157,9 +157,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							LOGDISPLAY_SPEC(1)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
 							backupwInSignal = wInSignal;
 
-							//받은 Trigger TabID 총 갯수 증가
-							AprData.m_NowLotData.m_nInputTabIDTotalCnt++;
-
 							//DIO Input Log
 							LOGDISPLAY_SPEC(1)(_T("*0**DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
 
@@ -202,18 +199,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							cntInfo.nTabID = wTempID;
 							pCntQueInPtr->PushBack(cntInfo);
 
-							//DIO Input Log
-							LOGDISPLAY_SPEC(1)(_T("Input ID 받음[%d] Queue Count<%d>-><%d>, Recive TabID TotalCount<%d>"),
-								cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize(), AprData.m_NowLotData.m_nInputTabIDTotalCnt);
-
 							//이전 id 갱신
 							wLastInfo = wTempID;
-
-							//메모리 로그 기록
-							CString strMsg;
-							strMsg.Format(_T("Input ID[%d], Recive TotalCount<%d>, Queue Count<%d>-><%d>"),
-								cntInfo.nTabID, AprData.m_NowLotData.m_nInputTabIDTotalCnt, beforeQueueCount, pCntQueInPtr->GetSize());
-							AprData.SaveMemoryLog(strMsg);
 
 						}
 						// Cell 추적 Queue Data -> Local Queue 
