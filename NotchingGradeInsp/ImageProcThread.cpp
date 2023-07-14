@@ -199,7 +199,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				// 에러 처리 
 				//	pThis->SetFameSizeError(); // 
 				CString strErrMsg;
-				strErrMsg.Format(_T("프레임 사이즈 이상 : Top [%d], Bottom[%d], 검사 상태 [%d], 종료 처리!!!!"), nSizeFrmL, nSizeFrmR, pThis->m_pParent->IsInspection());
+				strErrMsg.Format(_T("Frame Size Error : Top [%d], Bottom[%d], Inspect Status [%d], Process End!!!!"), nSizeFrmL, nSizeFrmR, pThis->m_pParent->IsInspection());
 				//	AprData.SaveErrorLog(strErrMsg);
 
 					//카메라의 에러를 세팅한다.
@@ -787,7 +787,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	return 0;
 }
 
-#define IMAGEPROCTHREAD_RESULT_TIMEOUT 40
+#define IMAGEPROCTHREAD_RESULT_TIMEOUT 30
 #define IMAGEPROCTHREAD_RESULTWAITE_TIMEOUT 5
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {
@@ -1366,7 +1366,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize];
-									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+									CopyMemory(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
 									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 									pImgSaveQueueCtrl->PushBack(pSaveInfo);

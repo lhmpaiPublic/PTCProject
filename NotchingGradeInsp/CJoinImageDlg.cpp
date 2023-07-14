@@ -123,7 +123,7 @@ void CJoinImageDlg::OnBnClickedOk()
 		pLinePtr = pImgJoin + (size2.cx * y);
 		pSrcLinePtr = pImg2 + (nWidth * y);
 		for (x = 0; x < size2.cx; x++) {
-			memcpy(pLinePtr, pSrcLinePtr, (sizeof(BYTE) * size2.cx));
+			CopyMemory(pLinePtr, pSrcLinePtr, (sizeof(BYTE) * size2.cx));
 		}
 	}
 
@@ -131,7 +131,7 @@ void CJoinImageDlg::OnBnClickedOk()
 		pLinePtr = pImgJoin + (nWidth * (y + size2.cy));
 		pSrcLinePtr = pImg1 + (size1.cx * y );
 		for (x = 0; x < size1.cx; x++) {
-			memcpy(pLinePtr, pSrcLinePtr, ( sizeof(BYTE) *size1.cx ) );
+			CopyMemory(pLinePtr, pSrcLinePtr, ( sizeof(BYTE) *size1.cx ) );
 		}
 	}
 

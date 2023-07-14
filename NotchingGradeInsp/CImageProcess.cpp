@@ -448,7 +448,7 @@ int CImageProcess::ImageMean_Part(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int 
 	if (nMode & en_FillTop) {
 		for (y = nStartY; y < nHalfH; y++) {
 			pTarLinePtr = pTarPtr + (nWidth * y) + nStartX;
-			memcpy(pTarLinePtr, pSrcPtr, sizeof(BYTE) * rcRange.Width());
+			CopyMemory(pTarLinePtr, pSrcPtr, sizeof(BYTE) * rcRange.Width());
 		}
 	}
 	pSrcPtr = pTarPtr + (nWidth * (nEndY - nHalfH - 2)) + nStartX;
@@ -459,7 +459,7 @@ int CImageProcess::ImageMean_Part(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int 
 		for (y = (nEndY - nHalfH ); y <= nEndY; y++) {
 		// 22.02.15 Ahn Modify Start
 			pTarLinePtr = pTarPtr + (nWidth * y) + nStartX;
-			memcpy(pTarLinePtr, pSrcPtr, sizeof(BYTE) * rcRange.Width());
+			CopyMemory(pTarLinePtr, pSrcPtr, sizeof(BYTE) * rcRange.Width());
 		}
 	}
 
@@ -1383,7 +1383,7 @@ int CImageProcess::Exptention(BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHe
 
 	BYTE* pLinePtr, * pTopPtr, * pBtmPtr;
 	BYTE* pRsltLinePtr;
-	memcpy(pRsltPtr, pImgPtr, sizeof(BYTE) * nWidth * nHeight);
+	CopyMemory(pRsltPtr, pImgPtr, sizeof(BYTE) * nWidth * nHeight);
 	//BYTE* pRsltLinePtr;
 	for (y = nStartY; y < nEndY; y++) {
 		pTopPtr = pImgPtr + (nWidth * (y - 1));
@@ -4657,7 +4657,7 @@ int CImageProcess::FindLevelBottom_Negative(BYTE* pImgPtr, int nWidth, int nHeig
 	int nPrjArray[2000];
 	// 22.12.30 Ahn Modify Start
 	//memcpy(nPrjArray, pnPrjData, sizeof(int) * nWidth);
-	memcpy(nPrjArray, pnPrjData, sizeof(int) * 2000);
+	CopyMemory(nPrjArray, pnPrjData, sizeof(int) * 2000);
 	// 22.12.30 Ahn Modify End
 
 	int i ;
@@ -4715,7 +4715,7 @@ int CImageProcess::FindLevelBottom_BrightRoll(BYTE* pImgPtr, int nWidth, int nHe
 	CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
 
 	int nPrjArray[2000];
-	memcpy(nPrjArray, pnPrjData, sizeof(int) * 2000);
+	CopyMemory(nPrjArray, pnPrjData, sizeof(int) * 2000);
 
 	int i;
 	BOOL bFound = FALSE;
@@ -6125,9 +6125,9 @@ int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nW
 		tabInfo.m_bErrorFlag = TRUE;
 		tabInfo.nImageLength = nFixSize;
 		tabInfo.pImgPtr = new BYTE[nWidth * nFixSize];
-		memcpy(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
+		CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
 		tabInfo.pImgBtmPtr = new BYTE[nWidth * nFixSize];
-		memcpy(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
+		CopyMemory(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
 		nLastSavePos += nFixSize ;
 
 		pVecTabInfo->push_back(tabInfo);
@@ -6295,19 +6295,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount ;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 			// 22.11.18 Ahn Add End
-			memcpy(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			memcpy(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			nLastSavePos = 0 ; 
-
-// 			{
-// 				CBitmapStd bmp(nWidth, tabInfo.nImageLength);
-// 				bmp.SetImage(nWidth, tabInfo.nImageLength, tabInfo.pImgPtr);
-// 
-// 				CTime time = CTime::GetCurrentTime();
-// 				CString str;
-// 				str.Format(_T("d:\\[Case0]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount() );
-// 				bmp.SaveBitmap(str);
-// 			}
 
 			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] case<%d> : %d ms"), nCase, GetTickCount() - dwTic);
 
@@ -6334,21 +6324,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 
 			// 22.11.18 Ahn Add End
-			memcpy(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			memcpy(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			memcpy(tabInfo.pImgPtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
-			memcpy(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
-
-// 			{
-// 				CBitmapStd bmp(nWidth, tabInfo.nImageLength);
-// 				bmp.SetImage(nWidth, tabInfo.nImageLength, tabInfo.pImgPtr);
-// 
-// 				CTime time = CTime::GetCurrentTime();
-// 				CString str;
-// 				str.Format(_T("d:\\[Case1]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
-// 				bmp.SaveBitmap(str);
-// 			}
 
 			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] case<%d> : %d ms"), nCase, GetTickCount() - dwTic);
 
@@ -6426,11 +6406,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.03.30 Ahn Add End
 			tabInfo.nImageLength = nSendLength + pResvTabInfo->nImageLength;
 			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength];
-			memcpy(tabInfo.pImgPtr, pResvTabInfo->pImgPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			memcpy(tabInfo.pImgPtr + (nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgPtr, pResvTabInfo->pImgPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr + (nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
 			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength];
-			memcpy(tabInfo.pImgBtmPtr, pResvTabInfo->pImgBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			memcpy(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgBtmPtr, pResvTabInfo->pImgBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
 
 			// 22.11.18 Ahn Add Start
@@ -6551,8 +6531,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				pResvTabInfo->nFrameCount = nFrameCount;
 				pResvTabInfo->nTabStartPosInFrame = nLastSavePos;
 				// 22.11.18 Ahn Add End 
-				memcpy(pResvTabInfo->pImgPtr, pImgPtr + ( nWidth * nLastSavePos ) , sizeof(BYTE) * nWidth * nBackupSize);
-				memcpy(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nBackupSize);
+				CopyMemory(pResvTabInfo->pImgPtr, pImgPtr + ( nWidth * nLastSavePos ) , sizeof(BYTE) * nWidth * nBackupSize);
+				CopyMemory(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nBackupSize);
 
 				//DEBUG_LOG.txt
 				AprData.SaveDebugLog_Format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** 보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 처리종료 처리번호<%d/%d>"), nCase, i, nSize);
@@ -6561,9 +6541,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			}
 
 			tabInfo.pImgPtr = new BYTE[tabInfo.nImageLength * nWidth];
-			memcpy(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
+			CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
 			tabInfo.pImgBtmPtr = new BYTE[tabInfo.nImageLength * nWidth];
-			memcpy(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
 
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = nFrameCount ;
@@ -6606,8 +6586,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		pResvTabInfo->nTabStartPosInFrame = nLastSavePos ;
 		// 22.11.18 Ahn Add End 
 
-		memcpy(pResvTabInfo->pImgPtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
-		memcpy(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
+		CopyMemory(pResvTabInfo->pImgPtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
+		CopyMemory(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
 
 		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] if ( nLeftSize > 0) : %d ms"), GetTickCount() - dwTic);
 
@@ -6971,7 +6951,7 @@ int CImageProcess::ImageProcessDetectSurface(BYTE* pImgPtr, int nWidth, int nHei
 #endif
 
 	if (bSimMode == TRUE) {
-		memcpy(pImgPtrArr[nArrCnt], pThresPtr, sizeof(BYTE) * nSizeAll);
+		CopyMemory(pImgPtrArr[nArrCnt], pThresPtr, sizeof(BYTE) * nSizeAll);
 	}
 
 	delete[] pThresPtr;
@@ -7321,12 +7301,12 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
-		memcpy(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
 
 		delete[] pBndPtr;
 		pBndPtr = NULL;
@@ -7534,12 +7514,12 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
-		memcpy(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
 		//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
 
 		delete[] pBndPtr;
@@ -8033,12 +8013,12 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
-		memcpy(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
 
 		delete[] pBndPtr;
 		pBndPtr = NULL;
@@ -8283,12 +8263,12 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
-		memcpy(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
 		//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
 
 		delete[] pBndPtr;
@@ -8744,12 +8724,12 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
-		memcpy(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
 		//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
 
 		delete[] pBndPtr;
@@ -8998,12 +8978,12 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
-		memcpy(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		memcpy(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
 		//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
 
 		delete[] pBndPtr;

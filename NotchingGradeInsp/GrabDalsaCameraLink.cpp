@@ -63,7 +63,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 			if (nWidth < pCbInfo->m_nWaveWidth) {
 				nCopyW = nWidth;
 			}
-			memcpy( pWave, pData, sizeof(BYTE) * nCopyW) ;
+			CopyMemory( pWave, pData, sizeof(BYTE) * nCopyW) ;
 		}
 
 		if (pCbInfo->GetMonitoringMode() == TRUE) 
@@ -94,7 +94,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		{
 			//이미지 저장 버퍼 생성
 			BYTE* pImg = new BYTE[nWidth * nHeight];
-			memcpy(pImg, pData, sizeof(BYTE) * nWidth * nHeight);
+			CopyMemory(pImg, pData, sizeof(BYTE) * nWidth * nHeight);
 
 			BOOL bSend = FALSE;
 			//프레임 정보 객체 생성
@@ -747,7 +747,7 @@ int CGrabDalsaCameraLink::GetImagePtr(BYTE** pImgPtr, int* pnWidth, int* pnHeigh
 	pBuffer->GetAddress(nIndex, (void**)&pData);
 
 	*pImgPtr = new BYTE[nWidth * nHeight];
-	memcpy(*pImgPtr, pData, sizeof(BYTE) * nWidth * nHeight);
+	CopyMemory(*pImgPtr, pData, sizeof(BYTE) * nWidth * nHeight);
 
 	return 0;
 }
@@ -826,7 +826,7 @@ double CGrabDalsaCameraLink::dGetExposureTime()
 
 BOOL CGrabDalsaCameraLink::GetCamWaveData(BYTE* btWaveArr)
 {
-	memcpy(btWaveArr, m_pbtWave, sizeof(BYTE) * m_nWaveWidth );
+	CopyMemory(btWaveArr, m_pbtWave, sizeof(BYTE) * m_nWaveWidth );
 
 	return TRUE;
 }
