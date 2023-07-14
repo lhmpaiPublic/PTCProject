@@ -6182,6 +6182,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 	int nTabFindPos = ( nWidth - 220 ) ; 
 
+	DWORD dwTic = 0;
+
 	//모드가 양극일 경우 처리
 	if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 	{ 
@@ -6189,7 +6191,13 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		// 2/3 지점에서 수직선을 내려 Tab을 먼저 찾음.
 		// Tab 중심에서 수평선을 그어 흑연 코팅 끝을 확인하고, 어깨선 레벨을 찾음.
 		//int nTabFindPos = (nWidth / 3) * 2;	// 22.05.30 Ahn Delete 
+
+		dwTic = GetTickCount();
+	
 		nLocalRet = CImageProcess::FindTab_Negative(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
+
+		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] FindTab_Negative : %d ms"), GetTickCount() - dwTic);
+
 		if (nLocalRet < 0) {
 		//	return nLocalRet; // 21.12.28 Ahn Delete 
 		}
@@ -6203,7 +6211,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	//모드가 음극일 경우 처리
 	else
 	{
+		dwTic = GetTickCount();
+
 		nLocalRet = CImageProcess::FindTabLevel_Simple(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
+
+		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] FindTabLevel_Simple : %d ms"), GetTickCount() - dwTic);
+
 		*pnLevel = nLevel;
 
 		CString strMsg;
@@ -6215,35 +6228,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nLastSavePos = 0;
 	int nSize = (int)vecSector.size();
 
-// 	if( nSize >= 2 )
-// 	{
-// 		CBitmapStd bmp(nWidth, nHeight);
-// 		bmp.SetImage(nWidth, nHeight, pImgPtr);
-// 
-// 		CTime time = CTime::GetCurrentTime();
-// 		CString str;
-// 		str.Format(_T("d:\\[nSizeOver]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
-// 		bmp.SaveBitmap(str);
-// 	}
-
-
-// 	if( nLevel <= 0 )
-// 	{
-// 		CBitmapStd bmp(nWidth, nHeight);
-// 		bmp.SetImage(nWidth, nHeight, pImgPtr);
-// 
-// 		CTime time = CTime::GetCurrentTime();
-// 		CString str;
-// 		str.Format(_T("d:\\[nSizeOver]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
-// 		bmp.SaveBitmap(str);
-// 	}
-
 
 	bool bSectorInfo = TRUE;
 	if (nSize == 0)
 	{
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("Logcount<%d> ==에러== 이미지에서 Sector 정보 찾지 못함"));
+		AprData.SaveDebugLog(_T("==에러== 이미지에서 Sector 정보 찾지 못함"));
 		bSectorInfo = FALSE;
 	}
 
@@ -6310,6 +6300,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		BOOL bResvSend = FALSE;
 		switch (nCase) {
 		case	0 : // 통으로 보냄
+			dwTic = GetTickCount();
+
 			tabInfo.nLeft = 0;
 			tabInfo.nRight = pResvTabInfo->nImageLength;
 			tabInfo.nImageLength = pResvTabInfo->nImageLength;
@@ -6337,12 +6329,15 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 // 				bmp.SaveBitmap(str);
 // 			}
 
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] case<%d> : %d ms"), nCase, GetTickCount() - dwTic);
 
 
 			break;
 
 
 		case	1: // 앞뒤 다 없어거나, 그냥 사이즈에 맞춰 잘라보냄.
+			dwTic = GetTickCount();
+
 			tabInfo.nLeft = 0;
 			nSendLength = nBaseTabPitch - pResvTabInfo->nImageLength ;
 			tabInfo.nRight = pResvTabInfo->nImageLength + nSendLength ;
@@ -6374,10 +6369,15 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 // 				str.Format(_T("d:\\[Case1]%02d%02d%02d%03d.bmp"), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
 // 				bmp.SaveBitmap(str);
 // 			}
+
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] case<%d> : %d ms"), nCase, GetTickCount() - dwTic);
+
 			break;
 
 
 		case	2 : // 예약Tab 정보에 Tab이 있어서 뒤에 꺼 붙여보냄.
+			dwTic = GetTickCount();
+
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
 			tabInfo.nTabRight = pResvTabInfo->nTabRight;
 			// 22.11.18 Ahn Add Start
@@ -6386,10 +6386,14 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 22.11.18 Ahn Add End
 			bResvSend = TRUE;
 
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] case<%d> : %d ms"), nCase, GetTickCount() - dwTic);
+
 			break;
 
 
 		case	3 :	// 앞뒤 Tab 정보가 하나로 판단 붙여서 보냄
+			dwTic = GetTickCount();
+
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
 			tabInfo.nTabRight = pResvTabInfo->nImageLength + vecSector[0].nEndPos ;
 			// 22.11.18 Ahn Add Start
@@ -6399,10 +6403,14 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			vecSector.erase(vecSector.begin());
 			bResvSend = TRUE;
 
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] case<%d> : %d ms"), nCase, GetTickCount() - dwTic);
+
 			break;
 
 
 		case	4 :	// 앞에 Tab 정보가 없어 그냥 뒤에꺼 앞에 붙여서 보냄.
+			dwTic = GetTickCount();
+
 			tabInfo.nTabLeft = pResvTabInfo->nImageLength + vecSector[0].nStartPos;
 			tabInfo.nTabRight = pResvTabInfo->nImageLength + vecSector[0].nEndPos;
 			// 22.11.18 Ahn Add Start
@@ -6412,6 +6420,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			vecSector.erase(vecSector.begin());
 			bResvSend = TRUE;
 
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] case<%d> : %d ms"), nCase, GetTickCount() - dwTic);
+
 			break;
 
 
@@ -6420,6 +6430,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		}
 
 		if (bResvSend == TRUE) {
+
+			dwTic = GetTickCount();
+
 
 			tabInfo.nCenter = (tabInfo.nTabRight + tabInfo.nTabLeft) / 2;
 			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;			// 센터기준으로 할지 오른쪽 기준으로 자를지....
@@ -6444,6 +6457,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount ;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame ;
 			// 22.11.18 Ahn Add End
+
+
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] bResvSend : %d ms"), GetTickCount() - dwTic);
 
 		}
 
@@ -6476,11 +6492,17 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		int nSendAbleLeng = (nHeight - nLastSavePos);
 		int nSendAbleCount = nSendAbleLeng / nBaseTabPitch ;
 
+		dwTic = GetTickCount();
+
 		nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight, pVecTabInfo);
+
+		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] (nSize <= 0) DivisionTab_byFixSize : %d ms"), GetTickCount() - dwTic);
 
 	}
 	else
 	{
+		dwTic = GetTickCount();
+
 		int nLeftSize = ( ( vecSector[0].nStartPos - nPairSholderLength ) - nLastSavePos);
 		int nDivCnt = 0;
 
@@ -6494,6 +6516,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 			}
 		}		
+
+		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] (nSize > 0) DivisionTab_byFixSize : %d ms"), GetTickCount() - dwTic);
+
+
+		dwTic = GetTickCount();
 
 		for (int i = 0; i < nSize; i++) 
 		{
@@ -6569,17 +6596,26 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		}	
 		
+		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] for (int i = 0; i < %d; i++) : %d ms"), nSize, GetTickCount() - dwTic);
+
+
 		int nRightSize = (nHeight - nLastSavePos) ;
 		if ( nRightSize > nBaseTabPitch ){
 			int nSendLeng = nRightSize / nBaseTabPitch;
 
+			dwTic = GetTickCount();
+
 			nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight,  pVecTabInfo);
+
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] ( nRightSize > nBaseTabPitch ) : %d ms"), GetTickCount() - dwTic);
+
 		}
 
 	}
 
 	int nLeftSize = nHeight - nLastSavePos;
 	if ( nLeftSize > 0) {
+		dwTic = GetTickCount();
 
 		pResvTabInfo->pImgPtr = new BYTE[nWidth * nLeftSize];
 		pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nLeftSize];
@@ -6593,7 +6629,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		memcpy(pResvTabInfo->pImgPtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
 		memcpy(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
 
+		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] if ( nLeftSize > 0) : %d ms"), GetTickCount() - dwTic);
+
 	}
+
 
 	return nRet;
 }
