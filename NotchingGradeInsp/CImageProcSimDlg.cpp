@@ -1881,7 +1881,7 @@ void CImageProcSimDlg::InspectionAuto()
 	for (int i = 0; i < nSize; i++)
 	{
 		CBlockData data;
-		data.nPixelCnt = tabRsltInfo.m_vecDefInfo[i]->nSize;
+		data.nPixelCnt = (int)tabRsltInfo.m_vecDefInfo[i]->nSize;
 		data.rcRect = tabRsltInfo.m_vecDefInfo[i]->rcPos ;
 		data.nType = tabRsltInfo.m_vecDefInfo[i]->nType;
 		data.nBriAve = tabRsltInfo.m_vecDefInfo[i]->nAvgBright;
@@ -3977,7 +3977,7 @@ void CImageProcSimDlg::OnBnClickedBtnInspSpeter()
 
 	for (int i = 0; i < nSize; i++) {
 		CBlockData data;
-		data.nPixelCnt = tabRsltInfo.m_vecDefInfo[i]->nSize;// vecBlock[i].nPixelCnt;
+		data.nPixelCnt = (int)tabRsltInfo.m_vecDefInfo[i]->nSize;// vecBlock[i].nPixelCnt;
 		// 22.07.20 Ahn Modify Start
 		//data.nLeft = tabRsltInfo.m_vecDefInfo[i]->rcPos.left;  // vecBlock[i].nLeft;
 		//data.nRight = tabRsltInfo.m_vecDefInfo[i]->rcPos.right;  // vecBlock[i].nRight;
