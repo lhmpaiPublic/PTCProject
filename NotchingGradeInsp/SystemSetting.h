@@ -74,5 +74,9 @@ public:
 	CString m_strPLCIPAddress;
 	int m_nPLCPort;
 	// 23.02.28 Son Add End
+
+	BOOL m_bNonNgSave;
+	BOOL m_bNonNgStop;
+
 };
 

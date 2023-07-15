@@ -97,6 +97,9 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_BIT_OUT_ADDRESS_16, m_EdBitOut_16);
 	DDX_Text(pDX, IDC_ED_WORD_IN_ADDRESS_16, m_EdWordIn_16);
 	DDX_Text(pDX, IDC_ED_WORD_OUT_ADDRESS_16, m_EdWordOut_16);
+	DDX_Check(pDX, IDC_CHK_ENABLE_NON_NG_SAVE, m_bChkEnableNonNgSave);
+	DDX_Check(pDX, IDC_CHK_ENABLE_NON_NG_STOP, m_bChkEnableNonNgStop);
+
 }
 
 
@@ -134,6 +137,8 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_IP, &CSystemSettingDlg::OnEnSetfocusEdIP)
 	ON_EN_SETFOCUS(IDC_ED_PORT, &CSystemSettingDlg::OnEnSetfocusEdPort)
 	ON_CBN_SELCHANGE(IDC_COM_IMAGEOUTFORMAT, &CSystemSettingDlg::OnCbnSelchangeComImageoutformat)
+	ON_BN_CLICKED(IDC_CHK_ENABLE_NON_NG_SAVE, &CSystemSettingDlg::OnBnClickedChkEnableNonNgSave)
+	ON_BN_CLICKED(IDC_CHK_ENABLE_NON_NG_STOP, &CSystemSettingDlg::OnBnClickedChkEnableNonNgStop)
 END_MESSAGE_MAP()
 
 
@@ -858,6 +863,11 @@ int CSystemSettingDlg::DataControl(int nMode)
 		strTmp.Format(_T("%X"), m_SysSetting.m_nWordOut);
 		m_EdWordOut_16 = strTmp;
 		// 23.03.03 Son Add End
+
+		m_SysSetting.m_bNonNgSave = m_bChkEnableNonNgSave;
+		m_SysSetting.m_bNonNgStop = m_bChkEnableNonNgStop;
+
+
 		UpdateData(FALSE);
 	}
 	else {
@@ -925,6 +935,10 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_EdIPAddress = m_SysSetting.m_strPLCIPAddress;
 		m_nEdPort = m_SysSetting.m_nPLCPort;
 		// 23.02.28 Son Add End
+
+		m_bChkEnableNonNgSave = m_SysSetting.m_bNonNgSave;
+		m_bChkEnableNonNgStop = m_SysSetting.m_bNonNgStop;
+
 
 		UpdateData(FALSE);
 	}
@@ -1448,5 +1462,23 @@ void CSystemSettingDlg::OnCbnSelchangeComImageoutformat()
 	default: AprData.getGSt()->SetOutImageFormat(".jpg");
 		break;
 	}
+
+}
+
+
+void CSystemSettingDlg::OnBnClickedChkEnableNonNgSave()
+{
+	UpdateData(TRUE);
+
+	DataControl(MODE_WRITE);
+
+}
+
+
+void CSystemSettingDlg::OnBnClickedChkEnableNonNgStop()
+{
+	UpdateData(TRUE);
+
+	DataControl(MODE_WRITE);
 
 }

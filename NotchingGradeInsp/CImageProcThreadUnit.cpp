@@ -472,8 +472,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					 if (pFrmInfo->m_bOverFlow == TRUE)
 					 {
 						 AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [Overflow Error] System Stop!!"));
-
-//						 AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+						 if (AprData.m_System.m_bNonNgStop == TRUE)
+						 {
+							 AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+						 }
 					 }
 
 				}
@@ -969,7 +971,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread_Exception(LPVOID pParam)
 			{
 				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [Overflow Error] System Stop!!"));
 
-//				AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+				if (AprData.m_System.m_bNonNgStop == TRUE)
+				{
+					AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+				}
 			}
 		}
 

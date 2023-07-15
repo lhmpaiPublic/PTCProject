@@ -157,4 +157,10 @@ public:
 	CString m_EdWordIn_16;
 	CString m_EdWordOut_16;
 	afx_msg void OnCbnSelchangeComImageoutformat();
+	afx_msg void OnBnClickedChkEnableNonNgSave();
+	afx_msg void OnBnClickedChkEnableNonNgStop();
+
+	BOOL m_bChkEnableNonNgSave;
+	BOOL m_bChkEnableNonNgStop;
+
 };

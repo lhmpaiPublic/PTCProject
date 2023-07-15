@@ -2141,7 +2141,7 @@ int CImageProcSimDlg::SaveCropAndResultSave()
 	int nDefIdx = 0;
 
 	for(iter = m_pVecBlockAll->begin(); iter != m_pVecBlockAll->end(); iter++) {
-	//	if (iter->nDefJudge == JUDGE_OK ) continue;
+		if (iter->nDefJudge == JUDGE_OK ) continue;
 
 		CDefectSearchList* pData;
 		pData = new CDefectSearchList();

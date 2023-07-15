@@ -480,7 +480,10 @@
 #define IDC_CHK_NG_STOP                 1151
 #define IDC_CHK_ENABLE_MARKER           1151
 #define IDC_CHK_NOTUSE_BACKUP           1151
+#define IDC_CHK_ENABLE_NON_NG_SAVE      1152
 #define IDC_CB_USERLIST                 1153
+#define IDC_CHK_ENABLE_MARKER3          1153
+#define IDC_CHK_ENABLE_NON_NG_STOP      1153
 #define IDC_ST_USERMODE                 1154
 #define IDC_ST_PASSWORD                 1155
 #define IDC_CHK_DARK_EMP_MODE           1156

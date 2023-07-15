@@ -1549,7 +1549,6 @@ void CIoMonitorDlg::OnBnClickedBtnDummyError()
 		CString strMessage;
 		strMessage.Format(_T("Dummy 구간 NG Alarm 발생. Dummy NG 발생"));
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_SectorNg, strMessage);
-//		AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
 
 		CSigProc* pSigProc = theApp.m_pSigProc;	
 		pSigProc->WriteAlarmCode(wAlarmCode);

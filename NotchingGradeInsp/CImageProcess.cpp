@@ -6197,6 +6197,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] FindTabLevel_Simple : %d ms"), GetTickCount() - dwTic);
 
+
 		*pnLevel = nLevel;
 
 		CString strMsg;
@@ -6425,6 +6426,31 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		//텝정보를 저장한다.
 		pVecTabInfo->push_back(tabInfo);
+
+
+
+		// 미결함 NG 발생 시 원본 이미지 저장
+		if (AprData.m_System.m_bNonNgSave == TRUE)
+		{
+			if (nLevel <= 0 || nLevel >= 2999 || tabInfo.m_bErrorFlag == TRUE)
+			{
+				CBitmapStd bmp(nWidth, nHeight);
+				bmp.SetImage(nWidth, nHeight, pImgPtr);
+
+				CTime time = CTime::GetCurrentTime();
+
+				CString strPath = AprData.m_strImagePath + _T("\\NON");
+				CWin32File::CreateDirectory(strPath);
+
+				CString str;
+				str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d).bmp"), strPath, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount());
+				bmp.SaveBitmap(str);
+			}
+		}
+
+
+
+
 
 		if (pResvTabInfo->pImgPtr != NULL) {
 			delete[]pResvTabInfo->pImgPtr;

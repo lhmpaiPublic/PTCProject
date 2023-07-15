@@ -810,9 +810,13 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			if (AprData.m_ErrStatus.IsHeavyError() == TRUE)
 			{
 				InspectionEnd();
-				CameraGrabStop(); // 22.07.07 Ahn Add
+//				CameraGrabStop();
 
-				m_nStatus = en_CameraReset;
+//				m_nStatus = en_CameraReset;
+	
+				SetInspReady(FALSE);
+
+				m_nStatus = en_InspStop;
 				ChangeStatus(enInspStop);
 				AprData.m_ErrStatus.ErrorClear();
 				break;

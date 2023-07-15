@@ -185,6 +185,14 @@ int CSystemSetting::FileCtrl(int nMode)
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			m_bFirstTabDoNotProc = atoi(buff);
 
+			strKey = _T("NON_NG_SAVE");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_bNonNgSave = atoi(buff);
+
+			strKey = _T("NON_NG_STOP");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_bNonNgStop = atoi(buff);
+
 		}
 		// 23.02.17 Son Add Start
 		{
@@ -212,6 +220,10 @@ int CSystemSetting::FileCtrl(int nMode)
 
 		}
 		// 23.02.17 Son Add End
+
+
+
+
     }
     else {
 		{
@@ -364,7 +376,15 @@ int CSystemSetting::FileCtrl(int nMode)
 
 			strKey = _T("FIRST_TAB_DONOT_PROCESS");
 			strData.Format(_T("%d"), m_bFirstTabDoNotProc);
-			::WritePrivateProfileString(strSection, strKey, strData, strFileName);			 
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);	
+
+			strKey = _T("NON_NG_SAVE");
+			strData.Format(_T("%d"), m_bNonNgSave);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("NON_NG_STOP");
+			strData.Format(_T("%d"), m_bNonNgStop);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 		}
 		// 23.02.17 Son Add Start
 		{
