@@ -256,7 +256,7 @@ int CResultViewDlg::MakeGrid()
 	return 0;
 }
 
-
+#define MAX_GRIDCOUNT 500
 int CResultViewDlg::UpdateGrid()
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -301,7 +301,7 @@ int CResultViewDlg::UpdateGrid()
 			if (nRow < m_pResultList->GetFixedRowCount())
 				strText.Format(_T("Column %d"), nCol);
 			else if (nCol < m_pResultList->GetFixedColumnCount())
-				strText.Format(_T("%d"), nRow  );
+				strText.Format(_T("%d"), m_pResultList->getTotalcount());
 			else {
 				switch (nCol) {
 				case	en_col_No:
@@ -356,6 +356,11 @@ int CResultViewDlg::UpdateGrid()
 		delete pInfo ;
 		pInfo = NULL;
 		nOldNumRows = nRow;
+	}
+
+	for (int count = m_pResultList->GetRowCount(); count >= MAX_GRIDCOUNT; count--)
+	{
+		m_pResultList->DeleteRow(1);
 	}
 
 	//m_pResultList->AutoSize();

@@ -199,6 +199,7 @@ CGridCtrl::CGridCtrl(int nRows, int nCols, int nFixedRows, int nFixedCols)
 {
     RegisterWindowClass();
 
+    m_Totalcount = 0;
 #if !defined(GRIDCONTROL_NO_DRAGDROP) || !defined(GRIDCONTROL_NO_CLIPBOARD)
     _AFX_THREAD_STATE* pState = AfxGetThreadState();
     if (!pState->m_bNeedTerm && !AfxOleInit())
