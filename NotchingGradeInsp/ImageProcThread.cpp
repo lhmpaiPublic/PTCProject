@@ -103,7 +103,7 @@ void CImageProcThread::Kill( void )
 
 
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
-#define IMAGEPROCTHREAD_TABFIND_TIMEOUT 60
+#define IMAGEPROCTHREAD_TABFIND_TIMEOUT 50
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 {
 	CImageProcThread* pThis = (CImageProcThread*)Param;
@@ -787,7 +787,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	return 0;
 }
 
-#define IMAGEPROCTHREAD_RESULT_TIMEOUT 30
+#define IMAGEPROCTHREAD_RESULT_TIMEOUT 20
 #define IMAGEPROCTHREAD_RESULTWAITE_TIMEOUT 5
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {
@@ -1362,16 +1362,23 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							{
 								if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE)
 								{
-									pFrmRsltInfo->m_nWidth;
-									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
-									BYTE* pImgSavePtr;
-									pImgSavePtr = new BYTE[nImgSize];
-									CopyMemory(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
-									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
-									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
-									pImgSaveQueueCtrl->PushBack(pSaveInfo);
+									if (pFrmRsltInfo->GetImagePtr())
+									{
+										pFrmRsltInfo->m_nWidth;
+										CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
+										BYTE* pImgSavePtr;
+										pImgSavePtr = new BYTE[nImgSize];
+										CopyMemory(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+										pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+										pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+										pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
-									AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <ImageSave> %s"), pSaveInfo->m_strSavePath);
+										AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <ImageSave> %s"), pSaveInfo->m_strSavePath);
+									}
+									else
+									{
+										AprData.SaveDebugLog_Format(_T("@@@@@@@@@@@@@@@@@<CtrlThreadImgProc> Image Save Info NULL "));
+									}
 
 
 									//								CString strMsg;
@@ -1382,7 +1389,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								}
 								else
 								{
-									AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <ImageSave> Overflow Q-Size(%d>=%d)"), pImgSaveQueueCtrl->GetSize(), MAX_SAVE_IMAGE_QUEUE);
+									AprData.SaveDebugLog_Format(_T("@@@@@@@@@@@@@<CtrlThreadImgProc> <ImageSave> Overflow Q-Size(%d>=%d)"), pImgSaveQueueCtrl->GetSize(), MAX_SAVE_IMAGE_QUEUE);
 								}
 							}
 						}
