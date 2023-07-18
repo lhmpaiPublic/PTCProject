@@ -797,11 +797,13 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 						// 22.05.04 Test
 						CImageProcess::ResizeImage(pImgPtr, pResizePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nMagnif);
 
+						int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
+
 						// 22.12.19 Ahn Delete Start - Overlay Image
 						CBitmapStd bmpStd;
-						if (nSize > IMAGE_DISPLAY_SKIP_COUNT)
+						if (nSize > nOverflowMax)
 						{
-							if ((pRsltInfo->nTabNo % (IMAGE_DISPLAY_SKIP_COUNT - 1)) == 0)
+							if ((pRsltInfo->nTabNo % (nOverflowMax - 1)) == 0)
 							{
 								// 23.02.06 Ahn Modify Start
 								// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);

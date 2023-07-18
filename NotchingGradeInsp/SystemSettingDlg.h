@@ -94,6 +94,7 @@ public:
 	afx_msg void OnBnClickedChkEnableMarker();
 	afx_msg void OnEnClickChkMarkingAllTab(); // 22.01.11 Ahn Add
 	int m_nJpgSaveQulaity;
+	int m_nEdOverflowCountMax;
 	afx_msg void OnEnSetfocusEdJpegSaveQuality();
 	afx_msg void OnBnClickedChkFirstTabDonotProc();
 	BOOL m_bChkFirstTabDoNotProc;
@@ -163,4 +164,5 @@ public:
 	BOOL m_bChkEnableNonNgSave;
 	BOOL m_bChkEnableNonNgStop;
 
+	afx_msg void OnSetfocusEdOverflowMax();
 };

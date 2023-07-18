@@ -681,15 +681,17 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//처리할 Bottom  프레임 정보 갯수
 						int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
 
+						int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
+
 						//처리할 정보가 스킵 숫자보다 크다면
-						if ((nTopQueCnt > IMAGE_PROC_SKIP_COUNT) && (nBtmQueCnt > IMAGE_PROC_SKIP_COUNT)
+						if ((nTopQueCnt > nOverflowMax) && (nBtmQueCnt > nOverflowMax)
 							//Top, Bottom 이미지 처리 프레임 정보가 스킵 숫자보다 크다면
-							|| ((nSizeFrmL > IMAGE_PROC_SKIP_COUNT) && (nSizeFrmR > IMAGE_PROC_SKIP_COUNT))) {
+							|| ((nSizeFrmL > nOverflowMax) && (nSizeFrmR > nOverflowMax))) {
 							pInfo->m_bErrorFlag = TRUE;
 							pBtmInfo->m_bErrorFlag = TRUE;
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> Top/Bottom Overflow TopFrameCnt:%d, BottonFrameCnt:%d, TopQueueCnt:%d, BottonQueueCnt:%d > IMAGE_PROC_SKIP_COUNT:%d"),
-								nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt, IMAGE_PROC_SKIP_COUNT);
+							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> Top/Bottom Overflow TopFrameCnt:%d, BottonFrameCnt:%d, TopQueueCnt:%d, BottonQueueCnt:%d > nOverflowMax:%d"),
+								nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt, nOverflowMax);
 
 						}
 						// 22.05.18 Ahn Add Start

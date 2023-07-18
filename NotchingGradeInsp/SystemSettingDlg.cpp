@@ -21,6 +21,7 @@ CSystemSettingDlg::CSystemSettingDlg(CWnd* pParent /*=nullptr*/, BOOL bMode /*=T
 	: CDialogEx(IDD_DLG_SYSTEM_SETTING, pParent)
 	, m_nRadMachineMode(0)
 	, m_nJpgSaveQulaity(0)
+	, m_nEdOverflowCountMax(0)
 	, m_bChkFirstTabDoNotProc(FALSE)
 	, m_bChkEnableNgStop(FALSE)
 	, m_EdMachineID(_T(""))
@@ -77,6 +78,7 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_ED_DUMMY, m_EdDummy);
 	DDX_Check(pDX, IDC_CHK_TRIGGER_MODE, m_bChkTriggerMode);
 	DDX_Text(pDX, IDC_ED_JPEG_SAVE_QUALITY, m_nJpgSaveQulaity);
+	DDX_Text(pDX, IDC_ED_OVERFLOW_MAX, m_nEdOverflowCountMax);
 	DDX_Check(pDX, IDC_CHK_FIRST_TAB_DONOT_PROC, m_bChkFirstTabDoNotProc);
 	DDX_Check(pDX, IDC_CHK_ENABLE_MARKER, m_bChkEnableMarker);
 	DDX_Check(pDX, IDC_CHK_ENABLE_NG_STOP, m_bChkEnableNgStop);
@@ -139,6 +141,7 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COM_IMAGEOUTFORMAT, &CSystemSettingDlg::OnCbnSelchangeComImageoutformat)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_NON_NG_SAVE, &CSystemSettingDlg::OnBnClickedChkEnableNonNgSave)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_NON_NG_STOP, &CSystemSettingDlg::OnBnClickedChkEnableNonNgStop)
+	ON_EN_SETFOCUS(IDC_ED_OVERFLOW_MAX, &CSystemSettingDlg::OnSetfocusEdOverflowMax)
 END_MESSAGE_MAP()
 
 
@@ -813,7 +816,8 @@ int CSystemSettingDlg::DataControl(int nMode)
 		//m_SysSetting.m_nGraphMaxSize_Surface = m_nGraphSizeSurface;
 		// 22.08.31 Ahn Delete End
 		m_SysSetting.m_bChkEnableMarker = m_bChkEnableMarker;
-		m_SysSetting.m_nJpegSaveQuality = m_nJpgSaveQulaity ;
+		m_SysSetting.m_nJpegSaveQuality = m_nJpgSaveQulaity;
+		m_SysSetting.m_nOverflowCountMax = m_nEdOverflowCountMax;
 		// 22.01.11 Ahn Add Start
 		m_SysSetting.m_bMarkingAllTab = m_bChkMarkingAllTab ;
 		// 22.01.11 Ahn Add End
@@ -878,6 +882,8 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_dEdResolY = m_SysSetting.m_dResolY ;
 		m_bChkEnableMarker = m_SysSetting.m_bChkEnableMarker ;
 		m_nJpgSaveQulaity = m_SysSetting.m_nJpegSaveQuality ;
+		m_nEdOverflowCountMax = m_SysSetting.m_nOverflowCountMax;
+
 		// 22.01.11 Ahn Add Start
 		m_bChkMarkingAllTab = m_SysSetting.m_bMarkingAllTab ;
 		// 22.01.11 Ahn Add End
@@ -1481,4 +1487,20 @@ void CSystemSettingDlg::OnBnClickedChkEnableNonNgStop()
 
 	DataControl(MODE_WRITE);
 
+}
+
+
+void CSystemSettingDlg::OnSetfocusEdOverflowMax()
+{
+	m_EdDummy.SetFocus();
+
+	CSetValue setValue(this);
+	CString strMsg;
+
+	int nMax = 100;
+	int nMin = 2;
+	setValue.SetValue(strMsg, m_nEdOverflowCountMax, nMax, nMin);
+	DataControl(MODE_WRITE);
+
+	UpdateData(FALSE);
 }

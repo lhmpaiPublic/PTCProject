@@ -78,5 +78,6 @@ public:
 	BOOL m_bNonNgSave;
 	BOOL m_bNonNgStop;
 
+	int m_nOverflowCountMax;
 };
 

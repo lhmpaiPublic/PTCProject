@@ -26,11 +26,13 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 
 	//스래드 저장큐의 갯수를 가져와서 MAX_THREAD_QUEUE_SIZE 작을 때 저장한다.
 	int nSize = (int)m_pThradQue.size();
+
+	int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
 	// 큐가 오버되었으면
-	if (MAX_THREAD_QUEUE_SIZE <= nSize) 
+	if (nOverflowMax <= nSize)
 	{
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, nSize, MAX_THREAD_QUEUE_SIZE) ;
+		AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, nSize, nOverflowMax) ;
 
 		//저장큐가 Over Flow 값 설정
 		pFrmInfo->m_bOverFlow = TRUE;
