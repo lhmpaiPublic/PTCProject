@@ -352,6 +352,8 @@
 #define IDC_ST_DISK_SPACE               1050
 #define IDC_ST_NUM_YIELD                1050
 #define IDC_EDIT_ACQISITION_RATE_CAM_NO_01 1050
+#define IDC_ED_JPEG_SAVE_QUALITY2       1050
+#define IDC_ED_OVERFLOW_MAX             1050
 #define IDC_EDIT_GAIN_CAM_NO_00         1051
 #define IDC_EDIT_GAIN_CAM_NO_01         1052
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_00 1054
@@ -620,6 +622,7 @@
 #define IDC_ST_OTHER_SETTING            1276
 #define IDC_ST_JPEG_QUALITY             1277
 #define IDC_ST_GROUP_RCP_SET            1278
+#define IDC_ST_OVERFLOW                 1278
 #define IDC_ST_GROUP_TAB_INFO           1279
 #define IDC_ST_INPUT_MM                 1280
 #define IDC_ST_INPUT_PIX                1281
