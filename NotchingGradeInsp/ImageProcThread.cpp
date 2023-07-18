@@ -520,6 +520,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							// 22.05.03 Ahn Modify End
 							pTabInfo->m_bErrorFlag = TRUE;
+
+							CString strError = "NONE";
+							if (nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW)
+							{
+								strError = "LEFT-RecipeInfo의 Tab-Radius 보다 작은 Error";
+							}
+							else if (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW)
+							{
+								strError = "RIGHT-RecipeInfo의 Tab-Radius 보다 작은 Error";
+							}
+							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<%d> : ERRORFLAG 1",
+								strError);
+
 							nErrorNo = 1;
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Tab 반지름 Error(nLeft:%d<%d or nRight:%d<%d)"),
@@ -531,6 +544,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if ((AprData.m_NowLotData.m_bProcError == TRUE) && (AprData.m_System.m_bFirstTabDoNotProc == TRUE))
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
+
+							CString strError = "NONE";
+							if (AprData.m_NowLotData.m_bProcError == TRUE)
+							{
+								strError = "PROCERROR";
+							}
+							else if (AprData.m_System.m_bFirstTabDoNotProc == TRUE)
+							{
+								strError = "FIRST_TabDonotProc Error";
+							}
+							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<%d> : ERRORFLAG 2",
+								strError);
+
 							AprData.m_NowLotData.m_bProcError = FALSE;
 							nErrorNo = 2;
 
@@ -544,6 +570,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (bErrorAll == TRUE)
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
+
+						LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<ErrorAll> : ERRORFLAG 3");
+
 							nErrorNo = 3;
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Tab 정보 없음"),
@@ -558,6 +587,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (nLevel <= 0)
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
+
+							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<Level:%d> : ERRORFLAG 4", nLevel);
+
 							nErrorNo = 4;
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: nLevel Error (nLevel:%d <= 0)"),
@@ -569,9 +601,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						// 22.09.30 Ahn Add Start
 
 						//Tab부의 흑연 코팅높이 에러
-						if (nLevel >= (nWidth - 100))
+						if (nLevel > nWidth)
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
+							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<Level:%d >= nWidth - 100 : %d> : ERRORFLAG 5", nLevel, nWidth - 100);
+
 							nErrorNo = 5;
 
 
@@ -787,7 +821,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	return 0;
 }
 
-#define IMAGEPROCTHREAD_RESULT_TIMEOUT 20
+#define IMAGEPROCTHREAD_RESULT_TIMEOUT 10
 #define IMAGEPROCTHREAD_RESULTWAITE_TIMEOUT 5
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {

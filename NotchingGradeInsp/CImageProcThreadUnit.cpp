@@ -207,7 +207,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								int nCount = CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rcPrj, DIR_VER, 10, 0);
 								// 경계 검출
 								int nUpper = 20 * nCount;
-								int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0);
+								int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0, 0);
 								nTabLevel = nBundary - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
 
 								if (nTabLevel <= 0 || nTabLevel >= nWidth-1 )
@@ -477,6 +477,18 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							 AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
 						 }
 					 }
+
+					 CString strNgType = "NONE";
+					 if (pFrmInfo->m_bErrorFlag == TRUE)
+					 {
+						 strNgType = "ERROR_FLAG";
+					 }
+					 else if(pFrmInfo->m_bOverFlow == TRUE)
+					 {
+						 strNgType = "OVERFLOW";
+					 }
+					 LOGDISPLAY_SPEC(5)("<<Proc>> <%s> : NgType<%s>",
+						 (pFrameRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", strNgType);
 
 				}
 
