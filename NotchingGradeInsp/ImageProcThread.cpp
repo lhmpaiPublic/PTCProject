@@ -103,7 +103,7 @@ void CImageProcThread::Kill( void )
 
 
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
-#define IMAGEPROCTHREAD_TABFIND_TIMEOUT 50
+#define IMAGEPROCTHREAD_TABFIND_TIMEOUT 40
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 {
 	CImageProcThread* pThis = (CImageProcThread*)Param;

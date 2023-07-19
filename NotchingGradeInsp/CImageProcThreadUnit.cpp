@@ -1322,6 +1322,10 @@ BOOL CImageProcThreadUnit::eventProcEnd_WaitTime()
 
 		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> eventProcEnd_WaitTime TimeOut"));
 
+		DWORD nExitCode = NULL;
+		GetExitCodeThread(m_pThread->m_hThread, &nExitCode);
+		TerminateThread(m_pThread->m_hThread, nExitCode);
+		
 		b = TRUE;
 	}
 	return b;
