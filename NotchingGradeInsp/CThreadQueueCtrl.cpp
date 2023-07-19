@@ -39,12 +39,9 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 		//저장큐가 Over Flow 값 설정
 		pFrmInfo->m_bOverFlow = TRUE;
 
-		pThread->Begin_Exception();
 	}
-	else
-	{
-		pThread->Begin();
-	}
+
+	pThread->Begin();
 
 	//스래드객체 저장큐에 저장
 	m_pThradQue.push(pThread);
