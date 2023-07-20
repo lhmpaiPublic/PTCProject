@@ -779,7 +779,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					if (hWnd != NULL) // 22.04.01 Ahn Add 
 					{
 						BYTE* pResizePtr;
-						int nMagnif = 10; //8;
+						int nMagnif = 11; //8;
 						int nReWidth = (pRsltInfo->m_nWidth / nMagnif);
 						int nReHeight = (pRsltInfo->m_nHeight / nMagnif);
 						int nReSize = nReWidth * nReHeight;

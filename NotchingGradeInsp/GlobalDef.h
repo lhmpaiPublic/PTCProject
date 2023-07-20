@@ -94,7 +94,7 @@ enum {
 
 // 장비 고유 설정
 // 22.03.25 Ahn Add Start
-#define		MIN_FRAME_SIZE		2000
+#define		MIN_FRAME_SIZE		1000
 #define		MAX_FRAME_SIZE		16384
 // 22.03.25 Ahn Add End
 
