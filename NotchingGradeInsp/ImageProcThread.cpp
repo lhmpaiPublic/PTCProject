@@ -953,7 +953,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//이미지 X Size [pxl]
 						IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nWidth));
 						//이미지 Y Size [pxl]
-						IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nHeight));
+						IqInfoTop->setIqScreenImageSizeY(CGlobalFunc::intToString(pTopInfo->m_nHeight));
 						//판정결과
 						CString IqTopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
 						IqInfoTop->setImageJudge(IqTopJudge);
@@ -969,7 +969,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//이미지 X Size [pxl]
 						IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nWidth));
 						//이미지 Y Size [pxl]
-						IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nHeight));
+						IqInfoBottom->setIqScreenImageSizeY(CGlobalFunc::intToString(pBtmInfo->m_nHeight));
 						//판정결과
 						CString IqBottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
 						IqInfoBottom->setImageJudge(IqBottomJudge);
