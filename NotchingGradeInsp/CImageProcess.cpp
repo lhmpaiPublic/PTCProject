@@ -6252,7 +6252,7 @@ int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nW
 	for (int i = 0; i < nSize; i++)
 	{
 		CTabInfo tabInfo;
-		tabInfo.m_bErrorFlag = FALSE;
+		tabInfo.m_bErrorFlag = TRUE;
 		tabInfo.nImageLength = nFixSize;
 		tabInfo.pImgPtr = new BYTE[nWidth * nFixSize];
 		CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);

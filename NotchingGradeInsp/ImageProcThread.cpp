@@ -519,7 +519,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if ((nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW) || (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW))
 						{
 							// 22.05.03 Ahn Modify End
-							pTabInfo->m_bErrorFlag = FALSE;
+							pTabInfo->m_bErrorFlag = TRUE;
 
 							CString strError = "NONE";
 							if (nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW)
@@ -537,10 +537,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Tab 반지름 Error(nLeft:%d<%d or nRight:%d<%d)"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLeft, AprData.m_pRecipeInfo->TabCond.nRadiusW, nRight, AprData.m_pRecipeInfo->TabCond.nRadiusW);
-							if (nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW)
-								pTabInfo->nTabLeft = pTabInfo->nLeft + AprData.m_pRecipeInfo->TabCond.nRadiusW;
-							if (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW)
-								pTabInfo->nRight = pTabInfo->nTabRight + AprData.m_pRecipeInfo->TabCond.nRadiusW;
 
 						}
 
