@@ -44,12 +44,8 @@ char* CSpcInspInData::MakeInspInDataText_2 =
 "        ],\r\n"
 "        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
 "        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
-"        \"APPEARANCE_REASON_ALL\" : [\r\n"
-"          \"%s\"\r\n"
-"        ],\r\n"
-"        \"APPEARANCE_REASON_ALL_REAL\" : [\r\n"
-"          \"%s\"\r\n"
-"        ],\r\n"
+"        \"APPEARANCE_REASON_ALL\" : [%s],\r\n"
+"        \"APPEARANCE_REASON_ALL_REAL\" : [%s],\r\n"
 "        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
 "        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
 "        \"DEFECT_INFO\": [\r\n";
@@ -118,7 +114,7 @@ void CSpcInspInData::appendAppearanceReasonAll(CString	AppearanceReasonAll)
 { 
 	if (m_AppearanceReasonAll.GetLength())
 		m_AppearanceReasonAll.Append(",");
-	m_AppearanceReasonAll.Append(AppearanceReasonAll); 
+	m_AppearanceReasonAll.Append(AppearanceReasonAll);
 }
 //현업에서 통용된 되는 외관 불량명 전체 기입(csv파일 저장시 세미콜론 ' ; ' 으로 불량명 구분) (개수제한X, 중복항목은 1회만 기입)	
 void CSpcInspInData::appendAppearanceReasonAllReal(CString  AppearanceReasonAllReal) 
@@ -159,6 +155,37 @@ CString CSpcInspInData::makeJSONText_Insp1()
 }
 CString CSpcInspInData::makeJSONText_Insp2()
 {
+	if (m_AppearanceReasonAll != "")
+	{
+		CSpcInspInData::MakeInspInDataText_2 =
+		"        ],\r\n"
+		"        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
+		"        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
+		"        \"APPEARANCE_REASON_ALL\" : [\r\n"
+		"          \"%s\"\r\n"
+		"        ],\r\n"
+		"        \"APPEARANCE_REASON_ALL_REAL\" : [\r\n"
+		"          \"%s\"\r\n"
+		"        ],\r\n"
+		"        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
+		"        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
+		"        \"DEFECT_INFO\": [\r\n";
+	}
+	else {
+		CSpcInspInData::MakeInspInDataText_2 =
+		"        ],\r\n"
+		"        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
+		"        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
+		"        \"APPEARANCE_REASON_ALL\" : [%s\r\n"
+		"        ],\r\n"
+		"        \"APPEARANCE_REASON_ALL_REAL\" :  [%s\r\n"
+		"        ],\r\n"
+		"        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
+		"        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
+		"        \"DEFECT_INFO\": [\r\n";
+	}
+
+
 	CString makeJSONText;
 	makeJSONText.Format(MakeInspInDataText_2,
 		m_AppearanceJudgeResult,
