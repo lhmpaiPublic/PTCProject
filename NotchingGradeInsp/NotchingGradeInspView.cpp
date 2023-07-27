@@ -646,6 +646,12 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					m_pDeleteThread = nullptr;
 				}
 			}
+
+
+
+
+
+			/* Log 자동 삭제 - 임시 막음 20230727 pyj
 			else
 			{
 				SYSTEMTIME sysTime;
@@ -690,8 +696,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					}
 				}
 			}
+			*/
 
-			//			CheckLotEndProcess();
+
 			break;
 
 

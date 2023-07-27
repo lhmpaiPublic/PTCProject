@@ -2109,8 +2109,12 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo(BYTE* pImgPtr, BYTE* pProcImg, 
 
 		if (nDir == DIR_VER) { // 세로 엣치 찾기
 			int nSumLeft, nSumRight;
-			nXStart = rectProc.left + nSumCnt;
-			nXEnd = rectProc.right - nSumCnt;
+//			nXStart = rectProc.left + nSumCnt;
+//			nXEnd = rectProc.right - nSumCnt;
+
+			nXStart = rectProc.left - nSumCnt;
+			nXEnd = rectProc.right + nSumCnt;
+
 			nYStart = rectProc.top;
 			nYEnd = rectProc.bottom;
 
@@ -2179,8 +2183,11 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo(BYTE* pImgPtr, BYTE* pProcImg, 
 			int nSumUpper, nSumLower;
 			nXStart = rectProc.left;
 			nXEnd = rectProc.right;
-			nYStart = rectProc.top + nSumCnt;
-			nYEnd = rectProc.bottom - nSumCnt;
+//			nYStart = rectProc.top + nSumCnt;
+//			nYEnd = rectProc.bottom - nSumCnt;
+
+			nYStart = rectProc.top - nSumCnt;
+			nYEnd = rectProc.bottom + nSumCnt;
 
 			for (x = nXStart; x < nXEnd; x++) {
 				int nMax = 0;
@@ -2207,8 +2214,12 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo(BYTE* pImgPtr, BYTE* pProcImg, 
 
 		if (nDir == DIR_VER) { // 세로 엣치 찾기
 			int nSumLeft, nSumRight;
-			nXStart = rectProc.left + nSumCnt;
-			nXEnd = rectProc.right - nSumCnt;
+//			nXStart = rectProc.left + nSumCnt;
+//			nXEnd = rectProc.right - nSumCnt;
+
+			nXStart = rectProc.left - nSumCnt;
+			nXEnd = rectProc.right + nSumCnt;
+
 			nYStart = rectProc.top;
 			nYEnd = rectProc.bottom;
 
@@ -2277,8 +2288,11 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo(BYTE* pImgPtr, BYTE* pProcImg, 
 			int nSumUpper, nSumLower;
 			nXStart = rectProc.left;
 			nXEnd = rectProc.right;
-			nYStart = rectProc.top + nSumCnt;
-			nYEnd = rectProc.bottom - nSumCnt;
+//			nYStart = rectProc.top + nSumCnt;
+//			nYEnd = rectProc.bottom - nSumCnt;
+
+			nYStart = rectProc.top - nSumCnt;
+			nYEnd = rectProc.bottom + nSumCnt;
 
 			for (x = nXStart; x < nXEnd; x++) {
 				int nMax = 0;
@@ -2345,8 +2359,12 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 	memset(nMaxPos, 0, sizeof(nMaxPos));
 
 	int nSumCnt = 10;
-	nXStart = rectProc.left + nSumCnt;
-	nXEnd = rectProc.right - nSumCnt;
+//	nXStart = rectProc.left + nSumCnt;
+//	nXEnd = rectProc.right - nSumCnt;
+
+	nXStart = rectProc.left - nSumCnt;
+	nXEnd = rectProc.right + nSumCnt;
+
 	nYStart = rectProc.top;
 	nYEnd = rectProc.bottom;
 
@@ -2558,6 +2576,10 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(BYTE* pImgPtr, BYTE* 
 	int nSumCnt = 10;
 	nXStart = rectProc.left + nSumCnt;
 	nXEnd = rectProc.right - nSumCnt;
+
+//	nXStart = rectProc.left - nSumCnt;
+//	nXEnd = rectProc.right + nSumCnt;
+
 	nYStart = rectProc.top;
 	nYEnd = rectProc.bottom;
 
@@ -2868,8 +2890,10 @@ int CImageProcess::EdgeDetectImageToArray(BYTE* pImgPtr, int* pnResltArr, int nW
 		memset(pnResltArr, 0, sizeof(int) * nHeight);
 
 		int nSumLeft, nSumRight;
-		nXStart = rectProc.left + nSumCnt;
-		nXEnd = rectProc.right - nSumCnt;
+//		nXStart = rectProc.left + nSumCnt;
+//		nXEnd = rectProc.right - nSumCnt;
+		nXStart = rectProc.left - nSumCnt;
+		nXEnd = rectProc.right + nSumCnt;
 		nYStart = rectProc.top;
 		nYEnd = rectProc.bottom;
 
@@ -2898,8 +2922,12 @@ int CImageProcess::EdgeDetectImageToArray(BYTE* pImgPtr, int* pnResltArr, int nW
 		int nSumUpper, nSumLower;
 		nXStart = rectProc.left;
 		nXEnd = rectProc.right;
-		nYStart = rectProc.top + nSumCnt;
-		nYEnd = rectProc.bottom - nSumCnt;
+//		nYStart = rectProc.top + nSumCnt;
+//		nYEnd = rectProc.bottom - nSumCnt;
+
+		nYStart = rectProc.top - nSumCnt;
+		nYEnd = rectProc.bottom + nSumCnt;
+
 		memset(pnResltArr, 0, sizeof(int) * nWidth);
 
 		for (x = nXStart; x < nXEnd; x++) {
@@ -3012,8 +3040,12 @@ int CImageProcess::EdgeDetectImageToBoth_CropArea(BYTE* pImgPtr, BYTE* pProcImg,
 		memset(pnResltArr, 0, sizeof(int) * nHeight);
 
 		int nSumLeft, nSumRight;
-		nXStart = rectProc.left + nSumCnt;
-		nXEnd = rectProc.right - nSumCnt;
+//		nXStart = rectProc.left + nSumCnt;
+//		nXEnd = rectProc.right - nSumCnt;
+
+		nXStart = rectProc.left - nSumCnt;
+		nXEnd = rectProc.right + nSumCnt;
+
 		nYStart = rectProc.top;
 		nYEnd = rectProc.bottom;
 
@@ -9581,8 +9613,12 @@ int CImageProcess::EdgeDetectImageToBoth_BaseBright(BYTE* pImgPtr, BYTE* pProcIm
 	memset(nMaxPos, 0, sizeof(nMaxPos));
 
 	int nSumCnt = 10;
-	nXStart = rectProc.left + nSumCnt;
-	nXEnd = rectProc.right - nSumCnt;
+//	nXStart = rectProc.left + nSumCnt;
+//	nXEnd = rectProc.right - nSumCnt;
+
+	nXStart = rectProc.left - nSumCnt;
+	nXEnd = rectProc.right + nSumCnt;
+
 	nYStart = rectProc.top;
 	nYEnd = rectProc.bottom;
 
