@@ -5933,6 +5933,12 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 			// 22.07.20 Ahn Modify Start
 			//pDefInfo->nRank = CTabRsltInfo::GetDefJudge(pRecipeInfo->dFoilExpInNgSize, pRecipeInfo->dDefJudgeHeight, pDefInfo->dJudgeSize, pDefInfo->dSizeY);
 			// 22.12.14 Ahn Add Start
+
+			if (pDefInfo->dJudgeSize == 0.f )
+			{
+				pDefInfo->dJudgeSize = pData->dWidth;
+			}
+
 			if ((pData->nDefPos == en_LeftRound) || (pData->nDefPos == en_RightRound)) {
 				pDefInfo->nDispPos = en_defPosRound ;
 			}
