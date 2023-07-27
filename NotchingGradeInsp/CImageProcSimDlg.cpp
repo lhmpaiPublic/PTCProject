@@ -2775,26 +2775,31 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 			ptCenter.x = (pData->rcRect.right + pData->rcRect.left) / 2;
 			ptCenter.y = (pData->rcRect.bottom + pData->rcRect.top) / 2;
 
-			if (rcLeftRnd.PtInRect(ptCenter) == TRUE) {
-			// 22.09.20 Ahn Test Start
-				CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
-			//	CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
-			// 22.09.20 Ahn Test End
+			if (rcLeftRnd.PtInRect(ptCenter) == TRUE)
+			{
+				//CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
-			else if (rcRightRnd.PtInRect(ptCenter) == TRUE) {
-				CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
-			} else {
+			else if (rcRightRnd.PtInRect(ptCenter) == TRUE)
+			{
+				//CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
+
+			}
+			else
+			{
 				// Round 결함이 아닌 경우, Edge에서 거리를 계산, 3 점의 위치를 측정하여 가장 큰 값을 취득함.
-				if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
-					if (pData->rcRect.top >= vecRightRndInfo[0].y) {
+				if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+				{
+					if (pData->rcRect.top >= vecRightRndInfo[0].y)
+					{
 //						CImageProcess::CalcSizeToEdgeLine(pData, &vecRightRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
 						CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
-
 					}
-					else {
+					else
+					{
 //						CImageProcess::CalcSizeToEdgeLine(pData, &vecLeftRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
 						CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
-
 					}
 				}
 			}
@@ -3045,10 +3050,8 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 		for (int i = 0; i < nDefSize; i++) {
 			pData = &(*pVecBlockPtr)[i];
 			if (pData->bDeleteFlag == TRUE) continue;
-			// 22.09.15 Ahn Modify End
-			//if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
-			if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
-			// 22.09.15 Ahn Modify End
+			if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+			{
 //				CImageProcess::CalcSizeToEdgeLine(pData, &vecAllRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
 				CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
@@ -5145,20 +5148,30 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 			ptCenter.x = (pData->rcRect.right + pData->rcRect.left) / 2;
 			ptCenter.y = (pData->rcRect.bottom + pData->rcRect.top) / 2;
 
-			if (rcLeftRnd.PtInRect(ptCenter) == TRUE) {
-				CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+			if (rcLeftRnd.PtInRect(ptCenter) == TRUE)
+			{
+				//CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
-			else if (rcRightRnd.PtInRect(ptCenter) == TRUE) {
-				CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+			else if (rcRightRnd.PtInRect(ptCenter) == TRUE)
+			{
+				//CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
-			else {
+			else
+			{
 				// Round 결함이 아닌 경우, Edge에서 거리를 계산, 3 점의 위치를 측정하여 가장 큰 값을 취득함.
-				if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
-					if (pData->rcRect.top >= vecRightRndInfo[0].y) {
-						CImageProcess::CalcSizeToEdgeLine(pData, &vecRightRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
+				if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+				{
+					if (pData->rcRect.top >= vecRightRndInfo[0].y)
+					{
+						//CImageProcess::CalcSizeToEdgeLine(pData, &vecRightRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
+						CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 					}
-					else {
-						CImageProcess::CalcSizeToEdgeLine(pData, &vecLeftRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
+					else
+					{
+						//CImageProcess::CalcSizeToEdgeLine(pData, &vecLeftRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
+						CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 					}
 				}
 			}
