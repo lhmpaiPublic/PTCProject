@@ -123,6 +123,10 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	//로그 출력창 활성화 키(Ctrl 눌림 확인용)
 	logControlKeyDown = false;
 
+	//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+	m_SpcStatus = 0; 
+#endif //SPCPLUS_CREATE
 }
 
 CNotchingGradeInspView::~CNotchingGradeInspView()
@@ -204,13 +208,13 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		pThread->m_hThread = NULL;
 	}
 
-//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE
-	if (m_SpcStatus != 0) {
-		KillTimer(m_SpcStatus);
-		m_SpcStatus = 0;
-	}
-#endif //SPCPLUS_CREATE
+////SPC 객체 소스에서 컴파일 여부 결정
+//#ifdef SPCPLUS_CREATE
+//	if (m_SpcStatus != 0) {
+//		KillTimer(m_SpcStatus);
+//		m_SpcStatus = 0;
+//	}
+//#endif //SPCPLUS_CREATE
 }
 
 BOOL CNotchingGradeInspView::PreCreateWindow(CREATESTRUCT& cs)

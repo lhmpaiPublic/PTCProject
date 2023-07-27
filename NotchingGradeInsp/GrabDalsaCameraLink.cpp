@@ -332,7 +332,7 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 		m_pAcqDevice = new SapAcqDevice(acqServerName, 0);
 
 		//버퍼 객체 생성
-		m_pBuffers = new SapBuffer(2, m_pAcq); 
+		m_pBuffers = new SapBuffer(10/*2*/, m_pAcq); // double buffering 
 
 		//View 객체 생성
 		m_pView = new SapView(m_pBuffers, m_DispHwnd);

@@ -436,10 +436,10 @@ void CResultThread::SaveResultImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* 
 	hBmpSaveOld = (HBITMAP)::SelectObject(cdcSave.m_hDC, hBmpSave);
 	cdcSave.BitBlt(0, 0, pBmpInfoSave->bmiHeader.biWidth, pBmpInfoSave->bmiHeader.biHeight, &cdcSave, 0, 0, BLACKNESS);
 
-	CRect crectDst;
-	crectDst.SetRect(0, 0, nWidth, nHeight);
+	//CRect crectDst;
+	//crectDst.SetRect(0, 0, nWidth, nHeight);
 
-	bmpAll->DrawImageFunction(&cdcSave, CRect(0, 0, crectDst.Width(), crectDst.Height()), crectDst);
+	//bmpAll->DrawImageFunction(&cdcSave, CRect(0, 0, crectDst.Width(), crectDst.Height()), crectDst);
 
 	pbyteBmpBits = bmpAll->GetImgPtr();
 	bmpAll->UnlockBitmapinfoPtr();
