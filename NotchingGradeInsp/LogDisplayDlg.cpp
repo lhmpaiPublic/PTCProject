@@ -10,7 +10,7 @@
 //유저메시지 - Log 화면 출력 메시지
 #define  WM_LOGMSGPRINT WM_USER + 12
 
-#define LOGTEXTFILENAME "NotchingGradeInsp.txt"
+#define LOGTEXTFILENAME "NotchingGradeInsp"
 
 #define LOGTEXTFILEFOLDER CString("NotchingLog")
 
@@ -306,13 +306,12 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 					SYSTEMTIME	sysTime;
 					::GetLocalTime(&sysTime);
 
-					FileName.Format(_T("%s-%04d%02d%02d-%02d-%02d.txt")
+					FileName.Format(_T("%s-%04d%02d%02d-%02d.txt")
 						, LOGTEXTFILENAME
 						, sysTime.wYear
 						, sysTime.wMonth
 						, sysTime.wDay
 						, sysTime.wHour
-						, sysTime.wMinute
 					);
 
 					file.TextSave1Line(FilePath, FileName, tempStr, "at", FALSE, 999999999);

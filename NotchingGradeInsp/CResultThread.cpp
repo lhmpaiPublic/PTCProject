@@ -449,10 +449,11 @@ void CResultThread::SaveResultImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* 
 	CopyMemory(pbyteBmpBits, pbyteTmpMemDC, (nWidth * nHeight) * 3);
 
 	// 23.02.09 Ahn Add Start
-	CRect rcClient;
-	CRect rcImg( 0, 0, nWidth, nHeight) ;
-	pWnd->GetClientRect(rcClient);
-	bmpAll->DrawImageFunction(pDC, &rcClient, &rcImg, SRCCOPY, FALSE);
+	//메인 이미지 출력 잠시 제거
+	//CRect rcClient;
+	//CRect rcImg( 0, 0, nWidth, nHeight) ;
+	//pWnd->GetClientRect(rcClient);
+	//bmpAll->DrawImageFunction(pDC, &rcClient, &rcImg, SRCCOPY, FALSE);
 	// 23.02.09 Ahn Add End
 
 	// 됶뺳

@@ -4665,14 +4665,14 @@ int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int 
 	nLocalRet = CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, pVecSector);
 	if (nLocalRet <= 0)
 	{
-		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::FindTabPos <%d> ", nLocalRet);
+		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::FindTabPos Error -1 ");
 		return -1;
 	}
 
 	nLocalRet = CImageProcess::CombineTabSector(pVecSector, *pRecipeInfo);
 	if (nLocalRet < 0)
 	{
-		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::CombineTabSector <%d> ", nLocalRet);
+		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::CombineTabSector Error -2");
 		return -2;
 	}
 
@@ -6270,6 +6270,7 @@ int CImageProcess::FindTabHeadCeramicBoundary(BYTE *pImagePtr, int nWidth, int n
 	return nRet;
 }
 
+static int Tab_byFixSizeCount = 0;
 int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, _VEC_TAB_INFO* pVecTabInfo)
 {
 	ASSERT(pImgPtr);
@@ -6299,7 +6300,7 @@ int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nW
 		nLastSavePos += nFixSize ;
 
 		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::DivisionTab_byFixSize-TabInfopush-count<%d> : ERRORFLAG",
-			i);
+			++Tab_byFixSizeCount);
 
 		pVecTabInfo->push_back(tabInfo);
 	}

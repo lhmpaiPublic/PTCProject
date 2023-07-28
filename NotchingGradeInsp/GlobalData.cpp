@@ -163,8 +163,13 @@ int CGlobalData::SaveDebugLog( CString strMsg )
 	// 22.07.27 Ahn Modify End
 	strSaveMsg = strTime + strMsg + _T("\r\n") ;
 
-	CString strFileName ;
-	strFileName = _T("DEBUG_LOG.txt") ;
+	CString strFileName = "";
+	strFileName.Format(_T("DEBUG_LOG-%04d%02d%02d-%02d.txt")
+		, sysTime.wYear
+		, sysTime.wMonth
+		, sysTime.wDay
+		, sysTime.wHour
+	);
 
 	file.TextSave1Line( strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999 ) ;
 

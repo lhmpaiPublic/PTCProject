@@ -487,7 +487,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					 {
 						 strNgType = "OVERFLOW";
 					 }
-					 LOGDISPLAY_SPEC(5)("<<Proc>> <%s> : NgType<%s>",
+					 LOGDISPLAY_SPEC(5)("<<Proc>> <%s> : NgType<%s> None Processing",
 						 (pFrameRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", strNgType);
 
 				}

@@ -364,6 +364,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
 					int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
 
+					LOGDISPLAY_SPEC(5)("<<Proc>> Tab_Find_Pos<%d>-Head_Image_Boundary_Electorde_Level<%d>+Recipe_CameraHeight<%d> ",
+						nTabFindPos
+						, nBndElectrode
+						, AprData.m_pRecipeInfo->TabCond.nCeramicHeight);
+
 					//이미지 프로세싱을 위한 클래스 
 					//이미지 Tab 정보에서 Tab을 그룹으로 나누기
 //					dwTic = GetTickCount();
@@ -530,7 +535,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								strError = "RIGHT-RecipeInfo의 Tab-Radius 보다 작은 Error";
 							}
-							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<%d> : ERRORFLAG 1",
+							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case-RadiusW-<%s> : ERRORFLAG 1",
 								strError);
 
 							nErrorNo = 1;
@@ -554,7 +559,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								strError = "FIRST_TabDonotProc Error";
 							}
-							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<%d> : ERRORFLAG 2",
+							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<%s> : ERRORFLAG 2",
 								strError);
 
 							AprData.m_NowLotData.m_bProcError = FALSE;
