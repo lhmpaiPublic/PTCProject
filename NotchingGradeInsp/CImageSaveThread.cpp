@@ -117,7 +117,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 				if (pSaveInfo->m_strSavePath.GetLength() > 0)
 				{
-					DWORD dwTic = GetTickCount();
+//					DWORD dwTic = GetTickCount();
 
 					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 
@@ -145,7 +145,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 					bmp.SaveBitmap(pSaveInfo->m_strSavePath);
 
-					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CtrlThreadImgSave : %d ms [%s]"), GetTickCount() - dwTic, pSaveInfo->m_strSavePath);
+//					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CtrlThreadImgSave : %d ms [%s]"), GetTickCount() - dwTic, pSaveInfo->m_strSavePath);
 
 
 					delete[]pImgPtr;

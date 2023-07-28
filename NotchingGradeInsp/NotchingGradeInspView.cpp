@@ -1210,6 +1210,8 @@ int CNotchingGradeInspView::CameraGrabStart()
 	CString strLog;
 	strLog.Format(_T("Camera Grab Start"));
 	AprData.SaveErrorLog(strLog);
+	AprData.SaveDebugLog(strLog);
+
 	// 22.07.07 Ahn Add Test End
 	return nRet;
 }
@@ -1226,6 +1228,7 @@ int CNotchingGradeInspView::CameraGrabStop()
 			CString strLog;
 			strLog.Format(_T("Camera Grab Stop"));
 			AprData.SaveErrorLog(strLog);
+			AprData.SaveDebugLog(strLog);
 			// 22.07.07 Ahn Add Test End
 		}
 	}
@@ -1436,7 +1439,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 ON"));
 
 		pSigProc->SigOutLotEndAck(TRUE);
-//		CameraGrabStop();
+		CameraGrabStop();
 		AprData.LotEndProcess();
 
 		AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;

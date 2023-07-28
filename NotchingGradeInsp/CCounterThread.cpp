@@ -202,6 +202,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							//이전 id 갱신
 							wLastInfo = wTempID;
 
+							//메모리 로그 기록
+							CString strMsg;
+							strMsg.Format(_T("Input ID[%d], Queue Count<%d>-><%d>"), cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize());
+							AprData.SaveMemoryLog(strMsg);
+
 						}
 						// Cell 추적 Queue Data -> Local Queue 
 						//if(....)

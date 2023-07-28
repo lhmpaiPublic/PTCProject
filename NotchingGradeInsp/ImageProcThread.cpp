@@ -345,13 +345,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					int nBneElectrodeBtm = 0;
 
 
-					dwTic = GetTickCount();
+//					dwTic = GetTickCount();
 #if defined( ANODE_MODE )
 					//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
 
 #endif
-					AprData.SaveDebugLog_Format( _T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] GetBoundaryOfElectorde : %d ms"), GetTickCount() -dwTic);
+//					AprData.SaveDebugLog_Format( _T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] GetBoundaryOfElectorde : %d ms"), GetTickCount() -dwTic);
 
 
 
@@ -366,11 +366,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//이미지 프로세싱을 위한 클래스 
 					//이미지 Tab 정보에서 Tab을 그룹으로 나누기
-					dwTic = GetTickCount();
+//					dwTic = GetTickCount();
 
 					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
 
-					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] DivisionTab_FromImageToTabInfo : %d ms"), GetTickCount() - dwTic);
+//					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] DivisionTab_FromImageToTabInfo : %d ms"), GetTickCount() - dwTic);
 
 
 					//Tab 정보 크기, Tab 정보가 없다면 에러처리
@@ -384,11 +384,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					}
 #if defined( ANODE_MODE )
 					//양극일 경우 Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
-					dwTic = GetTickCount();
+//					dwTic = GetTickCount();
 
 					nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
 
-					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] GetBoundaryOfElectordeBottom : %d ms"), GetTickCount() - dwTic);
+//					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] GetBoundaryOfElectordeBottom : %d ms"), GetTickCount() - dwTic);
 
 
 #else

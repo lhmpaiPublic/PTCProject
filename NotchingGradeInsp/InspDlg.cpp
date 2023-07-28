@@ -200,7 +200,7 @@ void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == m_TID_Renewal) {
 		KillRenewalTimer();
 
-		DWORD dwTic = GetTickCount();
+//		DWORD dwTic = GetTickCount();
 
 		int nFramdCnt1, nFrameCnt2;
 		int nFrmQue1, nFrmQue2;
@@ -223,14 +223,14 @@ void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 
 		UpdateData(FALSE);
 
-		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CInspDlg Update : %d ms"), GetTickCount() - dwTic);
+//		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CInspDlg Update : %d ms"), GetTickCount() - dwTic);
 
 
-		dwTic = GetTickCount();
+//		dwTic = GetTickCount();
 
 		theApp.m_pImgProcCtrl->SaveErrorData();
 
-		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CInspDlg SaveErrorData : %d ms"), GetTickCount() - dwTic);
+//		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CInspDlg SaveErrorData : %d ms"), GetTickCount() - dwTic);
 
 		SetRenewalTimer();
 	}
