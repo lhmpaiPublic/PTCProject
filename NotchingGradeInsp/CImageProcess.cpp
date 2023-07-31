@@ -6227,9 +6227,9 @@ int CImageProcess::CheckRect(CRect* pRect, int nWidth, int nHeight)
 	if (pRect->top == pRect->bottom) pRect->bottom = pRect->top + 1;
 
 	if (pRect->left < 0) pRect->left = 0;
-	if (pRect->right > nWidth) pRect->right = nWidth;
+	if (pRect->right >= nWidth) pRect->right = nWidth;
 	if (pRect->top < 0) pRect->top = 0;
-	if (pRect->bottom > nHeight) pRect->bottom = nHeight;
+	if (pRect->bottom >= nHeight) pRect->bottom = nHeight;
 
 	return nRet;
 }
@@ -6396,6 +6396,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		bSectorInfo = FALSE;
 	}
 
+
+
 	int nCase = -1;
 	if( pResvTabInfo->pImgPtr != NULL ){
 
@@ -6408,6 +6410,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		// 예약 정보에 Tab이 존재하는가?
 
 		int nSendLength = 0;
+
 
 		if (nSize <= 0) {
 
@@ -6800,6 +6803,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 //		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] if ( nLeftSize > 0) : %d ms"), GetTickCount() - dwTic);
 
 	}
+
 
 
 	return nRet;
@@ -8485,10 +8489,15 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 		pBndPtr = NULL;
 	}
 
-	delete[] pStdPtr;
-	pStdPtr = NULL;
-	delete[] pProcPtr;
-	pProcPtr = NULL;
+	if (pStdPtr != nullptr) {
+		delete[] pStdPtr;
+		pStdPtr = NULL;
+	}
+	
+	if (pProcPtr != nullptr) {
+		delete[] pProcPtr;
+		pProcPtr = NULL;
+	}
 
 	if (pThresPtr != nullptr) {
 		delete[]pThresPtr;
