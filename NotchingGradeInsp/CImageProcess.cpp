@@ -6028,6 +6028,8 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 						bNg = FALSE;
 					}
 				}
+
+
 				if ( bNg == TRUE )
 				{
 					pTabRsltInfo->m_nJudge = JUDGE_NG;

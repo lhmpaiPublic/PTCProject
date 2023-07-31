@@ -94,7 +94,7 @@ BOOL CCropImageViewDlg::OnInitDialog()
 	//	m_CropThumbCtrl.AddImageBufferMode(strFileName, strTempName) ;
 	//}
 
-	//SetCropViewTimer();
+	SetCropViewTimer();
 
 	//m_CropThumbCtrl.SetImageList(m_strImageList);
 	m_CropThumbCtrl.OnRefresh();
