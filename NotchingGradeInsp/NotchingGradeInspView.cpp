@@ -1439,7 +1439,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 ON"));
 
 		pSigProc->SigOutLotEndAck(TRUE);
-		CameraGrabStop();
+//		CameraGrabStop();
 		AprData.LotEndProcess();
 
 		AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;
