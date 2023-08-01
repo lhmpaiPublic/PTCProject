@@ -662,7 +662,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						strPath = AprData.m_strNowOkPath;
 						strJudge = _T("OK");
 						break;
-					}
+					}	
 
 					// 22.11.21 Ahn Modify End
 
