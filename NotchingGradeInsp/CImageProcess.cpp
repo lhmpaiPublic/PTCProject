@@ -7211,6 +7211,11 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 
 	int nMaskRight = nHeadBndry - 30;
 
+	if (nMaskRight >= nWidth)
+	{
+		nMaskRight = nWidth - 1;
+	}
+
 	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
 	BYTE* pProcPtr = new BYTE[nHeight * nWidth];
 	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
@@ -7834,6 +7839,14 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	}
 
 	int nMaskRight = nHeadBndry - 30;
+
+	if (nMaskRight >= nWidth)
+	{
+		nMaskRight = nWidth - 1;
+	}
+
+
+
 
 	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
 	BYTE* pProcPtr = new BYTE[nHeight * nWidth];
@@ -8576,6 +8589,12 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	}
 
 	int nMaskRight = nHeadBndry - 30;
+
+	if (nMaskRight >= nWidth)
+	{
+		nMaskRight = nWidth - 1;
+	}
+
 
 	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
 	BYTE* pProcPtr = new BYTE[nHeight * nWidth];

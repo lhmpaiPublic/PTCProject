@@ -597,7 +597,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//if ( (nJudge == JUDGE_NG) || (bSaveOkDef == TRUE ) ){
 				
 				//Judge GRAY 또는 NG이면 bSave TRUE 모든 파일 저장
-				if ( (nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG) )
+				//if ((nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG))
+				if ( nJudge == JUDGE_NG ) //Gray 저장 안함, NG만 저장
 				{
 					bSave = TRUE;
 				} 
@@ -640,27 +641,11 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//이미지 저장 포맷
 					CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
 
-					// 22.05.31 Ahn Delete Start - Image Save Thread
-					//CBitmapStd bmp(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, 8);
-					//bmp.SetImage(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->GetImagePtr());
-					//// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
-					//bmp.SetJpegQuality(AprData.m_System.m_nJpegSaveQuality);
-					// 22.05.31 Ahn Delete End
-
 					//파일 이름 객체 생성
 					CString strFileName;
-					//경로 객체 생성
 					CString strPath; 
-					//Judge 객체 생성
 					CString strJudge; 
-					// 22.11.21 Ahn Modify Start - JUDGE_GRAY
-					//if (nJudge == JUDGE_NG) {
-					//	strPath = AprData.m_strNowNgPath;
-					//	strJudge = _T("NG");
-					//} else {
-					//	strPath = AprData.m_strNowOkPath;
-					//	strJudge = _T("OK");
-					//}
+
 
 					//Judge 별 저장 경로를 가져온다.
 					switch (nJudge)

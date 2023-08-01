@@ -2465,6 +2465,11 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 
 	int nMaskRight = nHeadBndry - 30;
 
+	if (nMaskRight >= nWidth)
+	{
+		nMaskRight = nWidth - 1;
+	}
+
 
 	double dTime = cta.WhatTimeIsIt_Double();
 	CString strMeanTime;
@@ -3196,6 +3201,11 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	// 22.05.30 Ahn Modify End
 
 	int nMaskRight = nHeadBndry - 30;
+
+	if (nMaskRight >= nWidth)
+	{
+		nMaskRight = nWidth - 1;
+	}
 
 
 	double dTime = cta.WhatTimeIsIt_Double();
@@ -4898,6 +4908,12 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 	int nMaskRight = nHeadBndry - 30;
 
+	if (nMaskRight >= nWidth)
+	{
+		nMaskRight = nWidth - 1;
+	}
+
+
 	dTime = cta.WhatTimeIsIt_Double();
 	strMeanTime.Format(_T("MeanProc[%.1lf], "), dTime);
 	cta.Clear();
@@ -5389,6 +5405,11 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 
 	int nMaskRight = nHeadBndry - 30;
 
+	if (nMaskRight >= nWidth)
+	{
+		nMaskRight = nWidth - 1;
+	}
+
 
 	double dTime = cta.WhatTimeIsIt_Double();
 	CString strMeanTime;
@@ -5776,6 +5797,11 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	// 22.05.30 Ahn Modify End
 
 	int nMaskRight = nHeadBndry - 30;
+
+	if (nMaskRight >= nWidth)
+	{
+		nMaskRight = nWidth - 1;
+	}
 
 
 	double dTime = cta.WhatTimeIsIt_Double();
