@@ -591,7 +591,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab부의 흑연 코팅높이 에러
 						if (nLevel <= 0)
 						{
-							pTabInfo->m_bErrorFlag = FALSE;
+							pTabInfo->m_bErrorFlag = TRUE;
 
 							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<Level:%d> : ERRORFLAG 4", nLevel);
 
@@ -606,7 +606,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						// 22.09.30 Ahn Add Start
 
 						//Tab부의 흑연 코팅높이 에러
-						if (nLevel > nWidth)
+						if (nLevel >= (nWidth-1) )
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
 							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<Level:%d >= nWidth - 100 : %d> : ERRORFLAG 5", nLevel, nWidth - 100);
