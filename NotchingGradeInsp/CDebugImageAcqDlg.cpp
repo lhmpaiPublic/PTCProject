@@ -556,7 +556,7 @@ int CDebugImageAcqDlg::FileNameFromTabNo(CString strFileName)
 //			CBitmapStd bmp;
 //			bmp.ReadBitmap(strFullPath);
 //			CSize size = bmp.GetImgSize();
-//			BYTE* pImgPtr = new BYTE[ size.cx * size.cy ];
+//			BYTE* pImgPtr = new BYTE[ size.cx * size.cy  + 1 ];
 //			BYTE* pOrgPtr = bmp.GetImgPtr();
 //			memcpy(pImgPtr, pOrgPtr, sizeof(BYTE) * size.cx * size.cy);
 //
@@ -631,8 +631,10 @@ UINT CDebugImageAcqDlg::CtrlThreadDebugAcqProc(LPVOID pParam)
 	int nFrameSize = nFrameLength * nFrameWidth;
 
 	BYTE* pImgBackPtr[MAX_CAMERA_NO];
-	pImgBackPtr[CAM_POS_TOP] = new BYTE[nFrameLength * nFrameWidth];
-	pImgBackPtr[CAM_POS_BOTTOM] = new BYTE[nFrameLength * nFrameWidth];
+	pImgBackPtr[CAM_POS_TOP] = new BYTE[nFrameLength * nFrameWidth + 1];
+	memset(pImgBackPtr[CAM_POS_TOP], 0x00, sizeof(BYTE) * nFrameLength * nFrameWidth + 1);
+	pImgBackPtr[CAM_POS_BOTTOM] = new BYTE[nFrameLength * nFrameWidth + 1];
+	memset(pImgBackPtr[CAM_POS_BOTTOM], 0x00, sizeof(BYTE) * nFrameLength * nFrameWidth + 1);
 
 	CTabInfo ResvTabInfo;
 	ResvTabInfo.nImageLength = 0 ;
@@ -720,8 +722,10 @@ UINT CDebugImageAcqDlg::CtrlThreadDebugAcqProc(LPVOID pParam)
 			CSize size = bmpTop.GetImgSize();
 			
 			if ( (ResvTabInfo.nImageLength + size.cy) >= nFrameLength) {
-				BYTE* pImgPtrTop = new BYTE[nFrameSize];
-				BYTE* pImgPtrBtm = new BYTE[nFrameSize];
+				BYTE* pImgPtrTop = new BYTE[nFrameSize + 1];
+				memset(pImgPtrTop, 0x00, sizeof(BYTE) * nFrameSize + 1);
+				BYTE* pImgPtrBtm = new BYTE[nFrameSize + 1];
+				memset(pImgPtrBtm, 0x00, sizeof(BYTE) * nFrameSize + 1);
 
 				int nCopyLength = ResvTabInfo.nImageLength;
 				if (nCopyLength > nFrameLength) {

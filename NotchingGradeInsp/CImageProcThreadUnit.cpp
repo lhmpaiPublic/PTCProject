@@ -14,7 +14,7 @@
 #include "LogDisplayDlg.h"
 
 #define WAITEVENTTIME_PROCEND 5
-#define MAX_WAITEVENTTIME_PROCEND 200
+#define MAX_WAITEVENTTIME_PROCEND 10000
 
 
 // CImageProcThreadUnit
@@ -597,8 +597,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//if ( (nJudge == JUDGE_NG) || (bSaveOkDef == TRUE ) ){
 				
 				//Judge GRAY 또는 NG이면 bSave TRUE 모든 파일 저장
-				//if ((nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG))
-				if ( nJudge == JUDGE_NG ) //Gray 저장 안함, NG만 저장
+				if ( (nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG) )
 				{
 					bSave = TRUE;
 				} 
@@ -641,11 +640,27 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//이미지 저장 포맷
 					CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
 
+					// 22.05.31 Ahn Delete Start - Image Save Thread
+					//CBitmapStd bmp(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, 8);
+					//bmp.SetImage(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->GetImagePtr());
+					//// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
+					//bmp.SetJpegQuality(AprData.m_System.m_nJpegSaveQuality);
+					// 22.05.31 Ahn Delete End
+
 					//파일 이름 객체 생성
 					CString strFileName;
+					//경로 객체 생성
 					CString strPath; 
+					//Judge 객체 생성
 					CString strJudge; 
-
+					// 22.11.21 Ahn Modify Start - JUDGE_GRAY
+					//if (nJudge == JUDGE_NG) {
+					//	strPath = AprData.m_strNowNgPath;
+					//	strJudge = _T("NG");
+					//} else {
+					//	strPath = AprData.m_strNowOkPath;
+					//	strJudge = _T("OK");
+					//}
 
 					//Judge 별 저장 경로를 가져온다.
 					switch (nJudge)
@@ -662,7 +677,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						strPath = AprData.m_strNowOkPath;
 						strJudge = _T("OK");
 						break;
-					}	
+					}
 
 					// 22.11.21 Ahn Modify End
 
@@ -1152,6 +1167,7 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 
 	//ImageProc Proc Start 이벤트 객체 생성
 	m_hEventProcStart = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	m_bEventProcStart = FALSE;
 	m_hEventRun = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	//ImageProc: Image Proc Thread Proc End 이벤트객체 생성
 	m_hEventProcEnd = ::CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -1166,6 +1182,9 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 	m_nErrorCode = 0;
 
 	ProcEnd_WaitCount = 0;
+
+	//타임아웃 여부 변수
+	m_bTimeOut = FALSE;
 }
 
 CImageProcThreadUnit::~CImageProcThreadUnit()
@@ -1232,41 +1251,19 @@ int CImageProcThreadUnit::Begin()
 			, 0
 			, CREATE_SUSPENDED
 			, NULL);
-
-		if (m_pThread != NULL) 
-		{
-			m_pThread->m_bAutoDelete = TRUE;
-			m_pThread->ResumeThread();
-			//Start 처리 이벤트 발생
-			::SetEvent(m_hEventProcStart);
-		}
-
 	}
 	return 0;
 }
 
-int CImageProcThreadUnit::Begin_Exception()
+void CImageProcThreadUnit::ProcStart()
 {
-
-	if (m_pThread == NULL)
+	if (m_pThread != NULL)
 	{
-		m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlImageProcThread_Exception
-			, (LPVOID)this
-			, THREAD_PRIORITY_NORMAL
-			, 0
-			, CREATE_SUSPENDED
-			, NULL);
-
-		if (m_pThread != NULL)
-		{
-			m_pThread->m_bAutoDelete = TRUE;
-			m_pThread->ResumeThread();
-			//Start 처리 이벤트 발생
-			::SetEvent(m_hEventProcStart);
-		}
-
+		m_pThread->m_bAutoDelete = TRUE;
+		m_pThread->ResumeThread();
+		//Start 처리 이벤트 발생
+		::SetEvent(m_hEventProcStart);
 	}
-	return 0;
 }
 
 int CImageProcThreadUnit::Kill()
@@ -1309,6 +1306,8 @@ BOOL CImageProcThreadUnit::eventProcEnd_WaitTime()
 
 		theApp.ErrOutput("eventProcEnd_WaitTime", CErrorStatus::en_ProcessError);
 		
+		//타임아웃 여부 변수
+		m_bTimeOut = TRUE;
 		b = TRUE;
 	}
 	return b;

@@ -6263,9 +6263,11 @@ int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nW
 		CTabInfo tabInfo;
 		tabInfo.m_bErrorFlag = TRUE;
 		tabInfo.nImageLength = nFixSize;
-		tabInfo.pImgPtr = new BYTE[nWidth * nFixSize];
+		tabInfo.pImgPtr = new BYTE[nWidth * nFixSize + 1];
+		memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
 		CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
-		tabInfo.pImgBtmPtr = new BYTE[nWidth * nFixSize];
+		tabInfo.pImgBtmPtr = new BYTE[nWidth * nFixSize + 1];
+		memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
 		CopyMemory(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
 		nLastSavePos += nFixSize ;
 
@@ -6441,8 +6443,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag );
 
-			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength];
-			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength];
+			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount ;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
@@ -6470,8 +6474,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag);
 
-			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength];
-			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength];
+			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
+			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
@@ -6559,10 +6565,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			}
 			// 22.03.30 Ahn Add End
 			tabInfo.nImageLength = nSendLength + pResvTabInfo->nImageLength;
-			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength];
+			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
 			CopyMemory(tabInfo.pImgPtr, pResvTabInfo->pImgPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			CopyMemory(tabInfo.pImgPtr + (nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
-			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength];
+			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
 			CopyMemory(tabInfo.pImgBtmPtr, pResvTabInfo->pImgBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			CopyMemory(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
@@ -6702,8 +6710,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				if (pResvTabInfo->pImgBtmPtr != NULL) {
 					delete[]pResvTabInfo->pImgBtmPtr;
 				}
-				pResvTabInfo->pImgPtr = new BYTE[nWidth * nBackupSize];
-				pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nBackupSize];
+				pResvTabInfo->pImgPtr = new BYTE[nWidth * nBackupSize + 1];
+				memset(pResvTabInfo->pImgPtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
+				pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nBackupSize + 1];
+				memset(pResvTabInfo->pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
 				pResvTabInfo->nImageLength = nBackupSize;
 
 				// 22.11.18 Ahn Add Start
@@ -6719,9 +6729,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				return 0;
 			}
 
-			tabInfo.pImgPtr = new BYTE[tabInfo.nImageLength * nWidth];
+			tabInfo.pImgPtr = new BYTE[tabInfo.nImageLength * nWidth + 1];
+			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* tabInfo.nImageLength* nWidth + 1);
 			CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
-			tabInfo.pImgBtmPtr = new BYTE[tabInfo.nImageLength * nWidth];
+			tabInfo.pImgBtmPtr = new BYTE[tabInfo.nImageLength * nWidth + 1];
+			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * tabInfo.nImageLength * nWidth + 1);
 			CopyMemory(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
 
 			// 22.11.18 Ahn Add Start
@@ -6756,8 +6768,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	if ( nLeftSize > 0) {
 //		dwTic = GetTickCount();
 
-		pResvTabInfo->pImgPtr = new BYTE[nWidth * nLeftSize];
-		pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nLeftSize];
+		pResvTabInfo->pImgPtr = new BYTE[nWidth * nLeftSize + 1];
+		memset(pResvTabInfo->pImgPtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
+		pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nLeftSize + 1];
+		memset(pResvTabInfo->pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
 		pResvTabInfo->nImageLength = nLeftSize;
 
 		// 22.11.18 Ahn Add Start
@@ -7201,9 +7215,9 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	int nOffsetY = 0;
 
 	int nSizeAll = nWidth * nHeight;
-	BYTE* pMeanPtr = new BYTE[nSizeAll];
+	BYTE* pMeanPtr = new BYTE[nSizeAll + 1];
 
-	memset(pMeanPtr, 0x00, sizeof(BYTE) * nSizeAll);
+	memset(pMeanPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 	int nMeanSize = MEAN_SIZE_HOR;
 
 	int nHeadBndry;
@@ -7216,10 +7230,10 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 		nMaskRight = nWidth - 1;
 	}
 
-	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
-	BYTE* pProcPtr = new BYTE[nHeight * nWidth];
-	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
-	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pStdPtr = new BYTE[nHeight * nWidth + 1];
+	BYTE* pProcPtr = new BYTE[nHeight * nWidth + 1];
+	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcLeft, 15, 15, CImageProcess::en_FillTop);
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcRight, 15, 15, CImageProcess::en_FillBottom);
@@ -7363,10 +7377,10 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	CRegionInfo roiDross;
 	CString strThres;
 
-	BYTE* pThresPtr = new BYTE[nSizeAll];
+	BYTE* pThresPtr = new BYTE[nSizeAll + 1];
 	BYTE* pDiffPtr;
 
-	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 	roiFoilExp.SetRoiPtr(pThresPtr);
 	roiFoilExp.SetProcBit(CImageProcess::en_FoilExp_Bit);
 	roiDross.SetRoiPtr(pThresPtr);
@@ -7383,8 +7397,8 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	CRect rcRightDiff = rcRight;
 
 	{
-		pDiffPtr = new BYTE[nSizeAll];
-		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll);
+		pDiffPtr = new BYTE[nSizeAll + 1];
+		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 		BYTE btThreshold = (BYTE)pRecipeInfo->nFoilExpThresOrigin[CAM_POS_TOP];
 
 		CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcLeft, pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, pRecipeInfo->bDarkEmpMode);
@@ -7481,8 +7495,8 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 
 	if (bSimMode == TRUE) {
 		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+		pBndPtr = new BYTE[nWidth * nHeight + 1];
+		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
@@ -7545,8 +7559,8 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	}
 
 	int nSizeAll = nWidth * nHeight;
-	BYTE* pTempPtr = new BYTE[nSizeAll];
-	memset(pTempPtr, 0x00, sizeof(BYTE) * nSizeAll);
+	BYTE* pTempPtr = new BYTE[nSizeAll + 1];
+	memset(pTempPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 
 	VEC_ROUND_INFO vecAllRndInfo;
 	vecAllRndInfo.clear();
@@ -7561,10 +7575,10 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 #endif
 	int nMeanSize = MEAN_SIZE_HOR;
 
-	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
-	BYTE* pProcPtr = new BYTE[nHeight * nWidth];
-	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
-	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pStdPtr = new BYTE[nHeight * nWidth + 1];
+	BYTE* pProcPtr = new BYTE[nHeight * nWidth + 1];
+	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcAll, 15, 15, CImageProcess::en_FillAll);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcAll, 3, 3, CImageProcess::en_FillAll);
@@ -7572,8 +7586,8 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 
 	BYTE* pDiffPtr;
 	{
-		pDiffPtr = new BYTE[nSizeAll];
-		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll);
+		pDiffPtr = new BYTE[nSizeAll + 1];
+		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 		BYTE btThreshold = (BYTE)pRecipeInfo->nFoilExpThresOrigin[CAM_POS_BOTTOM];
 		CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, pRecipeInfo->dMagnification[CAM_POS_BOTTOM], btThreshold, pRecipeInfo->bDarkEmpMode);
 	}
@@ -7617,8 +7631,8 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	//	CRegionInfo roiDross;
 	CString strThres;
 
-	BYTE* pThresPtr = new BYTE[nWidth * nHeight];
-	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pThresPtr = new BYTE[nWidth * nHeight + 1];
+	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 	roiFoilExp.SetRoiPtr(pThresPtr);
 	roiFoilExp.SetProcBit(CImageProcess::en_FoilExp_Bit);
 
@@ -7696,8 +7710,8 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 
 	if (bSimMode == TRUE) {
 		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+		pBndPtr = new BYTE[nWidth * nHeight + 1];
+		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
 		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
@@ -7821,9 +7835,9 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	int nOffsetY = 0;
 
 	int nSizeAll = nWidth * nHeight;
-	BYTE* pMeanPtr = new BYTE[nSizeAll];
+	BYTE* pMeanPtr = new BYTE[nSizeAll + 1];
 
-	memset(pMeanPtr, 0x00, sizeof(BYTE) * nSizeAll);
+	memset(pMeanPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 	int nMeanSize = MEAN_SIZE_HOR;
 
 	//int nHeadBndry = nLineLevel + pRecipeInfo->TabCond.nTabCeramicHeight;
@@ -7848,10 +7862,10 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 
 
 
-	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
-	BYTE* pProcPtr = new BYTE[nHeight * nWidth];
-	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
-	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pStdPtr = new BYTE[nHeight * nWidth + 1];
+	BYTE* pProcPtr = new BYTE[nHeight * nWidth + 1];
+	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcLeft, 15, 15, CImageProcess::en_FillTop);
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcRight, 15, 15, CImageProcess::en_FillBottom);
@@ -8035,10 +8049,10 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	CRegionInfo roiDross;
 	CString strThres;
 
-	BYTE* pThresPtr = new BYTE[nSizeAll];
+	BYTE* pThresPtr = new BYTE[nSizeAll + 1];
 	BYTE* pDiffPtr;
 
-	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 	roiFoilExp.SetRoiPtr(pThresPtr);
 	roiFoilExp.SetProcBit(CImageProcess::en_FoilExp_Bit);
 	roiDross.SetRoiPtr(pThresPtr);
@@ -8060,8 +8074,8 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	rcRightDiff = rcRight;
 
 	{ 
-		pDiffPtr = new BYTE[nSizeAll];
-		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll);
+		pDiffPtr = new BYTE[nSizeAll + 1];
+		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 		BYTE btThreshold = (BYTE)pRecipeInfo->nFoilExpThresOrigin[CAM_POS_TOP];
 
 		CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcLeft, pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, pRecipeInfo->bDarkEmpMode);
@@ -8204,8 +8218,8 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 
 	if (bSimMode == TRUE) {
 		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+		pBndPtr = new BYTE[nWidth * nHeight + 1];
+		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
@@ -8269,8 +8283,8 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	}
 
 	int nSizeAll = nWidth * nHeight;
-	BYTE* pMeanPtr = new BYTE[nSizeAll];
-	memset(pMeanPtr, 0x00, sizeof(BYTE) * nSizeAll);
+	BYTE* pMeanPtr = new BYTE[nSizeAll + 1];
+	memset(pMeanPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 
 	CImageProcess::VEC_ROUND_INFO vecAllRndInfo;
 	vecAllRndInfo.clear();
@@ -8284,10 +8298,10 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 #endif
 	int nMeanSize = MEAN_SIZE_HOR;
 
-	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
-	BYTE* pProcPtr = new BYTE[nHeight * nWidth];
-	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
-	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pStdPtr = new BYTE[nHeight * nWidth + 1];
+	BYTE* pProcPtr = new BYTE[nHeight * nWidth + 1];
+	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcAll, 15, 15, CImageProcess::en_FillAll);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcAll, 3, 3, CImageProcess::en_FillAll);
@@ -8299,8 +8313,8 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	BYTE* pDiffPtr;
 	//if (pRecipeInfo->bDisableProcDiff == FALSE) 
 	{
-		pDiffPtr = new BYTE[nSizeAll];
-		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll);
+		pDiffPtr = new BYTE[nSizeAll + 1];
+		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 		BYTE btThreshold = (BYTE)pRecipeInfo->nFoilExpThresOrigin[CAM_POS_BOTTOM];
 		CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, pRecipeInfo->dMagnification[CAM_POS_BOTTOM], btThreshold, pRecipeInfo->bDarkEmpMode);
 	}
@@ -8356,8 +8370,8 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	CRegionInfo roiDross;
 	CString strThres;
 
-	BYTE* pThresPtr = new BYTE[nWidth * nHeight];
-	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pThresPtr = new BYTE[nWidth * nHeight + 1];
+	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 	roiFoilExp.SetRoiPtr(pThresPtr);
 	roiFoilExp.SetProcBit(CImageProcess::en_FoilExp_Bit);
 	roiDross.SetRoiPtr(pThresPtr);
@@ -8454,8 +8468,8 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 
 	if (bSimMode == TRUE) {
 		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+		pBndPtr = new BYTE[nWidth * nHeight + 1];
+		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
 		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
@@ -8569,9 +8583,9 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	int nOffsetY = 0;
 
 	int nSizeAll = nWidth * nHeight;
-	BYTE* pMeanPtr = new BYTE[nSizeAll];
+	BYTE* pMeanPtr = new BYTE[nSizeAll + 1];
 
-	memset(pMeanPtr, 0x00, sizeof(BYTE) * nSizeAll);
+	memset(pMeanPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 	int nMeanSize = MEAN_SIZE_HOR;
 
 	//int nHeadBndry = nLineLevel + pRecipeInfo->TabCond.nTabCeramicHeight;
@@ -8596,10 +8610,10 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	}
 
 
-	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
-	BYTE* pProcPtr = new BYTE[nHeight * nWidth];
-	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
-	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pStdPtr = new BYTE[nHeight * nWidth + 1];
+	BYTE* pProcPtr = new BYTE[nHeight * nWidth + 1];
+	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcLeft, 15, 15, CImageProcess::en_FillTop);
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcRight, 15, 15, CImageProcess::en_FillBottom);
@@ -8774,14 +8788,14 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	//	delete[]pRsltPtr;
 	delete[]pnResultArr;
 
-	BYTE* pThresPtr = new BYTE[nSizeAll];
+	BYTE* pThresPtr = new BYTE[nSizeAll + 1];
 	BYTE* pDiffPtr;
 
 	// 22.02.08 Ahn Modify Start
 	CRegionInfo roiInfo;
 	CString strThres;
 
-	memset(pThresPtr, 0x00, sizeof(BYTE)* nWidth* nHeight);
+	memset(pThresPtr, 0x00, sizeof(BYTE)* nWidth* nHeight + 1);
 	roiInfo.SetRoiPtr(pThresPtr);
 	roiInfo.SetProcBit(CImageProcess::en_FoilExp_Bit);
 	// 22.02.08 Ahn Modify End
@@ -8805,8 +8819,8 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 
 	//if (pRecipeInfo->bDisableProcDiff == FALSE) 
 	{
-		pDiffPtr = new BYTE[nSizeAll];
-		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll);
+		pDiffPtr = new BYTE[nSizeAll + 1];
+		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 		//	CImageProcess::MeanImageDirection_Round(pImgPtr, pMeanPtr, nWidth, nHeight, rcLeftRnd, 40, pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]);
 		//	CImageProcess::MeanImageDirection_Round(pImgPtr, pMeanPtr, nWidth, nHeight, rcRightRnd, 40, pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]);
 		BYTE btThreshold = (BYTE)pRecipeInfo->nFoilExpThresOrigin[CAM_POS_TOP];
@@ -8925,8 +8939,8 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 
 	if (bSimMode == TRUE) {
 		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+		pBndPtr = new BYTE[nWidth * nHeight + 1];
+		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
@@ -8995,8 +9009,8 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 	}
 
 	int nSizeAll = nWidth * nHeight;
-	BYTE* pTempPtr = new BYTE[nSizeAll];
-	memset(pTempPtr, 0x00, sizeof(BYTE) * nSizeAll);
+	BYTE* pTempPtr = new BYTE[nSizeAll + 1];
+	memset(pTempPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 
 	CImageProcess::VEC_ROUND_INFO vecAllRndInfo;
 	vecAllRndInfo.clear();
@@ -9018,10 +9032,10 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 		MeanImageDirection(pImgPtr, pMeanPtr, nWidth, nHeight, rcAll, nMeanSize, DIR_VER);
 	}
 
-	BYTE* pStdPtr = new BYTE[nHeight * nWidth];
-	BYTE* pProcPtr = new BYTE[nHeight * nWidth];
-	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
-	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pStdPtr = new BYTE[nHeight * nWidth + 1];
+	BYTE* pProcPtr = new BYTE[nHeight * nWidth + 1];
+	memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	memset(pProcPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcAll, 15, 15, CImageProcess::en_FillAll);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcAll, 3, 3, CImageProcess::en_FillAll);
@@ -9033,8 +9047,8 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 	BYTE* pDiffPtr;
 	//if (pRecipeInfo->bDisableProcDiff == FALSE) 
 	{
-		pDiffPtr = new BYTE[nSizeAll];
-		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll);
+		pDiffPtr = new BYTE[nSizeAll + 1];
+		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 		BYTE btThreshold = (BYTE)pRecipeInfo->nFoilExpThresOrigin[CAM_POS_BOTTOM];
 		CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, pRecipeInfo->dMagnification[CAM_POS_BOTTOM], btThreshold, pRecipeInfo->bDarkEmpMode);
 	}
@@ -9079,8 +9093,8 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 //	CRegionInfo roiDross;
 	CString strThres;
 
-	BYTE* pThresPtr = new BYTE[nWidth * nHeight];
-	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+	BYTE* pThresPtr = new BYTE[nWidth * nHeight + 1];
+	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 	roiFoilExp.SetRoiPtr(pThresPtr);
 	roiFoilExp.SetProcBit(CImageProcess::en_FoilExp_Bit);
 //	roiDross.SetRoiPtr(pThresPtr);
@@ -9181,8 +9195,8 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 
 	if (bSimMode == TRUE) {
 		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
+		pBndPtr = new BYTE[nWidth * nHeight + 1];
+		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
 		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);

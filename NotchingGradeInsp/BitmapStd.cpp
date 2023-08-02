@@ -207,7 +207,8 @@ CBitmapStd& CBitmapStd::operator = ( const CBitmap& src )
 	memset( &bmp, 0, sizeof( BITMAP ) ) ;
 	pBmp->GetBitmap( &bmp ) ;
 	int	nBuffSize = bmp.bmWidthBytes * bmp.bmHeight ;
-	BYTE* pBuff = new BYTE[ nBuffSize ] ;
+	BYTE* pBuff = new BYTE[ nBuffSize +1] ;
+	memset(pBuff, 0x00, sizeof(BYTE) * nBuffSize +1);
 	src.GetBitmapBits( nBuffSize, pBuff ) ;
 
 	MakeImageArea( bmp.bmWidth, bmp.bmHeight, ( bmp.bmBitsPixel * bmp.bmPlanes ) ) ;
@@ -2168,7 +2169,8 @@ int CBitmapStd::ImageReverse() {
 	int nHeight = pbmi->bmiHeader.biHeight;
 	
 	BYTE* pImgPtr = GetImgPtr();
-	BYTE* pTempPtr = new BYTE[ nWidth * nHeight ];
+	BYTE* pTempPtr = new BYTE[ nWidth * nHeight +1];
+	memset(pTempPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
 	memcpy(pTempPtr, pImgPtr , sizeof(BYTE) * nWidth * nHeight);
 
 	BYTE* pSrc = NULL ;
@@ -2194,7 +2196,8 @@ int CBitmapStd::ImageReverse(BYTE* pImgPtr, int nWidth, int nHeight)
 
 	if ((nWidth <= 0) || (nHeight <= 0)) return -1;
 
-	BYTE* pTempPtr = new BYTE[nWidth * nHeight];
+	BYTE* pTempPtr = new BYTE[nWidth * nHeight+1];
+	memset(pTempPtr, 0x00, sizeof(BYTE) * nWidth * nHeight+1);
 	memcpy(pTempPtr, pImgPtr, sizeof(BYTE) * nWidth * nHeight);
 
 	BYTE* pSrc = NULL;

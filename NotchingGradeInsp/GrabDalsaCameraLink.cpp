@@ -93,7 +93,8 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if ( pQueueCtrl != NULL )
 		{
 			//이미지 저장 버퍼 생성
-			BYTE* pImg = new BYTE[nWidth * nHeight];
+			BYTE* pImg = new BYTE[nWidth * nHeight + 1];
+			memset(pImg, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 			CopyMemory(pImg, pData, sizeof(BYTE) * nWidth * nHeight);
 
 			BOOL bSend = FALSE;
@@ -431,8 +432,8 @@ int CGrabDalsaCameraLink::GrabberInit()
 	}
 
 	m_nWaveWidth = AprData.m_System.m_nCamViewWidth;
-	m_pbtWave = new BYTE[m_nWaveWidth];
-	memset(m_pbtWave, 0, sizeof(BYTE)* m_nWaveWidth);
+	m_pbtWave = new BYTE[m_nWaveWidth + 1];
+	memset(m_pbtWave, 0, sizeof(BYTE)* m_nWaveWidth + 1);
 
 	m_pAcqDevice->SetFeatureValue("ExposureTime", dExposureTime);
 #if defined( CAMERA_TDI_MODE )
@@ -746,7 +747,8 @@ int CGrabDalsaCameraLink::GetImagePtr(BYTE** pImgPtr, int* pnWidth, int* pnHeigh
 	pBuffer->GetState(nIndex, &State1);
 	pBuffer->GetAddress(nIndex, (void**)&pData);
 
-	*pImgPtr = new BYTE[nWidth * nHeight];
+	*pImgPtr = new BYTE[nWidth * nHeight + 1];
+	memset(*pImgPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 	CopyMemory(*pImgPtr, pData, sizeof(BYTE) * nWidth * nHeight);
 
 	return 0;

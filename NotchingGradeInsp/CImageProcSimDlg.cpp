@@ -1073,7 +1073,8 @@ void CImageProcSimDlg::OnBnClickedBtnDetectLine()
 	//CBitmapStd bmp(nReWidth, nReHeight, nBitCnt);
 	//bmp.MakeImageArea(nReWidth, nReHeight, nBitCnt);
 	////pResizePtr = bmp.GetImgPtr();
-	//pResizePtr = new BYTE[nReSize];
+	//pResizePtr = new BYTE[nReSize + 1 ];
+	// memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1 );
 	//CImageProcess::ResizeImage(pImgPtr, pResizePtr, xSize, ySize, nMagnif);
 
 	//bmp.SetImage(nReWidth, nReHeight, pResizePtr);
@@ -3409,7 +3410,8 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 	// 22.01.19 Ahn Add Start
 //	BOOL bUseErosionTest = TRUE;
-////	BYTE* pErsPtr = new BYTE[nWidth * nHeight];
+////	BYTE* pErsPtr = new BYTE[nWidth * nHeight + 1 ];
+// 	   memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1 );
 //	if (bUseErosionTest == TRUE) {
 //
 //		CImageProcess::Threshold_Default(pDiffPtr, pThresPtr, &vecLeftRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, rcLeft, TRUE);

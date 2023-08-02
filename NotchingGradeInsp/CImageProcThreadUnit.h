@@ -24,6 +24,7 @@ class CImageProcThreadUnit : public CWinThread
 protected:
 
 	HANDLE	m_hEventProcStart;
+	BOOL m_bEventProcStart;
 	HANDLE	m_hEventRun;
 	HANDLE	m_hEventProcEnd;
 	HANDLE	m_hEventKillThread;
@@ -37,6 +38,8 @@ protected:
 	CWinThread* m_pThread;
 	int m_nErrorCode;
 
+	//타임아웃 여부 변수
+	BOOL m_bTimeOut;
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
@@ -46,7 +49,9 @@ public:
 	CFrameRsltInfo* m_pFrmRsltInfo;
 
 	int Begin();
-	int Begin_Exception();
+	//스래드를 생성 후 스타트 하기 위한 함수
+	void ProcStart();
+
 	int Kill();
 	BOOL IsProcEnd();
 	//EVENT 결과 
@@ -61,6 +66,7 @@ public:
 		ExitInstance();
 	};
 
+	BOOL getTimeOut() { return m_bTimeOut; }
 protected:
 	DECLARE_MESSAGE_MAP()
 };

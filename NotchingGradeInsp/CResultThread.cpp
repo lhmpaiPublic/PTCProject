@@ -784,7 +784,8 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 						int nReWidth = (pRsltInfo->m_nWidth / nMagnif);
 						int nReHeight = (pRsltInfo->m_nHeight / nMagnif);
 						int nReSize = nReWidth * nReHeight;
-						pResizePtr = new BYTE[nReSize];
+						pResizePtr = new BYTE[nReSize + 1];
+						memset(pResizePtr, 0x00, sizeof(BYTE) * nReSize + 1);
 
 						// 23.02.24 Ahn Add Start
 						CPoint cpSharpness;

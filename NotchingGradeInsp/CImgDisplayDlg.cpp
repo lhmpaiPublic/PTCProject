@@ -415,7 +415,8 @@ void CImgDisplayDlg::DrawImage(HWND HWnd, BYTE* pImgPtr, int nWidth, int nHeight
 	int nReWidth = (nWidth / nMagnif);
 	int nReHeight = (nHeight / nMagnif);
 	int nReSize = nReWidth * nReHeight;
-	pResizePtr = new BYTE[nReSize];
+	pResizePtr = new BYTE[nReSize + 1];
+	memset(pResizePtr, 0x00, sizeof(BYTE) * nReSize + 1);
 
 	rcImg.left = 0;
 	rcImg.right = nReWidth;

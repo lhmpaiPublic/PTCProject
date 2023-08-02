@@ -147,7 +147,8 @@ void CCameraWaveDlg::OnTimer(UINT_PTR nIDEvent)
 	//	theApp.m_pImgProcCtrl->GetCameraWaveData(m_nRadSelCamNo, btWave);
 
 		int nSysWidth = AprData.m_System.m_nCamViewWidth;
-		BYTE* pbtWave = new BYTE[nSysWidth];
+		BYTE* pbtWave = new BYTE[nSysWidth + 1];
+		memset(pbtWave, 0x00, sizeof(BYTE) * nSysWidth + 1);
 		theApp.m_pImgProcCtrl->GetCameraWaveData(m_nRadSelCamNo, pbtWave);
 
 		for (int i = 0; i < nSysWidth; i++) {

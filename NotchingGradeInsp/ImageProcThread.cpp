@@ -259,8 +259,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					pFrmInfo_Bottom->m_nHeight = pFrmInfo_Top->m_nHeight;
 					pFrmInfo_Bottom->m_nHeadNo = CAM_POS_BOTTOM;
 					pFrmInfo_Bottom->m_nBand = 1;
-					BYTE* pDummyImgPtr = new BYTE[nWidth * nHeight];
-					//memset(pDummyImgPtr, 0x00, sizeof(BYTE)nWidth * nHeight);
+					BYTE* pDummyImgPtr = new BYTE[nWidth * nHeight + 1];
+					memset(pDummyImgPtr, 0x00, sizeof(BYTE)nWidth * nHeight + 1);
 					//if (btLastBtmImg != NULL) {
 					AprData.SaveDebugLog(_T("!!!! Last bottom frame copy start !!!!"));
 					memcpy(pDummyImgPtr, btLastBtmImg, sizeof(BYTE) * nWidth * nHeight);
@@ -288,8 +288,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 #else
 				CFrameInfo* pFrmInfo_Bottom = new CFrameInfo();
-				BYTE* pImg = new BYTE[nWidth * nHeight];
-				memset(pImg, 0x00, sizeof(BYTE) * nWidth * nHeight);
+				BYTE* pImg = new BYTE[nWidth * nHeight + 1];
+				memset(pImg, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
 				BOOL bSend = FALSE;
 				pFrmInfo_Bottom = new CFrameInfo;
@@ -322,7 +322,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #if defined( DEBUG_NOISE_COUNTERMEASURE )
 				if (btLastBtmImg == NULL)
 				{
-					btLastBtmImg = new BYTE[nWidth * nHeight];
+					btLastBtmImg = new BYTE[nWidth * nHeight + 1];
+					memset(btLastBtmImg, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 				}
 				memcpy(btLastBtmImg, pTailPtr, sizeof(BYTE) * nWidth * nHeight);
 #endif
@@ -1355,7 +1356,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								pFrmRsltInfo->m_nWidth;
 								CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 								BYTE* pImgSavePtr;
-								pImgSavePtr = new BYTE[nImgSize];
+								pImgSavePtr = new BYTE[nImgSize + 1];
+								memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
 								memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
 								//퀄리티 정보를  세팅한다.
 								pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, SPCImageQuality);
@@ -1373,7 +1375,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 										pFrmRsltInfo->m_nWidth;
 										CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 										BYTE* pImgSavePtr;
-										pImgSavePtr = new BYTE[nImgSize];
+										pImgSavePtr = new BYTE[nImgSize + 1];
+										memset(pImgSavePtr, 0x00, sizeof(BYTE)* nImgSize + 1);
 										memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
 										pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
 										pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
@@ -1408,7 +1411,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 										pFrmRsltInfo->m_nWidth;
 										CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 										BYTE* pImgSavePtr;
-										pImgSavePtr = new BYTE[nImgSize];
+										pImgSavePtr = new BYTE[nImgSize + 1];
+										memset(pImgSavePtr, 0x00, sizeof(BYTE)* nImgSize + 1);
 										CopyMemory(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
 										pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
 										pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);

@@ -41,12 +41,12 @@ CGraphCtrl::CGraphCtrl(int nDataNum)
 		if (m_pMemo[i] == NULL) {
 		//KANG 22.06.17 Modify Start
 		//	m_pMemo[i] = new BYTE[MAX_GRAPH_DATA_NUM];
-			m_pMemo[i] = new WORD[MAX_GRAPH_DATA_NUM];
+			m_pMemo[i] = new WORD[MAX_GRAPH_DATA_NUM + 1];
 		//KANG 22.06.17 Modify End	
 			if (m_pMemo[i] != NULL) {
 			//KANG 22.06.17 Modify Start
 			//	memset(m_pMemo[i], 0x00, (sizeof(BYTE) * MAX_GRAPH_DATA_NUM));
-				memset(m_pMemo[i], 0x00, (sizeof(WORD) * MAX_GRAPH_DATA_NUM));
+				memset(m_pMemo[i], 0x00, (sizeof(WORD) * MAX_GRAPH_DATA_NUM) + 1);
 			//KANG 22.06.17 Modify End
 				m_bDrawData[i] = TRUE;
 			}
