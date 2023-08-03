@@ -126,8 +126,6 @@ protected:
 
 
 
-
-
 	// 22.07.04 Ahn Add Start
 	CDeleteResultFileThread* m_pDeleteThread;
 	// 22.07.04 Ahn Add End
@@ -196,6 +194,17 @@ private :
 
 	void StartThreadAliveSiginal();
 	static UINT AliveThread(LPVOID lpParm);
+
+	void MelsecTheadRun();
+	void MelsecTheadStop();
+
+	friend UINT ThreadProc_Melsec(LPVOID);
+
+
+private:
+	static CCriticalSection	m_csMelsecThread;
+	CWinThread* m_pThread;
+
 
 
 // 22.06.27 Ahn Add Start
