@@ -456,7 +456,11 @@ void CNotchingGradeInspView::OnInitialUpdate()
 
 //	SetSignalCheckTimer();
 
+
+
 	MelsecTheadRun();
+
+	SetTimer(33333, 200, NULL);
 
 	StartThreadAliveSiginal();
 	SetLogTermTimer();
@@ -622,6 +626,8 @@ UINT ThreadProc_Melsec(LPVOID Param)
 			pView->m_nStatus = CNotchingGradeInspView::en_InspStop;
 			AprData.m_NowLotData.m_bProcError = TRUE;
 
+			pView->CameraGrabStop();
+
 			break;
 
 
@@ -649,8 +655,8 @@ UINT ThreadProc_Melsec(LPVOID Param)
 					{
 						AprData.LotEndProcess();
 						pView->m_bDebugLotEndReq = FALSE;
-						CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-						pFrame->ResetAndRefreshAll();
+//						CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+//						pFrame->ResetAndRefreshAll();
 					}
 				}
 				pView->CameraGrabStop(); // 22.07.07 Ahn Add - Stop Button이 Click 되어 있는 상태.
@@ -792,8 +798,9 @@ UINT ThreadProc_Melsec(LPVOID Param)
 
 				pView->m_bLotStartInitFlag = FALSE;
 
-				CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-				pFrame->ReflashAll();
+//				CMainFrame* pFrame = (CMainFrame*)theApp.m_pMainWnd; // AfxGetMainWnd();
+//				pFrame->ReflashAll();
+
 			}
 			else
 			{
@@ -986,8 +993,8 @@ UINT ThreadProc_Melsec(LPVOID Param)
 			}
 
 			{
-				CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-				pFrame->ReflashAll();
+//				CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+//				pFrame->ReflashAll();
 			}
 			break;
 
@@ -1033,6 +1040,57 @@ UINT ThreadProc_Melsec(LPVOID Param)
 
 void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 {
+	if (nIDEvent == 33333)
+	{
+		switch (m_nStatus)
+		{
+		case	en_InspStop:
+			if (IsInspReady() == TRUE)
+			{
+			}
+			else
+			{
+				if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE)
+				{
+					if (m_bDebugLotStartReq == TRUE)
+					{
+					}
+					else if (m_bDebugLotEndReq == TRUE)
+					{
+						CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+						pFrame->ResetAndRefreshAll();
+					}
+				}
+			}
+			break;
+
+
+
+		case	en_PrepareRun:
+			if (m_bLotStartInitFlag == TRUE)
+			{
+				CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+				pFrame->ReflashAll();
+			}
+
+			break;
+
+		case	en_Run:
+			CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+			pFrame->ReflashAll();
+			break;
+
+		}
+
+
+	}
+
+
+
+
+
+
+
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	if (nIDEvent == m_TID_IO_Check)
 	{
@@ -1067,14 +1125,12 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			if (GrabberResetReqest() == 0)
 			{
 				m_nCamErrorResetCnt = 0;
-				// m_pInspDlg->ChangeStatus(enInspRun);
 				ChangeStatus(enInspRun);
 			}
 			else
 			{
 				if (m_nCamErrorResetCnt > 3)
 				{
-					// m_pInspDlg->ChangeStatus(enInspStop);
 					ChangeStatus(enInspStop);
 					m_nStatus = en_Initialize;
 				}
@@ -1097,7 +1153,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		case	en_Initialize:
 			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Initialize"));
 
-//			pSigProc->SigOutReady(FALSE);
 			pSigProc->SigOutEncoderZeroSet(FALSE);
 			pSigProc->SigOutLotEndAck(FALSE);
 			pSigProc->SigOutLotStartAck(FALSE);
@@ -1980,8 +2035,8 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
 		pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 
-		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-		pFrame->ResetAndRefreshAll();
+//		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd(); //pyjtest
+//		pFrame->ResetAndRefreshAll(); //pyjtest
 	}
 	if ((bSigIn == FALSE) && (m_bLotEndFlag == TRUE))
 	{
@@ -2021,9 +2076,9 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 		pDoc->SetReqCounterReset(TRUE);
 
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-		pFrame->ResetAndRefreshAll();
-		pFrame->ReflashAll();
-		pFrame->ResetResultViewDlg();
+//		pFrame->ResetAndRefreshAll(); //pyjtest
+//		pFrame->ReflashAll(); //pyjtest
+//		pFrame->ResetResultViewDlg(); //pyjtest
 
 
 	}
@@ -2057,8 +2112,8 @@ int CNotchingGradeInspView::CheckLotStartProcess()
 			m_nStatus = en_Initialize;
 		}
 
-		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-		pFrame->ReflashAll();
+//		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd(); //pyjtest
+//		pFrame->ReflashAll();  //pyjtest
 	}
 	if ((bLotStartSigIn == FALSE) && (m_bLotStartFlag == TRUE))
 	{

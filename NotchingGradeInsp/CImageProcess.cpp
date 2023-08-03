@@ -8234,7 +8234,10 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 		pBndPtr = NULL;
 	}
 
-	delete[]pStdPtr;
+	if (pStdPtr != nullptr) {
+		delete[]pStdPtr;
+	}
+
 	pStdPtr = NULL;
 	delete[]pProcPtr;
 	pProcPtr = NULL;
