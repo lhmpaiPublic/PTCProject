@@ -34,6 +34,9 @@ public :
 	//객체 멤버를 접근 스래드 처리 함수
 	//스래드 프로세싱 감시 스래드 함수
 	void ThreadQueueCtrl_WatchThread();
+
+	//총 생성 큐 갯수
+	int getTotalQueueCount();
 protected :
 
 	CImageProcessCtrl* m_pParent;

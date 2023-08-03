@@ -211,8 +211,8 @@ void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 
 		nFrmQue1 = theApp.m_pImgProcCtrl->GetQueueFrmPtr(0)->GetSize();
 		nFrmQue2 = theApp.m_pImgProcCtrl->GetQueueFrmPtr(1)->GetSize();
-		nQueueCnt1 = theApp.m_pImgProcCtrl->GetThreadQueuePtr(0)->GetSize();
-		nQueueCnt2 = theApp.m_pImgProcCtrl->GetThreadQueuePtr(1)->GetSize();
+		nQueueCnt1 = theApp.m_pImgProcCtrl->GetThreadQueuePtr(0)->getTotalQueueCount();
+		nQueueCnt2 = theApp.m_pImgProcCtrl->GetThreadQueuePtr(1)->getTotalQueueCount();
 		nRsltQueCnt1 = theApp.m_pImgProcCtrl->GetResultPtr(0)->GetSize();
 		nRsltQUeCnt2 = theApp.m_pImgProcCtrl->GetResultPtr(1)->GetSize();
 		
