@@ -160,7 +160,7 @@ void CImageProcessCtrl::ImgProcWaitThread_Event_push(HANDLE hEvent)
 {
 	//출력 대기 이벤트 객체 동기화 객체 진입
 	::EnterCriticalSection(&m_csImgProcWaitThread_Event);
-	if (m_nImgProcWaitThread_ActiveCount == 0)
+	if (m_nImgProcWaitThread_ActiveCount != 0)
 	{
 		//출력 대기 이벤트 객체
 		m_pImgProcWaitThread_Event.push(hEvent);
@@ -180,11 +180,14 @@ void CImageProcessCtrl::ImgProcWaitThread_Event_pop()
 	//출력 대기 이벤트 객체 동기화 객체 진입
 	::EnterCriticalSection(&m_csImgProcWaitThread_Event);
 	//출력 대기 이벤트 객체
-	HANDLE hEvent = m_pImgProcWaitThread_Event.front();
-	m_pImgProcWaitThread_Event.pop();
-	if (hEvent)
+	if (m_pImgProcWaitThread_Event.size())
 	{
-		SetEvent(hEvent);
+		HANDLE hEvent = m_pImgProcWaitThread_Event.front();
+		m_pImgProcWaitThread_Event.pop();
+		if (hEvent)
+		{
+			SetEvent(hEvent);
+		}
 	}
 	//갯수 감소
 	m_nImgProcWaitThread_ActiveCount--;

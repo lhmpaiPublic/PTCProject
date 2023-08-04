@@ -28,7 +28,7 @@ class CDefectQueueCtrl ;
 class CTacTimeDataCtrl;
 // 22.12.09 Ahn Add End
 
-#define MAX_WAITETHREAD_MAKE 4
+#define MAX_WAITETHREAD_MAKE 3
 class CImageProcessCtrl
 {
 

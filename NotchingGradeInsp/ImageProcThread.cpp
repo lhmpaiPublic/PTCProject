@@ -907,6 +907,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
 					//일정한 시간이 지나도 처리하지 못했을 때
+					if (pUnitTop == NULL || pUnitBtm == NULL)
+					{
+						if (!(pUnitTop == NULL && pUnitBtm == NULL))
+						{
+							int a = 0;
+						}
+						break;
+					}
 					if (pUnitTop->eventProcEnd_WaitTime() && pUnitBtm->eventProcEnd_WaitTime())
 					{
 						HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -1169,6 +1177,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 결과 Queue에 보냄
 
 						// Counter 신호 출력
+						WaitForSingleObject(hEvent, INFINITE);
 						WORD wOutPut;
 						CString strMarking = _T("OFF");
 						{
