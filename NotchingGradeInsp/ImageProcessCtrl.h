@@ -27,6 +27,8 @@ class CDefectQueueCtrl ;
 // 22.12.09 Ahn Add Start
 class CTacTimeDataCtrl;
 // 22.12.09 Ahn Add End
+
+#define MAX_WAITETHREAD_MAKE 4
 class CImageProcessCtrl
 {
 
@@ -36,6 +38,14 @@ public:
 
 	int Top_FrameCtn;
 	int Bottom_FrameCtn;
+
+public:
+	//이미지 처리 스래드 (대기 스래드)
+	//출력 대기 이벤트 객체 push
+	void ImgProcWaitThread_Event_push(HANDLE hEvent);
+	//출력 대기 이벤트 객체 pop
+	void ImgProcWaitThread_Event_pop();
+
 private :
 	CGrabberCtrl* m_pGrabCtrl[GRABBER_COUNT];
 	int m_nImgProcIdx[GRABBER_COUNT];
@@ -57,7 +67,14 @@ private :
 	CCounterQueueCtrl* m_pQueueCounterIn;
 
 	//이미지 처리 스래드 (대기 스래드)
-	CImageProcThread* m_pImgProcWaitThread;
+	CImageProcThread* m_pImgProcWaitThread[MAX_WAITETHREAD_MAKE];
+	//출력 대기 이벤트 객체
+	std::queue< HANDLE > m_pImgProcWaitThread_Event;
+	//출력 대기 이벤트 객체 동기화 객체
+	CRITICAL_SECTION m_csImgProcWaitThread_Event;
+	//스래드 활성화 갯수
+	int m_nImgProcWaitThread_ActiveCount;
+	
 
 	//이미지 Cut Tab 스래드
 	CImageProcThread* m_pImgCutTabThread;
