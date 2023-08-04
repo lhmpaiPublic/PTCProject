@@ -35,7 +35,6 @@
 #define THREAD_MODE_CUT_TAB 0 
 #define THREAD_MODE_PROC 1
 
-
 CImageProcessCtrl::CImageProcessCtrl(void)
 {
 	int i;
@@ -106,9 +105,18 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 	//	pThread->Begin(THREAD_MODE_PROC);
 	//}
 	
+	//이미지 처리 스래드 (대기 스래드)
+	//출력 대기 이벤트 객체 동기화 객체 초기화
+	::InitializeCriticalSection(&m_csImgProcWaitThread_Event);
+	//스래드 활성화 갯수 초기화 0
+	m_nImgProcWaitThread_ActiveCount = 0;
+
 	//이미지 처리 대기 스래드 객체 생성
-	m_pImgProcWaitThread = new CImageProcThread(this);
-	m_pImgProcWaitThread->Begin(THREAD_MODE_PROC);
+	for (int i = 0; i < MAX_WAITETHREAD_MAKE; i++)
+	{
+		m_pImgProcWaitThread[i] = new CImageProcThread(this);
+		m_pImgProcWaitThread[i]->Begin(THREAD_MODE_PROC);
+	}
 	// 21.11.11 Ahn Delete End
 
 	m_DefDataCtrl.RemoveAll();
@@ -144,6 +152,44 @@ CImageProcessCtrl::CImageProcessCtrl(void)
 		::InitializeCriticalSection(&m_csLastImg[i]);
 	}
 #endif
+}
+
+//이미지 처리 스래드 (대기 스래드)
+//출력 대기 이벤트 객체 push
+void CImageProcessCtrl::ImgProcWaitThread_Event_push(HANDLE hEvent)
+{
+	//출력 대기 이벤트 객체 동기화 객체 진입
+	::EnterCriticalSection(&m_csImgProcWaitThread_Event);
+	if (m_nImgProcWaitThread_ActiveCount == 0)
+	{
+		//출력 대기 이벤트 객체
+		m_pImgProcWaitThread_Event.push(hEvent);
+	}
+	else
+	{
+		SetEvent(hEvent);
+	}
+	//갯수 증가
+	m_nImgProcWaitThread_ActiveCount++;
+	//출력 대기 이벤트 객체 동기화 객체 통과
+	::LeaveCriticalSection(&m_csImgProcWaitThread_Event);
+}
+//출력 대기 이벤트 객체 pop
+void CImageProcessCtrl::ImgProcWaitThread_Event_pop()
+{
+	//출력 대기 이벤트 객체 동기화 객체 진입
+	::EnterCriticalSection(&m_csImgProcWaitThread_Event);
+	//출력 대기 이벤트 객체
+	HANDLE hEvent = m_pImgProcWaitThread_Event.front();
+	m_pImgProcWaitThread_Event.pop();
+	if (hEvent)
+	{
+		SetEvent(hEvent);
+	}
+	//갯수 감소
+	m_nImgProcWaitThread_ActiveCount--;
+	//출력 대기 이벤트 객체 동기화 객체 통과
+	::LeaveCriticalSection(&m_csImgProcWaitThread_Event);
 }
 
 // 22.05.09 Ahn Add Start
@@ -264,12 +310,20 @@ int CImageProcessCtrl::Destroy()
 	//	pThread = NULL;
 	//	m_vecThread.erase(m_vecThread.begin());
 	//}
-	
+
+	//이미지 처리 스래드 (대기 스래드)
+	//출력 대기 이벤트 객체 동기화 객체 종료
+	::DeleteCriticalSection(&m_csImgProcWaitThread_Event);
+	//스래드 활성화 갯수 초기화 0
+	m_nImgProcWaitThread_ActiveCount = 0;
 	//이미지 처리 대기 스래드
-	if (m_pImgProcWaitThread != NULL) {
-		m_pImgProcWaitThread->Kill();
-		delete m_pImgProcWaitThread;
-		m_pImgProcWaitThread = NULL;
+	for (int i = 0; i < MAX_WAITETHREAD_MAKE; i++)
+	{
+		if (m_pImgProcWaitThread[i] != NULL) {
+			m_pImgProcWaitThread[i]->Kill();
+			delete m_pImgProcWaitThread[i];
+			m_pImgProcWaitThread[i] = NULL;
+		}
 	}
 	// 21.11.11 Ahn Delete End
 

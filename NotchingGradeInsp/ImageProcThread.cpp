@@ -909,7 +909,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					//일정한 시간이 지나도 처리하지 못했을 때
 					if (pUnitTop->eventProcEnd_WaitTime() && pUnitBtm->eventProcEnd_WaitTime())
 					{
-
+						HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+						pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
 
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
@@ -1492,6 +1493,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							bClearFlag = FALSE;// 22.03.28 Ahn Add
 						}
 
+						pThis->m_pParent->ImgProcWaitThread_Event_pop();
+						CloseHandle(hEvent);
 						break;
 					}
 				}
