@@ -149,9 +149,11 @@ void CCropImageViewDlg::OnTimer(UINT_PTR nIDEvent)
 				if (data.m_bEnable == TRUE)
 				{
 					m_CropThumbCtrl.AddImageBufferMode(data.m_strFileName, data.m_strDispName);
+					SendMessage(WM_CROPIMAGEDRAW);
+
 				}
 			}
-			SendMessage(WM_CROPIMAGEDRAW);
+//			SendMessage(WM_CROPIMAGEDRAW);
 		}
 		//UpdateData(FALSE);
 		SetCropViewTimer();

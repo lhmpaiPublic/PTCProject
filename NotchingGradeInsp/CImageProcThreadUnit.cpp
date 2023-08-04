@@ -548,7 +548,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//::_tcsnccpy_s(pFrameRsltInfo->m_pTabRsltInfo->m_chCropPath, _countof(pFrameRsltInfo->m_pTabRsltInfo->m_chCropPath), strFilePath.GetBuffer(0), _TRUNCATE);
 
 					//bSaveCrop TRUE이면 Tab 결과 정보 Crop 이미지 플레그를 TRUE로 설정
-					if (bSaveCrop == TRUE && pFrmInfo->m_bErrorFlag == FALSE && pFrmInfo->m_bOverFlow == FALSE )
+					//if (bSaveCrop == TRUE && pFrmInfo->m_bErrorFlag == FALSE && pFrmInfo->m_bOverFlow == FALSE)
+					if (bSaveCrop == TRUE )
 					{
 						pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = TRUE;
 

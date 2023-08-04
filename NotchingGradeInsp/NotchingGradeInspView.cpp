@@ -454,13 +454,12 @@ void CNotchingGradeInspView::OnInitialUpdate()
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 
-//	SetSignalCheckTimer();
+	SetSignalCheckTimer();
 
 
 
-	MelsecTheadRun();
-
-	SetTimer(33333, 200, NULL);
+//	MelsecTheadRun();
+//	SetTimer(33333, 200, NULL);
 
 	StartThreadAliveSiginal();
 	SetLogTermTimer();
@@ -1040,7 +1039,7 @@ UINT ThreadProc_Melsec(LPVOID Param)
 
 void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 {
-	if (nIDEvent == 33333)
+/*	if (nIDEvent == 33333)
 	{
 		switch (m_nStatus)
 		{
@@ -1087,7 +1086,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 
-
+	*/
 
 
 
@@ -1661,7 +1660,7 @@ void CNotchingGradeInspView::CheckDiskSpace()
 
 BOOL CNotchingGradeInspView::SetSignalCheckTimer()
 {
-//	m_TID_IO_Check = SetTimer(T_ID_IO_CHECK, 50/*10*/, NULL);
+	m_TID_IO_Check = SetTimer(T_ID_IO_CHECK, 50/*10*/, NULL);
 	return FALSE;
 }
 BOOL CNotchingGradeInspView::KillSignalCheckTimer()
