@@ -133,7 +133,7 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 		LOGDISPLAY_SPEC(5)("<<Proc>> TabNo<%d> Qsize<%d> : CThreadQueueCtrl::push Overflow",
 			pFrmInfo->nTabNo, totalQueueSize);
 		//저장큐가 Over Flow 값 설정
-		pFrmInfo->m_bOverFlow = TRUE;
+		pFrmInfo->m_bOverFlow = FALSE;
 
 	}
 
