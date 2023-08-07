@@ -14,7 +14,7 @@
 #include "LogDisplayDlg.h"
 
 #define WAITEVENTTIME_PROCEND 5
-#define MAX_WAITEVENTTIME_PROCEND 10000
+#define MAX_WAITEVENTTIME_PROCEND 200
 
 
 // CImageProcThreadUnit
@@ -1289,13 +1289,13 @@ BOOL CImageProcThreadUnit::IsProcEnd()
 }
 
 //EVENT 결과 
-BOOL CImageProcThreadUnit::eventProcEnd_WaitTime()
+int CImageProcThreadUnit::eventProcEnd_WaitTime()
 {
-	BOOL b = FALSE;
+	int retval = 0;
 	++ProcEnd_WaitCount;
 	DWORD ret = ::WaitForSingleObject(m_hEventProcEnd, WAITEVENTTIME_PROCEND);
 	if(ret == WAIT_OBJECT_0)
-		b = TRUE;
+		retval = 1;
 	if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
 	{
 		//파일저장 프레임 결과 정보에 저장한다.
@@ -1309,9 +1309,9 @@ BOOL CImageProcThreadUnit::eventProcEnd_WaitTime()
 		
 		//타임아웃 여부 변수
 		m_bTimeOut = TRUE;
-		b = TRUE;
+		retval = 2;
 	}
-	return b;
+	return retval;
 }
 
 int CImageProcThreadUnit::ForceStop()

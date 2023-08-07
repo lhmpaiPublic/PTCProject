@@ -171,6 +171,8 @@ void CImageProcessCtrl::ImgProcWaitThread_Event_push(HANDLE hEvent)
 	}
 	//갯수 증가
 	m_nImgProcWaitThread_ActiveCount++;
+	if (m_nImgProcWaitThread_ActiveCount > MAX_WAITETHREAD_MAKE)
+		m_nImgProcWaitThread_ActiveCount = MAX_WAITETHREAD_MAKE;
 	//출력 대기 이벤트 객체 동기화 객체 통과
 	::LeaveCriticalSection(&m_csImgProcWaitThread_Event);
 }
@@ -191,6 +193,8 @@ void CImageProcessCtrl::ImgProcWaitThread_Event_pop()
 	}
 	//갯수 감소
 	m_nImgProcWaitThread_ActiveCount--;
+	if (m_nImgProcWaitThread_ActiveCount < 0)
+		m_nImgProcWaitThread_ActiveCount = 0;
 	//출력 대기 이벤트 객체 동기화 객체 통과
 	::LeaveCriticalSection(&m_csImgProcWaitThread_Event);
 }

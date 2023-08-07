@@ -894,6 +894,25 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				pUnitTop = pThdQue[CAM_POS_TOP]->pop();
 				pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
 
+				//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
+				//일정한 시간이 지나도 처리하지 못했을 때
+				if (pUnitTop == NULL || pUnitBtm == NULL)
+				{
+					if (!(pUnitTop == NULL && pUnitBtm == NULL))
+					{
+						int a = 0;
+					}
+					continue;
+				}
+
+				//이미지 처리 스래드 (대기 스래드)
+				//출력 대기 이벤트 객체 push
+				HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+				//Pop를 한번만 할 수 있도록
+				bool bEventPop = false;
+				//순서대로 push 저장한다.
+				pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
+
 				while (1)
 				{
 
@@ -905,21 +924,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					LARGE_INTEGER stTime;
 					// 22.12.09 Ahn Add End
 
-					//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
-					//일정한 시간이 지나도 처리하지 못했을 때
-					if (pUnitTop == NULL || pUnitBtm == NULL)
+					if ((pUnitTop->eventProcEnd_WaitTime()==1) && (pUnitBtm->eventProcEnd_WaitTime()==1))
 					{
-						if (!(pUnitTop == NULL && pUnitBtm == NULL))
-						{
-							int a = 0;
-						}
-						break;
-					}
-					if (pUnitTop->eventProcEnd_WaitTime() && pUnitBtm->eventProcEnd_WaitTime())
-					{
-						HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-						pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
-
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
 
@@ -1502,11 +1508,25 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							bClearFlag = FALSE;// 22.03.28 Ahn Add
 						}
 
-						pThis->m_pParent->ImgProcWaitThread_Event_pop();
-						CloseHandle(hEvent);
 						break;
 					}
+					else if ((pUnitTop->eventProcEnd_WaitTime() == 2) || (pUnitBtm->eventProcEnd_WaitTime() == 2))
+					{
+						//출력 대기 이벤트 객체 pop, 이벤트 닫기
+						if (bEventPop == false)
+						{
+							pThis->m_pParent->ImgProcWaitThread_Event_pop();
+							bEventPop = true;
+						}
+					}
 				}
+				//출력 대기 이벤트 객체 pop, 이벤트 닫기
+				if (bEventPop == false)
+				{
+					pThis->m_pParent->ImgProcWaitThread_Event_pop();
+					bEventPop = true;
+				}
+				CloseHandle(hEvent);
 			}
 			//Sleep(AprData.m_nSleep);
 		}

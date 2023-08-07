@@ -55,7 +55,7 @@ public:
 	int Kill();
 	BOOL IsProcEnd();
 	//EVENT 결과 
-	BOOL eventProcEnd_WaitTime();
+	int eventProcEnd_WaitTime();
 
 	int ForceStop();	
 	void SendResult();
