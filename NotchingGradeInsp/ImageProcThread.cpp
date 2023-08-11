@@ -81,6 +81,22 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 		}
 	}
 }
+
+void CImageProcThread::CreateDioMarkingThread(WORD* nOutPutData)
+{
+	CWinThread* pDioMarkingThread = AfxBeginThread((AFX_THREADPROC)DioMarkingThreadProc,
+		(LPVOID)nOutPutData,
+		THREAD_PRIORITY_HIGHEST,
+		0,
+		CREATE_SUSPENDED,
+		NULL);
+	if (pDioMarkingThread != NULL) {
+		pDioMarkingThread->m_bAutoDelete = TRUE;
+		pDioMarkingThread->ResumeThread();
+	}
+}
+
+
 void CImageProcThread::Kill( void ) 
 {
 	// source file
@@ -99,6 +115,27 @@ void CImageProcThread::Kill( void )
 		m_pThread->m_hThread = NULL;
 	}
 
+}
+
+//Dio Marking Thread Proc 함수
+UINT CImageProcThread::DioMarkingThreadProc(LPVOID pParam)
+{
+	WORD nOutPutData = *(WORD*)pParam;
+	delete pParam;
+
+	CAppDIO dio;
+
+	AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> Call Enter"));
+
+	dio.OutputWord(nOutPutData);
+
+	AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>"),
+		(nOutPutData>>2), nOutPutData);
+
+	Sleep(20);
+	dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+
+	return 0;
 }
 
 
@@ -829,6 +866,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	return 0;
 }
 
+
+
 #define IMAGEPROCTHREAD_RESULT_TIMEOUT 10
 #define IMAGEPROCTHREAD_RESULTWAITE_TIMEOUT 5
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
@@ -1187,9 +1226,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						WORD wOutPut;
 						CString strMarking = _T("OFF");
 						{
-							CAppDIO dio;
+							
 							int nMarkSel1 = 0;
 							int nMarkSel2 = 0;
+							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Marking Event> Enter"));
 
 							// 22.07.19 Ahn Modify Start
 							GetMarkingFlag(AprData.m_pRecipeInfo, nTopJudge, nBtmJudge, pTopInfo->m_pTabRsltInfo->m_wNgReason, pBtmInfo->m_pTabRsltInfo->m_wNgReason, nMarkSel1, nMarkSel2);
@@ -1206,14 +1246,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							}
 
 							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
-							dio.OutputWord(wOutPut);
+
+							WORD* nOutPutData = new WORD(wOutPut);
+							pThis->CreateDioMarkingThread(nOutPutData);
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>, Tab Cnt<%d>"),
 								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1);
-
-
-							Sleep(20);
-							dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+							
 
 							CString strMsg;
 							strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),

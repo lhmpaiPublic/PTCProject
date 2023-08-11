@@ -32,6 +32,9 @@ public:
 	~CImageProcThread(void);
 
 	void Begin( int nMode ) ;
+
+	void CreateDioMarkingThread(WORD* nOutPutData);
+
 	void Kill( void ) ;
 	static WORD GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2);
 
@@ -78,6 +81,9 @@ protected:
 
 	//이미지 분석을 위한 검사영역 Cutting Tab 스래드 함수
 	static UINT CtrlThreadImgCuttingTab(LPVOID Param) ;
+
+	//Dio Marking Thread Proc 함수
+	static UINT DioMarkingThreadProc(LPVOID pParam);
 
 
 	//레시피 정보에 설정된 마킹 방식이 저장된 방법을 가져온다.

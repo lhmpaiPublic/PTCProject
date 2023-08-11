@@ -13,8 +13,8 @@
 #include "TimeAnalyzer.h"
 #include "LogDisplayDlg.h"
 
-#define WAITEVENTTIME_PROCEND 5
-#define MAX_WAITEVENTTIME_PROCEND 200
+#define WAITEVENTTIME_PROCEND 20
+#define MAX_WAITEVENTTIME_PROCEND 10000
 
 
 // CImageProcThreadUnit
