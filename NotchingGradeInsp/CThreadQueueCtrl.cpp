@@ -120,32 +120,40 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 	//생성된 총 Unit 큐 사이즈
 	int totalQueueSize = getTotalQueueCount();
 
-	//이미지 저리 결과 마킹 최종 결과를 생성하기 위한 스래드 생성
-	CImageProcThreadUnit* pThread = new CImageProcThreadUnit(pFrmInfo);
-
-	int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
-	// 큐가 오버되었으면
-	if (nOverflowMax <= totalQueueSize)
+	if (pFrmInfo)
 	{
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax) ;
+		//이미지 저리 결과 마킹 최종 결과를 생성하기 위한 스래드 생성
+		CImageProcThreadUnit* pThread = new CImageProcThreadUnit(pFrmInfo);
 
-		LOGDISPLAY_SPEC(5)("<<Proc>> TabNo<%d> Qsize<%d> : CThreadQueueCtrl::push Overflow",
-			pFrmInfo->nTabNo, totalQueueSize);
-		//저장큐가 Over Flow 값 설정
-		pFrmInfo->m_bOverFlow = FALSE;
+		if (pThread)
+		{
+			int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
+			// 큐가 오버되었으면
+			if (nOverflowMax <= totalQueueSize)
+			{
+				//DEBUG_LOG.txt
+				AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax);
 
+				LOGDISPLAY_SPEC(5)("<<Proc>> TabNo<%d> Qsize<%d> : CThreadQueueCtrl::push Overflow",
+					pFrmInfo->nTabNo, totalQueueSize);
+				//저장큐가 Over Flow 값 설정
+				pFrmInfo->m_bOverFlow = FALSE;
+
+			}
+
+			pThread->Begin();
+
+			::EnterCriticalSection(&m_csWatchQueue);
+			//스래드객체 저장큐에 저장
+			m_pWatchQueBuffer.push(pThread);
+
+			::LeaveCriticalSection(&m_csWatchQueue);
+
+			totalQueueSize = getTotalQueueCount();
+		}
 	}
 
-	pThread->Begin();
-
-	::EnterCriticalSection(&m_csWatchQueue);
-	//스래드객체 저장큐에 저장
-	m_pWatchQueBuffer.push(pThread);
-
-	::LeaveCriticalSection(&m_csWatchQueue);
-
-	return getTotalQueueCount();
+	return totalQueueSize;
 }
 
 void CThreadQueueCtrl::push(CImageProcThreadUnit* pThread)

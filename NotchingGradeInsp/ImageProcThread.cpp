@@ -870,6 +870,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 #define IMAGEPROCTHREAD_RESULT_TIMEOUT 10
 #define IMAGEPROCTHREAD_RESULTWAITE_TIMEOUT 5
+
+#define DIOMARKINGEVENT_TIMEOUT 1000
+
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {
 	//스래드생성 시 넘긴 객체 포인터
@@ -929,7 +932,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			//위 함수 CtrlThreadImgCuttingTab Tab 정보를 찾는 스래드에서
 			//GetThreadQueuePtr(i) Queue 에 push 되면 처리를 탄다.
 			//처리를 하여 결과 정보 저장 Queue pRsltQueueCtrl 에 저장된다.
-			if (!pThdQue[CAM_POS_TOP]->IsEmpty() && !pThdQue[CAM_POS_BOTTOM]->IsEmpty()) {
+			if (!pThdQue[CAM_POS_TOP]->IsEmpty() && !pThdQue[CAM_POS_BOTTOM]->IsEmpty()) 
+			{
 				pUnitTop = pThdQue[CAM_POS_TOP]->pop();
 				pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
 
@@ -1222,7 +1226,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 결과 Queue에 보냄
 
 						// Counter 신호 출력
-						WaitForSingleObject(hEvent, INFINITE);
+						WaitForSingleObject(hEvent, DIOMARKINGEVENT_TIMEOUT);
 						WORD wOutPut;
 						CString strMarking = _T("OFF");
 						{
@@ -1523,9 +1527,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
 
 
-						delete pUnitTop;
-						delete pUnitBtm;
-
 						AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
 
 						// 22.04.06 Ahn Modify Start
@@ -1559,6 +1560,18 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 					}
 				}
+
+				if (pUnitTop)
+				{
+					delete pUnitTop;
+					pUnitTop = NULL;
+				}
+				if (pUnitBtm)
+				{
+					delete pUnitBtm;
+					pUnitBtm = NULL;
+				}
+
 				//출력 대기 이벤트 객체 pop, 이벤트 닫기
 				if (bEventPop == false)
 				{

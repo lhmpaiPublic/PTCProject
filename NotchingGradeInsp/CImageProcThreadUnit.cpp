@@ -1294,9 +1294,12 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 	int retval = 0;
 	++ProcEnd_WaitCount;
 	DWORD ret = ::WaitForSingleObject(m_hEventProcEnd, WAITEVENTTIME_PROCEND);
-	if(ret == WAIT_OBJECT_0)
+	if (ret == WAIT_OBJECT_0)
+	{
+		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> LoopCount<%d>"), ProcEnd_WaitCount);
 		retval = 1;
-	if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
+	}
+	else if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
 	{
 		//파일저장 프레임 결과 정보에 저장한다.
 		m_pFrmRsltInfo->Copy(m_pFrmInfo);
