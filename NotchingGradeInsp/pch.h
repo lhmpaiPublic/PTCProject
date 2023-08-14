@@ -24,6 +24,8 @@ using namespace Gdiplus;
 #pragma comment(lib, "AxL.lib")
 #endif
 
+#pragma comment(linker, "/HEAP:4000000000")
+
 //SPC 객체 소스에서 컴파일 여부 결정
 //SPC+ 생성을 위한 플래그
 //#define SPCPLUS_CREATE

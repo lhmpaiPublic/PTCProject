@@ -7500,23 +7500,23 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	AprData.SaveTactLog(strTactLog);
 #endif
 
-	if (bSimMode == TRUE) {
-		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight + 1];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	//if (bSimMode == TRUE) {
+	//	BYTE* pBndPtr = NULL;
+	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
+	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
-		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
-		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
-		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
+	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
+	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
 
-		delete[] pBndPtr;
-		pBndPtr = NULL;
-	}
+	//	delete[] pBndPtr;
+	//	pBndPtr = NULL;
+	//}
 
 	delete[]pStdPtr;
 	pStdPtr = NULL;
@@ -8947,24 +8947,24 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	AprData.SaveTactLog(strTactLog);
 #endif
 
-	if (bSimMode == TRUE) {
-		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight + 1];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	//if (bSimMode == TRUE) {
+	//	BYTE* pBndPtr = NULL;
+	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
+	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
-		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
-		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
-		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
-		//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
+	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
+	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
 
-		delete[] pBndPtr;
-		pBndPtr = NULL;
-	}
+	//	delete[] pBndPtr;
+	//	pBndPtr = NULL;
+	//}
 
 	delete[]pStdPtr;
 	pStdPtr = NULL;

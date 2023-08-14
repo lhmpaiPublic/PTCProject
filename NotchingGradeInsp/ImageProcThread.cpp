@@ -951,8 +951,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				//이미지 처리 스래드 (대기 스래드)
 				//출력 대기 이벤트 객체 push
 				HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-				//Pop를 한번만 할 수 있도록
-				bool bEventPop = false;
 				//순서대로 push 저장한다.
 				pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
 
@@ -967,7 +965,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					LARGE_INTEGER stTime;
 					// 22.12.09 Ahn Add End
 
-					if ((pUnitTop->eventProcEnd_WaitTime()==1) && (pUnitBtm->eventProcEnd_WaitTime()==1))
+					int topWaitVal = pUnitTop->eventProcEnd_WaitTime();
+					int btmWaitVal = pUnitBtm->eventProcEnd_WaitTime();
+
+					if ((topWaitVal == 1) && (btmWaitVal == 1))
 					{
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
@@ -1550,14 +1551,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						break;
 					}
-					else if ((pUnitTop->eventProcEnd_WaitTime() == 2) || (pUnitBtm->eventProcEnd_WaitTime() == 2))
+					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
 						//출력 대기 이벤트 객체 pop, 이벤트 닫기
-						if (bEventPop == false)
-						{
-							pThis->m_pParent->ImgProcWaitThread_Event_pop();
-							bEventPop = true;
-						}
+						break;
 					}
 				}
 
@@ -1573,11 +1570,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				}
 
 				//출력 대기 이벤트 객체 pop, 이벤트 닫기
-				if (bEventPop == false)
-				{
-					pThis->m_pParent->ImgProcWaitThread_Event_pop();
-					bEventPop = true;
-				}
+				pThis->m_pParent->ImgProcWaitThread_Event_pop();
 				CloseHandle(hEvent);
 			}
 			//Sleep(AprData.m_nSleep);
