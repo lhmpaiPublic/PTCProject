@@ -14,7 +14,7 @@
 #include "LogDisplayDlg.h"
 
 #define WAITEVENTTIME_PROCEND 20
-#define MAX_WAITEVENTTIME_PROCEND 10000
+#define MAX_WAITEVENTTIME_PROCEND 500
 
 
 // CImageProcThreadUnit
@@ -1299,20 +1299,23 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> LoopCount<%d>"), ProcEnd_WaitCount);
 		retval = 1;
 	}
-	else if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
+	else if (ret == WAIT_TIMEOUT)
 	{
-		//파일저장 프레임 결과 정보에 저장한다.
-		m_pFrmRsltInfo->Copy(m_pFrmInfo);
-		m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
-		m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
+		if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
+		{
+			//파일저장 프레임 결과 정보에 저장한다.
+			m_pFrmRsltInfo->Copy(m_pFrmInfo);
+			m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
+			m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
 
-		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> eventProcEnd_WaitTime TimeOut"));
+			AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> eventProcEnd_WaitTime TimeOut"));
 
-		theApp.ErrOutput("eventProcEnd_WaitTime", CErrorStatus::en_ProcessError);
-		
-		//타임아웃 여부 변수
-		m_bTimeOut = TRUE;
-		retval = 2;
+			theApp.ErrOutput("eventProcEnd_WaitTime", CErrorStatus::en_ProcessError);
+
+			//타임아웃 여부 변수
+			m_bTimeOut = TRUE;
+			retval = 2;
+		}
 	}
 	return retval;
 }
