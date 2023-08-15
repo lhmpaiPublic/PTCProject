@@ -40,6 +40,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	//TOP/BOTTOM 설정 값
 	char szPos[2][8] = { "TAB","BTM" };
 
+	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ThreadEnter",
+		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+		);
+
 	while (TRUE) 
 	{
 		//ImageProc: 이미지 처리 스래드가 종료 이벤트가 발생했는가 체크
@@ -182,7 +186,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같다면 실행
 					if (pFrmInfo->m_nHeadNo == CAM_POS_TOP)
 					{
-						
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - TopProc",
+							(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+							);
+
 						//Tab Left >0, Tab Right  < 0  이면 실행 Left이면 실행
 						if ((nTabLeft > 0) && (nTabRight < nHeight)) {
 							
@@ -205,9 +212,17 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								rcPrj.right = nWidth;
 
 								int nCount = CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rcPrj, DIR_VER, 10, 0);
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
+
 								// 경계 검출
 								int nUpper = 20 * nCount;
 								int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0, 0);
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetBundary_FromPrjData",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
+
 								nTabLevel = nBundary - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
 
 								if (nTabLevel <= 0 || nTabLevel >= nWidth-1 )
@@ -231,6 +246,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								{
 									//이미지 프로세서 Top Bright Roll 처리
 									nLocalRet = CImageProcess::ImageProcessTopSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
+
+									LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessTopSide_BrightRoll",
+										(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+										);
 									
 								}
 								//Roll Bright Mode Top 가 아니면 ImageProcessTopSide_Negative 실행
@@ -238,6 +257,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								{
 									//이미지 프로세서 처리 Top Side Negative 처리
 									nLocalRet = CImageProcess::ImageProcessTopSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
+
+									LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessTopSide_Negative",
+										(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+										);
 								
 								}
 								// 23.02.16 Ahn Modify End
@@ -274,8 +297,16 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 
 								BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[nHeadNo] == 1) ? FALSE : TRUE;
+
 								CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection 1",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
+
 								nTabLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - FindBoundary_FromPrjData 1",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
 
 
 
@@ -289,7 +320,15 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								}
 
 								CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection 2",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
+
 								nTabLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - FindBoundary_FromPrjData 2",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
+
 
 
 
@@ -320,6 +359,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 								// 이미지 프로세서 Top Side AreaDiff
 								nLocalRet = CImageProcess::ImageProcessTopSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
+
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessTopSide_AreaDiff",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
 							
 							}
 							// 22.05.30 Ahn Modify End
@@ -373,6 +416,11 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 							//이미지 처리 프로세서 함수 ImageProcessDetectSurface 
 							nLocalRet = CImageProcess::ImageProcessDetectSurface(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, rcArea, pFrameRsltInfo->m_pTabRsltInfo, CAM_POS_TOP, FALSE);
+							LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessDetectSurface",
+								(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								);
+
+
 							dSurfaceTact = ctAna.WhatTimeIsIt_Double();
 
 
@@ -385,6 +433,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					else 
 					{
 						AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Btm nLevel=%d"), nTabLevel);
+
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - BottomProc",
+							(pFrmInfo->m_nHeadNo == CAM_POS_TOP)? "Top":"Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+							);
 
 
 						//실행시간 체크 시작
@@ -403,17 +455,26 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//Tabcond Roll Bright Mode 가 Bottom 이면 ImageProcessBottomSide_BrightRoll 실행
 							if (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) {
 								nLocalRet = CImageProcess::ImageProcessBottomSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessBottomSide_BrightRoll",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
 								
 							} 
 							//Tabcond Roll Bright Mode 가 Top 이면 ImageProcessBottomSide_Negative 실행
 							else {
 								nLocalRet = CImageProcess::ImageProcessBottomSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
+								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessBottomSide_Negative",
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									);
 							
 							}
 						}
 						//Machine Mode 가 음극이면 ImageProcessBottomSide_AreaDiff 실행
 						else {
 							nLocalRet = CImageProcess::ImageProcessBottomSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
+							LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessBottomSide_AreaDiff",
+								(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								);
 						
 						}
 
@@ -445,6 +506,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 							//설정한 영역 검사 ImageProcessDetectSurface 함수를 호출한다.
 							nLocalRet = CImageProcess::ImageProcessDetectSurface(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, rcArea, pFrameRsltInfo->m_pTabRsltInfo, CAM_POS_BOTTOM, FALSE);
+
+							LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessDetectSurface",
+								(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								);
 							
 							//처리시간을 가져온다.
 							dSurfaceTact = ctAna.WhatTimeIsIt_Double();
@@ -460,6 +525,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//Tab 정보가 없을 때  ? 또는 Over Flow이면
 				else
 				{
+					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Errorflag - Overflow",
+						(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+						);
+
 					// Top 결과 정보  m_pTabRsltInfo  /NG 설정
 					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG; // 강제 NG 처리	
 					pFrameRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((pFrameRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
@@ -487,8 +556,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					 {
 						 strNgType = "OVERFLOW";
 					 }
-					 LOGDISPLAY_SPEC(5)("<<Proc>> <%s> : NgType<%s> None Processing",
-						 (pFrameRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", strNgType);
+
 
 				}
 
@@ -717,22 +785,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				
 				//============================================================================================
 
-
-				//프레임 정보 로컬 객체 삭제
-				if (pFrmInfo != NULL) {
-					delete pFrmInfo;
-					pFrmInfo = NULL;
-				}
-
-
 				// 처리 완료
 				//if (::WaitForSingleObject(pCtrl->m_hEventProcEnd, 0) != WAIT_OBJECT_0) {
 				//	::SetEvent(pCtrl->m_hEventProcEnd);
 
 				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> SetEventProcEnd : nHeadNo = %d"), nHeadNo);
 
-				if(pCtrl->bThreadClose == false)
-					pCtrl->SetEventProcEnd();
+				pCtrl->SetEventProcEnd();
 				break;
 				//}
 			} //Proc Start 이벤트 샐행 루프 빠져나감
@@ -745,6 +804,16 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	//CFrameInfo 객체의 Kill 이벤트 설정
 	::SetEvent(pCtrl->m_hEventKilled);
 
+	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ThreadExit",
+		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+		);
+
+	//프레임 정보 로컬 객체 삭제
+	if (pFrmInfo != NULL) {
+		delete pFrmInfo;
+		pFrmInfo = NULL;
+	}
+
 	return 0;
 }
 
@@ -754,7 +823,9 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 {
 //	m_pQueueCtrl = pQueueCtrl;
 
-	bThreadClose = false;
+	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Create",
+		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+		);
 
 	//ImageProc Proc Start 이벤트 객체 생성
 	m_hEventProcStart = ::CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -798,7 +869,10 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 	//}
 	// 22.02.18 Ahn Delete End
 
-	bThreadClose = true;
+	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Delete",
+		(m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", m_pFrmInfo->nTabNo, m_pFrmInfo->m_nTabId_CntBoard
+		);
+
 	//이벤트 객체 종료
 	::CloseHandle(m_hEventProcStart);
 	::CloseHandle(m_hEventRun);

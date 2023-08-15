@@ -35,9 +35,9 @@ CString strLogNameList =
 "1 TabID_ImageCount_TabCount_1 0,"
 "2 PLC_Live_BitData_2 0,"
 "3 SPCPlus_3 0,"
-"4 TACTIME_4 1,"
-"5 Proc_5 1,"
-"6 Non_6 0,"
+"4 TACTIME_4 0,"
+"5 Proc_5 0,"
+"6 UnitThread_6 1,"
 "100 END 0"
 ;
 

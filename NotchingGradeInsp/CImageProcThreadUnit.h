@@ -66,7 +66,6 @@ public:
 
 	BOOL getTimeOut() { return m_bTimeOut; }
 
-	bool bThreadClose;
 protected:
 	DECLARE_MESSAGE_MAP()
 };

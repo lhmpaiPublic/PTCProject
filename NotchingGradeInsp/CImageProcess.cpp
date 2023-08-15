@@ -7715,23 +7715,23 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockFoilExp, pRecipeInfo, pTabRsltInfo, CAM_POS_BOTTOM, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_BrightRoll> <AddDefectInfoByBlockInfo> Finish") );
 
-	if (bSimMode == TRUE) {
-		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight + 1];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	//if (bSimMode == TRUE) {
+	//	BYTE* pBndPtr = NULL;
+	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
+	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
-		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
-		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
-		//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
+	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
 
-		delete[] pBndPtr;
-		pBndPtr = NULL;
-	}
+	//	delete[] pBndPtr;
+	//	pBndPtr = NULL;
+	//}
 
 	delete[] pStdPtr;
 	pStdPtr = NULL;
@@ -8476,23 +8476,23 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockMerge, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
 
 
-	if (bSimMode == TRUE) {
-		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight + 1];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	//if (bSimMode == TRUE) {
+	//	BYTE* pBndPtr = NULL;
+	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
+	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
-		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
-		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
-		//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
+	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
 
-		delete[] pBndPtr;
-		pBndPtr = NULL;
-	}
+	//	delete[] pBndPtr;
+	//	pBndPtr = NULL;
+	//}
 
 	if (pStdPtr != nullptr) {
 		delete[] pStdPtr;
@@ -9203,23 +9203,23 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_Negative> AddDefectInfoByBlockInfo :Finish") );
 
 
-	if (bSimMode == TRUE) {
-		BYTE* pBndPtr = NULL;
-		pBndPtr = new BYTE[nWidth * nHeight + 1];
-		memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+	//if (bSimMode == TRUE) {
+	//	BYTE* pBndPtr = NULL;
+	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
+	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
 
-		DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
-		CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-		CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
-		//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
+	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
+	//	//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
 
-		delete[] pBndPtr;
-		pBndPtr = NULL;
-	}
+	//	delete[] pBndPtr;
+	//	pBndPtr = NULL;
+	//}
 
 	delete[] pStdPtr;
 	pStdPtr = NULL;
