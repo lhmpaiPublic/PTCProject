@@ -754,7 +754,7 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 {
 //	m_pQueueCtrl = pQueueCtrl;
 
-	bThreadClose - false;
+	bThreadClose = false;
 
 	//ImageProc Proc Start 이벤트 객체 생성
 	m_hEventProcStart = ::CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -798,7 +798,7 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 	//}
 	// 22.02.18 Ahn Delete End
 
-	bThreadClose - true;
+	bThreadClose = true;
 	//이벤트 객체 종료
 	::CloseHandle(m_hEventProcStart);
 	::CloseHandle(m_hEventRun);
@@ -894,6 +894,11 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 	{
 		if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
 		{
+			DWORD nExitCode = NULL;
+			GetExitCodeThread(m_pThread->m_hThread, &nExitCode);
+			TerminateThread(m_pThread->m_hThread, nExitCode);
+			m_pThread = NULL;
+
 			//파일저장 프레임 결과 정보에 저장한다.
 			m_pFrmRsltInfo->Copy(m_pFrmInfo);
 			m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
