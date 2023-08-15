@@ -974,12 +974,15 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					if ((topWaitVal == 1) && (btmWaitVal == 1))
 					{
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
-							(pUnitTop->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
-							);
-
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
+
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
+							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
+							);
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
+							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
+							);
 
 						//======TacTime 출력 ========================================================================
 						pTopInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
