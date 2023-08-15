@@ -869,10 +869,6 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 	//}
 	// 22.02.18 Ahn Delete End
 
-	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Delete",
-		(m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", m_pFrmInfo->nTabNo, m_pFrmInfo->m_nTabId_CntBoard
-		);
-
 	//이벤트 객체 종료
 	::CloseHandle(m_hEventProcStart);
 	::CloseHandle(m_hEventRun);

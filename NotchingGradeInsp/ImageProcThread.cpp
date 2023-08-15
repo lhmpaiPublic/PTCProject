@@ -954,10 +954,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				//순서대로 push 저장한다.
 				pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
 
-				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait",
-					(pUnitTop->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
-					);
-
 				while (1)
 				{
 
@@ -1565,8 +1561,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
 						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Timeout",
-						(pUnitTop->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
+							"Top" , pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
 						);
+
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Timeout",
+							"Btm", pUnitBtm->m_pFrmInfo->nTabNo, pUnitBtm->m_pFrmInfo->m_nTabId_CntBoard
+							);
 
 						//출력 대기 이벤트 객체 pop, 이벤트 닫기
 						break;
