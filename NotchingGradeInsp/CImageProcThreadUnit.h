@@ -39,6 +39,10 @@ protected:
 	//타임아웃 여부 변수
 	BOOL m_bTimeOut;
 public:
+
+	//m_hEventProcEnd 대신 사용 
+	BOOL m_bProcEnd;
+
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 

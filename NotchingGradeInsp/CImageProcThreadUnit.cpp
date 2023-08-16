@@ -791,7 +791,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> SetEventProcEnd : nHeadNo = %d"), nHeadNo);
 
-				pCtrl->SetEventProcEnd();
+				//pCtrl->SetEventProcEnd();
+				pCtrl->m_bProcEnd = TRUE;
 				break;
 				//}
 			} //Proc Start 이벤트 샐행 루프 빠져나감
@@ -833,6 +834,7 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 	m_hEventRun = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	//ImageProc: Image Proc Thread Proc End 이벤트객체 생성
 	m_hEventProcEnd = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+	m_bProcEnd = FALSE;
 	m_hEventForceStop = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	//ImageProc: CtrlImageProcThread 종료처리 이벤트 객체 생성
 	m_hEventKillThread = ::CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -954,15 +956,14 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 {
 	int retval = 0;
 	++ProcEnd_WaitCount;
-	DWORD ret = ::WaitForSingleObject(m_hEventProcEnd, WAITEVENTTIME_PROCEND);
-	if (ret == WAIT_OBJECT_0)
+	if (m_bProcEnd)
 	{
 		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> LoopCount<%d>"), ProcEnd_WaitCount);
 		retval = 1;
 	}
-	else if (ret == WAIT_TIMEOUT)
+	else
 	{
-		if (MAX_WAITEVENTTIME_PROCEND <= (ProcEnd_WaitCount * WAITEVENTTIME_PROCEND))
+		if (ProcEnd_WaitCount > 15)
 		{
 			DWORD nExitCode = NULL;
 			GetExitCodeThread(m_pThread->m_hThread, &nExitCode);
@@ -981,6 +982,11 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 			//타임아웃 여부 변수
 			m_bTimeOut = TRUE;
 			retval = 2;
+			
+		}
+		else
+		{
+			Sleep(30);
 		}
 	}
 	return retval;
