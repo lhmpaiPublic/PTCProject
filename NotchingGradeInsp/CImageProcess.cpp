@@ -9840,7 +9840,10 @@ int	CImageProcess::GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoi
 			nCount++;
 		}
 	}
-	nRet = nSum / nCount ;
+	if (nCount != 0)
+	{
+		nRet = nSum / nCount;
+	}
 
 	return nRet;
 }
