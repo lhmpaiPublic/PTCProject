@@ -1589,10 +1589,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				pThis->m_pParent->ImgProcWaitThread_Event_pop();
 				CloseHandle(hEvent);
 			}
-			else
-			{
-				LOGDISPLAY_SPEC(6)("UnitThread - ResultProcWait-QEmpty");
-			}
 
 		}
 		else

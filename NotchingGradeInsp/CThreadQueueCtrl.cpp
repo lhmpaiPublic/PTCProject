@@ -5,7 +5,7 @@
 #include "ImageProcessCtrl.h"
 #include "GlobalData.h"			// 23.09.10 Ahn Add 
 
-#define WATCHTHREAD_TIMEOUT 100
+#define WATCHTHREAD_TIMEOUT 30
 #define THREADQUEUE_MAXCOUNT 5
 CThreadQueueCtrl::CThreadQueueCtrl(CImageProcessCtrl* pParent)
 {
@@ -91,9 +91,9 @@ void CThreadQueueCtrl::ThreadQueueCtrl_WatchThread()
 				{
 					//스래드 객체를 가져온다.
 					CImageProcThreadUnit* pThread = GetWatchQueueData();
+					//스래드 작동 큐로 이동한다.
 					if (pThread)
 					{
-						//스래드 작동 큐로 이동한다.
 						push(pThread);
 					}
 				}
@@ -134,14 +134,13 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 				//DEBUG_LOG.txt
 				AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax);
 
-				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Overflow-Qsize<%d>",
-					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
-					);
-
 				//저장큐가 Over Flow 값 설정
 				pFrmInfo->m_bOverFlow = FALSE;
 
 			}
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Overflow-Qsize<%d>",
+				(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
+				);
 
 			pThread->Begin();
 
@@ -167,15 +166,20 @@ void CThreadQueueCtrl::push(CImageProcThreadUnit* pThread)
 	//스래드객체 저장큐에 저장
 	m_pThradQue.push(pThread);
 
+	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultWaitQ",
+		(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
+		);
+
 	::LeaveCriticalSection(&m_csQueue);
 }
 
 CImageProcThreadUnit* CThreadQueueCtrl::pop()
 {
+	CImageProcThreadUnit* pThread = NULL;
 	::EnterCriticalSection(&m_csQueue);
 
-	CImageProcThreadUnit* pThread = NULL ;
-	if (m_pThradQue.empty() == FALSE) {
+	if (m_pThradQue.empty() == FALSE) 
+	{
 		pThread = m_pThradQue.front();
 		m_pThradQue.pop();
 	}
@@ -235,9 +239,10 @@ int CThreadQueueCtrl::GetWatchQueueSize()
 
 CImageProcThreadUnit* CThreadQueueCtrl::GetWatchQueueData()
 {
+	CImageProcThreadUnit* data = NULL;
 	::EnterCriticalSection(&m_csWatchQueue);
-	CImageProcThreadUnit* data = m_pWatchQueBuffer.front();
-	if (data) m_pWatchQueBuffer.pop();
+	data = m_pWatchQueBuffer.front();
+	m_pWatchQueBuffer.pop();
 	::LeaveCriticalSection(&m_csWatchQueue);
 
 	return data;
