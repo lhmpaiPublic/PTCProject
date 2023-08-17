@@ -137,8 +137,12 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 				//저장큐가 Over Flow 값 설정
 				pFrmInfo->m_bOverFlow = FALSE;
 
+				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>-Overflow",
+					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
+					);
+
 			}
-			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Overflow-Qsize<%d>",
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>",
 				(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
 				);
 
