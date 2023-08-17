@@ -586,7 +586,7 @@ UINT ThreadProc_Melsec(LPVOID Param)
 		switch (pView->m_nStatus)
 		{
 		case	CNotchingGradeInspView::en_CameraReset:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_CameraReset"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_CameraReset"));
 			pView->m_nCamErrorResetCnt++;
 			if (pView->GrabberResetReqest() == 0)
 			{
@@ -615,7 +615,7 @@ UINT ThreadProc_Melsec(LPVOID Param)
 
 
 		case	CNotchingGradeInspView::en_Initialize:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Initialize"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Initialize"));
 
 			pSigProc->SigOutEncoderZeroSet(FALSE);
 			pSigProc->SigOutLotEndAck(FALSE);
@@ -634,7 +634,7 @@ UINT ThreadProc_Melsec(LPVOID Param)
 
 
 		case	CNotchingGradeInspView::en_InspStop:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_InspStop"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_InspStop"));
 
 			if (pView->IsInspReady() == TRUE)
 			{
@@ -667,7 +667,7 @@ UINT ThreadProc_Melsec(LPVOID Param)
 
 
 		case	CNotchingGradeInspView::en_WaitReady:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_WaitReady"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_WaitReady"));
 
 			if (pView->IsInspReady() == FALSE)
 			{
@@ -768,7 +768,7 @@ UINT ThreadProc_Melsec(LPVOID Param)
 			else if (pSigProc->SigInRun() == TRUE)
 			{
 				pView->m_nStatus = CNotchingGradeInspView::en_PrepareRun;
-				AprData.SaveDebugLog_Format(_T("<OnTimer> en_Ready, Run ON"));
+//				AprData.SaveDebugLog_Format(_T("<OnTimer> en_Ready, Run ON"));
 			}
 
 			break;
@@ -778,7 +778,7 @@ UINT ThreadProc_Melsec(LPVOID Param)
 
 
 		case	CNotchingGradeInspView::en_PrepareRun:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_PrepareRun"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_PrepareRun"));
 
 			if (pView->m_pDeleteThread != nullptr)
 			{
@@ -1119,7 +1119,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		switch (m_nStatus)
 		{
 		case	en_CameraReset:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_CameraReset"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_CameraReset"));
 			m_nCamErrorResetCnt++;
 			if (GrabberResetReqest() == 0)
 			{
@@ -1150,7 +1150,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			// 22.05.19 Ahn Add End
 		case	en_Initialize:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Initialize"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Initialize"));
 
 			pSigProc->SigOutEncoderZeroSet(FALSE);
 			pSigProc->SigOutLotEndAck(FALSE);
@@ -1167,7 +1167,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_InspStop:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_InspStop"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_InspStop"));
 
 			if (IsInspReady() == TRUE)
 			{
@@ -1200,7 +1200,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_WaitReady:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_WaitReady"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_WaitReady"));
 
 			if (IsInspReady() == FALSE)
 			{
@@ -1299,7 +1299,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			else if (pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
-				AprData.SaveDebugLog_Format(_T("<OnTimer> en_Ready, Run ON"));
+//				AprData.SaveDebugLog_Format(_T("<OnTimer> en_Ready, Run ON"));
 			}
 
 			break;
@@ -1309,7 +1309,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_PrepareRun:
-			AprData.SaveDebugLog_Format(_T("<OnTimer> en_PrepareRun"));
+//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_PrepareRun"));
 
 			if (m_pDeleteThread != nullptr)
 			{
@@ -1793,7 +1793,7 @@ int CNotchingGradeInspView::CameraGrabStart()
 	CString strLog;
 	strLog.Format(_T("Camera Grab Start"));
 	AprData.SaveErrorLog(strLog);
-	AprData.SaveDebugLog(strLog);
+//	AprData.SaveDebugLog(strLog);
 
 	// 22.07.07 Ahn Add Test End
 	return nRet;
@@ -1811,7 +1811,7 @@ int CNotchingGradeInspView::CameraGrabStop()
 			CString strLog;
 			strLog.Format(_T("Camera Grab Stop"));
 			AprData.SaveErrorLog(strLog);
-			AprData.SaveDebugLog(strLog);
+//			AprData.SaveDebugLog(strLog);
 			// 22.07.07 Ahn Add Test End
 		}
 	}

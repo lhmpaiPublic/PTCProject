@@ -44,6 +44,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
 		);
 
+	AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ThreadEnter"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo);
+
+
 	while (TRUE) 
 	{
 		//ImageProc: 이미지 처리 스래드가 종료 이벤트가 발생했는가 체크
@@ -237,7 +240,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									delete[] pnPrj;
 								}
 
-								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <NEGATIVE> Top nTabLevel=%d, %d ms"), nTabLevel, GetTickCount() - dwTic );
+//								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <NEGATIVE> Top nTabLevel=%d, %d ms"), nTabLevel, GetTickCount() - dwTic );
 
 
 
@@ -351,7 +354,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								}
 
 
-								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <POSITIVE> Top nTabLevel=%d, %d ms"), nTabLevel, GetTickCount() - dwTic );
+//								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <POSITIVE> Top nTabLevel=%d, %d ms"), nTabLevel, GetTickCount() - dwTic );
 
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -432,7 +435,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같지 않다면
 					else 
 					{
-						AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Btm nLevel=%d"), nTabLevel);
+//						AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Btm nLevel=%d"), nTabLevel);
 
 						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - BottomProc",
 							(pFrmInfo->m_nHeadNo == CAM_POS_TOP)? "Top":"Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
@@ -789,7 +792,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//if (::WaitForSingleObject(pCtrl->m_hEventProcEnd, 0) != WAIT_OBJECT_0) {
 				//	::SetEvent(pCtrl->m_hEventProcEnd);
 
-				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> SetEventProcEnd : nHeadNo = %d"), nHeadNo);
+				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ProcEnd"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo );
 
 				//pCtrl->SetEventProcEnd();
 				pCtrl->m_bProcEnd = TRUE;

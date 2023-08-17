@@ -916,15 +916,19 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
+			AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Invalid Handle") );
+
 			return 0;
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
 
 			if (pThis == NULL) {
+				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> pThis == NULL"));
 				break;
 			}
 			if (pThis->m_bKill == TRUE) {
+				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> pThis->m_bKill == TRUE"));
 				break;
 			}
 
@@ -949,6 +953,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
 					);
 
+
+				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Wait"), pUnitTop->m_pFrmInfo->nTabNo);
+
 				//이미지 처리 스래드 (대기 스래드)
 				//출력 대기 이벤트 객체 push
 				HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -959,6 +966,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				{
 
 					if (pThis->m_bKill == TRUE) {
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc pThis->m_bKill == TRUE"), pUnitTop->m_pFrmInfo->nTabNo);
 						break;
 					}
 
@@ -981,13 +989,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
 							);
 
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pUnitTop->m_pFrmInfo->nTabNo);
+
+
 						//======TacTime 출력 ========================================================================
 						pTopInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
 						pBtmInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
 						//=================================================================================================
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Process Start :: Board Tab ID <Top:%d/Btm:%d>, Find Tab ID <%d>"),
-							pTopInfo->m_nTabId_CntBoard, pBtmInfo->m_nTabId_CntBoard, pTopInfo->nTabNo + 1);
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -1229,7 +1238,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							AprData.m_NowLotData.m_nContinueCount = 0; // 22.08.09 Ahn Add
 							AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_nSectorBaseCount/*AprData.m_pRecipeInfo->nSectorCount*/);
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Result OK :: Find Tab Count <%d>"), AprData.m_NowLotData.m_nTabCountOK);
+//							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Result OK :: OK Tab Count <%d>"), AprData.m_NowLotData.m_nTabCountOK);
 
 						}
 						// 결과 Queue에 보냄
@@ -1242,7 +1251,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							
 							int nMarkSel1 = 0;
 							int nMarkSel2 = 0;
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Marking Event> Enter"));
+//							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Marking Event> Enter"));
 
 							// 22.07.19 Ahn Modify Start
 							GetMarkingFlag(AprData.m_pRecipeInfo, nTopJudge, nBtmJudge, pTopInfo->m_pTabRsltInfo->m_wNgReason, pBtmInfo->m_pTabRsltInfo->m_wNgReason, nMarkSel1, nMarkSel2);
@@ -1263,8 +1272,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							WORD* nOutPutData = new WORD(wOutPut);
 							pThis->CreateDioMarkingThread(nOutPutData);
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>, Tab Cnt<%d>"),
-								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1);
+//							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>, Tab Cnt<%d>"),
+//								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1);
 							
 
 							CString strMsg;
@@ -1317,9 +1326,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								int nSize = sizeof(_CELL_JUDGE) / sizeof(int);
 								pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 
-								CString strMsg;
-								strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID, AprData.m_NowLotData.m_stCellJudge.dwCellJudge, AprData.m_NowLotData.m_stCellJudge.dwCellNgCode);
-								AprData.SaveDebugLog(strMsg); //pyjtest
+//								CString strMsg;
+//								strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID, AprData.m_NowLotData.m_stCellJudge.dwCellJudge, AprData.m_NowLotData.m_stCellJudge.dwCellNgCode);
+//								AprData.SaveDebugLog(strMsg); //pyjtest
 
 							}
 
@@ -1486,7 +1495,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 										pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 										pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
-										AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <ImageSave> %s"), pSaveInfo->m_strSavePath);
+//										AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <ImageSave> %s"), pSaveInfo->m_strSavePath);
 									}
 									else
 									{
@@ -1570,9 +1579,16 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							);
 
 						//출력 대기 이벤트 객체 pop, 이벤트 닫기
+
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Wait TimeOut : topWaitVal<%d>, btmWaitVal<%d>"), pUnitTop->m_pFrmInfo->nTabNo, topWaitVal, btmWaitVal);
+
+
 						break;
 					}
 				}
+
+				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc End"), pUnitTop->m_pFrmInfo->nTabNo);
+
 
 				if (pUnitTop)
 				{
