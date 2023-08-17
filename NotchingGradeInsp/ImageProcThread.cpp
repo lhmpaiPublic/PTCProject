@@ -932,21 +932,22 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			//위 함수 CtrlThreadImgCuttingTab Tab 정보를 찾는 스래드에서
 			//GetThreadQueuePtr(i) Queue 에 push 되면 처리를 탄다.
 			//처리를 하여 결과 정보 저장 Queue pRsltQueueCtrl 에 저장된다.
-			if (!pThdQue[CAM_POS_TOP]->IsEmpty() && !pThdQue[CAM_POS_BOTTOM]->IsEmpty()) 
+			if (pUnitTop == NULL)
 			{
 				pUnitTop = pThdQue[CAM_POS_TOP]->pop();
+			}
+			if (pUnitBtm == NULL)
+			{
 				pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
+			}
 
-				//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
-				//일정한 시간이 지나도 처리하지 못했을 때
-				if (pUnitTop == NULL || pUnitBtm == NULL)
-				{
-					if (!(pUnitTop == NULL && pUnitBtm == NULL))
-					{
-						int a = 0;
-					}
-					continue;
-				}
+			//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
+			//일정한 시간이 지나도 처리하지 못했을 때
+			if (pUnitTop && pUnitBtm)
+			{
+				LOGDISPLAY_SPEC(6)("UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-QPop",
+					pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
+					);
 
 				//이미지 처리 스래드 (대기 스래드)
 				//출력 대기 이벤트 객체 push
@@ -1588,7 +1589,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				pThis->m_pParent->ImgProcWaitThread_Event_pop();
 				CloseHandle(hEvent);
 			}
-			//Sleep(AprData.m_nSleep);
+			else
+			{
+				LOGDISPLAY_SPEC(6)("UnitThread - ResultProcWait-QEmpty");
+			}
+
 		}
 		else
 		{

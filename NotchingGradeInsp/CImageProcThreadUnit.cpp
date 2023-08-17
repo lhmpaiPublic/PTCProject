@@ -963,7 +963,7 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 	}
 	else
 	{
-		if (ProcEnd_WaitCount > 15)
+		if (ProcEnd_WaitCount > 50)
 		{
 			DWORD nExitCode = NULL;
 			GetExitCodeThread(m_pThread->m_hThread, &nExitCode);
