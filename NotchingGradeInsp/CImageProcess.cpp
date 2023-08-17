@@ -6111,8 +6111,12 @@ int CImageProcess::BlockLink(CImageProcess::_VEC_BLOCK* pBlockInfo, CRecipeInfo*
 	int nSize = (int)pBlockInfo->size();
 	CBlockData* pPtr;
 	CBlockData* pTar;
-	int nRangX = pRecipeInfo->pntLinkRange[nDefType][nCamPos].x + 1;
-	int nRangY = pRecipeInfo->pntLinkRange[nDefType][nCamPos].y + 1;
+//	int nRangX = pRecipeInfo->pntLinkRange[nDefType][nCamPos].x + 1;
+//	int nRangY = pRecipeInfo->pntLinkRange[nDefType][nCamPos].y + 1;
+
+	int nRangX = pRecipeInfo->pntLinkRange[nCamPos][nDefType].x;// +1;
+	int nRangY = pRecipeInfo->pntLinkRange[nCamPos][nDefType].y;// +1;
+
 
 	CRect rcPtr;
 	CRect rcTar;
@@ -6151,6 +6155,8 @@ int CImageProcess::BlockLink(CImageProcess::_VEC_BLOCK* pBlockInfo, CRecipeInfo*
 
 			pPtr->dWidth = pPtr->nWidth * AprData.m_System.m_dResolX[nCamPos];
 			pPtr->dHeight = pPtr->nHeight * AprData.m_System.m_dResolY;
+			pPtr->dJudgeSize = pPtr->dWidth;
+
 		}
 	}
 
@@ -7028,8 +7034,10 @@ int CImageProcess::MergeAndLink_BlockInfo(_VEC_BLOCK* pDestVlock, _VEC_BLOCK vec
 	_VEC_BLOCK::iterator iterS = vecSecond.begin();
 	pDestVlock->clear();
 
-	for (; (iterF != vecFirst.end()) || ((iterS != vecSecond.end())); ) {
-		if ((iterF != vecFirst.end()) && ((iterS != vecSecond.end()))) {
+	for (; (iterF != vecFirst.end()) || ((iterS != vecSecond.end())); )
+	{
+		if ((iterF != vecFirst.end()) && ((iterS != vecSecond.end())))
+		{
 			// 두 결함이 붙어 있는가? 			
 			if( IsLinkedBlock(iterF->rcRect, iterS->rcRect, cpRange) == TRUE ){
 				MergeBlockInfo(*iterF, *iterS, nCamPos);
@@ -8136,11 +8144,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 #endif
 
 	pTabRsltInfo->RemoveAll();
-	// 22.07.20 Ahn Move Start
-	//if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
-	//	CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
-	//	CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
-	// 22.07.20 Ahn Move End
+
 
 	//// 라운드 결함인 경우 판정용 사이즈 계산.
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
@@ -8200,6 +8204,13 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 		}
 	}
 
+
+	// 22.07.20 Ahn Move Start
+	if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
+		CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
+	}
+	// 22.07.20 Ahn Move End
 
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
@@ -8428,13 +8439,6 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 
 	pTabRsltInfo->RemoveAll();
 
-	// 22.07.20 Ahn Delete Start
-	//if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
-	//	CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
-	//	CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
-	//}
-	// 22.07.20 Ahn Delete End
-
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
 	CBlockData* pData;
 	for (int nMode = 0; nMode < MAX_INSP_TYPE; nMode++) {
@@ -8458,6 +8462,14 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 			}
 		}
 	}
+
+
+	// 22.07.20 Ahn Delete Start
+	if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
+		CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
+	}
+	// 22.07.20 Ahn Delete End
 
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
@@ -8867,12 +8879,6 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 #endif
 
 	pTabRsltInfo->RemoveAll();
-	if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
-		CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
-	//	CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);	// 
-//		AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_Negative> BlockLink : Finish"));
-
-	}
 
 	//// 라운드 결함인 경우 판정용 사이즈 계산.
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
@@ -8928,6 +8934,14 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 			}
 		}
 	}
+
+	if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
+		//	CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);	// 
+	//		AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_Negative> BlockLink : Finish"));
+
+	}
+
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockFoilExp, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
@@ -9155,12 +9169,6 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 #endif
 	pTabRsltInfo->RemoveAll();
 
-	// 22.07.22 Ahn Delete Start
-	//if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
-	//	CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
-	////	CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
-	//}
-	// 22.07.22 Ahn Delete End
 
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
 	CBlockData* pData;
@@ -9192,6 +9200,15 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 			}
 		}
 	}
+
+
+	// 22.07.22 Ahn Delete Start
+	if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
+	//	CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
+	}
+	// 22.07.22 Ahn Delete End
+
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockFoilExp, pRecipeInfo, pTabRsltInfo, CAM_POS_BOTTOM, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);

@@ -2749,13 +2749,6 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 	strLabeling.Format("Labeling[%.1lf]", dTime);
 	// 22.03.30 Ahn Modify End
 
-	// 22.07.20 Ahn Delete Start
-	//if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
-	//	CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
-	//	CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
-	//}
-	// 22.07.20 Ahn Delete End
-
 	// 라운드 사이즈 판정.
 	//
 
@@ -2811,6 +2804,17 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 			}
 		}
 	}
+
+
+	// 22.07.20 Ahn Delete Start
+	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
+		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
+	}
+	// 22.07.20 Ahn Delete End
+
+
+
 	// 22.07.20 Ahn Add Start
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
@@ -3035,13 +3039,6 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	dTime = cta.WhatTimeIsIt_Double();
 	strThres.Format(_T("Thres & Labeling[%.1lf]"), dTime);
 
-	// 22.07.20 Ahn Delete Start
-	//if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
-	//	CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
-	//	CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
-	//}
-	// 22.07.20 Ahn Delete End
-
 	// Round 결함이 아닌 경우, Edge에서 거리를 계산, 3 점의 위치를 측정하여 가장 큰 값을 취득함.
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
 	CBlockData* pData;
@@ -3064,6 +3061,13 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 			}
 		}
 	}
+
+	// 22.07.20 Ahn Delete Start
+	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
+		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
+	}
+	// 22.07.20 Ahn Delete End
 
 	//// 22.08.29 Ahn Add Start
 	//switch (pData->nDefPos) {
@@ -3452,11 +3456,6 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	dTime = cta.WhatTimeIsIt_Double();
 	strThres.Format(_T("Thres & Labeling[%.1lf]"), dTime);
 
-	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
-		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
-//		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
-	}
-
 	// 라운드 사이즈 판정.
 	//
 
@@ -3515,6 +3514,13 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 			// 22.02.07 Ahn Modify End
 		}
 	}
+
+
+	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
+		//		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
+	}
+
 
 	double dCalcSize = cta.WhatTimeIsIt_Double();
 	CString strCalcSize;
@@ -3713,11 +3719,6 @@ int CImageProcSimDlg::ProceBottomAll_Negative()
 	dTime = cta.WhatTimeIsIt_Double();
 	strThres.Format(_T("Thres & Labeling[%.1lf]"), dTime);
 
-	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
-		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
-	//	CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
-	}
-
 	// Round 결함이 아닌 경우, Edge에서 거리를 계산, 3 점의 위치를 측정하여 가장 큰 값을 취득함.
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
 	CBlockData* pData;
@@ -3742,6 +3743,12 @@ int CImageProcSimDlg::ProceBottomAll_Negative()
 				CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 			}
 		}
+	}
+
+
+	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
+		//	CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
 	}
 
 	//AddDefectInfo(&vecBlockFoilExp, &vecBlockDross, CAM_POS_BOTTOM);
@@ -5611,10 +5618,6 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 	dTime = cta.WhatTimeIsIt_Double();
 	strThres.Format(_T("Thres & Labeling[%.1lf]"), dTime);
 
-	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
-		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
-		//		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
-	}
 
 	// 라운드 사이즈 판정.
 	//
@@ -5675,6 +5678,12 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 			}
 			// 22.02.07 Ahn Modify End
 		}
+	}
+
+
+	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
+		//		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
 	}
 
 	double dCalcSize = cta.WhatTimeIsIt_Double();
@@ -5939,16 +5948,6 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	dTime = cta.WhatTimeIsIt_Double();
 	strThres.Format("Thres & Labeling[%.1lf]", dTime);
 
-	// 23.02.24 Ahn Modify Start
-	//if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
-	//	CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
-	//	//		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
-	//}
-	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
-		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
-	}
-	// 23.02.24 Ahn Modify End
-
 	// 라운드 사이즈 판정.
 	//
 
@@ -5973,6 +5972,16 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 			CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 		}
 	}
+
+	// 23.02.24 Ahn Modify Start
+//if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
+//	CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
+//	//		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
+//}
+	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
+		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
+	}
+	// 23.02.24 Ahn Modify End
 
 	double dCalcSize = cta.WhatTimeIsIt_Double();
 	CString strCalcSize;
