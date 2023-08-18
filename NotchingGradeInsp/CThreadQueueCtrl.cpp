@@ -172,6 +172,11 @@ void CThreadQueueCtrl::push(CImageProcThreadUnit* pThread)
 		if (m_bQueuePushPop == false)
 		{
 			m_bQueuePushPop = true;
+
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultWaitQ",
+				(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
+				);
+
 			pThread->ProcStart();
 
 			//스래드객체 저장큐에 저장
@@ -179,9 +184,6 @@ void CThreadQueueCtrl::push(CImageProcThreadUnit* pThread)
 
 			m_bQueuePushPop = false;
 
-			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultWaitQ",
-				(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
-				);
 			break;
 		}
 		else

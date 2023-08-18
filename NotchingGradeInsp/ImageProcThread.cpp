@@ -66,19 +66,16 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 				0,
 				CREATE_SUSPENDED,
 				NULL);
+			if (m_pThread != NULL) {
+				m_pThread->m_bAutoDelete = FALSE;
+				m_pThread->ResumeThread();
+			}
 		}
 		else {
 			m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlThreadImgProc,
-				(LPVOID)this,
-				THREAD_PRIORITY_HIGHEST,
-				0,
-				CREATE_SUSPENDED,
-				NULL);
+				(LPVOID)this);
 		}
-		if ( m_pThread != NULL ) {
-			m_pThread->m_bAutoDelete = FALSE ;
-			m_pThread->ResumeThread() ;
-		}
+		
 	}
 }
 
@@ -911,8 +908,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 	while (1)
 	{
+		
 		//타임 주기 이벤트
 		ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_Result(), IMAGEPROCTHREAD_RESULT_TIMEOUT);
+		theApp.m_nImageProcThreadTimeEnter = GetTickCount();
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
@@ -938,22 +937,40 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			//처리를 하여 결과 정보 저장 Queue pRsltQueueCtrl 에 저장된다.
 			if (pUnitTop == NULL)
 			{
-				pUnitTop = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP)->pop();
+				CThreadQueueCtrl*  topPtr = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP);
+				if (topPtr)
+				{
+					pUnitTop = topPtr->pop();
+				}
+				else
+				{
+					LOGDISPLAY_SPEC(6)("TopQueueCtrl NULL");
+				}
 			}
 			if (pUnitBtm == NULL)
 			{
-				pUnitBtm = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM)->pop();
+				CThreadQueueCtrl* btmPtr = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM);
+				if (btmPtr)
+				{
+					pUnitBtm = btmPtr->pop();
+				}
+				else
+				{
+					LOGDISPLAY_SPEC(6)("BtmQueueCtrl NULL");
+				}
 			}
 
 			//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
 			//일정한 시간이 지나도 처리하지 못했을 때
 			if (pUnitTop && pUnitBtm)
 			{
-				//이미지 처리 스래드 (대기 스래드)
-				//출력 대기 이벤트 객체 push
-				HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-				//순서대로 push 저장한다.
-				pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
+				theApp.m_nImageProcThreadTimeBefore = GetTickCount();
+
+				////이미지 처리 스래드 (대기 스래드)
+				////출력 대기 이벤트 객체 push
+				//HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+				////순서대로 push 저장한다.
+				//pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
 
 				while (1)
 				{
@@ -1237,7 +1254,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 결과 Queue에 보냄
 
 						// Counter 신호 출력
-						WaitForSingleObject(hEvent, DIOMARKINGEVENT_TIMEOUT);
+						//WaitForSingleObject(hEvent, DIOMARKINGEVENT_TIMEOUT);
 						WORD wOutPut;
 						CString strMarking = _T("OFF");
 						{
@@ -1589,9 +1606,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pUnitBtm = NULL;
 				}
 
-				//출력 대기 이벤트 객체 pop, 이벤트 닫기
-				pThis->m_pParent->ImgProcWaitThread_Event_pop();
-				CloseHandle(hEvent);
+				theApp.m_nImageProcThreadTimeAfter = GetTickCount();
+
+				////출력 대기 이벤트 객체 pop, 이벤트 닫기
+				//pThis->m_pParent->ImgProcWaitThread_Event_pop();
+				//CloseHandle(hEvent);
 			}
 
 		}

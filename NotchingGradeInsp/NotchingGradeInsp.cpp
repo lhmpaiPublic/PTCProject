@@ -47,6 +47,9 @@ CNotchingGradeInspApp::CNotchingGradeInspApp() noexcept
 {
 	m_bHiColorIcons = TRUE;
 
+	m_nImageProcThreadTimeEnter = GetTickCount();
+	m_nImageProcThreadTimeBefore = GetTickCount();
+	m_nImageProcThreadTimeAfter = GetTickCount();
 
 	m_nAppLook = 0;
 	// 다시 시작 관리자 지원

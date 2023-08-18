@@ -194,6 +194,8 @@ void CInspDlg::OnSize(UINT nType, int cx, int cy)
 
 }
 
+static DWORD backImageProcThreadTime = 0;
+static DWORD backImageProcThreadTimeCount = 0;
 void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
@@ -232,6 +234,18 @@ void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 
 //		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CInspDlg SaveErrorData : %d ms"), GetTickCount() - dwTic);
 
+		if (backImageProcThreadTimeCount++ > 30)
+		{
+			AprData.SaveDebugLog_Format(_T("<ImageProcThreadTime> Enter<%d> Proc<%d> - Exit<%d>"), 
+				theApp.m_nImageProcThreadTimeEnter - backImageProcThreadTime, theApp.m_nImageProcThreadTimeBefore - backImageProcThreadTime, theApp.m_nImageProcThreadTimeAfter - backImageProcThreadTime);
+
+			LOGDISPLAY_SPEC(6)("<ImageProcThreadTime> Enter<%d> Proc<%d> - Exit<%d>",
+				theApp.m_nImageProcThreadTimeEnter - backImageProcThreadTime, theApp.m_nImageProcThreadTimeBefore - backImageProcThreadTime, theApp.m_nImageProcThreadTimeAfter - backImageProcThreadTime);
+
+			backImageProcThreadTime = theApp.m_nImageProcThreadTimeAfter;
+
+			backImageProcThreadTimeCount = 0;
+		}
 		SetRenewalTimer();
 	}
 
