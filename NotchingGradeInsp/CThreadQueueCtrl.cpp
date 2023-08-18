@@ -205,12 +205,13 @@ CImageProcThreadUnit* CThreadQueueCtrl::pop()
 			{
 				pThread = m_pThradQue.front();
 				m_pThradQue.pop();
+
+				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - pop-ResultWaitQ",
+					(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
+					);
 			}
 			m_bQueuePushPop = false;
-
-			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - pop-ResultWaitQ",
-				(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
-				);
+			
 
 			break;
 		}

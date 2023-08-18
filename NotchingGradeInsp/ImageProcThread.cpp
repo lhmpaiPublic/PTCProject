@@ -147,9 +147,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	CQueueCtrl* pQueueFrame_Top = pThis->m_pParent->GetQueueFrmPtr(0);
 	CQueueCtrl* pQueueFrame_Bottom = pThis->m_pParent->GetQueueFrmPtr(1);
 	CCounterQueueCtrl* pCntQueueInCtrl = pThis->m_pParent->GetCounterQueInPtr(); // 탭 카운터 용 큐
-	CThreadQueueCtrl* pThreadQue[MAX_CAMERA_NO];
-	pThreadQue[CAM_POS_TOP] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_TOP);
-	pThreadQue[CAM_POS_BOTTOM] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_BOTTOM);
+	//CThreadQueueCtrl* pThreadQue[MAX_CAMERA_NO];
+	//pThreadQue[CAM_POS_TOP] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_TOP);
+	//pThreadQue[CAM_POS_BOTTOM] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_BOTTOM);
 
 	BOOL bReserved = FALSE; // 크기가 작아서 보내지 못한 부분이 있음 다음 이미지 받아서 처리 할 것인지에 대한 Flag.
 	BOOL bReservFrmNo = -1;
@@ -751,26 +751,26 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pBtmInfo->m_bErrorFlag = TRUE;
 #endif
 
-						// 22.05.18 Ahn Add Start
+						//// 22.05.18 Ahn Add Start
 
-						//처리할  Top 프레임 정보 갯수
-						int nTopQueCnt = pThreadQue[CAM_POS_TOP]->GetSize();
-						//처리할 Bottom  프레임 정보 갯수
-						int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
+						////처리할  Top 프레임 정보 갯수
+						//int nTopQueCnt = pThreadQue[CAM_POS_TOP]->GetSize();
+						////처리할 Bottom  프레임 정보 갯수
+						//int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
 
-						int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
+						//int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
 
-						//처리할 정보가 스킵 숫자보다 크다면
-						if ((nTopQueCnt > nOverflowMax) && (nBtmQueCnt > nOverflowMax)
-							//Top, Bottom 이미지 처리 프레임 정보가 스킵 숫자보다 크다면
-							|| ((nSizeFrmL > nOverflowMax) && (nSizeFrmR > nOverflowMax))) {
-							pInfo->m_bErrorFlag = TRUE;
-							pBtmInfo->m_bErrorFlag = TRUE;
+						////처리할 정보가 스킵 숫자보다 크다면
+						//if ((nTopQueCnt > nOverflowMax) && (nBtmQueCnt > nOverflowMax)
+						//	//Top, Bottom 이미지 처리 프레임 정보가 스킵 숫자보다 크다면
+						//	|| ((nSizeFrmL > nOverflowMax) && (nSizeFrmR > nOverflowMax))) {
+						//	pInfo->m_bErrorFlag = TRUE;
+						//	pBtmInfo->m_bErrorFlag = TRUE;
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> Top/Bottom Overflow TopFrameCnt:%d, BottonFrameCnt:%d, TopQueueCnt:%d, BottonQueueCnt:%d > nOverflowMax:%d"),
-								nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt, nOverflowMax);
+						//	AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> Top/Bottom Overflow TopFrameCnt:%d, BottonFrameCnt:%d, TopQueueCnt:%d, BottonQueueCnt:%d > nOverflowMax:%d"),
+						//		nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt, nOverflowMax);
 
-						}
+						//}
 						// 22.05.18 Ahn Add Start
 
 						// 22.12.09 Ahn Add Start
@@ -797,8 +797,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 						//스래드에 처리할 정보를 저장 TOP, BOTTOM
-						pThreadQue[CAM_POS_TOP]->push(pInfo);
-						pThreadQue[CAM_POS_BOTTOM]->push(pBtmInfo);
+						CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP)->push(pInfo);
+						CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM)->push(pBtmInfo);
 
 						//Lot Data Tab 번호를 증가 시킨다.
 						AprData.m_NowLotData.m_nTabCount++;
@@ -891,11 +891,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 		pRsltQueueCtrl[i] = pThis->m_pParent->GetResultPtr(i);
 	}
 
-	//CFrameRsltInfo* pFrmRsltInfo;
-	CThreadQueueCtrl* pThdQue[MAX_CAMERA_NO];
-	for (int i = 0; i < MAX_CAMERA_NO; i++) {
-		pThdQue[i] = pThis->m_pParent->GetThreadQueuePtr(i);
-	}
+	////CFrameRsltInfo* pFrmRsltInfo;
+	//CThreadQueueCtrl* pThdQue[MAX_CAMERA_NO];
+	//for (int i = 0; i < MAX_CAMERA_NO; i++) {
+	//	pThdQue[i] = pThis->m_pParent->GetThreadQueuePtr(i);
+	//}
 	
 	CImageProcThreadUnit* pUnitTop = NULL;
 	CImageProcThreadUnit* pUnitBtm = NULL;
@@ -938,24 +938,17 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			//처리를 하여 결과 정보 저장 Queue pRsltQueueCtrl 에 저장된다.
 			if (pUnitTop == NULL)
 			{
-				pUnitTop = pThdQue[CAM_POS_TOP]->pop();
+				pUnitTop = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP)->pop();
 			}
 			if (pUnitBtm == NULL)
 			{
-				pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
+				pUnitBtm = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM)->pop();
 			}
 
 			//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
 			//일정한 시간이 지나도 처리하지 못했을 때
 			if (pUnitTop && pUnitBtm)
 			{
-				LOGDISPLAY_SPEC(6)("UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-QPop",
-					pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
-					);
-
-
-				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Wait"), pUnitTop->m_pFrmInfo->nTabNo);
-
 				//이미지 처리 스래드 (대기 스래드)
 				//출력 대기 이벤트 객체 push
 				HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -989,7 +982,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
 							);
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pUnitTop->m_pFrmInfo->nTabNo);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pTopInfo->nTabNo);
 
 
 						//======TacTime 출력 ========================================================================
@@ -1570,24 +1563,19 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Timeout",
-							"Top" , pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
-						);
+						LOGDISPLAY_SPEC(6)("UnitThread - ResultProcWait-Timeout"	);
 
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Timeout",
-							"Btm", pUnitBtm->m_pFrmInfo->nTabNo, pUnitBtm->m_pFrmInfo->m_nTabId_CntBoard
-							);
 
 						//출력 대기 이벤트 객체 pop, 이벤트 닫기
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Wait TimeOut : topWaitVal<%d>, btmWaitVal<%d>"), pUnitTop->m_pFrmInfo->nTabNo, topWaitVal, btmWaitVal);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> UnitThread - ResultProcWait-Timeout"));
 
 
 						break;
 					}
 				}
 
-				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc End"), pUnitTop->m_pFrmInfo->nTabNo);
+				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> ResultProc End") );
 
 
 				if (pUnitTop)

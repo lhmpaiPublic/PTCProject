@@ -812,12 +812,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
 		);
 
-	//프레임 정보 로컬 객체 삭제
-	if (pFrmInfo != NULL) {
-		delete pFrmInfo;
-		pFrmInfo = NULL;
-	}
-
 	return 0;
 }
 
@@ -873,6 +867,12 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 	//	}
 	//}
 	// 22.02.18 Ahn Delete End
+
+	if (m_pFrmInfo)
+	{
+		delete m_pFrmInfo;
+		m_pFrmInfo = NULL;
+	}
 
 	//이벤트 객체 종료
 	::CloseHandle(m_hEventProcStart);
