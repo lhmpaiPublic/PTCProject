@@ -896,7 +896,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	for (int i = 0; i < MAX_CAMERA_NO; i++) {
 		pThdQue[i] = pThis->m_pParent->GetThreadQueuePtr(i);
 	}
-
+	
 	CImageProcThreadUnit* pUnitTop = NULL;
 	CImageProcThreadUnit* pUnitBtm = NULL;
 	BOOL bBitmapSave = FALSE;

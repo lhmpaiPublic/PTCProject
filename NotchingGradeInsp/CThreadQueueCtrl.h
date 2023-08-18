@@ -41,6 +41,7 @@ protected :
 
 	CImageProcessCtrl* m_pParent;
 	CRITICAL_SECTION m_csQueue;
+	bool m_bQueuePushPop;
 
 	typedef std::queue< CImageProcThreadUnit*> THREAD_QUEUE;
 	THREAD_QUEUE m_pThradQue;

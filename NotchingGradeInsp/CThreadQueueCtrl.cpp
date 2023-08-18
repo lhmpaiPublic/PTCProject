@@ -12,6 +12,8 @@ CThreadQueueCtrl::CThreadQueueCtrl(CImageProcessCtrl* pParent)
 	::InitializeCriticalSection(&m_csQueue);
 	m_pParent = pParent;
 
+	m_bQueuePushPop = false;
+
 	//스래드 객체 초기화
 	m_pWatchThread = NULL;
 	//동기화 객체 초기화
@@ -163,31 +165,60 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 
 void CThreadQueueCtrl::push(CImageProcThreadUnit* pThread)
 {
-	::EnterCriticalSection(&m_csQueue);
+	
 
-	pThread->ProcStart();
+	while (true)
+	{
+		if (m_bQueuePushPop == false)
+		{
+			m_bQueuePushPop = true;
+			pThread->ProcStart();
 
-	//스래드객체 저장큐에 저장
-	m_pThradQue.push(pThread);
+			//스래드객체 저장큐에 저장
+			m_pThradQue.push(pThread);
 
-	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultWaitQ",
-		(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
-		);
+			m_bQueuePushPop = false;
 
-	::LeaveCriticalSection(&m_csQueue);
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultWaitQ",
+				(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
+				);
+			break;
+		}
+		else
+		{
+			Sleep(1);
+		}
+
+	}
 }
 
 CImageProcThreadUnit* CThreadQueueCtrl::pop()
 {
 	CImageProcThreadUnit* pThread = NULL;
-	::EnterCriticalSection(&m_csQueue);
-
-	if (m_pThradQue.empty() == FALSE) 
+	while (true)
 	{
-		pThread = m_pThradQue.front();
-		m_pThradQue.pop();
+		if (m_bQueuePushPop == false)
+		{
+			m_bQueuePushPop = true;
+
+			if (m_pThradQue.size())
+			{
+				pThread = m_pThradQue.front();
+				m_pThradQue.pop();
+			}
+			m_bQueuePushPop = false;
+
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - pop-ResultWaitQ",
+				(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
+				);
+
+			break;
+		}
+		else
+		{
+			Sleep(1);
+		}
 	}
-	::LeaveCriticalSection(&m_csQueue);
 	return pThread;
 }
 

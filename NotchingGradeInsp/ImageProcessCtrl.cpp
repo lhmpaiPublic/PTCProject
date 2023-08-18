@@ -35,6 +35,8 @@
 #define THREAD_MODE_CUT_TAB 0 
 #define THREAD_MODE_PROC 1
 
+CThreadQueueCtrl* CImageProcessCtrl::m_pThreadQueueCtrl[GRABBER_COUNT];
+
 CImageProcessCtrl::CImageProcessCtrl(void)
 {
 	int i;
