@@ -940,7 +940,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				CThreadQueueCtrl*  topPtr = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP);
 				if (topPtr)
 				{
-					pUnitTop = topPtr->pop();
+					pUnitTop = topPtr->deQueue();
 				}
 				else
 				{
@@ -952,7 +952,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				CThreadQueueCtrl* btmPtr = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM);
 				if (btmPtr)
 				{
-					pUnitBtm = btmPtr->pop();
+					pUnitBtm = btmPtr->deQueue();
 				}
 				else
 				{

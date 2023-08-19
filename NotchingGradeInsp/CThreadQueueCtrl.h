@@ -18,6 +18,7 @@ class CImageProcThreadUnit;
 class CFrameInfo;
 class CImageProcessCtrl;
 
+#define THREADQUEUE_MAXCOUNT 5
 class CThreadQueueCtrl
 {
 public :
@@ -38,6 +39,11 @@ public :
 	//총 생성 큐 갯수
 	int getTotalQueueCount();
 protected :
+
+	CImageProcThreadUnit* ProcThreadUnitqueue[THREADQUEUE_MAXCOUNT];
+	int front;
+	int rear;
+	int maxQueueSize;
 
 	CImageProcessCtrl* m_pParent;
 	CRITICAL_SECTION m_csQueue;
@@ -63,5 +69,12 @@ protected :
 	HANDLE pEvent_ThreadQueueCtrl;
 	//
 	CImageProcThreadUnit* GetWatchQueueData();
+
+public:
+	bool isEmpty();
+	bool isFull();
+	void enQueue();
+	CImageProcThreadUnit* deQueue();
+	int countQueue();
 };
 
