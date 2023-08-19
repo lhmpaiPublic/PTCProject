@@ -528,7 +528,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//Tab 정보가 없을 때  ? 또는 Over Flow이면
 				else
 				{
-					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Errorflag - Overflow",
+					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Errorflag",
 						(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
 						);
 

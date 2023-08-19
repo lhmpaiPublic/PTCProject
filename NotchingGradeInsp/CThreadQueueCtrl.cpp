@@ -307,6 +307,11 @@ void CThreadQueueCtrl::enQueue()
 		CImageProcThreadUnit* pImageProcThreadUnit = GetWatchQueueData();
 		if (pImageProcThreadUnit)
 		{
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - enQ-ResultWaitQ",
+				(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
+				);
+
+			pImageProcThreadUnit->ProcStart();
 			rear = ++rear % maxQueueSize;
 			ProcThreadUnitqueue[rear] = pImageProcThreadUnit;
 		}
@@ -320,6 +325,13 @@ CImageProcThreadUnit* CThreadQueueCtrl::deQueue()
 	{
 		front = ++front% maxQueueSize;
 		pImageProcThreadUnit = ProcThreadUnitqueue[front];
+
+		if (pImageProcThreadUnit)
+		{
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - deQ-ResultWaitQ",
+				(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
+				);
+		}
 
 	}
 	return pImageProcThreadUnit;

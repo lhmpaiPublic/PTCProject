@@ -1253,6 +1253,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 						// 결과 Queue에 보냄
 
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write NG Code To PLC"), pTopInfo->nTabNo);
+
+
+
 						// Counter 신호 출력
 						//WaitForSingleObject(hEvent, DIOMARKINGEVENT_TIMEOUT);
 						WORD wOutPut;
@@ -1345,6 +1349,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						}
 
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write Judge To PLC"), pTopInfo->nTabNo);
+
+
+
 						{ // CSV 파일 작성
 							CString strCsvFileName;
 							CString strFilePath;
@@ -1411,6 +1419,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							);
 							CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 						}
+
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write CSV"), pTopInfo->nTabNo);
 
 
 						//SPC 객체 소스에서 컴파일 여부 결정
@@ -1526,6 +1536,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							}
 						}
 #endif //SPCPLUS_CREATE
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Save Image PushBack"), pTopInfo->nTabNo);
+
+
 
 						double dTactTime = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
 						CTactTimeData data;
@@ -1551,8 +1564,19 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, pBtmInfo->m_tacTimeList[0], pBtmInfo->m_tacTimeList[1], pBtmInfo->m_tacTimeList[2], pBtmInfo->m_tacTimeList[3]);
 						//==============================================================================================
 
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit",
+							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
+							);
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit",
+							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
+							);
+
+						int tempTabNo = pTopInfo->nTabNo;
+
 						pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
 						pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
+
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- pRsltQueueCtrl->PushBack()"), tempTabNo);
 
 
 						AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
@@ -1560,6 +1584,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						// 22.04.06 Ahn Modify Start
 						CAppDIO dio;
 						dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
+
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- OutputBit"), tempTabNo);
 
 
 						// 22.02.17 Ahn Modify End
