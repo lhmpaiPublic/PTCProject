@@ -162,6 +162,14 @@ public:
 
 	typedef std::vector< _LINE_DATA > VEC_LINE_DATA;
 
+	typedef struct
+	{
+		CRect rcArea;
+		int nBright;
+	} _PET_INFO;
+
+	typedef std::vector< _PET_INFO > VEC_PET_INFO;
+
 	// >>>>>>>>>>>>>>>>>>>> 여기부터 제작 필요 >>>>>>>>>>>>>>>>>>>>>>>
 	//Filter 처리
 	static int FilterProc(BYTE* pImgae, BYTE* pResultPtr, int nFilterNo) { return 0; };
@@ -471,5 +479,8 @@ public:
 	static double	GetIqSharpnessValue(BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint);
 	static int		GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint);
 	// 23.02.16 Ahn Add End
+
+	static BOOL	GetBrightAvg_PetCheck(BYTE* pOrgImg, int nImageWidth, int nImageHeight, VEC_PET_INFO* vstPetInfo );
+
 };
 

@@ -67,6 +67,8 @@ private:
 	void DrawArea(CDC* pDC);
 	void DrawMask(CDC* pDC);
 	void DrawMeasureLine(CDC* pDC);
+	void DrawPetArea(CDC* pDC);
+
 	CPoint GetImagePoint(int x, int y);
 	int DrawSelectRect(CDC* pDC);
 
