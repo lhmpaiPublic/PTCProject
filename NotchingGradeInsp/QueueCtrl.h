@@ -8,6 +8,8 @@ public:
 	CQueueCtrl();
 	~CQueueCtrl(void);
 
+	bool m_bQueuePushPop;
+
 	void ResetQueue() ;
 	int PushBack( CFrameInfo *pFrmInfo ) ;
 	int GetSize() ;

@@ -706,7 +706,7 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 {
 	CResultThread* pThis = (CResultThread*)pParam;
-	CQueueCtrl* pQueueResult = pThis->m_pParent->GetResultPtr(pThis->m_nHeadNo);
+	CQueueCtrl* pQueueResult = CImageProcessCtrl::GetResultPtr(pThis->m_nHeadNo);
 	CCropImgQueueCtrl* pCropImgQue = pThis->m_pParent->GetCropImageQueuePtr();
 	CDefectQueueCtrl* pDefectQueue = pThis->m_pParent->GetDefectQueuePtr(); // 22.06.23 Ahn Add
 

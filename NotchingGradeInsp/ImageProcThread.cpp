@@ -879,14 +879,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	CImageSaveQueueCtrl* pImgSaveQueueCtrl = pThis->m_pParent->GetImageSaveQueuePtr();
 
 	//CImageSaveQueueCtrl에서 이미지 저장 객체<CTacTimeDataCtrl> 포인터를 가져온다.
-	CTacTimeDataCtrl* pTactCtrl = pThis->m_pParent->GetTactDataCtrlPtr();
+	//CTacTimeDataCtrl* pTactCtrl = pThis->m_pParent->GetTactDataCtrlPtr();
 
 	//결과 저장객체를 가져온다.
 	//CImageProcessCtrl의 객체 멤버인 결과저장 객체<CQueueCtrl> 포인터를 가져온다.
-	CQueueCtrl* pRsltQueueCtrl[GRABBER_COUNT];
-	for (int i = 0; i < GRABBER_COUNT; i++) {
-		pRsltQueueCtrl[i] = pThis->m_pParent->GetResultPtr(i);
-	}
+	//CQueueCtrl* pRsltQueueCtrl[GRABBER_COUNT];
+	//for (int i = 0; i < GRABBER_COUNT; i++) {
+	//	pRsltQueueCtrl[i] = pThis->m_pParent->GetResultPtr(i);
+	//}
 
 	////CFrameRsltInfo* pFrmRsltInfo;
 	//CThreadQueueCtrl* pThdQue[MAX_CAMERA_NO];
@@ -1540,41 +1540,30 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 
 
-						double dTactTime = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
-						CTactTimeData data;
-						data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo;
-						data.dTactTime = dTactTime;
-						pTactCtrl->AddNewTactData(data);
+						//double dTactTime = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
+						//CTactTimeData data;
+						//data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo;
+						//data.dTactTime = dTactTime;
+						//pTactCtrl->AddNewTactData(data);
 
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(1)("*4*3*TabID[%d]-TabNo[%d] - TacTime[%f]",
-							pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime);
 
 						//======TacTime 출력 ========================================================================
 						pTopInfo->m_tacTimeList[3] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
 						pBtmInfo->m_tacTimeList[3] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
 
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(4)("TacTime Top========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultStart[%f] - ResultEnd[%f]",
-							pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, pTopInfo->m_tacTimeList[0], pTopInfo->m_tacTimeList[1], pTopInfo->m_tacTimeList[2], pBtmInfo->m_tacTimeList[3]);
-
-
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(4)("TacTime Bottom========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultStart[%f] - ResultEnd[%f]",
-							pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, pBtmInfo->m_tacTimeList[0], pBtmInfo->m_tacTimeList[1], pBtmInfo->m_tacTimeList[2], pBtmInfo->m_tacTimeList[3]);
-						//==============================================================================================
 
 						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit",
 							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
 							);
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit",
-							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
-							);
 
 						int tempTabNo = pTopInfo->nTabNo;
 
-						pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
-						pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
+						CImageProcessCtrl::GetResultPtr(CAM_POS_TOP)->PushBack((CFrameInfo*)pTopInfo);
+						CImageProcessCtrl::GetResultPtr(CAM_POS_BOTTOM)->PushBack((CFrameInfo*)pBtmInfo);
+
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit1",
+							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
+							);
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- pRsltQueueCtrl->PushBack()"), tempTabNo);
 

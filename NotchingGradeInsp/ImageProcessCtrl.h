@@ -57,7 +57,7 @@ private :
 	CQueueCtrl* m_pQueueCtrl;
 
 	//이미지 프로세싱 결과 데이터 저장소
-	CQueueCtrl* m_pQueueResult[GRABBER_COUNT] ;
+	static CQueueCtrl* m_pQueueResult[GRABBER_COUNT] ;
 
 	// 22.06.23 Ahn Add Start
 	CDefectQueueCtrl *m_pDefectQueueCtrl ;
@@ -190,7 +190,7 @@ public :
 
 	CQueueCtrl* GetQueueFrmPtr(int nIndex);
 	//CQueueCtrl* GetQueuePtr();
-	CQueueCtrl* GetResultPtr(int nHeadNo);
+	static CQueueCtrl* GetResultPtr(int nHeadNo);
 
 	CCounterQueueCtrl* GetCounterQueInPtr();
 

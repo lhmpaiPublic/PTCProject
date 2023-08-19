@@ -37,6 +37,8 @@
 
 CThreadQueueCtrl* CImageProcessCtrl::m_pThreadQueueCtrl[GRABBER_COUNT];
 
+CQueueCtrl* CImageProcessCtrl::m_pQueueResult[GRABBER_COUNT];
+
 CImageProcessCtrl::CImageProcessCtrl(void)
 {
 	int i;
