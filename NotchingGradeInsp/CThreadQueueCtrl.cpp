@@ -97,6 +97,7 @@ void CThreadQueueCtrl::ThreadQueueCtrl_WatchThread()
 	}
 }
 
+#define MAX_THREADQUEUECTRLSIZE 8
 int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 {
 	ASSERT(pFrmInfo);
@@ -114,13 +115,13 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 		{
 			int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
 			// 큐가 오버되었으면
-			if (nOverflowMax <= totalQueueSize)
+			if (MAX_THREADQUEUECTRLSIZE <= totalQueueSize)
 			{
-				//DEBUG_LOG.txt
-				AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax);
-
 				//저장큐가 Over Flow 값 설정
 				pFrmInfo->m_bOverFlow = FALSE;
+
+				//DEBUG_LOG.txt
+				AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax);
 
 				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>-Overflow",
 					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
@@ -301,7 +302,7 @@ bool CThreadQueueCtrl::isFull()
 
 void CThreadQueueCtrl::enQueue()
 {
-	if (!isFull())
+	while (!isFull())
 	{
 		//스래드 객체를 가져온다.
 		CImageProcThreadUnit* pImageProcThreadUnit = GetWatchQueueData();
@@ -314,6 +315,10 @@ void CThreadQueueCtrl::enQueue()
 			pImageProcThreadUnit->ProcStart();
 			rear = ++rear % maxQueueSize;
 			ProcThreadUnitqueue[rear] = pImageProcThreadUnit;
+		}
+		else
+		{
+			break;
 		}
 	}
 }
