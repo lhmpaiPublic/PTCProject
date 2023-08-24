@@ -547,6 +547,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						 if (AprData.m_System.m_bNonNgStop == TRUE)
 						 {
 							 AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+
+							 AprData.m_NowLotData.m_nContinueCount = AprData.m_nCoutinuouCount + 1; //Overflow일때, 강제 연속 알람
 						 }
 					 }
 

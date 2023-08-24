@@ -118,7 +118,7 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 			if (MAX_THREADQUEUECTRLSIZE <= totalQueueSize)
 			{
 				//저장큐가 Over Flow 값 설정
-				pFrmInfo->m_bOverFlow = FALSE;
+				pFrmInfo->m_bOverFlow = TRUE;
 
 				//DEBUG_LOG.txt
 				CString strLog;

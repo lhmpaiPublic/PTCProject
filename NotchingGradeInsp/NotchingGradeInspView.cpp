@@ -1018,15 +1018,6 @@ UINT ThreadProc_Melsec(LPVOID Param)
 
 
 
-	//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE
-	if (nIDEvent == m_SpcStatus)
-	{
-		//SPC+ PCL Run Signal Status 
-		AprData.SpcPluusStatus("1");
-	}
-#endif //SPCPLUS_CREATE
-
 		::Sleep(50);
 	}
 
