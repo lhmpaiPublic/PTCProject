@@ -611,7 +611,7 @@ void CModeDlg::Refresh()
 	else {
 		clrBk = RGB(100, 255, 100);
 	}
-	m_stCameraState.SetBackgroundColor(clrBk);
+	m_stDiskSpace.SetBackgroundColor(clrBk);
 	m_stDiskSpace.SetWindowText(strDiskSpace);
 	// 22.07.04 Ahn Add End
 
