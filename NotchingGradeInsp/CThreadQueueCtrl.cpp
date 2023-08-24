@@ -121,7 +121,10 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 				pFrmInfo->m_bOverFlow = FALSE;
 
 				//DEBUG_LOG.txt
-				AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax);
+				CString strLog;
+				strLog.Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax);
+				AprData.SaveDebugLog_Format(strLog);
+				AprData.SaveErrorLog(strLog);
 
 				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>-Overflow",
 					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
