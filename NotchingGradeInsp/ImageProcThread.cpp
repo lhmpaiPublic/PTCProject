@@ -1283,12 +1283,18 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
 
-							WORD* nOutPutData = new WORD(wOutPut);
-							pThis->CreateDioMarkingThread(nOutPutData);
+							CAppDIO dio;
 
-//							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>, Tab Cnt<%d>"),
-//								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1);
-							
+							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> Call Enter"));
+
+							dio.OutputWord(wOutPut);
+							Sleep(5);
+							dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+
+							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>"),
+								(wOutPut >> 2), wOutPut);
+
+							Sleep(10);
 
 							CString strMsg;
 							strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),
@@ -1572,6 +1578,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						// 22.04.06 Ahn Modify Start
 						CAppDIO dio;
+
 						dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- OutputBit"), tempTabNo);
