@@ -526,7 +526,7 @@ int CImageProcessCtrl::InspectionStart()
 {
 	FrameQueueReset();
 
-	LightON();
+//	LightON();
 	
 	m_DefDataCtrl.m_strLotNo = AprData.m_NowLotData.m_strLotNo;
 	m_DefDataCtrl.m_strDate = AprData.m_NowLotData.m_strDate;
@@ -541,7 +541,7 @@ int CImageProcessCtrl::InspectionStart()
 
 int CImageProcessCtrl::InspectionEnd()
 {
-	LightOFF();
+//	LightOFF();
 
 	return 0;
 
@@ -655,15 +655,18 @@ int CImageProcessCtrl::LightON()
 	int nChanel = 0;
 	int nUnit = 0;
 
+	int nRet = 0;
 	// 22.07.07 Ahn Modify Start
 	int nMaxUnit = theApp.m_pLightCtrl->GetMaxUnit();
 	for (nUnit = 0; nUnit < nMaxUnit; nUnit++) {
 	// 22.07.07 Ahn Modify End
 		for (nChanel = 0; nChanel < MAX_LIGHT_CHANEL; nChanel++) {
 			nLevel = AprData.m_pRecipeInfo->nLightLevel[nUnit][nChanel];
-			theApp.m_pLightCtrl->SetLevel(nUnit, nChanel, nLevel);
+			nRet = theApp.m_pLightCtrl->SetLevel(nUnit, nChanel, nLevel);
+			AprData.SaveDebugLog_Format(_T("[ Light%d ON ]... %s"), nChanel, (nRet < 0) ? _T("Error") : _T("OK"));
 		}
 	}
+
 
 	return 0;
 }
@@ -676,12 +679,19 @@ int CImageProcessCtrl::LightOFF()
 	// 22.07.07 Ahn Modify Start
 	int nMaxUnit = theApp.m_pLightCtrl->GetMaxUnit();
 
-	for (nUnit = 0; nUnit < nMaxUnit; nUnit++) {
+	int nRet = 0;
+
+	for (nUnit = 0; nUnit < nMaxUnit; nUnit++)
+	{
 	// 22.07.07 Ahn Modify End
-		for (nChanel = 0; nChanel < MAX_LIGHT_CHANEL; nChanel++) {
-			theApp.m_pLightCtrl->SetLevel(nUnit, nChanel, 0);
+		for (nChanel = 0; nChanel < MAX_LIGHT_CHANEL; nChanel++)
+		{
+			nRet = theApp.m_pLightCtrl->SetLevel(nUnit, nChanel, 0);
+			AprData.SaveDebugLog_Format(_T("[ Light%d OFF ]... %s"), nChanel, (nRet < 0) ? _T("Error") : _T("OK"));
 		}
 	}
+
+
 
 	return 0;
 }

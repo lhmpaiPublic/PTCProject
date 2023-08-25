@@ -518,7 +518,7 @@ void CModeDlg::Refresh()
 	BOOL bPlc = FALSE ;
 	BOOL bIo = FALSE;
 	BOOL bLamp = FALSE;
-	BOOL bGrabber = FALSE;
+	BOOL bGrabber = TRUE;
 	BOOL bRunFlag = FALSE;
 
 	if (theApp.m_pPioCtrl != NULL) {
@@ -538,6 +538,15 @@ void CModeDlg::Refresh()
 		}
 		// 22.07.25 Ahn Modify End
 	}
+	if (theApp.m_pImgProcCtrl != NULL)
+	{
+		for( int i=0; i<MAX_CAMERA_NO; i++ )
+		{
+			bGrabber &= theApp.m_pImgProcCtrl->GetCameraLinkStatus(i);
+		}
+	}
+
+
 
 	// 22.07.01 Ahn Add Start
 	COLORREF clrBk;
@@ -670,6 +679,8 @@ void CModeDlg::OnBnClickedRadRun()
 
 	m_pView->SetInspReady(TRUE);
 
+	theApp.m_pImgProcCtrl->LightON();
+
 }
 
 
@@ -687,6 +698,8 @@ void CModeDlg::OnBnClickedRadStop()
 	EnableControl(FALSE);
 
 	m_pView->SetInspReady(FALSE);
+
+	theApp.m_pImgProcCtrl->LightOFF();
 
 }
 

@@ -206,6 +206,9 @@ public :
 	//FrameCtn : Camera에서 이벤트로 받은 이미지 번호 : Top, Bottom 각각
 	void GrabDalsaCameraLink(int CamType, int FrameCnt);
 
+
+
+
 #if defined( IMAGE_DRAW_DIRECT_VERSION )
 	void SetImgDispHWnd(HWND pHWnd, int nHeadNo);
 	HWND GetImgDispHWnd(int nHeadNo);

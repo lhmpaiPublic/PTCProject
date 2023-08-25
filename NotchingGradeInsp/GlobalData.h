@@ -45,6 +45,7 @@ public :
 		case	en_CameraError:
 		case	en_GrabberError:
 //		case	en_ProcessError:
+		case	en_LampError:			//조명 에러 발생 시 READY OFF
 			m_bInitialReq = TRUE;
 			break;
 		case	 en_DiskCapacityAlarm:
