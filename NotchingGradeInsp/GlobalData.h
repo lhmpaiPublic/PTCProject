@@ -44,7 +44,7 @@ public :
 		// Heavy Error
 		case	en_CameraError:
 		case	en_GrabberError:
-		case	en_ProcessError:
+//		case	en_ProcessError:
 			m_bInitialReq = TRUE;
 			break;
 		case	 en_DiskCapacityAlarm:

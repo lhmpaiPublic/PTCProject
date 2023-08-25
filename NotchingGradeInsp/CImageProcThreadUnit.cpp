@@ -528,7 +528,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//Tab 정보가 없을 때  ? 또는 Over Flow이면
 				else
 				{
-					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Errorflag - Overflow",
+					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Errorflag",
 						(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
 						);
 
@@ -547,6 +547,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						 if (AprData.m_System.m_bNonNgStop == TRUE)
 						 {
 							 AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
+
+							 AprData.m_NowLotData.m_nContinueCount = AprData.m_nCoutinuouCount + 1; //Overflow일때, 강제 연속 알람
 						 }
 					 }
 
@@ -812,12 +814,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
 		);
 
-	//프레임 정보 로컬 객체 삭제
-	if (pFrmInfo != NULL) {
-		delete pFrmInfo;
-		pFrmInfo = NULL;
-	}
-
 	return 0;
 }
 
@@ -873,6 +869,12 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 	//	}
 	//}
 	// 22.02.18 Ahn Delete End
+
+	if (m_pFrmInfo)
+	{
+		delete m_pFrmInfo;
+		m_pFrmInfo = NULL;
+	}
 
 	//이벤트 객체 종료
 	::CloseHandle(m_hEventProcStart);

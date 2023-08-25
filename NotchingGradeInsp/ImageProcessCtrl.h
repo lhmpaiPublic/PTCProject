@@ -57,7 +57,7 @@ private :
 	CQueueCtrl* m_pQueueCtrl;
 
 	//이미지 프로세싱 결과 데이터 저장소
-	CQueueCtrl* m_pQueueResult[GRABBER_COUNT] ;
+	static CQueueCtrl* m_pQueueResult[GRABBER_COUNT] ;
 
 	// 22.06.23 Ahn Add Start
 	CDefectQueueCtrl *m_pDefectQueueCtrl ;
@@ -89,7 +89,7 @@ private :
 	//Grabber 객수
 
 	//이미지 처리 결과 마킹 - 최종결과 생성을 위한 스래드 객체 저장소
-	CThreadQueueCtrl* m_pThreadQueueCtrl[GRABBER_COUNT];
+	static CThreadQueueCtrl* m_pThreadQueueCtrl[GRABBER_COUNT];
 
 	//카메라 번호에서 부터 장비 세팅 정보가 저장된 객체
 	//최종 프레임의 저리 결과를 파일로 저장하기 위해서 사용되는 객체
@@ -190,12 +190,12 @@ public :
 
 	CQueueCtrl* GetQueueFrmPtr(int nIndex);
 	//CQueueCtrl* GetQueuePtr();
-	CQueueCtrl* GetResultPtr(int nHeadNo);
+	static CQueueCtrl* GetResultPtr(int nHeadNo);
 
 	CCounterQueueCtrl* GetCounterQueInPtr();
 
 	// 21.11.11 Ahn Add Start
-	CThreadQueueCtrl* GetThreadQueuePtr(int nHeadNo);
+	static CThreadQueueCtrl* GetThreadQueuePtr(int nHeadNo);
 	// 21.11.11 Ahn Add End
 
 	// 22.06.23 Ahn Add Start

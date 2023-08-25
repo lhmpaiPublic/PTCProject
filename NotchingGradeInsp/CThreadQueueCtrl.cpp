@@ -6,11 +6,18 @@
 #include "GlobalData.h"			// 23.09.10 Ahn Add 
 
 #define WATCHTHREAD_TIMEOUT 30
-#define THREADQUEUE_MAXCOUNT 5
 CThreadQueueCtrl::CThreadQueueCtrl(CImageProcessCtrl* pParent)
 {
 	::InitializeCriticalSection(&m_csQueue);
 	m_pParent = pParent;
+
+	m_bQueuePushPop = false;
+
+	for(int idx = 0; idx < THREADQUEUE_MAXCOUNT; idx++)
+		ProcThreadUnitqueue[idx] = NULL;
+	front = 0;
+	rear = 0;
+	maxQueueSize = THREADQUEUE_MAXCOUNT;
 
 	//스래드 객체 초기화
 	m_pWatchThread = NULL;
@@ -80,29 +87,7 @@ void CThreadQueueCtrl::ThreadQueueCtrl_WatchThread()
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
-			//이미지 프로세싱 큐 갯수를 가져온다.
-			int ThreadQueueSize = GetSize();
-			//스래드의 갯수 보다 작은 만큼 채운다.
-			for (int buff = ThreadQueueSize; buff < THREADQUEUE_MAXCOUNT; buff++)
-			{
-				//작동하지 않는 스래드 큐 크기
-				int nRet = GetWatchQueueSize();
-				if (nRet) 
-				{
-					//스래드 객체를 가져온다.
-					CImageProcThreadUnit* pThread = GetWatchQueueData();
-					//스래드 작동 큐로 이동한다.
-					if (pThread)
-					{
-						push(pThread);
-					}
-				}
-				else
-				{
-					break;
-				}
-				
-			}
+			enQueue();
 		}
 		//스래드 종료 처리
 		else
@@ -112,6 +97,7 @@ void CThreadQueueCtrl::ThreadQueueCtrl_WatchThread()
 	}
 }
 
+#define MAX_THREADQUEUECTRLSIZE 8
 int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 {
 	ASSERT(pFrmInfo);
@@ -129,13 +115,16 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 		{
 			int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
 			// 큐가 오버되었으면
-			if (nOverflowMax <= totalQueueSize)
+			if (MAX_THREADQUEUECTRLSIZE <= totalQueueSize)
 			{
-				//DEBUG_LOG.txt
-				AprData.SaveDebugLog_Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax);
-
 				//저장큐가 Over Flow 값 설정
-				pFrmInfo->m_bOverFlow = FALSE;
+				pFrmInfo->m_bOverFlow = TRUE;
+
+				//DEBUG_LOG.txt
+				CString strLog;
+				strLog.Format(_T("TabNo[%d]- CImageProcThreadUnit OverFlow : Q-Size<%d/%d>"), pFrmInfo->nTabNo, totalQueueSize, nOverflowMax);
+				AprData.SaveDebugLog_Format(strLog);
+				AprData.SaveErrorLog(strLog);
 
 				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>-Overflow",
 					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
@@ -163,31 +152,63 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 
 void CThreadQueueCtrl::push(CImageProcThreadUnit* pThread)
 {
-	::EnterCriticalSection(&m_csQueue);
+	
 
-	pThread->ProcStart();
+	while (true)
+	{
+		if (m_bQueuePushPop == false)
+		{
+			m_bQueuePushPop = true;
 
-	//스래드객체 저장큐에 저장
-	m_pThradQue.push(pThread);
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultWaitQ",
+				(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
+				);
 
-	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultWaitQ",
-		(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
-		);
+			pThread->ProcStart();
 
-	::LeaveCriticalSection(&m_csQueue);
+			//스래드객체 저장큐에 저장
+			m_pThradQue.push(pThread);
+
+			m_bQueuePushPop = false;
+
+			break;
+		}
+		else
+		{
+			Sleep(1);
+		}
+
+	}
 }
 
 CImageProcThreadUnit* CThreadQueueCtrl::pop()
 {
 	CImageProcThreadUnit* pThread = NULL;
-	::EnterCriticalSection(&m_csQueue);
-
-	if (m_pThradQue.empty() == FALSE) 
+	while (true)
 	{
-		pThread = m_pThradQue.front();
-		m_pThradQue.pop();
+		if (m_bQueuePushPop == false)
+		{
+			m_bQueuePushPop = true;
+
+			if (m_pThradQue.size())
+			{
+				pThread = m_pThradQue.front();
+				m_pThradQue.pop();
+
+				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - pop-ResultWaitQ",
+					(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
+					);
+			}
+			m_bQueuePushPop = false;
+			
+
+			break;
+		}
+		else
+		{
+			Sleep(1);
+		}
 	}
-	::LeaveCriticalSection(&m_csQueue);
 	return pThread;
 }
 
@@ -245,8 +266,11 @@ CImageProcThreadUnit* CThreadQueueCtrl::GetWatchQueueData()
 {
 	CImageProcThreadUnit* data = NULL;
 	::EnterCriticalSection(&m_csWatchQueue);
-	data = m_pWatchQueBuffer.front();
-	m_pWatchQueBuffer.pop();
+	if (m_pWatchQueBuffer.size())
+	{
+		data = m_pWatchQueBuffer.front();
+		m_pWatchQueBuffer.pop();
+	}
 	::LeaveCriticalSection(&m_csWatchQueue);
 
 	return data;
@@ -256,5 +280,73 @@ CImageProcThreadUnit* CThreadQueueCtrl::GetWatchQueueData()
 //총 생성 큐 갯수
 int CThreadQueueCtrl::getTotalQueueCount()
 {
-	return GetWatchQueueSize() + GetSize();
+	return GetWatchQueueSize() + countQueue();
+}
+
+bool CThreadQueueCtrl::isEmpty()
+{
+	bool b = false;
+	if (front == rear) 
+	{
+		b = true;
+	}
+	return b;
+}
+
+bool CThreadQueueCtrl::isFull() 
+{
+	bool b = false;
+	if (front == (rear + 1) % maxQueueSize)
+	{
+		b = true;
+	}
+	return b;
+}
+
+void CThreadQueueCtrl::enQueue()
+{
+	while (!isFull())
+	{
+		//스래드 객체를 가져온다.
+		CImageProcThreadUnit* pImageProcThreadUnit = GetWatchQueueData();
+		if (pImageProcThreadUnit)
+		{
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - enQ-ResultWaitQ",
+				(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
+				);
+
+			pImageProcThreadUnit->ProcStart();
+			rear = ++rear % maxQueueSize;
+			ProcThreadUnitqueue[rear] = pImageProcThreadUnit;
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+
+CImageProcThreadUnit* CThreadQueueCtrl::deQueue()
+{
+	CImageProcThreadUnit* pImageProcThreadUnit = NULL;
+	if (!isEmpty())
+	{
+		front = ++front% maxQueueSize;
+		pImageProcThreadUnit = ProcThreadUnitqueue[front];
+
+		if (pImageProcThreadUnit)
+		{
+			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - deQ-ResultWaitQ",
+				(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
+				);
+		}
+
+	}
+	return pImageProcThreadUnit;
+
+}
+
+int CThreadQueueCtrl::countQueue()
+{
+	return abs(front - rear);
 }

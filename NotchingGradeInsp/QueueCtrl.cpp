@@ -7,6 +7,7 @@
 CQueueCtrl::CQueueCtrl()
 {
 	::InitializeCriticalSection( &m_csQueue ) ;
+	m_bQueuePushPop = false;
 }
 
 CQueueCtrl::~CQueueCtrl(void)
@@ -34,45 +35,87 @@ void CQueueCtrl::ResetQueue()
 int CQueueCtrl::PushBack( CFrameInfo *pFrmInfo ) 
 {
 	int nFrmCnt = 0;
-	::EnterCriticalSection( &m_csQueue ) ;
-	if( pFrmInfo != NULL )	{
-		if (pFrmInfo->nTabNo <= 0) {
-			pFrmInfo->nTabNo = (int)(m_lCount++ / MAX_CAMERA_NO);
+
+	while (true)
+	{
+		if (m_bQueuePushPop == false)
+		{
+			m_bQueuePushPop = true;
+
+
+			if (pFrmInfo != NULL) 
+			{
+				m_queFrameInfo.push(pFrmInfo);
+				int nHeadNo = pFrmInfo->m_nHeadNo;
+				nFrmCnt = pFrmInfo->m_nFrameCount;
+				AprData.SetFrameCounter(nHeadNo, nFrmCnt);
+
+				if (pFrmInfo->nTabNo > 0)
+				{
+					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultFrameData",
+						(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+						);
+				}
+			}
+
+			m_bQueuePushPop = false;
+
+			break;
 		}
-		m_queFrameInfo.push( pFrmInfo ) ;
-		int nHeadNo = pFrmInfo->m_nHeadNo  ;
-		nFrmCnt = pFrmInfo->m_nFrameCount;
-		AprData.SetFrameCounter( nHeadNo, nFrmCnt );
+		else
+		{
+			Sleep(1);
+		}
+
 	}
-	::LeaveCriticalSection( &m_csQueue ) ;
+
 	return nFrmCnt;
 }
 CFrameInfo *CQueueCtrl::Pop() 
 {
-	::EnterCriticalSection( &m_csQueue ) ;
-	CFrameInfo *pInfo =  NULL ;
-	if( m_queFrameInfo.empty() == false ){
-		pInfo = m_queFrameInfo.front() ;
-		m_queFrameInfo.pop() ;
+	CFrameInfo* pInfo = NULL;
+	while (true)
+	{
+		if (m_bQueuePushPop == false)
+		{
+			m_bQueuePushPop = true;
+
+			if (m_queFrameInfo.empty() == false)
+			{
+				pInfo = m_queFrameInfo.front();
+				m_queFrameInfo.pop();
+
+				if (pInfo->nTabNo > 0)
+				{
+					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - pop-ResultFrameData",
+						(pInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pInfo->nTabNo, pInfo->m_nTabId_CntBoard
+						);
+				}
+			}
+
+			m_bQueuePushPop = false;
+
+			break;
+		}
+		else
+		{
+			Sleep(1);
+		}
 	}
-	::LeaveCriticalSection( &m_csQueue ) ;
-	return pInfo ;
+	return pInfo;
 }
 int CQueueCtrl::GetSize() 
 {
-	::EnterCriticalSection( &m_csQueue ) ;
 	int nSize = (int)m_queFrameInfo.size() ;
-	::LeaveCriticalSection( &m_csQueue ) ;
 	return nSize ;
 }
 
 BOOL CQueueCtrl::IsEmpty() 
 {
-	::EnterCriticalSection( &m_csQueue ) ;
 	BOOL bRet = TRUE  ;
-	if( !m_queFrameInfo.empty() ){
+	if( !m_queFrameInfo.empty() )
+	{
 		bRet = FALSE ;
 	}
-	::LeaveCriticalSection( &m_csQueue ) ;
 	return bRet ;
 }

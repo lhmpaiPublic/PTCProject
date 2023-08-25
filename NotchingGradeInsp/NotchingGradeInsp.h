@@ -59,6 +59,10 @@ private:
 public :
 	CImageProcessCtrl *m_pImgProcCtrl ;
 
+	DWORD m_nImageProcThreadTimeEnter;
+	DWORD m_nImageProcThreadTimeBefore;
+	DWORD m_nImageProcThreadTimeAfter;
+
 	CPioCtrl* m_pPioCtrl;
 	// 22.04.01 Ahn Add Start
 	CSigProc* m_pSigProc; 

@@ -487,7 +487,9 @@ void CModeDlg::OnBnClickedBtnLog()
 void CModeDlg::OnBnClickedBtnExit()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if( MessageBox( _T("Do you want to exit the application?"), _T("NotchingGradeInsp"), MB_ICONQUESTION | MB_YESNO) == IDYES ) {
+	if( MessageBox( _T("Do you want to exit the application?"), _T("NotchingGradeInsp"), MB_ICONQUESTION | MB_YESNO) == IDYES )
+	{
+		AprData.SaveDebugLog_Format(_T("<BUTTON CLICK> exit the application"));
 		AfxGetMainWnd()->PostMessageA(WM_CLOSE);
 	}
 }
@@ -653,7 +655,9 @@ void CModeDlg::OnBnClickedBtnDirectory()
 void CModeDlg::OnBnClickedRadRun()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-		
+	
+	AprData.SaveDebugLog_Format(_T("<BUTTON CLICK> START"));
+
 	m_pDoc->SetInspState(enInspRun);
 
 	// 22.07.07 Ahn Delete Start
@@ -672,6 +676,7 @@ void CModeDlg::OnBnClickedRadRun()
 void CModeDlg::OnBnClickedRadStop()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	AprData.SaveDebugLog_Format(_T("<BUTTON CLICK> STOP"));
 
 	m_pDoc->SetInspState(enInspStop);
 

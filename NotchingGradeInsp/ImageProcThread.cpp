@@ -66,19 +66,16 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 				0,
 				CREATE_SUSPENDED,
 				NULL);
+			if (m_pThread != NULL) {
+				m_pThread->m_bAutoDelete = FALSE;
+				m_pThread->ResumeThread();
+			}
 		}
 		else {
 			m_pThread = AfxBeginThread((AFX_THREADPROC)CtrlThreadImgProc,
-				(LPVOID)this,
-				THREAD_PRIORITY_HIGHEST,
-				0,
-				CREATE_SUSPENDED,
-				NULL);
+				(LPVOID)this);
 		}
-		if ( m_pThread != NULL ) {
-			m_pThread->m_bAutoDelete = FALSE ;
-			m_pThread->ResumeThread() ;
-		}
+		
 	}
 }
 
@@ -147,9 +144,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	CQueueCtrl* pQueueFrame_Top = pThis->m_pParent->GetQueueFrmPtr(0);
 	CQueueCtrl* pQueueFrame_Bottom = pThis->m_pParent->GetQueueFrmPtr(1);
 	CCounterQueueCtrl* pCntQueueInCtrl = pThis->m_pParent->GetCounterQueInPtr(); // 탭 카운터 용 큐
-	CThreadQueueCtrl* pThreadQue[MAX_CAMERA_NO];
-	pThreadQue[CAM_POS_TOP] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_TOP);
-	pThreadQue[CAM_POS_BOTTOM] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_BOTTOM);
+	//CThreadQueueCtrl* pThreadQue[MAX_CAMERA_NO];
+	//pThreadQue[CAM_POS_TOP] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_TOP);
+	//pThreadQue[CAM_POS_BOTTOM] = pThis->m_pParent->GetThreadQueuePtr(CAM_POS_BOTTOM);
 
 	BOOL bReserved = FALSE; // 크기가 작아서 보내지 못한 부분이 있음 다음 이미지 받아서 처리 할 것인지에 대한 Flag.
 	BOOL bReservFrmNo = -1;
@@ -751,26 +748,26 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pBtmInfo->m_bErrorFlag = TRUE;
 #endif
 
-						// 22.05.18 Ahn Add Start
+						//// 22.05.18 Ahn Add Start
 
-						//처리할  Top 프레임 정보 갯수
-						int nTopQueCnt = pThreadQue[CAM_POS_TOP]->GetSize();
-						//처리할 Bottom  프레임 정보 갯수
-						int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
+						////처리할  Top 프레임 정보 갯수
+						//int nTopQueCnt = pThreadQue[CAM_POS_TOP]->GetSize();
+						////처리할 Bottom  프레임 정보 갯수
+						//int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
 
-						int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
+						//int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
 
-						//처리할 정보가 스킵 숫자보다 크다면
-						if ((nTopQueCnt > nOverflowMax) && (nBtmQueCnt > nOverflowMax)
-							//Top, Bottom 이미지 처리 프레임 정보가 스킵 숫자보다 크다면
-							|| ((nSizeFrmL > nOverflowMax) && (nSizeFrmR > nOverflowMax))) {
-							pInfo->m_bErrorFlag = TRUE;
-							pBtmInfo->m_bErrorFlag = TRUE;
+						////처리할 정보가 스킵 숫자보다 크다면
+						//if ((nTopQueCnt > nOverflowMax) && (nBtmQueCnt > nOverflowMax)
+						//	//Top, Bottom 이미지 처리 프레임 정보가 스킵 숫자보다 크다면
+						//	|| ((nSizeFrmL > nOverflowMax) && (nSizeFrmR > nOverflowMax))) {
+						//	pInfo->m_bErrorFlag = TRUE;
+						//	pBtmInfo->m_bErrorFlag = TRUE;
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> Top/Bottom Overflow TopFrameCnt:%d, BottonFrameCnt:%d, TopQueueCnt:%d, BottonQueueCnt:%d > nOverflowMax:%d"),
-								nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt, nOverflowMax);
+						//	AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> Top/Bottom Overflow TopFrameCnt:%d, BottonFrameCnt:%d, TopQueueCnt:%d, BottonQueueCnt:%d > nOverflowMax:%d"),
+						//		nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt, nOverflowMax);
 
-						}
+						//}
 						// 22.05.18 Ahn Add Start
 
 						// 22.12.09 Ahn Add Start
@@ -797,8 +794,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 						//스래드에 처리할 정보를 저장 TOP, BOTTOM
-						pThreadQue[CAM_POS_TOP]->push(pInfo);
-						pThreadQue[CAM_POS_BOTTOM]->push(pBtmInfo);
+						CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP)->push(pInfo);
+						CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM)->push(pBtmInfo);
 
 						//Lot Data Tab 번호를 증가 시킨다.
 						AprData.m_NowLotData.m_nTabCount++;
@@ -882,21 +879,21 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	CImageSaveQueueCtrl* pImgSaveQueueCtrl = pThis->m_pParent->GetImageSaveQueuePtr();
 
 	//CImageSaveQueueCtrl에서 이미지 저장 객체<CTacTimeDataCtrl> 포인터를 가져온다.
-	CTacTimeDataCtrl* pTactCtrl = pThis->m_pParent->GetTactDataCtrlPtr();
+	//CTacTimeDataCtrl* pTactCtrl = pThis->m_pParent->GetTactDataCtrlPtr();
 
 	//결과 저장객체를 가져온다.
 	//CImageProcessCtrl의 객체 멤버인 결과저장 객체<CQueueCtrl> 포인터를 가져온다.
-	CQueueCtrl* pRsltQueueCtrl[GRABBER_COUNT];
-	for (int i = 0; i < GRABBER_COUNT; i++) {
-		pRsltQueueCtrl[i] = pThis->m_pParent->GetResultPtr(i);
-	}
+	//CQueueCtrl* pRsltQueueCtrl[GRABBER_COUNT];
+	//for (int i = 0; i < GRABBER_COUNT; i++) {
+	//	pRsltQueueCtrl[i] = pThis->m_pParent->GetResultPtr(i);
+	//}
 
-	//CFrameRsltInfo* pFrmRsltInfo;
-	CThreadQueueCtrl* pThdQue[MAX_CAMERA_NO];
-	for (int i = 0; i < MAX_CAMERA_NO; i++) {
-		pThdQue[i] = pThis->m_pParent->GetThreadQueuePtr(i);
-	}
-
+	////CFrameRsltInfo* pFrmRsltInfo;
+	//CThreadQueueCtrl* pThdQue[MAX_CAMERA_NO];
+	//for (int i = 0; i < MAX_CAMERA_NO; i++) {
+	//	pThdQue[i] = pThis->m_pParent->GetThreadQueuePtr(i);
+	//}
+	
 	CImageProcThreadUnit* pUnitTop = NULL;
 	CImageProcThreadUnit* pUnitBtm = NULL;
 	BOOL bBitmapSave = FALSE;
@@ -911,8 +908,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 	while (1)
 	{
+		
 		//타임 주기 이벤트
 		ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_Result(), IMAGEPROCTHREAD_RESULT_TIMEOUT);
+		theApp.m_nImageProcThreadTimeEnter = GetTickCount();
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
@@ -938,29 +937,40 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			//처리를 하여 결과 정보 저장 Queue pRsltQueueCtrl 에 저장된다.
 			if (pUnitTop == NULL)
 			{
-				pUnitTop = pThdQue[CAM_POS_TOP]->pop();
+				CThreadQueueCtrl*  topPtr = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP);
+				if (topPtr)
+				{
+					pUnitTop = topPtr->deQueue();
+				}
+				else
+				{
+					LOGDISPLAY_SPEC(6)("TopQueueCtrl NULL");
+				}
 			}
 			if (pUnitBtm == NULL)
 			{
-				pUnitBtm = pThdQue[CAM_POS_BOTTOM]->pop();
+				CThreadQueueCtrl* btmPtr = CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM);
+				if (btmPtr)
+				{
+					pUnitBtm = btmPtr->deQueue();
+				}
+				else
+				{
+					LOGDISPLAY_SPEC(6)("BtmQueueCtrl NULL");
+				}
 			}
 
 			//Top, Bottom 처리 조건 : Defect 검사 프로세스가 처리 되었을 때
 			//일정한 시간이 지나도 처리하지 못했을 때
 			if (pUnitTop && pUnitBtm)
 			{
-				LOGDISPLAY_SPEC(6)("UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-QPop",
-					pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
-					);
+				theApp.m_nImageProcThreadTimeBefore = GetTickCount();
 
-
-				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Wait"), pUnitTop->m_pFrmInfo->nTabNo);
-
-				//이미지 처리 스래드 (대기 스래드)
-				//출력 대기 이벤트 객체 push
-				HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-				//순서대로 push 저장한다.
-				pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
+				////이미지 처리 스래드 (대기 스래드)
+				////출력 대기 이벤트 객체 push
+				//HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+				////순서대로 push 저장한다.
+				//pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
 
 				while (1)
 				{
@@ -989,7 +999,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
 							);
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pUnitTop->m_pFrmInfo->nTabNo);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pTopInfo->nTabNo);
 
 
 						//======TacTime 출력 ========================================================================
@@ -1243,8 +1253,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 						// 결과 Queue에 보냄
 
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write NG Code To PLC"), pTopInfo->nTabNo);
+
+
+
 						// Counter 신호 출력
-						WaitForSingleObject(hEvent, DIOMARKINGEVENT_TIMEOUT);
+						//WaitForSingleObject(hEvent, DIOMARKINGEVENT_TIMEOUT);
 						WORD wOutPut;
 						CString strMarking = _T("OFF");
 						{
@@ -1269,12 +1283,18 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
 
-							WORD* nOutPutData = new WORD(wOutPut);
-							pThis->CreateDioMarkingThread(nOutPutData);
+							CAppDIO dio;
 
-//							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>, Tab Cnt<%d>"),
-//								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1);
-							
+							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> Call Enter"));
+
+							dio.OutputWord(wOutPut);
+							Sleep(5);
+							dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+
+							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>"),
+								(wOutPut >> 2), wOutPut);
+
+							Sleep(10);
 
 							CString strMsg;
 							strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),
@@ -1334,6 +1354,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 
 						}
+
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write Judge To PLC"), pTopInfo->nTabNo);
+
+
 
 						{ // CSV 파일 작성
 							CString strCsvFileName;
@@ -1401,6 +1425,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							);
 							CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 						}
+
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write CSV"), pTopInfo->nTabNo);
 
 
 						//SPC 객체 소스에서 컴파일 여부 결정
@@ -1516,40 +1542,46 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							}
 						}
 #endif //SPCPLUS_CREATE
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Save Image PushBack"), pTopInfo->nTabNo);
 
-						double dTactTime = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
-						CTactTimeData data;
-						data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo;
-						data.dTactTime = dTactTime;
-						pTactCtrl->AddNewTactData(data);
 
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(1)("*4*3*TabID[%d]-TabNo[%d] - TacTime[%f]",
-							pTopInfo->m_nTabId_CntBoard, pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, dTactTime);
+
+						//double dTactTime = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
+						//CTactTimeData data;
+						//data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo;
+						//data.dTactTime = dTactTime;
+						//pTactCtrl->AddNewTactData(data);
+
 
 						//======TacTime 출력 ========================================================================
 						pTopInfo->m_tacTimeList[3] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
 						pBtmInfo->m_tacTimeList[3] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
 
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(4)("TacTime Top========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultStart[%f] - ResultEnd[%f]",
-							pTopInfo->m_pTabRsltInfo->m_nTabNo + 1, pTopInfo->m_tacTimeList[0], pTopInfo->m_tacTimeList[1], pTopInfo->m_tacTimeList[2], pBtmInfo->m_tacTimeList[3]);
 
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit",
+							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
+							);
 
-						//체크박스 로그 출력
-						LOGDISPLAY_SPEC(4)("TacTime Bottom========= TabNo[%d] - DefectFindProcStart[%f] - DefectFindProcEnd[%f] - ResultStart[%f] - ResultEnd[%f]",
-							pBtmInfo->m_pTabRsltInfo->m_nTabNo + 1, pBtmInfo->m_tacTimeList[0], pBtmInfo->m_tacTimeList[1], pBtmInfo->m_tacTimeList[2], pBtmInfo->m_tacTimeList[3]);
-						//==============================================================================================
+						int tempTabNo = pTopInfo->nTabNo;
 
-						pRsltQueueCtrl[CAM_POS_TOP]->PushBack((CFrameInfo*)pTopInfo);
-						pRsltQueueCtrl[CAM_POS_BOTTOM]->PushBack((CFrameInfo*)pBtmInfo);
+						CImageProcessCtrl::GetResultPtr(CAM_POS_TOP)->PushBack((CFrameInfo*)pTopInfo);
+						CImageProcessCtrl::GetResultPtr(CAM_POS_BOTTOM)->PushBack((CFrameInfo*)pBtmInfo);
+
+						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit1",
+							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
+							);
+
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- pRsltQueueCtrl->PushBack()"), tempTabNo);
 
 
 						AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
 
 						// 22.04.06 Ahn Modify Start
 						CAppDIO dio;
+
 						dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
+
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- OutputBit"), tempTabNo);
 
 
 						// 22.02.17 Ahn Modify End
@@ -1570,24 +1602,19 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Timeout",
-							"Top" , pUnitTop->m_pFrmInfo->nTabNo, pUnitTop->m_pFrmInfo->m_nTabId_CntBoard
-						);
+						LOGDISPLAY_SPEC(6)("UnitThread - ResultProcWait-Timeout"	);
 
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Timeout",
-							"Btm", pUnitBtm->m_pFrmInfo->nTabNo, pUnitBtm->m_pFrmInfo->m_nTabId_CntBoard
-							);
 
 						//출력 대기 이벤트 객체 pop, 이벤트 닫기
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Wait TimeOut : topWaitVal<%d>, btmWaitVal<%d>"), pUnitTop->m_pFrmInfo->nTabNo, topWaitVal, btmWaitVal);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> UnitThread - ResultProcWait-Timeout"));
 
 
 						break;
 					}
 				}
 
-				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc End"), pUnitTop->m_pFrmInfo->nTabNo);
+				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> ResultProc End") );
 
 
 				if (pUnitTop)
@@ -1601,9 +1628,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pUnitBtm = NULL;
 				}
 
-				//출력 대기 이벤트 객체 pop, 이벤트 닫기
-				pThis->m_pParent->ImgProcWaitThread_Event_pop();
-				CloseHandle(hEvent);
+				theApp.m_nImageProcThreadTimeAfter = GetTickCount();
+
+				////출력 대기 이벤트 객체 pop, 이벤트 닫기
+				//pThis->m_pParent->ImgProcWaitThread_Event_pop();
+				//CloseHandle(hEvent);
 			}
 
 		}

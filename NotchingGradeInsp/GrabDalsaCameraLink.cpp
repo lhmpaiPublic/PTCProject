@@ -11,8 +11,6 @@ CImageProcessCtrl* CGrabDalsaCameraLink::m_pImageProcessCtrl = NULL;
 
 //프레임 처리시간 객체를 세팅한다.
 #include "ImageProcThread.h"
-LARGE_INTEGER CGrabDalsaCameraLink::stTime ;
-double CGrabDalsaCameraLink::dFrecuency = 0.0;
 
 int nImageNoneExit = 0;
 static void AcqCallback(SapXferCallbackInfo* pInfo)
@@ -115,27 +113,15 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);
 
+				//Image Capture 정보 출력 로그
+				LOGDISPLAY_SPEC(6)(_T("FrameLog Head[%s], Width[%d], Height[%d], FrmCount[%d]"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
+
 				//얻은 이미지 정보를 TabFind 스래드로 전달하기 위해 queue 에 넣는다.
 				pQueueCtrl->PushBack(pFrmInfo);
 
-				//==== Tac Time ====================================================================================================
-				double dTactTime = CGlobalFunc::GetDiffTime(CGrabDalsaCameraLink::stTime, CGrabDalsaCameraLink::dFrecuency);
 
 				//Image Capture 정보 출력 로그
-				LOGDISPLAY_SPEC(4)(_T("Grab Image Receive Pos<%s> FrameCount<%d> Tactime <%f>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", nFrameCnt, dTactTime);
-				//===================================================================================================================================
-
-				//프레임 처리 시간 세팅
-				LARGE_INTEGER tmp;
-				LARGE_INTEGER start;
-				QueryPerformanceFrequency(&tmp);
-				double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
-				QueryPerformanceCounter(&start);
-
-				//프레임 처리시간 객체를 세팅한다.
-				CGrabDalsaCameraLink::stTime = start;
-				CGrabDalsaCameraLink::dFrecuency = dFrequency;
-				//================================================================================================================================
+				LOGDISPLAY_SPEC(6)(_T("FrameLog Pos<%s> FrameCount<%d>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", nFrameCnt);
 
 				//이미지 Top Bottom 모두 받으면 TabFind 스래드가 실행하도록 이벤트를 발생한다.
 				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
@@ -161,14 +147,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
 {
-	//== Tac Time ==================================================================
-	memset(&stTime, 0, sizeof(LARGE_INTEGER ));
-	QueryPerformanceCounter(&stTime);
-	LARGE_INTEGER tmp;
-	QueryPerformanceFrequency(&tmp);
-	dFrecuency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
-	//==============================================================================
-
 	//부모객체 생성 포인터
 	m_pImageProcessCtrl = pImageProcessCtrl;
 
