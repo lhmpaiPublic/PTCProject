@@ -1325,7 +1325,7 @@ void CImageDispDlg::DrawPetArea(CDC* pDC)
 		return;
 	}
 
-	int nSize = pvstPetInfo->size();
+	int nSize = (int)pvstPetInfo->size();
 
 	CBitmapStd* pBmpDest = m_pBmpDraw->GetBitmap();
 	if (pBmpDest == NULL) {

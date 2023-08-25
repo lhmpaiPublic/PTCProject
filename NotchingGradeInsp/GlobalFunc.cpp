@@ -2,6 +2,9 @@
 #include "GlobalFunc.h"
 #include "Win32File.h"
 
+
+bool CGlobalFunc::bSynchTime = false;
+
 CGlobalFunc::CGlobalFunc(void) {}
 CGlobalFunc::~CGlobalFunc(void) {}
 
@@ -67,18 +70,34 @@ CString CGlobalFunc::strLocalTime()
 {
 	CString strTime;
 
-	SYSTEMTIME	sysTime;
-	::GetLocalTime(&sysTime);
+	while (true)
+	{
+		if (CGlobalFunc::bSynchTime == false)
+		{
+			CGlobalFunc::bSynchTime = true;
 
-	strTime.Format(_T("%04d%02d%02d%02d%02d%02d%03d")
-		, sysTime.wYear
-		, sysTime.wMonth
-		, sysTime.wDay
-		, sysTime.wHour
-		, sysTime.wMinute
-		, sysTime.wSecond
-		, sysTime.wMilliseconds
-	);
+			SYSTEMTIME	sysTime;
+			::GetLocalTime(&sysTime);
+
+			strTime.Format(_T("%04d%02d%02d%02d%02d%02d%03d")
+				, sysTime.wYear
+				, sysTime.wMonth
+				, sysTime.wDay
+				, sysTime.wHour
+				, sysTime.wMinute
+				, sysTime.wSecond
+				, sysTime.wMilliseconds
+			);
+
+			CGlobalFunc::bSynchTime = false;
+
+			break;
+		}
+		else
+		{
+			Sleep(1);
+		}
+	}
 
 	return strTime;
 }

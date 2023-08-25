@@ -31,7 +31,7 @@ BOOL CLogDisplayDlg::bCreate = FALSE;
 CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 
 CString strLogNameList =
-"0 Init_FromExecute_Error_0 0,"
+"0 Init_FromExecute_Error_0 1,"
 "1 TabID_ImageCount_TabCount_1 0,"
 "2 PLC_Live_BitData_2 0,"
 "3 SPCPlus_3 0,"

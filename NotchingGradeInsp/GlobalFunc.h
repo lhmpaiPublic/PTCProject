@@ -24,6 +24,7 @@ public:
 	static CString makeTimeToPath(CString strTime);
 
 	//로컬 시간  string로 넘긴다.
+	static bool bSynchTime;
 	static CString strLocalTime();
 
 	//스래드 종료

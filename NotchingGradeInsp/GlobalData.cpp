@@ -11,6 +11,7 @@
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 //SPC+ 사용 해더파일
+#include "SpcInfo.h"
 #include "SpcPlusManager.h"
 #include "SpcStatusManager.h"
 #include "SpcStatusInData.h"
@@ -541,6 +542,12 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 		pSigProc->ReadBlockAllData(&m_SeqDataIN); // 22.04.01 Ahn Modify
 #endif
 		AprData.m_NowLotData.m_strLotNo = AprData.m_SeqDataIN.strCell_ID ;
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+//SPC+ 사용 해더파일
+		SPCINFO->setLotId(AprData.m_NowLotData.m_strLotNo);
+#endif //SPCPLUS_CREATE
 
 		CString strRecipeName;
 		strRecipeName = AprData.m_SeqDataIN.strRecipeName;

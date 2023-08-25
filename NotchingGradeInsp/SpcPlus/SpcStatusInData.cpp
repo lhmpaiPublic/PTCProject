@@ -38,7 +38,7 @@ CSpcStatusInData::CSpcStatusInData(CSpcPlusManager* sMgr)
 	m_CreateTime = CGlobalFunc::strLocalTime();
 
 	m_Category = "STATUS";
-	m_TransferTimer = CGlobalFunc::strLocalTime();
+	m_TransferTimer = m_CreateTime;
 	m_EqpInspId = SPCINFO->getEqpInspId();
 	m_ProcessGroup = SPCINFO->getProcessGroup();
 	m_ProcessName = SPCINFO->getProcessName();
