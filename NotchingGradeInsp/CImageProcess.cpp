@@ -9860,3 +9860,92 @@ int	CImageProcess::GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoi
 	return nRet;
 }
 // 23.02.16 Ahn Add End 
+
+
+BOOL CImageProcess::GetBrightAvg_PetCheck(BYTE* pOrgImg, int nImageWidth, int nImageHeight, VEC_PET_INFO* vstPetInfo)
+{
+	DWORD dwStart = GetTickCount();
+
+	vstPetInfo->clear();
+
+	int nRangeX = 100;
+	int nRangeY = 100;
+
+	BOOL nRet = FALSE;
+
+	int nSideMargin = 400;
+
+	int nDivWidth = (nImageWidth - (nSideMargin * 2)) / 4;
+	int nDivHeight = (nImageHeight - (nSideMargin * 2)) / 7;
+
+	int nStartX = 0;
+	int nStartY = 0;
+
+	CRect rcArea;
+
+	for (int x = 0; x < 5; x++)
+	{
+		for( int y = 0; y < 8; y++)
+		{
+			nStartX = (nSideMargin/2) + (nDivWidth * x);
+			nStartY = (nSideMargin/2) + (nDivHeight * y);
+
+			if (nStartX < 0) { nStartX = 0; }
+			if (nStartY < 0) { nStartY = 0; }
+
+			int nEndX = nStartX + nRangeX;
+			int nEndY = nStartY + nRangeY;
+			if (nEndX < 0) { nEndX = 0; }
+			if (nEndX >= nImageWidth) { nEndX = nImageWidth - 1; }
+			if (nEndY < 0) { nEndY = 0; }
+			if (nEndY >= nImageHeight) { nEndY = nImageHeight - 1; }
+
+			int nSum = 0;
+			int nCount = 0;
+			for (int y = nStartY; y < nEndY; y++) {
+				BYTE* pLinePtr = pOrgImg + (nImageWidth * y);
+				for (int x = nStartX; x < nEndX; x++) {
+					nSum += (int)*(pLinePtr + x);
+					nCount++;
+				}
+			}
+			if (nCount != 0)
+			{
+				nRet = nSum / nCount;
+
+				rcArea.left = nStartX;
+				rcArea.top = nStartY;
+				rcArea.right = nEndX;
+				rcArea.bottom = nEndY;
+
+				_PET_INFO stPet;
+				stPet.rcArea = rcArea;
+				stPet.nBright = nRet;
+
+				vstPetInfo->push_back(stPet);
+			}
+		}
+	}
+
+
+
+	int nSize = vstPetInfo->size();
+
+
+
+
+
+
+
+
+
+
+
+	DWORD dwTact = GetTickCount() - dwStart;
+	CString strTict;
+	strTict.Format(_T("%d"), dwTact);
+//	AfxMessageBox(strTict);
+
+
+	return nRet;
+}

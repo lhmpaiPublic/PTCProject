@@ -14,9 +14,11 @@ class CRecipeInfo;
 class CRecipeSettingDlg;
 class CHistogramDlg;
 
+
 class CImageProcSimDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CImageProcSimDlg)
+
 
 public:
 	CImageProcSimDlg(CWnd* pParent = nullptr);   // 표준 생성자입니다.
@@ -98,8 +100,13 @@ public :
 	int  AddDefectInfo(CImageProcess::_VEC_BLOCK *vecBlockFoilExp, CImageProcess::_VEC_BLOCK *vecBlockDross, int nCamPos, BOOL bModeClear = TRUE );
 	typedef CImageProcess::_VEC_BLOCK VEC_BLOCK_ALL;
 	VEC_BLOCK_ALL* m_pVecBlockAll ;
-
 	VEC_BLOCK_ALL* GetDefectData() { return m_pVecBlockAll ; };
+
+	CImageProcess::VEC_PET_INFO* m_pvstPetInfo;
+	CImageProcess::VEC_PET_INFO* GetPetInfo() { return m_pvstPetInfo; };
+
+
+
 //KANG 22.01.07 Add Start
 	void LoadImageFile(LPCTSTR lpszFileName);
 //KANG 22.01.07 Add End
