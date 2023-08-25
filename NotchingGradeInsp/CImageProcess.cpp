@@ -9929,7 +9929,7 @@ BOOL CImageProcess::GetBrightAvg_PetCheck(BYTE* pOrgImg, int nImageWidth, int nI
 
 
 
-	int nSize = vstPetInfo->size();
+	int nSize = (int)vstPetInfo->size();
 
 
 
