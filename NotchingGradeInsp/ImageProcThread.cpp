@@ -665,7 +665,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-					//SPc+ 객체를 Top에 만 추가한다.
+					//SPc+ 객체를 Top에 추가한다.
 					//Tab 있는 이미지 Frame  정보
 						pInfo->m_SpcInspMgr = insp;
 #endif //SPCPLUS_CREATE
@@ -705,7 +705,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-					//SPc+ 객체를 Top에 만 추가한다.
+					//SPc+ 객체를 Bottom에 추가한다.
 					//Tab 없는 이미지  Frame 정보
 						pBtmInfo->m_SpcInspMgr = insp;
 #endif //SPCPLUS_CREATE

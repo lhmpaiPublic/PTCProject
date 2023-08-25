@@ -55,7 +55,7 @@ CSpcAlarmInData::CSpcAlarmInData(CSpcPlusManager* sMgr)
 	m_VisionType = SPCINFO->getVisionType();
 	m_EqpId = SPCINFO->getEqpId();
 	m_AlarmFlag = "FALSE";
-	m_AlarmInfoDate = CGlobalFunc::strLocalTime();
+	m_AlarmInfoDate = m_CreateTime;
 	m_AlarmHost = "VISION";
 	m_AlarmLevel = "LIGHT";
 	m_AlarmCode = "9999";

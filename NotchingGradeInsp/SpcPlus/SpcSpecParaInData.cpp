@@ -48,7 +48,7 @@ CSpcSpecParaInData::CSpcSpecParaInData(CSpcPlusManager* sMgr)
 	m_RecipeId = SPCINFO->getRecipeId();
 	m_InspRecipe = SPCINFO->getRecipeId();
 	m_InspSwVersion = SPCINFO->getAgentSwVersion();
-	m_ModifyTime = CGlobalFunc::strLocalTime();
+	m_ModifyTime = m_CreateTime;
 	m_Modifier = "NA";
 	m_ModifyReason = "RESTART";
 

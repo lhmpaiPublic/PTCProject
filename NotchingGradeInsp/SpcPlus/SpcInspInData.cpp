@@ -65,7 +65,7 @@ CSpcInspInData::CSpcInspInData(CSpcPlusManager* sMgr)
 	m_CreateTime = CGlobalFunc::strLocalTime();
 
 	m_Category = "INSP";
-	m_VisionInputTime = CGlobalFunc::strLocalTime();
+	m_VisionInputTime = m_CreateTime;
 	m_VisionOutputTime = m_VisionInputTime;
 	m_InspTactTime = "100.217";
 	m_InspProcessingTime = "4.776";
