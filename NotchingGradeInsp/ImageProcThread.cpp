@@ -185,10 +185,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		//타임 주기 이벤트
 		//대기 상태일 때
 		if (bThreadWait)
+		{
 			ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), INFINITE);
+		}
 		//대기하지 않고 바로 처리한다.
 		else
+		{
 			ret = WAIT_OBJECT_0;
+		}
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
@@ -196,24 +200,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		}
 		else if (ret == WAIT_OBJECT_0) //TIMEOUT시 명령
 		{
-
-			if (pThis == NULL) {
+			if (pThis == NULL)
+			{
 				break;
 			}
-			if (pThis->m_bKill == TRUE) {
-#if !defined( BOTTOM_CAMERA_DEBUG )
-				if ((pQueueFrame_Top != NULL) && (pQueueFrame_Bottom != NULL)) {
-					if ((pQueueFrame_Top->GetSize() <= 0) || (pQueueFrame_Bottom->GetSize() <= 0)) {
+			if (pThis->m_bKill == TRUE)
+			{
+				if ((pQueueFrame_Top != NULL) && (pQueueFrame_Bottom != NULL))
+				{
+					if ((pQueueFrame_Top->GetSize() <= 0) || (pQueueFrame_Bottom->GetSize() <= 0))
+					{
 						break;
 					}
 				}
-#else
-				if ((pQueueFrame_Top != NULL)) {
-					if ((pQueueFrame_Top->GetSize() <= 0)) {
-						break;
-					}
-				}
-#endif
 			}
 
 			//프레임 크기
@@ -231,41 +230,17 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			{
 
 				// 에러 처리 
-				//	pThis->SetFameSizeError(); // 
 				CString strErrMsg;
 				strErrMsg.Format(_T("Frame Size Error : Top [%d], Bottom[%d], Inspect Status [%d], Process End!!!!"), nSizeFrmL, nSizeFrmR, pThis->m_pParent->IsInspection());
-				//	AprData.SaveErrorLog(strErrMsg);
+				AprData.SaveErrorLog(strErrMsg);
 
-					//카메라의 에러를 세팅한다.
+				//카메라의 에러를 세팅한다.
 				AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
 			}
-#if defined( BOTTOM_CAMERA_DEBUG )
-			bTailFlag = TRUE;
-#endif
-			// 22.02.22 Ahn Add Start
-#if defined( DEBUG_NOISE_COUNTERMEASURE )
-			BOOL bMakeDummyBtm;
-			//if ((bHeadFlag == TRUE) && (bTailFlag == FALSE)) {
-			if (((nSizeFrmL - nSizeFrmR) > 0) && (btLastBtmImg != NULL)) {
-				bMakeDummyBtm = TRUE;
-				AprData.SaveDebugLog(_T("!!!! MAKE Dummy Data -- 00 !!!!"));
-			}
-			else {
-				bMakeDummyBtm = FALSE;
-			}
-#endif
-			// 22.02.22 Ahn Add End
 
-					// 22.02.22 Ahn Modify Start
-#if defined( DEBUG_NOISE_COUNTERMEASURE )
-			if ((bHeadFlag && bTailFlag) || (bMakeDummyBtm == TRUE))
-			{
-#else
 		//Top과 Bottom  정보가 1개씩 이상이 되어야 한다.
 			if (bHeadFlag && bTailFlag)
 			{
-#endif
-
 				//TabFind TacTime
 				LARGE_INTEGER tmp_TabFind;
 				LARGE_INTEGER start_TabFind;
@@ -273,7 +248,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				double dFrequency_TabFind = (double)tmp_TabFind.LowPart + ((double)tmp_TabFind.HighPart * (double)0xffffffff);
 				QueryPerformanceCounter(&start_TabFind);
 
-				// 22.02.22 Ahn Modify End
 				//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Top 객체를 가져온다.
 				CFrameInfo* pFrmInfo_Top = pQueueFrame_Top->Pop();
 
@@ -282,86 +256,20 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				int nFrmWIdth = pFrmInfo_Top->m_nWidth;
 				int nWidth = nFrmWIdth;
 
-				// 22.02.22 Ahn Add Start
-#if defined( DEBUG_NOISE_COUNTERMEASURE )
-				CFrameInfo* pFrmInfo_Bottom;
-				if (bMakeDummyBtm == TRUE)
-				{
-					pFrmInfo_Bottom = new CFrameInfo;
-					pFrmInfo_Bottom->m_nFrameCount = pFrmInfo_Top->m_nFrameCount;
-					pFrmInfo_Bottom->m_nWidth = pFrmInfo_Top->m_nWidth;
-					pFrmInfo_Bottom->m_nHeight = pFrmInfo_Top->m_nHeight;
-					pFrmInfo_Bottom->m_nHeadNo = CAM_POS_BOTTOM;
-					pFrmInfo_Bottom->m_nBand = 1;
-					BYTE* pDummyImgPtr = new BYTE[nWidth * nHeight + 1];
-					memset(pDummyImgPtr, 0x00, sizeof(BYTE)nWidth * nHeight + 1);
-					//if (btLastBtmImg != NULL) {
-					AprData.SaveDebugLog(_T("!!!! Last bottom frame copy start !!!!"));
-					memcpy(pDummyImgPtr, btLastBtmImg, sizeof(BYTE) * nWidth * nHeight);
-					AprData.SaveDebugLog(_T("!!!! Last bottom frame copy end !!!!"));
-					//}
-					//else {
-					//	memset(pDummyImgPtr, 0x00, sizeof(BYTE)* nWidth * nHeight);
-					//}
-					pFrmInfo_Bottom->SetImgPtr(pDummyImgPtr);
-					AprData.SaveDebugLog(_T("!!!! MAKE Dummy Data !!!!"));
-					pFrmInfo_Bottom->m_bErrorFlag = TRUE;
-				}
-				else
-				{
-					pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
-				}
 
-#else
-// 22.02.22 Ahn Add End
-// 22.01.04 Ahn Modify Start
-#if !defined( BOTTOM_CAMERA_DEBUG )
-
-			//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Bottom 객체를 가져온다.
+				//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Bottom 객체를 가져온다.
 				CFrameInfo* pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
 
-#else
-				CFrameInfo* pFrmInfo_Bottom = new CFrameInfo();
-				BYTE* pImg = new BYTE[nWidth * nHeight + 1];
-				memset(pImg, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
-
-				BOOL bSend = FALSE;
-				pFrmInfo_Bottom = new CFrameInfo;
-				pFrmInfo_Bottom->SetImgPtr(pImg);
-				pFrmInfo_Bottom->m_nHeight = nHeight;
-				pFrmInfo_Bottom->m_nWidth = nWidth;
-				pFrmInfo_Bottom->m_nFrameCount = pFrmInfo_Top->m_nFrameCount;
-				pFrmInfo_Bottom->m_nBand = 1;
-				pFrmInfo_Bottom->m_nHeadNo = CAM_POS_BOTTOM;
-#endif 
-				// 22.01.04 Ahn Modify End
-				// 22.02.22 Ahn Add Start
-#endif
-// 22.02.22 Ahn Add End
-			//Top Frame 번호
+				//Top Frame 번호
 				int nFrameCountL = pFrmInfo_Top->m_nFrameCount;
 				//Bottom Frame 번호
 				int nFrameCountR = pFrmInfo_Bottom->m_nFrameCount;
 
-				// 22.11.30 Ahn Modify Start
 				AprData.m_NowLotData.m_nFrameCount = pFrmInfo_Top->m_nFrameCount;
-				// 22.11.30 Ahn Modify End
 
 				BYTE* pHeadPtr = pFrmInfo_Top->GetImagePtr();
 				BYTE* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
 
-
-
-				// 22.02.22 Ahn Add Start
-#if defined( DEBUG_NOISE_COUNTERMEASURE )
-				if (btLastBtmImg == NULL)
-				{
-					btLastBtmImg = new BYTE[nWidth * nHeight + 1];
-					memset(btLastBtmImg, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
-				}
-				memcpy(btLastBtmImg, pTailPtr, sizeof(BYTE) * nWidth * nHeight);
-#endif
-				// 22.02.22 Ahn Add End
 
 				//처리시간 체크 객체 생성 및 시간 진행
 				CTimeAnalyzer ctAna;
@@ -375,20 +283,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				// Tab으로 잘라 보냄
 				// Projection 사용 
 				{
-					// 22.05.09 Ahn Add Start
 					int nBndElectrode = 0;
 					int nBneElectrodeBtm = 0;
 
 
-//					dwTic = GetTickCount();
-#if defined( ANODE_MODE )
 					//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
-
-#endif
-//					AprData.SaveDebugLog_Format( _T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] GetBoundaryOfElectorde : %d ms"), GetTickCount() -dwTic);
-
-
 
 					// 22.05.09 Ahn Add End
 					//Tab 정보를 저장할 vector 임시 객체
@@ -406,11 +306,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//이미지 프로세싱을 위한 클래스 
 					//이미지 Tab 정보에서 Tab을 그룹으로 나누기
-//					dwTic = GetTickCount();
-
+					//PET Check TOP
 					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
-
-//					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] DivisionTab_FromImageToTabInfo : %d ms"), GetTickCount() - dwTic);
 
 
 					//Tab 정보 크기, Tab 정보가 없다면 에러처리
@@ -422,19 +319,20 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						// 강제 분할 
 						bErrorAll = TRUE;
 					}
-#if defined( ANODE_MODE )
-					//양극일 경우 Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
-//					dwTic = GetTickCount();
-
 					nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
 
-//					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] GetBoundaryOfElectordeBottom : %d ms"), GetTickCount() - dwTic);
+
+					// PET Check BOTTOM
+					CImageProcess::VEC_PET_INFO* pvstPetInfoBtm = new CImageProcess::VEC_PET_INFO;
+					pvstPetInfoBtm->clear();
+
+					BOOL bIsPET_Btm = CImageProcess::GetBrightAvg_PetCheck(pTailPtr, nWidth, nHeight, pvstPetInfoBtm, CAM_POS_BOTTOM);
+					pFrmInfo_Bottom->m_bIsPET = bIsPET_Btm;
 
 
-#else
-					int nLocalRet2 = CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
-#endif
-					// 21.12.28 Ahn Modify End
+
+
+
 					//Top Bottom 프로젝션 바운드리 처리 시간 체크 및 로그 출력
 					double dTime = ctAna.WhatTimeIsIt_Double();
 					CString strLog;
@@ -699,6 +597,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 						pInfo->m_nBndElectrode = nBndElectrode;
 
+						pInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
+
+
+
+
+
+
+
 						//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
 						CFrameInfo* pBtmInfo;
 						pBtmInfo = new CFrameInfo;
@@ -736,39 +642,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 						pBtmInfo->m_nBndElectrode = nBneElectrodeBtm;// 22.05.11 Ahn Add 
-						// 22.02.22 Ahn Add Start
-#if defined( DEBUG_NOISE_COUNTERMEASURE )
-						if (bMakeDummyBtm == TRUE) {
-							pBtmInfo->m_bErrorFlag = pFrmInfo_Bottom->m_bErrorFlag;
-						}
-#endif
-						// 22.02.22 Ahn Add End
 
-#if defined( BOTTOM_CAMERA_DEBUG )
-						pBtmInfo->m_bErrorFlag = TRUE;
-#endif
+						pBtmInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
 
-						//// 22.05.18 Ahn Add Start
-
-						////처리할  Top 프레임 정보 갯수
-						//int nTopQueCnt = pThreadQue[CAM_POS_TOP]->GetSize();
-						////처리할 Bottom  프레임 정보 갯수
-						//int nBtmQueCnt = pThreadQue[CAM_POS_BOTTOM]->GetSize();
-
-						//int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
-
-						////처리할 정보가 스킵 숫자보다 크다면
-						//if ((nTopQueCnt > nOverflowMax) && (nBtmQueCnt > nOverflowMax)
-						//	//Top, Bottom 이미지 처리 프레임 정보가 스킵 숫자보다 크다면
-						//	|| ((nSizeFrmL > nOverflowMax) && (nSizeFrmR > nOverflowMax))) {
-						//	pInfo->m_bErrorFlag = TRUE;
-						//	pBtmInfo->m_bErrorFlag = TRUE;
-
-						//	AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> Top/Bottom Overflow TopFrameCnt:%d, BottonFrameCnt:%d, TopQueueCnt:%d, BottonQueueCnt:%d > nOverflowMax:%d"),
-						//		nSizeFrmL, nSizeFrmR, nTopQueCnt, nBtmQueCnt, nOverflowMax);
-
-						//}
-						// 22.05.18 Ahn Add Start
 
 						// 22.12.09 Ahn Add Start
 						//프레임 처리 시간 세팅
@@ -842,13 +718,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		}
 	}
 
-	// 22.02.22 Ahn Add Start
-#if defined( DEBUG_NOISE_COUNTERMEASURE )
-	if (btLastBtmImg != NULL) {
-		delete[] btLastBtmImg;
-		btLastBtmImg = NULL;
-	}
-#endif
 
 	if (RsvTabInfo.pImgPtr != NULL) {
 		delete[] RsvTabInfo.pImgPtr;

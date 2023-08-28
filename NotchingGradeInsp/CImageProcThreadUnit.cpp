@@ -182,10 +182,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//에러 ? 또는 Over Flow 가 아니면
 				if ((pFrmInfo->m_bErrorFlag == FALSE) && (pFrmInfo->m_bOverFlow == FALSE))
 				{
-
-					DWORD dwTic = 0;
-
-
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같다면 실행
 					if (pFrmInfo->m_nHeadNo == CAM_POS_TOP)
 					{
@@ -203,7 +199,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//양극이면
 							if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 							{
-								dwTic = GetTickCount();
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 								// Tab Level
 								int* pnPrj = new int[nWidth];
@@ -233,14 +228,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									nTabLevel = pFrmInfo->m_nTabLevel;
 								}
 
-
-
 								if (pnPrj != NULL)
 								{
 									delete[] pnPrj;
 								}
-
-//								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <NEGATIVE> Top nTabLevel=%d, %d ms"), nTabLevel, GetTickCount() - dwTic );
 
 
 
@@ -271,7 +262,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//음극이면 ImageProcessTopSide_AreaDiff 실행
 							else
 							{
-								dwTic = GetTickCount();
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 								// Tab Level
 								int nTabLevelLeft = 0;
@@ -353,9 +343,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									delete[] pnPrj;
 								}
 
-
-//								AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> <POSITIVE> Top nTabLevel=%d, %d ms"), nTabLevel, GetTickCount() - dwTic );
-
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -388,10 +375,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							
 							CRect rcArea;
 							rcArea.left = 0;
-
-							// 22.07.12 Ahn Modify Start
-							// 22.09.15 Ahn Modify Start
-							//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
 							
 							//Right 영역 값 ImageProcessDetectSurface 처리 시에 적용
 							//Machine Mode 가 양극이면
@@ -525,6 +508,19 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					}
 				// 23.02.20 Ahn Add Start
 				}
+
+
+				// PET 감지 시
+				else if (pFrmInfo->m_bIsPET == TRUE)
+				{
+					// 결과 정보  m_pTabRsltInfo  //OK 설정
+					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_OK; // 강제 OK 처리	
+
+					AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [ Detected PET ] JUDGE_OK"));
+
+				}
+
+
 				//Tab 정보가 없을 때  ? 또는 Over Flow이면
 				else
 				{
@@ -704,6 +700,17 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					bSave = TRUE;
 				}
 #endif
+		
+				
+				
+				// PET 감지 시 이미지 저장				
+				if (pFrmInfo->m_bIsPET == TRUE)
+				{
+					bSave = TRUE;
+					pFrmInfo->m_bSaveFlag = TRUE;
+				}
+				
+				
 				//이미지를 저장 변수가  TRUE이면
 				if (bSave == TRUE) 
 				{

@@ -1361,7 +1361,14 @@ void CImageDispDlg::DrawPetArea(CDC* pDC)
 			}
 
 
-			hpen.CreatePen(PS_SOLID, 3, RGB(255, 64, 64));
+			if (DefData.bFind == TRUE)
+			{
+				hpen.CreatePen(PS_SOLID, 1, RGB(255, 64, 64));
+			}
+			else
+			{
+				hpen.CreatePen(PS_SOLID, 1, RGB(64, 255, 64));
+			}
 			hpenold = pDC->SelectObject(&hpen);
 
 			int nExtSize = 5;
@@ -1383,7 +1390,15 @@ void CImageDispDlg::DrawPetArea(CDC* pDC)
 			pDC->LineTo(rcDefect.left, rcDefect.top);
 
 			pDC->SetBkMode(TRANSPARENT);
-			pDC->SetTextColor(RGB(255, 64, 64));
+
+			if (DefData.bFind == TRUE )
+			{
+				pDC->SetTextColor(RGB(255, 64, 64));
+			}
+			else
+			{
+				pDC->SetTextColor(RGB(64, 255, 64));
+			}
 
 			CString strBright;
 			strBright.Format(_T("%d"), DefData.nBright);
