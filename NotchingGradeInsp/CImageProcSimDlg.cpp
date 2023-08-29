@@ -1752,7 +1752,7 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 
 
 
-		bIsPET = CImageProcess::GetBrightAvg_PetCheck(pImgPtr, nWidth, nHeight, m_pvstPetInfo, CAM_POS_TOP); // Graphic Draw 용
+		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, m_pvstPetInfo, CAM_POS_TOP); // Graphic Draw 용
 	}
 	else
 	{
@@ -1761,7 +1761,7 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 		int nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
 
 
-		bIsPET = CImageProcess::GetBrightAvg_PetCheck(pImgPtr, nWidth, nHeight, m_pvstPetInfo, CAM_POS_BOTTOM);
+		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, m_pvstPetInfo, CAM_POS_BOTTOM);
 	}
 
 

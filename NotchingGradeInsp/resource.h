@@ -349,12 +349,15 @@
 #define IDC_ST_LIGHT_STATE              1049
 #define IDC_ED_WORD_OUT_ADDRESS_16      1049
 #define IDC_EDIT_ACQISITION_RATE_CAM_NO_00 1049
+#define IDC_ED_PET_MATRIX_X             1049
 #define IDC_ST_DISK_SPACE               1050
 #define IDC_ST_NUM_YIELD                1050
 #define IDC_EDIT_ACQISITION_RATE_CAM_NO_01 1050
 #define IDC_ED_JPEG_SAVE_QUALITY2       1050
 #define IDC_ED_OVERFLOW_MAX             1050
+#define IDC_ED_PET_THRESHOLD            1050
 #define IDC_EDIT_GAIN_CAM_NO_00         1051
+#define IDC_ED_PET_CHECK_CNT            1051
 #define IDC_EDIT_GAIN_CAM_NO_01         1052
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_00 1054
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_01 1055
@@ -418,6 +421,7 @@
 #define IDC_ED_INSP_RANGE_IN            1102
 #define IDC_ED_INSP_RANGE_OUT           1103
 #define IDC_ED_DROSS_THRES_UPPER        1104
+#define IDC_ED_PET_MATRIX_Y             1105
 #define IDC_ST_RECIPE_NAME              1106
 #define IDC_BTN_SAVE                    1107
 #define IDC_BTN_TEST                    1108
@@ -542,6 +546,7 @@
 #define IDC_ST_IMAGE                    1201
 #define IDC_ED_SURFACE_NG_SIZE_BTM      1202
 #define IDC_PROGRESS_ECEXL              1203
+#define IDC_CHK_DISABLE_PET             1203
 #define IDC_BTN_OPEN_NG_IMG             1204
 #define IDC_BTN_OPEN_OK_IMG             1205
 #define IDC_BTN_ATTACH_IMG              1206
@@ -665,8 +670,12 @@
 #define IDC_ED_SURFACE_GRAY_SIZE        1316
 #define IDC_ST_GRAY_SIZE                1317
 #define IDC_GRAPH_TACT_TIME             1318
+#define IDC_ST_GROUP_PET_CHECK          1318
 #define IDC_BTN_TACT_TIME               1319
+#define IDC_ST_PET_MATRIX               1319
+#define IDC_ST_PET_THRESHOLD            1320
 #define IDC_ST_DISP_IMAGE               1321
+#define IDC_ST_PET_CHECK_CNT            1321
 #define IDC_CROP_THUMB                  1322
 #define IDC_ST_SELECT_IMG               1323
 #define IDC_ST_ORG_IMAGE                1324

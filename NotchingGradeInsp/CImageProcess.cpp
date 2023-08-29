@@ -6323,7 +6323,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	VEC_PET_INFO* pvstPetInfo = new VEC_PET_INFO;
 	pvstPetInfo->clear();
 
-	BOOL bIsPET = CImageProcess::GetBrightAvg_PetCheck(pImgPtr, nWidth, nHeight, pvstPetInfo, CAM_POS_TOP);
+	BOOL bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, RecipeInfo, pvstPetInfo, CAM_POS_TOP);
 
 	if (bIsPET == FALSE)
 	{
@@ -9815,27 +9815,41 @@ int	CImageProcess::GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoi
 // 23.02.16 Ahn Add End 
 
 
-BOOL CImageProcess::GetBrightAvg_PetCheck(BYTE* pOrgImg, int nImageWidth, int nImageHeight, VEC_PET_INFO* vstPetInfo, int nCamPos)
+BOOL CImageProcess::FindPetFilm(BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos)
 {
+	if (RecipeInfo.bDisablePET == TRUE)
+	{
+		return FALSE;
+	}
+
 	DWORD dwStart = GetTickCount();
 
 	vstPetInfo->clear();
 	BOOL bRet = FALSE;
 
 
-	int InspCntX = 3;
-	int InspCntY = 3;
+	int InspCntX = RecipeInfo.nPetMatrixX[nCamPos]; // 3
+	int InspCntY = RecipeInfo.nPetMatrixY[nCamPos]; // 3
 	int nRangeX = 100;
 	int nRangeY = 100;
 	int nSideMargin = 200;
-	int nBrightTh = 60;
-	int nCheckCnt_Setting = 3;
+	int nBrightTh = RecipeInfo.nPetThreshold[nCamPos]; // 200;
+	int nCheckCnt_Setting = RecipeInfo.nPetCheckCnt[nCamPos]; // 3;
 	int nCheckCnt_Now = 0;
 
-
 	int nHalfWidth = nImageWidth / 2;
-	int nDivWidth = (nHalfWidth - (nSideMargin * 2)) / (InspCntX-1);
-	int nDivHeight = (nImageHeight - (nSideMargin * 2)) / (InspCntY-1);
+	int nDivWidth = 0;
+	int nDivHeight = 0;
+
+	if (InspCntX > 1)
+	{
+		nDivWidth = (nHalfWidth - (nSideMargin * 2)) / (InspCntX - 1);
+	}
+	if (InspCntY > 1)
+	{
+		nDivHeight = (nImageHeight - (nSideMargin * 2)) / (InspCntY - 1);
+	}
+
 
 	int nStartX = 0;
 	int nStartY = 0;

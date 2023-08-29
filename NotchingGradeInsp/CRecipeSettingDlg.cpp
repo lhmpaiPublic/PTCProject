@@ -66,6 +66,12 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	, m_nTabMinBright(0)
 	, m_nRollBrightMode(0)
 	, m_strRecipeMemo(_T(""))
+	, m_bChkDisablePET(FALSE)
+	, m_nEdPetMatrixX(0)
+	, m_nEdPetMatrixY(0)
+	, m_nEdPetThreshold(0)
+	, m_nEdPetCheckCnt(0)
+
 {
 	m_bRcpSelMode = bRcpSelMode ;
 
@@ -204,6 +210,12 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_FOIL_BOTH_NG_X_SIZE_BTM, m_dEdFoilExpBothNgSize[CAM_POS_BOTTOM]);
 	DDX_Text(pDX, IDC_ED_SURFACE_NG_SIZE_BTM, m_dSurfaceNgSize[CAM_POS_BOTTOM]);
 
+	DDX_Check(pDX, IDC_CHK_DISABLE_PET, m_bChkDisablePET);
+	DDX_Text(pDX, IDC_ED_PET_MATRIX_X, m_nEdPetMatrixX);
+	DDX_Text(pDX, IDC_ED_PET_MATRIX_Y, m_nEdPetMatrixY);
+	DDX_Text(pDX, IDC_ED_PET_THRESHOLD, m_nEdPetThreshold);
+	DDX_Text(pDX, IDC_ED_PET_CHECK_CNT, m_nEdPetCheckCnt);
+
 }
 
 
@@ -282,6 +294,11 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_FOIL_OUT_NG_X_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdFoilOutNgXSizeBtm)
 	ON_EN_SETFOCUS(IDC_ED_FOIL_BOTH_NG_X_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdFoilBothNgXSizeBtm)
 	ON_EN_SETFOCUS(IDC_ED_SURFACE_NG_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdSurfaceNgSizeBtm)
+	ON_BN_CLICKED(IDC_CHK_DISABLE_PET, &CRecipeSettingDlg::OnBnClickedChkDisablePet)
+	ON_EN_SETFOCUS(IDC_ED_PET_MATRIX_X, &CRecipeSettingDlg::OnSetfocusEdPetMatrixX)
+	ON_EN_SETFOCUS(IDC_ED_PET_MATRIX_Y, &CRecipeSettingDlg::OnSetfocusEdPetMatrixY)
+	ON_EN_SETFOCUS(IDC_ED_PET_THRESHOLD, &CRecipeSettingDlg::OnSetfocusEdPetThreshold)
+	ON_EN_SETFOCUS(IDC_ED_PET_CHECK_CNT, &CRecipeSettingDlg::OnSetfocusEdPetCheckCnt)
 END_MESSAGE_MAP()
 
 
@@ -827,7 +844,7 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		m_dEdIgnoreSize = pRecipeInfo->dIgnoreSize;
 		m_nEdThresSurface = pRecipeInfo->nThresSurface[nCamPos];
 		m_nEdSurfaceMaskOffset = pRecipeInfo->nSurfaceMaskOffset[nCamPos];
-		m_bChkDisableSurface = pRecipeInfo->bDisableSurface ;
+		m_bChkDisableSurface = pRecipeInfo->bDisableSurface;
 		// 22.11.21 Ahn Add Start - JUDGE_GRAY
 		m_dEdFoilGraySize = pRecipeInfo->dFoileGraySize;
 		m_dEdSurfaceGraySize = pRecipeInfo->dSurfaceGraySize;
@@ -841,6 +858,15 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		m_nAlarmCnt = pRecipeInfo->nAlarmCount ;
 		m_nSectorCnt = pRecipeInfo->nSectorCount ;
 		// 22.08.09 Ahn Add End
+
+
+		m_bChkDisablePET = pRecipeInfo->bDisablePET;
+		m_nEdPetMatrixX = pRecipeInfo->nPetMatrixX[nCamPos];
+		m_nEdPetMatrixY = pRecipeInfo->nPetMatrixY[nCamPos];
+		m_nEdPetThreshold = pRecipeInfo->nPetThreshold[nCamPos];
+		m_nEdPetCheckCnt = pRecipeInfo->nPetCheckCnt[nCamPos];
+
+
 
 		for( int i=0; i<MAX_CAMERA_NO; i++ )
 		{
@@ -948,6 +974,14 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		pRecipeInfo->nContinousNgCount = m_nContinuousNgAlarmCnt ;
 		pRecipeInfo->nAlarmCount = m_nAlarmCnt ;
 		pRecipeInfo->nSectorCount  = m_nSectorCnt ;
+
+
+
+		pRecipeInfo->bDisablePET = m_bChkDisablePET;
+		pRecipeInfo->nPetMatrixX[nCamPos] = m_nEdPetMatrixX;
+		pRecipeInfo->nPetMatrixY[nCamPos] = m_nEdPetMatrixY;
+		pRecipeInfo->nPetThreshold[nCamPos] = m_nEdPetThreshold;
+		pRecipeInfo->nPetCheckCnt[nCamPos] = m_nEdPetCheckCnt;
 
 	}
 	OnRefresh();
@@ -1894,6 +1928,15 @@ void CRecipeSettingDlg::ShowControl()
 			pWnd->EnableWindow(SW_HIDE);
 		}
 	}
+
+	if (m_bChkDisablePET == FALSE)
+	{
+	}
+	else
+	{
+
+	}
+
 
 	// 22.07.22 Ahn Add Start
 	BOOL bShowAnode;
@@ -2920,5 +2963,74 @@ void CRecipeSettingDlg::OnSetfocusEdSurfaceNgSizeBtm()
 //	strMsg.Format(_T("표면결함 NG 사이즈을 입력해 주세요. ( %.1lf um ~ %.1lf um). 0.0 미사용"), dMin, dMax);
 	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um)."), dMin, dMax);
 	m_dSurfaceNgSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnBnClickedChkDisablePet()
+{
+	UpdateData(TRUE);
+
+	ShowControl();
+}
+
+
+
+void CRecipeSettingDlg::OnSetfocusEdPetMatrixX()
+{
+	int nValue, nMax, nMin;
+	nMax = 10;
+	nMin = 1;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdPetMatrixX;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdPetMatrixX = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdPetMatrixY()
+{
+	int nValue, nMax, nMin;
+	nMax = 10;
+	nMin = 1;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdPetMatrixY;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdPetMatrixY = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdPetThreshold()
+{
+	int nValue, nMax, nMin;
+	nMax = 255;
+	nMin = 0;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdPetThreshold;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdPetThreshold = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdPetCheckCnt()
+{
+	int nValue, nMax, nMin;
+	nMax = 100;
+	nMin = 1;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdPetCheckCnt;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdPetCheckCnt = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
 }

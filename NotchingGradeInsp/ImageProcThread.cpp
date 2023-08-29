@@ -326,7 +326,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					CImageProcess::VEC_PET_INFO* pvstPetInfoBtm = new CImageProcess::VEC_PET_INFO;
 					pvstPetInfoBtm->clear();
 
-					BOOL bIsPET_Btm = CImageProcess::GetBrightAvg_PetCheck(pTailPtr, nWidth, nHeight, pvstPetInfoBtm, CAM_POS_BOTTOM);
+					BOOL bIsPET_Btm = CImageProcess::FindPetFilm(pTailPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, pvstPetInfoBtm, CAM_POS_BOTTOM);
 					pFrmInfo_Bottom->m_bIsPET = bIsPET_Btm;
 
 

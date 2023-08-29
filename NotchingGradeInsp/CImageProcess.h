@@ -484,7 +484,7 @@ public:
 	static int		GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint);
 	// 23.02.16 Ahn Add End
 
-	static BOOL	GetBrightAvg_PetCheck(BYTE* pOrgImg, int nImageWidth, int nImageHeight, VEC_PET_INFO* vstPetInfo, int nCamPos);
+	static BOOL	FindPetFilm(BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos);
 
 };
 

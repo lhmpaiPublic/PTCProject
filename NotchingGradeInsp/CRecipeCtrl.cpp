@@ -260,6 +260,28 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 				strData.Format(_T("%d"), pRcpInfo->m_nSurfaceMinSize[i]);
 				SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
 				// 22.06.08 Ahn Add End
+
+				// PET Check
+				strKey = _T("DISABLE_PET_INSPECTION");
+				strData.Format(_T("%d"), pRcpInfo->bDisablePET);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("PET_MATRIX_X_CAM_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nPetMatrixX[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("PET_MATRIX_Y_CAM_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nPetMatrixY[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("PET_THRESHOLD_CAM_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nPetThreshold[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("PET_CHECK_COUNT_CAM_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nPetCheckCnt[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
 			}
 
 			strKey = _T("BMP_SAVE_INTERVAL");
@@ -592,6 +614,27 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 				pRcpInfo->m_nSurfaceMinSize[i] = atoi(buff) ;
 				// 22.06.08 Ahn Add End
+
+				// PET CHECK
+				strKey.Format(_T("DISABLE_PET_INSPECTION"), i);
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->bDisablePET = atoi(buff);
+
+				strKey.Format(_T("PET_MATRIX_X_CAM_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "3", buff, 256, strFileName);
+				pRcpInfo->nPetMatrixX[i] = atoi(buff);
+
+				strKey.Format(_T("PET_MATRIX_Y_CAM_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "5", buff, 256, strFileName);
+				pRcpInfo->nPetMatrixY[i] = atoi(buff);
+
+				strKey.Format(_T("PET_THRESHOLD_CAM_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "150", buff, 256, strFileName);
+				pRcpInfo->nPetThreshold[i] = atoi(buff);
+
+				strKey.Format(_T("PET_CHECK_COUNT_CAM_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "3", buff, 256, strFileName);
+				pRcpInfo->nPetCheckCnt[i] = atoi(buff);
 
 			}
 
