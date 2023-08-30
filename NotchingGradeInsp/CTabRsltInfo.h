@@ -25,6 +25,7 @@ public:
 	BOOL bDummy1[2];
 	BOOL m_bMarkingFlag;
 
+	BOOL m_bIsPET;
 	// 22.07.08 Ahn Add Start
 	enum {
 		// 22.07.25 Ahn Modify Start

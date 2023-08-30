@@ -179,6 +179,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				LOGDISPLAY_SPEC(1)("*3**Result-Proc <%s> : TabID<%d>, Tab Find TotalCount<%d>",
 					(pFrameRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", pFrameRsltInfo->m_nTabId_CntBoard, pFrameRsltInfo->nTabNo + 1);
 
+				pFrameRsltInfo->m_pTabRsltInfo->m_bIsPET = pFrmInfo->m_bIsPET;
 
 				// PET 감지 시
 				if (pFrmInfo->m_bIsPET == TRUE)
