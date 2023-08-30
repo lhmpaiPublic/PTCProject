@@ -1453,8 +1453,8 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
 		pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 
-//		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd(); //pyjtest
-//		pFrame->ResetAndRefreshAll(); //pyjtest
+		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+		pFrame->ResetAndRefreshAll();
 	}
 	if ((bSigIn == FALSE) && (m_bLotEndFlag == TRUE))
 	{
@@ -1494,9 +1494,9 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 		pDoc->SetReqCounterReset(TRUE);
 
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-//		pFrame->ResetAndRefreshAll(); //pyjtest
-//		pFrame->ReflashAll(); //pyjtest
-//		pFrame->ResetResultViewDlg(); //pyjtest
+		pFrame->ResetAndRefreshAll();
+		pFrame->ReflashAll();
+		pFrame->ResetResultViewDlg();
 
 
 	}

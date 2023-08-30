@@ -179,8 +179,19 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				LOGDISPLAY_SPEC(1)("*3**Result-Proc <%s> : TabID<%d>, Tab Find TotalCount<%d>",
 					(pFrameRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Bottom", pFrameRsltInfo->m_nTabId_CntBoard, pFrameRsltInfo->nTabNo + 1);
 
+
+				// PET 감지 시
+				if (pFrmInfo->m_bIsPET == TRUE)
+				{
+					// 결과 정보  m_pTabRsltInfo  //OK 설정
+					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_OK; // 강제 OK 처리	
+
+					AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [ Detected PET ] JUDGE_OK"));
+
+				}
+
 				//에러 ? 또는 Over Flow 가 아니면
-				if ((pFrmInfo->m_bErrorFlag == FALSE) && (pFrmInfo->m_bOverFlow == FALSE))
+				else if ((pFrmInfo->m_bErrorFlag == FALSE) && (pFrmInfo->m_bOverFlow == FALSE))
 				{
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같다면 실행
 					if (pFrmInfo->m_nHeadNo == CAM_POS_TOP)
@@ -508,18 +519,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					}
 				// 23.02.20 Ahn Add Start
 				}
-
-
-				// PET 감지 시
-				else if (pFrmInfo->m_bIsPET == TRUE)
-				{
-					// 결과 정보  m_pTabRsltInfo  //OK 설정
-					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_OK; // 강제 OK 처리	
-
-					AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [ Detected PET ] JUDGE_OK"));
-
-				}
-
 
 				//Tab 정보가 없을 때  ? 또는 Over Flow이면
 				else
