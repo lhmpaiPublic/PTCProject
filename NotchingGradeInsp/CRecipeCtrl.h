@@ -140,6 +140,15 @@ public:
 	int nSectorCount;
 	// 22.08.09 Ahn Add End
 
+
+	BOOL bDisablePET;
+	int nPetMatrixX[MAX_CAMERA_NO];
+	int nPetMatrixY[MAX_CAMERA_NO];
+	int nPetThreshold[MAX_CAMERA_NO];
+	int nPetCheckCnt[MAX_CAMERA_NO];
+
+
+
 	enum {
 		en_RankCond_Size = 0,
 		en_RankCond_Width,

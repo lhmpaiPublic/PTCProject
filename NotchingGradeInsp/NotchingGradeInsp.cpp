@@ -214,6 +214,8 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		GetFileVersion(strVersion);
 		strTitle.Format(_T("NotchingGradeInsp Version %s"), strVersion);
 		m_pMainWnd->SetWindowText(strTitle);
+
+		AprData.SaveDebugLog_Format(_T("============================= START PROGRAM (%s) ============================="), strVersion);
 	}
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
@@ -389,6 +391,8 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 
 int CNotchingGradeInspApp::DeviceClose(void)
 {
+	AprData.SaveDebugLog_Format(_T("DeviceClose... Start") );
+
 	if (m_pImgProcCtrl != NULL) {
 		delete m_pImgProcCtrl;
 		m_pImgProcCtrl = NULL;
@@ -424,6 +428,9 @@ int CNotchingGradeInspApp::DeviceClose(void)
 	}
 
 	CoUninitialize();
+
+	AprData.SaveDebugLog_Format(_T("DeviceClose... End"));
+
 	return (0);
 }
 

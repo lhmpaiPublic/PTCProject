@@ -91,6 +91,8 @@ public:
 	int nTabRight;		// 탭 머리 오른쪽
 	int nTabWidth;
 	BOOL m_bErrorFlag;
+	BOOL m_bIsPET;		// PET 인식
+
 	//QWORD qwHeadStPos;	// 검사 시작 Frame 을 기준으로 Tab Head의 Pixel 위치
 	int	nTabStartPosInFrame ; // Frame에서 Tab의 시작위치 (거리계산용)
 // 21.08.31 Ahn Add Start
@@ -166,6 +168,8 @@ public:
 	{
 		CRect rcArea;
 		int nBright;
+		BOOL bFind;
+
 	} _PET_INFO;
 
 	typedef std::vector< _PET_INFO > VEC_PET_INFO;
@@ -456,7 +460,7 @@ public:
 	//static int DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int *pnLevel, CRecipeInfo& recipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* VecTabInfo );
 	static int DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int* pnLevel, CRecipeInfo& recipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* VecTabInfo, int nFrameCount);
 	// 22.11.18 Ahn Modify End
-	static int DivisionTab_byFixSize(BYTE* pImgPtr, BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, _VEC_TAB_INFO* VecTabInfo);
+	static int DivisionTab_byFixSize(BYTE* pImgPtr, BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, BOOL bIsPET, _VEC_TAB_INFO* VecTabInfo);
 
 
 	// Analyze Image
@@ -480,7 +484,7 @@ public:
 	static int		GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint);
 	// 23.02.16 Ahn Add End
 
-	static BOOL	GetBrightAvg_PetCheck(BYTE* pOrgImg, int nImageWidth, int nImageHeight, VEC_PET_INFO* vstPetInfo );
+	static BOOL	FindPetFilm(BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos);
 
 };
 

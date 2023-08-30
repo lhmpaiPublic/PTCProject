@@ -1721,6 +1721,7 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 		return ;
 
 
+	CTabRsltInfo tabRsltInfo;
 	CBitmapStd* pBmpStd;
 	pBmpStd = m_pBmpStd[en_OrgImage];
 	BYTE* pImgPtr = pBmpStd->GetImgPtr();
@@ -1732,10 +1733,42 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 	nWidth = size.cx;
 	nHeight = size.cy;
 
-	int nBrightAvg = CImageProcess::GetBrightAvg_PetCheck(pImgPtr, nWidth, nHeight, m_pvstPetInfo );
+	BOOL bIsPET = FALSE;
+	if (m_bModeTop == TRUE)
+	{
+		CTabInfo RsvTabInfo;
+		int nLevel = 0;
+
+		//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
+		int nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pImgPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
+
+		//Tab 정보를 저장할 vector 임시 객체
+		CImageProcess::_VEC_TAB_INFO vecTabInfo;
+
+		//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
+		int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
+		CImageProcess::DivisionTab_FromImageToTabInfo(pImgPtr, pImgPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, 0);
+
+
+
+
+		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, m_pvstPetInfo, CAM_POS_TOP); // Graphic Draw 용
+	}
+	else
+	{
+		int nBtmLevel = 0;
+
+		int nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
+
+
+		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, m_pvstPetInfo, CAM_POS_BOTTOM);
+	}
+
 
 
 	Invalidate();
+
+
 
 	return;
 
@@ -1749,21 +1782,6 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 //	CBitmapStd* pBmpStd;
 //	pBmpStd = m_pBmpStd[en_OrgImage];
 //	BYTE* pImgPtr = pBmpStd->GetImgPtr();
-//	BYTE* pMeanPtr = m_pBmpStd[en_ProcImage1]->GetImgPtr();
-//	BYTE* pBndLinePtr = m_pBmpStd[en_ProcImage2]->GetImgPtr();
-//	BYTE* pRsltPixel = m_pBmpStd[en_ProcImage3]->GetImgPtr();
-//	BYTE* pDiffPtr = m_pBmpStd[en_ProcImage4]->GetImgPtr();
-//	BYTE* pStdPtr = m_pBmpStd[en_ProcImage5]->GetImgPtr();
-//	BYTE* pProcPtr = m_pBmpStd[en_ProcImage6]->GetImgPtr();
-//
-//	BYTE* pImgArr[6];
-//	pImgArr[0] = pMeanPtr;
-//	pImgArr[1] = pBndLinePtr;
-//	pImgArr[2] = pDiffPtr;
-//	pImgArr[3] = pRsltPixel;
-//	pImgArr[4] = pStdPtr;
-//	pImgArr[5] = pProcPtr;
-//
 //
 //	int nWidth;
 //	int nHeight;

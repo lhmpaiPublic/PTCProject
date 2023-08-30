@@ -185,6 +185,8 @@ public:
 
 	CString GetSelectName() { return m_strSelectRcpName; };
 
+
+
 private :
 	int m_nLastSelTab;
 	CRecipeTableCtrl m_RcpTableCtrl;
@@ -298,6 +300,7 @@ public:
 	CString m_strRecipeMemo;
 
 
+
 	double m_dEdNgSizeWidth[MAX_CAMERA_NO];
 	double m_dEdFoilExpOutNgSize[MAX_CAMERA_NO];
 	double m_dEdFoilExpBothNgSize[MAX_CAMERA_NO];
@@ -307,6 +310,18 @@ public:
 	afx_msg void OnSetfocusEdFoilOutNgXSizeBtm();
 	afx_msg void OnSetfocusEdFoilBothNgXSizeBtm();
 	afx_msg void OnSetfocusEdSurfaceNgSizeBtm();
+	afx_msg void OnBnClickedChkDisablePet();
+
+	BOOL m_bChkDisablePET;
+	int m_nEdPetMatrixX;
+	int m_nEdPetMatrixY;
+	int m_nEdPetThreshold;
+	int m_nEdPetCheckCnt;
+
+	afx_msg void OnSetfocusEdPetMatrixX();
+	afx_msg void OnSetfocusEdPetMatrixY();
+	afx_msg void OnSetfocusEdPetThreshold();
+	afx_msg void OnSetfocusEdPetCheckCnt();
 };
 
 
