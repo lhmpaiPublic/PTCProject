@@ -183,7 +183,7 @@ enum {
 
 
 // Debug용 Log
-#define	SAVE_TACT_LOG 
+//#define	SAVE_TACT_LOG 
 
 //#define IMAGE_DRAW_NOTIFY_VERSION 
 #if !defined( IMAGE_DRAW_NOTIFY_VERSION )
