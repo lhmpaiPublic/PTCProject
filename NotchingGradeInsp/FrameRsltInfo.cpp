@@ -51,13 +51,13 @@ void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 	nTabEndHor = pFrmInfo->nTabEndHor;
 	nTabStartPosInFrame = pFrmInfo->nTabStartPosInFrame; // 
 
-	if(m_pTabRsltInfo != NULL){
+	m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
+
+	if (m_pTabRsltInfo != NULL) {
 		m_pTabRsltInfo->m_nHeadNo = m_nHeadNo;
 		m_pTabRsltInfo->m_nTabNo = nTabNo;
-		m_pTabRsltInfo->m_nCellId = m_nTabId_CntBoard;
+		m_pTabRsltInfo->m_nCellId = pFrmInfo->m_nTabId_CntBoard;
 	}
-
-	m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
 
 	for (int i = 0; i < MAX_TACTIMELIST; i++)
 		m_tacTimeList[i] = pFrmInfo->m_tacTimeList[i];
