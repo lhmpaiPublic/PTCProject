@@ -5866,6 +5866,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 		pDefInfo->nSizeY = pData->nHeight;
 		pDefInfo->nHeadNo = pTabRsltInfo->m_nHeadNo;
 		pDefInfo->nTabNo = pTabRsltInfo->m_nTabNo;
+		pDefInfo->nCellId = pTabRsltInfo->m_nCellId;
 		pDefInfo->dSizeX = pData->dWidth; //(double)pDefInfo->nSizeX * AprData.m_System.m_dResolX[nCamPos];
 		pDefInfo->dSizeY = pData->dHeight; //(double)pDefInfo->nSizeY * AprData.m_System.m_dResolY;
 		pDefInfo->nType = pData->nType;

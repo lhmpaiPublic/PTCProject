@@ -7,6 +7,7 @@ public:
 	int nType;				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
 	int nHeadNo;			// Camera 번호
 	int nTabNo;				// Cell 번호
+	int nCellId;				// Cell ID
 	int nDefNo;				// 결함 번호.
 	int nDefectMode;		// 결함
 	double nSize;				// 

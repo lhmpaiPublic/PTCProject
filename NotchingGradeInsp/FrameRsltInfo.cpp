@@ -54,6 +54,7 @@ void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 	if(m_pTabRsltInfo != NULL){
 		m_pTabRsltInfo->m_nHeadNo = m_nHeadNo;
 		m_pTabRsltInfo->m_nTabNo = nTabNo;
+		m_pTabRsltInfo->m_nCellId = m_nTabId_CntBoard;
 	}
 
 	m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
