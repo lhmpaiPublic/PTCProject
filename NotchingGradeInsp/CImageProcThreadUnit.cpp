@@ -148,15 +148,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//프레임 결과정보 전파 값 제공
 				pFrameRsltInfo->m_dFrecuency = pFrmInfo->m_dFrecuency;
 
-				// 22.12.09 Ahn Add End
-				//Foil Tact 값
-				double dFoilExpTact = 0.0 ;
-				//Tact 표면
-				double dSurfaceTact = 0.0 ;
-
-				//실행시간 체크 객체 생성 및 초기화
-				CTimeAnalyzer ctAna;
-				ctAna.Clear();
 
 				int nLocalRet = 0;
 
@@ -168,9 +159,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				//시스템시간을 파일명에 사용하기 위해서 포멧을 만든다.
 				CString strTime;
-				// 22.12.16 Ahn Modify Start
-				//strTime.Format(_T("%02d-%02d%02d%02d.%03d"), sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds);
-				//시스템 시간명으로 이미지 저정명 추카
 				strTime.Format(_T("%04d%02d%02d_%02d%02d%02d%03d"), sysTime.wYear,sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond, sysTime.wMilliseconds);
 				// 22.12.16 Ahn Modify End
 				// 22.02.24 Ahn Add End
@@ -203,9 +191,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 						//Tab Left >0, Tab Right  < 0  이면 실행 Left이면 실행
 						if ((nTabLeft > 0) && (nTabRight < nHeight)) {
-							
-							//처리시간 체크 Start
-							ctAna.StopWatchStart();
 							
 							// 0 이면 양극, 1이면 음극
 							//양극이면
@@ -370,7 +355,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							// 22.05.30 Ahn Modify End
 							
 							//이미지 프로세서 처리 시간을 가져온다.
-							dFoilExpTact = ctAna.WhatTimeIsIt_Double();							
+							//dFoilExpTact = ctAna.WhatTimeIsIt_Double();							
 						}	
 						
 						//이미지 처리 프로세서 처리가 잘못었을 경우  Failed Log를 찍는다.
@@ -409,8 +394,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							rcArea.bottom = nHeight;
 
 							//실행시간 체크 객체 초기화 및 시작
-							ctAna.Clear();
-							ctAna.StopWatchStart();
+							//ctAna.Clear();
+							//ctAna.StopWatchStart();
 
 							//이미지 처리 프로세서 함수 ImageProcessDetectSurface 
 							nLocalRet = CImageProcess::ImageProcessDetectSurface(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, rcArea, pFrameRsltInfo->m_pTabRsltInfo, CAM_POS_TOP, FALSE);
@@ -419,7 +404,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								);
 
 
-							dSurfaceTact = ctAna.WhatTimeIsIt_Double();
+							//dSurfaceTact = ctAna.WhatTimeIsIt_Double();
 
 
 							if (nLocalRet < 0) {
@@ -438,11 +423,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 
 						//실행시간 체크 시작
-						ctAna.StopWatchStart();
-						// 22.05.30 Ahn Modify Start
-						//nLocalRet = CImageProcess::ImageProcessBottomSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
-						// 22.09.15 Ahn Modify Start
-						//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
+						//ctAna.StopWatchStart();
+
 						
 						//Machine Mode 가 양극이면
 						if (AprData.m_System.m_nMachineMode == ANODE_MODE)
@@ -478,7 +460,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 						// 22.05.30 Ahn Modify End
 						//실행시간 체크 값을 가져온다.
-						dFoilExpTact = ctAna.WhatTimeIsIt_Double();
+						//dFoilExpTact = ctAna.WhatTimeIsIt_Double();
 						//이미지 프로세서 처리가 잘못되었으면 Failed 로그 출력
 						if (nLocalRet < 0) {
 							CString strMsg;
@@ -499,8 +481,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							rcArea.bottom = nHeight;
 
 							//실행시간 체크 초기화 및 시작
-							ctAna.Clear();
-							ctAna.StopWatchStart();
+							//ctAna.Clear();
+							//ctAna.StopWatchStart();
 
 							//설정한 영역 검사 ImageProcessDetectSurface 함수를 호출한다.
 							nLocalRet = CImageProcess::ImageProcessDetectSurface(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, rcArea, pFrameRsltInfo->m_pTabRsltInfo, CAM_POS_BOTTOM, FALSE);
@@ -510,7 +492,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								);
 							
 							//처리시간을 가져온다.
-							dSurfaceTact = ctAna.WhatTimeIsIt_Double();
+							//dSurfaceTact = ctAna.WhatTimeIsIt_Double();
 
 							//ImageProcessDetectSurface 처리가 잘못되었으면
 							if (nLocalRet < 0) {
@@ -561,11 +543,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
-				// 23.02.20 Ahn Add End
-				//Tact 타임을 로그로 저장한다.
-				CString strTactLog;
-				strTactLog.Format(_T("Pos[%d], Foil노출 Tact[%.2lf], Surface Tact[%.2lf]"), pFrmInfo->m_nHeadNo, dFoilExpTact, dSurfaceTact);
-				AprData.SaveTactLog(strTactLog);
 
 				// 22.04.18 Ahn Add Start
 				//ImageProc: Tab 에 대한 이미지 최대 사이즈 저장

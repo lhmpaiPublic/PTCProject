@@ -5823,16 +5823,13 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 	if (pBlockInfo == NULL) return -1 ;
 	if (pTabRsltInfo == NULL) return -1 ;
 
-	int nSize;
-	nSize = (int)pBlockInfo->size();
+	int nSize = (int)pBlockInfo->size();
+
 	CBlockData* pData;
 	int nMinSize[MAX_INSP_TYPE];
-	nMinSize[TYPE_FOILEXP_OUT] = pRecipeInfo->nFoilExpOutMinSize[nCamPos] ;
-	nMinSize[TYPE_FOILEXP] = pRecipeInfo->nFoilExpInMinSize[nCamPos] ;
+	nMinSize[TYPE_FOILEXP_OUT] = pRecipeInfo->nFoilExpOutMinSize[nCamPos];
+	nMinSize[TYPE_FOILEXP] = pRecipeInfo->nFoilExpInMinSize[nCamPos];
 
-	//// 22.11.21 Ahn Add Start
-	//int nFrameCnt = pTabRsltInfo->nFrameCount ;
-	//// 22.11.21 Ahn Add End
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE			
@@ -5849,8 +5846,13 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 	for (int i = 0; i < nSize; i++)
 	{
 		pData = &(*pBlockInfo)[i];
-		if (pData->bDeleteFlag == TRUE) continue;
-		if (pData->nPixelCnt < nMinSize[pData->nType]) continue;
+
+		if (pData->bDeleteFlag == TRUE)
+			continue;
+
+		if (pData->nPixelCnt < nMinSize[pData->nType])
+			continue;
+
 		CDefectInfo* pDefInfo;
 		pDefInfo = new CDefectInfo();
 
@@ -5872,16 +5874,14 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 		pDefInfo->dJudgeSize = pData->dJudgeSize;
 		pDefInfo->dDistance = pData->dDistance;
 		pDefInfo->bDeleteFlag = FALSE;
+
 		// 판정 필요
-		// // 22.11.21 Ahn Add Start
 		CPoint cpCenter = pData->rcRect.CenterPoint();
 		int nDefPosY = cpCenter.y ;
 		pDefInfo->dDefectPosY = ( (double)( nFrameStartPos + nDefPosY ) * dResoY ) / 1000.0 ;
-		// // 22.11.21 Ahn Add End
-		// 22.05.25 Ahn Add Start
 		pDefInfo->sysTime = pTabRsltInfo->sysTime ;		
 		::_tcsnccpy_s( pDefInfo->szLotID, _countof(pDefInfo->szLotID), AprData.m_NowLotData.m_strLotNo.GetBuffer(0), _TRUNCATE);
-		// 22.05.25 Ahn Add End
+
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE			
@@ -5911,14 +5911,13 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 			{
 				pDefInfo->nRank = JUDGE_NG;
 				pTabRsltInfo->m_nJudge = JUDGE_NG;
-				pTabRsltInfo->m_wNgReason |= ( ( pDefInfo->nHeadNo == CAM_POS_TOP ) ? CTabRsltBase::en_Reason_Surface_Top : CTabRsltBase::en_Reason_Surface_Btm ); // 22.07.08 Ahn Add
-
-//				AprData.SaveDebugLog_Format(_T("<<AddDefectInfoByBlockInfo>>Surface NG => Head No<%d>."), pDefInfo->nHeadNo);
+				pTabRsltInfo->m_wNgReason |= ( ( pDefInfo->nHeadNo == CAM_POS_TOP ) ? CTabRsltBase::en_Reason_Surface_Top : CTabRsltBase::en_Reason_Surface_Btm );
 
 			}
 			else if (pTabRsltInfo->m_nJudge < JUDGE_NG)
 			{
-				if ((pRecipeInfo->dSurfaceGraySize > 0.0) && ( pDefInfo->dJudgeSize > pRecipeInfo->dSurfaceGraySize )) {
+				if ((pRecipeInfo->dSurfaceGraySize > 0.0) && ( pDefInfo->dJudgeSize > pRecipeInfo->dSurfaceGraySize ))
+				{
 					pDefInfo->nRank = JUDGE_GRAY;
 					pTabRsltInfo->m_nJudge = JUDGE_GRAY;
 				}
@@ -5928,23 +5927,19 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 		}
 		else
 		{
-			// 22.05.10 Ahn Add End
-			// 22.07.20 Ahn Modify Start
-			//pDefInfo->nRank = CTabRsltInfo::GetDefJudge(pRecipeInfo->dFoilExpInNgSize, pRecipeInfo->dDefJudgeHeight, pDefInfo->dJudgeSize, pDefInfo->dSizeY);
-			// 22.12.14 Ahn Add Start
-
 			if (pDefInfo->dJudgeSize == 0.f )
 			{
 				pDefInfo->dJudgeSize = pData->dWidth;
 			}
 
-			if ((pData->nDefPos == en_LeftRound) || (pData->nDefPos == en_RightRound)) {
+			if ((pData->nDefPos == en_LeftRound) || (pData->nDefPos == en_RightRound))
+			{
 				pDefInfo->nDispPos = en_defPosRound ;
 			}
-			else {
+			else
+			{
 				pDefInfo->nDispPos = en_defPosEdge ;
 			}
-			// 22.12.14 Ahn Add End
 
 			double dNgSize;
 			switch (pDefInfo->nType)
@@ -7073,11 +7068,6 @@ int CImageProcess::ImageProcessDetectSurface(BYTE* pImgPtr, int nWidth, int nHei
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-#if defined( SAVE_TACT_LOG ) 
-	CTimeAnalyzer ctAna;
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	
 	BYTE* pThresPtr;
 	int nSizeAll = nWidth * nHeight;
@@ -7107,11 +7097,6 @@ int CImageProcess::ImageProcessDetectSurface(BYTE* pImgPtr, int nWidth, int nHei
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockSpetter, pRecipeInfo, pTabRsltInfo, nCamPos, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY );
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessDetectSurface> AddDefectInfoByBlockInfo : Finish"));
 
-#if defined( SAVE_TACT_LOG ) 
-	CString strLog;
-	double dTime = ctAna.WhatTimeIsIt_Double();
-	strLog.Format(_T("Spetter Proc Time [%.2lf]"), dTime);
-#endif
 
 	if (bSimMode == TRUE) {
 		CopyMemory(pImgPtrArr[nArrCnt], pThresPtr, sizeof(BYTE) * nSizeAll);
@@ -7134,12 +7119,6 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
-
-#if defined( SAVE_TACT_LOG ) 
-	CTimeAnalyzer ctAna;
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	int nLeftOffset;
 	int nRightOffset = 100 ; 
@@ -7210,12 +7189,6 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcLeft, 3, 3, CImageProcess::en_FillTop);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcRight, 3, 3, CImageProcess::en_FillBottom);
 
-#if defined( SAVE_TACT_LOG ) 
-	double dMeanProc = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
-
 	CImageProcess::GetMaxImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcLeft);
 	CImageProcess::GetMaxImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcRight);
 
@@ -7258,11 +7231,6 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 		delete[] pMeanPtr; // 22.04.26 Ahn Add
 		return -1;
 	}
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	CImageProcess::SmoothVecRoundData(&vecLeftRndInfo, CImageProcess::en_FindLeft);
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_BrightRoll> SmoothVecRoundData : Finish"));
@@ -7288,11 +7256,6 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 		return -2; // 처리 불가.
 	}
 
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage2 = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	// Tab 오른쪽(아래) 부분의 Edge 검출
 
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_BrightRoll> EdgeDetectImageToBoth_BaseBright : nWidth = %d, nHeight = %d, nThresBnd = %d, nThresMax = %d, nLineLevel = %d"),
@@ -7334,12 +7297,6 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 
 		return -3;
 	}
-
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage3 = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	delete[]pnResultArr;
 
@@ -7385,11 +7342,6 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_BrightRoll> DiffProcImage, Threshold_RoundMask : Finish"));
 
 
-#if defined( SAVE_TACT_LOG ) 
-	double dThresTime = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	CImageProcess::_VEC_BLOCK vecBlockFoilExp;
 	CImageProcess::_VEC_BLOCK vecBlockDross;
 	vecBlockFoilExp.clear();
@@ -7400,12 +7352,6 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 	
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_BrightRoll> LoopLabeling : Finish"));
-
-#if defined( SAVE_TACT_LOG ) 
-	double dLabelTime = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	pTabRsltInfo->RemoveAll();
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
@@ -7448,38 +7394,10 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
 	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, pRecipeInfo, CAM_POS_TOP);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_BrightRoll> MergeAndLink_BlockInfo : Finish") );
 
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockMerge, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_BrightRoll> AddDefectInfoByBlockInfo : Finish"));
-
-#if defined( SAVE_TACT_LOG ) 
-	double dDefCollectTime = ctAna.WhatTimeIsIt_Double();
-	CString strTactLog;
-	strTactLog.Format(_T("MeanTime[%.2lf], EdgeTime[%.2lf], Edge2[%.2lf], Edge3[%.2lf], Thres[%.2lf], Labeling[%.2lf], Defect Collect TIme [%.2lf]")
-		, dMeanProc, dEdgeDtImage, dEdgeDtImage2, dEdgeDtImage3, dThresTime, dLabelTime, dDefCollectTime);
-	AprData.SaveTactLog(strTactLog);
-#endif
-
-	//if (bSimMode == TRUE) {
-	//	BYTE* pBndPtr = NULL;
-	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
-	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
-
-	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
-	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
-	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
-
-	//	delete[] pBndPtr;
-	//	pBndPtr = NULL;
-	//}
 
 	delete[]pStdPtr;
 	pStdPtr = NULL;
@@ -7538,11 +7456,6 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 
 	// 평균화 처리 
 	BYTE* pMeanPtr = pTempPtr;
-#if defined( SAVE_TACT_LOG )
-	CTimeAnalyzer ctAna;
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	int nMeanSize = MEAN_SIZE_HOR;
 
 	BYTE* pStdPtr = new BYTE[nHeight * nWidth + 1];
@@ -7562,12 +7475,6 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 		CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, pRecipeInfo->dMagnification[CAM_POS_BOTTOM], btThreshold, pRecipeInfo->bDarkEmpMode);
 	}
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_BrightRoll> <ImageMean_Part, GetMaxImage, DiffProcImage> Finish"));
-
-#if defined( SAVE_TACT_LOG )
-	double dMean = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	// 22.05.30 Ahn Add Start
 	BYTE* pEdgePtr;
@@ -7592,11 +7499,6 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_BrightRoll> <SmoothVecRoundData> Finish"));
 
 
-#if defined( SAVE_TACT_LOG )
-	double dEdge = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	CRegionInfo roiFoilExp;
 	//	CRegionInfo roiDross;
 	CString strThres;
@@ -7625,11 +7527,6 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	}
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_BrightRoll> <Threshold_RoundMask_Negative> Finish"));
 
-#if defined( SAVE_TACT_LOG )
-	double dThres = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	_VEC_BLOCK vecBlockFoilExp;
 	_VEC_BLOCK vecBlockDross;
 	vecBlockFoilExp.clear();
@@ -7641,13 +7538,7 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, AprData.m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_BrightRoll> <LoopLabeling> Finish"));
 
-#if defined( SAVE_TACT_LOG )
-	double dLabel = ctAna.WhatTimeIsIt_Double();
 
-	CString strLog;
-	strLog.Format(_T(" Bottom Side Mean[%.2lf], Edge[%.2lf], Thres[%.2lf], Label[%.2lf]"), dMean, dEdge, dThres, dLabel);
-	AprData.SaveTactLog(strLog);
-#endif
 	pTabRsltInfo->RemoveAll();
 
 	_VEC_BLOCK* pVecBlockPtr;
@@ -7725,11 +7616,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-#if defined( SAVE_TACT_LOG ) 
-	CTimeAnalyzer ctAna;
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	int nOffset = 50 ;
 
 	// 22.01.05 Ahn Add Start
@@ -7847,11 +7733,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcLeftRnd, 3, 3, CImageProcess::en_FillTop);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcRightRnd, 3, 3, CImageProcess::en_FillBottom);
 
-#if defined( SAVE_TACT_LOG ) 
-	double dMeanProc = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	// 22.04.26 Ahn Add Start
 	CImageProcess::GetMinImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcLeftRnd);
@@ -7908,11 +7789,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 		delete[] pMeanPtr; // 22.04.26 Ahn Add
 		return -1;
 	}
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	// Round는 가로 세로 2번의 Edge 검출이 필요함.
 	rcLeftRnd.right = nMaskRight;
@@ -7943,11 +7819,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 		return -2; // 처리 불가.
 	}
 
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage2 = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	// Tab 오른쪽(아래) 부분의 Edge 검출
 
 	nCropWidth = rcRightRnd.Width();
@@ -8006,11 +7877,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 		return -3;
 	}
 
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage3 = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	//	delete[]pRsltPtr;
 	delete[]pnResultArr;
@@ -8078,11 +7944,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_AreaDiff> Threshold_RoundMask : Finish"));
 
 
-#if defined( SAVE_TACT_LOG ) 
-	double dThresTime = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	CImageProcess::_VEC_BLOCK vecBlockFoilExp;
 	CImageProcess::_VEC_BLOCK vecBlockDross;
 	vecBlockFoilExp.clear();
@@ -8097,11 +7958,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_AreaDiff> LoopLabeling : Finish"));
 
-#if defined( SAVE_TACT_LOG ) 
-	double dLabelTime = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	pTabRsltInfo->RemoveAll();
 
@@ -8175,37 +8031,10 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
 	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, pRecipeInfo, CAM_POS_TOP );
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_AreaDiff> MergeAndLink_BlockInfo : Finish") );
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockMerge, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_AreaDiff> AddDefectInfoByBlockInfo : Finish"));
 
-#if defined( SAVE_TACT_LOG ) 
-	double dDefCollectTime = ctAna.WhatTimeIsIt_Double();
-	CString strTactLog;
-	strTactLog.Format(_T("MeanTime[%.2lf], EdgeTime[%.2lf], Edge2[%.2lf], Edge3[%.2lf], Thres[%.2lf], Labeling[%.2lf], Defect Collect TIme [%.2lf]")
-		, dMeanProc, dEdgeDtImage, dEdgeDtImage2, dEdgeDtImage3, dThresTime, dLabelTime, dDefCollectTime);
-	AprData.SaveTactLog(strTactLog);
-#endif
-
-	//if (bSimMode == TRUE) {
-	//	BYTE* pBndPtr = NULL;
-	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
-	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
-
-	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
-	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
-	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
-
-	//	delete[] pBndPtr;
-	//	pBndPtr = NULL;
-	//}
 
 	if (pStdPtr != nullptr) {
 		delete[]pStdPtr;
@@ -8238,23 +8067,26 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
+
+	if (nLineLevel < 0)
+	{
+		AprData.SaveDebugLog(_T("<<ImageProcessBottomSide_AreaDiff>>에러 - !!! Tab Level 이상 !!!"));
+
+		return -1;
+	}
+
 	CRect rcAll;
 	rcAll.left = nLineLevel - pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM] * 2;
 	rcAll.right = nLineLevel + pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
 	rcAll.top = 0;
 	rcAll.bottom = nHeight;
 
-	if (nLineLevel < 0) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog(_T("<<ImageProcessBottomSide_AreaDiff>>에러 - !!! Tab Level 이상 !!!"));
-
-		return -1;
-	}
-	if (rcAll.left < 0) {
+	if (rcAll.left < 0)
+	{
 		rcAll.left = 0;
 	}
-	if (rcAll.right >= nWidth) {
+	if (rcAll.right >= nWidth)
+	{
 		rcAll.right = (nWidth - 1);
 	}
 
@@ -8267,11 +8099,6 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	int nEdgeWidth = 10;
 
 	// 평균화 처리 
-#if defined( SAVE_TACT_LOG )
-	CTimeAnalyzer ctAna;
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	int nMeanSize = MEAN_SIZE_HOR;
 
 	BYTE* pStdPtr = new BYTE[nHeight * nWidth + 1];
@@ -8282,66 +8109,24 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcAll, 15, 15, CImageProcess::en_FillAll);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcAll, 3, 3, CImageProcess::en_FillAll);
 
-	// 22.04.26 Ahn Add Start
 	CImageProcess::GetMinImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcAll);
-	// 22.04.26 Ahn Add End
 
-	BYTE* pDiffPtr;
-	//if (pRecipeInfo->bDisableProcDiff == FALSE) 
-	{
-		pDiffPtr = new BYTE[nSizeAll + 1];
-		memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
-		BYTE btThreshold = (BYTE)pRecipeInfo->nFoilExpThresOrigin[CAM_POS_BOTTOM];
-		CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, pRecipeInfo->dMagnification[CAM_POS_BOTTOM], btThreshold, pRecipeInfo->bDarkEmpMode);
-	}
-	//else {
-	//	pDiffPtr = pImgPtr;
-	//}
-#if defined( SAVE_TACT_LOG )
-	double dMean = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
+	BYTE* pDiffPtr = new BYTE[nSizeAll + 1];
+	memset(pDiffPtr, 0x00, sizeof(BYTE) * nSizeAll + 1);
 
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> ImageMean_Part, GetMinImage, DiffProcImage : Finish"));
+	BYTE btThreshold = (BYTE)pRecipeInfo->nFoilExpThresOrigin[CAM_POS_BOTTOM];
+	CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, pRecipeInfo->dMagnification[CAM_POS_BOTTOM], btThreshold, pRecipeInfo->bDarkEmpMode);
 
 
-	// 22.01.06 Ahn Modify Start
-	BYTE* pEdgePtr ;
-	// 22.03.30 Ahn Delete End
-	//if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
-	//	pEdgePtr = pMeanPtr;
-	//}
-	//else 
-	// 22.03.30 Ahn Delete End
-	{
-		// 22.04.26 Ahn Modify Start
-		//pEdgePtr = pStdPtr;
-		pEdgePtr = pMeanPtr;
-		// 22.04.26 Ahn Modify Start
-	}
-	// 22.01.06 Ahn Modify End
+	BYTE* pEdgePtr = pMeanPtr;
 
-	if (pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM] == CImageProcess::en_Edge_MaxDiff) {
-		EdgeDetectImageToBoth_RndInfo(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nEdgeWidth, 2, DIR_VER);
-//		AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> EdgeDetectImageToBoth_RndInfo : Finish"));
-
-	}
-	else {
-		int nThresBnd = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-		CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
-//		AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> EdgeDetectImageToBoth_RndInfo_Threshold : Finish"));
-	}
+	int nThresBnd = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+	CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
 
 	CImageProcess::SmoothVecRoundData(&vecAllRndInfo, CImageProcess::en_FindLeft);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> SmoothVecRoundData : Finish"));
 
 
-#if defined( SAVE_TACT_LOG )
-	double dEdge = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
+
 	CRegionInfo roiFoilExp;
 	CRegionInfo roiDross;
 	CString strThres;
@@ -8360,61 +8145,50 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	int nFoilExpThLower = pRecipeInfo->nFoilExpThresLower[CAM_POS_BOTTOM];
 	int nFoilOutMaskOffset = pRecipeInfo->nFoilOutMaskOffset[CAM_POS_BOTTOM];
 	int nFileExpMaskOffset = pRecipeInfo->nFoilExpMaskOffset[CAM_POS_BOTTOM];
-
 	int nFoilOutInspWidth = pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM];
 	int nFoilExpInspWidth = pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
-	int nRet = 0;
 
+	int nRet = 0;
 	nRet |= CImageProcess::Threshold_RoundMask(pDiffPtr, &roiFoilExp, &vecAllRndInfo, nWidth, nHeight, nFoilExpInspWidth, nFoilExpThLower, nFileExpMaskOffset, 0, en_ModeFoilExp, FALSE, CImageProcess::en_TailSide);
 	nRet |= CImageProcess::Threshold_RoundMask(pDiffPtr, &roiDross, &vecAllRndInfo, nWidth, nHeight, nFoilOutInspWidth, nDrossThLower, nFoilOutMaskOffset, 0, en_ModeFoilExpOut, FALSE, CImageProcess::en_TailSide);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> Threshold_RoundMask : Finish"));
 
-#if defined( SAVE_TACT_LOG )
-	double dThres = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
+
 	CImageProcess::_VEC_BLOCK vecBlockFoilExp;
 	CImageProcess::_VEC_BLOCK vecBlockDross;
 	vecBlockFoilExp.clear();
 	vecBlockDross.clear();
 
-	//CImageProcess::RemoveNoise(pThresPtr, nWidth, nHeight, CImageProcess::en_Filter_8, rcAll, CImageProcess::en_FoilExp_Bit | CImageProcess::en_Dross_Bit);
 	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiFoilExp.GetFifoPtr());
 	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiDross.GetFifoPtr());
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> GetOrgImageBright : Finish"));
 
 	// Overflow 는 4번 Bit살려서 보냄
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, AprData.m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, AprData.m_pRecipeInfo->nFoilExpOutMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> LoopLabeling : Finish"));
 
-#if defined( SAVE_TACT_LOG )
-	double dLabel = ctAna.WhatTimeIsIt_Double();
-
-	CString strLog;
-	strLog.Format(_T(" Bottom Side Mean[%.2lf], Edge[%.2lf], Thres[%.2lf], Label[%.2lf]"), dMean, dEdge, dThres, dLabel);
-	AprData.SaveTactLog(strLog);
-#endif
 
 	pTabRsltInfo->RemoveAll();
 
 	CImageProcess::_VEC_BLOCK* pVecBlockPtr;
 	CBlockData* pData;
-	for (int nMode = 0; nMode < MAX_INSP_TYPE; nMode++) {
-		if (nMode == TYPE_FOILEXP_OUT) {
+	for (int nMode = 0; nMode < MAX_INSP_TYPE; nMode++)
+	{
+		if (nMode == TYPE_FOILEXP_OUT)
+		{
 			pVecBlockPtr = &vecBlockDross;
 		}
-		else {
+		else
+		{
 			pVecBlockPtr = &vecBlockFoilExp;
 		}
 		int nDefSize = (int)pVecBlockPtr->size();
-//		AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> nMode = %d, nDefSize = %d"), nMode, nDefSize);
 
 		for (int i = 0; i < nDefSize; i++)
 		{
 			pData = &(*pVecBlockPtr)[i];
-			if (pData->bDeleteFlag == TRUE) continue;
+
+			if (pData->bDeleteFlag == TRUE)
+				continue;
+
 			if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
 			{ 
 				//CImageProcess::CalcSizeToEdgeLine(pData, &vecAllRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
@@ -8424,42 +8198,22 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	}
 
 
-	// 22.07.20 Ahn Delete Start
-	if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
+	if (AprData.m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE)
+	{
 		CImageProcess::BlockLink(&vecBlockFoilExp, pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
 		CImageProcess::BlockLink(&vecBlockDross, pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_BOTTOM);
 	}
-	// 22.07.20 Ahn Delete End
+
 
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
-	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, pRecipeInfo, CAM_POS_BOTTOM);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> MergeAndLink_BlockInfo : Finish") );
 
+	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, pRecipeInfo, CAM_POS_BOTTOM);
 	CImageProcess::SortingBlockInfo(&vecBlockMerge);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> SortingBlockInfo : Finish"));
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockMerge, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
 
-
-	//if (bSimMode == TRUE) {
-	//	BYTE* pBndPtr = NULL;
-	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
-	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
-
-	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecAllRndInfo, 0x80);
-	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-
-	//	delete[] pBndPtr;
-	//	pBndPtr = NULL;
-	//}
 
 	if (pStdPtr != nullptr) {
 		delete[] pStdPtr;
@@ -8479,16 +8233,10 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 		delete[]pMeanPtr;
 		pMeanPtr = NULL;
 	}
-	//if (pRecipeInfo->bDisableProcDiff == FALSE) {
 	if( pDiffPtr != nullptr ){
 		delete[] pDiffPtr;		
 		pDiffPtr = NULL;
 	}
-//	int nFoilExpSize = (int)vecBlockFoilExp.size();
-//	int nDrossSize = (int)vecBlockDross.size();
-
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> End : nRet = %d"), nRet );
-
 
 	return nRet;
 
@@ -8504,11 +8252,6 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-#if defined( SAVE_TACT_LOG ) 
-	CTimeAnalyzer ctAna;
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	int nOffset = 50;
 
 	int nLeftOffset;
@@ -8618,12 +8361,6 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_Negative> ImageMean_Part, GetMinImage : Finish"));
 
 
-#if defined( SAVE_TACT_LOG ) 
-	double dMeanProc = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
-
 	int nRoundOffset = 50;	// 라운드 부분이 Slip 발생으로 늘어질경우를 대비한 Offset값
 	int nEdgeCompWidth = 10;	//	Edge 검출 Parameter 상하 비교 폭
 
@@ -8668,11 +8405,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 		// 22.04.18 Ahn Add End
 		return -1;
 	}
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
+
 
 	// Round는 가로 세로 2번의 Edge 검출이 필요함.
 	rcLeftRnd.right = nMaskRight;
@@ -8697,11 +8430,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 		return -2; // 처리 불가.
 	}
 
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage2 = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
+
 	// Tab 오른쪽(아래) 부분의 Edge 검출
 
 	nCropWidth = rcRightRnd.Width();
@@ -8755,12 +8484,6 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 		// 22.04.18 Ahn Add End
 		return -3;
 	}
-
-#if defined( SAVE_TACT_LOG ) 
-	double dEdgeDtImage3 = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	//	delete[]pRsltPtr;
 	delete[]pnResultArr;
@@ -8818,11 +8541,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 
 	// 22.02.08 Ahn Add End
 
-#if defined( SAVE_TACT_LOG ) 
-	double dThresTime = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
+
 	CImageProcess::_VEC_BLOCK vecBlockFoilExp;
 	vecBlockFoilExp.clear();
 
@@ -8832,11 +8551,6 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 	// 22.02.08 Ahn Modify End
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_Negative> LoopLabeling : Finish"));
 
-#if defined( SAVE_TACT_LOG ) 
-	double dLabelTime = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 
 	pTabRsltInfo->RemoveAll();
 
@@ -8905,35 +8619,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockFoilExp, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_Negative> AddDefectInfoByBlockInfo : Finish") );
 
-
-#if defined( SAVE_TACT_LOG ) 
-	double dDefCollectTime = ctAna.WhatTimeIsIt_Double();
-	CString strTactLog;
-	strTactLog.Format(_T("MeanTime[%.2lf], EdgeTime[%.2lf], Edge2[%.2lf], Edge3[%.2lf], Thres[%.2lf], Labeling[%.2lf], Defect Collect TIme [%.2lf]")
-		, dMeanProc, dEdgeDtImage, dEdgeDtImage2, dEdgeDtImage3, dThresTime, dLabelTime, dDefCollectTime);
-	AprData.SaveTactLog(strTactLog);
-#endif
-
-	//if (bSimMode == TRUE) {
-	//	BYTE* pBndPtr = NULL;
-	//	pBndPtr = new BYTE[nWidth * nHeight + 1];
-	//	memset(pBndPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
-
-	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecLeftRndInfo, 0x80);
-	//	DrawPixel_BoundaryLine(pBndPtr, nWidth, nHeight, vecRightRndInfo, 0x80);
-	//	CopyMemory(pImgPtrArr[0], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[1], pBndPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[2], pDiffPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[3], pThresPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[4], pStdPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	CopyMemory(pImgPtrArr[5], pProcPtr, sizeof(BYTE) * nWidth * nHeight);
-	//	//	memcpy(pImgPtrArr[7], pMeanPtr, sizeof(BYTE) * nWidth * nHeight);
-
-	//	delete[] pBndPtr;
-	//	pBndPtr = NULL;
-	//}
 
 	delete[]pStdPtr;
 	pStdPtr = NULL;
@@ -8997,11 +8683,6 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 
 	// 평균화 처리 
 	BYTE* pMeanPtr = pTempPtr;
-#if defined( SAVE_TACT_LOG )
-	CTimeAnalyzer ctAna;
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	int nMeanSize = MEAN_SIZE_HOR;
 
 	// 22.09.15 Ahn Modify Start
@@ -9034,11 +8715,7 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 	//else {
 	//	pDiffPtr = pImgPtr;
 	//}
-#if defined( SAVE_TACT_LOG )
-	double dMean = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
+
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_Negative> ImageMean_Part, GetMinImage, DiffProcImage : Finish") );
 
 	// 22.05.30 Ahn Add Start
@@ -9063,11 +8740,6 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_Negative> SmoothVecRoundData : Finish") );
 
 
-#if defined( SAVE_TACT_LOG )
-	double dEdge = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	CRegionInfo roiFoilExp;
 //	CRegionInfo roiDross;
 	CString strThres;
@@ -9100,11 +8772,6 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 
 	}
 
-#if defined( SAVE_TACT_LOG )
-	double dThres = ctAna.WhatTimeIsIt_Double();
-	ctAna.Clear();
-	ctAna.StopWatchStart();
-#endif
 	CImageProcess::_VEC_BLOCK vecBlockFoilExp;
 	CImageProcess::_VEC_BLOCK vecBlockDross;
 	vecBlockFoilExp.clear();
@@ -9115,18 +8782,8 @@ int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, in
 
 	// Overflow 는 4번 Bit살려서 보냄
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, AprData.m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
-//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_Negative> LoopLabeling : Finish") );
 
 
-
-
-#if defined( SAVE_TACT_LOG )
-	double dLabel = ctAna.WhatTimeIsIt_Double();
-
-	CString strLog;
-	strLog.Format(_T(" Bottom Side Mean[%.2lf], Edge[%.2lf], Thres[%.2lf], Label[%.2lf]"), dMean, dEdge, dThres, dLabel);
-	AprData.SaveTactLog(strLog);
-#endif
 	pTabRsltInfo->RemoveAll();
 
 

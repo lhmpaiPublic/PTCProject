@@ -272,9 +272,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 				//처리시간 체크 객체 생성 및 시간 진행
-				CTimeAnalyzer ctAna;
-				ctAna.Clear();
-				ctAna.StopWatchStart();
+//				CTimeAnalyzer ctAna;
+//				ctAna.Clear();
+//				ctAna.StopWatchStart();
 
 
 
@@ -334,10 +334,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 					//Top Bottom 프로젝션 바운드리 처리 시간 체크 및 로그 출력
-					double dTime = ctAna.WhatTimeIsIt_Double();
-					CString strLog;
-					strLog.Format(_T("TabCutting Time [%.2lf]msec, 전극경계Top[%d], Bottom[%d] BtmLevel[%d]"), dTime, nBndElectrode, nBneElectrodeBtm, nBtmLevel);
-					AprData.SaveTactLog(strLog);
+//					double dTime = ctAna.WhatTimeIsIt_Double();
 
 					//Image Cutting Tab 정보 출력 로그
 					LOGDISPLAY_SPEC(1)("*2*1*Now Tab Find Count<%d>, TabID QueueCount<%d>",
@@ -691,8 +688,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				delete pFrmInfo_Bottom;
 				pFrmInfo_Bottom = NULL;
 
-				double dSecond = ctAna.WhatTimeIsIt_Double();
-				AprData.SetTactTime_1(dSecond);
+//				double dSecond = ctAna.WhatTimeIsIt_Double();
+//				AprData.SetTactTime_1(dSecond);
 			}
 			//Top Frame 크기
 			nSizeFrmL = pQueueFrame_Top->GetSize();
