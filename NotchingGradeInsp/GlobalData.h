@@ -30,6 +30,7 @@ public :
 		en_MelsecError		= 0x000009,
 		en_DioError			= 0x000010,
 		en_ProcessError		= 0x000011,
+		en_MissTabID		= 0x000012,
 
 
 		en_DiskCapacityAlarm	= 0x100001,
@@ -486,6 +487,7 @@ public :
 	int		m_nSectorNgCount;
 	int		m_nSectorBaseCount;
 	
+	int		m_nMissTabIdNow;
 
 	//글로벌 스트링 세팅 객체를 넘긴다.
 	_GLOBAL_SETTING_STRING* getGSt() { return &m_globalStr; }

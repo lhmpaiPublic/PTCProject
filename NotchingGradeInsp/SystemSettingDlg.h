@@ -165,4 +165,7 @@ public:
 	BOOL m_bChkEnableNonNgStop;
 
 	afx_msg void OnSetfocusEdOverflowMax();
+	int m_nEdMissTabIdMax;
+//	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	afx_msg void OnSetfocusEdMissTabIdMax();
 };

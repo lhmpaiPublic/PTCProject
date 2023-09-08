@@ -1540,6 +1540,12 @@ CString CIoMonitorDlg::GetOutWordData(int nRow)
 // 22.10.05 Ahn Add Start
 void CIoMonitorDlg::OnBnClickedBtnDummyError()
 {
+	CString strError;
+	strError.Format(_T("Miss Tab ID Error!! [Count: %d]"), AprData.m_nMissTabIdNow);
+	AprData.m_ErrStatus.SetError(CErrorStatus::en_MissTabID, strError);
+
+	return;
+
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (MessageBox(_T("Dummy NG 발생시 장비가 정지 할 수 있습니다. 정말 NG를 발생시키 시겠습니까?"), _T("Dummy NG"), MB_OKCANCEL) == IDOK) {
 		// 22.10.05 Ahn Add Start

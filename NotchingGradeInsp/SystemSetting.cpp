@@ -188,6 +188,13 @@ int CSystemSetting::FileCtrl(int nMode)
 				m_nJpegSaveQuality = 5;
 			}
 
+			strKey = _T("MISS_TAB_ID_MAX");
+			::GetPrivateProfileString(strSection, strKey, "3", buff, 256, strFileName);
+			m_nMissTabIdMax = atoi(buff);
+			if ((m_nMissTabIdMax > 100) || (m_nMissTabIdMax < 0)) {
+				m_nJpegSaveQuality = 5;
+			}
+
 			strKey = _T("FIRST_TAB_DONOT_PROCESS");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			m_bFirstTabDoNotProc = atoi(buff);
@@ -383,6 +390,10 @@ int CSystemSetting::FileCtrl(int nMode)
 
 			strKey = _T("OVERFLOW_COUNT_MAX");
 			strData.Format(_T("%d"), m_nOverflowCountMax);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("MISS_TAB_ID_MAX");
+			strData.Format(_T("%d"), m_nMissTabIdMax);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("FIRST_TAB_DONOT_PROCESS");

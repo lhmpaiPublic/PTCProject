@@ -438,6 +438,32 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//사용한 아이디를 backup 한다. 확인용
 							quUserTabID.push(cntInfo.nTabID);
 
+
+							if (AprData.m_System.m_nMissTabIdMax > 0)
+							{
+								AprData.m_nMissTabIdNow++;
+
+								if (AprData.m_nMissTabIdNow >= AprData.m_System.m_nMissTabIdMax)
+								{
+									CString strError;
+									strError.Format( _T("Miss Tab ID Error!! [Count: %d]"), AprData.m_nMissTabIdNow );
+
+									AprData.m_ErrStatus.SetError(CErrorStatus::en_MissTabID, strError );
+									AprData.m_NowLotData.m_nContinueCount = AprData.m_nCoutinuouCount + 1; //Tab ID의 INPUT을 못 받았을때, 강제 연속 알람
+
+									AprData.SaveDebugLog_Format(strError);
+								}
+								else
+								{
+									AprData.SaveDebugLog_Format(_T("Miss Tab ID [%d/%d]"), AprData.m_nMissTabIdNow, AprData.m_System.m_nMissTabIdMax);
+								}
+
+							}
+
+						}
+						else
+						{
+							AprData.m_nMissTabIdNow = 0;
 						}
 
 						//Tab  정보 접근 임시 포인터 변수

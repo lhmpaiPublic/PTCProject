@@ -21,7 +21,8 @@ CSystemSettingDlg::CSystemSettingDlg(CWnd* pParent /*=nullptr*/, BOOL bMode /*=T
 	: CDialogEx(IDD_DLG_SYSTEM_SETTING, pParent)
 	, m_nRadMachineMode(0)
 	, m_nJpgSaveQulaity(0)
-	, m_nEdOverflowCountMax(0)
+	, m_nEdOverflowCountMax(5)
+	, m_nEdMissTabIdMax(3)
 	, m_bChkFirstTabDoNotProc(FALSE)
 	, m_bChkEnableNgStop(FALSE)
 	, m_EdMachineID(_T(""))
@@ -101,7 +102,7 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_WORD_OUT_ADDRESS_16, m_EdWordOut_16);
 	DDX_Check(pDX, IDC_CHK_ENABLE_NON_NG_SAVE, m_bChkEnableNonNgSave);
 	DDX_Check(pDX, IDC_CHK_ENABLE_NON_NG_STOP, m_bChkEnableNonNgStop);
-
+	DDX_Text(pDX, IDC_ED_MISS_TAB_ID_MAX, m_nEdMissTabIdMax);
 }
 
 
@@ -142,6 +143,8 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_NON_NG_SAVE, &CSystemSettingDlg::OnBnClickedChkEnableNonNgSave)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_NON_NG_STOP, &CSystemSettingDlg::OnBnClickedChkEnableNonNgStop)
 	ON_EN_SETFOCUS(IDC_ED_OVERFLOW_MAX, &CSystemSettingDlg::OnSetfocusEdOverflowMax)
+//	ON_WM_SETFOCUS()
+ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabIdMax)
 END_MESSAGE_MAP()
 
 
@@ -810,29 +813,16 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_SysSetting.m_bTriggerMode = m_bChkTriggerMode;
 		m_SysSetting.m_nEdgeSearchMean = m_nEdMeanWidth;
 		m_SysSetting.m_dResolY = m_dEdResolY;
-		// 22.08.31 Ahn Delete Start
-		//m_SysSetting.m_nGridFontSize = m_nGridFondSize;
-		//m_SysSetting.m_nGraphMaxSize_FoilExp = m_nGraphSizeFoilExp;
-		//m_SysSetting.m_nGraphMaxSize_Surface = m_nGraphSizeSurface;
-		// 22.08.31 Ahn Delete End
 		m_SysSetting.m_bChkEnableMarker = m_bChkEnableMarker;
 		m_SysSetting.m_nJpegSaveQuality = m_nJpgSaveQulaity;
 		m_SysSetting.m_nOverflowCountMax = m_nEdOverflowCountMax;
-		// 22.01.11 Ahn Add Start
+		m_SysSetting.m_nMissTabIdMax = m_nEdMissTabIdMax;
 		m_SysSetting.m_bMarkingAllTab = m_bChkMarkingAllTab ;
-		// 22.01.11 Ahn Add End
-		// 22.02.16 Ahn Add Start
 		m_SysSetting.m_bEnableNgStop = m_bChkEnableNgStop;
-		// 22.02.16 Ahn Add End
-		// 22.05.26 Ahn Add Start
 		m_SysSetting.m_strMachineID = m_EdMachineID;
-		// 22.05.26 Ahn Add End
-		// 22.07.04 Ahn Add Start
 		m_SysSetting.m_nResultSavePeriod = m_nEdSavePeriod;
 		m_SysSetting.m_nDiskCapacity = m_nDiskCapacityAlarm;
-		// 22.07.04 Ahn Add End
-		// 22.09.01 Ahn Add Start
-		//m_SysSetting.m_nLanguage = m_nLanguage;
+
 		switch (m_nLanguage) {
 		case	0 : 
 			m_SysSetting.m_strLangCode = LANGUAGE_CODE_KOR;
@@ -841,22 +831,14 @@ int CSystemSettingDlg::DataControl(int nMode)
 			m_SysSetting.m_strLangCode = LANGUAGE_CODE_ENG;
 			break;
 		}
-		// 22.09.01 Ahn Add End
-		// 23.02.17 Son Add Start
 		m_SysSetting.m_nBitIn = (int)strtol(m_EdBitIn, NULL, 10);
 		m_SysSetting.m_nBitOut = (int)strtol(m_EdBitOut, NULL, 10);
 		m_SysSetting.m_nWordIn = (int)strtol(m_EdWordIn, NULL, 10);
 		m_SysSetting.m_nWordOut = (int)strtol(m_EdWordOut, NULL, 10);
-		// 23.02.17 Son Add End
-		// 23.02.27 Son Add Start
 		m_SysSetting.m_nLogo = m_RadLogo;
-		// 23.02.27 Son Add End
-		// 23.02.28 Son Add Start
 		m_SysSetting.m_nPlcMode = m_RadPlcMode;
 		m_SysSetting.m_strPLCIPAddress = m_EdIPAddress;
 		m_SysSetting.m_nPLCPort = m_nEdPort;
-		// 23.02.28 Son Add End
-		// 23.03.03 Son Add Start
 		CString strTmp;
 		strTmp.Format(_T("%X"), m_SysSetting.m_nBitIn);
 		m_EdBitIn_16 = strTmp;
@@ -883,36 +865,18 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_bChkEnableMarker = m_SysSetting.m_bChkEnableMarker ;
 		m_nJpgSaveQulaity = m_SysSetting.m_nJpegSaveQuality ;
 		m_nEdOverflowCountMax = m_SysSetting.m_nOverflowCountMax;
-
-		// 22.01.11 Ahn Add Start
+		m_nEdMissTabIdMax = m_SysSetting.m_nMissTabIdMax;
 		m_bChkMarkingAllTab = m_SysSetting.m_bMarkingAllTab ;
-		// 22.01.11 Ahn Add End
-		// 22.02.16 Ahn Add Start
 		m_bChkEnableNgStop = m_SysSetting.m_bEnableNgStop ;
-		// 22.02.16 Ahn Add End
-		// 22.05.26 Ahn Add Start
 		m_EdMachineID = m_SysSetting.m_strMachineID ;
-		// 22.05.26 Ahn Add End
-
-		// 22.08.31 Ahn Delete End
-		//m_nGridFondSize = m_SysSetting.m_nGridFontSize;
-		//m_nGraphSizeFoilExp = m_SysSetting.m_nGraphMaxSize_FoilExp;
-		//m_nGraphSizeSurface = m_SysSetting.m_nGraphMaxSize_Surface;
-		// 22.08.31 Ahn Delete End
-		// 22.07.04 Ahn Add Start
 		m_nEdSavePeriod = m_SysSetting.m_nResultSavePeriod ;
 		m_nDiskCapacityAlarm = m_SysSetting.m_nDiskCapacity ;
-		// 22.07.04 Ahn Add End
-		// 22.09.01 Ahn Add Start
-		//m_nLanguage = m_SysSetting.m_nLanguage ;
 		if (m_SysSetting.m_strLangCode.Compare(LANGUAGE_CODE_KOR) == 0) {
 			m_nLanguage = 0 ;
 		}
 		else if (m_SysSetting.m_strLangCode.Compare(LANGUAGE_CODE_ENG) == 0) {
 			m_nLanguage = 1 ;
 		}
-		// 22.09.01 Ahn Add End
-		// 23.02.17 Son Add Start
 		CString strTmp;
 		strTmp.Format(_T("%d"), m_SysSetting.m_nBitIn);
 		m_EdBitIn = strTmp;
@@ -922,8 +886,6 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_EdWordIn = strTmp;
 		strTmp.Format(_T("%d"), m_SysSetting.m_nWordOut);
 		m_EdWordOut = strTmp;
-		// 23.02.17 Son Add End
-		// 23.03.03 Son Add Start
 		strTmp.Format(_T("%X"), m_SysSetting.m_nBitIn);
 		m_EdBitIn_16 = strTmp;
 		strTmp.Format(_T("%X"), m_SysSetting.m_nBitOut);
@@ -932,16 +894,10 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_EdWordIn_16 = strTmp;
 		strTmp.Format(_T("%X"), m_SysSetting.m_nWordOut);
 		m_EdWordOut_16 = strTmp;
-		// 23.03.03 Son Add End
-		// 23.02.27 Son Add Start
 		m_RadLogo = m_SysSetting.m_nLogo;
-		// 23.02.27 Son Add End
-		// 23.02.28 Son Add Start
 		m_RadPlcMode = m_SysSetting.m_nPlcMode;
 		m_EdIPAddress = m_SysSetting.m_strPLCIPAddress;
 		m_nEdPort = m_SysSetting.m_nPLCPort;
-		// 23.02.28 Son Add End
-
 		m_bChkEnableNonNgSave = m_SysSetting.m_bNonNgSave;
 		m_bChkEnableNonNgStop = m_SysSetting.m_bNonNgStop;
 
@@ -1500,6 +1456,23 @@ void CSystemSettingDlg::OnSetfocusEdOverflowMax()
 	int nMax = 100;
 	int nMin = 2;
 	setValue.SetValue(strMsg, m_nEdOverflowCountMax, nMax, nMin);
+	DataControl(MODE_WRITE);
+
+	UpdateData(FALSE);
+}
+
+
+
+void CSystemSettingDlg::OnSetfocusEdMissTabIdMax()
+{
+	m_EdDummy.SetFocus();
+
+	CSetValue setValue(this);
+	CString strMsg;
+
+	int nMax = 100;
+	int nMin = 0;
+	setValue.SetValue(strMsg, m_nEdMissTabIdMax, nMax, nMin);
 	DataControl(MODE_WRITE);
 
 	UpdateData(FALSE);

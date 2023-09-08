@@ -79,5 +79,6 @@ public:
 	BOOL m_bNonNgStop;
 
 	int m_nOverflowCountMax;
+	int m_nMissTabIdMax;
 };
 

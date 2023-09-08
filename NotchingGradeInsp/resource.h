@@ -358,6 +358,8 @@
 #define IDC_ED_PET_THRESHOLD            1050
 #define IDC_EDIT_GAIN_CAM_NO_00         1051
 #define IDC_ED_PET_CHECK_CNT            1051
+#define IDC_ED_OVERFLOW_MAX2            1051
+#define IDC_ED_MISS_TAB_ID_MAX          1051
 #define IDC_EDIT_GAIN_CAM_NO_01         1052
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_00 1054
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_01 1055
@@ -629,6 +631,7 @@
 #define IDC_ST_GROUP_RCP_SET            1278
 #define IDC_ST_OVERFLOW                 1278
 #define IDC_ST_GROUP_TAB_INFO           1279
+#define IDC_ST_MISS_TAB_ID_MAX          1279
 #define IDC_ST_INPUT_MM                 1280
 #define IDC_ST_INPUT_PIX                1281
 #define IDC_ST_TAB_WIDTH                1282

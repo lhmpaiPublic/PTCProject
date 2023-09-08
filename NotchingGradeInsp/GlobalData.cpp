@@ -95,6 +95,8 @@ CGlobalData::CGlobalData(void)
 	m_ErrStatus.ErrorClear() ; // 22.05.19 Ahn Add 
 
 	m_globalStr.SetOutImageFormat(".jpg");
+
+	m_nMissTabIdNow = 0;
 }
 
 CGlobalData::~CGlobalData(void)
