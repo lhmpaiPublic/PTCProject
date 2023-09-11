@@ -353,7 +353,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//============================================================================================================
 #endif //SPCPLUS_CREATE
 
-					//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
+						//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 						CCounterInfo cntInfo;
 
 						//Trigger input id 사용 예외처리
@@ -369,7 +369,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								//미리 땡겨 쓴 id를 가져온다.
 								int beforeTabId = quUserTabID.front();
-								//정보 삭제
+								//쓴 아이디 삭제
 								quUserTabID.pop();
 								//비교해서 다르다면 빠져나간다.
 								if (beforeTabId != cntInfo.nTabID)
@@ -377,13 +377,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 									//사용할 Tab Id를 찾았다
 									bNextTabId = true;
 
-									//다음에 사용할 id : 1 증가 시켜 저장
-									useTabID = cntInfo.nTabID + 1;
-									//Tab id는 0 ~ 63 까지 사용한다.
-									if (useTabID >= 64)
-									{
-										useTabID = 0;
-									}
+									//땡겨 쓴 Id와 비교했을 때 비교를 위해 저장한 Id를 모두 삭제한다.
+									//미리 사용한 Tab ID 정보 삭제
+									while (quUserTabID.size())
+										quUserTabID.pop();
+
 									break;
 								}
 								else
@@ -392,9 +390,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 									bNextTabId = false;
 								}
 
-								//미리 사용한 Tab ID 정보 삭제
-								while (quUserTabID.size())
-									quUserTabID.pop();
 							}
 							//땡겨 쓴 id가 없다.
 							else
@@ -402,38 +397,24 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								//사용할 Tab Id를 찾았다
 								bNextTabId = true;
 
-								//다음에 사용할 id : 1 증가 시켜 저장
-								useTabID = cntInfo.nTabID + 1;
-								//Tab id는 0 ~ 63 까지 사용한다.
-								if (useTabID >= 64)
-								{
-									useTabID = 0;
-								}
 								break;
 							}
 						}
 
-						//Tab id 정보가 없을 경우
-						//다음에 들어올 id를 할당한다.
+						//Tab id 정보가 없을 경우(미리 땡겨 쓴 Id 이거나 아직 못받았을 때)
 						if (bNextTabId == false)
 						{
-							//2개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
+							//5개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
 							if (quUserTabID.size() > 5)
 							{
 								//다음 아이디를 할당한다.
 								cntInfo.nTabID = 64;
 							}
+							//5개 이하였을 때 다음 사용할 아이디를 할당한다.
 							else
 							{
 								//다음 아이디를 할당한다.
 								cntInfo.nTabID = useTabID;
-								//다음에 사용할 id : 1 증가 시켜 저장
-								useTabID++;
-								//Tab id는 0 ~ 63 까지 사용한다.
-								if (useTabID >= 64)
-								{
-									useTabID = 0;
-								}
 							}
 							//사용한 아이디를 backup 한다. 확인용
 							quUserTabID.push(cntInfo.nTabID);
@@ -446,9 +427,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								if (AprData.m_nMissTabIdNow >= AprData.m_System.m_nMissTabIdMax)
 								{
 									CString strError;
-									strError.Format( _T("Miss Tab ID Error!! [Count: %d]"), AprData.m_nMissTabIdNow );
+									strError.Format(_T("Miss Tab ID Error!! [Count: %d]"), AprData.m_nMissTabIdNow);
 
-									AprData.m_ErrStatus.SetError(CErrorStatus::en_MissTabID, strError );
+									AprData.m_ErrStatus.SetError(CErrorStatus::en_MissTabID, strError);
 									AprData.m_NowLotData.m_nContinueCount = AprData.m_nCoutinuouCount + 1; //Tab ID의 INPUT을 못 받았을때, 강제 연속 알람
 
 									AprData.SaveDebugLog_Format(strError);
@@ -464,6 +445,17 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						else
 						{
 							AprData.m_nMissTabIdNow = 0;
+						}
+						//사용할 Id를 찾았다면 다음 사용할 Id 세팅
+						if (cntInfo.nTabID != 64)
+						{
+							//다음에 사용할 id : 1 증가 시켜 저장
+							useTabID = cntInfo.nTabID + 1;
+							//Tab id는 0 ~ 63 까지 사용한다.
+							if (useTabID >= 64)
+							{
+								useTabID = 0;
+							}
 						}
 
 						//Tab  정보 접근 임시 포인터 변수
