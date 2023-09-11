@@ -11,6 +11,7 @@ public:
 	CTabRsltBase();
 	~CTabRsltBase();
 	int m_nTabNo;
+	int m_nCellId;
 	int m_nHeadNo;
 	char m_chImagePath[ 256 ];
 	char m_chImageFile[ 256 ];

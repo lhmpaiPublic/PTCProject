@@ -216,7 +216,8 @@ int CResultViewDlg::MakeGrid()
 			strTitle[en_col_No]			= _T("No.") ;
 			strTitle[en_col_InspTime]	= _LANG(_T("검사시각"), _T("Insp Time")) ;
 			strTitle[en_col_LOT_ID]		= _T("LOT_ID");
-			strTitle[en_col_CELL_ID]	= _T("CELL_ID");
+			strTitle[en_col_CELL_NO]	= _T("CELL_NO");
+			strTitle[en_col_CELL_ID] = _T("CELL_ID");
 			strTitle[en_col_POSITION]	= _LANG(_T("불량위치"), _T("Position"));
 			strTitle[en_col_DEF_TYPE]	= _LANG(_T("불량종류"), _T("NG Type"));
 			strTitle[en_col_JUDGE]		= _LANG(_T("결함판정"), _T("Judgement"));
@@ -319,8 +320,11 @@ int CResultViewDlg::UpdateGrid()
 					strText.Format( _T("%s"), pInfo->szLotID ) ;
 
 					break;
-				case	en_col_CELL_ID:
+				case	en_col_CELL_NO:
 					strText.Format( _T("%d"), pInfo->nTabNo + 1 ) ;
+					break;
+				case	en_col_CELL_ID:
+					strText.Format(_T("%d"), pInfo->nCellId);
 					break;
 				case	en_col_POSITION:
 					strText = ( ( pInfo->nHeadNo == 0 ) ? _T("TAB") : _T("BOTTOM") ) ;
