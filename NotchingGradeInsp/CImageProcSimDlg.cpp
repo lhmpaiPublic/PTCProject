@@ -1739,6 +1739,8 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 	nWidth = size.cx;
 	nHeight = size.cy;
 
+	int nFindLevel = 0;
+
 	BOOL bIsPET = FALSE;
 	if (m_bModeTop == TRUE)
 	{
@@ -1755,8 +1757,7 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 		int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
 		CImageProcess::DivisionTab_FromImageToTabInfo(pImgPtr, pImgPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, 0);
 
-
-
+		nFindLevel = nLevel;
 
 		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, m_pvstPetInfo, CAM_POS_TOP); // Graphic Draw 용
 	}
@@ -1766,6 +1767,7 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 
 		int nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
 
+		nFindLevel = nBtmLevel;
 
 		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, m_pvstPetInfo, CAM_POS_BOTTOM);
 	}
@@ -1774,7 +1776,9 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 
 	Invalidate();
 
-
+	CString strMsg;
+	strMsg.Format(_T("%s Find Edge : %d"), (m_bModeTop == TRUE) ? _T("TOP") : _T("BTM"), nFindLevel );
+	AfxMessageBox(strMsg);
 
 	return;
 

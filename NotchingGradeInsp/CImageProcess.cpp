@@ -9001,6 +9001,7 @@ int CImageProcess::GetBoundaryOfElectordeBottom(BYTE* pImgPtr, int nWidth, int n
 	ASSERT(pRecipeInfo);
 	ASSERT(pnLevel);
 
+/*
 	CRect rect;
 	int nPrjWidth = 2000;
 	rect.left = 0;
@@ -9018,6 +9019,12 @@ int CImageProcess::GetBoundaryOfElectordeBottom(BYTE* pImgPtr, int nWidth, int n
 	*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], CImageProcess::en_FindFromLeft, bUseDarkRoll);
 
 	delete[] pnPrj;
+*/
+
+	int nLevel = 0;
+	FindTabLevel(pImgPtr, nWidth, nHeight, &nLevel, pRecipeInfo->TabCond, pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
+	int nBndElectrode = nLevel;
+	*pnLevel = nLevel;
 
 	return nBndElectrode;
 
