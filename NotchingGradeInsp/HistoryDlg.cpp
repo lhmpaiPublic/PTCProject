@@ -83,6 +83,9 @@ CHistoryDlg::CHistoryDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pVi
 CHistoryDlg::~CHistoryDlg()
 {
 	if (m_pImageSimDlg != NULL) {
+		if (m_pImageSimDlg->m_hWnd != NULL) {
+			m_pImageSimDlg->DestroyWindow();
+		}
 		delete m_pImageSimDlg;
 		m_pImageSimDlg = NULL;
 	}
@@ -95,6 +98,10 @@ CHistoryDlg::~CHistoryDlg()
 	// 22.02.11 Ahn Add End
 //KANG 22.05.24 Add Start
 	if (m_pSearchList != nullptr) {
+		if (m_pSearchList->m_hWnd != NULL) {
+			m_pSearchList->DestroyWindow();
+		}
+
 		delete m_pSearchList;
 		m_pSearchList = NULL;
 	}
@@ -105,6 +112,10 @@ CHistoryDlg::~CHistoryDlg()
 	}
 	FreeSearchList(m_pVtList);
 	if (m_pImageViewerDlg != NULL) {
+		if (m_pImageViewerDlg->m_hWnd != NULL) {
+			m_pImageViewerDlg->DestroyWindow();
+		}
+
 		delete m_pImageViewerDlg;
 		m_pImageViewerDlg = NULL;
 	}

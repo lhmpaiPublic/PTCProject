@@ -73,6 +73,9 @@ CImageProcSimDlg::~CImageProcSimDlg()
 {
 
 	if (m_pImageDispDlg != NULL) {
+		if (m_pImageDispDlg->m_hWnd != nullptr) {
+			m_pImageDispDlg->DestroyWindow();
+		}
 		delete m_pImageDispDlg;
 		m_pImageDispDlg = NULL;
 	}
@@ -112,6 +115,10 @@ CImageProcSimDlg::~CImageProcSimDlg()
 	}
 
 	if (m_pHistoDlg != NULL) {
+		if (m_pHistoDlg->m_hWnd != nullptr) {
+			m_pHistoDlg->DestroyWindow();
+		}
+
 		delete m_pHistoDlg;
 		m_pHistoDlg = NULL;
 	}

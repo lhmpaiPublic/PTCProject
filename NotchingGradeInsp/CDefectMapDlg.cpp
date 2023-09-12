@@ -47,6 +47,10 @@ CDefectMapDlg::~CDefectMapDlg()
 
 	// 22.12.15 Ahn Add Start
 	if (m_pImgDispDlg != NULL) {
+		if (m_pImgDispDlg->m_hWnd != NULL) {
+			m_pImgDispDlg->DestroyWindow();
+		}
+
 		delete m_pImgDispDlg ;
 		m_pImgDispDlg = NULL ;
 	}

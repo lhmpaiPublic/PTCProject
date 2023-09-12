@@ -45,6 +45,7 @@ END_MESSAGE_MAP()
 
 CNotchingGradeInspApp::CNotchingGradeInspApp() noexcept
 {
+	//AfxSetAllocStop(1192);
 	m_bHiColorIcons = TRUE;
 
 	m_nImageProcThreadTimeEnter = GetTickCount();
@@ -237,6 +238,9 @@ int CNotchingGradeInspApp::ExitInstance()
 
 	// 22.06.29 Son Add Start
 	if (m_pDispErrorDlg != NULL) {
+		if (m_pDispErrorDlg->m_hWnd != nullptr) {
+			m_pDispErrorDlg->DestroyWindow();
+		}
 		delete m_pDispErrorDlg;
 		m_pDispErrorDlg = NULL;
 	}

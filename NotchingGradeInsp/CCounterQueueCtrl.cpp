@@ -10,6 +10,7 @@ CCounterQueueCtrl::CCounterQueueCtrl()
 }
 CCounterQueueCtrl::~CCounterQueueCtrl(void)
 {
+	ResetQueue();
 	::DeleteCriticalSection(&m_csQueue);
 }
 void CCounterQueueCtrl::ResetQueue()
