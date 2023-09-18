@@ -66,6 +66,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 {
 	m_pParent = pParent;
+	m_MarkSendInfoData.clear();
 }
 CCounterThread::~CCounterThread()
 {
@@ -153,11 +154,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	CCounterQueueCtrl* pCntQueInPtr = pThis->m_pParent->GetCounterQueInPtr() ;
 
 	CAppDIO dio;
+	//최종 읽은 값
 	WORD wLastInfo = 0x00;
-	int nIncrease = 0 ;
 
+	//Trigger 펄스 값 읽기 위한 변수
 	WORD backupwInSignal = 0x00;
-
+	//다음에 찾을 TabID - ID 누력 여부 확인용
 	WORD nextTabID = 255;
 
 	//========= 마킹 정보를 보내기 위한 변수 ==============
@@ -177,6 +179,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 	//테스트 타임 id 생성
 	DWORD markingTestTimeOut = GetTickCount();
+
 
 	UINT ret = 0;
 	while (1) 
@@ -360,7 +363,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			//}
 
 			// 입력 취득
-			if (pThis->m_pParent->IsInspection() == TRUE)
+			if(pThis->m_pParent->IsInspection() == TRUE)
 			{
 				CSigProc* pSigProc = theApp.m_pSigProc;
 				if (pSigProc != NULL && (pSigProc->GetConnectZone() == FALSE))
@@ -368,6 +371,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 					BOOL bTriggerBit;
 					dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
+					//Trigger 펄스 bit true
 					if (bTriggerBit == TRUE)
 					{
 						WORD wInSignal = 0x00;
@@ -380,12 +384,20 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						//이전에 받았던 id와 다르다면 추가
 						if (wTempID != wLastInfo)
 						{
+
 							//DIO Input Log
 							LOGDISPLAY_SPEC(1)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
 							backupwInSignal = wInSignal;
 
 							//DIO Input Log
 							LOGDISPLAY_SPEC(1)(_T("*0**DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
+
+							//만약에 input id 저장소와 시간 저장소의 크기가 다르면 모두 지운다.
+							if (inputIdReadTime.size() != inputReadId.size())
+							{
+								inputIdReadTime.clear();
+								inputReadId.clear();
+							}
 
 							//누락된 input 아이디를 찾는다.
 							//초기값이 없다면 nextTabID 입력만
@@ -404,6 +416,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								//누락 로그 출력한다.
 								if (nextTabID != wTempID)
 								{
+									//ID가 누락 되었다면 
+									//Id  누락 시간은 바로 빼기 위해서
+									inputIdReadTime.push_back(GetTickCount());
+									//누락 id
+									inputReadId.push_back(nextTabID);
+
 									//메모리 로그 기록
 									CString strMsg;
 									strMsg.Format(_T("Input ID [%d] 누락"), nextTabID);
@@ -426,8 +444,14 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							cntInfo.nTabID = wTempID;
 							pCntQueInPtr->PushBack(cntInfo);
 
+							//Id  받은 시간
+							inputIdReadTime.push_back(GetTickCount() + MAXMARKING_TIMEOUT);
+							//받은 id
+							inputReadId.push_back(wTempID);
+
 							//이전 id 갱신
 							wLastInfo = wTempID;
+							
 
 							//메모리 로그 기록
 							CString strMsg;
@@ -437,6 +461,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						}
 						// Cell 추적 Queue Data -> Local Queue 
 						//if(....)
+					}
+					//Trigger 펄스 bit false
+					else
+					{
+
 					}
 				}
 				else
