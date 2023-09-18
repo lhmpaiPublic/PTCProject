@@ -260,6 +260,11 @@ int CLightControl::SetLevel(int unit, int ch, int nLevel)
 	// 22.12.22 Ahn Modify Start
 	//SetLevel_8Bit(unit, ch, (BYTE)nLevel);
 
+#ifdef GMLV_LIGHT_SKIP // GMLV 전용
+	if (unit >= 1)
+		return 0;
+#endif
+
 	int nRet = SetLevel_8Bit(unit, ch, (BYTE)nLevel);
 
 	if ( nRet < 0 )

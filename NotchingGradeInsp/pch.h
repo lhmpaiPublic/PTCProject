@@ -28,7 +28,12 @@ using namespace Gdiplus;
 
 //SPC 객체 소스에서 컴파일 여부 결정
 //SPC+ 생성을 위한 플래그
-//#define SPCPLUS_CREATE
+#define SPCPLUS_CREATE
+
+// GMLV Line용 - 조명 컨트롤러 1개 사용 시 Error Skip
+#define GMLV_LIGHT_SKIP
+
+
 
 #include "GlobalFunc.h"
 #include "LogDisplayDlg.h"
