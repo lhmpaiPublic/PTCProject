@@ -18,6 +18,7 @@
 #include "CThreadQueueCtrl.h"
 #include "CImageProcThreadUnit.h"
 #include "AppDIO.h"
+#include "CCounterThread.h"
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -79,20 +80,6 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 	}
 }
 
-void CImageProcThread::CreateDioMarkingThread(WORD* nOutPutData)
-{
-	CWinThread* pDioMarkingThread = AfxBeginThread((AFX_THREADPROC)DioMarkingThreadProc,
-		(LPVOID)nOutPutData,
-		THREAD_PRIORITY_HIGHEST,
-		0,
-		CREATE_SUSPENDED,
-		NULL);
-	if (pDioMarkingThread != NULL) {
-		pDioMarkingThread->m_bAutoDelete = TRUE;
-		pDioMarkingThread->ResumeThread();
-	}
-}
-
 
 void CImageProcThread::Kill( void ) 
 {
@@ -112,27 +99,6 @@ void CImageProcThread::Kill( void )
 		m_pThread->m_hThread = NULL;
 	}
 
-}
-
-//Dio Marking Thread Proc 함수
-UINT CImageProcThread::DioMarkingThreadProc(LPVOID pParam)
-{
-	WORD nOutPutData = *(WORD*)pParam;
-	delete pParam;
-
-	CAppDIO dio;
-
-	AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> Call Enter"));
-
-	dio.OutputWord(nOutPutData);
-
-	AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>"),
-		(nOutPutData>>2), nOutPutData);
-
-	Sleep(20);
-	dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
-
-	return 0;
 }
 
 
@@ -1167,18 +1133,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
 
-							CAppDIO dio;
-
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> Call Enter"));
 
-							dio.OutputWord(wOutPut);
-							Sleep(5);
-							dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
+							//마킹 정보를 세팅한다.
+							//input id 스래드에서 보낸다.
+							CCounterThread::MarkSendInfo_Push_back(pTopInfo->m_nTabId_CntBoard, wOutPut);
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>"),
 								(wOutPut >> 2), wOutPut);
-
-							Sleep(10);
 
 							CString strMsg;
 							strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),
@@ -1457,11 +1419,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 
 						AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
-
-						// 22.04.06 Ahn Modify Start
-						CAppDIO dio;
-
-						dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- OutputBit"), tempTabNo);
 

@@ -1,5 +1,12 @@
 ﻿#pragma once
 
+struct MarkSendInfo
+{
+	int TabId;
+	WORD MarkingOutputData;
+	bool bSendComplate;
+};
+
 class CImageProcessCtrl;
 class CCounterThread
 {
@@ -17,6 +24,11 @@ public:
 
 	//동기화 이벤트 객체
 	HANDLE pEvent_CounterThread;
+
+
+	static std::vector<MarkSendInfo> m_MarkSendInfoData;
+	static void MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, bool bSendComplate = false);
+	static BOOL m_bMarkSendInfoDataSynch;
 protected:
 	BOOL	m_bKill;
 	int		m_nThreadId;
