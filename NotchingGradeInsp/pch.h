@@ -31,7 +31,7 @@ using namespace Gdiplus;
 #define SPCPLUS_CREATE
 
 // GMLV Line용 - 조명 컨트롤러 1개 사용 시 Error Skip
-#define GMLV_LIGHT_SKIP
+//#define GMLV_LIGHT_SKIP
 
 
 

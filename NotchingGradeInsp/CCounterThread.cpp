@@ -12,7 +12,7 @@ BOOL CCounterThread::m_bMarkSendInfoDataSynch = FALSE;
 
 void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, bool bSendComplate)
 {
-	if (TabId >= 64)
+	if ((TabId >= 0) && (TabId < 64))
 	{
 		//push 하기 전에 보낸 데이터를 지운다.
 		//이전 마킹 데이터가 있을 때
@@ -147,7 +147,7 @@ void CCounterThread::ThreadRun(BOOL bRunFlag)
 
 //스래드 타임아웃 시간
 #define COUNTERINFOTHREAD_TIMEOUT 5
-#define MAXMARKING_TIMEOUT 100
+#define MAXMARKING_TIMEOUT 200
 UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 {
 	CCounterThread* pThis = (CCounterThread*)pParam;
@@ -180,7 +180,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	//테스트 타임 id 생성
 	DWORD markingTestTimeOut = GetTickCount();
 
-
+	BOOL bOneTrueTrigger = FALSE;
 	UINT ret = 0;
 	while (1) 
 	{
@@ -372,25 +372,27 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					BOOL bTriggerBit;
 					dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
 					//Trigger 펄스 bit true
-					if (bTriggerBit == TRUE)
+					if (bTriggerBit == TRUE && (bOneTrueTrigger == TRUE))
 					{
+						bOneTrueTrigger = FALSE;
 						WORD wInSignal = 0x00;
 						dio.InputWord(&wInSignal);
 
 						// 22.04.06 Ahn Modify Start
 						WORD wTempID;
-						wTempID = 0x3F & (wInSignal >> 1);
+						//wTempID = 0x3F & (wInSignal >> 1);
+						wTempID = nextTabID;
 
 						//이전에 받았던 id와 다르다면 추가
 						if (wTempID != wLastInfo)
 						{
 
 							//DIO Input Log
-							LOGDISPLAY_SPEC(1)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
+							LOGDISPLAY_SPEC(7)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
 							backupwInSignal = wInSignal;
 
 							//DIO Input Log
-							LOGDISPLAY_SPEC(1)(_T("*0**DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
+							LOGDISPLAY_SPEC(7)(_T("*0**DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
 
 							//만약에 input id 저장소와 시간 저장소의 크기가 다르면 모두 지운다.
 							if (inputIdReadTime.size() != inputReadId.size())
@@ -465,7 +467,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//Trigger 펄스 bit false
 					else
 					{
-
+						bOneTrueTrigger = TRUE;
 					}
 				}
 				else

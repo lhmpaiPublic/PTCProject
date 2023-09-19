@@ -371,7 +371,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (bNextTabId == false)
 						{
 							//5개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
-							if (quUserTabID.size() > 5)
+							if (quUserTabID.size() > 1)
 							{
 								//다음 아이디를 할당한다.
 								cntInfo.nTabID = 64;
@@ -574,6 +574,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pInfo->m_nTabLeft = pTabInfo->nTabLeft;
 						pInfo->m_nTabRight = pTabInfo->nTabRight;
 						pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
+						LOGDISPLAY_SPEC(7)("<<Proc>> CtrlThreadImgCuttingTab-use Tab id <%d> ", cntInfo.nTabID);
 
 						pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 						pInfo->m_nBndElectrode = nBndElectrode;
