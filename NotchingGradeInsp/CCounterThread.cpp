@@ -22,7 +22,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 			if (CCounterThread::m_MarkSendInfoData.size())
 			{
 				//DIO Input Log
-				LOGDISPLAY_SPEC(8)(_T("이전 마킹 데이터가 있을 때"));
+				LOGDISPLAY_SPEC(7)(_T("이전 마킹 데이터가 있을 때"));
 
 				//지울 최종 포인터
 				MarkSendInfoData_iterator itdelete = CCounterThread::m_MarkSendInfoData.begin();
@@ -42,7 +42,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 				if (CCounterThread::m_MarkSendInfoData.end() != itdelete)
 				{
 					//DIO Input Log
-					LOGDISPLAY_SPEC(8)(_T("지울 데이터가 있다면size<%d> id<%d>까지"), CCounterThread::m_MarkSendInfoData.size(), itdelete->TabId);
+					LOGDISPLAY_SPEC(7)(_T("지울 데이터가 있다면size<%d> id<%d>까지"), CCounterThread::m_MarkSendInfoData.size(), itdelete->TabId);
 
 					//시작점 부터 true 설정된 데이터까지 지운다.
 					CCounterThread::m_MarkSendInfoData.erase(CCounterThread::m_MarkSendInfoData.begin(), itdelete);
@@ -58,7 +58,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 		MarkSendInfoData.bSendComplate = bSendComplate;
 		CCounterThread::m_MarkSendInfoData.push_back(MarkSendInfoData);
 		//DIO Input Log
-		LOGDISPLAY_SPEC(8)(_T("마킹 데이터 id<%d>OutputData<%d>"), TabId, bSendComplate);
+		LOGDISPLAY_SPEC(7)(_T("마킹 데이터 id<%d>OutputData<%d>"), TabId, bSendComplate);
 	}
 
 }
@@ -220,7 +220,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			if (markingSendTimeOut > nowTickCount)
 			{
 				//DIO Input Log
-				LOGDISPLAY_SPEC(8)(_T("DIO test markingSendTimeOut Enter"));
+				LOGDISPLAY_SPEC(7)(_T("DIO test markingSendTimeOut Enter"));
 
 				//마킹 데이터 유효한가?
 				if (bMarkingDataSend)
@@ -228,7 +228,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					if (bOutputBitStatus == FALSE)
 					{
 						//DIO Input Log
-						LOGDISPLAY_SPEC(8)(_T("마킹 정보를 쓰고 eOut_PULSE 15sec 유지한다."));
+						LOGDISPLAY_SPEC(7)(_T("마킹 정보를 쓰고 eOut_PULSE 15sec 유지한다."));
 
 						dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
 						bOutputBitStatus = TRUE;
@@ -243,7 +243,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				if (bOutputBitStatus == TRUE)
 				{
 					//DIO Input Log
-					LOGDISPLAY_SPEC(8)(_T("마킹 eOut_PULSE FALSE 시간을 10 sec 유지"));
+					LOGDISPLAY_SPEC(7)(_T("마킹 eOut_PULSE FALSE 시간을 10 sec 유지"));
 
 					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
 					bOutputBitStatus = FALSE;
@@ -262,7 +262,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						if (inputIdReadTime[0] < nowTickCount)
 						{
 							//DIO Input Log
-							LOGDISPLAY_SPEC(8)(_T("input id가 time out 된 상태면 두개를 쌍으로 지운다."));
+							LOGDISPLAY_SPEC(7)(_T("input id가 time out 된 상태면 두개를 쌍으로 지운다."));
 
 							//input id가 time out 된 상태면 두개를 쌍으로 지운다.
 							inputIdReadTime.erase(inputIdReadTime.begin());
@@ -276,7 +276,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							{
 								CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
 								//DIO Input Log
-								LOGDISPLAY_SPEC(8)(_T("마킹 타임이 유효 할 때"));
+								LOGDISPLAY_SPEC(7)(_T("마킹 타임이 유효 할 때"));
 
 								for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 								{
@@ -284,7 +284,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 									if (CCounterThread::m_MarkSendInfoData[idx].TabId == inputReadId[0])
 									{
 										//DIO Input Log
-										LOGDISPLAY_SPEC(8)(_T("input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
+										LOGDISPLAY_SPEC(7)(_T("input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
 
 										//마킹 데이터 넣고
 										dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
@@ -307,7 +307,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 									else
 									{
 										//DIO Input Log
-										LOGDISPLAY_SPEC(8)(_T("input id와 마킹할 id가 다르면inputid<%d>sendid<%d>"), inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
+										LOGDISPLAY_SPEC(7)(_T("input id와 마킹할 id가 다르면inputid<%d>sendid<%d>"), inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
 
 									}
 								}
@@ -319,13 +319,13 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					else
 					{
 						//DIO Input Log
-						LOGDISPLAY_SPEC(8)(_T("받은 input id 정보가 없다"));
+						LOGDISPLAY_SPEC(7)(_T("받은 input id 정보가 없다"));
 					}
 				}
 				else
 				{
 					//DIO Input Log
-					LOGDISPLAY_SPEC(8)(_T("Out_PULSE FALSE 세팅 후 20초 전"));
+					LOGDISPLAY_SPEC(7)(_T("Out_PULSE FALSE 세팅 후 20초 전"));
 				}
 			}
 
@@ -359,7 +359,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			//	markingTestTimeOut = GetTickCount() + 120;
 
 			//	//DIO Input Log
-			//	LOGDISPLAY_SPEC(8)(_T("DIO test id<%d>time<%d>"), nextTabID, inputIdReadTime[inputIdReadTime.size()-1]);
+			//	LOGDISPLAY_SPEC(7)(_T("DIO test id<%d>time<%d>"), nextTabID, inputIdReadTime[inputIdReadTime.size()-1]);
 			//}
 
 			// 입력 취득
