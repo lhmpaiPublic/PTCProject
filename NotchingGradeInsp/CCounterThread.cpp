@@ -482,6 +482,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								wLastInfo_Output = 0;
 							}
 							WORD wInSignal = wLastInfo_Output<<1;
+							LOGDISPLAY_SPEC(7)(_T("DIO ID Output <%d> Signal <%d>"), wLastInfo_Output, wInSignal);
 							dio.OutputWord(wInSignal);
 						}
 #endif
