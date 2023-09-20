@@ -158,11 +158,9 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	WORD wLastInfo = 0x00;
 
 #if DIO_BOARD_NO // 0이 아니면
-	WORD wLastInfo_Output = 0x00;
+	WORD wLastInfo_Output = wLastInfo;
 #endif
 
-	//Trigger 펄스 값 읽기 위한 변수
-	WORD backupwInSignal = 0x00;
 	//다음에 찾을 TabID - ID 누력 여부 확인용
 	WORD nextTabID = 255;
 
@@ -265,7 +263,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						if (inputIdReadTime[0] < nowTickCount)
 						{
 							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("input id가 time out 된 상태면 두개를 쌍으로 지운다."));
+							LOGDISPLAY_SPEC(7)(_T("마킹 타임이 유효하지 않으면 input id가 time out 된 상태면 두개를 쌍으로 지운다."));
 
 							//input id가 time out 된 상태면 두개를 쌍으로 지운다.
 							inputIdReadTime.erase(inputIdReadTime.begin());
@@ -306,13 +304,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 										break;
 									}
-									//input id와 마킹할 id가 다르면
-									else
-									{
-										//DIO Input Log
-										LOGDISPLAY_SPEC(7)(_T("input id와 마킹할 id가 다르면inputid<%d>sendid<%d>"), inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
-
-									}
 								}
 								CCounterThread::m_bMarkSendInfoDataSynch = FALSE;
 							}
@@ -332,65 +323,38 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				}
 			}
 
-			////마킹 테스트 input ID 생성 코드
-			//if (markingTestTimeOut < nowTickCount)
-			//{
-			//	if (nextTabID == 255)
-			//	{
-			//		nextTabID = 0;
-			//	}
-			//	//초기값 세팅 상태에서 만 검사한다.
-			//	else
-			//	{
-			//		//다음에 받을 ID를 세팅한다.
-			//		nextTabID++;
-			//		//64 이상이면 0으로 
-			//		if (nextTabID >= 64)
-			//		{
-			//			nextTabID = 0;
-			//		}
-			//	}
-			//	CCounterInfo cntInfo;
-			//	cntInfo.nTabID = nextTabID;
-			//	pCntQueInPtr->PushBack(cntInfo);
-
-			//	//Id  받은 시간
-			//	inputIdReadTime.push_back(GetTickCount() + MAXMARKING_TIMEOUT);
-			//	//받은 id
-			//	inputReadId.push_back(nextTabID);
-
-			//	markingTestTimeOut = GetTickCount() + 120;
-
-			//	//DIO Input Log
-			//	LOGDISPLAY_SPEC(7)(_T("DIO test id<%d>time<%d>"), nextTabID, inputIdReadTime[inputIdReadTime.size()-1]);
-			//}
 
 			// 입력 취득
 			if(pThis->m_pParent->IsInspection() == TRUE)
 			{
+#if DIO_BOARD_NO // 0이 아니면
+				if (TRUE)
+				{
+#else
 				CSigProc* pSigProc = theApp.m_pSigProc;
 				if (pSigProc != NULL && (pSigProc->GetConnectZone() == FALSE))
 				{
+#endif
 
 					BOOL bTriggerBit;
 					dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
 					//Trigger 펄스 bit true
 					if (bTriggerBit == TRUE)
 					{
+#if DIO_BOARD_NO // 0이 아니면
+						WORD wTempID = wLastInfo_Output;
+#else
 						WORD wInSignal = 0x00;
 						dio.InputWord(&wInSignal);
 
 						// 22.04.06 Ahn Modify Start
 						WORD wTempID;
 						wTempID = 0x3F & (wInSignal >> 1);
+#endif
 
 						//이전에 받았던 id와 다르다면 추가
 						if (wTempID != wLastInfo)
 						{
-
-							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("DIO Signal Word before<%d> now<%d>"), backupwInSignal, wInSignal);
-							backupwInSignal = wInSignal;
 
 							//DIO Input Log
 							LOGDISPLAY_SPEC(7)(_T("*0**DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
@@ -481,9 +445,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							{
 								wLastInfo_Output = 0;
 							}
-							WORD wInSignal = wLastInfo_Output<<1;
-							LOGDISPLAY_SPEC(7)(_T("DIO ID Output <%d> Signal <%d>"), wLastInfo_Output, wInSignal);
-							dio.OutputWord(wInSignal);
 						}
 #endif
 						
@@ -495,7 +456,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					while (pCntQueInPtr->GetSize())
 						pCntQueInPtr->Pop();
 					//DIO Input Log
-					LOGDISPLAY_SPECTXT(1)(_T("Input TabID 무시 PLC 신호 == ConnectZone"));
+					LOGDISPLAY_SPECTXT(7)(_T("Input TabID 무시 PLC 신호 == ConnectZone"));
 				}
 			}
 			else
