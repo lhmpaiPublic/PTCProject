@@ -47,12 +47,15 @@ public :
 		case	en_GrabberError:
 //		case	en_ProcessError:
 		case	en_LampError:			//조명 에러 발생 시 READY OFF
+		case	en_DiskCapacityAlarm:
 			m_bInitialReq = TRUE;
 			break;
-		case	 en_DiskCapacityAlarm:
-			break;	
+
 
 		// Light Error
+		case	en_DiskCapacityWarning:
+			break;
+
 		}
 
 		// 22.06.29 Son Add Start

@@ -1017,9 +1017,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 	{
 		KillLongTermTimer();
 
-#if !defined( _DEBUG )
 		CheckDiskSpace();
-#endif 
+
 		SetLogTermTimer();
 	}
 
@@ -1048,6 +1047,10 @@ void CNotchingGradeInspView::ReDrawMap( BOOL bModeRect, CRect rcRange )
 // 22.07.01 Ahn Add Start
 void CNotchingGradeInspView::CheckDiskSpace()
 {
+#if defined(_DEBUG)
+	return;
+#endif
+
 	CWin32File file;
 
 	double dFreeSpace, dTotalSize, dPercent;
@@ -1059,19 +1062,20 @@ void CNotchingGradeInspView::CheckDiskSpace()
 	AprData.m_dDiskPercent = dPercent ;
 	// 22.07.04 Ahn Add End
 
-	// 22.08.05 Ahn Add Start
-//	double dAlarmSize = 90.0;
-//	double dWarningSize = 80.0;
-//	if (dAlarmSize < dPercent) {
-//		CString strMsg;
-//		strMsg.Format(_T("디스크 사용량이 %1.lf%% 입니다. 디스크 공간을 확보해 주세요."), dPercent);
-//		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityAlarm, strMsg);
-//	}
-//	else if (dWarningSize < dPercent) {
-//		CString strMsg;
-//		strMsg.Format(_T("디스크 사용량이 %1.lf %%입니다. 디스크 공간을 확보해 주세요."), dPercent);
-//		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityWarning, strMsg);
-//	}
+	double dAlarmSize = DISK_SPACE_ALARM_HEAVY;
+	double dWarningSize = DISK_SPACE_ALARM_LIGHT;
+	if (dAlarmSize < dPercent)
+	{
+		CString strMsg;
+		strMsg.Format(_T("Error : Disk usage [ %1.lf%% ]"), dPercent);
+		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityAlarm, strMsg);
+	}
+	else if (dWarningSize < dPercent)
+	{
+		CString strMsg;
+		strMsg.Format(_T("Warning : Disk usage [ %1.lf%% ]"), dPercent);
+		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityWarning, strMsg);
+	}
 
 }
 // 22.07.01 Ahn Add End

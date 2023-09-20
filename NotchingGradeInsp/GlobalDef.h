@@ -162,6 +162,11 @@ enum {
 
 #define		SWAP( type, x, y) { type t; t = x, x = y ; y = t ; } ;
 
+#define		DISK_SPACE_ALARM_LIGHT	80
+#define		DISK_SPACE_ALARM_HEAVY	90
+
+
+
 //{_T("No"),_T("Pixel"),_T("PosX"),_T("PosY"),_T("Col1"),_T("Row1"),_T("Col2"),_T("Row2"),_T("Height"),_T("Width"),_T("LinkCnt"),_T("--")};
 enum {
 	enDefNo = 0,
