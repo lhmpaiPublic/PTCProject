@@ -120,6 +120,7 @@ BEGIN_MESSAGE_MAP(CModeDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_RAD_STOP, &CModeDlg::OnBnClickedRadStop)
 	ON_BN_CLICKED(IDC_BTN_TACT_TIME, &CModeDlg::OnBnClickedBtnTactTime)
 	ON_BN_CLICKED(IDC_CHK_SWITCH_DISP, &CModeDlg::OnBnClickedChkSwitchDisp)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -368,6 +369,9 @@ BOOL CModeDlg::OnInitDialog()
 	// 22.06.15 Ahn Add Start
 	ChangeState(enInspStop);
 	// 22.06.15 Ahn Add End
+
+	SetTimer(AUTO_START_TIMER, AUTO_START_DELAY, NULL);
+
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -821,3 +825,22 @@ void CModeDlg::EnableControl(BOOL bModeRun)
 
 }
 // 23.02.16 Ahn Add End
+
+
+void CModeDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == AUTO_START_TIMER)
+	{
+		KillTimer(AUTO_START_TIMER);
+
+		m_bDispSwitch = TRUE;
+		m_pView->SwitchDisplay(!m_bDispSwitch);
+
+		OnBnClickedRadRun();
+		ChangeState(enInspRun);
+
+		UpdateData(FALSE);
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
+}

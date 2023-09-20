@@ -4,6 +4,10 @@
 
 // CModeDlg 대화 상자
 
+#define AUTO_START_TIMER 1111
+#define AUTO_START_DELAY 1000
+
+
 class CNotchingGradeInspDoc;
 class CNotchingGradeInspView;
 class CIoMonitorDlg;
@@ -97,4 +101,5 @@ public :
 	void EnableControl(BOOL bModeRun);
 	// 23.02.16 Ahn Add End
 
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
