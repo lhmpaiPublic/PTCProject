@@ -157,6 +157,10 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	//최종 읽은 값
 	WORD wLastInfo = 0x00;
 
+#if DIO_BOARD_NO // 0이 아니면
+	WORD wLastInfo_Output = 0x00;
+#endif
+
 	//Trigger 펄스 값 읽기 위한 변수
 	WORD backupwInSignal = 0x00;
 	//다음에 찾을 TabID - ID 누력 여부 확인용
@@ -449,7 +453,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							inputReadId.push_back(wTempID);
 
 							//이전 id 갱신
+#if DIO_BOARD_NO // 0이 아니면
+							wLastInfo_Output = wLastInfo = wTempID;
+#else
 							wLastInfo = wTempID;
+#endif
 							
 
 							//메모리 로그 기록
@@ -464,6 +472,19 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//Trigger 펄스 bit false
 					else
 					{
+
+#if DIO_BOARD_NO // 0이 아니면
+						if (wLastInfo_Output == wLastInfo)
+						{
+							++wLastInfo_Output;
+							if (wLastInfo_Output >= 64)
+							{
+								wLastInfo_Output = 0;
+							}
+							WORD wInSignal = wLastInfo_Output<<1;
+							dio.OutputWord(wInSignal);
+						}
+#endif
 						
 					}
 				}
