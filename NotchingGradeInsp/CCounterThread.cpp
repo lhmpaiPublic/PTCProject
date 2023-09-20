@@ -147,7 +147,7 @@ void CCounterThread::ThreadRun(BOOL bRunFlag)
 
 //스래드 타임아웃 시간
 #define COUNTERINFOTHREAD_TIMEOUT 5
-#define MAXMARKING_TIMEOUT 200
+#define MAXMARKING_TIMEOUT 500
 UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 {
 	CCounterThread* pThis = (CCounterThread*)pParam;
@@ -180,7 +180,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	//테스트 타임 id 생성
 	DWORD markingTestTimeOut = GetTickCount();
 
-	BOOL bOneTrueTrigger = FALSE;
 	UINT ret = 0;
 	while (1) 
 	{
@@ -372,16 +371,14 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					BOOL bTriggerBit;
 					dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
 					//Trigger 펄스 bit true
-					if (bTriggerBit == TRUE && (bOneTrueTrigger == TRUE))
+					if (bTriggerBit == TRUE)
 					{
-						bOneTrueTrigger = FALSE;
 						WORD wInSignal = 0x00;
 						dio.InputWord(&wInSignal);
 
 						// 22.04.06 Ahn Modify Start
 						WORD wTempID;
-						//wTempID = 0x3F & (wInSignal >> 1);
-						wTempID = nextTabID;
+						wTempID = 0x3F & (wInSignal >> 1);
 
 						//이전에 받았던 id와 다르다면 추가
 						if (wTempID != wLastInfo)
@@ -467,7 +464,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//Trigger 펄스 bit false
 					else
 					{
-						bOneTrueTrigger = TRUE;
+						
 					}
 				}
 				else

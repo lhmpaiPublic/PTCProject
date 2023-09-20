@@ -26,6 +26,9 @@ using namespace Gdiplus;
 
 #pragma comment(linker, "/HEAP:4000000000")
 
+//DIO 보드넘버 : 현장 pc 0 vs DEMO pc 1
+#define DIO_BOARD_NO 1
+
 //SPC 객체 소스에서 컴파일 여부 결정
 //SPC+ 생성을 위한 플래그
 #define SPCPLUS_CREATE
