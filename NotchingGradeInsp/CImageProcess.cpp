@@ -5966,7 +5966,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				if ( pDefInfo->nType == en_ModeFoilExp )
 				{
 					if ((pRecipeInfo->dIgnoreDistance < pDefInfo->dDistance) && (pRecipeInfo->dIgnoreDistance > 0) 
-						&& (( pDefInfo->dSizeX < pRecipeInfo->dIgnoreSize ) && (pRecipeInfo->dIgnoreSize > 0)))
+						&& (( pDefInfo->dSizeX > pRecipeInfo->dIgnoreSize ) && (pRecipeInfo->dIgnoreSize > 0)))
 					{
 
 //SPC 객체 소스에서 컴파일 여부 결정
@@ -7586,7 +7586,7 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 			if (pData->bDeleteFlag == TRUE) continue;
 			//if (AprData.m_System.m_nMachineMode == ANODE_MODE) 
 			{
-				//	CImageProcess::CalcSizeToEdgeLine(pData, &vecAllRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
+				CImageProcess::CalcSizeToEdgeLine(pData, &vecAllRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
 				CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 			}
 		}
@@ -8015,13 +8015,13 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 				{ 
 					if (pData->rcRect.top >= vecRightRndInfo[0].y)
 					{
-//						CImageProcess::CalcSizeToEdgeLine(pData, &vecRightRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
+						CImageProcess::CalcSizeToEdgeLine(pData, &vecRightRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
 						CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 						pData->nDefPos = en_Right;
 					}
 					else
 					{
-//						CImageProcess::CalcSizeToEdgeLine(pData, &vecLeftRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
+						CImageProcess::CalcSizeToEdgeLine(pData, &vecLeftRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
 						CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 						pData->nDefPos = en_Left;
 					}
@@ -8199,11 +8199,11 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 			if (pData->bDeleteFlag == TRUE)
 				continue;
 
-			if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
-			{ 
-				//CImageProcess::CalcSizeToEdgeLine(pData, &vecAllRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
+//			if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+//			{ 
+				CImageProcess::CalcSizeToEdgeLine(pData, &vecAllRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
 				CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
-			}
+//			}
 		}
 	}
 

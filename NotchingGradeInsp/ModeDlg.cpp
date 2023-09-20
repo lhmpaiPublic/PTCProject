@@ -843,6 +843,10 @@ void CModeDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		KillTimer(AUTO_START_TIMER);
 
+#if defined(_DEBUG)
+		return;
+#endif
+
 		m_bDispSwitch = TRUE;
 		m_pView->SwitchDisplay(!m_bDispSwitch);
 
@@ -850,6 +854,7 @@ void CModeDlg::OnTimer(UINT_PTR nIDEvent)
 		ChangeState(enInspRun);
 
 		UpdateData(FALSE);
+
 	}
 
 	CDialogEx::OnTimer(nIDEvent);

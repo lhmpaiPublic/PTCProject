@@ -1069,12 +1069,16 @@ void CNotchingGradeInspView::CheckDiskSpace()
 		CString strMsg;
 		strMsg.Format(_T("Error : Disk usage [ %1.lf%% ]"), dPercent);
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityAlarm, strMsg);
+
+		AprData.SaveErrorLog(strMsg);
 	}
 	else if (dWarningSize < dPercent)
 	{
 		CString strMsg;
 		strMsg.Format(_T("Warning : Disk usage [ %1.lf%% ]"), dPercent);
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_DiskCapacityWarning, strMsg);
+
+		AprData.SaveErrorLog(strMsg);
 	}
 
 }
@@ -1134,7 +1138,7 @@ BOOL CNotchingGradeInspView::KillAlivePulseTimer()
 
 BOOL CNotchingGradeInspView::SetLogTermTimer()
 {
-	m_TID_Long_Term = SetTimer( T_ID_LONG_TERM, 6000, NULL ); // 1분에 한번
+	m_TID_Long_Term = SetTimer( T_ID_LONG_TERM, 60000, NULL ); // 1분에 한번
 
 	return FALSE;
 }
