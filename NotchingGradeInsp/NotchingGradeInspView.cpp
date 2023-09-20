@@ -588,7 +588,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		case	en_InspStop:
 //			AprData.SaveDebugLog_Format(_T("<OnTimer> en_InspStop"));
 
-			if (IsInspReady() == TRUE)
+			if (IsInspReady() == TRUE )
 			{
 				m_nStatus = en_WaitReady;
 				pSigProc->SigOutReady(TRUE);

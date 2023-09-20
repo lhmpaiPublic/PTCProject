@@ -40,7 +40,7 @@ CStdIoCtrl* CStdIoCtrl::GetInstance(eIOTYPE type, int PortMax, int SeqNo, int Re
 		case eIO_Api:		ptr = new CStdIoApi(PortMax);						break;
 		//case eIO_Fbi:		ptr = new CStdIoFbi(PortMax);						break;
 		//case eIO_MXCtrl:	ptr = new CStdIoMXComponent(PortMax, SeqNo);		break;
-		case eIO_AXL:		ptr = new CStdIoAXL(PortMax, AXT_SIO_DB32P, 0 );	break;
+		case eIO_AXL:		ptr = new CStdIoAXL(PortMax, AXT_SIO_DB32P, DIO_BOARD_NO);	break; //pyjtest
 	default:
 		ASSERT(0); 																break; 
 	}

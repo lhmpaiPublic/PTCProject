@@ -209,6 +209,8 @@ public :
 	BOOL m_bDebug_counterResetReq;
 // 22.06.27 Ahn Add End
 
+
+
 public:
 	BOOL IsInspReady();
 	BOOL SetInspReady(BOOL bMode);
