@@ -155,7 +155,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 	CAppDIO dio;
 	//최종 읽은 값
-	WORD wLastInfo = 0x00;
+	WORD wLastInfo = 0xFF;
 
 #if DIO_BOARD_NO // 0이 아니면
 	WORD wLastInfo_Output = wLastInfo;
