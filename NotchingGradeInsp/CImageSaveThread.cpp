@@ -106,10 +106,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					//Image Save Log
 					LOGDISPLAY_SPECTXT(0)(_T("저장 이미지 정보 : 넓이가 0 또는 높이가 0이다"));
 
-					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
-					delete[]pImgPtr;
-					pImgPtr = NULL;
-
 					delete pSaveInfo;
 					pSaveInfo = NULL;
 					continue;
@@ -148,8 +144,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 //					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CtrlThreadImgSave : %d ms [%s]"), GetTickCount() - dwTic, pSaveInfo->m_strSavePath);
 
 
-					delete[]pImgPtr;
-					pImgPtr = NULL;
 				}
 				delete pSaveInfo;
 				pSaveInfo = NULL;

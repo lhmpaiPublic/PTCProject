@@ -721,11 +721,12 @@ UINT CDebugImageAcqDlg::CtrlThreadDebugAcqProc(LPVOID pParam)
 			bmpBtm.ReadBitmap(strFullPathBtm);
 			CSize size = bmpTop.GetImgSize();
 			
-			if ( (ResvTabInfo.nImageLength + size.cy) >= nFrameLength) {
-				BYTE* pImgPtrTop = new BYTE[nFrameSize + 1];
-				memset(pImgPtrTop, 0x00, sizeof(BYTE) * nFrameSize + 1);
-				BYTE* pImgPtrBtm = new BYTE[nFrameSize + 1];
-				memset(pImgPtrBtm, 0x00, sizeof(BYTE) * nFrameSize + 1);
+			if ( (ResvTabInfo.nImageLength + size.cy) >= nFrameLength)
+			{
+				CFrameInfo* pFrmInfoTop = new CFrameInfo;
+				pFrmInfoTop->initImagePtr(nFrameSize);
+				CFrameInfo* pFrmInfoBtm = new CFrameInfo;
+				pFrmInfoBtm->initImagePtr(nFrameSize);
 
 				int nCopyLength = ResvTabInfo.nImageLength;
 				if (nCopyLength > nFrameLength) {
@@ -735,12 +736,12 @@ UINT CDebugImageAcqDlg::CtrlThreadDebugAcqProc(LPVOID pParam)
 				BYTE* pOrgPtrTop = bmpTop.GetImgPtr();
 				BYTE* pOrgPtrBtm = bmpBtm.GetImgPtr();
 				if (nCopyLength > 0) {
-					memcpy(pImgPtrTop, ResvTabInfo.pImgPtr, sizeof(BYTE) * size.cx * nCopyLength);
-					memcpy(pImgPtrBtm, ResvTabInfo.pImgBtmPtr, sizeof(BYTE) * size.cx * nCopyLength);
+					memcpy(pFrmInfoTop->GetImagePtr(), ResvTabInfo.pImgPtr, sizeof(BYTE) * size.cx * nCopyLength);
+					memcpy(pFrmInfoBtm->GetImagePtr(), ResvTabInfo.pImgBtmPtr, sizeof(BYTE) * size.cx * nCopyLength);
 
 					int nCopyLen = nFrameLength - nCopyLength;
-					memcpy(pImgPtrTop + (size.cx * nCopyLength), pOrgPtrTop, sizeof(BYTE) * size.cx * nCopyLen);
-					memcpy(pImgPtrBtm + (size.cx * nCopyLength), pOrgPtrBtm, sizeof(BYTE) * size.cx * nCopyLen);
+					memcpy(pFrmInfoTop->GetImagePtr() + (size.cx * nCopyLength), pOrgPtrTop, sizeof(BYTE) * size.cx * nCopyLen);
+					memcpy(pFrmInfoBtm->GetImagePtr() + (size.cx * nCopyLength), pOrgPtrBtm, sizeof(BYTE) * size.cx * nCopyLen);
 
 					int nRemainLength = size.cy - nCopyLen ;
 					memcpy(ResvTabInfo.pImgPtr	 , pOrgPtrTop + (size.cx * nCopyLen) , sizeof(BYTE) * size.cx * nRemainLength);
@@ -751,9 +752,6 @@ UINT CDebugImageAcqDlg::CtrlThreadDebugAcqProc(LPVOID pParam)
 				int nHeight = size.cy;
 				int nWidth = size.cx;
 
-				CFrameInfo* pFrmInfoTop = new CFrameInfo;
-				CFrameInfo* pFrmInfoBtm = new CFrameInfo;
-
 				// 22.11.18 Ahn Add Start
 				pFrmInfoTop->m_nFrameCount = nFrameCount ;
 				pFrmInfoBtm->m_nFrameCount = nFrameCount++ ;
@@ -762,12 +760,10 @@ UINT CDebugImageAcqDlg::CtrlThreadDebugAcqProc(LPVOID pParam)
 				pFrmInfoTop->m_nHeadNo = CAM_POS_TOP;
 				pFrmInfoTop->m_nHeight = nFrameLength;
 				pFrmInfoTop->m_nWidth = nWidth;
-				pFrmInfoTop->SetImgPtr(pImgPtrTop);
 
 				pFrmInfoBtm->m_nHeadNo = CAM_POS_BOTTOM;
 				pFrmInfoBtm->m_nHeight = nFrameLength;
 				pFrmInfoBtm->m_nWidth = nWidth;
-				pFrmInfoBtm->SetImgPtr(pImgPtrBtm);
 
 				pThreadQue[CAM_POS_TOP]->PushBack(pFrmInfoTop);
 				pThreadQue[CAM_POS_BOTTOM]->PushBack(pFrmInfoBtm);

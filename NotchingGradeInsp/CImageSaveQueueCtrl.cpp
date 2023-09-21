@@ -2,6 +2,32 @@
 #include "CImageSaveQueueCtrl.h"
 #include "GlobalData.h"
 
+
+void CImgSaveInfo::initImgPtr(int nSize)
+{
+	memset(m_pImagePtr, 0x00, sizeof(BYTE) * ((nSize) + 1));
+}
+void CImgSaveInfo::initImgPtr(int nWidth, int nHeight)
+{
+	m_nWidth = nWidth;
+	m_nHeight = nHeight;
+	memset(m_pImagePtr, 0x00, sizeof(BYTE) * ((nWidth * nHeight) + 1));
+}
+
+BYTE* CImgSaveInfo::GetImgPtr()
+{
+	return m_pImagePtr; 
+};
+void CImgSaveInfo::SetImgPtr(BYTE* pImgPtr, int nWidth, int nHeight, int nJpgQuality)
+{
+	m_nWidth = nWidth; 
+	m_nHeight = nHeight; 
+	m_nJpgQuality = nJpgQuality; 
+	memset(m_pImagePtr, 0x00, sizeof(BYTE) * ((nWidth * nHeight) + 1));
+	CopyMemory(m_pImagePtr, pImgPtr, sizeof(BYTE) * m_nWidth * m_nHeight);
+};
+
+
 CImageSaveQueueCtrl::CImageSaveQueueCtrl()
 {
 	::InitializeCriticalSection(&m_csQueue);

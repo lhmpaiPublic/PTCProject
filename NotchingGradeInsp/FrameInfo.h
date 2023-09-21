@@ -10,6 +10,9 @@
 //m_pImagePtr : 이미지 데이터 값
 //m_bOverFlow 오버플로우 체크
 #define MAX_TACTIMELIST 10
+
+//FrameInfo 이미지 버퍼 사이트 픽스
+#define MAX_FRAMEINFO_INSPDATA_SIZE (4000*14000)+1
 class CFrameInfo
 {
 public:
@@ -24,7 +27,7 @@ public:
 		en_BottomFrame = 1,
 	};
 protected :
-	BYTE	*m_pImagePtr ;
+	BYTE	m_pImagePtr[MAX_FRAMEINFO_INSPDATA_SIZE];
 	
 public :
 	BOOL	m_bErrorFlag ;	// Image 처리 Pass
@@ -42,7 +45,9 @@ public :
 
 	double  m_dTopPosY;	// Frame의 시작 Pixel의 Y 좌표
 	BYTE* GetImagePtr();
-	void SetImgPtr(BYTE* pImgPtr);
+	void initImagePtr(int nSize);
+	void initImagePtr(int nWidth, int nHeight);
+	void SetImgPtr(BYTE* pImgPtr, int nWidth, int nHeight);
 	int		nTabNo;				// 
 	int		m_nTabId_CntBoard;	// 카운터 보드에서 부여받은 Marking용 Tab ID
 	int		nTopPosYInFrame;

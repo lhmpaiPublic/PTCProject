@@ -6,7 +6,6 @@ CFrameInfo::CFrameInfo(void)
 {
 	m_nFrameCount = -1 ;
 	m_nHeadNo = -1 ;
-	m_pImagePtr = NULL ;
 	m_bDummyData = FALSE;
 	// 23.02.20 Ahn Add Start
 	m_bOverFlow = FALSE;
@@ -24,19 +23,29 @@ CFrameInfo::CFrameInfo(void)
 
 CFrameInfo::~CFrameInfo(void)
 {
-	if( m_pImagePtr != NULL ){
-		delete []m_pImagePtr ;
-		m_pImagePtr = NULL ;
-	}
 }
 
+void CFrameInfo::initImagePtr(int nSize)
+{
+	memset(m_pImagePtr, 0x00, sizeof(BYTE) * (nSize + 1));
+}
+
+void CFrameInfo::initImagePtr(int nWidth, int nHeight)
+{
+	m_nWidth = nWidth;
+	m_nHeight = nHeight;
+	memset(m_pImagePtr, 0x00, sizeof(BYTE) * ((nWidth * nHeight) + 1));
+}
 
 BYTE * CFrameInfo::GetImagePtr()
 {
 	return m_pImagePtr ;
 }
 
-void CFrameInfo::SetImgPtr( BYTE *pImgPtr )
+void CFrameInfo::SetImgPtr( BYTE *pImgPtr, int nWidth, int nHeight)
 {
-	m_pImagePtr = pImgPtr ;
+	m_nWidth = nWidth;
+	m_nHeight = nHeight;
+	memset(m_pImagePtr, 0x00, sizeof(BYTE) * ((nWidth * nHeight) + 1));
+	CopyMemory(m_pImagePtr, pImgPtr, sizeof(BYTE) * m_nWidth * m_nHeight);
 }

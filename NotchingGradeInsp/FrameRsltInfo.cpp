@@ -12,11 +12,6 @@ CFrameRsltInfo::~CFrameRsltInfo(void)
 {
 	int i = 0;
 
-	if (m_pImagePtr != NULL) {
-		delete[] m_pImagePtr;
-		m_pImagePtr = NULL;
-	}
-
 	if (m_pTabRsltInfo != NULL) {
 		delete m_pTabRsltInfo;
 		m_pTabRsltInfo = NULL;
@@ -26,8 +21,7 @@ CFrameRsltInfo::~CFrameRsltInfo(void)
 
 void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 {
-	m_pImagePtr = pFrmInfo->GetImagePtr();
-	pFrmInfo->SetImgPtr(NULL); // 안하면 죽음.
+	SetImgPtr(pFrmInfo->GetImagePtr(), pFrmInfo->m_nWidth, pFrmInfo->m_nHeight);
 
 	m_nFrameCount = pFrmInfo->m_nFrameCount;
 	m_nHeadNo = pFrmInfo->m_nHeadNo;
