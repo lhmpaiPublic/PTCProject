@@ -158,7 +158,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	WORD wLastInfo = 0xFF;
 
 #if DIO_BOARD_NO // 0이 아니면
-	WORD wLastInfo_Output = wLastInfo;
+	WORD wLastInfo_Output = 0x00;
 #endif
 
 	//다음에 찾을 TabID - ID 누력 여부 확인용
