@@ -960,6 +960,10 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 			m_pThread = NULL;
 
 			//파일저장 프레임 결과 정보에 저장한다.
+			if (m_pFrmRsltInfo == NULL)
+			{
+				m_pFrmRsltInfo = new CFrameRsltInfo();
+			}
 			m_pFrmRsltInfo->Copy(m_pFrmInfo);
 			m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
 			m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
