@@ -766,8 +766,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
-				//파일저장 프레임 결과 정보에 저장한다.
-				pFrameRsltInfo->Copy(pFrmInfo);
 
 				//======TacTime 출력 ========================================================================
 				pFrmInfo->m_tacTimeList[1] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
@@ -782,6 +780,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				//pCtrl->SetEventProcEnd();
 				pCtrl->m_bProcEnd = TRUE;
+
+				//파일저장 프레임 결과 정보에 저장한다.
+				pFrameRsltInfo->Copy(pFrmInfo);
+
 				break;
 				//}
 			} //Proc Start 이벤트 샐행 루프 빠져나감
@@ -794,9 +796,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	//CFrameInfo 객체의 Kill 이벤트 설정
 	::SetEvent(pCtrl->m_hEventKilled);
 
-	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ThreadExit",
-		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-		);
 
 	return 0;
 }

@@ -6069,6 +6069,17 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				{
 					pDefInfo->nRank = JUDGE_GRAY;
 					pTabRsltInfo->m_nJudge = JUDGE_GRAY;
+
+					// JUDGE_GRAY도 결함 제거 기능에 포함
+					if ((pRecipeInfo->dIgnoreDistance < pDefInfo->dDistance) && (pRecipeInfo->dIgnoreDistance > 0)
+						&& ((pDefInfo->dSizeX > pRecipeInfo->dIgnoreSize) && (pRecipeInfo->dIgnoreSize > 0)))
+					{
+						pDefInfo->dJudgeSize = pDefInfo->dSizeX;
+						pDefInfo->nRank = JUDGE_OK;
+						pDefInfo->bDeleteFlag = TRUE;
+					}
+
+
 				}
 			}
 			// 22.11.21 Ahn Modify End

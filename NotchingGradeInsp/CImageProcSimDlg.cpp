@@ -712,8 +712,8 @@ int  CImageProcSimDlg::AddDefectInfo(CImageProcess::_VEC_BLOCK* vecBlockFoilExp,
 
 			pBlockData->nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nCamPos], m_pRecipeInfo->dDefJudgeHeight, pBlockData->dJudgeSize, pBlockData->dHeight );
 			
-			if (pBlockData->nDefJudge == JUDGE_NG)
-			{
+//			if (pBlockData->nDefJudge == JUDGE_NG)
+//			{
 				if (pBlockData->nType == en_ModeFoilExp)
 				{
 					if ( ((m_pRecipeInfo->dIgnoreDistance < pBlockData->dDistance) && (m_pRecipeInfo->dIgnoreDistance > 0))
@@ -724,7 +724,7 @@ int  CImageProcSimDlg::AddDefectInfo(CImageProcess::_VEC_BLOCK* vecBlockFoilExp,
 						pBlockData->bDeleteFlag = TRUE;
 					}
 				}
-			}
+//			}
 
 			if (pBlockData->dJudgeSize == 0.f)
 			{
