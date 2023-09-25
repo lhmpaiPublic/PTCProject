@@ -4,6 +4,7 @@
 
 #include "pch.h"
 #include "SpcCreateJSONFileThread.h"
+#include "SpcInfo.h"
 
 
 #ifdef _DEBUG
@@ -136,7 +137,10 @@ void CSpcCreateJSONFileThread::ExitThread()
 //SPC 객체 추가 전역함수
 void CSpcCreateJSONFileThread::AddSpcPlusManager(CSpcPlusManager* obj)
 {
-	CSpcCreateJSONFileThread::gInst()->AddSpcPlus(obj);
+	if (CSpcInfo::Inst()->getSPCStartFlag())
+	{
+		CSpcCreateJSONFileThread::gInst()->AddSpcPlus(obj);
+	}
 }
 
 //SPC 객체 추가 함수

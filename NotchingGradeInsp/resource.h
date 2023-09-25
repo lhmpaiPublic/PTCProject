@@ -695,6 +695,7 @@
 #define IDC_STATIC_IMAGESAVEINTERVAL    1337
 #define IDC_BUT_LOGCLEAR                1341
 #define IDC_CHECK_MOVELASTLOG           1343
+#define IDC_CHK_DISABLE_SPCPLUS         1343
 #define IDC_BUT_CLIPBOARDCOPY           1344
 #define IDC_CHECK_LOGSELECT             1345
 #define IDC_CHECK_MOVELASTLOG2          1346
@@ -724,7 +725,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        420
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1343
+#define _APS_NEXT_CONTROL_VALUE         1344
 #define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

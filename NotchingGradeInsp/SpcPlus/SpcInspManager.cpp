@@ -139,58 +139,61 @@ CSpcInDataDefectInfo* CSpcInspManager::getSpcInDataDefectInfo(DefectTopBottomSel
 // JSON 형식의 파일 생성
 void CSpcInspManager::makeJSONFile()
 {
-	//파일 저장 경로
-	CString strPath = m_SpcInspInData->JsonFilePath();
-	//파일명을 가져온다.
-	CString strJsonFileName = m_SpcInspInData->JsonFileName();
-
-	if (CWin32File::Exists(strPath+CString("\\")+ strJsonFileName) == FALSE)
+	if (CSpcInfo::Inst()->getSPCStartFlag())
 	{
+		//파일 저장 경로
+		CString strPath = m_SpcInspInData->JsonFilePath();
+		//파일명을 가져온다.
+		CString strJsonFileName = m_SpcInspInData->JsonFileName();
 
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->makeJSONText_Header());
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsFront());
-
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->makeJSONText_Insp1());
-
-		for (int idx = 0; idx < (int)m_SpcInDataIqInfo.size(); idx++)
+		if (CWin32File::Exists(strPath + CString("\\") + strJsonFileName) == FALSE)
 		{
-			CString rn = "";
-			if (idx < (m_SpcInDataIqInfo.size() - 1))
+
+			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->makeJSONText_Header());
+			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsFront());
+
+			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->makeJSONText_Insp1());
+
+			for (int idx = 0; idx < (int)m_SpcInDataIqInfo.size(); idx++)
 			{
-				rn = ",\r\n";
+				CString rn = "";
+				if (idx < (m_SpcInDataIqInfo.size() - 1))
+				{
+					rn = ",\r\n";
+				}
+				else
+				{
+					rn = "\r\n";
+				}
+				CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInDataIqInfo[idx]->makeJSONText_IqInfo() + rn);
 			}
-			else
+
+			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->makeJSONText_Insp2());
+
+			for (int idx = 0; idx < (int)m_SpcInDataDefectInfo.size(); idx++)
 			{
-				rn = "\r\n";
+				CString rn = "";
+				//인덱스가 데이터 사이즈보다 작을 때는 ,(ah
+				if (idx < (m_SpcInDataDefectInfo.size() - 1))
+				{
+					rn = ",\r\n";
+				}
+				else
+				{
+					rn = "\r\n";
+				}
+				CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInDataDefectInfo[idx]->makeJSONText_DefectInfo() + rn);
 			}
-			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInDataIqInfo[idx]->makeJSONText_IqInfo() + rn);
+
+			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->getSONText_InspTail());
+
+			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
+			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
 		}
-
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->makeJSONText_Insp2());
-
-		for (int idx = 0; idx < (int)m_SpcInDataDefectInfo.size(); idx++)
+		else
 		{
-			CString rn = "";
-			//인덱스가 데이터 사이즈보다 작을 때는 ,(ah
-			if (idx < (m_SpcInDataDefectInfo.size() - 1))
-			{
-				rn = ",\r\n";
-			}
-			else
-			{
-				rn = "\r\n";
-			}
-			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInDataDefectInfo[idx]->makeJSONText_DefectInfo() + rn);
+			LOGDISPLAY_SPEC(0)("SPC JSON FILE Exist -- Error ");
 		}
-
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcInspInData->getSONText_InspTail());
-
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
-	}
-	else
-	{
-		LOGDISPLAY_SPEC(0)("SPC JSON FILE Exist -- Error ");
 	}
 
 }

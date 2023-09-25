@@ -18,7 +18,11 @@ public:
 	virtual ~CSpcInfo() ;
 
 	static CSpcInfo* Inst() { return instance; }
+
 private:
+	//SPC+ 작동 플래그
+	BOOL m_bSPCStartFlag;
+
 	//설비ID	
 	CString	m_EqpId;
 	//검사기ID
@@ -88,6 +92,9 @@ private:
 	//Spc Plus 정보 파일을 읽어서 저장한다.
 	void LoadSpcPlusInfo();
 public:
+	//SPC+ 작동 플래그
+	BOOL getSPCStartFlag() { return m_bSPCStartFlag; }
+
 	//설비ID	
 	CString getEqpId() { return m_EqpId; }
 	//검사기ID
@@ -154,6 +161,9 @@ public:
 	CString	getInspOkImagePath() { return m_InspOkImagePath; }
 	//INSP Ng Image 파일 경로	
 	CString	getInspNgImagePath() { return m_InspNgImagePath; }
+
+	//SPC+ 작동 플래그
+	void setSPCStartFlag(BOOL bSPCStartFlag) { m_bSPCStartFlag = bSPCStartFlag; }
 
 	//설비ID	
 	void setEqpId(CString EqpId) { m_EqpId = EqpId; }

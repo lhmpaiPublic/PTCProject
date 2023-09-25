@@ -78,7 +78,11 @@ public:
 	BOOL m_bNonNgSave;
 	BOOL m_bNonNgStop;
 
+	//SPC 작동
+	BOOL m_bDisableSpcPlus;
+
 	int m_nOverflowCountMax;
 	int m_nMissTabIdMax;
+
 };
 

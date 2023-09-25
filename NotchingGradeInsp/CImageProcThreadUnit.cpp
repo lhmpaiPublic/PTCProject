@@ -122,6 +122,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				//Trigger Tab Id
 				pFrameRsltInfo->m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
+				//Defec 정보 출력 시 Cell id 나오도록 정보 입력
+				pFrameRsltInfo->m_pTabRsltInfo->m_nCellId = pFrmInfo->m_nTabId_CntBoard;
+
 				//프레임 헤더 번호
 				pFrameRsltInfo->m_nHeadNo = nHeadNo;
 				//프레임  Tab  번호

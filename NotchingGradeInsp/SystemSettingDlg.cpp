@@ -11,6 +11,7 @@
 #include "NotchingGradeInspView.h"
 #include "NotchingGradeInsp.h"
 #include "ImageProcessCtrl.h"
+#include "SpcInfo.h"
 
 
 // CSystemSettingDlg 대화 상자
@@ -53,6 +54,8 @@ CSystemSettingDlg::CSystemSettingDlg(CWnd* pParent /*=nullptr*/, BOOL bMode /*=T
 	, m_EdWordIn_16(_T(""))
 	, m_EdWordOut_16(_T(""))
 	// 23.03.03 Son Add End
+	, m_bChkDisableSpcPlus(FALSE)
+
 {
 	m_SysSetting = AprData.m_System;
 
@@ -103,6 +106,7 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHK_ENABLE_NON_NG_SAVE, m_bChkEnableNonNgSave);
 	DDX_Check(pDX, IDC_CHK_ENABLE_NON_NG_STOP, m_bChkEnableNonNgStop);
 	DDX_Text(pDX, IDC_ED_MISS_TAB_ID_MAX, m_nEdMissTabIdMax);
+	DDX_Check(pDX, IDC_CHK_DISABLE_SPCPLUS, m_bChkDisableSpcPlus);
 }
 
 
@@ -144,7 +148,8 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_NON_NG_STOP, &CSystemSettingDlg::OnBnClickedChkEnableNonNgStop)
 	ON_EN_SETFOCUS(IDC_ED_OVERFLOW_MAX, &CSystemSettingDlg::OnSetfocusEdOverflowMax)
 //	ON_WM_SETFOCUS()
-ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabIdMax)
+	ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabIdMax)
+	ON_BN_CLICKED(IDC_CHK_DISABLE_SPCPLUS, &CSystemSettingDlg::OnBnClickedChkDisableSpcplus)
 END_MESSAGE_MAP()
 
 
@@ -853,6 +858,9 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_SysSetting.m_bNonNgSave = m_bChkEnableNonNgSave;
 		m_SysSetting.m_bNonNgStop = m_bChkEnableNonNgStop;
 
+		//SPC Plus 실행여부
+		m_SysSetting.m_bDisableSpcPlus = m_bChkDisableSpcPlus;
+
 
 		UpdateData(FALSE);
 	}
@@ -900,6 +908,9 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_nEdPort = m_SysSetting.m_nPLCPort;
 		m_bChkEnableNonNgSave = m_SysSetting.m_bNonNgSave;
 		m_bChkEnableNonNgStop = m_SysSetting.m_bNonNgStop;
+
+		//SPC Plus 실행여부
+		m_bChkDisableSpcPlus = m_SysSetting.m_bDisableSpcPlus;
 
 
 		UpdateData(FALSE);
@@ -1476,4 +1487,13 @@ void CSystemSettingDlg::OnSetfocusEdMissTabIdMax()
 	DataControl(MODE_WRITE);
 
 	UpdateData(FALSE);
+}
+
+void CSystemSettingDlg::OnBnClickedChkDisableSpcplus()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	SPCINFO->setSPCStartFlag(!m_bChkDisableSpcPlus);
+
+	DataControl(MODE_WRITE);
 }

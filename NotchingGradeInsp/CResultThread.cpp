@@ -13,6 +13,7 @@
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 //SPC+ 사용을 위한 해더파일
+#include "SpcInfo.h"
 #include "SpcInspManager.h"
 #include "SpcCreateJSONFileThread.h"
 #include "SpcInspInData.h"
@@ -635,7 +636,10 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 
 				strSpcCropFilePath = InspInData->ImageFilePath()+CString("\\");
 
-				CImageProcess::SaveCropImage(pImgPtr, nWidth, nHeight, rcCrop, strSpcCropFilePath, strSpcCropFileName);
+				if (CSpcInfo::Inst()->getSPCStartFlag())
+				{
+					CImageProcess::SaveCropImage(pImgPtr, nWidth, nHeight, rcCrop, strSpcCropFilePath, strSpcCropFileName);
+				}
 
 			}
 

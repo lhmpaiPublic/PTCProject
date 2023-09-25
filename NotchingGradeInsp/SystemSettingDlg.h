@@ -168,4 +168,6 @@ public:
 	int m_nEdMissTabIdMax;
 //	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	afx_msg void OnSetfocusEdMissTabIdMax();
+	afx_msg void OnBnClickedChkDisableSpcplus();
+	BOOL m_bChkDisableSpcPlus;
 };

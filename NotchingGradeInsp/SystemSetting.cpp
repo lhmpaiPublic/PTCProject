@@ -207,6 +207,11 @@ int CSystemSetting::FileCtrl(int nMode)
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			m_bNonNgStop = atoi(buff);
 
+			strSection = _T("SPCPLUS_INFO");
+			strKey = _T("NON_EXEC_SPCPLUS");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_bDisableSpcPlus = atoi(buff);
+
 		}
 		// 23.02.17 Son Add Start
 		{
@@ -406,6 +411,11 @@ int CSystemSetting::FileCtrl(int nMode)
 
 			strKey = _T("NON_NG_STOP");
 			strData.Format(_T("%d"), m_bNonNgStop);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strSection = _T("SPCPLUS_INFO");
+			strKey = _T("NON_EXEC_SPCPLUS");
+			strData.Format(_T("%d"), m_bDisableSpcPlus);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 		}
 		// 23.02.17 Son Add Start
