@@ -371,6 +371,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								inputIdReadTime.clear();
 								inputReadId.clear();
 							}
+							//마킹을 위한 타임 아웃 갯수가 3개 이상이면 첫번째 정보를 제거하기 위해서 타임아웃 1 설정
+							else if (inputIdReadTime.size() > 3)
+							{
+								inputIdReadTime[0] = 1;
+							}
 
 							//누락된 input 아이디를 찾는다.
 							//초기값이 없다면 nextTabID 입력만
