@@ -58,7 +58,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 		MarkSendInfoData.bSendComplate = bSendComplate;
 		CCounterThread::m_MarkSendInfoData.push_back(MarkSendInfoData);
 		//DIO Input Log
-		LOGDISPLAY_SPEC(7)(_T("마킹 데이터 id<%d>OutputData<%d>"), TabId, bSendComplate);
+		LOGDISPLAY_SPEC(7)(_T("마킹 데이터 id<%d>OutputData<%d>"), TabId, MarkingOutputData);
 	}
 
 }
@@ -151,7 +151,7 @@ void CCounterThread::ThreadRun(BOOL bRunFlag)
 UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 {
 	CCounterThread* pThis = (CCounterThread*)pParam;
-	CCounterQueueCtrl* pCntQueInPtr = pThis->m_pParent->GetCounterQueInPtr() ;
+	CCounterQueueCtrl* pCntQueInPtr = pThis->m_pParent->GetCounterQueInPtr();
 
 	CAppDIO dio;
 	//최종 읽은 값
@@ -182,8 +182,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	//테스트 타임 id 생성
 	DWORD markingTestTimeOut = GetTickCount();
 
+	//Trigger Off Time 을 체크하기 위한 변수
+	//Off 타임이 길어지면 Tab id 유효 시간을 늘려준다.
+	int TriggerOffCount = 0;
+
 	UINT ret = 0;
-	while (1) 
+	while (1)
 	{
 		//타임 주기 이벤트
 		ret = WaitForSingleObject(pThis->getEvent_CounterThread(), COUNTERINFOTHREAD_TIMEOUT);
@@ -325,7 +329,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 
 			// 입력 취득
-			if(pThis->m_pParent->IsInspection() == TRUE)
+			if (pThis->m_pParent->IsInspection() == TRUE)
 			{
 #if DIO_BOARD_NO // 0이 아니면
 				if (TRUE)
@@ -341,6 +345,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//Trigger 펄스 bit true
 					if (bTriggerBit == TRUE)
 					{
+						//Trigger 타임이 Off 시간을 체크하기 위해 세팅
+						TriggerOffCount = 0;
 #if DIO_BOARD_NO // 0이 아니면
 						WORD wTempID = wLastInfo_Output;
 #else
@@ -383,19 +389,13 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								//누락 로그 출력한다.
 								if (nextTabID != wTempID)
 								{
-									//ID가 누락 되었다면 
-									//Id  누락 시간은 바로 빼기 위해서
-									inputIdReadTime.push_back(GetTickCount());
-									//누락 id
-									inputReadId.push_back(nextTabID);
-
 									//메모리 로그 기록
 									CString strMsg;
 									strMsg.Format(_T("Input ID [%d] 누락"), nextTabID);
 									AprData.SaveMemoryLog(strMsg);
 
 									//DIO Input Log
-									LOGDISPLAY_SPEC(0)(_T("Input ID [%d] 누락"), nextTabID);
+									LOGDISPLAY_SPEC(7)(_T("Input ID [%d] 누락"), nextTabID);
 								}
 								//다음에 받을 ID를 세팅한다.
 								nextTabID = wTempID + 1;
@@ -422,7 +422,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 #else
 							wLastInfo = wTempID;
 #endif
-							
+
 
 							//메모리 로그 기록
 							CString strMsg;
@@ -436,6 +436,18 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//Trigger 펄스 bit false
 					else
 					{
+						//트리거 카운트 증가해셔 30이상이면 대기 상태의 id의 유휴시간을 늘려준다.
+						TriggerOffCount++;
+						if (TriggerOffCount > 30)
+						{
+							if (inputIdReadTime.size())
+							{
+								//input id 100초 유지 증가
+								inputIdReadTime[0] = GetTickCount() + 100;
+								//DIO Input Log
+								LOGDISPLAY_SPEC(7)(_T("Trigger 신호가 Off 유지 카운트<%d> id<%d>"), TriggerOffCount, inputReadId[0]);
+							}
+						}
 
 #if DIO_BOARD_NO // 0이 아니면
 						if (wLastInfo_Output == wLastInfo)
@@ -447,7 +459,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							}
 						}
 #endif
-						
+
 					}
 				}
 				else
@@ -455,6 +467,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//Connect Zone 상태일 때 버퍼를 비운다.
 					while (pCntQueInPtr->GetSize())
 						pCntQueInPtr->Pop();
+					//마킹 하기위한 값 제거
+					if (inputIdReadTime.size())
+					{
+						inputIdReadTime.clear();
+						inputReadId.clear();
+					}
 					//DIO Input Log
 					LOGDISPLAY_SPECTXT(7)(_T("Input TabID 무시 PLC 신호 == ConnectZone"));
 				}
@@ -462,7 +480,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			else
 			{
 				//DIO Input Log
-				LOGDISPLAY_SPECTXT(1)(_T("DIO Check Image Porcess Insp FALSE 상태"));
+				LOGDISPLAY_SPECTXT(7)(_T("DIO Check Image Porcess Insp FALSE 상태"));
 			}
 
 		}
