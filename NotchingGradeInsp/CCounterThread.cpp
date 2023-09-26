@@ -256,7 +256,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					markingSendFALSETimeOut = GetTickCount() + 10;
 				}
 
-				//마킹 정보를 보내고 Out_PULSE FALSE 세팅 후 20초 후
+				//마킹 정보를 보내고 Out_PULSE FALSE 세팅 후 10초 후
 				//마킹 정보를 보내기 위한 세팅을 한다.
 				if (markingSendFALSETimeOut < nowTickCount)
 				{
@@ -267,7 +267,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						if (inputIdReadTime[0] < nowTickCount)
 						{
 							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("마킹 타임이 유효하지 않으면 input id가 time out 된 상태면 두개를 쌍으로 지운다."));
+							LOGDISPLAY_SPEC(7)(_T("마킹 타임이 유효하지 않으면 input id가 time out 된 상태면 두개를 쌍으로 지운다. : id<%d>"), inputReadId[0]);
 
 							//input id가 time out 된 상태면 두개를 쌍으로 지운다.
 							inputIdReadTime.erase(inputIdReadTime.begin());
@@ -371,8 +371,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								inputIdReadTime.clear();
 								inputReadId.clear();
 							}
-							//마킹을 위한 타임 아웃 갯수가 3개 이상이면 첫번째 정보를 제거하기 위해서 타임아웃 1 설정
-							else if (inputIdReadTime.size() > 3)
+							//마킹을 위한 타임 아웃 갯수가 3개 보다 크면 첫번째 정보를 제거하기 위해서 타임아웃 1 설정
+							if (inputIdReadTime.size() > 3)
 							{
 								inputIdReadTime[0] = 1;
 							}
@@ -445,12 +445,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						TriggerOffCount++;
 						if (TriggerOffCount > 30)
 						{
-							if (inputIdReadTime.size())
+							for (int idx = 0; idx < (int)inputIdReadTime.size(); idx++)
 							{
 								//input id 100초 유지 증가
-								inputIdReadTime[0] = GetTickCount() + 100;
+								inputIdReadTime[idx] = GetTickCount() + MAXMARKING_TIMEOUT;
 								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("Trigger 신호가 Off 유지 카운트<%d> id<%d>"), TriggerOffCount, inputReadId[0]);
+								LOGDISPLAY_SPEC(7)(_T("Trigger 신호가 Off 유지 카운트<%d> id<%d>"), TriggerOffCount, inputReadId[idx]);
 							}
 						}
 
