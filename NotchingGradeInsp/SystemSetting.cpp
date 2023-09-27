@@ -86,23 +86,6 @@ int CSystemSetting::FileCtrl(int nMode)
 			m_strLangCode.Format( _T("%s"),buff) ;
 			// 22.09.01 Ahn Add End
 
-			// 230922 kjk
-			strKey = _T("RS232_MODE");
-			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
-			m_nRS232_Mode = atoi(buff);
-			
-			strKey = _T("RS232_BAUDRATE");
-			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
-			m_nRS232_Baudrate = atoi(buff);
-
-			strKey = _T("RS232_COMPORT_TOP");
-			::GetPrivateProfileString(strSection, strKey, "COM1", buff, 256, strFileName);
-			m_strRS232_COMPORT_TOP.Format(_T("%s"), buff);
-
-			strKey = _T("RS232_COMPORT_BOTTOM");
-			::GetPrivateProfileString(strSection, strKey, "COM2", buff, 256, strFileName);
-			m_strRS232_COMPORT_BOTTOM.Format(_T("%s"), buff);
-
 			// 22.07.04 Ahn Add Start
 			strSection = _T("RESULT_DELETE");
 			strKey = _T("RESULT_SAVE_PERIOD");
@@ -256,9 +239,25 @@ int CSystemSetting::FileCtrl(int nMode)
 
 		}
 		// 23.02.17 Son Add End
+		{
+			// 230922 kjk
+			strSection = _T("RS232_SETTING");
+			strKey = _T("RS232_MODE");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_nRS232_Mode = atoi(buff);
 
+			strKey = _T("RS232_BAUDRATE");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_nRS232_Baudrate = atoi(buff);
 
+			strKey = _T("RS232_COMPORT_TOP");
+			::GetPrivateProfileString(strSection, strKey, "COM1", buff, 256, strFileName);
+			m_strRS232_COMPORT_TOP.Format(_T("%s"), buff);
 
+			strKey = _T("RS232_COMPORT_BOTTOM");
+			::GetPrivateProfileString(strSection, strKey, "COM2", buff, 256, strFileName);
+			m_strRS232_COMPORT_BOTTOM.Format(_T("%s"), buff);
+		}
 
     }
     else {
@@ -460,6 +459,31 @@ int CSystemSetting::FileCtrl(int nMode)
 
 		}
 		// 23.02.17 Son Add End
+
+		{
+			strSection = _T("RS232_SETTING");
+			strKey = _T("RS232_MODE");
+			strData.Format(_T("%d"), m_nRS232_Mode);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("RS232_BAUDRATE");
+			strData.Format(_T("%d"), m_nRS232_Baudrate);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("RS232_COMPORT_TOP");
+			strData.Format(_T("%d"), m_strRS232_COMPORT_TOP);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("RS232_COMPORT_BOTTOM");
+			strData.Format(_T("%d"), m_strRS232_COMPORT_BOTTOM);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			//			strKey = _T("SLAVE_ID");
+			// 			strData.Format(_T("%d"), );
+			// 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+		}
+
     }
     return 0;
 }
