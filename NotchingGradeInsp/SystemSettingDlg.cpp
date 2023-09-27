@@ -148,8 +148,8 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_NON_NG_STOP, &CSystemSettingDlg::OnBnClickedChkEnableNonNgStop)
 	ON_EN_SETFOCUS(IDC_ED_OVERFLOW_MAX, &CSystemSettingDlg::OnSetfocusEdOverflowMax)
 //	ON_WM_SETFOCUS()
-	ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabIdMax)
-	ON_BN_CLICKED(IDC_CHK_DISABLE_SPCPLUS, &CSystemSettingDlg::OnBnClickedChkDisableSpcplus)
+ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabIdMax)
+ON_BN_CLICKED(IDC_CHK_DISABLE_SPCPLUS, &CSystemSettingDlg::OnBnClickedChkDisableSpcplus)
 END_MESSAGE_MAP()
 
 

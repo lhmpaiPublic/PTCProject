@@ -86,6 +86,23 @@ int CSystemSetting::FileCtrl(int nMode)
 			m_strLangCode.Format( _T("%s"),buff) ;
 			// 22.09.01 Ahn Add End
 
+			// 230922 kjk
+			strKey = _T("RS232_MODE");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_nRS232_Mode = atoi(buff);
+			
+			strKey = _T("RS232_BAUDRATE");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_nRS232_Baudrate = atoi(buff);
+
+			strKey = _T("RS232_COMPORT_TOP");
+			::GetPrivateProfileString(strSection, strKey, "COM1", buff, 256, strFileName);
+			m_strRS232_COMPORT_TOP.Format(_T("%s"), buff);
+
+			strKey = _T("RS232_COMPORT_BOTTOM");
+			::GetPrivateProfileString(strSection, strKey, "COM2", buff, 256, strFileName);
+			m_strRS232_COMPORT_BOTTOM.Format(_T("%s"), buff);
+
 			// 22.07.04 Ahn Add Start
 			strSection = _T("RESULT_DELETE");
 			strKey = _T("RESULT_SAVE_PERIOD");
@@ -206,7 +223,7 @@ int CSystemSetting::FileCtrl(int nMode)
 			strKey = _T("NON_NG_STOP");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			m_bNonNgStop = atoi(buff);
-
+			
 			strSection = _T("SPCPLUS_INFO");
 			strKey = _T("NON_EXEC_SPCPLUS");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
@@ -412,7 +429,7 @@ int CSystemSetting::FileCtrl(int nMode)
 			strKey = _T("NON_NG_STOP");
 			strData.Format(_T("%d"), m_bNonNgStop);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-
+						
 			strSection = _T("SPCPLUS_INFO");
 			strKey = _T("NON_EXEC_SPCPLUS");
 			strData.Format(_T("%d"), m_bDisableSpcPlus);

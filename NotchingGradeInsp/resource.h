@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++에서 생성한 포함 파일입니다.
-// NotchingGradeInsp.rc에서 사용되고 있습니다.
+// Microsoft Visual C++ generated include file.
+// Used by NotchingGradeInsp.rc
 //
 #define IDCANCEL2                       3
 #define IDOK2                           3
@@ -146,6 +146,8 @@
 #define IDD_DLG_INITSYSTEMSETTING       414
 #define IDD_LOGDISPLAYDLG               416
 #define IDD_DLG_RECIPEIMPORT            418
+#define IDD_DLG_RS232                   420
+#define IDD_DIALOG1                     420
 #define IDC_BTN_LOG                     1000
 #define IDC_COMBO                       1000
 #define IDC_CHECK_HIGH_00               1001
@@ -723,7 +725,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        420
+#define _APS_NEXT_RESOURCE_VALUE        422
 #define _APS_NEXT_COMMAND_VALUE         32799
 #define _APS_NEXT_CONTROL_VALUE         1344
 #define _APS_NEXT_SYMED_VALUE           316
