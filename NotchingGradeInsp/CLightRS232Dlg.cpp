@@ -32,7 +32,7 @@ LRESULT CLightRS232Dlg::OnReceive(WPARAM length, LPARAM lpara)
 	if (m_comm_top)
 	{
 
-		m_comm_top->Receive(data1, length); //length 길이만큼데이터를받는다.
+		m_comm_top->Receive(data1, (int)length); //length 길이만큼데이터를받는다.
 		data1[length] = _T('\0');
 		//	str += _T("\r\n");
 		for (int i = 0; i < (int)length; i++)
@@ -48,7 +48,7 @@ LRESULT CLightRS232Dlg::OnReceive(WPARAM length, LPARAM lpara)
 	if (m_comm_bottom)
 	{
 
-		m_comm_bottom->Receive(data2, length); //length 길이만큼데이터를받는다.
+		m_comm_bottom->Receive(data2, (int)length); //length 길이만큼데이터를받는다.
 		data2[length] = _T('\0');
 		//	str += _T("\r\n");
 		for (int i = 0; i < (int)length; i++)
@@ -143,9 +143,9 @@ BOOL CLightRS232Dlg::send(int unit, char* pSendBuff, char* pRecvBuff, int nCmdLe
 	BYTE* m_pRcvBuffer;
 	int		m_SendBuffCnt;	
 	int		m_SendCnt;		
-	int		m_RecvCnt;		
+	//int		m_RecvCnt;		
 	int		m_SendFlag;		
-	char* m_btRecv;
+	//char* m_btRecv;
 	CString send = "";
 	CString rcv = "";
 #endif
