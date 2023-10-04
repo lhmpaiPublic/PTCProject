@@ -1099,40 +1099,40 @@ int CBitmapStd::SaveBitmap( CString &filepath )
 
 			file.Close() ;
 		} else if ( ( expname.Compare( _T( "JPG" ) ) == 0 ) || ( expname.Compare( _T( "JPEG" ) ) == 0 ) ) {
-			//if ( EncodeJpg != NULL ) {
-			//	BITMAPINFO* pbmi = ( BITMAPINFO *)m_ptr ;
-			//	BYTE* pimg = ( BYTE *)pbmi ;
-			//	pimg += sizeof( BITMAPINFOHEADER ) ;
-			//	pimg += pbmi->bmiHeader.biClrUsed * sizeof( RGBQUAD ) ;
-			//	if ( EncodeJpg( filepath, pbmi, pimg, m_nJpegQuality ) < 0 ) {
-			//		nRet = -1 ;
-			//	}
-			//} else {
-			//	nRet = -1 ;
-			//	CString strMsg ;
-			//	strMsg.Format( _T( "Please check the library file \"%s\"." ), g_szLibrary ) ;
-			//	AfxMessageBox( strMsg ) ;
-			//}
-			int nQuality = m_nJpegQuality;
-			Gdiplus::EncoderParameters param;
-			param.Count = 1;
-			param.Parameter[0].Guid = Gdiplus::EncoderQuality;
-			param.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
-			param.Parameter[0].NumberOfValues = 1;
-			param.Parameter[0].Value = &nQuality;
+			if ( EncodeJpg != NULL ) {
+				BITMAPINFO* pbmi = ( BITMAPINFO *)m_ptr ;
+				BYTE* pimg = ( BYTE *)pbmi ;
+				pimg += sizeof( BITMAPINFOHEADER ) ;
+				pimg += pbmi->bmiHeader.biClrUsed * sizeof( RGBQUAD ) ;
+				if ( EncodeJpg( filepath, pbmi, pimg, m_nJpegQuality ) < 0 ) {
+					nRet = -1 ;
+				}
+			} else {
+				nRet = -1 ;
+				CString strMsg ;
+				strMsg.Format( _T( "Please check the library file \"%s\"." ), g_szLibrary ) ;
+				AfxMessageBox( strMsg ) ;
+			}
+			//int nQuality = m_nJpegQuality;
+			//Gdiplus::EncoderParameters param;
+			//param.Count = 1;
+			//param.Parameter[0].Guid = Gdiplus::EncoderQuality;
+			//param.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
+			//param.Parameter[0].NumberOfValues = 1;
+			//param.Parameter[0].Value = &nQuality;
 
-			BITMAPINFO* pbmi = (BITMAPINFO*)m_ptr;
-			BYTE* pimg = (BYTE*)pbmi;
-			pimg += sizeof(BITMAPINFOHEADER);
-			pimg += pbmi->bmiHeader.biClrUsed * sizeof(RGBQUAD);
+			//BITMAPINFO* pbmi = (BITMAPINFO*)m_ptr;
+			//BYTE* pimg = (BYTE*)pbmi;
+			//pimg += sizeof(BITMAPINFOHEADER);
+			//pimg += pbmi->bmiHeader.biClrUsed * sizeof(RGBQUAD);
 
-			Gdiplus::Bitmap* image;
-			image = Gdiplus::Bitmap::FromBITMAPINFO(pbmi, pimg);
-			CLSID   encoderClsid;
-			// Get the CLSID of the JPEG encoder.
-			GetEncoderClsid(L"image/jpeg", &encoderClsid);
-			CStringW wStr = (CStringW)filepath.GetBuffer(0);
-			image->Save(wStr, &encoderClsid, &param);
+			//Gdiplus::Bitmap* image;
+			//image = Gdiplus::Bitmap::FromBITMAPINFO(pbmi, pimg);
+			//CLSID   encoderClsid;
+			//// Get the CLSID of the JPEG encoder.
+			//GetEncoderClsid(L"image/jpeg", &encoderClsid);
+			//CStringW wStr = (CStringW)filepath.GetBuffer(0);
+			//image->Save(wStr, &encoderClsid, &param);
 		} else if ( expname.Compare( _T( "PNG" ) ) == 0 ) {
 			if ( EncodePng != NULL ) {
 				BITMAPINFO* pbmi = ( BITMAPINFO *)m_ptr ;
