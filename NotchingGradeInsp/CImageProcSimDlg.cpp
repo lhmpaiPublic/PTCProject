@@ -3088,7 +3088,7 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
 
-	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, m_pRecipeInfo, CAM_POS_BOTTOM);
+	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockDross, vecBlockFoilExp, m_pRecipeInfo, CAM_POS_BOTTOM);
 	CImageProcess::SortingBlockInfo(&vecBlockMerge);
 
 	AddDefectInfo(&vecBlockMerge, NULL, CAM_POS_BOTTOM);

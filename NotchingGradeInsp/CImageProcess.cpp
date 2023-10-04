@@ -6986,6 +6986,12 @@ BOOL CImageProcess::IsLinkedBlock(CRect rcPtr, CRect rcTar, CPoint cpRange)
 
 int CImageProcess::MergeAndLink_BlockInfo(_VEC_BLOCK* pDestVlock, _VEC_BLOCK vecFirst, _VEC_BLOCK vecSecond, CRecipeInfo* pRecipeInfo, int nCamPos)
 {
+	// 인자 사용에 방향성 있음
+	// TOP, BTM 이미지 기준으로 vecFirst 안쪽 결함(Foil-IN), vecSecond 바깥쪽(Foil Out) 결함으로 사용하여야함
+	// ex) Top의 경우 vecFirst = Foil-In 결함, vecSecond = Foil-Out 결함
+	// ex) Btm의 경우 vecFirst = Foil-Out 결함, vecSecond = Foil-In 결함
+
+
 	int nRet = 0;
 
 	ASSERT(pDestVlock);
@@ -8051,7 +8057,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
-	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, pRecipeInfo, CAM_POS_TOP );
+	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, pRecipeInfo, CAM_POS_TOP);
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
 	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockMerge, pRecipeInfo, pTabRsltInfo, CAM_POS_TOP, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
@@ -8229,7 +8235,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
 
-	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, pRecipeInfo, CAM_POS_BOTTOM);
+	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockDross, vecBlockFoilExp, pRecipeInfo, CAM_POS_BOTTOM);
 	CImageProcess::SortingBlockInfo(&vecBlockMerge);
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
