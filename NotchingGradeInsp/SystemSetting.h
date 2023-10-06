@@ -77,8 +77,18 @@ public:
 
 	BOOL m_bNonNgSave;
 	BOOL m_bNonNgStop;
+	
+	//SPC 작동
+	BOOL m_bDisableSpcPlus;
 
 	int m_nOverflowCountMax;
 	int m_nMissTabIdMax;
+
+#if 1 //kjk rs232 추가 230922
+	int m_nRS232_Mode; 
+	int m_nRS232_Baudrate;
+	CString m_strRS232_COMPORT_TOP;
+	CString m_strRS232_COMPORT_BOTTOM;
+#endif
 };
 

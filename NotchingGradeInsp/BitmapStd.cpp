@@ -983,6 +983,36 @@ int CBitmapStd::SaveBitmap( CWnd *pwnd, LPCTSTR pszInitDir )
 	return ( nRet ) ;
 }
 
+int CBitmapStd::GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
+{
+	UINT  num = 0;          // number of image encoders  
+	UINT  size = 0;         // size of the image encoder array in bytes  
+
+	ImageCodecInfo* pImageCodecInfo = NULL;
+
+	GetImageEncodersSize(&num, &size);
+	if (size == 0)
+		return -1;
+
+	pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
+	if (pImageCodecInfo == NULL)
+		return -1;  // Failure  
+
+	GetImageEncoders(num, size, pImageCodecInfo);
+
+	for (UINT j = 0; j < num; ++j)
+	{
+		if (wcscmp(pImageCodecInfo[j].MimeType, format) == 0)
+		{
+			*pClsid = pImageCodecInfo[j].Clsid;
+			free(pImageCodecInfo);
+			return j;  // Success  
+		}
+	}
+
+	free(pImageCodecInfo);
+	return -1;  // Failure  
+}
 
 int CBitmapStd::SaveBitmap( CString &filepath )
 {
@@ -1083,6 +1113,26 @@ int CBitmapStd::SaveBitmap( CString &filepath )
 				strMsg.Format( _T( "Please check the library file \"%s\"." ), g_szLibrary ) ;
 				AfxMessageBox( strMsg ) ;
 			}
+			//int nQuality = m_nJpegQuality;
+			//Gdiplus::EncoderParameters param;
+			//param.Count = 1;
+			//param.Parameter[0].Guid = Gdiplus::EncoderQuality;
+			//param.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
+			//param.Parameter[0].NumberOfValues = 1;
+			//param.Parameter[0].Value = &nQuality;
+
+			//BITMAPINFO* pbmi = (BITMAPINFO*)m_ptr;
+			//BYTE* pimg = (BYTE*)pbmi;
+			//pimg += sizeof(BITMAPINFOHEADER);
+			//pimg += pbmi->bmiHeader.biClrUsed * sizeof(RGBQUAD);
+
+			//Gdiplus::Bitmap* image;
+			//image = Gdiplus::Bitmap::FromBITMAPINFO(pbmi, pimg);
+			//CLSID   encoderClsid;
+			//// Get the CLSID of the JPEG encoder.
+			//GetEncoderClsid(L"image/jpeg", &encoderClsid);
+			//CStringW wStr = (CStringW)filepath.GetBuffer(0);
+			//image->Save(wStr, &encoderClsid, &param);
 		} else if ( expname.Compare( _T( "PNG" ) ) == 0 ) {
 			if ( EncodePng != NULL ) {
 				BITMAPINFO* pbmi = ( BITMAPINFO *)m_ptr ;

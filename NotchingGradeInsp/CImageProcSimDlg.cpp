@@ -712,9 +712,9 @@ int  CImageProcSimDlg::AddDefectInfo(CImageProcess::_VEC_BLOCK* vecBlockFoilExp,
 
 			pBlockData->nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nCamPos], m_pRecipeInfo->dDefJudgeHeight, pBlockData->dJudgeSize, pBlockData->dHeight );
 			
-			if (pBlockData->nDefJudge == JUDGE_NG)
-			{
-				if (pBlockData->nType == en_ModeFoilExp)
+//			if (pBlockData->nDefJudge == JUDGE_NG)
+//			{
+				if (pBlockData->nType == en_ModeFoilExp || pBlockData->nType == en_ModeFoilExpOut)
 				{
 					if ( ((m_pRecipeInfo->dIgnoreDistance < pBlockData->dDistance) && (m_pRecipeInfo->dIgnoreDistance > 0))
 						&& ((pBlockData->dWidth > m_pRecipeInfo->dIgnoreSize) && (m_pRecipeInfo->dIgnoreSize > 0)) )
@@ -724,7 +724,7 @@ int  CImageProcSimDlg::AddDefectInfo(CImageProcess::_VEC_BLOCK* vecBlockFoilExp,
 						pBlockData->bDeleteFlag = TRUE;
 					}
 				}
-			}
+//			}
 
 			if (pBlockData->dJudgeSize == 0.f)
 			{
@@ -2855,12 +2855,12 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 
 			if (rcLeftRnd.PtInRect(ptCenter) == TRUE)
 			{
-				//CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
 				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
 			else if (rcRightRnd.PtInRect(ptCenter) == TRUE)
 			{
-				//CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
 				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 
 			}
@@ -3088,7 +3088,7 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	CImageProcess::_VEC_BLOCK vecBlockMerge;
 	vecBlockMerge.clear();
 
-	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockFoilExp, vecBlockDross, m_pRecipeInfo, CAM_POS_BOTTOM);
+	CImageProcess::MergeAndLink_BlockInfo(&vecBlockMerge, vecBlockDross, vecBlockFoilExp, m_pRecipeInfo, CAM_POS_BOTTOM);
 	CImageProcess::SortingBlockInfo(&vecBlockMerge);
 
 	AddDefectInfo(&vecBlockMerge, NULL, CAM_POS_BOTTOM);
@@ -3489,7 +3489,8 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 			// 22.02.07 Ahn Modify Start
 			if (rcLeft.PtInRect(cpLT) == TRUE) {
-				CImageProcess::CheckDistanceToEdgeLine(pData, &vecLeftRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
+				//CImageProcess::CheckDistanceToEdgeLine(pData, &vecLeftRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
+				CImageProcess::CalcSizeToEdgeLine(pData, &vecLeftRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
 				//if (rcTemp.IntersectRect(rcLeftRnd, rcDef) == TRUE) 
 				if(rcLeftRnd.PtInRect( cpLT ) == TRUE )
 				{
@@ -3500,7 +3501,8 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 				}
 			}
 			else if (rcRight.PtInRect(cpLB) == TRUE) {
-				CImageProcess::CheckDistanceToEdgeLine(pData, &vecRightRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
+				//CImageProcess::CheckDistanceToEdgeLine(pData, &vecRightRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
+				CImageProcess::CalcSizeToEdgeLine(pData, &vecRightRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
 				if (rcLeftRnd.PtInRect(cpLB) == TRUE)
 				{
 					CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcDef, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindRight);
@@ -3732,9 +3734,9 @@ int CImageProcSimDlg::ProceBottomAll_Negative()
 		for (int i = 0; i < nDefSize; i++) {
 			pData = &(*pVecBlockPtr)[i];
 
-			CImageProcess::CheckDistanceToEdgeLine(pData, &vecAllRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
+			//CImageProcess::CheckDistanceToEdgeLine(pData, &vecAllRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
 
-			if (pData->bDeleteFlag == TRUE) continue;
+			//if (pData->bDeleteFlag == TRUE) continue;
 			//if (AprData.m_System.m_nMachineMode == ANODE_MODE) 
 			{
 				CImageProcess::CalcSizeToEdgeLine(pData, &vecAllRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
@@ -5173,12 +5175,12 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 			if (rcLeftRnd.PtInRect(ptCenter) == TRUE)
 			{
-				//CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
 				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
 			else if (rcRightRnd.PtInRect(ptCenter) == TRUE)
 			{
-				//CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
 				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
 			else
@@ -5652,7 +5654,7 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 
 			// 22.02.07 Ahn Modify Start
 			if (rcLeft.PtInRect(cpLT) == TRUE) {
-				CImageProcess::CheckDistanceToEdgeLine(pData, &vecLeftRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
+				//CImageProcess::CheckDistanceToEdgeLine(pData, &vecLeftRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
 				//if (rcTemp.IntersectRect(rcLeftRnd, rcDef) == TRUE) 
 				//if (rcLeftRnd.PtInRect(cpLT) == TRUE)
 				//{
@@ -5660,17 +5662,19 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 				//}
 				//else 
 				{
+					CImageProcess::CalcSizeToEdgeLine(pData, &vecLeftRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
 					CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 				}
 			}
 			else if (rcRight.PtInRect(cpLB) == TRUE) {
-				CImageProcess::CheckDistanceToEdgeLine(pData, &vecRightRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
+				//CImageProcess::CheckDistanceToEdgeLine(pData, &vecRightRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
 				//if (rcLeftRnd.PtInRect(cpLB) == TRUE)
 				//{
 				//	CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcDef, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindRight);
 				//}
 				//else 
 				{
+					CImageProcess::CalcSizeToEdgeLine(pData, &vecRightRndInfo, AprData.m_System.m_dResolX[CAM_POS_TOP], CAM_POS_TOP);
 					CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 				}
 			}
@@ -5961,12 +5965,12 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	for (int i = 0; i < nDefSize; i++) {
 		pData = &(*pVecBlockPtr)[i];
 
-		CImageProcess::CheckDistanceToEdgeLine(pData, &vecRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
+		//CImageProcess::CheckDistanceToEdgeLine(pData, &vecRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
 
-		if (pData->bDeleteFlag == TRUE) continue;
+		//if (pData->bDeleteFlag == TRUE) continue;
 		//if (AprData.m_System.m_nMachineMode == ANODE_MODE) 
 		{
-			//CImageProcess::CalcSizeToEdgeLine(pData, &vecAllRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
+			CImageProcess::CalcSizeToEdgeLine(pData, &vecRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
 			CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 		}
 	}

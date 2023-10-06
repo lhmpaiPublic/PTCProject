@@ -19,6 +19,7 @@
 //#define MAX_LIGHT_UNIT 2
 
 class CLightSocket;
+class CLightRS232Dlg; // 230922 kjk
 
 class CLightControl
 {
@@ -94,6 +95,12 @@ public :
 	int GetMaxUnit() { return m_nMaxLight; };
 	// 22.07.07 Ahn Add End
 
+#if 1 //230922 kjk
+	CLightRS232Dlg* m_pRS232Dlg; 
+	BOOL bRS232Mode = FALSE;
+	int SendNRecvRS232(char* pSendBuff, char* pRecvBuff, int nCmdLen, int nRecvLen, long lTimeOver);
+#endif
+
 private :
 	int SetLevel_8Bit(int ch, BYTE level);
 	int SetLevel_8Bit(int unit, int ch, BYTE level);
@@ -111,14 +118,10 @@ private:
 	CLightSocket* m_pClient[MAX_LIGHT_CHANEL] ;
 	CLightSocket* GetClient( int ch ) ;
 
-
 	BOOL m_bOpened;
 
 	int m_nMaxLight;
 	int m_pLevel[MAX_CHANEL] ;
 	int m_pFineLevel[MAX_CHANEL] ;
-	
-
-
 };
 

@@ -1299,14 +1299,30 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
 
 							//SPC+ 전송용 이미지 파일 저장 정보
-							if (nImgSize)
+							if (CSpcInfo::Inst()->getSPCStartFlag())
 							{
+<<<<<<< HEAD
 								pFrmRsltInfo->m_nWidth;
 								CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 								//퀄리티 정보를  세팅한다.
 								pSaveInfo->SetImgPtr(pFrmRsltInfo->GetImagePtr(), pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, SPCImageQuality);
 								pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
 								pImgSaveQueueCtrl->PushBack(pSaveInfo);
+=======
+								if (nImgSize)
+								{
+									pFrmRsltInfo->m_nWidth;
+									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
+									BYTE* pImgSavePtr;
+									pImgSavePtr = new BYTE[nImgSize + 1];
+									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
+									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+									//퀄리티 정보를  세팅한다.
+									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, SPCImageQuality);
+									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
+									pImgSaveQueueCtrl->PushBack(pSaveInfo);
+								}
+>>>>>>> origin/master
 							}
 
 							//기존 이미지 저장정보

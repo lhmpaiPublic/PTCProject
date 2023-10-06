@@ -691,6 +691,7 @@ int CResultViewDlg::CounterReset()
 {
 //	m_nRow 
 	int m_nRows = 1 ; 
+	m_pResultList->resetTotalcount();
 
 	TRY{
 		m_pResultList->SetRowCount(m_nRows);

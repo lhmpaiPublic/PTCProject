@@ -17,7 +17,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 한국어(대한민국) resources
+// Korean (Korea) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -34,8 +34,8 @@ CAPTION "Version Info"
 FONT 9, "Arial", 400, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,27,20,20
-    LTEXT           "NotchingGradeInsp\nVersion\tBinV1.0",IDC_STATIC,41,29,93,21,SS_NOPREFIX
-    LTEXT           "Creation : 2023 / 05 / 09",IDC_STATIC,40,48,99,8
+    LTEXT           "NotchingGradeInsp\nVersion\tBinV2.0",IDC_STATIC,41,29,93,21,SS_NOPREFIX
+    LTEXT           "Creation : 2023 / 09 / 21",IDC_STATIC,40,48,99,8
     DEFPUSHBUTTON   "OK",IDOK,113,7,41,14,WS_GROUP
     LTEXT           "PROTECH Corporation",IDC_STATIC,14,13,75,8
 END
@@ -564,6 +564,7 @@ BEGIN
     EDITTEXT        IDC_ED_OVERFLOW_MAX,337,108,72,12,ES_AUTOHSCROLL
     LTEXT           "Miss Tab ID Count Max",IDC_ST_MISS_TAB_ID_MAX,255,124,79,8
     EDITTEXT        IDC_ED_MISS_TAB_ID_MAX,337,122,72,12,ES_AUTOHSCROLL
+    CONTROL         "Not Use SPC+",IDC_CHK_DISABLE_SPCPLUS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,354,81,66,10
 END
 
 IDD_DLG_RECIPE_SELECT DIALOGEX 0, 0, 235, 304
@@ -971,6 +972,15 @@ BEGIN
     PUSHBUTTON      "Clear",IDC_BTN_CLEAR,395,39,30,27
 END
 
+IDD_DLG_RS232 DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,198,155,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,252,155,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1284,6 +1294,14 @@ BEGIN
         TOPMARGIN, 3
         BOTTOMMARGIN, 143
     END
+
+    IDD_DLG_RS232, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1531,6 +1549,11 @@ BEGIN
 END
 
 IDD_DLG_HISTORY AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_RS232 AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -2082,7 +2105,7 @@ BEGIN
     IDS_CROP_IMAGE_VIEW     "크롭 이미지 윈도우"
 END
 
-#endif    // 한국어(대한민국) resources
+#endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -564,6 +564,12 @@
     <ClInclude Include="SpcPlus\SpcCreateJSONFileThread.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CLightRS232Dlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Light232.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -1008,6 +1014,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SpcPlus\SpcCreateJSONFileThread.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CLightRS232Dlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Light232.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

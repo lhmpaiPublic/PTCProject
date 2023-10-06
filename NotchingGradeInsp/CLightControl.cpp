@@ -5,7 +5,7 @@
 #include "WinTool.h"
 #include "Ping.h"
 #include "GlobalData.h"
-
+#include "CLightRS232Dlg.h" //230922 kjk
 
 CLightControl::CLightControl(void)
 {
@@ -24,9 +24,17 @@ CLightControl::CLightControl(void)
 // 	// 23.02.07 Ahn Modify Start
 // 		m_nMaxLight = 1 ;
 // 	}
+
+	//230922 kjk
+	m_pRS232Dlg = new CLightRS232Dlg();
+
 }
 CLightControl::~CLightControl()
 {
+#if 1 //230922 kjk
+	delete m_pRS232Dlg;
+	m_pRS232Dlg = NULL;
+#endif
 }
 
 int CLightControl::Pump(void)
@@ -160,74 +168,96 @@ int CLightControl::DeleteUnit(void)
 int CLightControl::Open(void)
 {
 	BOOL bTimeOut = FALSE;
+#if 1 // 230922 kjk	 
+	if (AprData.m_System.m_nRS232_Mode == 1) bRS232Mode = TRUE;
+#endif
 
 	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Light) == TRUE) {
 		return 2;
 	}
 
 	if ( m_bOpened == FALSE) {
-	//	CString strIpAddress = _T("192.168.10.10");
-		CString strIpAddress[MAX_LIGHT_UNIT];
-		for ( int i = 0; i < MAX_LIGHT_UNIT; i++) {
-			strIpAddress[i].Format( _T("192.168.10.16%d"), i+1);
-		}
+		if (bRS232Mode == FALSE) {
+			// 기존 TCP
+			//	CString strIpAddress = _T("192.168.10.10");
+			CString strIpAddress[MAX_LIGHT_UNIT];
+			for (int i = 0; i < MAX_LIGHT_UNIT; i++) {
+				strIpAddress[i].Format(_T("192.168.10.16%d"), i + 1);
+			}
 
-		int nPort = 1000;
+			int nPort = 1000;
 
-		Close();
-		{
-			CPing cp;
-			cp.SetMaxLoopCount(3);
-			cp.SetNotReceiveResponse_ReplyTimeout(FALSE);
-			cp.SetWaitReplyTimeout(1, 100);
-			BOOL bDone[MAX_LIGHT_UNIT];
+			Close();
+			{
+				CPing cp;
+				cp.SetMaxLoopCount(3);
+				cp.SetNotReceiveResponse_ReplyTimeout(FALSE);
+				cp.SetWaitReplyTimeout(1, 100);
+				BOOL bDone[MAX_LIGHT_UNIT];
 
-			int i = 0;
-			{			
-				// 22.07.06 Ahn Modify Start
-				//for ( i = 0; i < MAX_LIGHT_UNIT; i++){
-				for (i = 0; i < m_nMaxLight; i++) {
+				int i = 0;
+				{
+					// 22.07.06 Ahn Modify Start
+					//for ( i = 0; i < MAX_LIGHT_UNIT; i++){
+					for (i = 0; i < m_nMaxLight; i++) {
 						// 22.07.06 Ahn Modify End
-					if (bDone[i] == TRUE) {
-					//	continue;
-					}
-					if (cp.Ping(strIpAddress[i]) == 0) {
-						if (cp.IsConnect() == TRUE) {
-							bDone[i] = TRUE;
+						if (bDone[i] == TRUE) {
+							//	continue;
+						}
+						if (cp.Ping(strIpAddress[i]) == 0) {
+							if (cp.IsConnect() == TRUE) {
+								bDone[i] = TRUE;
+							}
 						}
 					}
 				}
 			}
-		}
 
-		for (int i = 0; i < m_nMaxLight; i++) {
-			SetUnit(i, strIpAddress[i], CLightSocket::TCP_MODE);
-		}
+			for (int i = 0; i < m_nMaxLight; i++) {
+				SetUnit(i, strIpAddress[i], CLightSocket::TCP_MODE);
+			}
 
-		CTimeAnalyzer ta;
-		ta.StopWatchStart();
-		int cnt = m_nMaxLight;
+			CTimeAnalyzer ta;
+			ta.StopWatchStart();
+			int cnt = m_nMaxLight;
 
-		while (cnt) {
-			Pump();
-			Sleep(10);
-			int  n;
-			for (n = 0; n < cnt; n++) {
-				if (GetConnect(n) == FALSE) {
+			while (cnt) {
+				Pump();
+				Sleep(10);
+				int  n;
+				for (n = 0; n < cnt; n++) {
+					if (GetConnect(n) == FALSE) {
+						break;
+					}
+				}
+				if (n == cnt) {
+					break;
+				}
+				if (ta.WhatTimeIsIt() > 5000) {
+					bTimeOut = TRUE;
 					break;
 				}
 			}
-			if (n == cnt) {
-				break;
-			}
-			if (ta.WhatTimeIsIt() > 5000) {
-				bTimeOut = TRUE;
-				break;
+
+			if (bTimeOut == TRUE) {
+				return -1;
 			}
 		}
+		else {
+		// RS232
+		//	AfxMessageBox(_T("rs232 모드"));
+			m_pRS232Dlg->getRS232Info();
+			m_pRS232Dlg->ConnectRS232();
 
-		if (bTimeOut == TRUE) {
-			return -1;
+
+			if (m_pRS232Dlg->comport_state == FALSE) {
+				//m_Button_Connect.SetWindowTextW(_T("Disconnect"));
+				return -1;
+			}
+			else {
+				//m_Button_Connect.SetWindowTextW(_T("Connect"));
+			}
+
 		}
 	}
 
@@ -545,6 +575,29 @@ BOOL CLightControl::IsLampErrorAll(void)
 //}
 
 
+int CLightControl::SendNRecvRS232(char* pSendBuff, char* pRecvBuff, int nCmdLen, int nRecvLen, long lTimeOver)
+{
+	char mRecvBuff[32] = {0};
+
+	if (m_pRS232Dlg->comport_state == FALSE) return -1;
+
+	for (int try_cnt = 0; try_cnt <= 1 ; try_cnt++) {
+		//m_pRS232Dlg->send(try_cnt, pSendBuff, pRecvBuff, nCmdLen, nRecvLen, lTimeOver);
+		m_pRS232Dlg->send(try_cnt, pSendBuff, mRecvBuff, nCmdLen, nRecvLen, lTimeOver);
+	}
+
+	
+	for (int i = 0; i < 32; i++) {
+
+//		sprintf_s(bb, "230926_1 mRecvBuff[%d] = %x \n", i, (unsigned char)mRecvBuff[i]);
+//		OutputDebugString(bb);
+
+		pRecvBuff[i] = (unsigned char)mRecvBuff[i + 1];
+	}
+	
+	return 0;
+}
+
 int CLightControl::SetLevel_8Bit(int unit, int ch, BYTE level)
 {
 	//	CString strCommond = _T("WDA");
@@ -553,15 +606,32 @@ int CLightControl::SetLevel_8Bit(int unit, int ch, BYTE level)
 	memset(send_buff, 0x00, sizeof(send_buff));
 	char recv_buff[256];
 	memset(recv_buff, 0x00, sizeof(recv_buff));
+
 	BYTE btCMD = en_CMD_CH_WRITE;
 	send_buff[0] = btCMD;
 	send_buff[1] = ch;
 	send_buff[2] = (char)level;
 	send_buff[3] = (char)(send_buff[0] ^ send_buff[1] ^ send_buff[2]);
 
-	if (SendNRecvPacket(unit, send_buff, recv_buff, en_CH_WRITE_Length, en_CH_WRITE_Length, 1000) < 0) {
-		return (-1);
+	
+	if (bRS232Mode == FALSE) {
+		if (SendNRecvPacket(unit, send_buff, recv_buff, en_CH_WRITE_Length, en_CH_WRITE_Length, 1000) < 0) {
+			return (-1);
+		}
 	}
+	else {
+	//rs232 모드
+		if (SendNRecvRS232(send_buff, recv_buff, en_CH_WRITE_Length, en_CH_WRITE_Length, 1000) < 0) {
+			return (-1);
+		}
+	}
+
+#if 0 //test
+
+	char aa[256] = "";
+	sprintf_s(aa, "230926 recv_buff[0] = %x, btCMD = %x \n", recv_buff[0], btCMD);
+	OutputDebugString(aa);
+#endif
 
 	// 응답 체크
 	BOOL bSuccess = FALSE;
@@ -570,6 +640,11 @@ int CLightControl::SetLevel_8Bit(int unit, int ch, BYTE level)
 	{
 		int temp = 0x00;
 
+#if 0
+		char bb[256] = "";
+		sprintf_s(bb, "230926 recv_buff[2] = %x, level= %x \n", (BYTE)recv_buff[2], (BYTE)level);
+		OutputDebugString(bb);
+#endif
 		if (((BYTE)recv_buff[2]) == (BYTE)level)
 		{
 
@@ -597,7 +672,6 @@ CLightSocket* CLightControl::GetClient(int ch)
 	}
 	return (m_pClient[ch]);
 }
-
 
 int CLightControl::GetConnect(int ch)
 {

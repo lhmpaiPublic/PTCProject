@@ -207,6 +207,7 @@ public:
                 DWORD dwStyle = WS_CHILD | WS_BORDER | WS_TABSTOP | WS_VISIBLE);
     int m_Totalcount;
     int getTotalcount() { return ++m_Totalcount; }
+    void resetTotalcount() { m_Totalcount = 0; }
 ///////////////////////////////////////////////////////////////////////////////////
 // Attributes
 ///////////////////////////////////////////////////////////////////////////////////

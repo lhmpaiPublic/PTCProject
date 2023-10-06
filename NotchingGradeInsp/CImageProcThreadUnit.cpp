@@ -122,6 +122,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				//Trigger Tab Id
 				pFrameRsltInfo->m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
+				//Defec 정보 출력 시 Cell id 나오도록 정보 입력
+				pFrameRsltInfo->m_pTabRsltInfo->m_nCellId = pFrmInfo->m_nTabId_CntBoard;
+
 				//프레임 헤더 번호
 				pFrameRsltInfo->m_nHeadNo = nHeadNo;
 				//프레임  Tab  번호
@@ -766,8 +769,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
-				//파일저장 프레임 결과 정보에 저장한다.
-				pFrameRsltInfo->Copy(pFrmInfo);
 
 				//======TacTime 출력 ========================================================================
 				pFrmInfo->m_tacTimeList[1] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
@@ -782,6 +783,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				//pCtrl->SetEventProcEnd();
 				pCtrl->m_bProcEnd = TRUE;
+
+				//파일저장 프레임 결과 정보에 저장한다.
+				pFrameRsltInfo->Copy(pFrmInfo);
+
 				break;
 				//}
 			} //Proc Start 이벤트 샐행 루프 빠져나감
@@ -794,9 +799,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	//CFrameInfo 객체의 Kill 이벤트 설정
 	::SetEvent(pCtrl->m_hEventKilled);
 
-	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ThreadExit",
-		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-		);
 
 	return 0;
 }
@@ -960,6 +962,10 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 			m_pThread = NULL;
 
 			//파일저장 프레임 결과 정보에 저장한다.
+			if (m_pFrmRsltInfo == NULL)
+			{
+				m_pFrmRsltInfo = new CFrameRsltInfo();
+			}
 			m_pFrmRsltInfo->Copy(m_pFrmInfo);
 			m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
 			m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
