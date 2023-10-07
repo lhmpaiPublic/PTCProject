@@ -792,7 +792,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				if (topPtr)
 				{
 					pUnitTop = topPtr->deQueue();
-					LOGDISPLAY_SPEC(8)("TopQueueCtrl TopPtr Get");
+					if (pUnitTop)
+					{
+						LOGDISPLAY_SPEC(8)("TopQueueCtrl TopPtr Get");
+					}
 				}
 				else
 				{
@@ -805,7 +808,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				if (btmPtr)
 				{
 					pUnitBtm = btmPtr->deQueue();
-					LOGDISPLAY_SPEC(8)("BtmQueueCtrl BtmPtr Get");
+					if (pUnitBtm)
+					{
+						LOGDISPLAY_SPEC(8)("BtmQueueCtrl BtmPtr Get");
+					}
 				}
 				else
 				{
