@@ -126,12 +126,12 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 				AprData.SaveDebugLog_Format(strLog);
 				AprData.SaveErrorLog(strLog);
 
-				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>-Overflow",
+				LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>-Overflow",
 					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
 					);
 
 			}
-			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>",
+			LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Qsize<%d>",
 				(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard, totalQueueSize
 				);
 
@@ -311,7 +311,7 @@ void CThreadQueueCtrl::enQueue()
 		CImageProcThreadUnit* pImageProcThreadUnit = GetWatchQueueData();
 		if (pImageProcThreadUnit)
 		{
-			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - enQ-ResultWaitQ",
+			LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - enQ-ResultWaitQ",
 				(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
 				);
 

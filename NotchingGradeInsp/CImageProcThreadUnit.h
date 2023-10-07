@@ -33,13 +33,12 @@ protected:
 	//m_hEventProcEnd의 타임아웃 카운트
 	int ProcEnd_WaitCount;
 
-	CWinThread* m_pThread;
 	int m_nErrorCode;
 
 	//타임아웃 여부 변수
 	BOOL m_bTimeOut;
 public:
-
+	CWinThread* m_pThread;
 	//m_hEventProcEnd 대신 사용 
 	BOOL m_bProcEnd;
 

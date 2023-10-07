@@ -792,10 +792,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				if (topPtr)
 				{
 					pUnitTop = topPtr->deQueue();
+					LOGDISPLAY_SPEC(8)("TopQueueCtrl TopPtr Get");
 				}
 				else
 				{
-					LOGDISPLAY_SPEC(6)("TopQueueCtrl NULL");
+					LOGDISPLAY_SPEC(8)("TopQueueCtrl NULL");
 				}
 			}
 			if (pUnitBtm == NULL)
@@ -804,10 +805,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				if (btmPtr)
 				{
 					pUnitBtm = btmPtr->deQueue();
+					LOGDISPLAY_SPEC(8)("BtmQueueCtrl BtmPtr Get");
 				}
 				else
 				{
-					LOGDISPLAY_SPEC(6)("BtmQueueCtrl NULL");
+					LOGDISPLAY_SPEC(8)("BtmQueueCtrl NULL");
 				}
 			}
 
@@ -826,8 +828,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				while (1)
 				{
 
-					if (pThis->m_bKill == TRUE) {
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc pThis->m_bKill == TRUE"), pUnitTop->m_pFrmInfo->nTabNo);
+					if (pThis->m_bKill == TRUE)
+					{
+						LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc pThis->m_bKill == TRUE"), pUnitTop->m_pFrmInfo->nTabNo
+							);
+
 						break;
 					}
 
@@ -843,10 +848,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
 
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
+						LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
 							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
 							);
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
+						LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
 							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
 							);
 
@@ -1415,7 +1420,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CImageProcessCtrl::GetResultPtr(CAM_POS_TOP)->PushBack((CFrameInfo*)pTopInfo);
 						CImageProcessCtrl::GetResultPtr(CAM_POS_BOTTOM)->PushBack((CFrameInfo*)pBtmInfo);
 
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit1",
+						LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit1",
 							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
 							);
 
@@ -1445,19 +1450,38 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
-						LOGDISPLAY_SPEC(6)("UnitThread - ResultProcWait-Timeout"	);
+						LOGDISPLAY_SPEC(8)("UnitThread - ResultProcWait-Timeout");
 
+						int topWaitVal = pUnitTop->eventProcEnd_WaitTime();
+						int btmWaitVal = pUnitBtm->eventProcEnd_WaitTime();
 
-						//출력 대기 이벤트 객체 pop, 이벤트 닫기
+						if (topWaitVal == 2)
+						{
+							DWORD nExitCode = NULL;
+							GetExitCodeThread(pUnitTop->m_pThread->m_hThread, &nExitCode);
+							TerminateThread(pUnitTop->m_pThread->m_hThread, nExitCode);
+							pUnitTop->m_pThread = NULL;
+						}
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> UnitThread - ResultProcWait-Timeout"));
-
+						if (btmWaitVal == 2)
+						{
+							DWORD nExitCode = NULL;
+							GetExitCodeThread(pUnitBtm->m_pThread->m_hThread, &nExitCode);
+							TerminateThread(pUnitBtm->m_pThread->m_hThread, nExitCode);
+							pUnitBtm->m_pThread = NULL;
+						}
 
 						break;
+					}
+					else
+					{
+						LOGDISPLAY_SPEC(8)(_T("UnitThread - ResultProcWait-loop"));
 					}
 				}
 
 				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> ResultProc End") );
+
+				LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> ResultProc End"));
 
 
 				if (pUnitTop)

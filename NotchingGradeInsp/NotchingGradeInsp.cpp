@@ -217,6 +217,8 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		m_pMainWnd->SetWindowText(strTitle);
 
 		AprData.SaveDebugLog_Format(_T("============================= START PROGRAM (%s) ============================="), strVersion);
+		LOGDISPLAY_SPEC(8)(_T("============================= START PROGRAM (%s) ============================="), strVersion);
+
 	}
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
