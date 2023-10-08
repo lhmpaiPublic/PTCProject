@@ -636,14 +636,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
 						QueryPerformanceCounter(&start);
 
-						//프레임 처리시간 객체를 세팅한다.
-						pInfo->m_stTime = start;
-						pInfo->m_dFrecuency = dFrequency;
-						pBtmInfo->m_stTime = start;
-						pBtmInfo->m_dFrecuency = dFrequency;
-						// 22.12.09 Ahn Add End
-
-
 						double TabFind_TacTime = CGlobalFunc::GetDiffTime(start_TabFind, dFrequency_TabFind);
 						//Image Cutting Tab 정보 출력 로그
 						LOGDISPLAY_SPEC(4)("*TacTime - TabFind : TabID-[%d], TabNo-[%d], TacTime[%f]",
@@ -799,7 +791,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				}
 				else
 				{
-					LOGDISPLAY_SPEC(8)("TopQueueCtrl NULL");
+					LOGDISPLAY_SPEC(8)("TopQueueCtrl TopPtr Get NULL");
 				}
 			}
 			if (pUnitBtm == NULL)
@@ -815,7 +807,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				}
 				else
 				{
-					LOGDISPLAY_SPEC(8)("BtmQueueCtrl NULL");
+					LOGDISPLAY_SPEC(8)("BtmQueueCtrl BtmPtr Get NULL");
 				}
 			}
 
@@ -836,15 +828,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					if (pThis->m_bKill == TRUE)
 					{
-						LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc pThis->m_bKill == TRUE"), pUnitTop->m_pFrmInfo->nTabNo
+						LOGDISPLAY_SPEC(8)(_T("<CImageProcThread> TabNo<%d> CtrlThreadImgProc pThis->m_bKill == TRUE"), pUnitTop->m_pFrmInfo->nTabNo
 							);
 
 						break;
 					}
-
-					// 22.12.09 Ahn Add Start
-					LARGE_INTEGER stTime;
-					// 22.12.09 Ahn Add End
 
 					int topWaitVal = pUnitTop->eventProcEnd_WaitTime();
 					int btmWaitVal = pUnitBtm->eventProcEnd_WaitTime();
@@ -854,20 +842,15 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
 
-						LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
+						LOGDISPLAY_SPEC(8)("<<%s>>>CtrlThreadImgProc TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
 							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
 							);
-						LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
+						LOGDISPLAY_SPEC(8)("<<%s>>>CtrlThreadImgProc TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
 							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
 							);
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pTopInfo->nTabNo);
 
-
-						//======TacTime 출력 ========================================================================
-						pTopInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
-						pBtmInfo->m_tacTimeList[2] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
-						//=================================================================================================
 
 
 						//SPC 객체 소스에서 컴파일 여부 결정
@@ -935,10 +918,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						int nBtmJudge = pBtmInfo->m_pTabRsltInfo->m_nJudge;
 						int nTopJudge = pTopInfo->m_pTabRsltInfo->m_nJudge;
-
-						// 22.12.09 Ahn Add Start 
-						stTime = pTopInfo->m_stTime;
-						// 22.12.09 Ahn Add End
 
 						// NG Tab 보고
 						if ((nTopJudge == JUDGE_NG) || (nBtmJudge == JUDGE_NG))
@@ -1404,30 +1383,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Save Image PushBack"), pTopInfo->nTabNo);
 
 
-
-						//double dTactTime = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
-						//CTactTimeData data;
-						//data.nCellNo = pTopInfo->m_pTabRsltInfo->m_nTabNo;
-						//data.dTactTime = dTactTime;
-						//pTactCtrl->AddNewTactData(data);
-
-
-						//======TacTime 출력 ========================================================================
-						pTopInfo->m_tacTimeList[3] = CGlobalFunc::GetDiffTime(pTopInfo->m_stTime, pTopInfo->m_dFrecuency);
-						pBtmInfo->m_tacTimeList[3] = CGlobalFunc::GetDiffTime(pBtmInfo->m_stTime, pBtmInfo->m_dFrecuency);
-
-
-						LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit",
-							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
-							);
-
 						int tempTabNo = pTopInfo->nTabNo;
 
 						CImageProcessCtrl::GetResultPtr(CAM_POS_TOP)->PushBack((CFrameInfo*)pTopInfo);
 						CImageProcessCtrl::GetResultPtr(CAM_POS_BOTTOM)->PushBack((CFrameInfo*)pBtmInfo);
 
-						LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ResultProcWait-Exit1",
-							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
+						LOGDISPLAY_SPEC(8)("CtrlThreadImgProc TabNo<%d>-TabId<%d> - Result info Push",
+							pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
 							);
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- pRsltQueueCtrl->PushBack()"), tempTabNo);
@@ -1456,7 +1418,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
-						LOGDISPLAY_SPEC(8)("UnitThread - ResultProcWait-Timeout");
+						LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout");
 
 						int topWaitVal = pUnitTop->eventProcEnd_WaitTime();
 						int btmWaitVal = pUnitBtm->eventProcEnd_WaitTime();
@@ -1481,7 +1443,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else
 					{
-						LOGDISPLAY_SPEC(8)(_T("UnitThread - ResultProcWait-loop"));
+						LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgProc - ResultProcWait-loop"));
 					}
 				}
 

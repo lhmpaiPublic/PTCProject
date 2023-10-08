@@ -97,11 +97,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					pCtrl->m_nErrorCode = -1;
 					break;
 				}
-				//======TacTime 출력 용========================================================================
-				pFrmInfo->m_tacTimeList[0] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
-				
-				 //============================================================================================
-
 
 				//이미지 넓이
 				int nWidth = pFrmInfo->m_nWidth;
@@ -144,13 +139,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				pFrameRsltInfo->m_pTabRsltInfo->nFrameCount = pFrmInfo->m_nFrameCount;
 				//프레임 결과 정보/Tab  결과정보 프레임 In 위치 세팅
 				pFrameRsltInfo->m_pTabRsltInfo->nTabStartPosInFrame = pFrmInfo->nTabStartPosInFrame;
-				// 22.12.01 Ahn Add End
-				// 22.12.09 Ahn Add Start
-				//프레임 결과 정보에 st Time 세팅
-				pFrameRsltInfo->m_stTime = pFrmInfo->m_stTime;
-				//프레임 결과정보 전파 값 제공
-				pFrameRsltInfo->m_dFrecuency = pFrmInfo->m_dFrecuency;
-
 
 				int nLocalRet = 0;
 
@@ -769,15 +757,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
-
-				//======TacTime 출력 ========================================================================
-				pFrmInfo->m_tacTimeList[1] = CGlobalFunc::GetDiffTime(pFrmInfo->m_stTime, pFrmInfo->m_dFrecuency);
-				
-				//============================================================================================
-
 				// 처리 완료
-				//if (::WaitForSingleObject(pCtrl->m_hEventProcEnd, 0) != WAIT_OBJECT_0) {
-				//	::SetEvent(pCtrl->m_hEventProcEnd);
 
 				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ProcEnd"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo );
 
@@ -788,7 +768,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				pFrameRsltInfo->Copy(pFrmInfo);
 
 				break;
-				//}
 			} //Proc Start 이벤트 샐행 루프 빠져나감
 		} //Proc End 이벤트 
 		Sleep(AprData.m_nSleep);

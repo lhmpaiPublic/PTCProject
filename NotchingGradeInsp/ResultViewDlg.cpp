@@ -287,10 +287,14 @@ int CResultViewDlg::UpdateGrid()
 
 	UpdateData(FALSE);
 
-	for( int nRow = nOldNumRows; nRow < m_nRows; nRow++ ){
+	LOGDISPLAY_SPEC(8)("UpdateGrid - defect view Enter");
+
+	for( int nRow = nOldNumRows; nRow < m_nRows; nRow++ )
+	{
 		//CFrameCeInfo* pInfo = (CFrameCeInfo *)pQueue->Pop();
 		CDefectInfo* pInfo = pQueue->Pop();
 		if (pInfo == nullptr) continue;
+
 		for (int nCol = 0; nCol < m_pResultList->GetColumnCount(); nCol++)
 		{
 			CString strText;
@@ -371,6 +375,8 @@ int CResultViewDlg::UpdateGrid()
 	if (m_bAutoRefresh == TRUE) {
 		m_pResultList->EnsureVisible(m_nRows - 1, 0);
 	}
+
+	LOGDISPLAY_SPEC(8)("UpdateGrid - defect view End");
 
 	return 0;
 }

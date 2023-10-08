@@ -194,7 +194,10 @@ double CGlobalFunc::GetDiffTime(LARGE_INTEGER stTime, double dFrequency)
 	double	dv0, dv1;
 	dv0 = (double)stTime.LowPart + ((double)stTime.HighPart * (double)0xffffffff);
 	dv1 = (double)edTime.LowPart + ((double)edTime.HighPart * (double)0xffffffff);
-	double	dtimev;
-	dtimev = (dv1 - dv0) / dFrequency * (double)1000.0;
+	double	dtimev = 0;
+	if (dFrequency > 0)
+	{
+		dtimev = (dv1 - dv0) / dFrequency * (double)1000.0;
+	}
 	return (dtimev);
 }

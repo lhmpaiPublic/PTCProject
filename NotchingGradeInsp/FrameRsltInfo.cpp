@@ -59,9 +59,6 @@ void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 		m_pTabRsltInfo->m_nCellId = pFrmInfo->m_nTabId_CntBoard;
 	}
 
-	for (int i = 0; i < MAX_TACTIMELIST; i++)
-		m_tacTimeList[i] = pFrmInfo->m_tacTimeList[i];
-
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//SPC+ 객체도 복사한다.

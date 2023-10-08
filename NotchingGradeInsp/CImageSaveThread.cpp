@@ -104,7 +104,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
 				{
 					//Image Save Log
-					LOGDISPLAY_SPECTXT(0)(_T("저장 이미지 정보 : 넓이가 0 또는 높이가 0이다"));
+					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave 저장 이미지 정보 : 넓이가 0 또는 높이가 0이다"));
 
 					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 					delete[]pImgPtr;
@@ -117,39 +117,47 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 				if (pSaveInfo->m_strSavePath.GetLength() > 0)
 				{
+					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave Enter"));
+
 //					DWORD dwTic = GetTickCount();
 
 					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 
-					CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
-					bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr());
-					// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
+					if (pImgPtr)
+					{
+						CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
+						bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr());
+						// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
 
-					int nJpgQuality;
+						int nJpgQuality;
 
-					//SPC 객체 소스에서 컴파일 여부 결정
+						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-					nJpgQuality = pSaveInfo->m_nJpgQuality;
+						nJpgQuality = pSaveInfo->m_nJpgQuality;
 #else
-					if (pQueuePtr->GetSize() > 2)
-					{
-						nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10;
-					}
-					else
-					{
-						nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
-					}
+						if (pQueuePtr->GetSize() > 2)
+						{
+							nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10;
+						}
+						else
+						{
+							nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
+						}
 #endif //SPCPLUS_CREATE
 
-					bmp.SetJpegQuality(nJpgQuality);
+						bmp.SetJpegQuality(nJpgQuality);
 
-					bmp.SaveBitmap(pSaveInfo->m_strSavePath);
+						bmp.SaveBitmap(pSaveInfo->m_strSavePath);
 
-//					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CtrlThreadImgSave : %d ms [%s]"), GetTickCount() - dwTic, pSaveInfo->m_strSavePath);
+						//					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CtrlThreadImgSave : %d ms [%s]"), GetTickCount() - dwTic, pSaveInfo->m_strSavePath);
 
 
-					delete[]pImgPtr;
-					pImgPtr = NULL;
+						delete[]pImgPtr;
+						pImgPtr = NULL;
+					}
+
+					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave End"));
+
 				}
 				delete pSaveInfo;
 				pSaveInfo = NULL;

@@ -58,14 +58,6 @@ public :
 	
 	virtual void Copy(CFrameInfo* pFrmInfo) {};
 
-	// 22.12.09 Ahn Add Start
-	//SYSTEMTIME m_sysStTime;
-	LARGE_INTEGER m_stTime ;
-	double		  m_dFrecuency ;
-	//각 구간별 tactime
-	double m_tacTimeList[MAX_TACTIMELIST];
-	// 22.12.09 Ahn Add End
-
 	// 23.02.20 Ahn Add Start
 	BOOL	m_bOverFlow;
 	// 23.02.20 Ahn Add End

@@ -12,8 +12,6 @@ CFrameInfo::CFrameInfo(void)
 	m_bOverFlow = FALSE;
 	// 23.02.20 Ahn Add End
 
-	for (int i = 0; i < MAX_TACTIMELIST; i++)
-		m_tacTimeList[i] = 0.0f;
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
