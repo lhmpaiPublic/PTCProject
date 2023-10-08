@@ -286,14 +286,16 @@ int CResultViewDlg::UpdateGrid()
 	END_CATCH
 
 	UpdateData(FALSE);
-
-	LOGDISPLAY_SPEC(8)("UpdateGrid - defect view Enter");
+	
 
 	for( int nRow = nOldNumRows; nRow < m_nRows; nRow++ )
 	{
+
 		//CFrameCeInfo* pInfo = (CFrameCeInfo *)pQueue->Pop();
 		CDefectInfo* pInfo = pQueue->Pop();
 		if (pInfo == nullptr) continue;
+
+		LOGDISPLAY_SPEC(8)("UpdateGrid - defect TabNo<%d> view Enter", pInfo->nTabNo);
 
 		for (int nCol = 0; nCol < m_pResultList->GetColumnCount(); nCol++)
 		{
@@ -364,6 +366,9 @@ int CResultViewDlg::UpdateGrid()
 		delete pInfo ;
 		pInfo = NULL;
 		nOldNumRows = nRow;
+
+		LOGDISPLAY_SPEC(8)("UpdateGrid - defect TabNo<%d> view End", pInfo->nTabNo);
+
 	}
 
 	for (int count = m_pResultList->GetRowCount(); count >= MAX_GRIDCOUNT; count--)
@@ -376,7 +381,6 @@ int CResultViewDlg::UpdateGrid()
 		m_pResultList->EnsureVisible(m_nRows - 1, 0);
 	}
 
-	LOGDISPLAY_SPEC(8)("UpdateGrid - defect view End");
 
 	return 0;
 }
