@@ -933,11 +933,13 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					//===========================================================================================================
 #endif //SPCPLUS_CREATE
 
+					LOGDISPLAY_SPEC(8)("CtrlThreadResultProc TabNo<%d> CFrameRsltInfo Object Proc End", pRsltInfo->nTabNo);
+
 					pRsltInfo->m_pTabRsltInfo = NULL;
 					delete pRsltInfo;
 					pRsltInfo = NULL;
 
-					LOGDISPLAY_SPEC(8)("CtrlThreadResultProc TabNo<%d> CFrameRsltInfo Object Proc End", pRsltInfo->nTabNo);
+					
 				}
 				else
 				{

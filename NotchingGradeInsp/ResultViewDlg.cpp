@@ -363,11 +363,13 @@ int CResultViewDlg::UpdateGrid()
 			m_pResultList->SetItem(&Item);
 			m_pResultList->SetColAlignment(nCol, flexAlignCenterCenter);
 		}
+
+		LOGDISPLAY_SPEC(8)("UpdateGrid - defect TabNo<%d> view End", pInfo->nTabNo);
+		
 		delete pInfo ;
 		pInfo = NULL;
 		nOldNumRows = nRow;
-
-		LOGDISPLAY_SPEC(8)("UpdateGrid - defect TabNo<%d> view End", pInfo->nTabNo);
+		
 
 	}
 
