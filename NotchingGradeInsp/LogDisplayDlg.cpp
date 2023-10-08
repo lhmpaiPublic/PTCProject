@@ -43,7 +43,7 @@ CString strLogNameList =
 "100 END 0"
 ;
 
-#define LOGDISPLAY_LISTBOX
+//#define LOGDISPLAY_LISTBOX
 #define MAX_DISPLAYLOG 480900
 #define LISTBOX_CLEARCOUNT 5000
 CLogDisplayDlg* CLogDisplayDlg::gInst()
@@ -289,7 +289,6 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 			//Do something...
 			if (CLogDisplayDlg::bCreate && strList->size() && listBox->m_hWnd)
 			{
-				CString tempStr = "";
 				for (int i = 0; i < strList->size(); i++)
 				{
 					CString popStr = pMain->GetLogDisplayMessage();
@@ -299,12 +298,11 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 					CString* pSendStr = new CString(popStr);
 					pMain->PostMessage(WM_LOGMSGPRINT, (WPARAM)pSendStr);
 #endif //LOGDISPLAY_LISTBOX
-					tempStr += popStr + CString("\r\n");
 
 					//텍스트 로그 출력
 					if (pMain->getTextLogPrint())
 					{
-
+						CString tempStr = popStr + CString("\r\n");
 						CString FileName;
 
 						FileName.Format(_T("%s-%s.txt")
