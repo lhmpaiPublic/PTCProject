@@ -150,114 +150,9 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 	return totalQueueSize;
 }
 
-void CThreadQueueCtrl::push(CImageProcThreadUnit* pThread)
-{
-	
-
-	while (true)
-	{
-		if (m_bQueuePushPop == false)
-		{
-			m_bQueuePushPop = true;
-
-			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultWaitQ",
-				(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
-				);
-
-			pThread->ProcStart();
-
-			//스래드객체 저장큐에 저장
-			m_pThradQue.push(pThread);
-
-			m_bQueuePushPop = false;
-
-			break;
-		}
-		else
-		{
-			Sleep(1);
-		}
-
-	}
-}
-
-CImageProcThreadUnit* CThreadQueueCtrl::pop()
-{
-	CImageProcThreadUnit* pThread = NULL;
-	while (true)
-	{
-		if (m_bQueuePushPop == false)
-		{
-			m_bQueuePushPop = true;
-
-			if (m_pThradQue.size())
-			{
-				pThread = m_pThradQue.front();
-				m_pThradQue.pop();
-
-				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - pop-ResultWaitQ",
-					(pThread->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pThread->m_pFrmInfo->nTabNo, pThread->m_pFrmInfo->m_nTabId_CntBoard
-					);
-			}
-			m_bQueuePushPop = false;
-			
-
-			break;
-		}
-		else
-		{
-			Sleep(1);
-		}
-	}
-	return pThread;
-}
-
-BOOL CThreadQueueCtrl::IsEmpty()
-{
-	::EnterCriticalSection(&m_csQueue);
-	BOOL bRet = m_pThradQue.empty();
-	::LeaveCriticalSection(&m_csQueue);
-
-	return bRet;
-}
-
-void CThreadQueueCtrl::ResetQueue()
-{
-	::EnterCriticalSection(&m_csQueue);
-	int size = (int)m_pThradQue.size();
-	int i = 0;
-	CImageProcThreadUnit* pProcUnit;
-	for (i = 0; i < size; i++) {
-		pProcUnit = m_pThradQue.front();
-		m_pThradQue.pop();
-		if (pProcUnit != NULL) {
-
-			pProcUnit->ForceStop();
-			pProcUnit->Kill();
-
-			delete pProcUnit;
-			pProcUnit = NULL;
-		}
-	}
-	::LeaveCriticalSection(&m_csQueue);
-}
-
-int CThreadQueueCtrl::GetSize()
-{
-	::EnterCriticalSection(&m_csQueue);
-	int nRet = (int)m_pThradQue.size();
-	::LeaveCriticalSection(&m_csQueue);
-
-	return nRet;
-
-}
-
 int CThreadQueueCtrl::GetWatchQueueSize()
 {
-	::EnterCriticalSection(&m_csWatchQueue);
 	int nRet = (int)m_pWatchQueBuffer.size();
-	::LeaveCriticalSection(&m_csWatchQueue);
-
 	return nRet;
 
 }
@@ -305,42 +200,52 @@ bool CThreadQueueCtrl::isFull()
 
 void CThreadQueueCtrl::enQueue()
 {
-	while (!isFull())
+	if (m_bQueuePushPop == false)
 	{
-		//스래드 객체를 가져온다.
-		CImageProcThreadUnit* pImageProcThreadUnit = GetWatchQueueData();
-		if (pImageProcThreadUnit)
+		m_bQueuePushPop = true;
+		while (!isFull())
 		{
-			LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - enQ-ResultWaitQ",
-				(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
-				);
+			//스래드 객체를 가져온다.
+			CImageProcThreadUnit* pImageProcThreadUnit = GetWatchQueueData();
+			if (pImageProcThreadUnit)
+			{
+				LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - enQ-ResultWaitQ",
+					(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
+					);
 
-			pImageProcThreadUnit->ProcStart();
-			rear = ++rear % maxQueueSize;
-			ProcThreadUnitqueue[rear] = pImageProcThreadUnit;
+				pImageProcThreadUnit->ProcStart();
+				rear = ++rear % maxQueueSize;
+				ProcThreadUnitqueue[rear] = pImageProcThreadUnit;
+			}
+			else
+			{
+				break;
+			}
 		}
-		else
-		{
-			break;
-		}
+		m_bQueuePushPop = false;
 	}
 }
 
 CImageProcThreadUnit* CThreadQueueCtrl::deQueue()
 {
 	CImageProcThreadUnit* pImageProcThreadUnit = NULL;
-	if (!isEmpty())
+	if (m_bQueuePushPop == false)
 	{
-		front = ++front% maxQueueSize;
-		pImageProcThreadUnit = ProcThreadUnitqueue[front];
-
-		if (pImageProcThreadUnit)
+		m_bQueuePushPop = true;
+		if (!isEmpty())
 		{
-			LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - deQ-ResultWaitQ",
-				(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
-				);
-		}
+			front = ++front % maxQueueSize;
+			pImageProcThreadUnit = ProcThreadUnitqueue[front];
 
+			if (pImageProcThreadUnit)
+			{
+				LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - deQ-ResultWaitQ",
+					(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
+					);
+			}
+
+		}
+		m_bQueuePushPop = false;
 	}
 	return pImageProcThreadUnit;
 
