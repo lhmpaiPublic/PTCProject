@@ -45,6 +45,8 @@ public :
 	//Gdiplus 인코딩 Guiid 가져오기
 	static int GetEncoderClsid(const WCHAR* format, CLSID* pClsid);
 
+	static void grayscale(HDC hdc, HBITMAP& hbitmap);
+
 	virtual int Clear() ;
 
 	CBitmapStd( int nSizeX = 256, int nSizeY = 256, int nBitCount = 8 ) ;

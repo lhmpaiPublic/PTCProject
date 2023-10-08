@@ -64,7 +64,7 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 	SYSTEMTIME	sysTime;
 	::GetLocalTime(&sysTime);
 
-	strData.Format(_T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d :: Log = %s")
+	strData.Format(_T("%04d%02d%02d_%02d:%02d:%02d:%03d :: Log = %s")
 		, sysTime.wYear
 		, sysTime.wMonth
 		, sysTime.wDay
@@ -88,7 +88,7 @@ void CLogDisplayDlg::LogDisplayMessageText(const char* data)
 	SYSTEMTIME	sysTime;
 	::GetLocalTime(&sysTime);
 
-	strData.Format(_T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d :: Log = %s")
+	strData.Format(_T("%04d%02d%02d_%02d:%02d:%02d:%03d :: Log = %s")
 		, sysTime.wYear
 		, sysTime.wMonth
 		, sysTime.wDay
@@ -293,30 +293,27 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 				for (int i = 0; i < strList->size(); i++)
 				{
 					CString popStr = pMain->GetLogDisplayMessage();
+					CString midStrFolder = popStr.Left(8);
+					CString midStrName = popStr.Left(11);
 #ifdef LOGDISPLAY_LISTBOX
 					CString* pSendStr = new CString(popStr);
 					pMain->PostMessage(WM_LOGMSGPRINT, (WPARAM)pSendStr);
 #endif //LOGDISPLAY_LISTBOX
 					tempStr += popStr + CString("\r\n");
-				}
 
-				//텍스트 로그 출력
-				if (pMain->getTextLogPrint())
-				{
+					//텍스트 로그 출력
+					if (pMain->getTextLogPrint())
+					{
 
-					CString FileName;
-					SYSTEMTIME	sysTime;
-					::GetLocalTime(&sysTime);
+						CString FileName;
 
-					FileName.Format(_T("%s-%04d%02d%02d-%02d.txt")
-						, LOGTEXTFILENAME
-						, sysTime.wYear
-						, sysTime.wMonth
-						, sysTime.wDay
-						, sysTime.wHour
-					);
+						FileName.Format(_T("%s-%s.txt")
+							, LOGTEXTFILENAME
+							, midStrName
+						);
 
-					file.TextSave1Line(FilePath, FileName, tempStr, "at", FALSE, 999999999);
+						file.TextSave1Line(FilePath + midStrFolder, FileName, tempStr, "at", FALSE, 999999999);
+					}
 				}
 			}
 		}

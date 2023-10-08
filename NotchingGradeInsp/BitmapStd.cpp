@@ -1014,6 +1014,34 @@ int CBitmapStd::GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 	return -1;  // Failure  
 }
 
+void CBitmapStd::grayscale(HDC hdc, HBITMAP& hbitmap)
+{
+	BITMAP bm;
+	GetObject(hbitmap, sizeof(bm), &bm);
+	if (bm.bmBitsPixel < 24)
+	{
+		DebugBreak();
+		return;
+	}
+
+	DWORD size = ((bm.bmWidth * bm.bmBitsPixel + 31) / 32) * 4 * bm.bmHeight;
+	BITMAPINFO bmi
+	{ sizeof(BITMAPINFOHEADER),bm.bmWidth,bm.bmHeight,1,bm.bmBitsPixel,BI_RGB,size };
+	int stride = bm.bmWidth + (bm.bmWidth * bm.bmBitsPixel / 8) % 4;
+	BYTE* bits = new BYTE[size];
+	GetDIBits(hdc, hbitmap, 0, bm.bmHeight, bits, &bmi, DIB_RGB_COLORS);
+	for (int y = 0; y < bm.bmHeight; y++) {
+		for (int x = 0; x < stride; x++) {
+			int i = (x + y * stride) * bm.bmBitsPixel / 8;
+			BYTE gray = BYTE(0.1 * bits[i + 0] + 0.6 * bits[i + 1] + 0.3 * bits[i + 2]);
+			bits[i + 0] = bits[i + 1] = bits[i + 2] = gray;
+		}
+	}
+	SetDIBits(hdc, hbitmap, 0, bm.bmHeight, bits, &bmi, DIB_RGB_COLORS);
+	ReleaseDC(HWND_DESKTOP, hdc);
+	delete[]bits;
+}
+
 int CBitmapStd::SaveBitmap( CString &filepath )
 {
 #if	!defined( NOT_USE_BMPSTD_CRITICALSECTION )
@@ -1114,25 +1142,52 @@ int CBitmapStd::SaveBitmap( CString &filepath )
 				AfxMessageBox( strMsg ) ;
 			}
 			//int nQuality = m_nJpegQuality;
-			//Gdiplus::EncoderParameters param;
-			//param.Count = 1;
-			//param.Parameter[0].Guid = Gdiplus::EncoderQuality;
-			//param.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
-			//param.Parameter[0].NumberOfValues = 1;
-			//param.Parameter[0].Value = &nQuality;
+			//ULONG colorDeph = 8;
+
+			//Gdiplus::EncoderParameters* pEncoderParameters = (Gdiplus::EncoderParameters*)malloc(sizeof(Gdiplus::EncoderParameters)
+			//	+ 1 * sizeof(Gdiplus::EncoderParameter));
+
+			//pEncoderParameters->Count = 2;
+			//pEncoderParameters->Parameter[0].NumberOfValues = 1;
+			//pEncoderParameters->Parameter[0].Guid = Gdiplus::EncoderQuality;
+			//pEncoderParameters->Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
+			//pEncoderParameters->Parameter[0].Value = &nQuality;
+			//pEncoderParameters->Parameter[1].NumberOfValues = 1;
+			//pEncoderParameters->Parameter[1].Guid = Gdiplus::EncoderColorDepth;
+			//pEncoderParameters->Parameter[1].Type = Gdiplus::EncoderParameterValueTypeLong;
+			//pEncoderParameters->Parameter[1].Value = &colorDeph;
+
+			//HDC hdc = GetDC(HWND_DESKTOP);
 
 			//BITMAPINFO* pbmi = (BITMAPINFO*)m_ptr;
 			//BYTE* pimg = (BYTE*)pbmi;
 			//pimg += sizeof(BITMAPINFOHEADER);
 			//pimg += pbmi->bmiHeader.biClrUsed * sizeof(RGBQUAD);
+			//HBITMAP hbm = ::CreateDIBitmap(hdc, (BITMAPINFOHEADER*)pbmi, CBM_INIT, pimg, pbmi, DIB_RGB_COLORS);
+			//grayscale(hdc, hbm);
 
+			//HPALETTE hpal;
 			//Gdiplus::Bitmap* image;
-			//image = Gdiplus::Bitmap::FromBITMAPINFO(pbmi, pimg);
+			//image = Gdiplus::Bitmap::FromHBITMAP(hbm, NULL);
 			//CLSID   encoderClsid;
 			//// Get the CLSID of the JPEG encoder.
 			//GetEncoderClsid(L"image/jpeg", &encoderClsid);
 			//CStringW wStr = (CStringW)filepath.GetBuffer(0);
-			//image->Save(wStr, &encoderClsid, &param);
+			//image->Save(wStr, &encoderClsid, pEncoderParameters);
+
+			////BITMAPINFO* pbmi = (BITMAPINFO*)m_ptr;
+			////BYTE* pimg = (BYTE*)pbmi;
+			////pimg += sizeof(BITMAPINFOHEADER);
+			////pimg += pbmi->bmiHeader.biClrUsed * sizeof(RGBQUAD);
+
+			////Gdiplus::Bitmap* image;
+			////image = Gdiplus::Bitmap::FromBITMAPINFO(pbmi, pimg);
+
+			////CLSID   encoderClsid;
+			////// Get the CLSID of the JPEG encoder.
+			////GetEncoderClsid(L"image/jpeg", &encoderClsid);
+			////CStringW wStr = (CStringW)filepath.GetBuffer(0);
+			////image->Save(wStr, &encoderClsid, pEncoderParameters);
 		} else if ( expname.Compare( _T( "PNG" ) ) == 0 ) {
 			if ( EncodePng != NULL ) {
 				BITMAPINFO* pbmi = ( BITMAPINFO *)m_ptr ;
