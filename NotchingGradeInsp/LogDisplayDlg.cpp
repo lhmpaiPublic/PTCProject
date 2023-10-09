@@ -28,6 +28,8 @@ int CLogDisplayDlg::printLogNum = 0;
 
 BOOL CLogDisplayDlg::bCreate = FALSE;
 
+int CLogDisplayDlg::FolderFindCount = 0;
+
 CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 
 CString strLogNameList =
@@ -230,6 +232,23 @@ BOOL CLogDisplayDlg::OnInitDialog()
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
 
+void CLogDisplayDlg::FindFoderList(CString path, std::vector<CString>& findList)
+{
+	CStringList folderList;
+	CString findName = "NotchingLog";
+	CWin32File::GetFolderList(path, folderList);
+	POSITION pos = folderList.GetHeadPosition();
+	while (pos != NULL)
+	{
+		CString str = folderList.GetNext(pos);
+		if (str.Left(findName.GetLength()) == findName)
+		{
+			findList.push_back(str);
+		}
+	}
+}
+
+
 void CLogDisplayDlg::AddLogDisplayMessage(CString msg)
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -258,6 +277,7 @@ CString CLogDisplayDlg::GetLogDisplayMessage()
 
 //source file
 #define LOGDISPLAYDLG_THREADTIMEOUT 30
+
 UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 {
 	CLogDisplayDlg* pMain = (CLogDisplayDlg*)param;
@@ -287,30 +307,52 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
 			//Do something...
-			if (CLogDisplayDlg::bCreate && strList->size() && listBox->m_hWnd)
+			if (CLogDisplayDlg::bCreate && listBox->m_hWnd)
 			{
-				for (int i = 0; i < strList->size(); i++)
+				if (strList->size())
 				{
-					CString popStr = pMain->GetLogDisplayMessage();
-					CString midStrFolder = popStr.Left(8);
-					CString midStrName = popStr.Left(11);
+					for (int i = 0; i < strList->size(); i++)
+					{
+						CString popStr = pMain->GetLogDisplayMessage();
+						CString midStrFolder = popStr.Left(8);
+						CString midStrName = popStr.Left(11);
 #ifdef LOGDISPLAY_LISTBOX
-					CString* pSendStr = new CString(popStr);
-					pMain->PostMessage(WM_LOGMSGPRINT, (WPARAM)pSendStr);
+						CString* pSendStr = new CString(popStr);
+						pMain->PostMessage(WM_LOGMSGPRINT, (WPARAM)pSendStr);
 #endif //LOGDISPLAY_LISTBOX
 
-					//텍스트 로그 출력
-					if (pMain->getTextLogPrint())
+						//텍스트 로그 출력
+						if (pMain->getTextLogPrint())
+						{
+							CString tempStr = popStr + CString("\r\n");
+							CString FileName;
+
+							FileName.Format(_T("%s-%s.txt")
+								, LOGTEXTFILENAME
+								, midStrName
+							);
+
+							file.TextSave1Line(FilePath + midStrFolder, FileName, tempStr, "at", FALSE, 999999999);
+						}
+					}
+				}
+				//로그 출력 내용이 없을 때
+				else
+				{
+					//NotchingLog Delete 세팅
+					//삭제 카운트가 10000
+					if (FolderFindCount++ > 10000)
 					{
-						CString tempStr = popStr + CString("\r\n");
-						CString FileName;
-
-						FileName.Format(_T("%s-%s.txt")
-							, LOGTEXTFILENAME
-							, midStrName
-						);
-
-						file.TextSave1Line(FilePath + midStrFolder, FileName, tempStr, "at", FALSE, 999999999);
+						//삭제할 Folder List를 가져온다.
+						std::vector<CString> listFolder;
+						CLogDisplayDlg::FindFoderList(FilePath, listFolder);
+						//Folder 갯수가 5개 이상이면 첫번째 폴더 삭제
+						if (listFolder.size() > 5)
+						{
+							CString delStr = listFolder[0];
+							CWin32File::DeleteDirectory(FilePath + "\\" + delStr);
+						}
+						FolderFindCount = 0;
 					}
 				}
 			}
@@ -319,7 +361,7 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 		{
 			break;
 		}
-		
+
 	}
 	AfxEndThread(0);
 	return 0;

@@ -81,6 +81,10 @@ public:
 
 	CString GetLogDisplayMessage();
 
+	//Log Folder Delete 
+	static int FolderFindCount;
+	static void FindFoderList(CString path, std::vector<CString>& findList);
+
 	//클립보드 복사
 	void CopyStrToClipboard(CString str);
 
