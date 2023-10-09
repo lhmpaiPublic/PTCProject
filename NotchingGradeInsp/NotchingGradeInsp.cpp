@@ -216,7 +216,10 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		strTitle.Format(_T("NotchingGradeInsp Version %s"), strVersion);
 		m_pMainWnd->SetWindowText(strTitle);
 
-		AprData.SaveDebugLog_Format(_T("============================= START PROGRAM (%s) ============================="), strVersion);
+		CString ErrorLog;
+		ErrorLog.Format(_T("============================= START PROGRAM (%s) ============================="), strVersion);
+		AprData.SaveErrorLog(ErrorLog);
+
 		LOGDISPLAY_SPEC(8)(_T("============================= START PROGRAM (%s) ============================="), strVersion);
 
 	}
