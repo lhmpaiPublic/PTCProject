@@ -40,8 +40,8 @@ CString strLogNameList =
 "4 TACTIME_4 0,"
 "5 Proc_5 0,"
 "6 UnitThread_6 0,"
-"7 TriggerDIO_7 0,"
-"8 UnitResult_8 1,"
+"7 TriggerDIO_7 1,"
+"8 UnitResult_8 0,"
 "100 END 0"
 ;
 

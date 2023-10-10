@@ -295,8 +295,6 @@ int CResultViewDlg::UpdateGrid()
 		CDefectInfo* pInfo = pQueue->Pop();
 		if (pInfo == nullptr) continue;
 
-		LOGDISPLAY_SPEC(8)("UpdateGrid - defect TabNo<%d> view Enter", pInfo->nTabNo);
-
 		for (int nCol = 0; nCol < m_pResultList->GetColumnCount(); nCol++)
 		{
 			CString strText;
@@ -328,6 +326,7 @@ int CResultViewDlg::UpdateGrid()
 					break;
 				case	en_col_CELL_NO:
 					strText.Format( _T("%d"), pInfo->nTabNo + 1 ) ;
+					LOGDISPLAY_SPEC(8)("UpdateGrid - defect TabNo<%d> view Enter", pInfo->nTabNo);
 					break;
 				case	en_col_CELL_ID:
 					strText.Format(_T("%d"), pInfo->nCellId);
@@ -364,8 +363,7 @@ int CResultViewDlg::UpdateGrid()
 			m_pResultList->SetColAlignment(nCol, flexAlignCenterCenter);
 		}
 
-		LOGDISPLAY_SPEC(8)("UpdateGrid - defect TabNo<%d> view End", pInfo->nTabNo);
-		
+	
 		delete pInfo ;
 		pInfo = NULL;
 		nOldNumRows = nRow;
