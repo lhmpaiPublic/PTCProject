@@ -349,14 +349,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//dFoilExpTact = ctAna.WhatTimeIsIt_Double();							
 						}	
 						
-						//이미지 처리 프로세서 처리가 잘못었을 경우  Failed Log를 찍는다.
-						if (nLocalRet < 0) {
-							CString strMsg;
-							strMsg.Format(_T("Top Side Image Proc Failed nLcaoRet[%d], nLevel[%d]"), nLocalRet, pFrmInfo->m_nTabLevel);
-							AprData.SaveErrorLog(strMsg);
-						}
-						// 22.05.10 Ahn Add Start 
-						
 						//레시피 정보에 표면 끔이 아니면
 						//이미지 프로세서 ImageProcessDetectSurface 를 실행한다.
 						if (AprData.m_pRecipeInfo->bDisableSurface == FALSE) {
@@ -448,16 +440,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								);
 						
 						}
-
-						// 22.05.30 Ahn Modify End
-						//실행시간 체크 값을 가져온다.
-						//dFoilExpTact = ctAna.WhatTimeIsIt_Double();
-						//이미지 프로세서 처리가 잘못되었으면 Failed 로그 출력
-						if (nLocalRet < 0) {
-							CString strMsg;
-							strMsg.Format(_T("Bottom Side Image Proc Failed nLcaoRet[%d], nLevel[%d]"), nLocalRet, pFrmInfo->m_nTabLevel);
-							AprData.SaveErrorLog(strMsg);
-						}	
 
 						// 22.05.10 Ahn Add Start 
 						//Disable Surface 가 FALSE(아니면)
