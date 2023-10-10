@@ -219,6 +219,7 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		CString ErrorLog;
 		ErrorLog.Format(_T("============================= START PROGRAM (%s) ============================="), strVersion);
 		AprData.SaveErrorLog(ErrorLog);
+		AprData.SaveDebugLog_Format(ErrorLog);
 
 		LOGDISPLAY_SPEC(8)(_T("============================= START PROGRAM (%s) ============================="), strVersion);
 

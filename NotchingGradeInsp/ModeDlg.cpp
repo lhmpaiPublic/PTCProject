@@ -494,6 +494,7 @@ void CModeDlg::OnBnClickedBtnExit()
 	if( MessageBox( _T("Do you want to exit the application?"), _T("NotchingGradeInsp"), MB_ICONQUESTION | MB_YESNO) == IDYES )
 	{
 		AprData.SaveErrorLog(_T("============================= SHUTDWON PROGRAM ============================="));
+		AprData.SaveDebugLog_Format(_T("============================= SHUTDWON PROGRAM ============================="));
 
 		LOGDISPLAY_SPEC(8)(_T("============================= SHUTDWON PROGRAM ============================="));
 
