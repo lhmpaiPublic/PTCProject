@@ -107,11 +107,21 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave 저장 이미지 정보 : 넓이가 0 또는 높이가 0이다"));
 
 					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
-					delete[]pImgPtr;
-					pImgPtr = NULL;
+					if (pImgPtr)
+					{
+						delete[]pImgPtr;
+						pImgPtr = NULL;
+					}
+					else
+					{
+						LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
+					}
 
-					delete pSaveInfo;
-					pSaveInfo = NULL;
+					if (pSaveInfo)
+					{
+						delete pSaveInfo;
+						pSaveInfo = NULL;
+					}
 					continue;
 				}
 
@@ -155,12 +165,19 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 						delete[]pImgPtr;
 						pImgPtr = NULL;
 					}
+					else
+					{
+						LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
+					}
 
 					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave End"));
 
 				}
-				delete pSaveInfo;
-				pSaveInfo = NULL;
+				if (pSaveInfo)
+				{
+					delete pSaveInfo;
+					pSaveInfo = NULL;
+				}
 			}
 			//큐에 데이터가 있으면 기다리지 않고 실행하도록 설정
 			if (pQueuePtr->GetSize())
