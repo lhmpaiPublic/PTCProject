@@ -200,11 +200,13 @@ bool CThreadQueueCtrl::isFull()
 
 void CThreadQueueCtrl::enQueue()
 {
-	if (m_bQueuePushPop == false)
+
+	while (!isFull())
 	{
-		m_bQueuePushPop = true;
-		while (!isFull())
+		if (m_bQueuePushPop == false)
 		{
+			m_bQueuePushPop = true;
+
 			//스래드 객체를 가져온다.
 			CImageProcThreadUnit* pImageProcThreadUnit = GetWatchQueueData();
 			if (pImageProcThreadUnit)
@@ -217,23 +219,29 @@ void CThreadQueueCtrl::enQueue()
 				rear = ++rear % maxQueueSize;
 				ProcThreadUnitqueue[rear] = pImageProcThreadUnit;
 			}
-			else
+
+			m_bQueuePushPop = false;
+
+			if (pImageProcThreadUnit == NULL)
 			{
 				break;
-			}
+			}			
+
 		}
-		m_bQueuePushPop = false;
+
 	}
 }
 
 CImageProcThreadUnit* CThreadQueueCtrl::deQueue()
 {
 	CImageProcThreadUnit* pImageProcThreadUnit = NULL;
-	if (m_bQueuePushPop == false)
+
+	if (!isEmpty())
 	{
-		m_bQueuePushPop = true;
-		if (!isEmpty())
+		if (m_bQueuePushPop == false)
 		{
+			m_bQueuePushPop = true;
+
 			front = ++front % maxQueueSize;
 			pImageProcThreadUnit = ProcThreadUnitqueue[front];
 
@@ -243,9 +251,10 @@ CImageProcThreadUnit* CThreadQueueCtrl::deQueue()
 					(pImageProcThreadUnit->m_pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pImageProcThreadUnit->m_pFrmInfo->nTabNo, pImageProcThreadUnit->m_pFrmInfo->m_nTabId_CntBoard
 					);
 			}
+			m_bQueuePushPop = false;
 
 		}
-		m_bQueuePushPop = false;
+
 	}
 	return pImageProcThreadUnit;
 
