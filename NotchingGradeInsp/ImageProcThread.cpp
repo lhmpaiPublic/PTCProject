@@ -754,7 +754,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 		
 		//타임 주기 이벤트
 		ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_Result(), IMAGEPROCTHREAD_RESULT_TIMEOUT);
-		theApp.m_nImageProcThreadTimeEnter = GetTickCount();
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
@@ -815,7 +814,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			//일정한 시간이 지나도 처리하지 못했을 때
 			if (pUnitTop && pUnitBtm)
 			{
-				theApp.m_nImageProcThreadTimeBefore = GetTickCount();
+				theApp.m_nImageProcImageTabFind = GetTickCount();
 
 				////이미지 처리 스래드 (대기 스래드)
 				////출력 대기 이벤트 객체 push
@@ -839,6 +838,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					if ((topWaitVal == 1) && (btmWaitVal == 1))
 					{
+						theApp.m_nImageProcInspDataGet = GetTickCount();
+
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
 
@@ -1388,6 +1389,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CImageProcessCtrl::GetResultPtr(CAM_POS_TOP)->PushBack((CFrameInfo*)pTopInfo);
 						CImageProcessCtrl::GetResultPtr(CAM_POS_BOTTOM)->PushBack((CFrameInfo*)pBtmInfo);
 
+						theApp.m_nImageProcResultProcPush = GetTickCount();
+
 						LOGDISPLAY_SPEC(8)("CtrlThreadImgProc TabNo<%d>-TabId<%d> - Result info Push",
 							pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
 							);
@@ -1463,7 +1466,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pUnitBtm = NULL;
 				}
 
-				theApp.m_nImageProcThreadTimeAfter = GetTickCount();
 
 				////출력 대기 이벤트 객체 pop, 이벤트 닫기
 				//pThis->m_pParent->ImgProcWaitThread_Event_pop();

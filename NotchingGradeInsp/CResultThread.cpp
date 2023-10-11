@@ -765,6 +765,8 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 				if (pRsltInfo != NULL)
 				{
+					theApp.m_nImageProcResultProcCrop = GetTickCount();
+
 					LOGDISPLAY_SPEC(8)("CtrlThreadResultProc TabNo<%d> CFrameRsltInfo Object Proc Enter", pRsltInfo->nTabNo);
 
 #ifdef SPCPLUS_CREATE

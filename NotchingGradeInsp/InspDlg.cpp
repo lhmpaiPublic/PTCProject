@@ -194,7 +194,6 @@ void CInspDlg::OnSize(UINT nType, int cx, int cy)
 
 }
 
-static DWORD backImageProcThreadTime = 0;
 static DWORD backImageProcThreadTimeCount = 0;
 void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 {
@@ -234,15 +233,21 @@ void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 
 //		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CInspDlg SaveErrorData : %d ms"), GetTickCount() - dwTic);
 
-		if (backImageProcThreadTimeCount++ > 30)
+		if (backImageProcThreadTimeCount++ > 10)
 		{
-			AprData.SaveDebugLog_Format(_T("<ImageProcThreadTime> Enter<%d> Proc<%d> - Exit<%d>"), 
-				theApp.m_nImageProcThreadTimeEnter - backImageProcThreadTime, theApp.m_nImageProcThreadTimeBefore - backImageProcThreadTime, theApp.m_nImageProcThreadTimeAfter - backImageProcThreadTime);
+			DWORD currentTime = GetTickCount();
 
-			LOGDISPLAY_SPEC(6)("<ImageProcThreadTime> Enter<%d> Proc<%d> - Exit<%d>",
-				theApp.m_nImageProcThreadTimeEnter - backImageProcThreadTime, theApp.m_nImageProcThreadTimeBefore - backImageProcThreadTime, theApp.m_nImageProcThreadTimeAfter - backImageProcThreadTime);
+			LOGDISPLAY_SPEC(8)(_T("<<<<<<<<<<<<<<<<<<ImageProcThreadTime>>>>>>>>>>>>>>>> curr<%d> imgGet<%d> TabFind<%d> InspDataGet<%d>"),
+				currentTime
+				, currentTime - theApp.m_nImageProcGrabberImageGet
+				, currentTime - theApp.m_nImageProcImageTabFind
+				, currentTime - theApp.m_nImageProcInspDataGet);
 
-			backImageProcThreadTime = theApp.m_nImageProcThreadTimeAfter;
+			LOGDISPLAY_SPEC(8)(_T("<<<<<<<<<<<<<<<<<<ImageProcThreadTime>>>>>>>>>>>>>>>> curr<%d> ResultPush<%d> ResultCrop<%d> ResultSave<%d>"),
+				currentTime
+				, currentTime - theApp.m_nImageProcResultProcPush
+				, currentTime - theApp.m_nImageProcResultProcCrop
+				, currentTime - theApp.m_nImageProcResultImageSave);
 
 			backImageProcThreadTimeCount = 0;
 		}

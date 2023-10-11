@@ -97,6 +97,8 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 			while (pQueuePtr->GetSize())
 			{
+				theApp.m_nImageProcResultImageSave = GetTickCount();
+
 				// Image 하나 가지고 오고 삭제함.
 				CImgSaveInfo* pSaveInfo = pQueuePtr->Pop();
 				if (pSaveInfo == NULL) break;

@@ -59,9 +59,12 @@ private:
 public :
 	CImageProcessCtrl *m_pImgProcCtrl ;
 
-	DWORD m_nImageProcThreadTimeEnter;
-	DWORD m_nImageProcThreadTimeBefore;
-	DWORD m_nImageProcThreadTimeAfter;
+	DWORD m_nImageProcGrabberImageGet;
+	DWORD m_nImageProcImageTabFind;
+	DWORD m_nImageProcInspDataGet;
+	DWORD m_nImageProcResultProcPush;
+	DWORD m_nImageProcResultProcCrop;
+	DWORD m_nImageProcResultImageSave;
 
 	CPioCtrl* m_pPioCtrl;
 	// 22.04.01 Ahn Add Start

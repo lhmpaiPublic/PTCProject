@@ -48,10 +48,6 @@ CNotchingGradeInspApp::CNotchingGradeInspApp() noexcept
 	//AfxSetAllocStop(1192);
 	m_bHiColorIcons = TRUE;
 
-	m_nImageProcThreadTimeEnter = GetTickCount();
-	m_nImageProcThreadTimeBefore = GetTickCount();
-	m_nImageProcThreadTimeAfter = GetTickCount();
-
 	m_nAppLook = 0;
 	// 다시 시작 관리자 지원
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
@@ -158,6 +154,17 @@ BOOL CNotchingGradeInspApp::InitInstance()
 
 	//로그창을 이용한 출력 기능 모듈을 생성한다.
 	CLogDisplayDlg::CreateLogDisplayDlg();
+
+	m_nImageProcGrabberImageGet = GetTickCount();
+	m_nImageProcImageTabFind = GetTickCount();
+	m_nImageProcInspDataGet = GetTickCount();
+	m_nImageProcResultProcPush = GetTickCount();
+	m_nImageProcResultProcCrop = GetTickCount();
+	m_nImageProcResultImageSave = GetTickCount();
+
+	LOGDISPLAY_SPEC(8)(_T("<<<<<<<<<<<<<<<<<<ImageProcThreadTime>>>>>>>>>>>>>>>> init proc time<%d>"),
+		m_nImageProcGrabberImageGet);
+
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE

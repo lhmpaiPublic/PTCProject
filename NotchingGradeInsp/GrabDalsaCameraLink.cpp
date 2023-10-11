@@ -119,6 +119,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				//얻은 이미지 정보를 TabFind 스래드로 전달하기 위해 queue 에 넣는다.
 				pQueueCtrl->PushBack(pFrmInfo);
 
+				theApp.m_nImageProcGrabberImageGet = GetTickCount();
 
 				//Image Capture 정보 출력 로그
 				LOGDISPLAY_SPEC(6)(_T("FrameLog Pos<%s> FrameCount<%d>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", nFrameCnt);
