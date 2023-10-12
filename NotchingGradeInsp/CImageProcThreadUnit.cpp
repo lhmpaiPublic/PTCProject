@@ -920,16 +920,16 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 			LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-timeout<%d>"), ProcEnd_WaitCount
 				);
 
-			//파일저장 프레임 결과 정보에 저장한다.
-			if (m_pFrmRsltInfo == NULL)
-			{
-				m_pFrmRsltInfo = new CFrameRsltInfo();
-			}
-			m_pFrmRsltInfo->Copy(m_pFrmInfo);
-			m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
-			m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
+			////파일저장 프레임 결과 정보에 저장한다.
+			//if (m_pFrmRsltInfo == NULL)
+			//{
+			//	m_pFrmRsltInfo = new CFrameRsltInfo();
+			//}
+			//m_pFrmRsltInfo->Copy(m_pFrmInfo);
+			//m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
+			//m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
 
-			theApp.ErrOutput("eventProcEnd_WaitTime", CErrorStatus::en_ProcessError);
+			//theApp.ErrOutput("eventProcEnd_WaitTime", CErrorStatus::en_ProcessError);
 
 			//타임아웃 여부 변수
 			m_bTimeOut = TRUE;
@@ -938,9 +938,16 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 		}
 		else
 		{
+			if (ProcEnd_WaitCount > 5)
+			{
+				CString ErrorLog;
+				ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  COUNT<%d>============================="), ProcEnd_WaitCount);
+				AprData.SaveErrorLog(ErrorLog);
+			}
+
 			LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-loop<%d>"), ProcEnd_WaitCount
 				);
-			Sleep(30);
+			Sleep(1);
 		}
 	}
 	return retval;

@@ -1423,23 +1423,28 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					{
 						LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout");
 
-						int topWaitVal = pUnitTop->eventProcEnd_WaitTime();
-						int btmWaitVal = pUnitBtm->eventProcEnd_WaitTime();
+						CString ErrorLog;
+						ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  ============================="));
+						AprData.SaveErrorLog(ErrorLog);
 
 						if (topWaitVal == 2)
 						{
-							DWORD nExitCode = NULL;
-							GetExitCodeThread(pUnitTop->m_pThread->m_hThread, &nExitCode);
-							TerminateThread(pUnitTop->m_pThread->m_hThread, nExitCode);
-							pUnitTop->m_pThread = NULL;
+							LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout topWaitVal");
+
+							//DWORD nExitCode = NULL;
+							//GetExitCodeThread(pUnitTop->m_pThread->m_hThread, &nExitCode);
+							//TerminateThread(pUnitTop->m_pThread->m_hThread, nExitCode);
+							//pUnitTop->m_pThread = NULL;
 						}
 
 						if (btmWaitVal == 2)
 						{
-							DWORD nExitCode = NULL;
-							GetExitCodeThread(pUnitBtm->m_pThread->m_hThread, &nExitCode);
-							TerminateThread(pUnitBtm->m_pThread->m_hThread, nExitCode);
-							pUnitBtm->m_pThread = NULL;
+							LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout btmWaitVal");
+
+							//DWORD nExitCode = NULL;
+							//GetExitCodeThread(pUnitBtm->m_pThread->m_hThread, &nExitCode);
+							//TerminateThread(pUnitBtm->m_pThread->m_hThread, nExitCode);
+							//pUnitBtm->m_pThread = NULL;
 						}
 
 						break;
