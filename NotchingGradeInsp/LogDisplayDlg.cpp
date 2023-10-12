@@ -278,6 +278,9 @@ CString CLogDisplayDlg::GetLogDisplayMessage()
 //source file
 #define LOGDISPLAYDLG_THREADTIMEOUT 30
 
+//로그 삭제 카운터
+#define LOGDISPLAYDLG_LOGDELETECOUNT 5000
+
 UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 {
 	CLogDisplayDlg* pMain = (CLogDisplayDlg*)param;
@@ -339,29 +342,27 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 						}
 					}
 				}
-				//로그 출력 내용이 없을 때
-				else
+
+				//NotchingLog Delete 세팅
+				//삭제 카운트가 10000
+				if ((FolderFindCount++ > LOGDISPLAYDLG_LOGDELETECOUNT))
 				{
-					//NotchingLog Delete 세팅
-					//삭제 카운트가 10000
-					if (FolderFindCount++ > 10000)
+					//삭제할 Folder List를 가져온다.
+					std::vector<CString> listFolder;
+					CLogDisplayDlg::FindFoderList(CurrentFilePath, listFolder);
+					//Folder 갯수가 5개 이상이면 첫번째 폴더 삭제
+					while (listFolder.size() > 5)
 					{
-						//삭제할 Folder List를 가져온다.
-						std::vector<CString> listFolder;
-						CLogDisplayDlg::FindFoderList(CurrentFilePath, listFolder);
-						//Folder 갯수가 5개 이상이면 첫번째 폴더 삭제
-						if (listFolder.size() > 5)
-						{
-							CString delStr = listFolder[0];
-							CWin32File::DeleteDirectory(CurrentFilePath + "\\" + delStr);
+						CString delStr = listFolder[0];
+						CWin32File::DeleteDirectory(CurrentFilePath + "\\" + delStr);
+						listFolder.erase(listFolder.begin());
 
-							CString strlog;
-							strlog.Format("delete forder name : %s", delStr);
-							file.TextSave1Line(FilePath + "_DeleteForder", "DeleteForderlog.txt", strlog, "at", FALSE, 999999999);
+						CString strlog;
+						strlog.Format("delete forder name : %s", delStr);
+						file.TextSave1Line(CurrentFilePath + CString("\\DeleteForderLog"), "DeleteForderlog.txt", strlog, "at", FALSE, 999999999);
 
-						}
-						FolderFindCount = 0;
 					}
+					FolderFindCount = 0;
 				}
 			}
 		}
