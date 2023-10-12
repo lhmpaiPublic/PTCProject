@@ -471,11 +471,11 @@ int CSystemSetting::FileCtrl(int nMode)
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("RS232_COMPORT_TOP");
-			strData.Format(_T("%d"), m_strRS232_COMPORT_TOP);
+			strData.Format(_T("%s"), m_strRS232_COMPORT_TOP); // 231011 format %d->%s kjk
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strKey = _T("RS232_COMPORT_BOTTOM");
-			strData.Format(_T("%d"), m_strRS232_COMPORT_BOTTOM);
+			strData.Format(_T("%s"), m_strRS232_COMPORT_BOTTOM); // 231011 format %d->%s kjk
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			//			strKey = _T("SLAVE_ID");
