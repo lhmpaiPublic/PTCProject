@@ -284,10 +284,12 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 	std::queue<CString>* strList = pMain->getstrLog();
 	CListBox* listBox = pMain->getListBox();
 
+	CString CurrentFilePath;
 	CString FilePath;
 	char	LogTextpath[_MAX_PATH];
 	memset(LogTextpath, 0x00, sizeof(LogTextpath));
 	::GetCurrentDirectory(_MAX_PATH, LogTextpath);
+	CurrentFilePath = LogTextpath;
 	FilePath.Format(_T("%s\\%s")
 		, LogTextpath
 		, LOGTEXTFILEFOLDER
@@ -295,6 +297,7 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 
 	CWin32File file;
 	UINT ret = 0;
+	CLogDisplayDlg::FolderFindCount = 0;
 	while (pMain)
 	{
 		//타임 주기 이벤트
@@ -345,12 +348,17 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 					{
 						//삭제할 Folder List를 가져온다.
 						std::vector<CString> listFolder;
-						CLogDisplayDlg::FindFoderList(FilePath, listFolder);
+						CLogDisplayDlg::FindFoderList(CurrentFilePath, listFolder);
 						//Folder 갯수가 5개 이상이면 첫번째 폴더 삭제
 						if (listFolder.size() > 5)
 						{
 							CString delStr = listFolder[0];
-							CWin32File::DeleteDirectory(FilePath + "\\" + delStr);
+							CWin32File::DeleteDirectory(CurrentFilePath + "\\" + delStr);
+
+							CString strlog;
+							strlog.Format("delete forder name : %s", delStr);
+							file.TextSave1Line(FilePath + "_DeleteForder", "DeleteForderlog.txt", strlog, "at", FALSE, 999999999);
+
 						}
 						FolderFindCount = 0;
 					}
