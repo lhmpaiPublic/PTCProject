@@ -953,15 +953,16 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 		}
 		else
 		{
-			if (ProcEnd_WaitCount > 5)
+			if (ProcEnd_WaitCount > 45)
 			{
 				CString ErrorLog;
 				ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  COUNT<%d>============================="), ProcEnd_WaitCount);
 				AprData.SaveErrorLog(ErrorLog);
+
+				LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-loop<%d>"), ProcEnd_WaitCount
+					);
 			}
 
-			LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-loop<%d>"), ProcEnd_WaitCount
-				);
 			Sleep(1);
 		}
 	}

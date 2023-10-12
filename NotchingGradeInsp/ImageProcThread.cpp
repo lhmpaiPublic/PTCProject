@@ -822,6 +822,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				////순서대로 push 저장한다.
 				//pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
 
+				int topWaitVal = 0;
+				int btmWaitVal = 0;
+
+				//로그 출력 -  Unit Loop count 10개
+				int UnitLoopCount = 0;
 				while (1)
 				{
 
@@ -833,8 +838,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						break;
 					}
 
-					int topWaitVal = pUnitTop->eventProcEnd_WaitTime();
-					int btmWaitVal = pUnitBtm->eventProcEnd_WaitTime();
+					topWaitVal = pUnitTop->eventProcEnd_WaitTime();
+					btmWaitVal = pUnitBtm->eventProcEnd_WaitTime();
 
 					if ((topWaitVal == 1) && (btmWaitVal == 1))
 					{
@@ -1451,7 +1456,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else
 					{
-						LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgProc - ResultProcWait-loop"));
+						if (UnitLoopCount++ > 45)
+						{
+							LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgProc - ResultProcWait-loop"));
+						}
 					}
 				}
 
@@ -1459,16 +1467,32 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 				LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> ResultProc End"));
 
-
-				if (pUnitTop)
+				//Unit Thread 에서 빠져나오지 못했을 때 체크
+				if (topWaitVal != 2)
 				{
-					delete pUnitTop;
-					pUnitTop = NULL;
+					if (pUnitTop)
+					{
+						delete pUnitTop;
+						pUnitTop = NULL;
+					}
 				}
-				if (pUnitBtm)
+				else
 				{
-					delete pUnitBtm;
-					pUnitBtm = NULL;
+					LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> topWaitVal Error"));
+				}
+
+				//Unit Thread 에서 빠져나오지 못했을 때 체크
+				if (btmWaitVal != 2)
+				{
+					if (pUnitBtm)
+					{
+						delete pUnitBtm;
+						pUnitBtm = NULL;
+					}
+				}
+				else
+				{
+					LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> btmWaitVal Error"));
 				}
 
 
