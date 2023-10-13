@@ -281,7 +281,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Left] Error - Invalid Find Area"));
 								}
 
-								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================ANODE_MODE ImageProcessing FindBoundary_FromPrjData Enter");
+								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================CATHODE_MODE ImageProcessing FindBoundary_FromPrjData Enter");
 
 								BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[nHeadNo] == 1) ? FALSE : TRUE;
 
