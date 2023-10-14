@@ -357,7 +357,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 						//레시피 정보에 표면 끔이 아니면
 						//이미지 프로세서 ImageProcessDetectSurface 를 실행한다.
-						if (AprData.m_pRecipeInfo->bDisableSurface == FALSE) {
+						if (AprData.m_pRecipeInfo->bDisableSurface == FALSE)
+						{
 
 							CRect rcArea;
 							rcArea.left = 0;
@@ -366,6 +367,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//Machine Mode 가 양극이면
 							if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 							{
+								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================ANODE_MODE Surface Enter");
+
 								// 22.09.15 Ahn Modify End
 								rcArea.right = pFrmInfo->m_nTabLevel - AprData.m_pRecipeInfo->TabCond.nNegVGrooveHeight;
 
@@ -373,6 +376,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//Machine Mode 가 음극이면 
 							else
 							{
+								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================CATHODE_MODE Surface Enter");
+
 								rcArea.right = pFrmInfo->m_nBndElectrode - AprData.m_pRecipeInfo->nSurfaceMaskOffset[CAM_POS_TOP];
 
 							}
