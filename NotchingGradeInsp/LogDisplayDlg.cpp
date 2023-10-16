@@ -32,6 +32,9 @@ int CLogDisplayDlg::FolderFindCount = 0;
 
 CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 
+static CWin32File StaticFile;
+CString CLogDisplayDlg::StaticCurrentPath = "D:\\NotchingTextLog";
+
 CString strLogNameList =
 "0 Init_FromExecute_Error_0 0,"
 "1 TabID_ImageCount_TabCount_1 0,"
@@ -82,6 +85,41 @@ void CLogDisplayDlg::LogDisplayMessage(const char* format, ...)
 		gInstObject->AddLogDisplayMessage(strData);
 	}
 }
+
+void CLogDisplayDlg::LogDisplayText(CString FileName, const char* format, ...)
+{
+	va_list arg;
+	int done;
+	char str[MAX_DISPLAYLOG] = { 0, };
+	va_start(arg, format);
+	done = vsprintf_s(str, format, arg);
+	va_end(arg);
+	CString strData;
+
+	SYSTEMTIME	sysTime;
+	::GetLocalTime(&sysTime);
+
+	strData.Format(_T("%04d%02d%02d_%02d:%02d:%02d:%03d :: Log = %s\r\n")
+		, sysTime.wYear
+		, sysTime.wMonth
+		, sysTime.wDay
+		, sysTime.wHour
+		, sysTime.wMinute
+		, sysTime.wSecond
+		, sysTime.wMilliseconds
+		, str
+	);
+
+	FileName + strData.Left(11);
+
+	if (CWin32File::Exists(StaticCurrentPath) == FALSE)
+	{
+		CWin32File::CreateDirectory(StaticCurrentPath);
+	}
+
+	StaticFile.TextSave1Line(StaticCurrentPath , FileName+(".txt"), strData, "at", FALSE, 999999999);
+}
+
 
 void CLogDisplayDlg::LogDisplayMessageText(const char* data)
 {
@@ -135,6 +173,14 @@ CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 	, m_ComboSpecialLogNameStr(_T(""))
 {
 	::InitializeCriticalSection(&m_csQueueLog);
+
+	char	LogTextpath[_MAX_PATH];
+	memset(LogTextpath, 0x00, sizeof(LogTextpath));
+	::GetCurrentDirectory(_MAX_PATH, LogTextpath);
+	StaticCurrentPath = LogTextpath;
+
+	StaticCurrentPath + CString("\\") + CString("NotchingTextLog");
+
 }
 
 CLogDisplayDlg::~CLogDisplayDlg()
@@ -358,7 +404,7 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 						listFolder.erase(listFolder.begin());
 
 						CString strlog;
-						strlog.Format("delete forder name : %s", delStr);
+						strlog.Format("delete forder name : %s\r\n", delStr);
 						file.TextSave1Line(CurrentFilePath + CString("\\DeleteForderLog"), "DeleteForderlog.txt", strlog, "at", FALSE, 999999999);
 
 					}

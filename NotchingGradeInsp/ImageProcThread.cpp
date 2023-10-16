@@ -838,8 +838,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						break;
 					}
 
-					topWaitVal = pUnitTop->eventProcEnd_WaitTime();
-					btmWaitVal = pUnitBtm->eventProcEnd_WaitTime();
+					if (topWaitVal != 1)
+					{
+						topWaitVal = pUnitTop->eventProcEnd_WaitTime("TOP");
+					}
+					if (btmWaitVal != 1)
+					{
+						btmWaitVal = pUnitBtm->eventProcEnd_WaitTime("BOTTOM");
+					}
 
 					if ((topWaitVal == 1) && (btmWaitVal == 1))
 					{
@@ -1434,7 +1440,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						if (topWaitVal == 2)
 						{
-							LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout topWaitVal");
+							LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout === <TOP>");
 
 							//DWORD nExitCode = NULL;
 							//GetExitCodeThread(pUnitTop->m_pThread->m_hThread, &nExitCode);
@@ -1444,7 +1450,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						if (btmWaitVal == 2)
 						{
-							LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout btmWaitVal");
+							LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout === <BOTTOM>");
 
 							//DWORD nExitCode = NULL;
 							//GetExitCodeThread(pUnitBtm->m_pThread->m_hThread, &nExitCode);

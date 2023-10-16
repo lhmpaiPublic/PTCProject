@@ -16,6 +16,7 @@
 #define WAITEVENTTIME_PROCEND 20
 #define MAX_WAITEVENTTIME_PROCEND 500
 
+int CImageProcThreadUnit::ProcEnd_WaitCount = 0;
 
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
@@ -281,7 +282,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Left] Error - Invalid Find Area"));
 								}
 
-								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================CATHODE_MODE ImageProcessing FindBoundary_FromPrjData Enter");
+								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================CATHODE_MODE ImageProcessing FindBoundary_FromPrjData Enter1");
 
 								BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[nHeadNo] == 1) ? FALSE : TRUE;
 
@@ -296,7 +297,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									);
 
 
-								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================CATHODE_MODE ImageProcessing FindBoundary_FromPrjData Enter");
+								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================CATHODE_MODE ImageProcessing FindBoundary_FromPrjData Enter2");
 
 								// Tab Right
 								rect.top = nTabRight + AprData.m_pRecipeInfo->TabCond.nRadiusH;
@@ -344,7 +345,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								// 이미지 프로세서 Top Side AreaDiff
 								nLocalRet = CImageProcess::ImageProcessTopSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
 
-								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessTopSide_AreaDiff",
+								LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessTopSide_AreaDiff",
 									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
 									);
 
@@ -811,8 +812,6 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 	m_pThread = NULL;
 	m_nErrorCode = 0;
 
-	ProcEnd_WaitCount = 0;
-
 	//타임아웃 여부 변수
 	m_bTimeOut = FALSE;
 }
@@ -924,20 +923,22 @@ BOOL CImageProcThreadUnit::IsProcEnd()
 }
 
 //EVENT 결과 
-int CImageProcThreadUnit::eventProcEnd_WaitTime()
+int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos)
 {
 	int retval = 0;
-	++ProcEnd_WaitCount;
+	++CImageProcThreadUnit::ProcEnd_WaitCount;
 	if (m_bProcEnd)
 	{
-		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> LoopCount-exit<%d>"), ProcEnd_WaitCount);
+		CImageProcThreadUnit::ProcEnd_WaitCount = 0;
+		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> LoopCount-exit<%d> CamPos<%s>"), ProcEnd_WaitCount, CamPos);
 		retval = 1;
 	}
 	else
 	{
 		if (ProcEnd_WaitCount > 50)
 		{
-			LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-timeout<%d>"), ProcEnd_WaitCount
+			CImageProcThreadUnit::ProcEnd_WaitCount = 0;
+			LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-timeout<%d> CamPos<%s>"), ProcEnd_WaitCount, CamPos
 				);
 
 			////파일저장 프레임 결과 정보에 저장한다.
@@ -961,10 +962,11 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime()
 			if (ProcEnd_WaitCount > 45)
 			{
 				CString ErrorLog;
-				ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  COUNT<%d>============================="), ProcEnd_WaitCount);
+				ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  COUNT<%d> CamPos<%s>============================="), 
+					ProcEnd_WaitCount, CamPos);
 				AprData.SaveErrorLog(ErrorLog);
 
-				LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-loop<%d>"), ProcEnd_WaitCount
+				LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-loop<%d> CamPos<%s>"), ProcEnd_WaitCount, CamPos
 					);
 			}
 
