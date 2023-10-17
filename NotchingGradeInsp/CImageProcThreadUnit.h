@@ -31,7 +31,7 @@ protected:
 	HANDLE	m_hSendResult;
 
 	//m_hEventProcEnd의 타임아웃 카운트
-	int ProcEnd_WaitCount;
+	static int ProcEnd_WaitCount;
 
 	int m_nErrorCode;
 
@@ -56,7 +56,7 @@ public:
 	int Kill();
 	BOOL IsProcEnd();
 	//EVENT 결과 
-	int eventProcEnd_WaitTime();
+	int eventProcEnd_WaitTime(CString CamPos);
 
 	int ForceStop();	
 	void SendResult();

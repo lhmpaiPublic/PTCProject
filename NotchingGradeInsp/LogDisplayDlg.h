@@ -42,6 +42,9 @@ public:
 	//로그 메시지 추가 전역함수
 	static void LogDisplayMessage(const char* format, ...);
 
+	static CString StaticCurrentPath;
+	static void LogDisplayText(CString FileName, const char* format, ...);
+
 	//로그 메시지 추가 전역함수
 	static void LogDisplayMessageText(const char* data);
 

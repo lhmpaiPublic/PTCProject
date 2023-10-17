@@ -364,6 +364,7 @@ int CImageProcess::ImageMean_Part(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int 
 
 	int x, y;
 
+	__int64 totalImageSize = nWidth * nHeight;
 	int nTotalW = nMeanX;
 	int nTotalH = nMeanY;
 	if ((nMeanX % 2) == 0) {
@@ -401,11 +402,21 @@ int CImageProcess::ImageMean_Part(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int 
 	long* vecLineSum;
 	vecLineSum = new long[nWidth];
 	memset(vecLineSum, 0, sizeof(long) * nWidth);
-
-	for (x = nStartX; x < nEndX; x++) {
+//=====================죽는 위치 -------------------------------------
+	for (x = nStartX; x < nEndX; x++) 
+	{
 		nVerSum = 0;
-		for (y = nStartY; y < nStartY + nTotalH; y++) {
-			nVerSum += *(pOrgPtr + (nWidth * y) + x);
+		for (y = nStartY; y < nStartY + nTotalH; y++) 
+		{
+			int SumPoint = (nWidth * y) + x;
+			if (SumPoint <= totalImageSize)
+			{
+				nVerSum += *(pOrgPtr + SumPoint);
+			}
+			else
+			{
+				CLogDisplayDlg::LogDisplayText("CImageProcessLog", "nWidth<%d> y<%d> x<%d>", nWidth, y, x);
+			}
 		}
 		vecLineSum[x] += nVerSum;
 	}
