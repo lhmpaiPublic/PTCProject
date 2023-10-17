@@ -192,39 +192,46 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//양극이면
 							if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 							{
+								// 2023.10.17. pyj del
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 								// Tab Level
-								int* pnPrj = new int[nWidth];
+								//int* pnPrj = new int[nWidth];
 
-								CRect rcPrj;
-								rcPrj.top = nTabLeft;
-								rcPrj.bottom = nTabRight;
-								rcPrj.left = 0;
-								rcPrj.right = nWidth;
+								//CRect rcPrj;
+								//rcPrj.top = nTabLeft;
+								//rcPrj.bottom = nTabRight;
+								//rcPrj.left = 0;
+								//rcPrj.right = nWidth;
 
-								int nCount = CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rcPrj, DIR_VER, 10, 0);
-								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection",
-									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-									);
+								//int nCount = CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rcPrj, DIR_VER, 10, 0);
+								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection",
+								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								//	);
 
-								// 경계 검출
-								int nUpper = 20 * nCount;
-								int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0, 0);
-								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetBundary_FromPrjData",
-									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-									);
+								//// 경계 검출
+								//int nUpper = 20 * nCount;
+								//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0, 0);
+								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetBundary_FromPrjData",
+								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								//	);
 
-								nTabLevel = nBundary - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
+								//nTabLevel = nBundary - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
 
-								if (nTabLevel <= 0 || nTabLevel >= nWidth - 1)
-								{
-									nTabLevel = pFrmInfo->m_nTabLevel;
-								}
+								//if (nTabLevel <= 0 || nTabLevel >= nWidth-1 )
+								//{
+								//	nTabLevel = pFrmInfo->m_nTabLevel;
+								//}
 
-								if (pnPrj != NULL)
-								{
-									delete[] pnPrj;
-								}
+								//if (pnPrj != NULL)
+								//{
+								//	delete[] pnPrj;
+								//}
+								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+								nTabLevel = pFrmInfo->m_nTabLevel;// 2023.10.17. pyj add
+
+
+
 
 
 								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================ANODE_MODE ImageProcessing ImageProcessTopSide_BrightRoll Enter");
@@ -256,89 +263,92 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//음극이면 ImageProcessTopSide_AreaDiff 실행
 							else
 							{
+								// 2023.10.17. pyj del
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 								// Tab Level
-								int nTabLevelLeft = 0;
-								int nTabLevelRight = 0;
+								//int nTabLevelLeft = 0;
+								//int nTabLevelRight = 0;
 
-								CRect rect;
-								int nPrjWidth = 2000;
-								if (nWidth < 2000)
-								{
-									nPrjWidth = nWidth;
-								}
-								rect.left = nWidth - nPrjWidth;
-								rect.right = nWidth;
-								rect.top = 0;
-								rect.bottom = nHeight - 1;
-								int nSamplingSize = nHeight / 100;
-								int* pnPrj = new int[nPrjWidth];
+								//CRect rect;
+								//int nPrjWidth = 2000;
+								//if (nWidth < 2000)
+								//{
+								//	nPrjWidth = nWidth;
+								//}
+								//rect.left = nWidth - nPrjWidth;
+								//rect.right = nWidth;
+								//rect.top = 0;
+								//rect.bottom = nHeight - 1;
+								//int nSamplingSize = nHeight / 100;
+								//int* pnPrj = new int[nPrjWidth];
 
-								// Tab Left
-								rect.top = 100;
-								rect.bottom = nTabLeft - AprData.m_pRecipeInfo->TabCond.nRadiusH;
-								if (rect.bottom < rect.top)
-								{
-									AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Left] Error - Invalid Find Area"));
-								}
-
-								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================CATHODE_MODE ImageProcessing FindBoundary_FromPrjData Enter1");
-
-								BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[nHeadNo] == 1) ? FALSE : TRUE;
-
-								CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection 1",
-									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-									);
-
-								nTabLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
-								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - FindBoundary_FromPrjData 1",
-									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-									);
+								//// Tab Left
+								//rect.top = 100;
+								//rect.bottom = nTabLeft - AprData.m_pRecipeInfo->TabCond.nRadiusH;
+								//if (rect.bottom < rect.top)
+								//{
+								//	AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Left] Error - Invalid Find Area"));
+								//}
 
 
-								LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================CATHODE_MODE ImageProcessing FindBoundary_FromPrjData Enter2");
+								//BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[nHeadNo] == 1) ? FALSE : TRUE;
 
-								// Tab Right
-								rect.top = nTabRight + AprData.m_pRecipeInfo->TabCond.nRadiusH;
-								rect.bottom = nHeight - 100;
-								if (rect.top < 0 || rect.bottom < rect.top)
-								{
-									AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Right] Error - Invalid Find Area"));
-								}
+								//CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
+								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection 1",
+								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								//	);
 
-								CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection 2",
-									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-									);
-
-								nTabLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
-								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - FindBoundary_FromPrjData 2",
-									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-									);
+								//nTabLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
+								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - FindBoundary_FromPrjData 1",
+								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								//	);
 
 
 
 
-								nTabLevelLeft += rect.left;
-								nTabLevelRight += rect.left;
+								//// Tab Right
+								//rect.top = nTabRight + AprData.m_pRecipeInfo->TabCond.nRadiusH;
+								//rect.bottom = nHeight - 100;
+								//if (rect.top < 0 || rect.bottom < rect.top)
+								//{
+								//	AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Right] Error - Invalid Find Area"));
+								//}
 
-								if (nTabLevelLeft <= nPrjWidth + 1 || nTabLevelRight <= nPrjWidth + 1
-									|| nTabLevelLeft >= nWidth - 1 || nTabLevelRight >= nWidth - 1)
-								{
-									nTabLevel = pFrmInfo->m_nTabLevel;
-								}
-								else
-								{
-									nTabLevel = (nTabLevelLeft + nTabLevelRight) / 2;
-								}
+								//CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
+								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection 2",
+								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								//	);
 
-								if (pnPrj != NULL)
-								{
-									delete[] pnPrj;
-								}
+								//nTabLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
+								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - FindBoundary_FromPrjData 2",
+								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								//	);
+
+
+
+
+								//nTabLevelLeft += rect.left;
+								//nTabLevelRight += rect.left;
+
+								//if (nTabLevelLeft <= nPrjWidth+1 || nTabLevelRight <= nPrjWidth+1
+								//	|| nTabLevelLeft >= nWidth-1 || nTabLevelRight >= nWidth-1 )
+								//{
+								//	nTabLevel = pFrmInfo->m_nTabLevel;
+								//}
+								//else
+								//{
+								//	nTabLevel = (nTabLevelLeft + nTabLevelRight) / 2;
+								//}
+
+								//if (pnPrj != NULL)
+								//{
+								//	delete[] pnPrj;
+								//}
 
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+								nTabLevel = pFrmInfo->m_nTabLevel;// 2023.10.17. pyj add
 
 
 
