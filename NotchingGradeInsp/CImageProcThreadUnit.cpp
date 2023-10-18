@@ -19,7 +19,6 @@
 int CImageProcThreadUnit::ProcEnd_WaitCount = 0;
 
 // CImageProcThreadUnit
-#define MAX_IMAGEDATASIZE 4000 * 14000
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
 	//스래드에 넘긴 객체 정보
@@ -27,6 +26,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 	//스래드 객체 정보에 멤버 Frame Info 정보 객체
 	CFrameInfo* pFrmInfo = pCtrl->m_pFrmInfo;
+
+	//이미지 넓이
+	int nWidth = pFrmInfo->m_nWidth;
+	//이미지 높이
+	int nHeight = pFrmInfo->m_nHeight;
+	//TotalSize
+	__int64 ImgTotalSize = (nWidth * nHeight) + 1;
 
 	//프레임의 결과 정보를 생성해서 외부와 연결한다.
 	//스래드 안에서 프레임 결과 정보 객체 생성한다.
@@ -48,8 +54,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 	AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ThreadEnter"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo);
 
-	BYTE* pOrgImg = new BYTE[MAX_IMAGEDATASIZE];
-	memset(pOrgImg, 0, sizeof(BYTE) * MAX_IMAGEDATASIZE);
+	BYTE* pOrgImg = new BYTE[ImgTotalSize];
+	memset(pOrgImg, 0, sizeof(BYTE) * ImgTotalSize);
 
 	while (TRUE)
 	{
@@ -102,10 +108,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					break;
 				}
 
-				//이미지 넓이
-				int nWidth = pFrmInfo->m_nWidth;
-				//이미지 높이
-				int nHeight = pFrmInfo->m_nHeight;
 				//Tab  레벨
 				int nTabLevel = pFrmInfo->m_nTabLevel;
 
