@@ -749,14 +749,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//파일저장 프레임 결과 정보에 저장한다.
 				pFrameRsltInfo->Copy(pFrmInfo);
 
+				//이미지 프로세싱 끝 상태 판단 변수
+				pCtrl->m_bProcEnd = TRUE;
+
 				break;
 			} //Proc Start 이벤트 샐행 루프 빠져나감
 		} //Proc End 이벤트 
 		Sleep(AprData.m_nSleep);
 	}
-
-	//이미지 프로세싱 끝 상태 판단 변수
-	pCtrl->m_bProcEnd = TRUE;
 
 	//이미지 처리 스래드 유효성을  FALSE 설정
 	pCtrl->m_bThreadValid = FALSE;
@@ -790,6 +790,8 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 	m_hEventKillThread = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	m_hEventKilled = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 	m_hSendResult = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	m_heventProcEnd_SleepTime = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	m_pFrmInfo = pFrmInfo;
 	m_pThread = NULL;
@@ -835,6 +837,8 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 	::CloseHandle(m_hEventKillThread);
 	::CloseHandle(m_hEventKilled);
 	::CloseHandle(m_hSendResult);
+
+	::CloseHandle(m_heventProcEnd_SleepTime);
 }
 
 
@@ -906,6 +910,7 @@ BOOL CImageProcThreadUnit::IsProcEnd()
 }
 
 //EVENT 결과 
+#define EVENTPROCEND_TIMEOUT 3
 int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos)
 {
 	int retval = 0;
@@ -952,8 +957,7 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos)
 				LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-loop<%d> CamPos<%s>"), ProcEnd_WaitCount, CamPos
 					);
 			}
-
-			Sleep(1);
+			WaitForSingleObject(m_heventProcEnd_SleepTime, EVENTPROCEND_TIMEOUT);
 		}
 	}
 	return retval;

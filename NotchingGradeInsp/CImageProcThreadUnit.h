@@ -30,6 +30,9 @@ protected:
 	HANDLE	m_hEventKilled;
 	HANDLE	m_hSendResult;
 
+	//프로세싱 끝 확인 함수 슬립타임 이벤트 객체
+	HANDLE	m_heventProcEnd_SleepTime;
+
 	//m_hEventProcEnd의 타임아웃 카운트
 	static int ProcEnd_WaitCount;
 
