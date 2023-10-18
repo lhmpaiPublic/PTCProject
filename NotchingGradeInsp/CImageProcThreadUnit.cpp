@@ -19,6 +19,7 @@
 int CImageProcThreadUnit::ProcEnd_WaitCount = 0;
 
 // CImageProcThreadUnit
+#define MAX_IMAGEDATASIZE 4000 * 14000
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
 	//스래드에 넘긴 객체 정보
@@ -47,7 +48,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 	AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ThreadEnter"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo);
 
-
+	BYTE pOrgImg[MAX_IMAGEDATASIZE] = { 0, };
 	while (TRUE)
 	{
 		//ImageProc: 이미지 처리 스래드가 종료 이벤트가 발생했는가 체크
@@ -114,7 +115,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//이미지 해더 번호
 				int nHeadNo = pFrmInfo->m_nHeadNo;
 				//이미지 데이터 : CFrameInfo에 저장된 이미지 데이터를 가져온다.
-				BYTE* pOrgImg = pFrmInfo->GetImagePtr();
+				CopyMemory(pOrgImg, pFrmInfo->GetImagePtr(), sizeof(BYTE)*(nWidth* nHeight));
 
 				//Trigger Tab Id
 				pFrameRsltInfo->m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
