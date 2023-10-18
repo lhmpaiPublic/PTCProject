@@ -566,7 +566,6 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 
 		if (pDefInfo != NULL)
 		{
-			LOGDISPLAY_SPEC(8)("SaveCropImage TabNo<%d> Defect Proc Enter", pTabInfo->m_nTabNo);
 
 			// 22.11.28 Ahn Modify End
 			CRect rcCrop;
@@ -705,7 +704,6 @@ void CResultThread::SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrame
 			pDefectQueue->PushBack(pDefRsltInfo);
 			// 22.06.23 Ahn Add End
 
-			LOGDISPLAY_SPEC(8)("SaveCropImage TabNo<%d> Defect Proc End", pTabInfo->m_nTabNo);
 		}
 		else
 		{
@@ -766,8 +764,6 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				if (pRsltInfo != NULL)
 				{
 					theApp.m_nImageProcResultProcCrop = GetTickCount();
-
-					LOGDISPLAY_SPEC(8)("CtrlThreadResultProc TabNo<%d> CFrameRsltInfo Object Proc Enter", pRsltInfo->nTabNo);
 
 #ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
@@ -843,7 +839,6 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							// Overlay 저장
 							if (pRsltInfo->m_pTabRsltInfo->m_bCropImgFlag == TRUE)
 							{
-								LOGDISPLAY_SPEC(8)("CtrlThreadResultProc TabNo<%d> CFrameRsltInfo Crop Image Save", pRsltInfo->nTabNo);
 								//이미지 저장 포맷
 								CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
 
@@ -934,8 +929,6 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					}
 					//===========================================================================================================
 #endif //SPCPLUS_CREATE
-
-					LOGDISPLAY_SPEC(8)("CtrlThreadResultProc TabNo<%d> CFrameRsltInfo Object Proc End", pRsltInfo->nTabNo);
 
 					pRsltInfo->m_pTabRsltInfo = NULL;
 					delete pRsltInfo;
