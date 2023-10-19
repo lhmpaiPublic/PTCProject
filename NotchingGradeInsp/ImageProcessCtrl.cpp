@@ -646,6 +646,10 @@ int CImageProcessCtrl::GrabStop()
 	theApp.m_pSigProc->EnableWorkSet(TRUE);
 	// 22.05.26 Ahn Add End
 
+#if 1 //231018
+	theApp.m_pImgProcCtrl->LightOFF();
+#endif
+
 	return 0;
 }
 
