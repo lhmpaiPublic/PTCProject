@@ -58,7 +58,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 		MarkSendInfoData.bSendComplate = bSendComplate;
 		CCounterThread::m_MarkSendInfoData.push_back(MarkSendInfoData);
 		//DIO Input Log
-		LOGDISPLAY_SPEC(7)(_T("마킹 데이터 id<%d>OutputData<%d>"), TabId, MarkingOutputData);
+		LOGDISPLAY_SPEC(7)(_T("마킹 데이터 id<%d> OutputData<%d>"), TabId, MarkingOutputData);
 	}
 
 }
@@ -431,6 +431,9 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						CString strMsg;
 						strMsg.Format(_T("Input ID[%d], Queue Count<%d>-><%d>"), cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize());
 						AprData.SaveMemoryLog(strMsg);
+
+						//DIO Input Log
+						LOGDISPLAY_SPEC(7)(_T("Input ID[%d], Queue Count<%d>-><%d>"), cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize());
 
 					}
 					// Cell 추적 Queue Data -> Local Queue 
