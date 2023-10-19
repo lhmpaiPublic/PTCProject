@@ -5,7 +5,7 @@
 #include "ImageProcessCtrl.h"
 #include "GlobalData.h"			// 23.09.10 Ahn Add 
 
-#define WATCHTHREAD_TIMEOUT 30
+#define WATCHTHREAD_TIMEOUT 20
 CThreadQueueCtrl::CThreadQueueCtrl(CImageProcessCtrl* pParent)
 {
 	::InitializeCriticalSection(&m_csQueue);
@@ -201,7 +201,7 @@ bool CThreadQueueCtrl::isFull()
 void CThreadQueueCtrl::enQueue()
 {
 
-	while (!isFull())
+	if (!isFull())
 	{
 		if (m_bQueuePushPop == false)
 		{
@@ -221,11 +221,6 @@ void CThreadQueueCtrl::enQueue()
 			}
 
 			m_bQueuePushPop = false;
-
-			if (pImageProcThreadUnit == NULL)
-			{
-				break;
-			}			
 
 		}
 

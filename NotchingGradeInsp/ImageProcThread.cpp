@@ -103,7 +103,6 @@ void CImageProcThread::Kill( void )
 
 
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
-#define IMAGEPROCTHREAD_TABFIND_TIMEOUT 40
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 {
 	CImageProcThread* pThis = (CImageProcThread*)Param;
@@ -709,9 +708,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 #define IMAGEPROCTHREAD_RESULT_TIMEOUT 10
-#define IMAGEPROCTHREAD_RESULTWAITE_TIMEOUT 5
-
-#define DIOMARKINGEVENT_TIMEOUT 1000
 
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {
@@ -1111,7 +1107,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 
 						// Counter 신호 출력
-						//WaitForSingleObject(hEvent, DIOMARKINGEVENT_TIMEOUT);
 						WORD wOutPut;
 						CString strMarking = _T("OFF");
 						{
@@ -1474,7 +1469,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> ResultProc End"));
 
 				//Unit Thread 에서 빠져나오지 못했을 때 체크
-				if (topWaitVal != 2)
+				if (topWaitVal == 1)
 				{
 					if (pUnitTop)
 					{
@@ -1488,7 +1483,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 				}
 
 				//Unit Thread 에서 빠져나오지 못했을 때 체크
-				if (btmWaitVal != 2)
+				if (btmWaitVal == 1)
 				{
 					if (pUnitBtm)
 					{
