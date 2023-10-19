@@ -718,7 +718,11 @@ void CModeDlg::OnBnClickedRadStop()
 
 	m_pView->SetInspReady(FALSE);
 
+#if 0 //231018 // GrabStop()으로 이동 kjk
 	theApp.m_pImgProcCtrl->LightOFF();
+#else
+	if (theApp.m_pImgProcCtrl->m_bInspFlag == FALSE) theApp.m_pImgProcCtrl->LightOFF(); //시작했다가 바로 종료했을때 처리 231019 kjk
+#endif
 
 }
 
