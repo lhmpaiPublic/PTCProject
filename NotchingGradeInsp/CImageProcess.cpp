@@ -53,7 +53,7 @@ void CRegionInfo::SetRect(CRect rect) {
 
 // Round 부분의 평균화 처리는 내부 외부 별도로 처리.
 // 좌우 휘도 차이가 있는 부분은 중심부와 Threslevel과의 관계로 상/하 평균값을 적용
-int CImageProcess::MeanImageDirection_Round(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nThresLevel)
+int CImageProcess::MeanImageDirection_Round(const BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nThresLevel)
 {
 	int nRet = 0;
 	ASSERT(pImage);
@@ -165,7 +165,7 @@ int CImageProcess::MeanImageDirection_Round(BYTE* pImage, BYTE* pMeanImg, int nW
 	return nRet; 
 }
 
-int CImageProcess::MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nDir)
+int CImageProcess::MeanImageDirection(const BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nDir)
 {
 	int nRet = 0;
 	ASSERT(pImage);
@@ -205,7 +205,7 @@ int CImageProcess::MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, 
 	if (nDir == DIR_HOR) {
 		for (y = nStartY; y < nEndY; y++) {
 			nSum = 0;
-			pLinePtr = pImage + (nWidth * y);
+			pLinePtr = (BYTE*)pImage + (nWidth * y);
 			pTarLinePtr = pMeanImg + (nWidth * y);
 
 			for (x = nStartX; x < nStartX + nMeanSize; x++) {
@@ -269,7 +269,7 @@ int CImageProcess::MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, 
 	return nRet;
 }
 
-int CImageProcess::MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, int nMeanSize, int nDir)
+int CImageProcess::MeanImageDirection(const BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, int nMeanSize, int nDir)
 {
 	int nRet = 0;
 	CRect rectProc;
@@ -284,7 +284,7 @@ int CImageProcess::MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, 
 }
 
 
-BOOL CImageProcess::ImageMean(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHeight, int nMeanX, int nMeanY)
+BOOL CImageProcess::ImageMean(const BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHeight, int nMeanX, int nMeanY)
 {
 	ASSERT(pOrgPtr);
 	ASSERT(pTarPtr);
@@ -357,7 +357,7 @@ BOOL CImageProcess::ImageMean(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHei
 	return TRUE;
 }
 
-int CImageProcess::ImageMean_Part(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHeight, CRect rcRange, int nMeanX, int nMeanY, int nMode )
+int CImageProcess::ImageMean_Part(const BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHeight, CRect rcRange, int nMeanX, int nMeanY, int nMode )
 {
 	ASSERT(pOrgPtr);
 	ASSERT(pTarPtr);
@@ -481,7 +481,7 @@ int CImageProcess::ImageMean_Part(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int 
 }
 
 
-int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int nHeight, int nStartX, int nEndX, int nStartY, int nEndY, int nDir, int nSampling, BOOL bModeSum)
+int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, int nStartX, int nEndX, int nStartY, int nEndY, int nDir, int nSampling, BOOL bModeSum)
 {
 	ASSERT(pImage);
 	ASSERT(pProjection);
@@ -502,7 +502,7 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 		int nCount = ((nEndX - nStartX) / nSampling);
 		memset(pProjection, 0x00, sizeof(int) * (nDestHeight));
 		for (y = nStartY; y < nEndY; y++) {
-			pLine = pImage + (nWidth * y);
+			pLine = (BYTE*)pImage + (nWidth * y);
 			for (x = nStartX; x < nEndX; x += nSampling) {
 				pProjection[y - nStartY] += *(pLine + x);
 			}
@@ -519,7 +519,7 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 		if (nCount <= 0) nCount = 1; // // 22.07.01 Ahn Add
 
 		for (y = nStartY; y < nEndY; y += nSampling) {
-			pLine = pImage + (nWidth * y);
+			pLine = (BYTE*)pImage + (nWidth * y);
 			for (x = nStartX; x < nEndX; x++) {
 				pProjection[x - nStartX] += *(pLine + x);
 			}
@@ -565,7 +565,7 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 //}
 
 
-int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum)
+int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum)
 {
 	ASSERT(pImage);
 	ASSERT(pProjection);
@@ -613,7 +613,7 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 		memset(pProjection, 0x00, sizeof(int) * (nDestHeight));
 		for (y = nStartY; y < nEndY; y++)
 		{
-			pLine = pImage + (nWidth * y);
+			pLine = (BYTE*)pImage + (nWidth * y);
 			for (x = nStartX; x < nEndX; x += nSampling)
 			{
 				pProjection[y - nStartY] += *(pLine + x);
@@ -635,7 +635,7 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 
 		for (y = nStartY; y < nEndY; y += nSampling)
 		{
-			pLine = pImage + (nWidth * y);
+			pLine = (BYTE*)pImage + (nWidth * y);
 			for (x = nStartX; x < nEndX; x++)
 			{
 				pProjection[x - nStartX] += *(pLine + x);
@@ -652,7 +652,7 @@ int CImageProcess::GetProjection(BYTE* pImage, int* pProjection, int nWidth, int
 	return nCount;  // 22.06.24 Ahn Modify
 }
 
-int CImageProcess::Threshold(BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHeight, int nMin, int nMax)
+int CImageProcess::Threshold(const BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHeight, int nMin, int nMax)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRsltPtr);
@@ -673,7 +673,7 @@ int CImageProcess::Threshold(BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHei
 	}
 	// 22.07.07 Ahn Add End
 	for (y = 0; y < nHeight; y++) {
-		pLinePtr = pImgPtr + (nWidth * y);
+		pLinePtr = (BYTE*)pImgPtr + (nWidth * y);
 		pTarLinPtr = pRsltPtr + (nWidth * y);
 		// 22.07.07 Ahn Add Start
 		if (dwCount > MAX_BLOCK_PIXEL) {
@@ -726,7 +726,7 @@ int CImageProcess::Threshold(BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHei
 //}
 // 22.07.14 Ahn Modify Start
 //int CImageProcess::Threshold(BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, int nHeight, int nMin, BOOL bClearRslt)
-int CImageProcess::Threshold(BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, int nHeight, int nThreshold, BOOL bClearRslt, BOOL bModeDark /*= FALSE*/ )
+int CImageProcess::Threshold(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, int nHeight, int nThreshold, BOOL bClearRslt, BOOL bModeDark /*= FALSE*/ )
 // 22.07.14 Ahn Modify End
 {
 	ASSERT(pImgPtr);
@@ -765,7 +765,7 @@ int CImageProcess::Threshold(BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, i
 		// 22.07.07 Ahn Add End
 
 		for (y = nStartY; y < nEndY; y++) {
-			pLinePtr = pImgPtr + (nWidth * y);
+			pLinePtr = (BYTE*)pImgPtr + (nWidth * y);
 			pRoiLinePtr = pRoiPtr + (nWidth * y);
 			// 22.07.07 Ahn Add Start
 			if (dwCount > MAX_BLOCK_PIXEL) {
@@ -789,7 +789,7 @@ int CImageProcess::Threshold(BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, i
 	}
 	else {
 		for (y = nStartY; y < nEndY; y++) {
-			pLinePtr = pImgPtr + (nWidth * y);
+			pLinePtr = (BYTE*)pImgPtr + (nWidth * y);
 			pRoiLinePtr = pRoiPtr + (nWidth * y);
 			if (dwCount > MAX_BLOCK_PIXEL) {
 				return OVERFLOW_OCCURED;
@@ -816,7 +816,7 @@ int CImageProcess::Threshold(BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, i
 	return 0;
 }
 
-int CImageProcess::Threshold_RoundMask(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMin, int nMaskOffset, int nLimitRight, int nMode, BOOL bClearRslt, BOOL bModeSide /*=en_HeadSide*/)
+int CImageProcess::Threshold_RoundMask(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMin, int nMaskOffset, int nLimitRight, int nMode, BOOL bClearRslt, BOOL bModeSide /*=en_HeadSide*/)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRoiInfo);
@@ -863,7 +863,7 @@ int CImageProcess::Threshold_RoundMask(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC
 	}
 	if ( mode == en_ModeFoilExp) { // In
 		for (y = nStartY, nBnd = 0; y < nEndY; y++, nBnd++) {
-			pLinePtr = pImgPtr + (nWidth * y);
+			pLinePtr = (BYTE*)pImgPtr + (nWidth * y);
 			pRoiLinePtr = pRoiPtr + (nWidth * y);
 			nEndX = (*vecLine)[nBnd].x - nMaskOffset ;
 			int nInspStartX = nEndX - nInspWidth;
@@ -897,7 +897,7 @@ int CImageProcess::Threshold_RoundMask(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC
 				break;
 			}
 
-			pLinePtr = pImgPtr + (nWidth * y);
+			pLinePtr = (BYTE*)pImgPtr + (nWidth * y);
 			pRoiLinePtr = pRoiPtr + (nWidth * y);
 			nStartX = (*vecLine)[nBnd].x + nMaskOffset;
 			nEndX = nStartX + nInspWidth;
@@ -931,7 +931,7 @@ int CImageProcess::Threshold_RoundMask(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC
 
 // 22.01.17 Ahn Add Start
 // 음극용 Threshold를 기준으로 Image와 Fifo를 작성.
-int CImageProcess::Threshold_RoundMask_Negative(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nStartOffset, int nEndOffset, int nMin, int nLimitRight, BOOL bClearRslt, BOOL bModeSide /* = CImageProcess::en_TopSide */ )
+int CImageProcess::Threshold_RoundMask_Negative(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nStartOffset, int nEndOffset, int nMin, int nLimitRight, BOOL bClearRslt, BOOL bModeSide /* = CImageProcess::en_TopSide */ )
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRoiInfo);
@@ -971,7 +971,7 @@ int CImageProcess::Threshold_RoundMask_Negative(BYTE* pImgPtr, CRegionInfo* pRoi
 		return -1;
 	}
 	for (y = nStartY, nBnd = 0; y < nEndY; y++, nBnd++) {
-		pLinePtr = pImgPtr + (nWidth * y);
+		pLinePtr = (BYTE*)pImgPtr + (nWidth * y);
 		pRoiLinePtr = pRoiPtr + (nWidth * y);
 		int nInspStartX = (*vecLine)[nBnd].x - nStartOffset;
 		nEndX = (*vecLine)[nBnd].x + nEndOffset;
@@ -1560,7 +1560,7 @@ int CImageProcess::PreFilter1x2(BYTE* pImgPtr, BYTE* pProcImgPtr, int nWidth, in
 
 }
 
-BOOL CImageProcess::GetOrgImageBright(BYTE* pImgPtr, int nWidth, int nHeight, CRegionInfo::VEC_FIFO* pVecFifo)
+BOOL CImageProcess::GetOrgImageBright(const BYTE* pImgPtr, int nWidth, int nHeight, CRegionInfo::VEC_FIFO* pVecFifo)
 {
 	ASSERT(pVecFifo);
 	ASSERT(pImgPtr);
@@ -4249,7 +4249,7 @@ int CImageProcess::DivideSectionBetweenThreshold(int* pnPrjData, int nPrjLength,
 	return nCount;
 }
 
-int CImageProcess::FillArea_byRndInfo(BYTE* pImage, BYTE* pMeanPtr, int nWidth, int nHeight, CRect rcArea, CImageProcess::VEC_ROUND_INFO* pVecRndInfo, BYTE btLevel, int nProcPos )
+int CImageProcess::FillArea_byRndInfo(const BYTE* pImage, BYTE* pMeanPtr, int nWidth, int nHeight, CRect rcArea, CImageProcess::VEC_ROUND_INFO* pVecRndInfo, BYTE btLevel, int nProcPos )
 {
 	ASSERT(pImage);
 	ASSERT(pMeanPtr);
@@ -4266,7 +4266,7 @@ int CImageProcess::FillArea_byRndInfo(BYTE* pImage, BYTE* pMeanPtr, int nWidth, 
 	BYTE* pLinePtr;
 	BYTE* pMeanLinePtr;
 	for (y = nStartY; y < nEndY; y++) {
-		pLinePtr = pImage + (nWidth * y);
+		pLinePtr = (BYTE*)pImage + (nWidth * y);
 		pMeanLinePtr = pMeanPtr + (nWidth * y);
 //		if (y > nSize) break;
 //		nStartX = (*pVecRndInfo)[y].x;
@@ -7087,7 +7087,7 @@ int CImageProcess::MergeBlockList(_VEC_BLOCK* pDestVlock, _VEC_BLOCK vecFirst, _
 // 22.05.24 Ahn Add End
 
 // 22.05.09 Ahn Add Start
-int CImageProcess::ImageProcessDetectSurface(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pTabRsltInfo, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt )
+int CImageProcess::ImageProcessDetectSurface(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pTabRsltInfo, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt )
 {
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessDetectSurface> Start : nWidth = %d, nHeight = %d, rcArea = (%d,%d,%d,%d), nCamPos = %d, bSimMode = %d, nArrCnt = %d"), 
 //		nWidth, nHeight, rcArea.left, rcArea.top, rcArea.right, rcArea.bottom, nCamPos, bSimMode, nArrCnt);
@@ -7141,7 +7141,7 @@ int CImageProcess::ImageProcessDetectSurface(BYTE* pImgPtr, int nWidth, int nHei
 // 22.05.09 Ahn Add End
 
 // 23.02.10 Ahn Add Start
-int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0 */ , BYTE** pImgPtrArr /*= NULL */ , int nArrCnt /*= 0*/)
+int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0 */ , BYTE** pImgPtrArr /*= NULL */ , int nArrCnt /*= 0*/)
 {
 	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_BrightRoll> Start : nWidth = %d, nHeight = %d, nLineLevel = %d, nTabLeft = %d, bSimMode = %d, nArrCnt = %d"), nWidth, nHeight, nLineLevel, nTabLeft, bSimMode, nArrCnt);
 
@@ -7468,7 +7468,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int
 
 	return 0;
 }
-int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0*/, BYTE** pImgPtrArr /*= NULL*/, int nArrCnt /*= 0*/)
+int CImageProcess::ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0*/, BYTE** pImgPtrArr /*= NULL*/, int nArrCnt /*= 0*/)
 {
 	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_BrightRoll> Start : nWidth = %d, nHeight = %d, nLineLevel = %d, bSimMode = %d, nArrCnt = %d"), nWidth, nHeight, nLineLevel, bSimMode, nArrCnt);
 
@@ -7648,7 +7648,7 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, 
 // 23.02.10 Ahn Add End
 
 // Head부 검사 처리 함수.
-int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
 {
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_AreaDiff> Start : nWidth = %d, nHeight = %d, nLineLevel = %d, nTabLeft = %d, nTabRight = %d, bSimMode = %d, nArrCnt = %d"), nWidth, nHeight, nLineLevel, nTabLeft, nTabRight, bSimMode, nArrCnt);
 
@@ -8100,7 +8100,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int n
 }
 
 
-int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
 {
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_AreaDiff> Start : nWidth = %d, nHeight = %d, nLineLevel = %d, bSimMode = %d, nArrCnt = %d"), nWidth, nHeight, nLineLevel, bSimMode, nArrCnt);
 
@@ -8284,7 +8284,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, in
 
 // Head부 검사 처리 함수.
 // 22.02.08 Ahn Add Start
-int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
 {
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessTopSide_Negative> Start : nWidth = %d, nHeight = %d, nLineLevel = %d, nTabLeft = %d, nTabRight = %d, bSimMode = %d, nArrCnt = %d"), nWidth, nHeight, nLineLevel, nTabLeft, nTabRight, bSimMode, nArrCnt);
 
@@ -8690,7 +8690,7 @@ int CImageProcess::ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int n
 }
 
 
-int CImageProcess::ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
 {
 //	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_Negative> Start : nWidth = %d, nHeight = %d, nLineLevel = %d, bSimMode = %d, nArrCnt = %d"), nWidth, nHeight, nLineLevel, bSimMode, nArrCnt);
 
@@ -9181,7 +9181,7 @@ int CImageProcess::SearchEdgeLine(BYTE* pMeanPtr, int nWidth, int nHeight, CRect
 
 
 // 22.07.14 Ahn Add Start
-int CImageProcess::Threshold_ByEdgeLine(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMinThres, int nMaxThres, int nMaskOffset, int nMode, BOOL bClearRslt, BOOL bModeSide )
+int CImageProcess::Threshold_ByEdgeLine(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMinThres, int nMaxThres, int nMaskOffset, int nMode, BOOL bClearRslt, BOOL bModeSide )
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRoiInfo);
@@ -9230,7 +9230,7 @@ int CImageProcess::Threshold_ByEdgeLine(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VE
 	}
 	if (mode == en_ModeWave) { // In
 		for (y = nStartY, nBnd = 0; y < nEndY; y++, nBnd++) {
-			pLinePtr = pImgPtr + (nWidth * y);
+			pLinePtr = (BYTE*)pImgPtr + (nWidth * y);
 			pRoiLinePtr = pRoiPtr + (nWidth * y);
 			nEndX = (*vecLine)[nBnd].x - nMaskOffset;
 			int nInspStartX = nEndX - nInspWidth;
@@ -9265,7 +9265,7 @@ int CImageProcess::Threshold_ByEdgeLine(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VE
 				break;
 			}
 
-			pLinePtr = pImgPtr + (nWidth * y);
+			pLinePtr = (BYTE*)pImgPtr + (nWidth * y);
 			pRoiLinePtr = pRoiPtr + (nWidth * y);
 			nStartX = (*vecLine)[nBnd].x + nMaskOffset  ;
 			nEndX = nStartX + nInspWidth;

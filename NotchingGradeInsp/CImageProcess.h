@@ -180,7 +180,7 @@ public:
 
 	//결함 검출처리 
 
-	static BOOL GetOrgImageBright(BYTE* pImgPtr, int nWidth, int nHeight, CRegionInfo::VEC_FIFO* pVecFifo);
+	static BOOL GetOrgImageBright(const BYTE* pImgPtr, int nWidth, int nHeight, CRegionInfo::VEC_FIFO* pVecFifo);
 	static BOOL MergeLineData(_LINE_DATA* pNewData, _LINE_DATA* pPreData); // pSrcData 에 pTarData를 Merge 하고 pTarData를 제거함.
 	static BOOL LoopLabeling(CRegionInfo* pRoiInfo, int nWidth, int nHeight, _VEC_BLOCK* pVecBlock, BYTE btBit, int MinSize, double dResolX, double ResolY);
 	static BOOL IsLinked(_LINE_DATA* pCurData, _LINE_DATA* pPreData);
@@ -231,11 +231,11 @@ public:
 
 	// <<<<<<<<<<<<<<<<<<< 여기까지 제작 필요 <<<<<<<<<<<<<<<<<<<<<<<<<
 	// 전체 영역
-	static int Threshold(BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHeight, int nMin, int nMax);
+	static int Threshold(const BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHeight, int nMin, int nMax);
 	// ROI 사용 
-	static int Threshold(BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, int nHeight, int nMin, BOOL bClearRslt, BOOL bModeDark = FALSE );
-	static int Threshold_RoundMask(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMin, int nMaskOffset, int nLimitRight, int nMode, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_HeadSide );
-	static int Threshold_RoundMask_Negative(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nStartX, int nEndX, int nMin, int nLimitRight, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_HeadSide);
+	static int Threshold(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWidth, int nHeight, int nMin, BOOL bClearRslt, BOOL bModeDark = FALSE );
+	static int Threshold_RoundMask(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMin, int nMaskOffset, int nLimitRight, int nMode, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_HeadSide );
+	static int Threshold_RoundMask_Negative(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nStartX, int nEndX, int nMin, int nLimitRight, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_HeadSide);
 	enum {
 		en_LeftSide = 0,
 		en_RightSide = 1,
@@ -244,27 +244,27 @@ public:
 		en_ModeCrak = 2,
 		en_ModeBur	= 3,
 	};
-	static int Threshold_ByEdgeLine(BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMinThres, int nMaxThres, int nMaskOffset, int nMode, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_LeftSide);
+	static int Threshold_ByEdgeLine(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, VEC_ROUND_INFO* vecLine, int nWidth, int nHeight, int nInspWidth, int nMinThres, int nMaxThres, int nMaskOffset, int nMode, BOOL bClearRslt, BOOL bModeSide = CImageProcess::en_LeftSide);
 	// 22.07.14 Ahn Add End
 	
 	// Projection 처리 
-	static int GetProjection(BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum = TRUE);
-	static int GetProjection(BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, int nStartX, int nEndX, int nStartY, int nEndY, int nDir, int nSampling, BOOL bModeSum = TRUE);
+	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum = TRUE);
+	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, int nStartX, int nEndX, int nStartY, int nEndY, int nDir, int nSampling, BOOL bModeSum = TRUE);
 	//static int GetAverageFromPrjData(int* pPrjData, int* pAveData, int nLength, int nAveRage);
 	static int GetBundary_FromPrjData(int* pnPrjData, int nLength, int nCompWidth, int nMode, int nNegCoatHeight , bool bLogOk = false);
 
 	// 평균화 처리 
-	static int MeanImageDirection_Round(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nThresLevel);
-	static int MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nDir);
-	static int MeanImageDirection(BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, int nMeanSize, int nDir);
-	static int ImageMean(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHeight, int nMeanX, int nMeanY);
+	static int MeanImageDirection_Round(const BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nThresLevel);
+	static int MeanImageDirection(const BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nDir);
+	static int MeanImageDirection(const BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, int nMeanSize, int nDir);
+	static int ImageMean(const BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHeight, int nMeanX, int nMeanY);
 	enum {
 		en_FillTop = 0x0001,
 		en_FillBottom = 0x0002,
 		en_FillAll = 0x0003,
 		en_NoFill = 0x0000,
 	};
-	static int ImageMean_Part(BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHeight, CRect rcRange, int nMeanX, int nMeanY, int nMode );
+	static int ImageMean_Part(const BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth, int nHeight, CRect rcRange, int nMeanX, int nMeanY, int nMode );
 	static int PreFilter2x2(BYTE* pOrgPtr, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc);
 	static int PreFilter(BYTE* pImgPtr, BYTE* pMeanPtr, int nWidth, int nHeight, CRect rcProc);
 	static int PreFilterCross(BYTE* pOrgPtr, BYTE* pProcImgPtr, int nWidth, int nHeight, CRect rectProc);
@@ -360,7 +360,7 @@ public:
 		en_BottomSide = 1, 
 	};
 
-	static int FillArea_byRndInfo(BYTE *pImage, BYTE* pMeanPtr, int nWidth, int nHeight, CRect rcArea, CImageProcess::VEC_ROUND_INFO* pVecRndInfo, BYTE btLevel, int nPocPos );
+	static int FillArea_byRndInfo(const BYTE *pImage, BYTE* pMeanPtr, int nWidth, int nHeight, CRect rcArea, CImageProcess::VEC_ROUND_INFO* pVecRndInfo, BYTE btLevel, int nPocPos );
 	static long GetAreaSum(BYTE* pImage, int nWidth, int nHeight, CRect rectPrj, int nSampling, BOOL bModeSum);
 	static long GetAreaSum_BetweenThreshold(BYTE* pImage, int nWidth, int nHeight, CRect rectPrj, int nMin, int nMax, int nSampling, BOOL bModeSum);
 	static int FindTabLevel(BYTE* pImagePtr, int nWidth, int nHeight, int* nLevel, CTabCondition tabCond, int nMode, int nDir);
@@ -397,18 +397,18 @@ public:
 	//// 22.05.13 Ahn Add End
 
 	// 양극 검사 Dross & Foil 노출 구분 검출
-	static int ImageProcessTopSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_AreaDiff(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 
-	static int ImageProcessTopSide_Negative(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_Negative(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 22.05.09 Ahn Add Start
-	static int ImageProcessDetectSurface(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pDefInfoCtrl, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessDetectSurface(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pDefInfoCtrl, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 22.05.09 Ahn Add End
 
 	// 23.02.10 Ahn Add Start
-	static int ImageProcessTopSide_BrightRoll(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_BrightRoll(BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 23.02.10 Ahn Add End
 
 	static int SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CRect rcCrop, CString strFilePath, CString strFileName);
