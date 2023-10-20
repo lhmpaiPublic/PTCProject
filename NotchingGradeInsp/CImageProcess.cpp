@@ -413,10 +413,6 @@ int CImageProcess::ImageMean_Part(const BYTE* pOrgPtr, BYTE* pTarPtr, int nWidth
 			{
 				nVerSum += *(pOrgPtr + SumPoint);
 			}
-			else
-			{
-				CLogDisplayDlg::LogDisplayText("CImageProcessLog", "nWidth<%d> y<%d> x<%d>", nWidth, y, x);
-			}
 		}
 		vecLineSum[x] += nVerSum;
 	}
