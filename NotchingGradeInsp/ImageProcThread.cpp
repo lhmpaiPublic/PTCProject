@@ -1138,7 +1138,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							CCounterThread::MarkSendInfo_Push_back(pTopInfo->m_nTabId_CntBoard, wOutPut);
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>"),
-								(wOutPut >> 2), wOutPut);
+								((wOutPut >> 2)&0x3F), wOutPut);
 
 							CString strMsg;
 							strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),
