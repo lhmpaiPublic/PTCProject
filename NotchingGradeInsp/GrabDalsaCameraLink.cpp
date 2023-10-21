@@ -77,16 +77,19 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 			return;
 		}
 
+#ifdef USE_PLCCONNECTZONE
 
-		//CSigProc* pSigProc = theApp.m_pSigProc;
-		//if ((pSigProc != NULL) && (pSigProc->GetConnectZone() == TRUE))
-		//{
-		//	//Log Camera Setting
-		//	LOGDISPLAY_SPECTXT(0)(_T("**Cam Error** CGrabDalsaCameraLink AcqCallback함수 PLC Connect Zone 상태 - 이미지 무시한다."));
-		//	AprData.SaveDebugLog_Format(_T("<AcqCallback> Connect Zone TURE") );
+		CSigProc* pSigProc = theApp.m_pSigProc;
+		if ((pSigProc != NULL) && (pSigProc->GetConnectZone() == TRUE))
+		{
+			//Log Camera Setting
+			LOGDISPLAY_SPECTXT(0)(_T("**Cam Error** CGrabDalsaCameraLink AcqCallback함수 PLC Connect Zone 상태 - 이미지 무시한다."));
+			AprData.SaveDebugLog_Format(_T("<AcqCallback> Connect Zone TURE") );
 
-		//	return;
-		//}
+			return;
+		}
+
+#endif //USE_PLCCONNECTZONE
 
 		if ( pQueueCtrl != NULL )
 		{

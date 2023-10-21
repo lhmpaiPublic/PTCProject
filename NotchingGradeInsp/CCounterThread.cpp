@@ -327,16 +327,19 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				}
 			}
 
+#ifdef USE_PLCCONNECTZONE
 
-//			// 입력 취득
-//#if DIO_BOARD_NO // 0이 아니면
-//			if (TRUE)
-//			{
-//#else
-//			CSigProc* pSigProc = theApp.m_pSigProc;
-//			if (pSigProc != NULL && (pSigProc->GetConnectZone() == FALSE))
-//			{
-//#endif
+			// 입력 취득
+#if DIO_BOARD_NO // 0이 아니면
+			if (TRUE)
+			{
+#else
+			CSigProc* pSigProc = theApp.m_pSigProc;
+			if (pSigProc != NULL && (pSigProc->GetConnectZone() == FALSE))
+			{
+#endif
+
+#endif //USE_PLCCONNECTZONE
 
 				BOOL bTriggerBit;
 				dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
@@ -469,48 +472,50 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 #endif
 
 				}
-			//}
-			//else
-			//{
-			//	//Connect Zone 상태일 때 버퍼를 비운다.
-			//	while (pCntQueInPtr->GetSize())
-			//		pCntQueInPtr->Pop();
-			//	//마킹 하기위한 값 제거
-			//	if (inputIdReadTime.size())
-			//	{
-			//		inputIdReadTime.clear();
-			//		inputReadId.clear();
-			//	}
+#ifdef USE_PLCCONNECTZONE
+			}
+			else
+			{
+				//Connect Zone 상태일 때 버퍼를 비운다.
+				while (pCntQueInPtr->GetSize())
+					pCntQueInPtr->Pop();
+				//마킹 하기위한 값 제거
+				if (inputIdReadTime.size())
+				{
+					inputIdReadTime.clear();
+					inputReadId.clear();
+				}
 
-			//	//ID를 한번만 처리
-			//	static BOOL bTriggerBitFALSE = FALSE;
+				//ID를 한번만 처리
+				static BOOL bTriggerBitFALSE = FALSE;
 
-			//	BOOL bTriggerBit;
-			//	dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
-			//	//Trigger 펄스 bit true
-			//	if (bTriggerBit == TRUE )
-			//	{
-			//		if (bTriggerBitFALSE == FALSE)
-			//		{
-			//			WORD wInSignal = 0x00;
-			//			dio.InputWord(&wInSignal);
+				BOOL bTriggerBit;
+				dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
+				//Trigger 펄스 bit true
+				if (bTriggerBit == TRUE )
+				{
+					if (bTriggerBitFALSE == FALSE)
+					{
+						WORD wInSignal = 0x00;
+						dio.InputWord(&wInSignal);
 
-			//			// 22.04.06 Ahn Modify Start
-			//			WORD wTempID;
-			//			wTempID = 0x3F & (wInSignal >> 1);
-			//			//DIO Input Log
-			//			LOGDISPLAY_SPECTXT(7)(_T("Input TabID 무시 PLC 신호 == ConnectZone"));
+						// 22.04.06 Ahn Modify Start
+						WORD wTempID;
+						wTempID = 0x3F & (wInSignal >> 1);
+						//DIO Input Log
+						LOGDISPLAY_SPEC(7)(_T("Input TabID 무시 PLC 신호 == ConnectZone input Tabid<%d>"), wTempID);
 
-			//			bTriggerBitFALSE = TRUE;
-			//		}
+						bTriggerBitFALSE = TRUE;
+					}
 
-			//	}
-			//	else
-			//	{
-			//		bTriggerBitFALSE = FALSE;
-			//	}
-			//	
-			//}
+				}
+				else
+				{
+					bTriggerBitFALSE = FALSE;
+				}
+				
+			}
+#endif //USE_PLCCONNECTZONE
 
 		}
 		else

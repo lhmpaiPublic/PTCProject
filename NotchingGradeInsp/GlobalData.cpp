@@ -548,8 +548,8 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 //SPC+ 사용 해더파일
-		//SPCINFO->setLotId(AprData.m_NowLotData.m_strLotNo);
-		SPCINFO->setLotId("NA");
+		SPCINFO->setLotId(AprData.m_NowLotData.m_strLotNo);
+		//SPCINFO->setLotId("NA");
 #endif //SPCPLUS_CREATE
 
 		CString strRecipeName;

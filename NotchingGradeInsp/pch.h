@@ -36,6 +36,9 @@ using namespace Gdiplus;
 // GMLV Line용 - 조명 컨트롤러 1개 사용 시 Error Skip
 //#define GMLV_LIGHT_SKIP
 
+//컨넥트 존 컴파일 여부
+#define USE_PLCCONNECTZONE
+
 
 
 #include "GlobalFunc.h"
