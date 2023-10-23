@@ -77,6 +77,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 			return;
 		}
 
+#ifdef USE_PLCCONNECTZONE
 
 		CSigProc* pSigProc = theApp.m_pSigProc;
 		if ((pSigProc != NULL) && (pSigProc->GetConnectZone() == TRUE))
@@ -87,6 +88,8 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 			return;
 		}
+
+#endif //USE_PLCCONNECTZONE
 
 		if ( pQueueCtrl != NULL )
 		{

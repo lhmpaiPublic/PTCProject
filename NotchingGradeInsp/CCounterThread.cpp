@@ -281,7 +281,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							{
 								CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
 								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("마킹 타임이 유효 할 때"));
+								LOGDISPLAY_SPEC(7)(_T("마킹 타임이 유효 할 때 input id size<%d>, marking data size<%d>"), inputReadId.size(), CCounterThread::m_MarkSendInfoData.size());
 
 								for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 								{
@@ -327,6 +327,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				}
 			}
 
+#ifdef USE_PLCCONNECTZONE
 
 			// 입력 취득
 #if DIO_BOARD_NO // 0이 아니면
@@ -337,6 +338,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			if (pSigProc != NULL && (pSigProc->GetConnectZone() == FALSE))
 			{
 #endif
+
+#endif //USE_PLCCONNECTZONE
 
 				BOOL bTriggerBit;
 				dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
@@ -399,6 +402,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 								//DIO Input Log
 								LOGDISPLAY_SPEC(7)(_T("Input ID [%d] 누락"), nextTabID);
+
+								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("Input ID 누락 before<%d> now<%d>"), wLastInfo, wTempID);
 							}
 							//다음에 받을 ID를 세팅한다.
 							nextTabID = wTempID + 1;
@@ -467,6 +472,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 #endif
 
 				}
+#ifdef USE_PLCCONNECTZONE
 			}
 			else
 			{
@@ -479,9 +485,37 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					inputIdReadTime.clear();
 					inputReadId.clear();
 				}
-				//DIO Input Log
-				LOGDISPLAY_SPECTXT(7)(_T("Input TabID 무시 PLC 신호 == ConnectZone"));
+
+				//ID를 한번만 처리
+				static BOOL bTriggerBitFALSE = FALSE;
+
+				BOOL bTriggerBit;
+				dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
+				//Trigger 펄스 bit true
+				if (bTriggerBit == TRUE )
+				{
+					if (bTriggerBitFALSE == FALSE)
+					{
+						WORD wInSignal = 0x00;
+						dio.InputWord(&wInSignal);
+
+						// 22.04.06 Ahn Modify Start
+						WORD wTempID;
+						wTempID = 0x3F & (wInSignal >> 1);
+						//DIO Input Log
+						LOGDISPLAY_SPEC(7)(_T("Input TabID 무시 PLC 신호 == ConnectZone input Tabid<%d>"), wTempID);
+
+						bTriggerBitFALSE = TRUE;
+					}
+
+				}
+				else
+				{
+					bTriggerBitFALSE = FALSE;
+				}
+				
 			}
+#endif //USE_PLCCONNECTZONE
 
 		}
 		else

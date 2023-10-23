@@ -110,7 +110,7 @@ void CLogDisplayDlg::LogDisplayText(CString FileName, const char* format, ...)
 		, str
 	);
 
-	FileName + strData.Left(11);
+	FileName += strData.Left(11);
 
 	if (CWin32File::Exists(StaticCurrentPath) == FALSE)
 	{
