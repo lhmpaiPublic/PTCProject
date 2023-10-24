@@ -78,6 +78,8 @@ CHistoryDlg::CHistoryDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pVi
 	m_nGraphHistHorSize = 5;
 	m_nGraphHistVerSize = 10;
 //KANG 22.06.17 Add End
+
+	m_startRow = 0;
 }
 
 CHistoryDlg::~CHistoryDlg()
@@ -1608,6 +1610,7 @@ int CHistoryDlg::ReadThumbnailFromErrorData(CString strPath, CString strYear, CS
 // 22.02.11 Ahn Add End
 
 //KANG 22.05.24 Add Start
+#define MAX_GRIDDISPLAY 500
 int CHistoryDlg::MakeGridSearchList()
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -1643,7 +1646,7 @@ int CHistoryDlg::MakeGridSearchList()
 			//m_pSearchList->SetAutoSizeStyle();
 			m_pSearchList->SetFixedColumnSelection(TRUE);
 			m_pSearchList->SetFixedRowSelection(TRUE);
-			m_pSearchList->SetRows(nRows);
+			m_pSearchList->SetRows(MAX_GRIDDISPLAY+2);
 			m_pSearchList->SetCols(nCols);
 
 			// header Name
@@ -1664,13 +1667,16 @@ int CHistoryDlg::MakeGridSearchList()
 			for (int nRow = 1; nRow < nRows; nRow++)
 			{
 				CDefectSearchList* pList = NULL;
-				pList = GetSearchListData(nRow - 1);
+				int displayRow = (m_startRow + nRow)-1;
+				pList = GetSearchListData(displayRow);
+				if (pList == NULL) break;
+				if (nRow > MAX_GRIDDISPLAY) break;
 				for (int nCol = 0; nCol < m_pSearchList->GetColumnCount(); nCol++)
 				{
 					CString strText;
 					switch (nCol) {
 					case	en_ListCol_No:			//No.
-						strText.Format(_T("%d"), nRow);
+						strText.Format(_T("%d"), displayRow);
 						break;
 					case	en_ListCol_Time:		//Time
 						strText.Format(_T("%04d-%02d-%02d %02d:%02d:%02d"), pList->tLotStartTime.wYear, pList->tLotStartTime.wMonth, pList->tLotStartTime.wDay,
@@ -1771,6 +1777,7 @@ int CHistoryDlg::MakeGridSearchList()
 
 					m_pSearchList->SetTextMatrix(nRow, nCol, strText);
 				}
+
 			}
 			//크기에 맞게 조정
 			m_pSearchList->setGridFullColumnWidthVec();
@@ -2341,6 +2348,8 @@ int CHistoryDlg::GetGraphIntervalSize(int nNum)
 
 void CHistoryDlg::OnBnClickedBtnClear()
 {
+	//AddDefectSearchList("D:\\XCJL52NC19.bin");
+	//MakeGridSearchList();
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (MessageBox(_LANG(_T("검색 내용을 모두 제거하시겠습니까?"), _T("Do you want clear searched list.")), _T("Clear searched list"), MB_OKCANCEL) == IDOK) {
 		SearchListClear();
