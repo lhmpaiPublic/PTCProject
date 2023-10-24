@@ -66,6 +66,7 @@ protected:
 
 	CExcelFileSaveDlg *m_pExcelDlg;
 
+	int m_startRow;
 private:
 	CImageProcSimDlg* m_pImageSimDlg;
 	void OpenSimDlg();

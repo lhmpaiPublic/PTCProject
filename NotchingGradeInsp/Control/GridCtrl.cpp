@@ -8897,9 +8897,12 @@ void CGridCtrl::setColumnWidthVec(int nCol, int nSize)
 int CGridCtrl::setGrideFontWidth(int nCol, CDC* dc, CString Text, int offset)
 {
     int width = 0;
-    CSize fontSize = dc->GetTextExtent(Text);
-    width = fontSize.cx + offset;
-    setColumnWidthVec(nCol, width);
+    if (dc)
+    {
+        CSize fontSize = dc->GetTextExtent(Text);
+        width = fontSize.cx + offset;
+        setColumnWidthVec(nCol, width);
+    }
     return width;
 }
 
