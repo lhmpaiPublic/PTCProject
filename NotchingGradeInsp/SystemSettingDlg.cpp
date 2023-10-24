@@ -54,8 +54,6 @@ CSystemSettingDlg::CSystemSettingDlg(CWnd* pParent /*=nullptr*/, BOOL bMode /*=T
 	, m_EdWordIn_16(_T(""))
 	, m_EdWordOut_16(_T(""))
 	// 23.03.03 Son Add End
-	, m_bChkDisableSpcPlus(FALSE)
-
 {
 	m_SysSetting = AprData.m_System;
 
@@ -162,7 +160,6 @@ int CSystemSettingDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
-
 
 	return 0;
 }
@@ -293,6 +290,9 @@ BOOL CSystemSettingDlg::OnInitDialog()
 	{
 		m_ImageFormat.SetCurSel(2);
 	}
+
+	m_bChkDisableSpcPlus = FALSE;
+	((CButton*)GetDlgItem(IDC_CHK_DISABLE_SPCPLUS))->SetCheck(m_bChkDisableSpcPlus);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -1492,8 +1492,20 @@ void CSystemSettingDlg::OnSetfocusEdMissTabIdMax()
 void CSystemSettingDlg::OnBnClickedChkDisableSpcplus()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+#ifdef SPCPLUS_CREATE
+//SPC+ 사용 해더파일
+	//if (((CButton*)GetDlgItem(IDC_CHK_DISABLE_SPCPLUS))->GetCheck() == TRUE)
+	//{
+	//	SPCINFO->setSPCStartFlag(FALSE);
+	//}
+	//else
+	//{
+	//	SPCINFO->setSPCStartFlag(TRUE);
+	//}
+
 	UpdateData(TRUE);
 	SPCINFO->setSPCStartFlag(!m_bChkDisableSpcPlus);
 
 	DataControl(MODE_WRITE);
+#endif //SPCPLUS_CREATE
 }
