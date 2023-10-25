@@ -143,6 +143,8 @@ private:
 
 //KANG 22.05.24 Add Start
 protected:
+	int CounterReset();
+
 	int AddDefectSearchList(LPCTSTR lpszSerchFileName);
 //KANG 22.05.24 Add End
 //KANG 22.05.27 Add Start
@@ -223,4 +225,6 @@ public:
 	afx_msg void OnCellChangingSearchList(NMHDR* pNMHDR, LRESULT* pResult);
 //KANG 22.06.17 Add End
 	afx_msg void OnBnClickedBtnClear();
+	afx_msg void OnBnClickedBtnMovePrev();
+	afx_msg void OnBnClickedBtnMoveNext();
 };

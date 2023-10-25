@@ -17,7 +17,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Korean (Korea) resources
+// 한국어(대한민국) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -940,7 +940,7 @@ BEGIN
     COMBOBOX        IDC_COMBO_RECIPE_NAME,66,13,182,57,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
-IDD_DLG_HISTORY DIALOGEX 0, 0, 439, 147
+IDD_DLG_HISTORY DIALOGEX 0, 0, 523, 147
 STYLE DS_SETFONT | WS_CHILD
 FONT 9, "Arial", 400, 0, 0x0
 BEGIN
@@ -951,8 +951,8 @@ BEGIN
     CONTROL         "Month",IDC_RD_MONTH,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_GROUP,322,7,32,19
     CONTROL         "Week",IDC_RD_WEEK,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE,359,7,29,19
     CTEXT           "static",IDC_ST_HEADER,90,8,74,18,WS_BORDER
-    CONTROL         "Custom1",IDC_THUMBCTRL,"ThumbnailCtrl",WS_TABSTOP,229,78,206,65
-    CONTROL         "Custom1",IDC_CALCTRL,"CalenderCtrl",WS_TABSTOP,4,77,216,66
+    CONTROL         "Custom1",IDC_THUMBCTRL,"ThumbnailCtrl",WS_TABSTOP,262,78,257,65
+    CONTROL         "Custom1",IDC_CALCTRL,"CalenderCtrl",WS_TABSTOP,4,77,253,66
     PUSHBUTTON      "??",IDC_BTN_REFRESH,392,7,32,19
     CONTROL         "NG Crop",IDC_RD_NG_CROP,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE | WS_GROUP,169,7,34,19
     CONTROL         "NG",IDC_RD_NG,"Button",BS_AUTORADIOBUTTON | BS_PUSHLIKE,208,7,34,19
@@ -970,6 +970,8 @@ BEGIN
     PUSHBUTTON      "Excel\n\nExport",IDC_BTN_EXPORT,351,39,41,27,BS_MULTILINE
     LTEXT           "~",IDC_ST_TILDE,195,58,8,8
     PUSHBUTTON      "Clear",IDC_BTN_CLEAR,395,39,30,27
+    PUSHBUTTON      "이전",IDC_BTN_MOVE_PREV,433,39,30,27
+    PUSHBUTTON      "다음",IDC_BTN_MOVE_NEXT,471,39,30,27
 END
 
 IDD_DLG_RS232 DIALOGEX 0, 0, 309, 176
@@ -1290,7 +1292,7 @@ BEGIN
     IDD_DLG_HISTORY, DIALOG
     BEGIN
         LEFTMARGIN, 4
-        RIGHTMARGIN, 435
+        RIGHTMARGIN, 519
         TOPMARGIN, 3
         BOTTOMMARGIN, 143
     END
@@ -2105,7 +2107,7 @@ BEGIN
     IDS_CROP_IMAGE_VIEW     "크롭 이미지 윈도우"
 END
 
-#endif    // Korean (Korea) resources
+#endif    // 한국어(대한민국) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

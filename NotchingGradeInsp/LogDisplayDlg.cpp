@@ -179,7 +179,7 @@ CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 	::GetCurrentDirectory(_MAX_PATH, LogTextpath);
 	StaticCurrentPath = LogTextpath;
 
-	StaticCurrentPath + CString("\\") + CString("NotchingTextLog");
+	StaticCurrentPath += CString("\\NotchingTextLog");
 
 }
 
