@@ -157,6 +157,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	//최종 읽은 값
 	WORD wLastInfo = 0xFF;
 
+	WORD wLastTabId = 0xFF;
+
 #if DIO_BOARD_NO // 0이 아니면
 	WORD wLastInfo_Output = 0x00;
 #endif
@@ -429,6 +431,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						wLastInfo_Output = wLastInfo = wTempID;
 #else
 						wLastInfo = wTempID;
+						wLastTabId = wTempID;
 #endif
 
 
@@ -449,14 +452,37 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				{
 					//트리거 카운트 증가해셔 30이상이면 대기 상태의 id의 유휴시간을 늘려준다.
 					TriggerOffCount++;
-					if (TriggerOffCount > 30)
+					if (TriggerOffCount >= 30)
 					{
-						for (int idx = 0; idx < (int)inputIdReadTime.size(); idx++)
+						if ((TriggerOffCount % 30) == 0)
 						{
-							//input id 100초 유지 증가
-							inputIdReadTime[idx] = GetTickCount() + MAXMARKING_TIMEOUT;
+							for (int idx = 0; idx < (int)inputIdReadTime.size(); idx++)
+							{
+								//input id 100초 유지 증가
+								inputIdReadTime[idx] = GetTickCount() + MAXMARKING_TIMEOUT;
+								//DIO Input Log
+								LOGDISPLAY_SPEC(7)(_T("Trigger 신호가 Off 유지 카운트<%d> id<%d>"), TriggerOffCount, inputReadId[idx]);
+							}
+						}
+					}
+
+					if ((TriggerOffCount % 10) == 0)
+					{
+						LOGDISPLAY_SPEC(7)(_T("TriggerOff Count<%d>"), TriggerOffCount);
+
+						WORD wInSignal = 0x00;
+						dio.InputWord(&wInSignal);
+
+						// 22.04.06 Ahn Modify Start
+						WORD wTempID;
+						wTempID = 0x3F & (wInSignal >> 1);
+
+						if (wLastTabId != wTempID)
+						{
 							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("Trigger 신호가 Off 유지 카운트<%d> id<%d>"), TriggerOffCount, inputReadId[idx]);
+							LOGDISPLAY_SPEC(7)(_T("TriggerOff input Tabid<%d><%d>"), wTempID, wLastTabId);
+
+							wLastTabId = wTempID;
 						}
 					}
 

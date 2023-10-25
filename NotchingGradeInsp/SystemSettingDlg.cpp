@@ -291,8 +291,10 @@ BOOL CSystemSettingDlg::OnInitDialog()
 		m_ImageFormat.SetCurSel(2);
 	}
 
+	//SPC+ 사용 설정 초기값 세팅
 	m_bChkDisableSpcPlus = FALSE;
 	((CButton*)GetDlgItem(IDC_CHK_DISABLE_SPCPLUS))->SetCheck(m_bChkDisableSpcPlus);
+	SPCINFO->setSPCStartFlag(!m_bChkDisableSpcPlus);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
