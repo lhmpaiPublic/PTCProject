@@ -2451,6 +2451,7 @@ void CHistoryDlg::OnBnClickedBtnClear()
 
 int CHistoryDlg::CounterReset()
 {
+	m_pSearchList->DeleteAllItems();
 	//	m_nRow 
 	int m_nRows = 1;
 	m_pSearchList->resetTotalcount();
