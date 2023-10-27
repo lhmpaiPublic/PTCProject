@@ -159,6 +159,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 	WORD wLastTabId = 0xFF;
 
+	WORD wLastTabIdTriggerOff = 0xFF;
+
 #if DIO_BOARD_NO // 0이 아니면
 	WORD wLastInfo_Output = 0x00;
 #endif
@@ -362,11 +364,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 #endif
 
 					//이전에 받았던 id와 다르다면 추가
-					if (wTempID != wLastInfo)
+					if (wTempID != wLastTabId)
 					{
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("*0**DIO ID before<%d> now<%d>"), wLastInfo, wTempID);
+						LOGDISPLAY_SPEC(7)(_T("*0**DIO ID before<%d> now<%d>"), wLastTabId, wTempID);
 
 						//만약에 input id 저장소와 시간 저장소의 크기가 다르면 모두 지운다.
 						if (inputIdReadTime.size() != inputReadId.size())
@@ -405,7 +407,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								//DIO Input Log
 								LOGDISPLAY_SPEC(7)(_T("Input ID [%d] 누락"), nextTabID);
 
-								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("Input ID 누락 before<%d> now<%d>"), wLastInfo, wTempID);
+								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("Input ID 누락 before<%d> now<%d>"), wLastTabId, wTempID);
 							}
 							//다음에 받을 ID를 세팅한다.
 							nextTabID = wTempID + 1;
@@ -416,7 +418,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							}
 						}
 
-						int beforeQueueCount = pCntQueInPtr->GetSize();
 						CCounterInfo cntInfo;
 						cntInfo.nTabID = wTempID;
 						pCntQueInPtr->PushBack(cntInfo);
@@ -432,16 +433,17 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 #else
 						wLastInfo = wTempID;
 						wLastTabId = wTempID;
+						wLastTabIdTriggerOff = wTempID;
 #endif
 
 
 						//메모리 로그 기록
 						CString strMsg;
-						strMsg.Format(_T("Input ID[%d], Queue Count<%d>-><%d>"), cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize());
+						strMsg.Format(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, pCntQueInPtr->GetSize());
 						AprData.SaveMemoryLog(strMsg);
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("Input ID[%d], Queue Count<%d>-><%d>"), cntInfo.nTabID, beforeQueueCount, pCntQueInPtr->GetSize());
+						LOGDISPLAY_SPEC(7)(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, pCntQueInPtr->GetSize());
 
 					}
 					// Cell 추적 Queue Data -> Local Queue 
@@ -477,12 +479,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						WORD wTempID;
 						wTempID = 0x3F & (wInSignal >> 1);
 
-						if (wLastTabId != wTempID)
+						if (wLastTabIdTriggerOff != wTempID)
 						{
 							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("TriggerOff input Tabid<%d><%d>"), wTempID, wLastTabId);
+							LOGDISPLAY_SPEC(7)(_T("TriggerOff input Tabid<%d><%d>"), wTempID, wLastTabIdTriggerOff);
 
-							wLastTabId = wTempID;
+							wLastTabIdTriggerOff = wTempID;
 						}
 					}
 
