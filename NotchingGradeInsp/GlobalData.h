@@ -295,6 +295,9 @@ public:
 	int		m_nTabCountOK;
 	int		m_nLastTotalCnt;
 
+	//Trigger Tab Id Total Count
+	int		m_nTabIdTotalCount;
+
 	// 22.06.29 Ahn Add Start
 	int		m_nTopNG;
 	int		m_nBottomNG;

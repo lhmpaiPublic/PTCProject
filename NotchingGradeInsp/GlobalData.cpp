@@ -787,7 +787,10 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		// 22.08.05 Ahn Add End
 		strKey = _T("TOTAL_COUNT");
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
-		AprData.m_NowLotData.m_nTabCount = atoi(buff);		
+		AprData.m_NowLotData.m_nTabCount = atoi(buff);	
+
+		//Trigger Tab Id Total Count 로그한 TabCount로 세팅
+		AprData.m_NowLotData.m_nTabIdTotalCount = AprData.m_NowLotData.m_nTabCount;
 
 		strKey = _T("NG_COUNT");
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
@@ -1151,6 +1154,9 @@ void CGlobalData::SpcPluusStatus(CString InspStatus)
 void CLotInfo::ClearAllCount()
 {
 	m_nTabCount = 0 ;
+
+	//Trigger Tab Id Total Count
+	m_nTabIdTotalCount = 0;
 
 	m_nTabCountNG = 0 ;
 	m_nTabCountOK = 0 ;

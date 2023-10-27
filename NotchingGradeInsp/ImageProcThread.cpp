@@ -329,6 +329,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							//정보를 하나 가지고 온다.
 							cntInfo = pCntQueueInCtrl->Pop();
+
 							//미리 땡겨 쓴 Tab Id가 있다면
 							if (quUserTabID.size())
 							{
@@ -370,7 +371,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (bNextTabId == false)
 						{
 							//5개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
-							if (quUserTabID.size() > 1)
+							if (quUserTabID.size() > 5)
 							{
 								//다음 아이디를 할당한다.
 								cntInfo.nTabID = 64;
@@ -420,6 +421,25 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							if (useTabID >= 64)
 							{
 								useTabID = 0;
+							}
+						}
+
+						//Tab id 정보를 가져와서 지금의 id 정보를 확인한다.
+						if (cntInfo.nTabIdTotalCount != 0)
+						{
+							static bool bLogPrint = true;
+							if (bLogPrint && (AprData.m_NowLotData.m_nTabCount != cntInfo.nTabIdTotalCount))
+							{
+								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("!!!!=====LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>"), 
+									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
+
+								bLogPrint = false;
+							}
+							else if ((bLogPrint == false) && (AprData.m_NowLotData.m_nTabCount == cntInfo.nTabIdTotalCount))
+							{
+								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("========LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>"),
+									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
+								bLogPrint = true;
 							}
 						}
 

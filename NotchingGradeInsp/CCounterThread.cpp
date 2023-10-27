@@ -191,8 +191,24 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	int TriggerOffCount = 0;
 
 	UINT ret = 0;
+
+	//m_nTabIdTotalCount 를 백업 해둔다.
+	int nTabIdTotalCount_backup = 0;
+
+	//누락정보를 받았을 때 보낸다.
+
 	while (1)
 	{
+		//카운터 리셋이 일어 났을 때 0 이 된다. 
+		//리셋 되면 초기화 해야할 객체를 초기화 한다.
+		if ((nTabIdTotalCount_backup != 0) && (AprData.m_NowLotData.m_nTabIdTotalCount != nTabIdTotalCount_backup))
+		{
+			//input Id 받은 시간 목록 초기화
+			inputIdReadTime.clear();
+			inputReadId.clear();
+			pCntQueInPtr->ResetQueue();
+			nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
+		}
 		//타임 주기 이벤트
 		ret = WaitForSingleObject(pThis->getEvent_CounterThread(), COUNTERINFOTHREAD_TIMEOUT);
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
@@ -298,7 +314,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										//마킹 데이터 넣고
 										dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
 										//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
-										Sleep(2);
+										Sleep(1);
 										//sednd 후 지우기 위한 플래그 true;
 										CCounterThread::m_MarkSendInfoData[idx].bSendComplate = true;
 										//마킹 보내는 타임 설정
@@ -322,6 +338,41 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					{
 						//DIO Input Log
 						LOGDISPLAY_SPEC(7)(_T("받은 input id 정보가 없다"));
+						//보낼 Tab Id 정보가 없을 때 마킹정보가 3개 이상이면
+						//첫번째 id 정보를 확인해서 보낸다.
+						if (CCounterThread::m_MarkSendInfoData.size() > 3)
+						{
+							//마킹 정보를 보내고 Out_PULSE FALSE 세팅 후 10초 후
+							//마킹 정보를 보내기 위한 세팅을 한다.
+							if ((markingSendFALSETimeOut < nowTickCount))
+							{
+								if (CCounterThread::m_bMarkSendInfoDataSynch == FALSE)
+								{
+									CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
+
+									//첫번 째 마킹 정보를 보낸다.
+									if (CCounterThread::m_MarkSendInfoData[0].bSendComplate == false)
+									{
+										//DIO Input Log
+										LOGDISPLAY_SPEC(7)(_T("마킹할 정보가 3이상이면 첫번째 마킹정보를 보낸다. sendid<%d>"), CCounterThread::m_MarkSendInfoData[0].TabId);
+
+										//마킹 데이터 넣고
+										dio.OutputWord(CCounterThread::m_MarkSendInfoData[0].MarkingOutputData);
+										//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
+										Sleep(1);
+										//sednd 후 지우기 위한 플래그 true;
+										CCounterThread::m_MarkSendInfoData[0].bSendComplate = true;
+										//마킹 보내는 타임 설정
+										markingSendTimeOut = GetTickCount() + 5 + 15;
+										//마킹을 보내는 플래그 설정 켜기
+										bMarkingDataSend = TRUE;
+
+									}
+									CCounterThread::m_bMarkSendInfoDataSynch = FALSE;
+								}
+							}
+						}
+
 					}
 				}
 				else
@@ -399,6 +450,72 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							//누락 로그 출력한다.
 							if (nextTabID != wTempID)
 							{
+								//얻은 Tab Id 범위 확인용
+								if ((wTempID >= 0) && (wTempID < 64))
+								{
+									//누락 Tab id Total 증가를 위한 세팅
+									//Tab Id 누락 된 카운트 증가를 위해서 백업한다.
+									int wLastTabIdbackup = wLastTabId;
+									//누락이 1개 일어 났을 때 마킹 정보를 바로 보낸다.
+									int omissCount = 0;
+									while (true)
+									{
+										//다음 id로 증가 및 유효 카운트 검사
+										wLastTabIdbackup++;
+										if (wLastTabIdbackup >= 64)
+											wLastTabIdbackup = 0;
+
+										//얻은  Tab id가  같으면 빠져 나간다.
+										if (wLastTabIdbackup == wTempID)
+										{
+											break;
+										}
+										//아니면 Tab id 총 카운트 증가한다.
+										else
+										{
+											AprData.m_NowLotData.m_nTabIdTotalCount++;
+											omissCount++;
+										}
+
+									}
+									//Tab id Count 백업
+									nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
+
+									//누락이 한탭 일어 났을 때 바로 보낸다.
+									//마킹 정보를 보내고 Out_PULSE FALSE 세팅 후 10초 후
+									//마킹 정보를 보내기 위한 세팅을 한다.
+									if ((omissCount == 1) && (markingSendFALSETimeOut < nowTickCount))
+									{
+										if (CCounterThread::m_bMarkSendInfoDataSynch == FALSE)
+										{
+											CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
+
+											for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
+											{
+												//input id와 마킹할 id가 같으면
+												if (CCounterThread::m_MarkSendInfoData[idx].TabId == nextTabID && CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
+												{
+													//DIO Input Log
+													LOGDISPLAY_SPEC(7)(_T("누락 id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), nextTabID, CCounterThread::m_MarkSendInfoData[idx].TabId);
+
+													//마킹 데이터 넣고
+													dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+													//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
+													Sleep(1);
+													//sednd 후 지우기 위한 플래그 true;
+													CCounterThread::m_MarkSendInfoData[idx].bSendComplate = true;
+													//마킹 보내는 타임 설정
+													markingSendTimeOut = GetTickCount() + 5 + 15;
+													//마킹을 보내는 플래그 설정 켜기
+													bMarkingDataSend = TRUE;
+
+													break;
+												}
+											}
+											CCounterThread::m_bMarkSendInfoDataSynch = FALSE;
+										}
+									}
+								}
 								//메모리 로그 기록
 								CString strMsg;
 								strMsg.Format(_T("Input ID [%d] 누락"), nextTabID);
@@ -419,9 +536,17 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						}
 
 						CCounterInfo cntInfo;
+						//Tab Id 
 						cntInfo.nTabID = wTempID;
+						//Tab Total Count 
+						//Tab Total Count를 증가 시킨다.
+						AprData.m_NowLotData.m_nTabIdTotalCount++;
+						cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
 						pCntQueInPtr->PushBack(cntInfo);
 
+						//Tab id Count 백업
+						nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
+						
 						//Id  받은 시간
 						inputIdReadTime.push_back(GetTickCount() + MAXMARKING_TIMEOUT);
 						//받은 id
@@ -505,8 +630,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			else
 			{
 				//Connect Zone 상태일 때 버퍼를 비운다.
-				while (pCntQueInPtr->GetSize())
-					pCntQueInPtr->Pop();
+				pCntQueInPtr->ResetQueue();
+
 				//마킹 하기위한 값 제거
 				if (inputIdReadTime.size())
 				{
