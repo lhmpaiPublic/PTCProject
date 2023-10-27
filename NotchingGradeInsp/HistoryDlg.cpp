@@ -1860,6 +1860,8 @@ int CHistoryDlg::MakeGridSearchList()
 					CDC* dc = GetDC();
 					m_pSearchList->setGrideFontWidth(nCol, dc, strTitle[nCol], 80);
 
+					ReleaseDC(dc); // 231027 kjk
+
 					Item.strText = strText;
 					m_pSearchList->SetItem(&Item);
 
