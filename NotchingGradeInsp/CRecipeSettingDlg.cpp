@@ -1092,6 +1092,8 @@ int CRecipeSettingDlg::MakeGridCtrl()
 			//폰트 픽셀 넓이 저정
 			CDC* dc = GetDC();
 			pGridCtrl->setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+			//cd 메모리 해제
+			ReleaseDC(dc);
 
 			pGridCtrl->SetItem(&Item);
 
@@ -1128,6 +1130,8 @@ int CRecipeSettingDlg::MakeGridCtrl()
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
 				pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
+				//cd 메모리 해제
+				ReleaseDC(dc);
 
 				pGridCtrl->SetColAlignment(nCol, flexAlignCenterCenter);
 			}
@@ -1639,6 +1643,8 @@ int CRecipeSettingDlg::MakeGridCtrl_RecipeTable()
 		//폰트 픽셀 넓이 저정
 		CDC* dc = GetDC();
 		pGridCtrl->setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+		//cd 메모리 해제
+		ReleaseDC(dc);
 
 		pGridCtrl->SetItem(&Item);
 
@@ -1681,6 +1687,8 @@ int CRecipeSettingDlg::MakeGridCtrl_RecipeTable()
 			//폰트 픽셀 넓이 저정
 			CDC* dc = GetDC();
 			pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
+			//cd 메모리 해제
+			ReleaseDC(dc);
 
 			pGridCtrl->SetItem(&Item);
 		}
@@ -2279,6 +2287,8 @@ int CRecipeSettingDlg::MakeGridCtrl_Marking()
 			//폰트 픽셀 넓이 저정
 			CDC* dc = GetDC();
 			pGridCtrl->setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+			//cd 메모리 해제
+			ReleaseDC(dc);
 
 			pGridCtrl->SetItem(&Item);
 
@@ -2307,6 +2317,8 @@ int CRecipeSettingDlg::MakeGridCtrl_Marking()
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
 				pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
+				//cd 메모리 해제
+				ReleaseDC(dc);
 
 				pGridCtrl->SetItem(&Item);
 				pGridCtrl->SetColAlignment(nCol, flexAlignCenterCenter);

@@ -172,6 +172,8 @@ int CRecipeSelectDlg::MakeGridCtrl_RecipeTable()
 		//폰트 픽셀 넓이 저정
 		CDC* dc = GetDC();
 		pGridCtrl->setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+		//cd 메모리 해제
+		ReleaseDC(dc);
 
 		pGridCtrl->SetItem(&Item);
 
@@ -214,6 +216,8 @@ int CRecipeSelectDlg::MakeGridCtrl_RecipeTable()
 			//폰트 픽셀 넓이 저정
 			CDC* dc = GetDC();
 			pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
+			//cd 메모리 해제
+			ReleaseDC(dc);
 
 			pGridCtrl->SetItem(&Item);
 		}

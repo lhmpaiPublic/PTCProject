@@ -163,6 +163,8 @@ int CHistoryLotDlg::MakeHitoryGrid()
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
 				m_pHistoryList->setGrideFontWidth(nCol, dc, strTitle[nCol], 20);
+				//cd 메모리 해제
+				ReleaseDC(dc);
 
 				m_pHistoryList->SetItem(&Item);
 				m_pHistoryList->SetColAlignment(nCol, flexAlignCenterCenter);

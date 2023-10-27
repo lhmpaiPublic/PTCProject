@@ -1734,6 +1734,8 @@ int CHistoryDlg::MakeGridSearchList()
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
 				m_pSearchList->setGrideFontWidth(nCol, dc, strTitle[nCol], 80);
+				//cd 메모리 해제
+				ReleaseDC(dc);
 
 				Item.strText = strTitle[nCol];
 				m_pSearchList->SetItem(&Item);
@@ -1859,8 +1861,8 @@ int CHistoryDlg::MakeGridSearchList()
 					//폰트 픽셀 넓이 저정
 					CDC* dc = GetDC();
 					m_pSearchList->setGrideFontWidth(nCol, dc, strTitle[nCol], 80);
-
-					ReleaseDC(dc); // 231027 kjk
+					//cd 메모리 해제
+					ReleaseDC(dc);
 
 					Item.strText = strText;
 					m_pSearchList->SetItem(&Item);
@@ -2442,13 +2444,13 @@ int CHistoryDlg::GetGraphIntervalSize(int nNum)
 
 void CHistoryDlg::OnBnClickedBtnClear()
 {
-	AddDefectSearchList("D:\\XCJL52NC19.bin");
-	MakeGridSearchList();
-	//// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//if (MessageBox(_LANG(_T("검색 내용을 모두 제거하시겠습니까?"), _T("Do you want clear searched list.")), _T("Clear searched list"), MB_OKCANCEL) == IDOK) {
-	//	SearchListClear();
-	//	MakeGridSearchList();
-	//}
+	//AddDefectSearchList("D:\\XCJL52NC19.bin");
+	//MakeGridSearchList();
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (MessageBox(_LANG(_T("검색 내용을 모두 제거하시겠습니까?"), _T("Do you want clear searched list.")), _T("Clear searched list"), MB_OKCANCEL) == IDOK) {
+		SearchListClear();
+		MakeGridSearchList();
+	}
 }
 
 int CHistoryDlg::CounterReset()

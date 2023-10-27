@@ -240,6 +240,8 @@ int CResultViewDlg::MakeGrid()
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
 				m_pResultList->setGrideFontWidth(nCol, dc, strTitle[nCol], 47);
+				//cd 메모리 해제
+				ReleaseDC(dc);
 
 				// 22.06.30 Ahn Add End
 				m_pResultList->SetItem(&Item);

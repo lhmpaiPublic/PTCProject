@@ -1325,6 +1325,8 @@ int CImageProcSimDlg::MakeGridData()
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
 				m_GridCtrlDef.setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+				//cd 메모리 해제
+				ReleaseDC(dc);
 
 				m_GridCtrlDef.SetItem(&Item);
 
@@ -1352,6 +1354,9 @@ int CImageProcSimDlg::MakeGridData()
 					//폰트 픽셀 넓이 저정
 					CDC* dc = GetDC();
 					m_GridCtrlDef.setGrideFontWidth(nCol, dc, strText, 2);
+					//cd 메모리 해제
+					ReleaseDC(dc);
+
 
 					if (rand() % 10 == 1)
 					{
@@ -1411,6 +1416,8 @@ int CImageProcSimDlg::MakeGridData()
 			//폰트 픽셀 넓이 저정
 			CDC* dc = GetDC();
 			m_GridCtrlDef.setGrideFontWidth(nCol, dc, strTitle[nCol], 2);
+			//cd 메모리 해제
+			ReleaseDC(dc);
 
 			pGridCtrl->SetItem(&Item);
 
@@ -1470,6 +1477,8 @@ int CImageProcSimDlg::MakeGridData()
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
 				pGridCtrl->setGrideFontWidth(nCol, dc, strText, 2);
+				//cd 메모리 해제
+				ReleaseDC(dc);
 
 				pGridCtrl->SetItem(&Item);
 			}
