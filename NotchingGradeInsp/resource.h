@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by NotchingGradeInsp.rc
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// NotchingGradeInsp.rc에서 사용되고 있습니다.
 //
 #define IDCANCEL2                       3
 #define IDOK2                           3
@@ -641,7 +641,9 @@
 #define IDC_ST_RECIPE_NO                1285
 #define IDC_BTN_CLEAR                   1286
 #define IDC_ST_EDGE_DETECT_COND         1287
+#define IDC_BTN_MOVE_PREV               1287
 #define IDC_ST_COAT_BRIGHT              1288
+#define IDC_BTN_MOVE_NEXT               1288
 #define IDC_ST_ROLL_BRIGHT              1289
 #define IDC_ST_LIGHT_SETTING            1290
 #define IDC_ST_MARKING_SETTING          1291

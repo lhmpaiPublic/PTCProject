@@ -194,6 +194,8 @@ BEGIN_MESSAGE_MAP(CHistoryDlg, CDialogEx)
 	ON_NOTIFY(GVN_SELCHANGING, IDC_SEARCH_LIST, OnCellChangingSearchList)	//KANG 22.06.17 Add
 	ON_CBN_SELCHANGE(IDC_CMB_TIME_START, &CHistoryDlg::OnCbnSelchangeCmbTimeStart)
 	ON_BN_CLICKED(IDC_BTN_CLEAR, &CHistoryDlg::OnBnClickedBtnClear)
+	ON_BN_CLICKED(IDC_BTN_MOVE_PREV, &CHistoryDlg::OnBnClickedBtnMovePrev)
+	ON_BN_CLICKED(IDC_BTN_MOVE_NEXT, &CHistoryDlg::OnBnClickedBtnMoveNext)
 END_MESSAGE_MAP()
 
 
@@ -449,6 +451,28 @@ void CHistoryDlg::OnSize(UINT nType, int cx, int cy)
 	}
 	// 22.09.15 Ahn Add Start
 	pButton = (CButton*)GetDlgItem(IDC_BTN_CLEAR);
+	if (pButton != nullptr) {
+		pButton->GetWindowRect(rectControl);
+		nYPos = (int)((cy * 3.0) / 100.0);
+		nWidth = rectControl.Width();
+		nHeight = nYPos2 - (int)((cy * 3.0) / 100.0);
+		pButton->MoveWindow(nXPos, nYPos, nWidth, nHeight);
+
+		nXPos += nWidth + 5;
+	}
+
+	pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_PREV);
+	if (pButton != nullptr) {
+		pButton->GetWindowRect(rectControl);
+		nYPos = (int)((cy * 3.0) / 100.0);
+		nWidth = rectControl.Width();
+		nHeight = nYPos2 - (int)((cy * 3.0) / 100.0);
+		pButton->MoveWindow(nXPos, nYPos, nWidth, nHeight);
+
+		nXPos += nWidth + 5;
+	}
+
+	pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_NEXT);
 	if (pButton != nullptr) {
 		pButton->GetWindowRect(rectControl);
 		nYPos = (int)((cy * 3.0) / 100.0);
@@ -1126,6 +1150,17 @@ int CHistoryDlg::OnRefresh(int nKind /*= 0*/)
 		if (pButton != nullptr) {
 			pButton->ShowWindow(SW_HIDE);
 		}
+
+		pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_PREV);
+		if (pButton != nullptr) {
+			pButton->ShowWindow(SW_HIDE);
+		}
+		pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_NEXT);
+		if (pButton != nullptr) {
+			pButton->ShowWindow(SW_HIDE);
+		}
+
+
 		if (m_pSearchList->GetSafeHwnd()) {
 			m_pSearchList->ShowWindow(SW_HIDE);
 		}
@@ -1234,6 +1269,16 @@ int CHistoryDlg::OnRefresh(int nKind /*= 0*/)
 		if (pButton != nullptr) {
 			pButton->ShowWindow(SW_HIDE);
 		}
+
+		pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_PREV);
+		if (pButton != nullptr) {
+			pButton->ShowWindow(SW_HIDE);
+		}
+		pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_NEXT);
+		if (pButton != nullptr) {
+			pButton->ShowWindow(SW_HIDE);
+		}
+
 		if (m_pSearchList->GetSafeHwnd()) {
 			m_pSearchList->ShowWindow(SW_HIDE);
 		}
@@ -1365,6 +1410,17 @@ int CHistoryDlg::OnRefresh(int nKind /*= 0*/)
 	if (pButton != nullptr) {
 		pButton->ShowWindow(SW_SHOW);
 	}
+
+	pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_PREV);
+	if (pButton != nullptr) {
+		pButton->ShowWindow(SW_SHOW);
+	}
+	pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_NEXT);
+	if (pButton != nullptr) {
+		pButton->ShowWindow(SW_SHOW);
+	}
+
+
 	if (m_pSearchList->GetSafeHwnd()) {
 		m_pSearchList->ShowWindow(SW_SHOW);
 	}
@@ -1468,6 +1524,16 @@ int CHistoryDlg::OnRefresh(int nKind /*= 0*/)
 	if (pButton != nullptr) {
 		pButton->ShowWindow(SW_HIDE);
 	}
+
+	pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_PREV);
+	if (pButton != nullptr) {
+		pButton->ShowWindow(SW_HIDE);
+	}
+	pButton = (CButton*)GetDlgItem(IDC_BTN_MOVE_NEXT);
+	if (pButton != nullptr) {
+		pButton->ShowWindow(SW_HIDE);
+	}
+
 	if (m_pSearchList->GetSafeHwnd()) {
 		m_pSearchList->ShowWindow(SW_HIDE);
 	}
@@ -1610,7 +1676,7 @@ int CHistoryDlg::ReadThumbnailFromErrorData(CString strPath, CString strYear, CS
 // 22.02.11 Ahn Add End
 
 //KANG 22.05.24 Add Start
-#define MAX_GRIDDISPLAY 500
+#define MAX_GRIDDISPLAY 100
 int CHistoryDlg::MakeGridSearchList()
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -1644,23 +1710,35 @@ int CHistoryDlg::MakeGridSearchList()
 			nRows += GetSearchListCount();
 
 			//m_pSearchList->SetAutoSizeStyle();
-			m_pSearchList->SetFixedColumnSelection(TRUE);
-			m_pSearchList->SetFixedRowSelection(TRUE);
-			m_pSearchList->SetRows(MAX_GRIDDISPLAY+2);
-			m_pSearchList->SetCols(nCols);
+			if (m_pSearchList->GetRowCount() < MAX_GRIDDISPLAY)
+			{
+				m_pSearchList->SetFixedColumnSelection(TRUE);
+				m_pSearchList->SetFixedRowSelection(TRUE);
+				m_pSearchList->SetRows(MAX_GRIDDISPLAY + 2);
+				m_pSearchList->SetCols(nCols);
+			}
 
 			// header Name
 			CString strTitle[en_MaxListCol] = { _T(""), _T("       Time       "), _T("  LOT  "), _T("    Model    "), _T("     Lane     "), _T("   CELL   "), _T("   Tab/Bottom   "), _T("    Type    "), _T("    Judge    "), _T("  X(um)  "), _T("  Y(um)  "), _T("     Marking     "), _T("    IMAGE    ") };
 
 
-			for (nCol = 0; nCol < m_pSearchList->GetColumnCount(); nCol++) {
+			for (nCol = 0; nCol < m_pSearchList->GetColumnCount(); nCol++) 
+			{
+				GV_ITEM Item;
+				Item.mask = GVIF_TEXT;
+				Item.row = 0;
+				Item.col = nCol;
+
 				m_pSearchList->SetColAlignment(nCol, 5);
 
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
 				m_pSearchList->setGrideFontWidth(nCol, dc, strTitle[nCol], 80);
 
-				m_pSearchList->SetTextMatrix(0, nCol, strTitle[nCol]);
+				Item.strText = strTitle[nCol];
+				m_pSearchList->SetItem(&Item);
+
+				//m_pSearchList->SetTextMatrix(0, nCol, strTitle[nCol]);
 			}
 
 			m_pSearchList->SetRedraw(FALSE);
@@ -1668,11 +1746,18 @@ int CHistoryDlg::MakeGridSearchList()
 			{
 				CDefectSearchList* pList = NULL;
 				int displayRow = (m_startRow + nRow)-1;
+				if (displayRow >= m_pVtList->size())
+					break;;
 				pList = GetSearchListData(displayRow);
 				if (pList == NULL) break;
 				if (nRow > MAX_GRIDDISPLAY) break;
 				for (int nCol = 0; nCol < m_pSearchList->GetColumnCount(); nCol++)
 				{
+					GV_ITEM Item;
+					Item.mask = GVIF_TEXT;
+					Item.row = nRow;
+					Item.col = nCol;
+
 					CString strText;
 					switch (nCol) {
 					case	en_ListCol_No:			//No.
@@ -1775,7 +1860,10 @@ int CHistoryDlg::MakeGridSearchList()
 					CDC* dc = GetDC();
 					m_pSearchList->setGrideFontWidth(nCol, dc, strTitle[nCol], 80);
 
-					m_pSearchList->SetTextMatrix(nRow, nCol, strText);
+					Item.strText = strText;
+					m_pSearchList->SetItem(&Item);
+
+					//m_pSearchList->SetTextMatrix(nRow, nCol, strText);
 				}
 
 			}
@@ -1798,6 +1886,8 @@ void CHistoryDlg::SearchListClear()
 {
 	FreeSearchList(m_pVtList);
 	m_pVtList = new std::vector<CDefectSearchList*>;
+
+	m_startRow = 0;
 }
 
 void CHistoryDlg::AddSearchListData(CDefectSearchList* pList)
@@ -2225,6 +2315,8 @@ int CHistoryDlg::AddDefectSearchList(LPCTSTR lpszSerchFileName)
 	int nIndex = 0;
 	CFile binFile;
 
+	m_startRow = 0;
+
 	if (binFile.Open(strFileName, CFile::modeRead | CFile::shareDenyNone) != 0) {
 		int bytes;
 		CDefectInfo DefInfo;
@@ -2348,11 +2440,66 @@ int CHistoryDlg::GetGraphIntervalSize(int nNum)
 
 void CHistoryDlg::OnBnClickedBtnClear()
 {
-	//AddDefectSearchList("D:\\XCJL52NC19.bin");
-	//MakeGridSearchList();
+	AddDefectSearchList("D:\\XCJL52NC19.bin");
+	MakeGridSearchList();
+	//// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//if (MessageBox(_LANG(_T("검색 내용을 모두 제거하시겠습니까?"), _T("Do you want clear searched list.")), _T("Clear searched list"), MB_OKCANCEL) == IDOK) {
+	//	SearchListClear();
+	//	MakeGridSearchList();
+	//}
+}
+
+int CHistoryDlg::CounterReset()
+{
+	m_pSearchList->DeleteAllItems();
+	//	m_nRow 
+	int m_nRows = 1;
+	m_pSearchList->resetTotalcount();
+
+	TRY{
+		m_pSearchList->SetRowCount(m_nRows);
+	}
+		CATCH(CMemoryException, e)
+	{
+		e->ReportError();
+		return -1;
+	}
+	END_CATCH
+
+	UpdateData(FALSE);
+	return 0;
+}
+
+void CHistoryDlg::OnBnClickedBtnMovePrev()
+{
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (MessageBox(_LANG(_T("검색 내용을 모두 제거하시겠습니까?"), _T("Do you want clear searched list.")), _T("Clear searched list"), MB_OKCANCEL) == IDOK) {
-		SearchListClear();
-		MakeGridSearchList();
+
+	if (m_pVtList->size() > 0)
+	{
+		if (m_pSearchList != nullptr)
+		{
+			CounterReset();
+
+			m_startRow -= MAX_GRIDDISPLAY;
+			if (m_startRow < 0) m_startRow = 0;
+			MakeGridSearchList();
+		}
+		
+	}
+}
+
+
+void CHistoryDlg::OnBnClickedBtnMoveNext()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_pVtList->size() > 0)
+	{
+		if (m_pSearchList != nullptr)
+		{
+			CounterReset();
+
+			if ((m_startRow + MAX_GRIDDISPLAY) < m_pVtList->size()) m_startRow += MAX_GRIDDISPLAY;
+			MakeGridSearchList();
+		}
 	}
 }
