@@ -554,7 +554,9 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 						//이전 id 갱신
 #if DIO_BOARD_NO // 0이 아니면
-						wLastInfo_Output = wLastInfo = wTempID;
+						wLastInfo = wTempID;
+						wLastTabId = wTempID;
+						wLastTabIdTriggerOff = wTempID;
 #else
 						wLastInfo = wTempID;
 						wLastTabId = wTempID;
