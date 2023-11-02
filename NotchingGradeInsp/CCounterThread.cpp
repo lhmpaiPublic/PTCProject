@@ -25,7 +25,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 				LOGDISPLAY_SPEC(7)(_T("이전 마킹 데이터가 있을 때"));
 
 				//지울 최종 포인터
-				MarkSendInfoData_iterator itdelete = CCounterThread::m_MarkSendInfoData.begin();
+				MarkSendInfoData_iterator itdelete = CCounterThread::m_MarkSendInfoData.end();
 				//시작 점
 				MarkSendInfoData_iterator it = CCounterThread::m_MarkSendInfoData.begin();
 				//end 까지 돌면서 true 인 지울 end 포인터를 백업한다.

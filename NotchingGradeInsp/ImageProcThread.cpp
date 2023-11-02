@@ -101,7 +101,7 @@ void CImageProcThread::Kill( void )
 
 }
 
-
+#define MAX_INT 2147483647
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 {
@@ -140,7 +140,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//CCounterInfo 에 값이 없을때 사용할 값
 	int useTabID = 64;
 	//CCounterInfo 에 값이 없을때 미리 사용한 값 저장
-	std::queue<int> quUserTabID;
+	std::vector<int> quUserTabID;
 
 	UINT ret = 0;
 	//스래드 대기 여부
@@ -320,6 +320,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 						CCounterInfo cntInfo;
+						cntInfo.nTabID = useTabID;
+						cntInfo.nTabIdTotalCount = MAX_INT;
 
 						//Trigger input id 사용 예외처리
 						//queue에서 정보가 없을 때 들어올 값을 미리 사용한다.
@@ -329,61 +331,60 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							//정보를 하나 가지고 온다.
 							cntInfo = pCntQueueInCtrl->Pop();
-
 							//미리 땡겨 쓴 Tab Id가 있다면
+							//지울 최종 포인터
+							std::vector<int>::iterator itdelete = quUserTabID.end();
+							//end 까지 돌면서 true 인 지울 end 포인터를 백업한다.
 							if (quUserTabID.size())
 							{
-								//미리 땡겨 쓴 id를 가져온다.
-								int beforeTabId = quUserTabID.front();
-								//쓴 아이디 삭제
-								quUserTabID.pop();
-								//비교해서 다르다면 빠져나간다.
-								if (beforeTabId != cntInfo.nTabID)
+								std::vector<int>::iterator it = quUserTabID.begin();
+								do
 								{
-									//사용할 Tab Id를 찾았다
-									bNextTabId = true;
-
-									//땡겨 쓴 Id와 비교했을 때 비교를 위해 저장한 Id를 모두 삭제한다.
-									//미리 사용한 Tab ID 정보 삭제
-									while (quUserTabID.size())
-										quUserTabID.pop();
-
-									break;
-								}
-								else
-								{
-									//다음에 사용할 id를 못찾았다.
-									bNextTabId = false;
-								}
-
+									if ((*it) == cntInfo.nTabID)
+									{
+										itdelete = it;
+									}
+									it++;
+								} while (quUserTabID.end() != it);
 							}
-							//땡겨 쓴 id가 없다.
+							//지울 데이터가 있다면
+							if (quUserTabID.end() != itdelete)
+							{
+								//시작점 부터 true 설정된 데이터까지 지운다.
+								quUserTabID.erase(quUserTabID.begin(), itdelete);
+							}
+							//지울 데이터가 없다면
 							else
 							{
-								//사용할 Tab Id를 찾았다
 								bNextTabId = true;
-
-								break;
 							}
 						}
 
 						//Tab id 정보가 없을 경우(미리 땡겨 쓴 Id 이거나 아직 못받았을 때)
 						if (bNextTabId == false)
 						{
-							//5개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
-							if (quUserTabID.size() > 5)
+							//20개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
+							if (quUserTabID.size() > 20)
 							{
 								//다음 아이디를 할당한다.
 								cntInfo.nTabID = 64;
 							}
-							//5개 이하였을 때 다음 사용할 아이디를 할당한다.
+							//20개 이하였을 때 다음 사용할 아이디를 할당한다.
 							else
 							{
 								//다음 아이디를 할당한다.
 								cntInfo.nTabID = useTabID;
-							}
-							//사용한 아이디를 backup 한다. 확인용
-							quUserTabID.push(cntInfo.nTabID);
+								//사용한 아이디를 backup 한다. 확인용
+								quUserTabID.push_back(cntInfo.nTabID);
+
+								//다음에 사용할 id : 1 증가 시켜 저장
+								useTabID = cntInfo.nTabID + 1;
+								//Tab id는 0 ~ 63 까지 사용한다.
+								if (useTabID >= 64)
+								{
+									useTabID = 0;
+								}
+							}	
 
 
 							if (AprData.m_System.m_nMissTabIdMax > 0)
@@ -412,20 +413,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							AprData.m_nMissTabIdNow = 0;
 						}
-						//사용할 Id를 찾았다면 다음 사용할 Id 세팅
-						if (cntInfo.nTabID != 64)
-						{
-							//다음에 사용할 id : 1 증가 시켜 저장
-							useTabID = cntInfo.nTabID + 1;
-							//Tab id는 0 ~ 63 까지 사용한다.
-							if (useTabID >= 64)
-							{
-								useTabID = 0;
-							}
-						}
 
 						//Tab id 정보를 가져와서 지금의 id 정보를 확인한다.
-						if (cntInfo.nTabIdTotalCount != 0)
+						if (cntInfo.nTabIdTotalCount != MAX_INT)
 						{
 							static int countdiff = 0;
 							int diffval = abs(AprData.m_NowLotData.m_nTabCount - cntInfo.nTabIdTotalCount);
