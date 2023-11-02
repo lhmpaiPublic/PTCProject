@@ -292,7 +292,7 @@ BOOL CSystemSettingDlg::OnInitDialog()
 	}
 
 	//SPC+ 사용 설정 초기값 세팅
-	m_bChkDisableSpcPlus = FALSE;
+	m_bChkDisableSpcPlus = m_SysSetting.m_bDisableSpcPlus;
 	((CButton*)GetDlgItem(IDC_CHK_DISABLE_SPCPLUS))->SetCheck(m_bChkDisableSpcPlus);
 	SPCINFO->setSPCStartFlag(!m_bChkDisableSpcPlus);
 

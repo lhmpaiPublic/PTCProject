@@ -427,20 +427,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab id 정보를 가져와서 지금의 id 정보를 확인한다.
 						if (cntInfo.nTabIdTotalCount != 0)
 						{
-							static bool bLogPrint = true;
-							if (bLogPrint && (AprData.m_NowLotData.m_nTabCount != cntInfo.nTabIdTotalCount))
+							static int countdiff = 0;
+							int diffval = abs(AprData.m_NowLotData.m_nTabCount - cntInfo.nTabIdTotalCount);
+							if (diffval != countdiff)
 							{
-								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("!!!!=====LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>"), 
-									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
-
-								bLogPrint = false;
+								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("========LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>=countdiff<%d>"),
+									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount, diffval);
+								countdiff = diffval;
 							}
-							else if ((bLogPrint == false) && (AprData.m_NowLotData.m_nTabCount == cntInfo.nTabIdTotalCount))
-							{
-								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("========LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>"),
-									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
-								bLogPrint = true;
-							}
+						}
+						else
+						{
+							CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("========LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
+								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount);
 						}
 
 						//Tab  정보 접근 임시 포인터 변수
