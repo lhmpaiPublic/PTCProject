@@ -356,6 +356,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//지울 데이터가 없다면
 							else
 							{
+								//다음에 사용할 id : 1 증가 시켜 저장
+								useTabID = cntInfo.nTabID + 1;
+								//Tab id는 0 ~ 63 까지 사용한다.
+								if (useTabID >= 64)
+								{
+									useTabID = 0;
+								}
 								bNextTabId = true;
 							}
 						}
