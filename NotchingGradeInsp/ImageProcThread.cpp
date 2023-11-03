@@ -283,6 +283,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					{
 						// 강제 분할 
 						bErrorAll = TRUE;
+
+						AprData.SaveDebugLog_Format(_T(">>>>>> Miss Tab Vec [T/B:%d][F/V:%d] : Size=%d, QueueCount=%d, FrameCountTop=%d, FrameCountBtm=%d "), 
+							pFrmInfo_Top->m_nTabId_CntBoard, pFrmInfo_Top->nTabNo, nVecSize, pCntQueueInCtrl->GetSize(), pFrmInfo_Top->m_nFrameCount, pFrmInfo_Bottom->m_nFrameCount );
 					}
 					nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
 
