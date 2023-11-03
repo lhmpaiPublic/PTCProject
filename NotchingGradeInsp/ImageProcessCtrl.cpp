@@ -646,8 +646,19 @@ int CImageProcessCtrl::GrabStop()
 	theApp.m_pSigProc->EnableWorkSet(TRUE);
 	// 22.05.26 Ahn Add End
 
-#if 1 //231018
+#if 0 //231018 //231102 주석
 	theApp.m_pImgProcCtrl->LightOFF();
+#else 
+
+	if (AprData.m_System.m_nRS232_Mode == 1) {
+		theApp.m_pImgProcCtrl->LightOFF();
+	}
+	else {
+		theApp.m_pLightCtrl->Open();
+		theApp.m_pImgProcCtrl->LightOFF();
+		Sleep(100);
+		theApp.m_pLightCtrl->Close();
+	}
 #endif
 
 	return 0;

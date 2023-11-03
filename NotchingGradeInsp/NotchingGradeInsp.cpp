@@ -201,7 +201,6 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
-
 	// 표준 셸 명령, DDE, 파일 열기에 대한 명령줄을 구문 분석합니다.
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
@@ -214,7 +213,6 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	// 응용 프로그램이 /RegServer, /Register, /Unregserver 또는 /Unregister로 시작된 경우 FALSE를 반환합니다.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-
 
 	{
 		CString strTitle;
@@ -398,13 +396,13 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_LampError, strMsg);
 			// 22.10.17 Ahn Add End
 		}
+
+		if (AprData.m_System.m_nRS232_Mode == 1);
+		else m_pLightCtrl->Close(); //231102 // TCP/IP 일때만 close 함
 	}
-
-
 
 	return (0);
 }
-
 
 int CNotchingGradeInspApp::DeviceClose(void)
 {
@@ -438,7 +436,7 @@ int CNotchingGradeInspApp::DeviceClose(void)
 		m_pImageSimDlg = NULL;
 	}
 
-	if (m_pLightCtrl != NULL) {
+	if (m_pLightCtrl != NULL) { 
 		m_pLightCtrl->Close();
 		delete m_pLightCtrl;
 		m_pLightCtrl = NULL;

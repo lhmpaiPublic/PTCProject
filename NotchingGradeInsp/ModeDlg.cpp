@@ -537,7 +537,9 @@ void CModeDlg::Refresh()
 		bIo = theApp.m_pIoCtrl->IsOpened();
 	}
 	if (theApp.m_pLightCtrl != NULL) {
-		bLamp = theApp.m_pLightCtrl->IsOpened();
+	//	bLamp = theApp.m_pLightCtrl->IsOpened(); // 231102 연결방식 변경으로 주석.
+		if (AprData.m_ErrStatus.m_nErrorType == AprData.m_ErrStatus.en_LampError) bLamp = FALSE;
+		else bLamp = TRUE;
 	}
 	if (theApp.m_pImgProcCtrl != NULL) {
 		// 22.07.25 Ahn Modify Start
@@ -598,7 +600,15 @@ void CModeDlg::Refresh()
 		m_stIoState.SetBackgroundColor(clrBk);
 		m_stIoState.SetWindowText(_T("I/O"));
 	}
-	if (m_bLampLastFlag != bLamp) {
+
+#if 0 //test 231102
+
+	char aa[256] = "";
+	sprintf_s(aa, "231102 m_bLampLastFlag =%d, bLamp =%d \n", m_bLampLastFlag, bLamp);
+	OutputDebugString(aa);
+#endif
+
+//	if (m_bLampLastFlag != bLamp) { // 231103 연결방식 변경으로 주석함.
 		if (bLamp == TRUE) {
 			clrBk = RGB(100, 255, 100);
 		}
@@ -607,7 +617,7 @@ void CModeDlg::Refresh()
 		}
 		m_stLightState.SetBackgroundColor(clrBk);
 		m_stLightState.SetWindowText(_T("Lamp"));
-	}
+//	}
 	if ( m_bCamLastFlag != bGrabber) {
 		if(bGrabber){
 			clrBk = RGB(100, 255, 100);
@@ -698,8 +708,21 @@ void CModeDlg::OnBnClickedRadRun()
 
 	m_pView->SetInspReady(TRUE);
 
+#if 0 //231101
 	theApp.m_pImgProcCtrl->LightON();
+#else
+	if (AprData.m_System.m_nRS232_Mode == 1) {
+		theApp.m_pImgProcCtrl->LightON();
+	}
+	else {
+		// TCP/IP
+		theApp.m_pLightCtrl->Open();
+		theApp.m_pImgProcCtrl->LightON();
+		theApp.m_pLightCtrl->Close();
+	}
 
+	Refresh();
+#endif
 }
 
 
@@ -718,12 +741,29 @@ void CModeDlg::OnBnClickedRadStop()
 
 	m_pView->SetInspReady(FALSE);
 
+#if 0
 #if 0 //231018 // GrabStop()으로 이동 kjk
 	theApp.m_pImgProcCtrl->LightOFF();
 #else
 	if (theApp.m_pImgProcCtrl->m_bInspFlag == FALSE) theApp.m_pImgProcCtrl->LightOFF(); //시작했다가 바로 종료했을때 처리 231019 kjk
 #endif
 
+#else
+	if (theApp.m_pImgProcCtrl->m_bInspFlag == FALSE) { //시작했다가 바로 종료했을때 처리 231019 kjk
+		if (AprData.m_System.m_nRS232_Mode == 1) { 	//231101
+			theApp.m_pImgProcCtrl->LightOFF(); 
+		}
+		else {
+			// TCP/IP
+			theApp.m_pLightCtrl->Open();
+			theApp.m_pImgProcCtrl->LightOFF();
+			Sleep(150);
+			theApp.m_pLightCtrl->Close();
+		}
+	}
+
+	Refresh();
+#endif
 }
 
 void CModeDlg::ChangeState(int nStatus)
