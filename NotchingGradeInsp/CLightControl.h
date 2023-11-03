@@ -99,6 +99,7 @@ public :
 	CLightRS232Dlg* m_pRS232Dlg; 
 	BOOL bRS232Mode = FALSE;
 	int SendNRecvRS232(char* pSendBuff, char* pRecvBuff, int nCmdLen, int nRecvLen, long lTimeOver);
+	int SendNRecvRS232(int unit, char* pSendBuff, char* pRecvBuff, int nCmdLen, int nRecvLen, long lTimeOver); //231102 유닛전달 추가.
 #endif
 
 private :

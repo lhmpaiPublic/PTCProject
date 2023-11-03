@@ -233,7 +233,7 @@ int CLightControl::Open(void)
 				if (n == cnt) {
 					break;
 				}
-				if (ta.WhatTimeIsIt() > 5000) {
+				if (ta.WhatTimeIsIt() > 300) { //5000 기본 231101 kjk
 					bTimeOut = TRUE;
 					break;
 				}
@@ -296,6 +296,14 @@ int CLightControl::SetLevel(int unit, int ch, int nLevel)
 #endif
 
 	int nRet = SetLevel_8Bit(unit, ch, (BYTE)nLevel);
+
+	
+#if 0 //test 231102
+
+	char aa[256] = "";
+	sprintf_s(aa, "231102 nRet = %d \n", nRet);
+	OutputDebugString(aa);
+#endif
 
 	if ( nRet < 0 )
 	{
@@ -581,11 +589,11 @@ int CLightControl::SendNRecvRS232(char* pSendBuff, char* pRecvBuff, int nCmdLen,
 
 	if (m_pRS232Dlg->comport_state == FALSE) return -1;
 
+
 	for (int try_cnt = 0; try_cnt <= 1 ; try_cnt++) {
 		//m_pRS232Dlg->send(try_cnt, pSendBuff, pRecvBuff, nCmdLen, nRecvLen, lTimeOver);
 		m_pRS232Dlg->send(try_cnt, pSendBuff, mRecvBuff, nCmdLen, nRecvLen, lTimeOver);
 	}
-
 	
 	for (int i = 0; i < 32; i++) {
 
@@ -595,6 +603,27 @@ int CLightControl::SendNRecvRS232(char* pSendBuff, char* pRecvBuff, int nCmdLen,
 		pRecvBuff[i] = (unsigned char)mRecvBuff[i + 1];
 	}
 	
+	return 0;
+}
+
+//231102
+int CLightControl::SendNRecvRS232(int unit, char* pSendBuff, char* pRecvBuff, int nCmdLen, int nRecvLen, long lTimeOver)
+{
+	char mRecvBuff[32] = { 0 };
+
+	if (m_pRS232Dlg->comport_state == FALSE) return -1;
+
+		m_pRS232Dlg->send(unit, pSendBuff, mRecvBuff, nCmdLen, nRecvLen, lTimeOver);
+
+
+	for (int i = 0; i < 32; i++) {
+
+		//		sprintf_s(bb, "230926_1 mRecvBuff[%d] = %x \n", i, (unsigned char)mRecvBuff[i]);
+		//		OutputDebugString(bb);
+
+		pRecvBuff[i] = (unsigned char)mRecvBuff[i + 1];
+	}
+
 	return 0;
 }
 
@@ -613,15 +642,25 @@ int CLightControl::SetLevel_8Bit(int unit, int ch, BYTE level)
 	send_buff[2] = (char)level;
 	send_buff[3] = (char)(send_buff[0] ^ send_buff[1] ^ send_buff[2]);
 
+//	char aa[256] = ""; // test 231102 
 	
 	if (bRS232Mode == FALSE) {
 		if (SendNRecvPacket(unit, send_buff, recv_buff, en_CH_WRITE_Length, en_CH_WRITE_Length, 1000) < 0) {
+#if 0 //test 231102
+			sprintf_s(aa, "231102 SendNRecvPacket = %d \n", unit);
+			OutputDebugString(aa);
+#endif
 			return (-1);
 		}
 	}
 	else {
 	//rs232 모드
-		if (SendNRecvRS232(send_buff, recv_buff, en_CH_WRITE_Length, en_CH_WRITE_Length, 1000) < 0) {
+	//	if (SendNRecvRS232(send_buff, recv_buff, en_CH_WRITE_Length, en_CH_WRITE_Length, 1000) < 0) { //231102 unit 전달로 변경 
+		if (SendNRecvRS232(unit, send_buff, recv_buff, en_CH_WRITE_Length, en_CH_WRITE_Length, 1000) < 0) {
+#if 0	 //test	231102	
+			sprintf_s(aa, "231102 SendNRecvRS232 = %d \n", unit);
+			OutputDebugString(aa);
+#endif
 			return (-1);
 		}
 	}
@@ -656,6 +695,14 @@ int CLightControl::SetLevel_8Bit(int unit, int ch, BYTE level)
 	{
 		CString strError;
 		strError.Format(_T("응답Error %s"), recv_buff);
+
+#if 0 //test 231102
+		char aa[256] = "";
+		sprintf_s(aa, "231102 strError = %s \n", strError);
+		OutputDebugString(aa);
+#endif
+
+
 		return (-1);
 	}
 
