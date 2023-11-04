@@ -3169,8 +3169,12 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 	rcAll.top = rcLeft.top = 0;
 	rcAll.bottom = rcRight.bottom = nHeight;
-	rcLeft.bottom = tabPos.cx - 200; //m_pRecipeInfo->nFoilExpInspWidth[ CAM_POS_TOP ] ; 
-	rcRight.top = tabPos.cy + 200;//m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+//	rcLeft.bottom = tabPos.cx - 200; //m_pRecipeInfo->nFoilExpInspWidth[ CAM_POS_TOP ] ; 
+//	rcRight.top = tabPos.cy + 200;//m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+	rcLeft.bottom = tabPos.cx;
+	rcRight.top = tabPos.cy;
+
+
 
 	CRect rcLeftRnd;
 	CRect rcRightRnd;

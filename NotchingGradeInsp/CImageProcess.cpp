@@ -7698,8 +7698,10 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth,
 
 	rcAll.top = rcLeft.top = 0;
 	rcAll.bottom = rcRight.bottom = nHeight;
-	rcLeft.bottom = nTabLeft + 50; //pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-	rcRight.top = nTabRight - 50;//pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+//	rcLeft.bottom = nTabLeft + 50; //pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+//	rcRight.top = nTabRight - 50;//pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+	rcLeft.bottom = nTabLeft;
+	rcRight.top = nTabRight;
 
 	CRect rcLeftRnd;
 	CRect rcRightRnd;
@@ -8310,8 +8312,8 @@ int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth,
 
 	rcAll.top = rcLeft.top = 0;
 	rcAll.bottom = rcRight.bottom = nHeight;
-	rcLeft.bottom = nTabLeft + 50; //pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-	rcRight.top = nTabRight - 50;//pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+	rcLeft.bottom = nTabLeft;// +50; //pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+	rcRight.top = nTabRight;// -50;//pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 
 	CRect rcLeftRnd;
 	CRect rcRightRnd;
