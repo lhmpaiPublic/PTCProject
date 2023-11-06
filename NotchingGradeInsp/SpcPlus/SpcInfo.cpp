@@ -37,7 +37,7 @@ CSpcInfo::~CSpcInfo()
 //Spc Plus 정보 파일을 읽어서 저장한다.
 void CSpcInfo::LoadSpcPlusInfo()
 {
-	m_bSPCStartFlag = TRUE;
+	m_bSPCStartFlag = FALSE;
 
 	TCHAR szProfilePath[_MAX_PATH];
 	memset(szProfilePath, 0x00, sizeof(szProfilePath));

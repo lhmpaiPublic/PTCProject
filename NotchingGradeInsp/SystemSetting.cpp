@@ -6,7 +6,7 @@
 
 CSystemSetting::CSystemSetting()
 {
-
+	m_bDisableSpcPlus = FALSE;
 }
 
 
