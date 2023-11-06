@@ -60,8 +60,9 @@ CSystemSettingDlg::CSystemSettingDlg(CWnd* pParent /*=nullptr*/, BOOL bMode /*=T
 	m_bChkTriggerMode = FALSE;
 	m_pParent = (CNotchingGradeInspView*)pParent;
 
-	m_bStartMode = bMode ; // 22.08.05 Ahn Add 
-
+	m_bStartMode = bMode; // 22.08.05 Ahn Add 
+	//SPC+ 출력 여부 플래그
+	m_bChkDisableSpcPlus = FALSE;
 }
 
 CSystemSettingDlg::~CSystemSettingDlg()
@@ -294,6 +295,7 @@ BOOL CSystemSettingDlg::OnInitDialog()
 	//SPC+ 사용 설정 초기값 세팅
 	m_bChkDisableSpcPlus = m_SysSetting.m_bDisableSpcPlus;
 	((CButton*)GetDlgItem(IDC_CHK_DISABLE_SPCPLUS))->SetCheck(m_bChkDisableSpcPlus);
+	//SPC+ 출력 여부 플래그 세팅 - SPC+ SpcInfo = 정보파일에 
 	SPCINFO->setSPCStartFlag(!m_bChkDisableSpcPlus);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -864,7 +866,7 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_SysSetting.m_bNonNgSave = m_bChkEnableNonNgSave;
 		m_SysSetting.m_bNonNgStop = m_bChkEnableNonNgStop;
 
-		//SPC Plus 실행여부
+		//SPC Plus 실행여부 전역 변수에 세팅한다.
 		m_SysSetting.m_bDisableSpcPlus = m_bChkDisableSpcPlus;
 
 
@@ -1510,6 +1512,7 @@ void CSystemSettingDlg::OnBnClickedChkDisableSpcplus()
 	//}
 
 	UpdateData(TRUE);
+	//SPC+ 출력여부 체크 박스 체크 이벤트 시 SpcInfo - 정보 클래스 변경한다.
 	SPCINFO->setSPCStartFlag(!m_bChkDisableSpcPlus);
 
 	DataControl(MODE_WRITE);

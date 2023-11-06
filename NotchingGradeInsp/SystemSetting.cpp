@@ -6,6 +6,7 @@
 
 CSystemSetting::CSystemSetting()
 {
+	//SPC+ 출력 여부 플래그 초기화
 	m_bDisableSpcPlus = FALSE;
 }
 
@@ -210,6 +211,7 @@ int CSystemSetting::FileCtrl(int nMode)
 			strSection = _T("SPCPLUS_INFO");
 			strKey = _T("NON_EXEC_SPCPLUS");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			//SPC+ 출력여부 플래그를 SystemSetting 파일에서 읽어서 가져온다.
 			m_bDisableSpcPlus = atoi(buff);
 
 		}
@@ -431,6 +433,7 @@ int CSystemSetting::FileCtrl(int nMode)
 						
 			strSection = _T("SPCPLUS_INFO");
 			strKey = _T("NON_EXEC_SPCPLUS");
+			//SPC+ 출력여브 체크박스 이벤트 값을 SystemSetting 파일에 저장한다.
 			strData.Format(_T("%d"), m_bDisableSpcPlus);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 		}

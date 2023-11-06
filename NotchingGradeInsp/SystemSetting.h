@@ -78,7 +78,7 @@ public:
 	BOOL m_bNonNgSave;
 	BOOL m_bNonNgStop;
 	
-	//SPC 작동
+	//SPC 출력 여부 플래그
 	BOOL m_bDisableSpcPlus;
 
 	int m_nOverflowCountMax;
