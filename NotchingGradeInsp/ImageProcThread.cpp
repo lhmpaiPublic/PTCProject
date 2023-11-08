@@ -308,6 +308,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					LOGDISPLAY_SPEC(1)("*2*1*Now Tab Find Count<%d>, TabID QueueCount<%d>",
 						nVecSize, pCntQueueInCtrl->GetSize());
 
+
 					//Tab 정보 크기 만큼 루프 돌다.
 					for (int i = 0; i < nVecSize; i++)
 					{
@@ -554,6 +555,49 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> nVecSize:%d/%d, ImageLength:%d, FrameCount:%d, TabStartPosInFrame:%d, TabLeft:%d, TabRight:%d, nLevel:%d"),
 							i, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel);
+
+
+
+
+
+
+
+
+
+						////////////////////////////////////////////////////////////////////////////////////////////
+						// pyjtest : Tab 2개 인식 시 이미지 저장
+
+//						if( nVecSize >= 2 )
+//						{
+////							CBitmapStd bmp(nWidth, pTabInfo->nImageLength);
+////							bmp.SetImage(nWidth, pTabInfo->nImageLength, pTabInfo->pImgPtr);
+//
+//							CBitmapStd bmp(nWidth, nHeight);
+//							bmp.SetImage(nWidth, nHeight, pHeadPtr);
+//				
+//
+//							CTime time = CTime::GetCurrentTime();
+//
+//							CString strPath = AprData.m_strImagePath + _T("\\2TAB");
+//							CWin32File::CreateDirectory(strPath);
+//
+//							CString str;
+//							str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d)_BCD%d_FoilTab%d_FrameCnt%d.bmp"), 
+//								strPath, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount(),
+//								cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, pTabInfo->nFrameCount );
+//							bmp.SaveBitmap(str);
+//						}
+						////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
 
 
 						//프레임 정보 임시 객체(Top 프레임 정보 처리)

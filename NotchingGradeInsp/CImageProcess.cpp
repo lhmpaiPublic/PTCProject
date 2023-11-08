@@ -6394,6 +6394,37 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 
 
+
+
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// pyjtest : 원본 이미지 저장
+	//{
+	//	CBitmapStd bmp(nWidth, nHeight);
+	//	bmp.SetImage(nWidth, nHeight, pImgPtr);
+
+	//	CTime time = CTime::GetCurrentTime();
+
+	//	CString strPath = AprData.m_strImagePath + _T("\\NON");
+	//	CWin32File::CreateDirectory(strPath);
+
+	//	CString str;
+	//	str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d)_FC[%d]_Org.bmp"), strPath, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount(), nFrameCount);
+	//	bmp.SaveBitmap(str);
+	//}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
 	int nCase = -1;
 	if( pResvTabInfo->pImgPtr != NULL )
 	{
@@ -6458,6 +6489,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				}
 			}
 		}
+
+		AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d>"), nCase);
 
 		BOOL bResvSend = FALSE;
 		switch (nCase)
@@ -6592,6 +6625,39 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		//텝정보를 저장한다.
 		pVecTabInfo->push_back(tabInfo);
+		AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> pVecTabInfo->push_back 1 Size<%d> "), pVecTabInfo->size());
+
+
+
+
+
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// pyjtest : 원본 이미지 저장
+		//{
+		//	CBitmapStd bmp(nWidth, tabInfo.nImageLength);
+		//	bmp.SetImage(nWidth, tabInfo.nImageLength, tabInfo.pImgPtr);
+
+		//	CTime time = CTime::GetCurrentTime();
+
+		//	CString strPath = AprData.m_strImagePath + _T("\\TAB_ORG");
+		//	CWin32File::CreateDirectory(strPath);
+
+		//	CString str;
+		//	str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d)_FC[%d]_1.bmp"), strPath, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount(), tabInfo.nFrameCount);
+		//	bmp.SaveBitmap(str);
+		//}
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6613,6 +6679,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				bmp.SaveBitmap(str);
 			}
 		}
+
+
+
+
 
 		if (pResvTabInfo->pImgPtr != NULL)
 		{
@@ -6661,6 +6731,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			}
 		}		
 
+		AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <vecSector.Size=%d>"), nSize);
+
 		for (int i = 0; i < nSize; i++) 
 		{
 			CTabInfo tabInfo;
@@ -6689,6 +6761,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			// 21.09.02 Ahn Add Start
 			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;
 			tabInfo.nImageLength = tabInfo.nRight ;
+
+			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> (tabInfo.nImageLength<%d> + nLastSavePos<%d>) > nHeight<%d> "), tabInfo.nImageLength, nLastSavePos, nHeight);
+
 
 			if ((tabInfo.nImageLength + nLastSavePos) > nHeight)
 			{ 
@@ -6736,6 +6811,25 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			nLastSavePos = nLastSavePos + tabInfo.nImageLength;
 			pVecTabInfo->push_back(tabInfo);
 
+			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> pVecTabInfo->push_back 2 Size<%d> "), pVecTabInfo->size() );
+
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// pyjtest : 원본 이미지 저장
+			//{
+			//	CBitmapStd bmp(nWidth, tabInfo.nImageLength);
+			//	bmp.SetImage(nWidth, tabInfo.nImageLength, tabInfo.pImgPtr);
+
+			//	CTime time = CTime::GetCurrentTime();
+
+			//	CString strPath = AprData.m_strImagePath + _T("\\TAB_ORG");
+			//	CWin32File::CreateDirectory(strPath);
+
+			//	CString str;
+			//	str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d)_FC[%d]_2.bmp"), strPath, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount(), tabInfo.nFrameCount);
+			//	bmp.SaveBitmap(str);
+			//}
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 		}	
 		
@@ -6765,7 +6859,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		CopyMemory(pResvTabInfo->pImgPtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
 		CopyMemory(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
+
+		AprData.SaveDebugLog_Format( _T("<DivisionTab_FromImageToTabInfo> CopyMemory pResvTabInfo->pImgPtr") );
+
 	}
+
 
 
 

@@ -496,10 +496,10 @@ void CImageProcessCtrl::TabCountReset()
 		m_pGrabCtrl[i]->FrameCounterReset();
 		m_pQueueFrmCtrl[i]->ResetQueue();
 		m_pQueueResult[i]->ResetQueue();
-		m_pQueueCounterIn->ResetQueue(); // 22.03.28 Ahn Add
+//		m_pQueueCounterIn->ResetQueue(); // 22.03.28 Ahn Add // 23.11.08 pyj del 
 	}
 	m_pQueueCtrl->ResetQueue();
-	m_pQueueCounterIn->ResetQueue();
+//	m_pQueueCounterIn->ResetQueue(); // 23.11.08 pyj del 
 
 	m_DefDataCtrl.RemoveAll();
 
@@ -589,7 +589,7 @@ int CImageProcessCtrl::GrabStart(BOOL bMode)
 	}
 
 	// 22.04.06 Ahn Add Start
-	GetCounterQueInPtr()->ResetQueue();
+//	GetCounterQueInPtr()->ResetQueue();  // 23.11.08 pyj del 
 	CounterThreadRun(TRUE);
 	// 22.04.06 Ahn Add End
 
