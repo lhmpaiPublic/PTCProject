@@ -156,9 +156,15 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	CAppDIO dio;
 	//최종 읽은 값
 	WORD wLastInfo = 0xFF;
-
+	//DIO Trigger Bit 신호가 TRUE일 때 
+	//받은 값 백업 용
+	//새로 받은 Tab Id와 비교하여 누락 여부 확인
+	//누락된 값 및 범위 확인
 	WORD wLastTabId = 0xFF;
 
+	//Trigger 신호가 Off 상태에서 Tab Id 가 변화가 있는 지 확인
+	//Off 신호가 10번의 루프(5/1000 초 주기로 상태 확인)마다 상태 변화 확인 TriggerOffCount 가 %10으로 로그 출력
+	//Trigger 신호 가 Off 상태에서 Tab Id 가 들어오는 지 확인
 	WORD wLastTabIdTriggerOff = 0xFF;
 
 #if DIO_BOARD_NO // 0이 아니면

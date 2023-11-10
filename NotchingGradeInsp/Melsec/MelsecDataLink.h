@@ -15,10 +15,10 @@
 //#define	CHN_NO_CCLINK1	81		//!< CC-Link Chanel No
 //#define	CHN_NO_CCLINK2	82		//!< CC-Link Chanel No
 
-//class  CMelsecBase;
-#include "CMelsecBase.h"
+//class  CPlcBase;
+#include "PlcBase.h"
 
-class CMelsecDataLink:public CMelsecBase
+class CMelsecDataLink:public CPlcBase
 {
 public:
 	CMelsecDataLink(WORD wChannelNo = CHN_NO_CCLINK1, WORD wMaxPort = 16, WORD wMyStNo = 1, WORD wExtStNo = 1, WORD wSeqStNo = 0, WORD wOffset_In = 0, WORD wOffset_Out = 0) ;

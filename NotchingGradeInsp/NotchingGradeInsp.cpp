@@ -78,8 +78,29 @@ CNotchingGradeInspApp theApp;
 
 // CNotchingGradeInspApp 초기화
 
+#define NOTCHINGAPP_NAME _T("NotchingGradeInsp")
 BOOL CNotchingGradeInspApp::InitInstance()
 {
+	CString AppName = AfxGetAppName();
+	HANDLE hMutex = CreateMutex(NULL, TRUE, NOTCHINGAPP_NAME); // Mutex Name
+	DWORD errorCode = GetLastError();
+	ReleaseMutex(hMutex);
+
+	if (errorCode == ERROR_ALREADY_EXISTS)
+	{
+		CWnd* pWndPrev = CWnd::FindWindow(NULL, NOTCHINGMAINFRM_NAME); // Find using Window Caption
+		if (pWndPrev)
+		{
+			CWnd* pWndChild = pWndPrev->GetLastActivePopup();
+
+			if (pWndChild->IsIconic())
+				pWndPrev->ShowWindow(SW_RESTORE);
+
+			pWndChild->SetForegroundWindow();
+		}
+		return FALSE;
+	}
+
 	// 애플리케이션 매니페스트가 ComCtl32.dll 버전 6 이상을 사용하여 비주얼 스타일을
 	// 사용하도록 지정하는 경우, Windows XP 상에서 반드시 InitCommonControlsEx()가 필요합니다. 
 	// InitCommonControlsEx()를 사용하지 않으면 창을 만들 수 없습니다.
@@ -89,20 +110,6 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	// 이 항목을 설정하십시오.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
-
-	::CreateMutex(NULL, TRUE, AfxGetAppName());
-
-
-//#ifndef _DEBUG // 22.03.22 Test 
-//	if (GetLastError() == ERROR_ALREADY_EXISTS) {
-//		AfxMessageBox(_T("이미 실행 중입니다."));
-//		CWnd* pWnd = CWnd::FindWindowA(NULL, AfxGetAppName());
-//		if (pWnd) {
-//			pWnd->SetForegroundWindow();
-//		}
-//		return FALSE;
-//	}
-//#endif
 
 	CWinAppEx::InitInstance();
 

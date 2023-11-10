@@ -11,7 +11,6 @@
 #define	OFFSET_OUT	0x6B20		//출력디바이스 번호 오프셋
 
 #include "MelsecDataLink.h"
-#include "CMelsecEthenet.h"
 // 23.02.28 Son Add Start
 #include "CSiemensPlc.h"
 // 23.02.28 Son Add End
@@ -26,7 +25,7 @@ typedef struct {
 	BOOL BusyFlag;	// 스레드 작업중
 } PIOTHREAD_DATAIF;
 
-class CMelsecBase;
+class CPlcBase;
 
 
 class CPioCtrl
@@ -94,7 +93,7 @@ private:
 	PIOTHREAD_DATAIF PioDataIF;
 	// 22.03.17 Ahn Modify Start
 	//CMelsecDataLink* pAprPio;
-	CMelsecBase* pAprPio;
+	CPlcBase* pAprPio;
 	// 22.03.17 Ahn Modify End
 
 	//동기화 이벤트 객체

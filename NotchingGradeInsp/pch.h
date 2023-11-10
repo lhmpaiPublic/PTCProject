@@ -26,6 +26,9 @@ using namespace Gdiplus;
 
 #pragma comment(linker, "/HEAP:4000000000")
 
+//검사 프로그램 명
+#define NOTCHINGMAINFRM_NAME _T("NotchingGradeInsp")
+
 //DIO 보드넘버 : 현장 pc 0 vs DEMO pc 1
 #define DIO_BOARD_NO 0
 

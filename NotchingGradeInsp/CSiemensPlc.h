@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CMelsecBase.h"
+#include "PlcBase.h"
 #include "..\LGIS\LGIS_Plc.h"
 
 #ifdef _DEBUG
@@ -8,7 +8,7 @@
 #pragma comment(lib, "LGIS.lib")
 #endif
 
-class CSiemensPlc : public CMelsecBase
+class CSiemensPlc : public CPlcBase
 {
 public:
 	CSiemensPlc(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort = 4000, int nOffsetIn = 0, int nOffsetOut = 100, int nWordIn = 20, int nWordOut = 120);

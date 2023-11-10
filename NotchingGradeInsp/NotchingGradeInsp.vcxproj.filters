@@ -381,15 +381,6 @@
     <ClInclude Include="Control\ThumbnailCtrl.h">
       <Filter>Control</Filter>
     </ClInclude>
-    <ClInclude Include="CMelsecEthernetSock.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CMelsecBase.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CMelsecEthenet.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CDeleteSettingDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -568,6 +559,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Light232.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PlcBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -848,15 +842,6 @@
     <ClCompile Include="Control\ThumbnailCtrl.cpp">
       <Filter>Control</Filter>
     </ClCompile>
-    <ClCompile Include="CMelsecEthernetSock.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CMelsecBase.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CMelsecEthenet.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CDeleteSettingDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -1020,6 +1005,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Light232.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PlcBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

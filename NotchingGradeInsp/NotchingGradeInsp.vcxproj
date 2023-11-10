@@ -423,9 +423,6 @@
     <ClInclude Include="CLightManualCtrlDlg.h" />
     <ClInclude Include="CLightRS232Dlg.h" />
     <ClInclude Include="CMathFunc.h" />
-    <ClInclude Include="CMelsecBase.h" />
-    <ClInclude Include="CMelsecEthenet.h" />
-    <ClInclude Include="CMelsecEthernetSock.h" />
     <ClInclude Include="CondDlg.h" />
     <ClInclude Include="Contec\Caio.h" />
     <ClInclude Include="Contec\CCnt.h" />
@@ -454,6 +451,7 @@
     <ClInclude Include="CRecipeTableCtrl.h" />
     <ClInclude Include="GlobalFunc.h" />
     <ClInclude Include="Light232.h" />
+    <ClInclude Include="PlcBase.h" />
     <ClInclude Include="RecipImportDlg.h" />
     <ClInclude Include="CResultDirectoryDlg.h" />
     <ClInclude Include="CResultFileManager.h" />
@@ -590,9 +588,6 @@
     <ClCompile Include="CLightManualCtrlDlg.cpp" />
     <ClCompile Include="CLightRS232Dlg.cpp" />
     <ClCompile Include="CMathFunc.cpp" />
-    <ClCompile Include="CMelsecBase.cpp" />
-    <ClCompile Include="CMelsecEthenet.cpp" />
-    <ClCompile Include="CMelsecEthernetSock.cpp" />
     <ClCompile Include="CondDlg.cpp" />
     <ClCompile Include="Control\CalendarCell.cpp" />
     <ClCompile Include="Control\CalendarCellItem.cpp" />
@@ -664,6 +659,7 @@
     </ClCompile>
     <ClCompile Include="Ping.cpp" />
     <ClCompile Include="PioCtrl.cpp" />
+    <ClCompile Include="PlcBase.cpp" />
     <ClCompile Include="QueueCtrl.cpp" />
     <ClCompile Include="RecipImportDlg.cpp" />
     <ClCompile Include="ResultView.cpp" />

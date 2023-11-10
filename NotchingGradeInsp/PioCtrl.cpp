@@ -52,18 +52,11 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		break;
 	}
 
-	// 22.03.17 Ahn Modify Start
-	//pAprPio = new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
-#if defined( MELSEC_ETHERNET )
-	pAprPio = (CMelsecBase*)new CMelsecEthernet(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
-#else
-	// 23.02.28 Son Mod Start
-	//pAprPio = (CMelsecBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
 		//로그 항상출력
 		LOGDISPLAY_SPECTXT(0)("Pio Ctrl : Melsec 생성");
 
-		pAprPio = (CMelsecBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
+		pAprPio = (CPlcBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
 	}
 	else {
 		//로그 항상출력
@@ -71,14 +64,11 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 
 		CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 		int nPort = AprData.m_System.m_nPLCPort;
-		pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);
-		//pAprPio = (CMelsecBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort );
+		pAprPio = (CPlcBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);
+		//pAprPio = (CPlcBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort );
 
 		PioTheadRun();
 	}
-	// 23.02.28 Son Mod End
-#endif
-	// 22.03.17 Ahn Modify End
 
 	memset(&PioDataIF, 0x00, sizeof(PioDataIF));
 

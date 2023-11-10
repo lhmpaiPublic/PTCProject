@@ -5,11 +5,11 @@
 #define	CHN_NO_CCLINK1	81		//!< CC-Link
 #define	CHN_NO_CCLINK2	82		//!< CC-Link
 
-class CMelsecBase
+class CPlcBase
 {
 public :
-	CMelsecBase(WORD wChannelNo = CHN_NO_NETG1, WORD wMaxPort = 16, WORD wMyStNo = 1, WORD wExtStNo = 1, WORD wSeqStNo = 0, WORD wOffset_In = 0, WORD wOffset_Out = 0);
-	virtual ~CMelsecBase();
+	CPlcBase(WORD wChannelNo = CHN_NO_NETG1, WORD wMaxPort = 16, WORD wMyStNo = 1, WORD wExtStNo = 1, WORD wSeqStNo = 0, WORD wOffset_In = 0, WORD wOffset_Out = 0);
+	virtual ~CPlcBase();
 
 	virtual int InPort(WORD port, BYTE* data, BOOL bExtSt = FALSE) = 0 ;
 	virtual int OutPort(WORD port, BYTE data, BOOL bLockCtrl = TRUE, BOOL bGetBit = FALSE) = 0;
