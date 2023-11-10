@@ -332,10 +332,12 @@
 #define IDC_RADIO_MESSAGE               1045
 #define IDC_ED_PORT                     1045
 #define IDC_EDIT_PLC_MODE               1045
+#define IDC_EXEC_MAKE_TEXT              1045
 #define IDC_ED_BTM_COAT_HEIGHT_PIX      1046
 #define IDC_RADIO_CALLBACK              1046
 #define IDC_ED_BIT_IN_ADDRESS_16        1046
 #define IDC_EDIT_PLC_IP_ADDRESS         1046
+#define IDC_EXEC_MAKEDAY                1046
 #define IDC_ST_NUM_TOTAL                1047
 #define IDC_ED_FOIL_THRES_UPPER         1047
 #define IDC_RADIO_EVENT                 1047

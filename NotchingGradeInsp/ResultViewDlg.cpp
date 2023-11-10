@@ -141,6 +141,37 @@ void CResultViewDlg::OnSize(UINT nType, int cx, int cy)
 		pButton->MoveWindow(cx - nBtnWidth-5, cy-nBtnHeight-5, nBtnWidth, nBtnHeight);
 	}
 
+	//컴파일 정보를 출력을 위한 객체
+	CButton* pMakeText = (CButton*)GetDlgItem(IDC_EXEC_MAKE_TEXT);
+	CButton* pMakeDay = (CButton*)GetDlgItem(IDC_EXEC_MAKEDAY);
+	//객체 가 있다면
+	if ((pMakeText != nullptr) && (pMakeDay != nullptr))
+	{
+		//객체의 크기를 가져오기 위한 변수
+		CRect	MakeTextRect;
+		CRect	MakeDayRect;
+		//객체의 크기 정보를 가져온다.
+		pMakeText->GetClientRect(&MakeTextRect);
+		pMakeDay->GetClientRect(&MakeDayRect);
+		//객체의 크기정보를 사용하여 위치 및 크기를 재 설정한다.
+		pMakeText->MoveWindow(5, cy - nBtnHeight - 5, MakeTextRect.Width(), MakeTextRect.Height());
+		pMakeDay->MoveWindow(5 + MakeTextRect.Width() + 5, cy - nBtnHeight - 5, MakeDayRect.Width(), MakeDayRect.Height());
+		//버튼의 기능을 사용하지 못하도록 세팅한다.
+		pMakeText->EnableWindow(false);
+		pMakeDay->EnableWindow(false);
+		
+		//실행파일 컴파일 정보 출력
+		CString strCompileInfo;
+		CString strVersion;
+		//정보를 만들기 위한 함수
+		CNotchingGradeInspApp::GetFileVersion(strVersion);
+		//출력을 텍스트를 만든다.
+		strCompileInfo.Format(_T("NotchingGradeInsp %s"), strVersion);
+		//정보를 윈도우에 출력한다.
+		pMakeDay->SetWindowText(strCompileInfo);
+		
+	}
+
 	if (m_pResultList->GetSafeHwnd()) {
 	//KANG 22.01.07 Add Start
 		if (m_pDoc != NULL) {

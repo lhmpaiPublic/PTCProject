@@ -81,23 +81,38 @@ CNotchingGradeInspApp theApp;
 #define NOTCHINGAPP_NAME _T("NotchingGradeInsp")
 BOOL CNotchingGradeInspApp::InitInstance()
 {
+	//중복 실행 방지를 위한 Mutex 생성
+	//App Name를 가져온다.
 	CString AppName = AfxGetAppName();
-	HANDLE hMutex = CreateMutex(NULL, TRUE, NOTCHINGAPP_NAME); // Mutex Name
+	//App Name 에 대한 뮤텍스 생성
+	HANDLE hMutex = CreateMutex(NULL, TRUE, AppName); // Mutex Name
+	//App Name를 가지는 윈도우가 실행되어 있으면 ERROR_ALREADY_EXISTS 에러가 발생한다.
 	DWORD errorCode = GetLastError();
+	//생성한 뮤텍스를 제거한다.
 	ReleaseMutex(hMutex);
 
+	//프로그램이 이미 실행되어 있으면
 	if (errorCode == ERROR_ALREADY_EXISTS)
 	{
+		//실행 메시지 출력
+		AfxMessageBox(_T("이미 프로그램이 실행중입니다\r\n프로그램 실행을 확인하세요"));
+
+		//메인 프레임 윈도우 명과 같은 윈도우 를 찾는다.
+		//실행된 윈도우를 활성화 시키기 위한 부분
 		CWnd* pWndPrev = CWnd::FindWindow(NULL, NOTCHINGMAINFRM_NAME); // Find using Window Caption
 		if (pWndPrev)
 		{
+			//윈도우를 찾았으면 메시지 출력하고
+			AfxMessageBox(_T("이미 프로그램이 실행중입니다\r\n프로그램 실행을 확인하세요"));
+			//Ionic 화 되었나 확인을 위한 - 자식 객체를 찾는다
 			CWnd* pWndChild = pWndPrev->GetLastActivePopup();
-
+			//Iconic화 되어 있으면 해제 시키고
 			if (pWndChild->IsIconic())
 				pWndPrev->ShowWindow(SW_RESTORE);
-
+			//자식 객체를 최상단으로 오도록 한다.
 			pWndChild->SetForegroundWindow();
 		}
+		//중복 실행이 되지 않도록 프로그램은 중지하기 위해서 FALSE로 함수를 빠져나간다.
 		return FALSE;
 	}
 
@@ -221,21 +236,19 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
 
-	{
-		CString strTitle;
-		CString strVersion;
-		GetFileVersion(strVersion);
-		strTitle.Format(_T("NotchingGradeInsp Version %s"), strVersion);
-		m_pMainWnd->SetWindowText(strTitle);
+	m_pMainWnd->SetWindowText(NOTCHINGMAINFRM_NAME);
 
-		CString ErrorLog;
-		ErrorLog.Format(_T("============================= START PROGRAM (%s) ============================="), strVersion);
-		AprData.SaveErrorLog(ErrorLog);
-		AprData.SaveDebugLog_Format(ErrorLog);
+	//실행 파일 컴파일 정보
+	CString strVersion;
+	GetFileVersion(strVersion);
 
-		LOGDISPLAY_SPEC(8)(_T("============================= START PROGRAM (%s) ============================="), strVersion);
+	CString ErrorLog;
+	ErrorLog.Format(_T("============================= START PROGRAM (%s) ============================="), strVersion);
+	AprData.SaveErrorLog(ErrorLog);
+	AprData.SaveDebugLog_Format(ErrorLog);
 
-	}
+	LOGDISPLAY_SPEC(8)(_T("============================= START PROGRAM (%s) ============================="), strVersion);
+
 
 	// 창 하나만 초기화되었으므로 이를 표시하고 업데이트합니다.
 	m_pMainWnd->ShowWindow(SW_SHOW);

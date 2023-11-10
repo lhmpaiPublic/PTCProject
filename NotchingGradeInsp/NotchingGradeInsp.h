@@ -78,8 +78,8 @@ public :
 	CDispErrorDlg* m_pDispErrorDlg;
 	// 22.06.29 Son Add End
 
-	int GetFileVersion(CString& strVersion);
-	CString& GetAppBuildInfo(void);	
+	static int GetFileVersion(CString& strVersion);
+	static CString& GetAppBuildInfo(void);	
 ////KANG 22.01.07 Add Start
 //	CResultView* GetResultViewPrt();
 ////KANG 22.01.07 Add End
