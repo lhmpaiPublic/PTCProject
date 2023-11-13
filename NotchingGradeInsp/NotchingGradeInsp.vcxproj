@@ -705,7 +705,6 @@
     <ResourceCompile Include="SetValue\SetValueRes.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\UltiumCells.bmp" />
     <Image Include="C:\Users\94000_9k1\Desktop\Lenz.ico" />
     <Image Include="res\AppClose.bmp" />
     <Image Include="res\bitmap1.bmp" />

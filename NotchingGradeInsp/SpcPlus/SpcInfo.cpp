@@ -20,8 +20,6 @@ static char THIS_FILE[]=__FILE__;
 
 CSpcInfo* CSpcInfo::instance=NULL;
 
-//전역 객체 생성
-CSpcInfo obj;
 //생성자 : 클래스의 초기화 설계
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcInfo::CSpcInfo()

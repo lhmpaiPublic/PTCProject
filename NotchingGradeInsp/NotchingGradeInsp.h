@@ -26,8 +26,11 @@ class CLightControl;
 class CSigProc;
 class CDispErrorDlg;	// 22.06.29 Son Add
 
+class CSpcInfo;
 class CNotchingGradeInspApp : public CWinAppEx
 {
+	//전역 객체 생성
+	CSpcInfo* objSpcInfo;
 public:
 	CNotchingGradeInspApp() noexcept;
 	// 22.02.15 Ahn Add Start

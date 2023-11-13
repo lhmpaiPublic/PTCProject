@@ -24,6 +24,7 @@
 #include "Win32File.h" // 22.11.25 Ahn Add
 #include "resource.h"
 #include "SpcCreateJSONFileThread.h"
+#include "SpcInfo.h"
 
 #pragma comment( lib, "version.lib")
 
@@ -190,6 +191,8 @@ BOOL CNotchingGradeInspApp::InitInstance()
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
+	//전역 객체 생성
+	objSpcInfo = new CSpcInfo();
 	//SPC+ JSON파일 생성을 위한 스래드 모듈을 생성한다.
 	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
 #endif //SPCPLUS_CREATE
@@ -288,6 +291,8 @@ int CNotchingGradeInspApp::ExitInstance()
 #ifdef SPCPLUS_CREATE
 	//SPC+ JSON파일 생성을 위한 스래드 모듈을 소멸한다.
 	CSpcCreateJSONFileThread::ExitSpcCreateJSONFileThread();
+	//전역 객체 소멸
+	delete objSpcInfo;
 #endif //SPCPLUS_CREATE
 
 	return CWinAppEx::ExitInstance();
