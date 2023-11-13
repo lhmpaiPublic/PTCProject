@@ -189,12 +189,25 @@ void CSpcInspManager::makeJSONFile()
 
 			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
 			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+			LOGDISPLAY_SPEC(3)("SPC PRINT : <%s>/<%s> ", strPath, strJsonFileName);
+#endif //SPCPLUS_CREATE
 		}
 		else
 		{
 			LOGDISPLAY_SPEC(0)("SPC JSON FILE Exist -- Error ");
 		}
 	}
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE		
+	else
+	{
+	
+	//SPC+ 정보 출력 로그
+		LOGDISPLAY_SPEC(3)("SPC+=====CSpcInspManager NONE JSON ");
+	}
+#endif //SPCPLUS_CREATE
 
 }
 

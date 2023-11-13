@@ -154,7 +154,7 @@ void CSpcInfo::LoadSpcPlusInfo()
 void CSpcInfo::setSPCStartFlag(BOOL bSPCStartFlag)
 {
 	m_bSPCStartFlag = bSPCStartFlag; 
-	//SPC 객체 소스에서 컴파일 여부 결정
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE			
 	//SPC+ 정보 출력 로그
 	LOGDISPLAY_SPEC(3)("SPC+=====출력여부<%s>", (m_bSPCStartFlag) ? "Yes" : "No");
