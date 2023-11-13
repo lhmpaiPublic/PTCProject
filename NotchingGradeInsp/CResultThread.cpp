@@ -887,11 +887,6 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 			//Tab 있는 Frame과 Tab 없는 Frame 이 JSON INSP 1개를 생성하기 때문에 필요함
 					if (insp->getCreateJSONFile())
 					{
-						//SPC+ 정보 출력 로그
-						LOGDISPLAY_SPEC(3)("SPC+=====FrameCount<%d>, Frame Kind : %s = Cell Count : %d === JSON 생성 OK "
-							, pRsltInfo->m_nFrameCount
-							, (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
-
 						//InData 객체를 가져온다.
 						///In Data(송신 데이터) 객체 포인터
 						CSpcInspInData* InspInData = insp->getSpcInspInData();

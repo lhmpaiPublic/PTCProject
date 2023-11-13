@@ -127,12 +127,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	BOOL bTailFlag = FALSE;
 	BOOL bStopFlag = FALSE;
 
-	// 22.02.22 Ahn Add Start
-#if defined( DEBUG_NOISE_COUNTERMEASURE )
-	BYTE* btLastBtmImg = NULL;
-#endif
-	// 22.02.22 Ahn Add End
-
 	// 22.04.06 Ahn Add Start - 첫 탭 버림
 	BOOL bFirstTab = TRUE;
 	// 22.04.06 Ahn Add End

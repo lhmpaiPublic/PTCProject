@@ -163,7 +163,7 @@ public:
 	CString	getInspNgImagePath() { return m_InspNgImagePath; }
 
 	//SPC+ 작동 플래그
-	void setSPCStartFlag(BOOL bSPCStartFlag) { m_bSPCStartFlag = bSPCStartFlag; }
+	void setSPCStartFlag(BOOL bSPCStartFlag);
 
 	//설비ID	
 	void setEqpId(CString EqpId) { m_EqpId = EqpId; }

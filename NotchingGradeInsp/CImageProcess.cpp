@@ -5891,19 +5891,6 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 		::_tcsnccpy_s( pDefInfo->szLotID, _countof(pDefInfo->szLotID), AprData.m_NowLotData.m_strLotNo.GetBuffer(0), _TRUNCATE);
 
 
-//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE			
-		//SPC+ INSP===================================================================================================
-		//SPC+ 정보 출력 로그
-		LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo CellNo<%d>, CAM<%s>, BlockData Type<%s>"
-			, pTabRsltInfo->m_nTabNo
-			, (pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM"
-			, (pData->nType == en_ModeFoilExp) ? "ModeFoilExp" :
-			(pData->nType == en_ModeFoilExpOut) ? "ModeFoilExpOut" :
-			(pData->nType == en_ModeSurface) ? "ModeSurface" : "ModeFoilBoth");
-		//===========================================================================================================
-#endif //SPCPLUS_CREATE
-
 		// 22.05.10 Ahn Add Start
 		if( pData->nType == en_ModeSurface )
 		{
@@ -5975,22 +5962,6 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 					if ((pRecipeInfo->dIgnoreDistance < pDefInfo->dDistance) && (pRecipeInfo->dIgnoreDistance > 0) 
 						&& (( pDefInfo->dSizeX > pRecipeInfo->dIgnoreSize ) && (pRecipeInfo->dIgnoreSize > 0)))
 					{
-
-//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE			
-						//SPC+ INSP===================================================================================================
-						//SPC+ 정보 출력 로그
-						LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo CellNo<%d>, CAM<%s>, Delete Case : (pRecipeInfo->dIgnoreDistance(%d) < pDefInfo->dDistance( %d))\r\n : (pRecipeInfo->dIgnoreDistance(%d) > 0)\r\n(pDefInfo->dSizeX(%d) > pRecipeInfo->dIgnoreSize(%d)\r\n (pRecipeInfo->dIgnoreSize(%d) > 0) ====="
-							, pTabRsltInfo->m_nTabNo
-							, (pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM"
-							, pRecipeInfo->dIgnoreDistance 
-							, pDefInfo->dDistance
-							, pRecipeInfo->dIgnoreDistance
-							, pDefInfo->dSizeX
-							, pRecipeInfo->dIgnoreSize
-							, pRecipeInfo->dIgnoreSize);
-						//===========================================================================================================
-#endif //SPCPLUS_CREATE
 
 						pDefInfo->dJudgeSize = pDefInfo->dSizeX;
 						pDefInfo->nRank = JUDGE_OK;

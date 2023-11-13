@@ -5,6 +5,10 @@
 #include "pch.h"
 #include "SpcInfo.h"
 
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+#include "Win32File.h"
+#endif //SPCPLUS_CREATE
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -43,6 +47,13 @@ void CSpcInfo::LoadSpcPlusInfo()
 	memset(szProfilePath, 0x00, sizeof(szProfilePath));
 	::GetCurrentDirectory(_MAX_PATH, szProfilePath);
 	_tcsncat_s(szProfilePath, sizeof(szProfilePath), SPCPLUSINFO_PROFILE_NAME, _MAX_PATH);
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ 정보 출력 로그
+	BOOL bExist = CWin32File::Exists(szProfilePath);
+	LOGDISPLAY_SPEC(3)("SPC+=====정보파일 읽기<%s><%s>", szProfilePath, (bExist) ? "성공" : "실패");
+#endif //SPCPLUS_CREATE
 
 	//설비ID	
 	m_EqpId = CGlobalFunc::ReadIniFile("EQP", "EQP_ID", szProfilePath);
@@ -99,14 +110,55 @@ void CSpcInfo::LoadSpcPlusInfo()
 
 	//외관불량 JSON 파일 경로	
 	m_InspPath = CGlobalFunc::ReadIniFile("FILEPATH", "INSP_PATH", szProfilePath);
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====외관불량 JSON 파일 경로<%s>", m_InspPath);
+#endif //SPCPLUS_CREATE
 	//장비 Spec, Para 변경 JSON 파일 경로	
 	m_SpecParaPath = CGlobalFunc::ReadIniFile("FILEPATH", "SPEC_PARA_PATH", szProfilePath);
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====장비 Spec, Para 변경 JSON 파일 경로<%s>", m_SpecParaPath);
+#endif //SPCPLUS_CREATE
 	//Alarm JSON 파일 경로	
 	m_AlarmPath = CGlobalFunc::ReadIniFile("FILEPATH", "ALARM_PATH", szProfilePath);
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====Alarm JSON 파일 경로<%s>", m_AlarmPath);
+#endif //SPCPLUS_CREATE
 	//Status JSON 파일 경로	
 	m_StatusPath = CGlobalFunc::ReadIniFile("FILEPATH", "STATUS_PATH", szProfilePath);
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====Status JSON 파일 경로<%s>", m_StatusPath);
+#endif //SPCPLUS_CREATE
 	//INSP Ok Image 파일 경로	
 	m_InspOkImagePath = CGlobalFunc::ReadIniFile("FILEPATH", "INSP_OK_IMGPATH", szProfilePath);
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====INSP Ok Image 파일 경로<%s>", m_InspOkImagePath);
+#endif //SPCPLUS_CREATE
 	//INSP Ng Image 파일 경로	
 	m_InspNgImagePath = CGlobalFunc::ReadIniFile("FILEPATH", "INSP_NG_IMGPATH", szProfilePath);
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====INSP Ng Image 파일 경로<%s>", m_InspNgImagePath);
+#endif //SPCPLUS_CREATE
+}
+
+//SPC+ 작동 플래그
+void CSpcInfo::setSPCStartFlag(BOOL bSPCStartFlag)
+{
+	m_bSPCStartFlag = bSPCStartFlag; 
+	//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE			
+	//SPC+ 정보 출력 로그
+	LOGDISPLAY_SPEC(3)("SPC+=====출력여부<%s>", (m_bSPCStartFlag) ? "Yes" : "No");
+#endif //SPCPLUS_CREATE
 }

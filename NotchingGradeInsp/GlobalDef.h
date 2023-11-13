@@ -69,13 +69,6 @@ enum {
 };
 // 23.02.02 Ahn Add End
 
-//#define		BOTTOM_CAMERA_DEBUG
-
-//#define		DEBUG_NOISE_COUNTERMEASURE
-
-//#define		MELSEC_ETHERNET 
-//#define		DEBUG_MELSEC_ETHERNET // 멜섹 사용시 커맨드 확인용 디버그 디파인
-
 // 22.06.26 Ahn Add Start
 #define		MAX_CROP_IMAGE_QUEUE_SIZE	540
 #define		MAX_SAVE_LOT_INFO_SIZE	30 
@@ -219,37 +212,6 @@ enum {
 // 검출력 관련 Define
 
 #define		THRESHOLD_MIN_VALUE		100
-
-//
-////// 22.09.01 Ahn Add Start
-//#define		LANGUAGE_CODE_KOR	0
-//#define		LANGUAGE_CODE_ENG	1
-////
-//int GetLanguageCode(void)
-//{
-//	static int nLangCode = -1 ;
-//	if ((nLangCode < 0) || (nLangCode > LANGUAGE_CODE_ENG)) {
-//		char szPath[ 256 ] ;
-//		char buff[128];
-//		::GetCurrentDirectory(_MAX_PATH, szPath);
-//		CString strPath;
-//		CString strFileName;
-//		CString strSection;
-//		CString strKey;
-//
-//		strFileName.Format(_T("%s\\Data\\SystemSetting.ini"), szPath ) ;
-//		strPath.Format(_T("%s\\Data"), szPath );
-//
-//		strKey = _T("DISPLAY_LANGUAGE");
-//		::GetPrivateProfileString(strSection, strKey, 0, buff, 1, strFileName);
-//		nLangCode = atoi(buff);
-//	}
-//	return (nLangCode);
-//}
-////
-//#define		_DISP_LANG( kor, eng ) ( ( GetLanguageCode() == LANGUAGE_CODE_KOR ) ? kor : eng )  
-////// 22.09.01 Ahn Add End
-//
 
 
 // 22.07.29 Ahn Add Start

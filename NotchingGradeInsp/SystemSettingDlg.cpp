@@ -387,7 +387,7 @@ int CSystemSettingDlg::MakeGridCtrl()
 	strParamName[en_CamViewHeight] = _LANG(_T("뷰 높이"), _T("Height"));
 	strParamName[en_CamViewOffset] = _LANG(_T("뷰 옵셋"), _T("View Offset"));
 	strParamName[en_CamImgFlipMode] = _LANG(_T("좌우반전"), _T("Flip Mode"));
-	//GetLanguageCode();
+
 	//// 22.09.01 Ahn Add End
 	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
 	{

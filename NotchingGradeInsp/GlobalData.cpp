@@ -540,9 +540,8 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	}
 	else 
 	{
-#if !defined( MELSEC_ETHERNET )
+		//PLC Lot 번호 가져오기
 		pSigProc->ReadBlockAllData(&m_SeqDataIN); // 22.04.01 Ahn Modify
-#endif
 		AprData.m_NowLotData.m_strLotNo = AprData.m_SeqDataIN.strCell_ID ;
 
 //SPC 객체 소스에서 컴파일 여부 결정
