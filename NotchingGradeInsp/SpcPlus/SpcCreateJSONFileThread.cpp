@@ -28,8 +28,7 @@ CSpcCreateJSONFileThread* CSpcCreateJSONFileThread::gInst()
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcCreateJSONFileThread::CSpcCreateJSONFileThread()
 {
-	//스래드를 생성한다.
-	CreateThread();
+	
 }
 
 //소멸자
@@ -51,7 +50,16 @@ void CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread()
 		if (gInstObject)
 		{
 			bCreate = true;
-		}		
+			//스래드를 생성한다.
+			gInstObject->CreateThread();
+		}
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+		else
+		{
+				LOGDISPLAY_SPEC(3)("SPC+===== CreateSpcCreateJSONFileThread 실패 === ");
+		}
+#endif //SPCPLUS_CREATE
 	}
 }
 
@@ -74,6 +82,12 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 	CSpcCreateJSONFileThread* pMain = (CSpcCreateJSONFileThread*)param;
 	std::queue<CSpcPlusManager*>* SpcList = pMain->getSpcList();
 	UINT ret;
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+	LOGDISPLAY_SPEC(3)("SPC+===== ThreadProc 생성");
+#endif //SPCPLUS_CREATE
+
 	while (pMain)
 	{
 		ret = WaitForSingleObject(pMain->getEvent_SpcCreateJSONFileThread(), SPCCREATEJSONFILETHREAD_TIMEOUT);
@@ -97,6 +111,13 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 					}
 					
 				}
+				else if(CLogDisplayDlg::bCreate == FALSE)
+				{
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+					LOGDISPLAY_SPEC(3)("SPC+===== Make Json File 생성 루프 Create FALSE");
+#endif //SPCPLUS_CREATE
+				}
 				else
 				{
 					break;
@@ -110,6 +131,10 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 		
 	}
 
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+	LOGDISPLAY_SPEC(3)("SPC+===== ThreadProc 소멸");
+#endif //SPCPLUS_CREATE
 	return 0;
 }
 //스래드 생성함수
@@ -119,6 +144,12 @@ void CSpcCreateJSONFileThread::CreateThread()
 
 	//이벤트 객체 생성
 	pEvent_SpcCreateJSONFileThread = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+		LOGDISPLAY_SPEC(3)("SPC+===== pEvent_SpcCreateJSONFileThread CreateEvent <%s> === ", (pEvent_SpcCreateJSONFileThread == NULL) ? "실패":"성공");
+#endif //SPCPLUS_CREATE
+
 	//스래드 생성
 	m_pThread = AfxBeginThread(ThreadProc, this);
 }
@@ -141,6 +172,13 @@ void CSpcCreateJSONFileThread::AddSpcPlusManager(CSpcPlusManager* obj)
 	{
 		CSpcCreateJSONFileThread::gInst()->AddSpcPlus(obj);
 	}
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+	else
+	{
+		LOGDISPLAY_SPEC(3)("SPC+===== Add Spc Manager Failed None Run === ");
+	}
+#endif //SPCPLUS_CREATE
 }
 
 //SPC 객체 추가 함수
@@ -150,6 +188,10 @@ void CSpcCreateJSONFileThread::AddSpcPlus(CSpcPlusManager* obj)
 	{
 		::EnterCriticalSection(&m_csQueue);
 		m_SpcList.push(obj);
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+		LOGDISPLAY_SPEC(3)("SPC+===== SPCPlusMamager Size<%d> === ", m_SpcList.size());
+#endif //SPCPLUS_CREATE
 		::LeaveCriticalSection(&m_csQueue);
 	}
 }

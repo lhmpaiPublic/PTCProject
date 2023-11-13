@@ -912,6 +912,11 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 						//Defect 정보가 0번 카메라, 1번 카메라 정보를 모두 받고 JSON파일를 만들기 전 세팅한다.
 						insp->setIndexSpcInDataDefectInfo();
 
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+						LOGDISPLAY_SPEC(3)("SPC+===== JSON 생성 Insp AddSpcPlusManager === Trigger 받은 시간<%s>", InspInData->getVisionInputTime());
+#endif //SPCPLUS_CREATE
+
 						//JSON 파일 생성을 위한 스래드에 추가한다.
 						CSpcCreateJSONFileThread::AddSpcPlusManager(insp);
 					}
