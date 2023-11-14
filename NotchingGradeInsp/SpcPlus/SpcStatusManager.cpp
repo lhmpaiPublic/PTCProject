@@ -56,17 +56,12 @@ void CSpcStatusManager::makeJSONFile()
 
 		CString strMakeJsonData = "";
 
-		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->makeJSONText_Header());
 		strMakeJsonData += m_SpcHeader->makeJSONText_Header();
-		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsFront());
 		strMakeJsonData += m_SpcRefDs->getJSONText_RefDsFront();
 
-		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcStatusInData->makeJSONText_Status());
 		strMakeJsonData += m_SpcStatusInData->makeJSONText_Status();
 
-		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
 		strMakeJsonData += m_SpcRefDs->getJSONText_RefDsTail();
-		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
 		strMakeJsonData += m_SpcHeader->getJSONText_HeaderTail();
 		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, strMakeJsonData);
 	}
