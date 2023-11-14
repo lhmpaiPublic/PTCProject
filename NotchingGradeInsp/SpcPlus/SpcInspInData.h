@@ -99,7 +99,7 @@ private:
 
 public:
 	static char* MakeInspInDataText_1;
-	static char* MakeInspInDataText_2;
+	static char* MakeInspInDataText_2[2];
 	static char* MakeInspInDataText_3;	
 
 	//Message 종류	

@@ -40,15 +40,24 @@ char* CSpcInspInData::MakeInspInDataText_1 =
 "        \"CELL_FINAL_JUDGE\" : \"%s\",\r\n"
 "        \"IQ_INFO\": [\r\n";
 //+"%s"	 IQ_INFO
-char* CSpcInspInData::MakeInspInDataText_2 =
-"        ],\r\n"
+char* CSpcInspInData::MakeInspInDataText_2[2] =
+{ {"        ],\r\n"
 "        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
 "        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
 "        \"APPEARANCE_REASON_ALL\" : [%s],\r\n"
 "        \"APPEARANCE_REASON_ALL_REAL\" : [%s],\r\n"
 "        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
 "        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
-"        \"DEFECT_INFO\": [\r\n";
+"        \"DEFECT_INFO\": [\r\n"},
+{"        ],\r\n"
+"        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
+"        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
+"        \"APPEARANCE_REASON_ALL\" : [%s],\r\n"
+"        \"APPEARANCE_REASON_ALL_REAL\" : [%s],\r\n"
+"        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
+"        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
+"        \"DEFECT_INFO\": [\r\n"}
+};
 //+"%s"	DEFECT_INFO
 char* CSpcInspInData::MakeInspInDataText_3 =
 "        ]\r\n"
@@ -155,39 +164,43 @@ CString CSpcInspInData::makeJSONText_Insp1()
 }
 CString CSpcInspInData::makeJSONText_Insp2()
 {
+	CString MakeInspInDataText = "";
 	if (m_AppearanceReasonAll != "")
 	{
-		CSpcInspInData::MakeInspInDataText_2 =
-		"        ],\r\n"
-		"        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
-		"        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
-		"        \"APPEARANCE_REASON_ALL\" : [\r\n"
-		"          \"%s\"\r\n"
-		"        ],\r\n"
-		"        \"APPEARANCE_REASON_ALL_REAL\" : [\r\n"
-		"          \"%s\"\r\n"
-		"        ],\r\n"
-		"        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
-		"        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
-		"        \"DEFECT_INFO\": [\r\n";
+		MakeInspInDataText = CSpcInspInData::MakeInspInDataText_2[0];
+		//=
+		//"        ],\r\n"
+		//"        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
+		//"        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
+		//"        \"APPEARANCE_REASON_ALL\" : [\r\n"
+		//"          \"%s\"\r\n"
+		//"        ],\r\n"
+		//"        \"APPEARANCE_REASON_ALL_REAL\" : [\r\n"
+		//"          \"%s\"\r\n"
+		//"        ],\r\n"
+		//"        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
+		//"        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
+		//"        \"DEFECT_INFO\": [\r\n";
 	}
-	else {
-		CSpcInspInData::MakeInspInDataText_2 =
-		"        ],\r\n"
-		"        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
-		"        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
-		"        \"APPEARANCE_REASON_ALL\" : [%s\r\n"
-		"        ],\r\n"
-		"        \"APPEARANCE_REASON_ALL_REAL\" :  [%s\r\n"
-		"        ],\r\n"
-		"        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
-		"        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
-		"        \"DEFECT_INFO\": [\r\n";
+	else 
+	{
+		MakeInspInDataText = CSpcInspInData::MakeInspInDataText_2[1];
+		//=
+		//"        ],\r\n"
+		//"        \"APPEARANCE_JUDGE_RESULT\": \"%s\",\r\n"
+		//"        \"TOTAL_APPEARANCE_NG_COUNT\" : \"%s\",\r\n"
+		//"        \"APPEARANCE_REASON_ALL\" : [%s\r\n"
+		//"        ],\r\n"
+		//"        \"APPEARANCE_REASON_ALL_REAL\" :  [%s\r\n"
+		//"        ],\r\n"
+		//"        \"APPEARANCE_REASON_MAIN\" : \"%s\",\r\n"
+		//"        \"APPEARANCE_REASON_MAIN_REAL\" : \"%s\",\r\n"
+		//"        \"DEFECT_INFO\": [\r\n";
 	}
 
 
 	CString makeJSONText;
-	makeJSONText.Format(MakeInspInDataText_2,
+	makeJSONText.Format(MakeInspInDataText,
 		m_AppearanceJudgeResult,
 		m_TotalAppearanceNgCount,
 		m_AppearanceReasonAll,

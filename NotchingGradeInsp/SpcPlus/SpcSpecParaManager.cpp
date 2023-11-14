@@ -61,10 +61,15 @@ void CSpcSpecParaManager::makeJSONFile()
 		//파일명을 가져온다.
 		CString strJsonFileName = m_SpcSpecParaInData->JsonFileName();
 
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->makeJSONText_Header());
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsFront());
+		CString strMakeJsonData = "";
 
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->makeJSONText_SpecPara1());
+		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->makeJSONText_Header());
+		strMakeJsonData += m_SpcHeader->makeJSONText_Header();
+		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsFront());
+		strMakeJsonData += m_SpcRefDs->getJSONText_RefDsFront();
+
+		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->makeJSONText_SpecPara1());
+		strMakeJsonData += m_SpcSpecParaInData->makeJSONText_SpecPara1();
 
 		for (int idx = 0; idx < (int)m_SpcParaInfo.size(); idx++)
 		{
@@ -77,10 +82,12 @@ void CSpcSpecParaManager::makeJSONFile()
 			{
 				rn = "\r\n";
 			}
-			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcParaInfo[idx]->makeJSONText_ParaInfo() + rn);
+			//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcParaInfo[idx]->makeJSONText_ParaInfo() + rn);
+			strMakeJsonData += (m_SpcParaInfo[idx]->makeJSONText_ParaInfo() + rn);
 		}
 
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->getJSONText_SpecPara2());
+		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->getJSONText_SpecPara2());
+		strMakeJsonData += m_SpcSpecParaInData->getJSONText_SpecPara2();
 
 		for (int idx = 0; idx < (int)m_SpcSpecInfo.size(); idx++)
 		{
@@ -93,13 +100,18 @@ void CSpcSpecParaManager::makeJSONFile()
 			{
 				rn = "\r\n";
 			}
-			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecInfo[idx]->makeJSONText_SpecInfo() + rn);
+			//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecInfo[idx]->makeJSONText_SpecInfo() + rn);
+			strMakeJsonData += (m_SpcSpecInfo[idx]->makeJSONText_SpecInfo() + rn);
 		}
 
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->getJSONText_SpecParaTail());
+		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcSpecParaInData->getJSONText_SpecParaTail());
+		strMakeJsonData += m_SpcSpecParaInData->getJSONText_SpecParaTail();
 
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
-		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
+		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcRefDs->getJSONText_RefDsTail());
+		strMakeJsonData += m_SpcRefDs->getJSONText_RefDsTail();
+		//CGlobalFunc::makeJSONFile(strPath, strJsonFileName, m_SpcHeader->getJSONText_HeaderTail());
+		strMakeJsonData += m_SpcHeader->getJSONText_HeaderTail();
+		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, strMakeJsonData);
 	}
 
 }
