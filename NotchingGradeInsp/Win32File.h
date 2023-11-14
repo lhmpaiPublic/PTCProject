@@ -38,6 +38,7 @@ public:
 	} enumAccessMode ;
 
 	static BOOL Exists( LPCTSTR szFilename, int mode = CWin32File::enExist ) ;
+	static BOOL FolderFileExists(LPCTSTR szFilename);
 	static BOOL ExistFile( LPCTSTR lpszFile, BOOL *pbIsDirectory = NULL ) ;
 
 	static int CreateDirectory( LPCTSTR szPathName, BOOL bIncludedFilename = FALSE ) ;

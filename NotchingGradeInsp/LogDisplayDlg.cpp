@@ -112,7 +112,7 @@ void CLogDisplayDlg::LogDisplayText(CString FileName, const char* format, ...)
 
 	FileName += strData.Left(11);
 
-	if (CWin32File::Exists(StaticCurrentPath) == FALSE)
+	if (CWin32File::FolderFileExists(StaticCurrentPath) == FALSE)
 	{
 		CWin32File::CreateDirectory(StaticCurrentPath);
 	}

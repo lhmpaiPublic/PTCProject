@@ -145,8 +145,12 @@ void CSpcInspManager::makeJSONFile()
 		CString strPath = m_SpcInspInData->JsonFilePath();
 		//파일명을 가져온다.
 		CString strJsonFileName = m_SpcInspInData->JsonFileName();
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+		LOGDISPLAY_SPEC(3)("SPC PRINT INFO <%s>/<%s> ", strPath, strJsonFileName);
+#endif //SPCPLUS_CREATE
 
-		if (CWin32File::Exists(strPath + CString("\\") + strJsonFileName) == FALSE)
+		if (CWin32File::FolderFileExists(strPath + CString("\\") + strJsonFileName) == FALSE)
 		{
 			CString strMakeJsonData = "";
 
@@ -208,7 +212,7 @@ void CSpcInspManager::makeJSONFile()
 	{
 	
 	//SPC+ 정보 출력 로그
-		LOGDISPLAY_SPEC(3)("SPC+=====CSpcInspManager NONE JSON ");
+		LOGDISPLAY_SPEC(3)("SPC+=====CSpcInspManager NONE RUN ");
 	}
 #endif //SPCPLUS_CREATE
 

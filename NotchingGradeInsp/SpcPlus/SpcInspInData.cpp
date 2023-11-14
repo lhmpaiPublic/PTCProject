@@ -201,7 +201,7 @@ CString CSpcInspInData::getSONText_InspTail()
 CString CSpcInspInData::JsonFilePath()
 {
 	CString path = SPCINFO->getInspPath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
-	if (CWin32File::Exists(path) == FALSE)
+	if (CWin32File::FolderFileExists(path) == FALSE)
 	{
 		CWin32File::CreateDirectory(path);
 	}
@@ -222,7 +222,7 @@ CString CSpcInspInData::ImageFilePath()
 	{
 		path = SPCINFO->getInspNgImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 	}
-	if (CWin32File::Exists(path) == FALSE)
+	if (CWin32File::FolderFileExists(path) == FALSE)
 	{
 		CWin32File::CreateDirectory(path);
 	}

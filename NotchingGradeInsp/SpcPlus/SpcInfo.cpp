@@ -49,7 +49,7 @@ void CSpcInfo::LoadSpcPlusInfo()
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE			
 	//SPC+ 정보 출력 로그
-	BOOL bExist = CWin32File::Exists(szProfilePath);
+	BOOL bExist = CWin32File::FolderFileExists(szProfilePath);
 	LOGDISPLAY_SPEC(3)("SPC+=====정보파일 읽기<%s><%s>", szProfilePath, (bExist) ? "성공" : "실패");
 #endif //SPCPLUS_CREATE
 

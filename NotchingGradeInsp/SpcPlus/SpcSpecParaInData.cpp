@@ -95,7 +95,7 @@ CString CSpcSpecParaInData::getJSONText_SpecParaTail()
 CString CSpcSpecParaInData::JsonFilePath()
 {
 	CString path = SPCINFO->getSpecParaPath();
-	if (CWin32File::Exists(path) == FALSE)
+	if (CWin32File::FolderFileExists(path) == FALSE)
 	{
 		CWin32File::CreateDirectory(path);
 	}

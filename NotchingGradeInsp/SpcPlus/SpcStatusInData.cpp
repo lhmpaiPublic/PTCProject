@@ -83,7 +83,7 @@ CString CSpcStatusInData::makeJSONText_Status()
 CString CSpcStatusInData::JsonFilePath()
 {
 	CString path = SPCINFO->getStatusPath()+ m_CreateTime.Mid(0, 6);
-	if (CWin32File::Exists(path) == FALSE)
+	if (CWin32File::FolderFileExists(path) == FALSE)
 	{
 		CWin32File::CreateDirectory(path);
 	}

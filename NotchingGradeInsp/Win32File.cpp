@@ -420,7 +420,12 @@ int CWin32File::CreateDirectory( LPCTSTR szDirName, BOOL bIncludedFilename /*= F
 
 BOOL CWin32File::Exists( LPCTSTR szFilename, int mode /*= CWin32File::enExist*/ ) 
 {
-	return ( _access( szFilename, mode ) == 0 ) ;
+	return (_access( szFilename, mode ) == 0 ) ;
+}
+
+BOOL CWin32File::FolderFileExists(LPCTSTR szFilename)
+{
+	return (_taccess(szFilename, CWin32File::enExist) != -1);
 }
 
 

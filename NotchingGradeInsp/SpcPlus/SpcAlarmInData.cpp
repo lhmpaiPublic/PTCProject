@@ -106,7 +106,7 @@ CString CSpcAlarmInData::makeJSONText_Alarm()
 CString CSpcAlarmInData::JsonFilePath()
 {
 	CString path = SPCINFO->getAlarmPath() + m_CreateTime.Mid(0, 6);
-	if (CWin32File::Exists(path) == FALSE)
+	if (CWin32File::FolderFileExists(path) == FALSE)
 	{
 		CWin32File::CreateDirectory(path);
 	}
