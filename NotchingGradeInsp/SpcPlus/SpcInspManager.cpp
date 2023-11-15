@@ -145,66 +145,60 @@ void CSpcInspManager::makeJSONFile()
 		CString strPath = m_SpcInspInData->JsonFilePath();
 		//파일명을 가져온다.
 		CString strJsonFileName = m_SpcInspInData->JsonFileName();
-//SPC 객체 소스에서 컴파일 여부 결정
+		//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
 		LOGDISPLAY_SPEC(3)("SPC PRINT INFO <%s>/<%s> ", strPath, strJsonFileName);
 #endif //SPCPLUS_CREATE
 
-		if (CWin32File::FolderFileExists(strPath + CString("\\") + strJsonFileName) == FALSE)
+		CString strMakeJsonData = "";
+
+		strMakeJsonData += m_SpcHeader->makeJSONText_Header();
+		strMakeJsonData += m_SpcRefDs->getJSONText_RefDsFront();
+
+		strMakeJsonData += m_SpcInspInData->makeJSONText_Insp1();
+
+		for (int idx = 0; idx < (int)m_SpcInDataIqInfo.size(); idx++)
 		{
-			CString strMakeJsonData = "";
-
-			strMakeJsonData += m_SpcHeader->makeJSONText_Header();
-			strMakeJsonData += m_SpcRefDs->getJSONText_RefDsFront();
-
-			strMakeJsonData += m_SpcInspInData->makeJSONText_Insp1();
-
-			for (int idx = 0; idx < (int)m_SpcInDataIqInfo.size(); idx++)
+			CString rn = "";
+			if (idx < (m_SpcInDataIqInfo.size() - 1))
 			{
-				CString rn = "";
-				if (idx < (m_SpcInDataIqInfo.size() - 1))
-				{
-					rn = ",\r\n";
-				}
-				else
-				{
-					rn = "\r\n";
-				}
-
-				strMakeJsonData += (m_SpcInDataIqInfo[idx]->makeJSONText_IqInfo() + rn);
+				rn = ",\r\n";
+			}
+			else
+			{
+				rn = "\r\n";
 			}
 
-			strMakeJsonData += m_SpcInspInData->makeJSONText_Insp2();
+			strMakeJsonData += (m_SpcInDataIqInfo[idx]->makeJSONText_IqInfo() + rn);
+		}
 
-			for (int idx = 0; idx < (int)m_SpcInDataDefectInfo.size(); idx++)
+		strMakeJsonData += m_SpcInspInData->makeJSONText_Insp2();
+
+		for (int idx = 0; idx < (int)m_SpcInDataDefectInfo.size(); idx++)
+		{
+			CString rn = "";
+			//인덱스가 데이터 사이즈보다 작을 때는 ,(ah
+			if (idx < (m_SpcInDataDefectInfo.size() - 1))
 			{
-				CString rn = "";
-				//인덱스가 데이터 사이즈보다 작을 때는 ,(ah
-				if (idx < (m_SpcInDataDefectInfo.size() - 1))
-				{
-					rn = ",\r\n";
-				}
-				else
-				{
-					rn = "\r\n";
-				}
-				strMakeJsonData += (m_SpcInDataDefectInfo[idx]->makeJSONText_DefectInfo() + rn);
+				rn = ",\r\n";
 			}
+			else
+			{
+				rn = "\r\n";
+			}
+			strMakeJsonData += (m_SpcInDataDefectInfo[idx]->makeJSONText_DefectInfo() + rn);
+		}
 
-			strMakeJsonData += m_SpcInspInData->getSONText_InspTail();
+		strMakeJsonData += m_SpcInspInData->getSONText_InspTail();
 
-			strMakeJsonData += m_SpcRefDs->getJSONText_RefDsTail();
-			strMakeJsonData += m_SpcHeader->getJSONText_HeaderTail();
-			CGlobalFunc::makeJSONFile(strPath, strJsonFileName, strMakeJsonData);
-//SPC 객체 소스에서 컴파일 여부 결정
+		strMakeJsonData += m_SpcRefDs->getJSONText_RefDsTail();
+		strMakeJsonData += m_SpcHeader->getJSONText_HeaderTail();
+		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, strMakeJsonData);
+		//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
-			LOGDISPLAY_SPEC(3)("SPC PRINT : <%s>/<%s> ", strPath, strJsonFileName);
+		LOGDISPLAY_SPEC(3)("SPC PRINT : <%s>/<%s> ", strPath, strJsonFileName);
 #endif //SPCPLUS_CREATE
-		}
-		else
-		{
-			LOGDISPLAY_SPEC(3)("SPC JSON FILE Exist -- Error ");
-		}
+
 	}
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE		
