@@ -23,7 +23,7 @@ CFrameInfo::CFrameInfo(void)
 CFrameInfo::~CFrameInfo(void)
 {
 	if( m_pImagePtr != NULL ){
-		delete []m_pImagePtr ;
+		delete m_pImagePtr ;
 		m_pImagePtr = NULL ;
 	}
 }
