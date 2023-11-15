@@ -295,6 +295,9 @@ int CNotchingGradeInspApp::ExitInstance()
 	delete objSpcInfo;
 #endif //SPCPLUS_CREATE
 
+	//사용한 Image 메모리풀 해제
+	FrameImagePtr::ReleasePool();
+
 	return CWinAppEx::ExitInstance();
 }
 

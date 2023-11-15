@@ -94,11 +94,10 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if ( pQueueCtrl != NULL )
 		{
 			//이미지 저장 버퍼 생성
-			BYTE* pImg = new BYTE[nWidth * nHeight + 1];
-			memset(pImg, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
-			CopyMemory(pImg, pData, sizeof(BYTE) * nWidth * nHeight);
+			FrameImagePtr* pImg = new FrameImagePtr();
+			memset(pImg->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+			CopyMemory(pImg->m_pImagePtr, pData, sizeof(BYTE) * nWidth * nHeight);
 
-			BOOL bSend = FALSE;
 			//프레임 정보 객체 생성
 			CFrameInfo* pFrmInfo; // 22.01.11 Ahn Modify ( pInfo -> pFrmInfo )
 			pFrmInfo = new CFrameInfo;
@@ -130,11 +129,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				//이미지 Top Bottom 모두 받으면 TabFind 스래드가 실행하도록 이벤트를 발생한다.
 				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 
-				bSend = TRUE;
 
-				if (bSend == FALSE) {
-					delete[]pImg;
-				}
 				bImageExit = true;
 			}
 		}

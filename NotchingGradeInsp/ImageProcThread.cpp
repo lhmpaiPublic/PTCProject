@@ -226,8 +226,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 				AprData.m_NowLotData.m_nFrameCount = pFrmInfo_Top->m_nFrameCount;
 
-				BYTE* pHeadPtr = pFrmInfo_Top->GetImagePtr();
-				BYTE* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
+				FrameImagePtr* pHeadPtr = pFrmInfo_Top->GetImagePtr();
+				FrameImagePtr* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
 
 
 				//처리시간 체크 객체 생성 및 시간 진행
@@ -247,7 +247,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 					//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
-					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
+					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr->m_pImagePtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
 
 					// 22.05.09 Ahn Add End
 					//Tab 정보를 저장할 vector 임시 객체
@@ -266,7 +266,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//이미지 프로세싱을 위한 클래스 
 					//이미지 Tab 정보에서 Tab을 그룹으로 나누기
 					//PET Check TOP
-					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
+					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr->m_pImagePtr, pTailPtr->m_pImagePtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
 
 
 					//Tab 정보 크기, Tab 정보가 없다면 에러처리
@@ -281,14 +281,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						AprData.SaveDebugLog_Format(_T(">>>>>> Miss Tab Vec [T/B:%d][F/V:%d] : Size=%d, QueueCount=%d, FrameCountTop=%d, FrameCountBtm=%d "), 
 							pFrmInfo_Top->m_nTabId_CntBoard, pFrmInfo_Top->nTabNo, nVecSize, pCntQueueInCtrl->GetSize(), pFrmInfo_Top->m_nFrameCount, pFrmInfo_Bottom->m_nFrameCount );
 					}
-					nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
+					nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
 
 
 					// PET Check BOTTOM
 					CImageProcess::VEC_PET_INFO* pvstPetInfoBtm = new CImageProcess::VEC_PET_INFO;
 					pvstPetInfoBtm->clear();
 
-					BOOL bIsPET_Btm = CImageProcess::FindPetFilm(pTailPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, pvstPetInfoBtm, CAM_POS_BOTTOM);
+					BOOL bIsPET_Btm = CImageProcess::FindPetFilm(pTailPtr->m_pImagePtr, nWidth, nHeight, *AprData.m_pRecipeInfo, pvstPetInfoBtm, CAM_POS_BOTTOM);
 					pFrmInfo_Bottom->m_bIsPET = bIsPET_Btm;
 
 
@@ -750,10 +750,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 	if (RsvTabInfo.pImgPtr != NULL) {
-		delete[] RsvTabInfo.pImgPtr;
+		delete RsvTabInfo.pImgPtr;
 	}
 	if (RsvTabInfo.pImgBtmPtr != NULL) {
-		delete[] RsvTabInfo.pImgBtmPtr;
+		delete RsvTabInfo.pImgBtmPtr;
 	}
 
 	AfxEndThread(0);

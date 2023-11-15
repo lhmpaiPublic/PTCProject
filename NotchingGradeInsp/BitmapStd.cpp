@@ -2268,9 +2268,9 @@ int CBitmapStd::SetJpegQuality( int nJpegQuality )
 }
 
 
-void CBitmapStd::SetImage( int xsize, int ysize, BYTE* pImage, BOOL bRB_Revers ) 
+void CBitmapStd::SetImage( int xsize, int ysize, const BYTE* pImage, BOOL bRB_Revers ) 
 {
-	BYTE* ps = pImage ;
+	BYTE* ps = (BYTE*)pImage ;
 	BYTE* pd ;
 	BITMAPINFO	*pbmi = NULL ;
 

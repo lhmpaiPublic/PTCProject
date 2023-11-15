@@ -155,7 +155,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -451,6 +451,8 @@
     <ClInclude Include="CRecipeTableCtrl.h" />
     <ClInclude Include="GlobalFunc.h" />
     <ClInclude Include="Light232.h" />
+    <ClInclude Include="MemoryMgr\FrameImagePtr.h" />
+    <ClInclude Include="MemoryMgr\MemoryPool.h" />
     <ClInclude Include="PlcBase.h" />
     <ClInclude Include="RecipImportDlg.h" />
     <ClInclude Include="CResultDirectoryDlg.h" />

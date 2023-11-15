@@ -94,7 +94,7 @@ public :
 	int GetJpegQuality( void ) ;
 	int SetJpegQuality( int nJpegQuality ) ;
 	int	m_ReverseFlag ;			//반전플래그(0:통상/1:상하반전/2:좌우반전/3:상하좌우반전)
-	void SetImage( int xsize, int ysize, BYTE* pImage, BOOL bRB_Revers = FALSE ) ;
+	void SetImage( int xsize, int ysize, const BYTE* pImage, BOOL bRB_Revers = FALSE ) ;
 
 	// 23.02.03 Ahn Add Start
 	int CopyImgBit8toBit24(CBitmapStd* pOrgImg);

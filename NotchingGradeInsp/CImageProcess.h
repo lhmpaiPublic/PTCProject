@@ -98,8 +98,8 @@ public:
 // 21.08.31 Ahn Add Start
 //	int nWidth;
 	int nImageLength;
-	BYTE* pImgPtr;
-	BYTE* pImgBtmPtr;
+	FrameImagePtr* pImgPtr;
+	FrameImagePtr* pImgBtmPtr;
 // 21.08.31 Ahn Add End
 };
 
@@ -368,14 +368,14 @@ public:
 	static int FindTabLevel_FromProjection(int* pnPrjData, int nLength, int nCompWidth); // CompWidth으로 좌우 비교하여 차이가 가장 많이나는 위치를 찾는 함수.
 
 	// 22.04.13 Ahn Add Start
-	static int FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel, bool bLogOk = false);
+	static int FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel, bool bLogOk = false);
 	// 23.02.24 Ahn Modify Start
 	//static int FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTargetBright, int nMode);
 	static int FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTargetBright, int nMode, BOOL bFindDark = FALSE, bool bLogOk = false);
 	// 23.02.24 Ahn Modify End
 	// 22.04.13 Ahn Add End
 
-	static int FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel, bool bLogOk = false);
+	static int FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel, bool bLogOk = false);
 	static int FindLevelBottom_Negative(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int* pnLevel, int nFindDir );
 	// 23.02.24 Ahn Add Start
 	static int FindLevelBottom_BrightRoll(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int* pnLevel, int nFindDir);
@@ -411,9 +411,9 @@ public:
 	static int ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 23.02.10 Ahn Add End
 
-	static int SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CRect rcCrop, CString strFilePath, CString strFileName);
+	static int SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, CRect rcCrop, CString strFilePath, CString strFileName);
 	static int CopyPartImage(BYTE* pTarImgPtr, BYTE* pSrcImgPtr, int nWidth, int nHeight, CRect rcCopy);
-	static int ResizeImage(BYTE* pImgPtr, BYTE* pResizePtr, int nWidth, int nHeight, int nZoomOut);
+	static int ResizeImage(const BYTE* pImgPtr, BYTE* pResizePtr, int nWidth, int nHeight, int nZoomOut);
 
 	// 23.01.20 Ahn Modify Start
 	//static int GetBoundaryRoundInfo_ByBriDist( BYTE* pOrgImg, BYTE *pRsltImg, int nWidth, int nHeight, CRect rcRound, int nThreshold, int nTopCutPos,  CImageProcess::VEC_ROUND_INFO* pVecRoundInfo, int nMode, int nFindDir = en_FindFromRight);
@@ -424,7 +424,7 @@ public:
 	// 22.01.17 Ahn Add End
 
 	// 22.05.09 Ahn Add Start
-	static int GetBoundaryOfElectorde(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nFindDir );
+	static int GetBoundaryOfElectorde(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nFindDir );
 	static int GetBoundaryOfElectordeBottom(BYTE* pImgPtr, int nWidth, int nHeight, int *pnLevel, CRecipeInfo* pRecipeInfo );
 	// 22.05.09 Ahn Add End
 
@@ -448,7 +448,7 @@ public:
 	// Tab 분할용 함수 정의 
 
 	static int DivideSectionBetweenThreshold(int* pnPrjData, int nPrjLength, int nThresMin, int nThresMax, int nMinLength, VEC_SECTOR* pVecSector);
-	static int FindTabPos(BYTE* pImagePtr, int nWidth, int nHeight, int nStartPos, int nEndPos, int nThresMin, int nThresMax, VEC_SECTOR* pVecSector);
+	static int FindTabPos(const BYTE* pImagePtr, int nWidth, int nHeight, int nStartPos, int nEndPos, int nThresMin, int nThresMax, VEC_SECTOR* pVecSector);
 	static int CombineTabSector(VEC_SECTOR* pVecSector, CRecipeInfo& RecipeInfo);
 	static int ConvertSectToTabInfo(VEC_SECTOR vecSector, _VEC_TAB_INFO* VecTabInfo, int nFrameCount, CTabCondition tabCond);
 
@@ -458,9 +458,9 @@ public:
 
 	// 22.11.18 Ahn Modify Start
 	//static int DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int *pnLevel, CRecipeInfo& recipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* VecTabInfo );
-	static int DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int* pnLevel, CRecipeInfo& recipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* VecTabInfo, int nFrameCount);
+	static int DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYTE* pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int* pnLevel, CRecipeInfo& recipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* VecTabInfo, int nFrameCount);
 	// 22.11.18 Ahn Modify End
-	static int DivisionTab_byFixSize(BYTE* pImgPtr, BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, BOOL bIsPET, _VEC_TAB_INFO* VecTabInfo);
+	static int DivisionTab_byFixSize(const BYTE* pImgPtr, const BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, BOOL bIsPET, _VEC_TAB_INFO* VecTabInfo);
 
 
 	// Analyze Image
@@ -480,11 +480,11 @@ public:
 	// 23.01.20 Ahn Add End
 
 	// 23.02.16 Ahn Add Start
-	static double	GetIqSharpnessValue(BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint);
-	static int		GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint);
+	static double	GetIqSharpnessValue(const BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint);
+	static int		GetBrightAverage(const BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint);
 	// 23.02.16 Ahn Add End
 
-	static BOOL	FindPetFilm(BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos);
+	static BOOL	FindPetFilm(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos);
 
 };
 

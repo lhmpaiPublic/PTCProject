@@ -2931,7 +2931,7 @@ int CImageProcess::EdgeDetectImageToArray(BYTE* pImgPtr, int* pnResltArr, int nW
 	return 0;
 }
 
-int CImageProcess::SaveCropImage(BYTE* pImgPtr,int nWidth, int nHeight, CRect rcCrop, CString strFilePath, CString strFileName )
+int CImageProcess::SaveCropImage(const BYTE* pImgPtr,int nWidth, int nHeight, CRect rcCrop, CString strFilePath, CString strFileName )
 {
 	ASSERT(pImgPtr);
 
@@ -2980,7 +2980,7 @@ int CImageProcess::SaveCropImage(BYTE* pImgPtr,int nWidth, int nHeight, CRect rc
 	int cy = 0 ;
 	//for (int y = nStartY, cy = 0; y < nEndY; y++, cy++) {
 	for (int y = ( nEndY - 1 ), cy = 0; y > nStartY; y--, cy++) {
-		BYTE* pLinePtr = pImgPtr + (nWidth * y);
+		BYTE* pLinePtr = (BYTE *)pImgPtr + (nWidth * y);
 		BYTE* pCropLinePtr = pCropPtr +(nCropW * cy);
 		for (int x = nStartX, cx = 0 ; x < nEndX; x++, cx++ ) {
 			*(pCropLinePtr + cx) = *(pLinePtr + x) ;
@@ -4494,7 +4494,7 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 // 22.04.13 Ahn Add Start
 
 bool bOkSampleLog = false;
-int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel, bool bLogOk)
+int CImageProcess::FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel, bool bLogOk)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pVecSector);
@@ -4618,7 +4618,7 @@ int CImageProcess::FindTabLevel_Simple(BYTE* pImgPtr, int nWidth, int nHeight, i
 // 22.04.13 Ahn Add End
 
 // 음극 Tab을 찾고 Tab 중심에서 검사 라인을 유추함.
-int CImageProcess::FindTab_Negative(BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel , bool bLogOk)
+int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel , bool bLogOk)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pVecSector);
@@ -5133,7 +5133,7 @@ int CImageProcess::FindTabPos_New(BYTE* pImagePtr, int nWidth, int nHeight, int 
 // 23.01.20 Ahn Modify End
 
 // Image의 주어진 rect 위치의 Projection값을 얻어와 Threshold Min~Max 사이의 연속된 Vector들을 얻어오는 함수.
-int CImageProcess::FindTabPos(BYTE* pImagePtr, int nWidth, int nHeight, int nStartPos, int nEndPos, int nThresMin, int nThresMax, VEC_SECTOR* pVecSector)
+int CImageProcess::FindTabPos(const BYTE* pImagePtr, int nWidth, int nHeight, int nStartPos, int nEndPos, int nThresMin, int nThresMax, VEC_SECTOR* pVecSector)
 {
 	CRect rect;
 	rect.left = nStartPos;
@@ -6148,7 +6148,7 @@ int CImageProcess::BlockLink(CImageProcess::_VEC_BLOCK* pBlockInfo, CRecipeInfo*
 	return 0;
 }
 
-int CImageProcess::ResizeImage(BYTE* pImgPtr, BYTE* pResizePtr, int nWidth, int nHeight, int nZoomOut)
+int CImageProcess::ResizeImage(const BYTE* pImgPtr, BYTE* pResizePtr, int nWidth, int nHeight, int nZoomOut)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pResizePtr);
@@ -6166,7 +6166,7 @@ int CImageProcess::ResizeImage(BYTE* pImgPtr, BYTE* pResizePtr, int nWidth, int 
 	for (y = 0; y < nReHeight ; y++) {
 
 		pLinePtr = pResizePtr + (nReWidth * y);
-		pOrgLinePtr = pImgPtr + (nWidth * (y * nMagnif));
+		pOrgLinePtr = (BYTE*)pImgPtr + (nWidth * (y * nMagnif));
 
 		for (x = 0; x < nReWidth ; x++) {
 			nSum = 0;
@@ -6238,7 +6238,7 @@ int CImageProcess::FindTabHeadCeramicBoundary(BYTE *pImagePtr, int nWidth, int n
 }
 
 static int Tab_byFixSizeCount = 0;
-int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, BOOL bIsPET, _VEC_TAB_INFO* pVecTabInfo)
+int CImageProcess::DivisionTab_byFixSize(const BYTE* pImgPtr, const BYTE* pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, BOOL bIsPET, _VEC_TAB_INFO* pVecTabInfo)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pVecTabInfo);
@@ -6261,12 +6261,12 @@ int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nW
 		tabInfo.m_bErrorFlag = TRUE;
 		tabInfo.m_bIsPET = bIsPET;
 		tabInfo.nImageLength = nFixSize;
-		tabInfo.pImgPtr = new BYTE[nWidth * nFixSize + 1];
-		memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
-		CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
-		tabInfo.pImgBtmPtr = new BYTE[nWidth * nFixSize + 1];
-		memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
-		CopyMemory(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
+		tabInfo.pImgPtr = new FrameImagePtr();
+		memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
+		CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
+		tabInfo.pImgBtmPtr = new FrameImagePtr();
+		memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
+		CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
 		nLastSavePos += nFixSize ;
 
 		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::DivisionTab_byFixSize-TabInfopush-count<%d> : ERRORFLAG",
@@ -6284,7 +6284,7 @@ int CImageProcess::DivisionTab_byFixSize(BYTE* pImgPtr, BYTE* pImgBtmPtr, int nW
 }
 
 // 22.11.18 Ahn Modify Start
-int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int *pnLevel, CRecipeInfo& RecipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* pVecTabInfo, int nFrameCount)
+int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int *pnLevel, CRecipeInfo& RecipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* pVecTabInfo, int nFrameCount)
 // 22.11.18 Ahn Modify End
 {
 	int nRet = 0;
@@ -6401,8 +6401,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	{
 		// 지난 Frame에서 보내지 못하고 남은 Image가 있음.
 		CTabInfo tabInfo;		
-		BYTE *pTempPtr = pResvTabInfo->pImgPtr;
-		BYTE *pTempBtmPtr = pResvTabInfo->pImgBtmPtr;
+		BYTE *pTempPtr = pResvTabInfo->pImgPtr->m_pImagePtr;
+		BYTE *pTempBtmPtr = pResvTabInfo->pImgBtmPtr->m_pImagePtr;
 
 		// 예약 Tab과 첫번째 Tab이 붙은 Tab인가??
 		// 예약 정보에 Tab이 존재하는가?
@@ -6476,16 +6476,16 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag );
 
-			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
-			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
-			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
-			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			tabInfo.pImgPtr = new FrameImagePtr();
+			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			tabInfo.pImgBtmPtr = new FrameImagePtr();
+			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount ;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 			// 22.11.18 Ahn Add End
-			CopyMemory(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			CopyMemory(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			nLastSavePos = 0 ; 
 
 			break;
@@ -6502,20 +6502,20 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag);
 
-			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
-			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
-			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
-			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
+			tabInfo.pImgPtr = new FrameImagePtr();
+			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
+			tabInfo.pImgBtmPtr = new FrameImagePtr();
+			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
 
 			// 22.11.18 Ahn Add End
-			CopyMemory(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			CopyMemory(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			CopyMemory(tabInfo.pImgPtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
-			CopyMemory(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr->m_pImagePtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
 
 			break;
@@ -6577,14 +6577,14 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 			}
 			// 22.03.30 Ahn Add End
 			tabInfo.nImageLength = nSendLength + pResvTabInfo->nImageLength;
-			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
-			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
-			CopyMemory(tabInfo.pImgPtr, pResvTabInfo->pImgPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			CopyMemory(tabInfo.pImgPtr + (nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
-			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
-			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
-			CopyMemory(tabInfo.pImgBtmPtr, pResvTabInfo->pImgBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-			CopyMemory(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
+			tabInfo.pImgPtr = new FrameImagePtr();
+			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pResvTabInfo->pImgPtr->m_pImagePtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
+			tabInfo.pImgBtmPtr = new FrameImagePtr();
+			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pResvTabInfo->pImgBtmPtr->m_pImagePtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
 
 			// 22.11.18 Ahn Add Start
@@ -6657,13 +6657,13 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 
 		if (pResvTabInfo->pImgPtr != NULL)
 		{
-			delete[]pResvTabInfo->pImgPtr;
+			delete pResvTabInfo->pImgPtr;
 			pResvTabInfo->pImgPtr = NULL;
 
 		}
 		if (pResvTabInfo->pImgBtmPtr != NULL)
 		{
-			delete[]pResvTabInfo->pImgBtmPtr;
+			delete pResvTabInfo->pImgBtmPtr;
 			pResvTabInfo->pImgBtmPtr = NULL;
 		}
 		pResvTabInfo->ResetData();
@@ -6743,23 +6743,23 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				int nBackupSize = tabInfo.nImageLength -( (tabInfo.nImageLength + nLastSavePos) - nHeight ) ;
 				*pResvTabInfo = tabInfo;
 				if (pResvTabInfo->pImgPtr != NULL) {
-					delete []pResvTabInfo->pImgPtr;
+					delete pResvTabInfo->pImgPtr;
 				}
 				if (pResvTabInfo->pImgBtmPtr != NULL) {
-					delete[]pResvTabInfo->pImgBtmPtr;
+					delete pResvTabInfo->pImgBtmPtr;
 				}
-				pResvTabInfo->pImgPtr = new BYTE[nWidth * nBackupSize + 1];
-				memset(pResvTabInfo->pImgPtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
-				pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nBackupSize + 1];
-				memset(pResvTabInfo->pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
+				pResvTabInfo->pImgPtr = new FrameImagePtr();
+				memset(pResvTabInfo->pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
+				pResvTabInfo->pImgBtmPtr = new FrameImagePtr();
+				memset(pResvTabInfo->pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
 				pResvTabInfo->nImageLength = nBackupSize;
 
 				// 22.11.18 Ahn Add Start
 				pResvTabInfo->nFrameCount = nFrameCount;
 				pResvTabInfo->nTabStartPosInFrame = nLastSavePos;
 				// 22.11.18 Ahn Add End 
-				CopyMemory(pResvTabInfo->pImgPtr, pImgPtr + ( nWidth * nLastSavePos ) , sizeof(BYTE) * nWidth * nBackupSize);
-				CopyMemory(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nBackupSize);
+				CopyMemory(pResvTabInfo->pImgPtr->m_pImagePtr, pImgPtr + ( nWidth * nLastSavePos ) , sizeof(BYTE) * nWidth * nBackupSize);
+				CopyMemory(pResvTabInfo->pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nBackupSize);
 
 				//DEBUG_LOG.txt
 				AprData.SaveDebugLog_Format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** 보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 처리종료 처리번호<%d/%d>"), nCase, i, nSize);
@@ -6767,12 +6767,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 				return 0;
 			}
 
-			tabInfo.pImgPtr = new BYTE[tabInfo.nImageLength * nWidth + 1];
-			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* tabInfo.nImageLength* nWidth + 1);
-			CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
-			tabInfo.pImgBtmPtr = new BYTE[tabInfo.nImageLength * nWidth + 1];
-			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * tabInfo.nImageLength * nWidth + 1);
-			CopyMemory(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
+			tabInfo.pImgPtr = new FrameImagePtr();
+			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* tabInfo.nImageLength* nWidth + 1);
+			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
+			tabInfo.pImgBtmPtr = new FrameImagePtr();
+			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * tabInfo.nImageLength * nWidth + 1);
+			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
 
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = nFrameCount ;
@@ -6817,10 +6817,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 	int nLeftSize = nHeight - nLastSavePos;
 	if ( nLeftSize > 0 )
 	{
-		pResvTabInfo->pImgPtr = new BYTE[nWidth * nLeftSize + 1];
-		memset(pResvTabInfo->pImgPtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
-		pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nLeftSize + 1];
-		memset(pResvTabInfo->pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
+		pResvTabInfo->pImgPtr = new FrameImagePtr();
+		memset(pResvTabInfo->pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
+		pResvTabInfo->pImgBtmPtr = new FrameImagePtr();
+		memset(pResvTabInfo->pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
 		pResvTabInfo->nImageLength = nLeftSize;
 
 		// 22.11.18 Ahn Add Start
@@ -6828,8 +6828,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(BYTE* pImgPtr, BYTE *pImgBtmPt
 		pResvTabInfo->nTabStartPosInFrame = nLastSavePos ;
 		// 22.11.18 Ahn Add End 
 
-		CopyMemory(pResvTabInfo->pImgPtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
-		CopyMemory(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
+		CopyMemory(pResvTabInfo->pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
+		CopyMemory(pResvTabInfo->pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
 
 		AprData.SaveDebugLog_Format( _T("<DivisionTab_FromImageToTabInfo> CopyMemory pResvTabInfo->pImgPtr") );
 
@@ -9071,7 +9071,7 @@ int CImageProcess::GetMaxImage(BYTE* pResultPtr, BYTE* pSrcPtr, BYTE* pTarPtr, i
 // 22.05.30 Ahn Add End
 
 // 22.05.09 Ahn Add Start
-int CImageProcess::GetBoundaryOfElectorde(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nFindDir)
+int CImageProcess::GetBoundaryOfElectorde(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nFindDir)
 {
 	CRect rect;
 	int nPrjWidth = 2000;
@@ -9527,7 +9527,7 @@ int CImageProcess::EdgeDetectImageToBoth_BaseBright(BYTE* pImgPtr, BYTE* pProcIm
 // 23.01.20 Ahn Add End
 
 // 23.02.16 Ahn Add Start
-double CImageProcess::GetIqSharpnessValue(BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint)
+double CImageProcess::GetIqSharpnessValue(const BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint)
 {
 	double dRet = 0.0;
 
@@ -9544,7 +9544,7 @@ double CImageProcess::GetIqSharpnessValue(BYTE* pOrgImg, int nWidth, int nHeight
 
 	double dMax1, dMax2 = 0 , dDc = 0 ;
 	for (int y = nStartY; y < nEndY; y++) {
-		BYTE* pLinePtr = pOrgImg + (nWidth * y) ;
+		BYTE* pLinePtr = (BYTE *)pOrgImg + (nWidth * y) ;
 		dMax1 = 0 ;
 		for (int x = nStartX ; x < nEndX; x++) {
 			BYTE btFront = *(pLinePtr + x );
@@ -9560,7 +9560,7 @@ double CImageProcess::GetIqSharpnessValue(BYTE* pOrgImg, int nWidth, int nHeight
 
 	return dRet;
 }
-int	CImageProcess::GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint)
+int	CImageProcess::GetBrightAverage(const BYTE* pOrgImg, int nWidth, int nHeight, CPoint cpStartPoint)
 {
 	int nRet = 0; 
 
@@ -9578,7 +9578,7 @@ int	CImageProcess::GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoi
 	int nSum = 0 ;
 	int nCount = 0 ;
 	for (int y = nStartY; y < nEndY; y++) {
-		BYTE* pLinePtr = pOrgImg + (nWidth * y);
+		BYTE* pLinePtr = (BYTE *)pOrgImg + (nWidth * y);
 		for (int x = nStartX; x < nEndX; x++) {
 			nSum += (int)*(pLinePtr + x) ;
 			nCount++;
@@ -9594,7 +9594,7 @@ int	CImageProcess::GetBrightAverage(BYTE* pOrgImg, int nWidth, int nHeight, CPoi
 // 23.02.16 Ahn Add End 
 
 
-BOOL CImageProcess::FindPetFilm(BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos)
+BOOL CImageProcess::FindPetFilm(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos)
 {
 	if (RecipeInfo.bDisablePET == TRUE)
 	{
@@ -9664,7 +9664,7 @@ BOOL CImageProcess::FindPetFilm(BYTE* pOrgImg, int nImageWidth, int nImageHeight
 			int nSum = 0;
 			int nCount = 0;
 			for (int y = nStartY; y < nEndY; y++) {
-				BYTE* pLinePtr = pOrgImg + (nImageWidth * y);
+				BYTE* pLinePtr = (BYTE *)pOrgImg + (nImageWidth * y);
 				for (int x = nStartX; x < nEndX; x++) {
 					nSum += (int)*(pLinePtr + x);
 					nCount++;

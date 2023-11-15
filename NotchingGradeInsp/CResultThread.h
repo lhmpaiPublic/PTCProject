@@ -60,9 +60,9 @@ public :
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
 	//SPC+ DefectInfo 객체 추가
-	static void SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl *pQueueCtrl, CDefectQueueCtrl* pDefectQueue, CSpcInspManager* insp);
+	static void SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl *pQueueCtrl, CDefectQueueCtrl* pDefectQueue, CSpcInspManager* insp);
 #else
-	static void SaveCropImage(BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl* pQueueCtrl, CDefectQueueCtrl* pDefectQueue);
+	static void SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, CFrameRsltInfo* pFrmInfo, CCropImgQueueCtrl* pQueueCtrl, CDefectQueueCtrl* pDefectQueue);
 #endif //SPCPLUS_CREATE
 	// 22.06.10 Ahn Add End
 
