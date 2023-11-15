@@ -198,33 +198,34 @@ CString CSpcInspInData::getSONText_InspTail()
 }
 
 //파일저장경로를 넘긴다.
-CString CSpcInspInData::JsonFilePath()
+CString CSpcInspInData::JsonFilePath(CString& FilePath)
 {
-	CString path = SPCINFO->getInspPath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
-	if (CWin32File::FolderFileExists(path) == FALSE)
+	FilePath = SPCINFO->getInspPath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
+	if (CWin32File::FolderFileExists(FilePath) == FALSE)
 	{
-		CWin32File::CreateDirectory(path);
+		CWin32File::CreateDirectory(FilePath);
 	}
-	return path;
+	return FilePath;
 }
 
 //파일명을 넘긴다.
-CString CSpcInspInData::JsonFileName()
+CString CSpcInspInData::JsonFileName(CString& JsonFileName)
 {
-	return m_VisionType + CString("_") + m_CreateTime + CString("_") + m_LineNumber + CString("_") + m_MachineNumber + CString("_") + m_EqpId + CString("_") + m_LotId + CString("_") + m_CellId + CString("_") + m_CellFinalJudge + CString(".JSON");
+	JsonFileName = m_VisionType + CString("_") + m_CreateTime + CString("_") + m_LineNumber + CString("_") + m_MachineNumber + CString("_") + m_EqpId + CString("_") + m_LotId + CString("_") + m_CellId + CString("_") + m_CellFinalJudge + CString(".JSON");
+	return JsonFileName;
 }
 
 //INSP 이미지 저장경로를 넘긴다.
-CString CSpcInspInData::ImageFilePath()
+CString CSpcInspInData::ImageFilePath(CString& ImageFilePath)
 {
-	CString path = SPCINFO->getInspOkImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
+	ImageFilePath = SPCINFO->getInspOkImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 	if (m_CellFinalJudge == "NG")
 	{
-		path = SPCINFO->getInspNgImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
+		ImageFilePath = SPCINFO->getInspNgImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 	}
-	if (CWin32File::FolderFileExists(path) == FALSE)
+	if (CWin32File::FolderFileExists(ImageFilePath) == FALSE)
 	{
-		CWin32File::CreateDirectory(path);
+		CWin32File::CreateDirectory(ImageFilePath);
 	}
-	return path;
+	return ImageFilePath;
 }

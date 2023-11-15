@@ -142,9 +142,11 @@ void CSpcInspManager::makeJSONFile()
 	if (CSpcInfo::Inst()->getSPCStartFlag())
 	{
 		//파일 저장 경로
-		CString strPath = m_SpcInspInData->JsonFilePath();
+		CString strPath = "";
+		m_SpcInspInData->JsonFilePath(strPath);
 		//파일명을 가져온다.
-		CString strJsonFileName = m_SpcInspInData->JsonFileName();
+		CString strJsonFileName = "";
+		m_SpcInspInData->JsonFileName(strJsonFileName);
 		//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
 		LOGDISPLAY_SPEC(3)("SPC PRINT INFO <%s>/<%s> ", strPath, strJsonFileName);
