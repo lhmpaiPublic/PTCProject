@@ -193,6 +193,8 @@ BOOL CNotchingGradeInspApp::InitInstance()
 #ifdef SPCPLUS_CREATE
 	//전역 객체 생성
 	objSpcInfo = new CSpcInfo();
+	//SPC+ 출력 여부 플래그 세팅 - SPC+ SpcInfo = 정보파일에 
+	objSpcInfo->setSPCStartFlag(!AprData.m_System.m_bDisableSpcPlus);
 	//SPC+ JSON파일 생성을 위한 스래드 모듈을 생성한다.
 	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
 #endif //SPCPLUS_CREATE
