@@ -248,13 +248,13 @@ public:
 	CString getSONText_InspTail();
 
 	//파일저장경로를 넘긴다.
-	CString JsonFilePath();
+	CString JsonFilePath(CString& FilePath);
 
 	//파일명을 넘긴다.
-	CString JsonFileName();
+	CString JsonFileName(CString& JsonFileName);
 
 	//INSP 이미지 저장경로를 넘긴다.
-	CString ImageFilePath();
+	CString ImageFilePath(CString& ImageFilePath);
 
 };
 

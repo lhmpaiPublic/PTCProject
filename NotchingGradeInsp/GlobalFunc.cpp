@@ -29,7 +29,7 @@ std::vector<CString> CGlobalFunc::StringParser(CString val, char s = ',')
 void CGlobalFunc::makeJSONFile(CString FilePath, CString FileName, CString msg)
 {
 	CWin32File file;
-	file.TextSave1Line(FilePath, FileName, msg, "at", FALSE, 999999999);
+	file.TextSave1Line(FilePath, FileName, msg, "wt", FALSE, 999999999);
 }
 
 CString CGlobalFunc::ReadIniFile(LPCSTR lpAppName,	LPCSTR lpKeyName, LPCSTR lpFileName, LPCSTR lpDefault)

@@ -961,7 +961,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						IqInfoTop->setImageJudge(IqTopJudge);
 						//SPC+ 저장할 이미지 명을 입력(Top 이미지 명)
 						CString IqImageFileNameTop = IqInfoTop->ImagIqFileName();
-						IqInfoTop->setImageFileName(IqImageFileNameTop);
 
 						//IqInfo ===Tab 없는 카메라
 						//Bottom 객체
@@ -977,7 +976,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						IqInfoBottom->setImageJudge(IqBottomJudge);
 						//SPC+ 저장할 이미지 명을 입력(Bottom 이미지 명)
 						CString IqImageFileNameBottom = IqInfoBottom->ImagIqFileName();
-						IqInfoBottom->setImageFileName(IqImageFileNameBottom);
 
 #endif //SPCPLUS_CREATE
 
@@ -1331,7 +1329,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 						//SPC+ IMAGE Save===================================================================================================
-						CString strSPCFilePath = InspInData->ImageFilePath();
+						CString strSPCFilePath = "";
+						InspInData->ImageFilePath(strSPCFilePath);
 						int SPCImageQuality = CGlobalFunc::StringToint(SPCINFO->getIqJpgQuality());
 						for (int i = 0; i < MAX_CAMERA_NO; i++)
 						{
