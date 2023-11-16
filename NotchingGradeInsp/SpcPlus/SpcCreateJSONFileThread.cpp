@@ -69,9 +69,9 @@ void CSpcCreateJSONFileThread::ExitSpcCreateJSONFileThread()
 	// 로그출력 창 생성
 	if (gInstObject != NULL)
 	{
-		bCreate = false;
 		delete gInstObject;
 		gInstObject = NULL;
+		bCreate = false;
 	}
 }
 
@@ -109,26 +109,29 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 						obj->makeJSONFile();
 						delete obj;
 					}
-					
-				}
-				else if(CLogDisplayDlg::bCreate == FALSE)
-				{
-//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE	
-					LOGDISPLAY_SPEC(3)("SPC+===== Make Json File 생성 루프 Create FALSE");
-#endif //SPCPLUS_CREATE
+
 				}
 				else
 				{
 					break;
 				}
-			}			
+			}
+
+			//객체 소멸 시 스래드 함수 빠져 나가기
+			if (CLogDisplayDlg::bCreate == FALSE)
+			{
+//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE	
+				LOGDISPLAY_SPEC(3)("SPC+===== Make Json File 생성 루프 Create FALSE");
+#endif //SPCPLUS_CREATE
+				break;
+			}
 		}
 		else
 		{
 			break;
 		}
-		
+
 	}
 
 //SPC 객체 소스에서 컴파일 여부 결정
