@@ -15,6 +15,7 @@ class CMemoryPool{
 private:
     static UCHAR *mPoolPointer;    // 메모리풀에 사용될 static 멤버 포인터
     static vector<UCHAR*> m_pointerForRelease;    // 블록 삭제하기위한 포인터 벡터
+    static CRITICAL_SECTION m_csPool;
 protected:
     ~CMemoryPool()
     {
@@ -51,6 +52,11 @@ private:
     }
  
 public:
+
+    static void initMemoryPool()
+    {
+        ::InitializeCriticalSection(&m_csPool);
+    }
  
     // new 연산자 오버로딩
     /// new 연산자 오버로딩 약속 : 리턴은 void*로  매개변수는(size_t size)으로 크기정보가 바이트단위로 계산되어 전달 됨.
@@ -62,6 +68,7 @@ public:
         assert(sizeof(T) >= sizeof(UCHAR*));
         assert(sizeof(T) == _allocSize);
  
+        ::EnterCriticalSection(&m_csPool);
         //할당할 메모리가 없으면 메모리 블럭 생성
         if (!mPoolPointer)
             AllocBlock();
@@ -71,6 +78,8 @@ public:
         // 리턴하는 블록 앞 4바이트에 들어있던 다음 블록의 주소를 mPoolPointer에 대입하여 mPoolPointer 이동
         mPoolPointer = *reinterpret_cast<UCHAR**>(returnPointer);
  
+        ::LeaveCriticalSection(&m_csPool);
+
         return returnPointer;
     }
  
@@ -78,11 +87,13 @@ public:
     // delete 연산자 오버로딩
     static void operator delete(void *deletePointer)
     {
+        ::EnterCriticalSection(&m_csPool);
         //cout << "delete" << endl;
         //지울 블록의 앞 4바이트에 현재 mPoolPointer의 주소를 넣어줌
         *reinterpret_cast<UCHAR**>(deletePointer) = mPoolPointer;
         // mPoolPointer 이동
         mPoolPointer = static_cast<UCHAR*>(deletePointer);
+        ::LeaveCriticalSection(&m_csPool);
     }
  
  // 메모리풀에서 할당한 블록 메모리 소멸 (프로그램 종료시 호출되어야 함)
@@ -90,6 +101,8 @@ public:
     {
         for (auto i = m_pointerForRelease.begin() ; i< m_pointerForRelease.end(); i++)
             delete []*i;
+
+       ::EnterCriticalSection(&m_csPool);
     }
 };
  
@@ -100,3 +113,6 @@ UCHAR* CMemoryPool<T, MEMORY_DEFAULT_SIZE>::mPoolPointer = nullptr;
  
 template <class T, UINT MEMORY_DEFAULT_SIZE>
 vector<UCHAR*> CMemoryPool<T, MEMORY_DEFAULT_SIZE>::m_pointerForRelease;
+
+template <class T, UINT MEMORY_DEFAULT_SIZE>
+CRITICAL_SECTION CMemoryPool<T, MEMORY_DEFAULT_SIZE>::m_csPool;

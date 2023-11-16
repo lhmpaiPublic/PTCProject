@@ -208,6 +208,9 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		return FALSE;
 	}
 
+	//사용한 Image 메모리풀 초기화
+	FrameImagePtr::initMemoryPool();
+
 	// 22.06.29 Son Add Start
 	m_pDispErrorDlg = new CDispErrorDlg(m_pMainWnd);
 	m_pDispErrorDlg->Create(IDD_DLG_DISPERROR, m_pMainWnd);
