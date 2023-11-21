@@ -39,12 +39,12 @@ CString strLogNameList =
 "0 Init_FromExecute_Error_0 0,"
 "1 TabID_ImageCount_TabCount_1 0,"
 "2 PLC_Live_BitData_2 0,"
-"3 SPCPlus_3 1,"
+"3 SPCPlus_3 0,"
 "4 TACTIME_4 0,"
 "5 Proc_5 0,"
 "6 UnitThread_6 0,"
-"7 TriggerDIO_7 0,"
-"8 UnitResult_8 0,"
+"7 TriggerDIO_7 1,"
+"8 UnitResult_8 1,"
 "100 END 0"
 ;
 

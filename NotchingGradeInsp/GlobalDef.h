@@ -83,7 +83,6 @@ enum {
 // 22.11.07 Ahn Test Start
 #define		INSPECTION_TYPE				_T("FOIL-EXP")
 
-#define		MAX_SAVE_IMAGE_QUEUE		20		// 
 
 // 장비 고유 설정
 // 22.03.25 Ahn Add Start

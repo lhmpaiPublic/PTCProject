@@ -369,7 +369,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (bNextTabId == false)
 						{
 							//20개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
-							if (quUserTabID.size() > 20)
+							if (quUserTabID.size() > 5)
 							{
 								//다음 아이디를 할당한다.
 								cntInfo.nTabID = 64;
@@ -1351,10 +1351,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
 
-							//SPC+ 전송용 이미지 파일 저장 정보
-							if (CSpcInfo::Inst()->getSPCStartFlag())
+							if (nImgSize > 0)
 							{
-								if (nImgSize)
+								//SPC+ 전송용 이미지 파일 저장 정보
+								if (CSpcInfo::Inst()->getSPCStartFlag())
 								{
 									pFrmRsltInfo->m_nWidth;
 									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
@@ -1367,26 +1367,20 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
 									pImgSaveQueueCtrl->PushBack(pSaveInfo);
 								}
-							}
 
-							//기존 이미지 저장정보
-							if (nImgSize && pFrmRsltInfo->m_bSaveFlag)
-							{
-								if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE)
+								//기존 이미지 저장정보
+								if ((pFrmRsltInfo->m_bSaveFlag) && (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE))
 								{
-									if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE)
-									{
-										pFrmRsltInfo->m_nWidth;
-										CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
-										BYTE* pImgSavePtr;
-										pImgSavePtr = new BYTE[nImgSize + 1];
-										memset(pImgSavePtr, 0x00, sizeof(BYTE)* nImgSize + 1);
-										memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
-										pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
-										pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
-										pImgSaveQueueCtrl->PushBack(pSaveInfo);
+									pFrmRsltInfo->m_nWidth;
+									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
+									BYTE* pImgSavePtr;
+									pImgSavePtr = new BYTE[nImgSize + 1];
+									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
+									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+									pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
-									}
 								}
 							}
 						}
@@ -1408,38 +1402,25 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							// 22.08.09 Ahn Move End
 							if (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE)
 							{
-								if (pImgSaveQueueCtrl->GetSize() < MAX_SAVE_IMAGE_QUEUE)
+								if (pFrmRsltInfo->GetImagePtr())
 								{
-									if (pFrmRsltInfo->GetImagePtr())
-									{
-										pFrmRsltInfo->m_nWidth;
-										CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
-										BYTE* pImgSavePtr;
-										pImgSavePtr = new BYTE[nImgSize + 1];
-										memset(pImgSavePtr, 0x00, sizeof(BYTE)* nImgSize + 1);
-										CopyMemory(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
-										pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
-										pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
-										pImgSaveQueueCtrl->PushBack(pSaveInfo);
+									pFrmRsltInfo->m_nWidth;
+									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
+									BYTE* pImgSavePtr;
+									pImgSavePtr = new BYTE[nImgSize + 1];
+									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
+									CopyMemory(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+									pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
-//										AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <ImageSave> %s"), pSaveInfo->m_strSavePath);
-									}
-									else
-									{
-										AprData.SaveDebugLog_Format(_T("@@@@@@@@@@@@@@@@@<CtrlThreadImgProc> Image Save Info NULL "));
-									}
-
-
-									//								CString strMsg;
-									//								strMsg.Format(_T("Save Image Path = %s"), pSaveInfo->m_strSavePath);
-									//								AprData.SaveDebugLog(strMsg); //pyjtest
-
-
+									//										AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <ImageSave> %s"), pSaveInfo->m_strSavePath);
 								}
 								else
 								{
-									AprData.SaveDebugLog_Format(_T("@@@@@@@@@@@@@<CtrlThreadImgProc> <ImageSave> Overflow Q-Size(%d>=%d)"), pImgSaveQueueCtrl->GetSize(), MAX_SAVE_IMAGE_QUEUE);
+									AprData.SaveDebugLog_Format(_T("@@@@@@@@@@@@@@@@@<CtrlThreadImgProc> Image Save Info NULL "));
 								}
+
 							}
 						}
 #endif //SPCPLUS_CREATE
