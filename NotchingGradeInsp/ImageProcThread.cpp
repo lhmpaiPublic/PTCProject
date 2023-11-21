@@ -1361,7 +1361,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize + 1];
 									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
-									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSize);
 									//퀄리티 정보를  세팅한다.
 									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, SPCImageQuality);
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
@@ -1376,7 +1376,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize + 1];
 									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
-									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
+									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSize);
 									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 									pImgSaveQueueCtrl->PushBack(pSaveInfo);
