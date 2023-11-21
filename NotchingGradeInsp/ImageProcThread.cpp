@@ -185,17 +185,18 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			bTailFlag = !pQueueFrame_Bottom->IsEmpty();
 
 			//Top과 Bottom Frame 크기의 차가 FRAME_ACQ_ERROR_CHK_CNT 이상이면 에러 출력한다.
-			if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT)
-			{
+			//if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) //의미 없음
+			//{
 
-				// 에러 처리 
-				CString strErrMsg;
-				strErrMsg.Format(_T("Frame Size Error : Top [%d], Bottom[%d], Inspect Status [%d], Process End!!!!"), nSizeFrmL, nSizeFrmR, pThis->m_pParent->IsInspection());
-				AprData.SaveErrorLog(strErrMsg);
+			//	// 에러 처리 
+			//	CString strErrMsg;
+			//	strErrMsg.Format(_T("Frame Size Error : Top [%d], Bottom[%d], Inspect Status [%d], Process End!!!!"), nSizeFrmL, nSizeFrmR, pThis->m_pParent->IsInspection());
+			//	AprData.SaveErrorLog(strErrMsg);
+			//	AprData.SaveDebugLog_Format(strErrMsg);
 
-				//카메라의 에러를 세팅한다.
-				AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
-			}
+			//	//카메라의 에러를 세팅한다.
+			//	AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
+			//}
 
 		//Top과 Bottom  정보가 1개씩 이상이 되어야 한다.
 			if (bHeadFlag && bTailFlag)

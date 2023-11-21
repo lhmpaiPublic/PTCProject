@@ -568,15 +568,30 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						wLastTabId = wTempID;
 						wLastTabIdTriggerOff = wTempID;
 #endif
-
+						int nCntQueSize = pCntQueInPtr->GetSize();
 
 						//메모리 로그 기록
 						CString strMsg;
-						strMsg.Format(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, pCntQueInPtr->GetSize());
+						strMsg.Format(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, nCntQueSize);
 						AprData.SaveMemoryLog(strMsg);
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, pCntQueInPtr->GetSize());
+						LOGDISPLAY_SPEC(7)(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, nCntQueSize);
+
+						if (nCntQueSize >= FRAME_ACQ_ERROR_CHK_CNT)
+						{
+							// 에러 처리 : BCD ID는 들어오는데 Frame이 없거나 Process 처리 문제로 BCD를 사용하지 못하고 쌓이는 경우 에러
+							CString strErrMsg;
+							strErrMsg.Format(_T("Frame Error : BCD Que Over[%d>=%d], Process End!!!!"), nCntQueSize, FRAME_ACQ_ERROR_CHK_CNT );
+							AprData.SaveErrorLog(strErrMsg);
+							AprData.SaveDebugLog_Format(strErrMsg);
+
+							//카메라의 에러를 세팅한다.
+							AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
+						}
+
+
+
 
 					}
 					// Cell 추적 Queue Data -> Local Queue 

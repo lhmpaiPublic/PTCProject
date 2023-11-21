@@ -40,7 +40,7 @@ using namespace Gdiplus;
 //#define GMLV_LIGHT_SKIP
 
 //컨넥트 존 컴파일 여부
-//#define USE_PLCCONNECTZONE
+#define USE_PLCCONNECTZONE
 
 //FrameInfo 이미지 저장 메모리 풀
 #include "FrameImagePtr.h"
