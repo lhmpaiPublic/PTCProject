@@ -300,7 +300,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 //					double dTime = ctAna.WhatTimeIsIt_Double();
 
 					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(1)("*2*1*Now Tab Find Count<%d>, TabID QueueCount<%d>",
+					LOGDISPLAY_SPEC(7)("*2*1*Now Tab Find Count<%d> vs TabID QueueCount<%d>",
 						nVecSize, pCntQueueInCtrl->GetSize());
 
 
@@ -342,6 +342,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 									if ((*it) == cntInfo.nTabID)
 									{
 										itdelete = it;
+										LOGDISPLAY_SPEC(7)("Input Id  Delete to<%d>",
+											*itdelete);
+										break;
 									}
 									it++;
 								} while (quUserTabID.end() != it);
@@ -351,6 +354,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								//시작점 부터 true 설정된 데이터까지 지운다.
 								quUserTabID.erase(quUserTabID.begin(), itdelete);
+								
 							}
 							//지울 데이터가 없다면
 							else
@@ -363,6 +367,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 									useTabID = 0;
 								}
 								bNextTabId = true;
+
+								LOGDISPLAY_SPEC(7)("Input Id TRUE ** <%d>TabNo Use TabId <%d>",
+									AprData.m_NowLotData.m_nTabCount, cntInfo.nTabID);
 							}
 						}
 
@@ -390,8 +397,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								{
 									useTabID = 0;
 								}
-							}	
-
+								
+							}
+							//Input Id가 없을 때 로그
+							LOGDISPLAY_SPEC(7)("Input Id FALSE XX <%d>TabNo Use TabId <%d>",
+								AprData.m_NowLotData.m_nTabCount, cntInfo.nTabID);
 
 							if (AprData.m_System.m_nMissTabIdMax > 0)
 							{
@@ -437,6 +447,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("========LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
 								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount);
 						}
+
+						//Tab Id 정보 로그
+						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Id Info@@@@  LotId<%d> Tab Id<%d> TabNo<%d> TabTotalcnt<%d>",
+							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
 
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[i];
@@ -631,7 +645,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pInfo->m_nTabLeft = pTabInfo->nTabLeft;
 						pInfo->m_nTabRight = pTabInfo->nTabRight;
 						pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
-						LOGDISPLAY_SPEC(7)("<<Proc>> CtrlThreadImgCuttingTab-use Tab id <%d> ", cntInfo.nTabID);
 
 						pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 						pInfo->m_nBndElectrode = nBndElectrode;
