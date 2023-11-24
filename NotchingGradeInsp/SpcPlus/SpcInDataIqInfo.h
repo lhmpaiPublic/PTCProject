@@ -49,6 +49,12 @@ private:
 	CString	m_IqCameraGain;
 	//Exposure Time value [ms](카메라 노출 시간)	
 	CString	m_IqExposureTime;
+	//SPC+ Image JPG 퀄리티 정보
+	CString	m_IqJpgQuality;
+	//SPC+ 압출률 Pix 정보 추가(Pix가 줄지 않기 때문에 NULL 기본)
+	CString m_IqScreenImageResizeRatio_X;
+	//SPC+ 압출률 Pix 정보 추가(Pix가 줄지 않기 때문에 NULL 기본)
+	CString m_IqScreenImageResizeRatio_Y;
 	//Image 판정결과	
 	CString	m_ImageJudge;
 	//Original Image 파일명 	

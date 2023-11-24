@@ -4,7 +4,7 @@
 class CDefectInfo
 {
 public:
-	int nType;				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
+	int nType;				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface (변경전) -> 0 : Foil-Inner Exposure, 1: Foil-Outer Exposure, 2 : Foil-Exposure (변경 후)
 	int nHeadNo;			// Camera 번호
 	int nTabNo;				// Cell 번호
 	int nCellId;				// Cell ID

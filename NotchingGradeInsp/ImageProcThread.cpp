@@ -931,6 +931,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//Cell 추적 PLC에서 받은 ID (VIRTUAL_CELL_ID와 동일값 작성)	
 						CString	CellId = "";
 						CellId.Format(_T("%02d"), pTopInfo->m_nTabId_CntBoard);
+
+						//외관 판정 시 미응답에 의한 NG 발생시 처리 부분
+						InspInData->setDetectFallFlact(pTopInfo->m_bErrorFlag == TRUE ? "TRUE" : "FALSE");
+						InspInData->setDetectFallReasoAll(pTopInfo->m_bErrorFlag == TRUE ? "Foil-Inner Exposure, Foil-Outer Exposure, Foil-exposure" : "Null");
+
 						InspInData->setCellId(CellId);
 						//셀 카운트 번호
 						InspInData->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));

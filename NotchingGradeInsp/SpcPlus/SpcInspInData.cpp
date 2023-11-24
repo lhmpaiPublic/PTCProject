@@ -38,6 +38,8 @@ char* CSpcInspInData::MakeInspInDataText_1 =
 "        \"CELL_COUNT_NO\" : \"%s\",\r\n"
 "        \"VIRTUAL_CELL_ID\" : \"%s\",\r\n"
 "        \"CELL_FINAL_JUDGE\" : \"%s\",\r\n"
+"        \"DetectFallFlact\" : \"%s\",\r\n"
+"        \"DetectFallReasoAll\" : \"%s\",\r\n"
 "        \"IQ_INFO\": [\r\n";
 //+"%s"	 IQ_INFO
 char* CSpcInspInData::MakeInspInDataText_2[2] =
@@ -100,6 +102,8 @@ CSpcInspInData::CSpcInspInData(CSpcPlusManager* sMgr)
 	m_CellCountNo = "0";
 	m_VirtualCellId = "NA";
 	m_CellFinalJudge = "NG";
+	m_DetectFallFlact = "FALSE";
+	m_DetectFallReasoAll = "Null";
 	m_AppearanceJudgeResult = "NG";
 	m_TotalAppearanceNgCount = "1";
 	m_AppearanceReasonAll = "";
@@ -164,7 +168,9 @@ CString CSpcInspInData::makeJSONText_Insp1()
 		m_CellId,
 		m_CellCountNo,
 		m_VirtualCellId,
-		m_CellFinalJudge
+		m_CellFinalJudge,
+		m_DetectFallFlact,
+		m_DetectFallReasoAll
 	);
 	return makeJSONText;
 }
