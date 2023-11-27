@@ -405,6 +405,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								}
 
 							}
+
+						}
+
+						if (cntInfo.nTabID != 64)
+						{
 							//다음에 사용할 id : 1 증가 시켜 저장
 							useTabID = cntInfo.nTabID + 1;
 							//Tab id는 0 ~ 63 까지 사용한다.
@@ -412,9 +417,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								useTabID = 0;
 							}
-
 						}
-
 						
 						//Tab id 정보를 가져와서 지금의 id 정보를 확인한다.
 						if (cntInfo.nTabIdTotalCount != MAX_INT)
