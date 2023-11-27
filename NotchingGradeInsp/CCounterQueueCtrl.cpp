@@ -18,10 +18,9 @@ void CCounterQueueCtrl::ResetQueue()
 	::EnterCriticalSection(&m_csQueue);
 	int size = (int)m_CntInfo.size();
 	int i = 0;
-	m_lCount = 0;
 	//CCounterInfo pCntInfo;
-	for (i = 0; i < size; i++) {
-	//	pCntInfo = m_CntInfo.front();
+	for (i = 0; i < size; i++) 
+	{
 		m_CntInfo.pop();
 	}
 	::LeaveCriticalSection(&m_csQueue);
@@ -70,6 +69,24 @@ CCounterInfo CCounterQueueCtrl::Pop()
 	}
 	::LeaveCriticalSection(&m_csQueue);
 	return CntInfo;
+}
+
+BOOL CCounterQueueCtrl::FindTabId(int TabId)
+{
+	BOOL b = FALSE;
+	::EnterCriticalSection(&m_csQueue);
+	CCounterInfo CntInfo;
+	while (m_CntInfo.size())
+	{
+		CntInfo = m_CntInfo.front();
+		if (CntInfo.nTabID == TabId)
+		{
+			b = TRUE;
+			break;
+		}
+	}
+	::LeaveCriticalSection(&m_csQueue);
+	return b;
 }
 
 
