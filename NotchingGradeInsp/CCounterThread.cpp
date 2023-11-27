@@ -470,12 +470,29 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										if (wLastTabIdbackup >= 64)
 											wLastTabIdbackup = 0;
 
-										//DIO Input Log
-										LOGDISPLAY_SPEC(7)(_T("누락 Input ID [%d]"), wLastTabIdbackup);
-
-										AprData.m_NowLotData.m_nTabIdTotalCount++;
+										//누락된 카운트를 올린다.
 										omissCount++;
 
+										//DIO Input Log
+										LOGDISPLAY_SPEC(7)(_T("누락 Input ID [%d] 누락 갯수<%d>"), wLastTabIdbackup, omissCount);
+
+									}
+									//누락 카운트가 0으로 초기화 한 데이터 일경우 카운터하지 않는다.
+									//Tab Id Queue도 초기화 한다.
+									if ((wTempID == 0) && (omissCount > 1))
+									{
+										//초기화 한다.
+										pCntQueInPtr->ResetQueue();
+										//DIO Input Log
+										LOGDISPLAY_SPEC(7)(_T("Input ID 초기화 TabId[%d]- ResetQ - BeforId[%d]"), wTempID, wLastTabId);
+									}
+									//초기화가 아닌 경우
+									else
+									{
+										//DIO Input Log
+										LOGDISPLAY_SPEC(7)(_T("Input ID 누락 카운트 추가 지금 카운트[%d]- 추가[%d] - 추가된 카운트[%d]"), AprData.m_NowLotData.m_nTabIdTotalCount, omissCount, (AprData.m_NowLotData.m_nTabIdTotalCount + omissCount));
+
+										AprData.m_NowLotData.m_nTabIdTotalCount += omissCount;										
 									}
 									//Tab id Count 백업
 									nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
@@ -538,6 +555,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						//Tab Total Count를 증가 시킨다.
 						AprData.m_NowLotData.m_nTabIdTotalCount++;
 						cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
+
+						//Tab Id 정보를 추가한다.
 						pCntQueInPtr->PushBack(cntInfo);
 
 						//Tab id Count 백업
@@ -566,7 +585,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						AprData.SaveMemoryLog(strMsg);
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, nCntQueSize);
+						LOGDISPLAY_SPEC(7)(_T("Input ID Add TabId[%d],TotalCount[%d],Queue Count<%d>"), cntInfo.nTabID, cntInfo.nTabIdTotalCount, nCntQueSize);
 
 						if (nCntQueSize >= FRAME_ACQ_ERROR_CHK_CNT)
 						{
