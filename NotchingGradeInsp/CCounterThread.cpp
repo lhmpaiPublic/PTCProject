@@ -307,7 +307,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 								{
 									//input id와 마킹할 id가 같으면
-									if (CCounterThread::m_MarkSendInfoData[idx].TabId == inputReadId[0])
+									if (CCounterThread::m_MarkSendInfoData[idx].TabId == inputReadId[0] && CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
 									{
 										//DIO Input Log
 										LOGDISPLAY_SPEC(7)(_T("input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
@@ -338,8 +338,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					else
 					{
 						//보낼 Tab Id 정보가 없을 때 마킹정보가 3개 이상이면
-						//첫번째 id 정보를 확인해서 보낸다.
-						if (CCounterThread::m_MarkSendInfoData.size() > 3)
+						//size -1 까지 id 정보를 확인해서 보낸다.
+						if (CCounterThread::m_MarkSendInfoData.size() > 2)
 						{
 							//마킹 정보를 보내고 Out_PULSE FALSE 세팅 후 10초 후
 							//마킹 정보를 보내기 위한 세팅을 한다.
@@ -349,23 +349,29 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								{
 									CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
 
-									//첫번 째 마킹 정보를 보낸다.
-									if (CCounterThread::m_MarkSendInfoData[0].bSendComplate == false)
+									//Size -1 개 정보를 확인하여 bSendComplate == false 이면 보낸다.
+									for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size()-1; idx++)
 									{
-										//DIO Input Log
-										LOGDISPLAY_SPEC(7)(_T("마킹할 Data가 3개이상이면 첫번째 마킹정보를 보낸다. sendid<%d>"), CCounterThread::m_MarkSendInfoData[0].TabId);
+										//첫번 째 마킹 정보를 보낸다.
+										if (CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
+										{
+											//DIO Input Log
+											LOGDISPLAY_SPEC(7)(_T("마킹할 Data가 3개이상이면 첫번째 마킹정보를 보낸다. sendid<%d>"), CCounterThread::m_MarkSendInfoData[idx].TabId);
 
-										//마킹 데이터 넣고
-										dio.OutputWord(CCounterThread::m_MarkSendInfoData[0].MarkingOutputData);
-										//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
-										Sleep(1);
-										//sednd 후 지우기 위한 플래그 true;
-										CCounterThread::m_MarkSendInfoData[0].bSendComplate = true;
-										//마킹 보내는 타임 설정
-										markingSendTimeOut = GetTickCount() + 5 + 15;
-										//마킹을 보내는 플래그 설정 켜기
-										bMarkingDataSend = TRUE;
+											//마킹 데이터 넣고
+											dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+											//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
+											Sleep(1);
+											//sednd 후 지우기 위한 플래그 true;
+											CCounterThread::m_MarkSendInfoData[idx].bSendComplate = true;
+											//마킹 보내는 타임 설정
+											markingSendTimeOut = GetTickCount() + 5 + 15;
+											//마킹을 보내는 플래그 설정 켜기
+											bMarkingDataSend = TRUE;
 
+											break;
+
+										}
 									}
 									CCounterThread::m_bMarkSendInfoDataSynch = FALSE;
 								}
