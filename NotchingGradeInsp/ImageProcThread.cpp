@@ -149,6 +149,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 	//레시피 텝 피치 정보를 세팅한다.
 	RecipeInfoTabPitch = (int)AprData.m_pRecipeInfo->TabCond.dTabPitch;
+
+	//다음 사용할 Tab ID (BCD ID)
+	int nextBCDId = 64;
 	while (1)
 	{
 		//이벤트 타임 Tab Find 주기 
@@ -305,6 +308,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
 								useTabID = 64;
+								nextBCDId = 64;
 								//Tab Id 정보 로그
 								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 접합부 Trigger Id Setting 초기화 @@@@ ");
 							}
@@ -318,6 +322,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							AprData.m_NowLotData.m_bInitTabId = FALSE;
 							useTabID = 64;
+							nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@Trigger Tab Id  초기화 시 Trigger Id Setting 초기화 @@@@ ");
 						}
@@ -327,6 +332,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							AprData.m_NowLotData.m_bConnectZone = FALSE;
 							useTabID = 64;
+							nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@ConnectZone Trigger Id Setting 초기화 @@@@ ");
 						}
@@ -436,7 +442,30 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								useTabID = 0;
 							}
+
+							//로그 초기 세팅
+							if (nextBCDId == 64)
+							{
+								nextBCDId = cntInfo.nTabID;
+							}
+
+							//BCD ID 사용 체크 로그
+							else if (cntInfo.nTabID != nextBCDId)
+							{
+								CLogDisplayDlg::LogDisplayText(_T("BCD_ID_USE_ERROR "), _T("use Id<%d> next id<%d>"), cntInfo.nTabID, nextBCDId);
+
+								//Tab Id 정보 로그
+								LOGDISPLAY_SPEC(7)("@@@@@@@@@ BCD_ID_USE_ERROR use Id<%d> next id<%d>@@@@ ", cntInfo.nTabID, nextBCDId);
+							}
+
+							nextBCDId = cntInfo.nTabID + 1;
+							if (nextBCDId >= 64)
+							{
+								nextBCDId = 0;
+							}
+
 						}
+
 						
 						//Tab id 정보를 가져와서 지금의 id 정보를 확인한다.
 						if (cntInfo.nTabIdTotalCount != MAX_INT)
