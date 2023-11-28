@@ -6500,6 +6500,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			nLastSavePos = 0 ; 
 
+
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> case 0 nLastSavePos = %d"), nLastSavePos);
+
 			break;
 
 
@@ -6529,6 +6532,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
+
+
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> case 1 nLastSavePos = %d"), nLastSavePos);
 
 			break;
 
@@ -6582,6 +6588,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;			// 센터기준으로 할지 오른쪽 기준으로 자를지....
 			nSendLength = tabInfo.nRight - pResvTabInfo->nImageLength;
 
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> nSendLength(%d) = tabInfo.nRight(%d) - pResvTabInfo->nImageLength(%d)"), nSendLength, tabInfo.nRight, pResvTabInfo->nImageLength);
+
+
 			// 22.03.30 Ahn Add Start
 			if (nSendLength > nHeight)
 			{
@@ -6599,6 +6608,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 			nLastSavePos = nSendLength;
 
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> bResvSend == TRUE nLastSavePos = %d, tabInfo.nRight = %d, pResvTabInfo->nImageLength = %d"), nLastSavePos, tabInfo.nRight, pResvTabInfo->nImageLength );
+
+
 			// 22.11.18 Ahn Add Start
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount ;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame ;
@@ -6613,6 +6625,13 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// pyjtest : 원본 이미지 저장
+		//{
+		//	CString str;
+		//	str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), tabInfo.nFrameCount);
+
+		//	CImageProcess::SaveOriginImage(tabInfo.pImgPtr->m_pImagePtr, nWidth, tabInfo.nImageLength, str);
+		//}
+
 		{
 			CString str;
 			str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), nFrameCount);
@@ -6685,6 +6704,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		int nSendAbleCount = nSendAbleLeng / nBaseTabPitch ;
 
 		nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight, bIsPET, pVecTabInfo);
+
+		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> nSize <= 0 nLastSavePos = %d"), nLastSavePos);
+
 	}
 	else
 	{
@@ -6698,6 +6720,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			if (nDivCnt > 0) 
 			{
 				nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nLastSavePos + nLeftSize, bIsPET, pVecTabInfo);
+
+				AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> nDivCnt > 0 nLastSavePos = %d"), nLastSavePos);
 
 			}
 		}		
@@ -6782,6 +6806,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			nLastSavePos = nLastSavePos + tabInfo.nImageLength;
 			pVecTabInfo->push_back(tabInfo);
 
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> pVecTabInfo->push_back(tabInfo) nLastSavePos = %d"), nLastSavePos);
+
+
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> pVecTabInfo->push_back 2 Size<%d> "), pVecTabInfo->size() );
 
 
@@ -6789,6 +6816,13 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// pyjtest : 원본 이미지 저장
+			//{
+			//	CString str;
+			//	str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), tabInfo.nFrameCount);
+
+			//	CImageProcess::SaveOriginImage(tabInfo.pImgPtr->m_pImagePtr, nWidth, tabInfo.nImageLength, str);
+			//}
+
 			{
 				CString str;
 				str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), nFrameCount);
@@ -6805,6 +6839,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		{
 			int nSendLeng = nRightSize / nBaseTabPitch;
 			nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight, bIsPET, pVecTabInfo);
+
+			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> nRightSize > nBaseTabPitch nLastSavePos = %d"), nLastSavePos);
+
 		}
 
 	}
