@@ -273,6 +273,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//Tab 정보 크기, Tab 정보가 없다면 에러처리
 					int nVecSize = (int)vecTabInfo.size();
 
+
 					BOOL bErrorAll = FALSE;
 					if (nVecSize <= 0)
 					{
@@ -554,43 +555,15 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 
-
-
-
-
-
 						////////////////////////////////////////////////////////////////////////////////////////////
 						// pyjtest : Tab 2개 인식 시 이미지 저장
+						//if (nVecSize >= 2)
+						//{
+						//	CString str;
+						//	str.Format(_T("FrameCnt%d"), pTabInfo->nFrameCount );
 
-//						if( nVecSize >= 2 )
-//						{
-////							CBitmapStd bmp(nWidth, pTabInfo->nImageLength);
-////							bmp.SetImage(nWidth, pTabInfo->nImageLength, pTabInfo->pImgPtr);
-//
-//							CBitmapStd bmp(nWidth, nHeight);
-//							bmp.SetImage(nWidth, nHeight, pHeadPtr);
-//				
-//
-//							CTime time = CTime::GetCurrentTime();
-//
-//							CString strPath = AprData.m_strImagePath + _T("\\2TAB");
-//							CWin32File::CreateDirectory(strPath);
-//
-//							CString str;
-//							str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d)_BCD%d_FoilTab%d_FrameCnt%d.bmp"), 
-//								strPath, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount(),
-//								cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, pTabInfo->nFrameCount );
-//							bmp.SaveBitmap(str);
-//						}
-						////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
+						//	CImageProcess::SaveOriginImage((BYTE*)pTabInfo->pImgPtr, nWidth, pTabInfo->nImageLength, str);
+						//}
 
 
 

@@ -6404,6 +6404,18 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		BYTE *pTempPtr = pResvTabInfo->pImgPtr->m_pImagePtr;
 		BYTE *pTempBtmPtr = pResvTabInfo->pImgBtmPtr->m_pImagePtr;
 
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// pyjtest : 원본 이미지 저장
+		//{
+		//	CString str;
+		//	str.Format(_T("pResvTabInfo_%d"), pResvTabInfo->nFrameCount);
+
+		//	CImageProcess::SaveOriginImage(pTempPtr, nWidth, pResvTabInfo->nImageLength, str);
+		//}
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 		// 예약 Tab과 첫번째 Tab이 붙은 Tab인가??
 		// 예약 정보에 Tab이 존재하는가?
 		tabInfo.m_bIsPET = bIsPET;
@@ -6599,27 +6611,15 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> pVecTabInfo->push_back 1 Size<%d> "), pVecTabInfo->size());
 
 
-
-
-
-
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// pyjtest : 원본 이미지 저장
-		//{
-		//	CBitmapStd bmp(nWidth, tabInfo.nImageLength);
-		//	bmp.SetImage(nWidth, tabInfo.nImageLength, tabInfo.pImgPtr);
+		{
+			CString str;
+			str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), nFrameCount);
 
-		//	CTime time = CTime::GetCurrentTime();
-
-		//	CString strPath = AprData.m_strImagePath + _T("\\TAB_ORG");
-		//	CWin32File::CreateDirectory(strPath);
-
-		//	CString str;
-		//	str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d)_FC[%d]_1.bmp"), strPath, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount(), tabInfo.nFrameCount);
-		//	bmp.SaveBitmap(str);
-		//}
+			CImageProcess::SaveOriginImage(pImgPtr, nWidth, nHeight, str);
+		}
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 
@@ -6784,23 +6784,18 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> pVecTabInfo->push_back 2 Size<%d> "), pVecTabInfo->size() );
 
+
+
+
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// pyjtest : 원본 이미지 저장
-			//{
-			//	CBitmapStd bmp(nWidth, tabInfo.nImageLength);
-			//	bmp.SetImage(nWidth, tabInfo.nImageLength, tabInfo.pImgPtr);
+			{
+				CString str;
+				str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), nFrameCount);
 
-			//	CTime time = CTime::GetCurrentTime();
-
-			//	CString strPath = AprData.m_strImagePath + _T("\\TAB_ORG");
-			//	CWin32File::CreateDirectory(strPath);
-
-			//	CString str;
-			//	str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d)_FC[%d]_2.bmp"), strPath, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount(), tabInfo.nFrameCount);
-			//	bmp.SaveBitmap(str);
-			//}
+				CImageProcess::SaveOriginImage(pImgPtr, nWidth, nHeight, str);
+			}
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 		}	
 		
@@ -6834,7 +6829,6 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		AprData.SaveDebugLog_Format( _T("<DivisionTab_FromImageToTabInfo> CopyMemory pResvTabInfo->pImgPtr") );
 
 	}
-
 
 
 
