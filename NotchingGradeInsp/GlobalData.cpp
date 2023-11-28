@@ -1157,6 +1157,12 @@ void CLotInfo::ClearAllCount()
 	//Trigger Tab Id Total Count
 	m_nTabIdTotalCount = 0;
 
+	//Trigger Tab Id 초기화
+	m_bInitTabId = FALSE;
+
+	//ConnectZone
+	m_bConnectZone = FALSE;
+
 	m_nTabCountNG = 0 ;
 	m_nTabCountOK = 0 ;
 	m_nLastTotalCnt = 0 ;
