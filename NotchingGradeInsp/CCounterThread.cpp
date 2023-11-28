@@ -426,9 +426,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//이전에 받았던 id와 다르다면 추가
 					if (wTempID != wLastTabId)
 					{
+						//BCD ID 얻는 시점에 TabNo는?
+						int TabNo = AprData.m_NowLotData.m_nTabCount;
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("@@%d### DIO ID before<%d> ^^ now<%d>"), ThreadLoopCount, wLastTabId, wTempID);
+						LOGDISPLAY_SPEC(7)(_T("@@%d### DIO ID before<%d> ^^ now<%d> TabNo<%d>"), ThreadLoopCount, wLastTabId, wTempID, TabNo);
 
 						//만약에 input id 저장소와 시간 저장소의 크기가 다르면 모두 지운다.
 						if (inputIdReadTime.size() != inputReadId.size())
@@ -558,6 +560,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						CCounterInfo cntInfo;
 						//Tab Id 
 						cntInfo.nTabID = wTempID;
+						//Tab No(번호)
+						cntInfo.nTabNo = TabNo;
 						//Tab Total Count 
 						//Tab Total Count를 증가 시킨다.
 						AprData.m_NowLotData.m_nTabIdTotalCount++;
