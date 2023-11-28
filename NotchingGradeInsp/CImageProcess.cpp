@@ -9715,3 +9715,25 @@ BOOL CImageProcess::FindPetFilm(const BYTE* pOrgImg, int nImageWidth, int nImage
 
 	return bRet;
 }
+
+
+BOOL CImageProcess::SaveOriginImage(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CString strComment)
+{ //  원본 이미지 저장
+	CBitmapStd bmp(nImageWidth, nImageHeight);
+	bmp.SetImage(nImageWidth, nImageHeight, pOrgImg);
+
+	CTime time = CTime::GetCurrentTime();
+
+	CString strPath = AprData.m_strImagePath + _T("\\ORIGIN");
+	CWin32File::CreateDirectory(strPath);
+
+	CString str;
+	str.Format(_T("%s\\%04d%02d%02d_%02d%02d%02d(%03d)_%s.bmp"),
+		strPath,
+		time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond(), GetTickCount(),
+		strComment );
+
+	bmp.SaveBitmap(str);
+
+	return TRUE;
+}
