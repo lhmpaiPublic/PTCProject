@@ -22,11 +22,11 @@ public :
 	int GetSize();
 	BOOL IsEmpty();
 	CCounterInfo Pop();
+	BOOL FindTabId(int TabId);
 	int CalcMaxQueueSize(int nAcqBufSize, int nOneTabSize);
 	void SetMaxQueueSize( int nSize );
 
 protected :
-	long m_lCount;
 	CRITICAL_SECTION m_csQueue;
 	int m_nMaxQueueSize;
 

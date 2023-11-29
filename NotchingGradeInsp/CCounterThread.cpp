@@ -21,8 +21,6 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 			CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
 			if (CCounterThread::m_MarkSendInfoData.size())
 			{
-				//DIO Input Log
-				LOGDISPLAY_SPEC(7)(_T("이전 마킹 데이터가 있을 때"));
 
 				//지울 최종 포인터
 				MarkSendInfoData_iterator itdelete = CCounterThread::m_MarkSendInfoData.end();
@@ -201,7 +199,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	//m_nTabIdTotalCount 를 백업 해둔다.
 	int nTabIdTotalCount_backup = 0;
 
-	//누락정보를 받았을 때 보낸다.
+	//스래드 주기 카운터
+	DWORD ThreadLoopCount = 0;
+
+	//ConnectZone count
+	int ConnectZoneCount = 0;
 
 	while (1)
 	{
@@ -237,10 +239,9 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 				break;
 			}
-			//if (pThis->m_bRunFlag == FALSE)
-			//{
-			//	continue;
-			//}
+
+			//스래드 주기 카운터 증가
+			ThreadLoopCount++;
 
 			//마킹을 위한 플로우 추가
 			//마킹을 위한 시간을 세팅
@@ -250,9 +251,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			//마킹 보내는 시간은 총 Set 하고 펄스를 TRUE 만드는 시간 5초 대기 + 펄스 TRUE -> FALSE (켠상태 - 끈상태 만들기) 15초 총20초
 			if (markingSendTimeOut > nowTickCount)
 			{
-				//DIO Input Log
-				LOGDISPLAY_SPEC(7)(_T("DIO test markingSendTimeOut Enter"));
-
 				//마킹 데이터 유효한가?
 				if (bMarkingDataSend)
 				{
@@ -312,7 +310,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 								{
 									//input id와 마킹할 id가 같으면
-									if (CCounterThread::m_MarkSendInfoData[idx].TabId == inputReadId[0])
+									if (CCounterThread::m_MarkSendInfoData[idx].TabId == inputReadId[0] && CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
 									{
 										//DIO Input Log
 										LOGDISPLAY_SPEC(7)(_T("input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
@@ -342,11 +340,9 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					}
 					else
 					{
-						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("받은 input id 정보가 없다"));
 						//보낼 Tab Id 정보가 없을 때 마킹정보가 3개 이상이면
-						//첫번째 id 정보를 확인해서 보낸다.
-						if (CCounterThread::m_MarkSendInfoData.size() > 3)
+						//size -1 까지 id 정보를 확인해서 보낸다.
+						if (CCounterThread::m_MarkSendInfoData.size() > 2)
 						{
 							//마킹 정보를 보내고 Out_PULSE FALSE 세팅 후 10초 후
 							//마킹 정보를 보내기 위한 세팅을 한다.
@@ -356,23 +352,29 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								{
 									CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
 
-									//첫번 째 마킹 정보를 보낸다.
-									if (CCounterThread::m_MarkSendInfoData[0].bSendComplate == false)
+									//Size -1 개 정보를 확인하여 bSendComplate == false 이면 보낸다.
+									for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size()-1; idx++)
 									{
-										//DIO Input Log
-										LOGDISPLAY_SPEC(7)(_T("마킹할 정보가 3이상이면 첫번째 마킹정보를 보낸다. sendid<%d>"), CCounterThread::m_MarkSendInfoData[0].TabId);
+										//첫번 째 마킹 정보를 보낸다.
+										if (CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
+										{
+											//DIO Input Log
+											LOGDISPLAY_SPEC(7)(_T("마킹할 Data가 3개이상이면 첫번째 마킹정보를 보낸다. sendid<%d>"), CCounterThread::m_MarkSendInfoData[idx].TabId);
 
-										//마킹 데이터 넣고
-										dio.OutputWord(CCounterThread::m_MarkSendInfoData[0].MarkingOutputData);
-										//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
-										Sleep(1);
-										//sednd 후 지우기 위한 플래그 true;
-										CCounterThread::m_MarkSendInfoData[0].bSendComplate = true;
-										//마킹 보내는 타임 설정
-										markingSendTimeOut = GetTickCount() + 5 + 15;
-										//마킹을 보내는 플래그 설정 켜기
-										bMarkingDataSend = TRUE;
+											//마킹 데이터 넣고
+											dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+											//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
+											Sleep(1);
+											//sednd 후 지우기 위한 플래그 true;
+											CCounterThread::m_MarkSendInfoData[idx].bSendComplate = true;
+											//마킹 보내는 타임 설정
+											markingSendTimeOut = GetTickCount() + 5 + 15;
+											//마킹을 보내는 플래그 설정 켜기
+											bMarkingDataSend = TRUE;
 
+											break;
+
+										}
 									}
 									CCounterThread::m_bMarkSendInfoDataSynch = FALSE;
 								}
@@ -398,6 +400,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			CSigProc* pSigProc = theApp.m_pSigProc;
 			if (pSigProc != NULL && (pSigProc->GetConnectZone() == FALSE))
 			{
+				ConnectZoneCount = 0;
 #endif
 
 #endif //USE_PLCCONNECTZONE
@@ -423,9 +426,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//이전에 받았던 id와 다르다면 추가
 					if (wTempID != wLastTabId)
 					{
+						//BCD ID 얻는 시점에 TabNo는?
+						int TabNo = AprData.m_NowLotData.m_nTabCount;
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("*0**DIO ID before<%d> now<%d>"), wLastTabId, wTempID);
+						LOGDISPLAY_SPEC(7)(_T("@@%d### DIO ID before<%d> ^^ now<%d> TabNo<%d>"), ThreadLoopCount, wLastTabId, wTempID, TabNo);
 
 						//만약에 input id 저장소와 시간 저장소의 크기가 다르면 모두 지운다.
 						if (inputIdReadTime.size() != inputReadId.size())
@@ -464,25 +469,39 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 									int wLastTabIdbackup = wLastTabId;
 									//누락이 1개 일어 났을 때 마킹 정보를 바로 보낸다.
 									int omissCount = 0;
-									while (true)
+									while (wLastTabIdbackup != wTempID)
 									{
 										//다음 id로 증가 및 유효 카운트 검사
 										wLastTabIdbackup++;
 										if (wLastTabIdbackup >= 64)
 											wLastTabIdbackup = 0;
 
-										//얻은  Tab id가  같으면 빠져 나간다.
-										if (wLastTabIdbackup == wTempID)
-										{
-											break;
-										}
-										//아니면 Tab id 총 카운트 증가한다.
-										else
-										{
-											AprData.m_NowLotData.m_nTabIdTotalCount++;
-											omissCount++;
-										}
+										//누락된 카운트를 올린다.
+										omissCount++;
 
+										//DIO Input Log
+										LOGDISPLAY_SPEC(7)(_T("@@%d### 누락 Input ID [%d] 누락 갯수<%d>"), ThreadLoopCount, wLastTabIdbackup, omissCount);
+
+									}
+									//누락 카운트가 0으로 초기화 한 데이터 일경우 카운터하지 않는다.
+									//Tab Id Queue도 초기화 한다.
+									if ((wTempID == 0) && (omissCount > 1))
+									{
+										//초기화 한다.
+										pCntQueInPtr->ResetQueue();
+
+										//Tab Use Id 초기화 세팅
+										AprData.m_NowLotData.m_bInitTabId = TRUE;
+										//DIO Input Log
+										LOGDISPLAY_SPEC(7)(_T("@@%d### Input ID 초기화 TabId[%d]- ResetQ - BeforId[%d]"), ThreadLoopCount, wTempID, wLastTabId);
+									}
+									//초기화가 아닌 경우
+									else
+									{
+										//DIO Input Log
+										LOGDISPLAY_SPEC(7)(_T("@@%d### Input ID 누락 카운트 추가 지금 카운트[%d]- 추가[%d] - 추가된 카운트[%d]"), ThreadLoopCount, AprData.m_NowLotData.m_nTabIdTotalCount, omissCount, (AprData.m_NowLotData.m_nTabIdTotalCount + omissCount));
+
+										AprData.m_NowLotData.m_nTabIdTotalCount += omissCount;										
 									}
 									//Tab id Count 백업
 									nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
@@ -502,7 +521,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 												if (CCounterThread::m_MarkSendInfoData[idx].TabId == nextTabID && CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
 												{
 													//DIO Input Log
-													LOGDISPLAY_SPEC(7)(_T("누락 id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), nextTabID, CCounterThread::m_MarkSendInfoData[idx].TabId);
+													LOGDISPLAY_SPEC(7)(_T("@@%d### 누락 id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), ThreadLoopCount, nextTabID, CCounterThread::m_MarkSendInfoData[idx].TabId);
 
 													//마킹 데이터 넣고
 													dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
@@ -527,10 +546,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								strMsg.Format(_T("Input ID [%d] 누락"), nextTabID);
 								AprData.SaveMemoryLog(strMsg);
 
-								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("Input ID [%d] 누락"), nextTabID);
-
-								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("Input ID 누락 before<%d> now<%d>"), wLastTabId, wTempID);
+								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("Input ID 누락 before<%d> ^^ now<%d>"), wLastTabId, wTempID);
 							}
 							//다음에 받을 ID를 세팅한다.
 							nextTabID = wTempID + 1;
@@ -544,10 +560,14 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						CCounterInfo cntInfo;
 						//Tab Id 
 						cntInfo.nTabID = wTempID;
+						//Tab No(번호)
+						cntInfo.nTabNo = TabNo;
 						//Tab Total Count 
 						//Tab Total Count를 증가 시킨다.
 						AprData.m_NowLotData.m_nTabIdTotalCount++;
 						cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
+
+						//Tab Id 정보를 추가한다.
 						pCntQueInPtr->PushBack(cntInfo);
 
 						//Tab id Count 백업
@@ -576,7 +596,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						AprData.SaveMemoryLog(strMsg);
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, nCntQueSize);
+						LOGDISPLAY_SPEC(7)(_T("@@%d### Input ID Add TabId[%d],TotalCount[%d],Queue Count<%d>"), ThreadLoopCount, cntInfo.nTabID, cntInfo.nTabIdTotalCount, nCntQueSize);
 
 						if (nCntQueSize >= FRAME_ACQ_ERROR_CHK_CNT)
 						{
@@ -611,15 +631,13 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								//input id 100초 유지 증가
 								inputIdReadTime[idx] = GetTickCount() + MAXMARKING_TIMEOUT;
 								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("Trigger 신호가 Off 유지 카운트<%d> id<%d>"), TriggerOffCount, inputReadId[idx]);
+								LOGDISPLAY_SPEC(7)(_T("@@%d### Trigger 신호가 Off 유지 카운트<%d> id<%d>"), ThreadLoopCount, TriggerOffCount, inputReadId[idx]);
 							}
 						}
 					}
 
-					if ((TriggerOffCount % 10) == 0)
+					if ((TriggerOffCount % 5) == 0)
 					{
-						LOGDISPLAY_SPEC(7)(_T("TriggerOff Count<%d>"), TriggerOffCount);
-
 						WORD wInSignal = 0x00;
 						dio.InputWord(&wInSignal);
 
@@ -630,7 +648,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						if (wLastTabIdTriggerOff != wTempID)
 						{
 							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("TriggerOff input Tabid<%d><%d>"), wTempID, wLastTabIdTriggerOff);
+							LOGDISPLAY_SPEC(7)(_T("@@%d### TriggerOff Count<%d> input Tabid<%d><%d>"), ThreadLoopCount, TriggerOffCount, wTempID, wLastTabIdTriggerOff);
 
 							wLastTabIdTriggerOff = wTempID;
 						}
@@ -652,6 +670,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			}
 			else
 			{
+				//ConnectZone 세팅 상태 체크
+				AprData.m_NowLotData.m_bConnectZone = TRUE;
+
+				ConnectZoneCount++;
+				//DIO Input Log
+				LOGDISPLAY_SPEC(7)(_T("@@%d### ConnectZone <%d>==== "), ThreadLoopCount, ConnectZoneCount);
 				//Connect Zone 상태일 때 버퍼를 비운다.
 				pCntQueInPtr->ResetQueue();
 
@@ -662,32 +686,19 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					inputReadId.clear();
 				}
 
-				//ID를 한번만 처리
-				static BOOL bTriggerBitFALSE = FALSE;
+				WORD wInSignal = 0x00;
+				dio.InputWord(&wInSignal);
 
-				BOOL bTriggerBit;
-				dio.InputBit(CAppDIO::eIn_TRIGGER, &bTriggerBit);
-				//Trigger 펄스 bit true
-				if (bTriggerBit == TRUE )
+				// 22.04.06 Ahn Modify Start
+				WORD wTempID;
+				wTempID = 0x3F & (wInSignal >> 1);
+
+				if (wLastInfo != wTempID)
 				{
-					if (bTriggerBitFALSE == FALSE)
-					{
-						WORD wInSignal = 0x00;
-						dio.InputWord(&wInSignal);
+					//DIO Input Log
+					LOGDISPLAY_SPEC(7)(_T("@@%d### ConnectZone input Tabid<%d>"), ThreadLoopCount, wTempID);
 
-						// 22.04.06 Ahn Modify Start
-						WORD wTempID;
-						wTempID = 0x3F & (wInSignal >> 1);
-						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("Input TabID 무시 PLC 신호 == ConnectZone input Tabid<%d>"), wTempID);
-
-						bTriggerBitFALSE = TRUE;
-					}
-
-				}
-				else
-				{
-					bTriggerBitFALSE = FALSE;
+					wLastInfo = wTempID;
 				}
 				
 			}

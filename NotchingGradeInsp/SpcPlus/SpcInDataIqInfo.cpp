@@ -28,6 +28,8 @@ char* CSpcInDataIqInfo::MakeInDataIqInfoText =
 "            \"IQ_CAM_ANGLE_VALUE\" : \"%s\",\r\n"
 "            \"IQ_CAMERA_GAIN\" : \"%s\",\r\n"
 "            \"IQ_EXPOSURE_TIME\" : \"%s\",\r\n"
+"            \"IQ_SCREEN_IMAGE_RESIZE_RATIO_X\" : \"%s\",\r\n"
+"            \"IQ_SCREEN_IMAGE_RESIZE_RATIO_Y\" : \"%s\",\r\n"
 "            \"IMAGE_JUDGE\" : \"%s\",\r\n"
 "            \"IMAGE_FILE_NAME\" : \"%s\"\r\n"
 "          }";
@@ -38,6 +40,8 @@ char* CSpcInDataIqInfo::MakeInDataIqInfoText =
 CSpcInDataIqInfo::CSpcInDataIqInfo(CSpcPlusManager* sMgr)
 {
 	//관리 클래스 객체 포인터
+	float IntQuality = 0.0;
+
 	manager = dynamic_cast<CSpcInspManager*>(sMgr);
 
 	m_IqCameraLocation = SPCINFO->getCameraLocation();
@@ -52,6 +56,8 @@ CSpcInDataIqInfo::CSpcInDataIqInfo(CSpcPlusManager* sMgr)
 	m_IqCamAngleValue = SPCINFO->getCamAngleValue();
 	m_IqCameraGain = SPCINFO->getCameraGain();
 	m_IqExposureTime = SPCINFO->getCameraExposureTime();
+	m_IqScreenImageResizeRatio_X = "Null";
+	m_IqScreenImageResizeRatio_Y = "Null";
 	m_ImageJudge = "NG";
 	m_ImageFileName = "";
 
@@ -86,6 +92,8 @@ CString CSpcInDataIqInfo::makeJSONText_IqInfo()
 		m_IqCamAngleValue,
 		m_IqCameraGain,
 		m_IqExposureTime,
+		m_IqScreenImageResizeRatio_X,
+		m_IqScreenImageResizeRatio_Y,
 		m_ImageJudge,
 		m_ImageFileName
 	);

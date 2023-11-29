@@ -101,13 +101,16 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 				// Image 하나 가지고 오고 삭제함.
 				CImgSaveInfo* pSaveInfo = pQueuePtr->Pop();
-				if (pSaveInfo == NULL) break;
+				if (pSaveInfo == NULL)
+				{
+					AprData.SaveDebugLog_Format(_T("CtrlThreadImgSave pSaveInfo NULL"));
+					break;
+				}
 
 				if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
 				{
 					//Image Save Log
 					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave 저장 이미지 정보 : 넓이가 0 또는 높이가 0이다"));
-
 					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 					if (pImgPtr)
 					{
@@ -117,6 +120,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					else
 					{
 						LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
+						AprData.SaveDebugLog_Format(_T("CtrlThreadImgSave pImgPtr NULL"));
 					}
 
 					if (pSaveInfo)
@@ -170,6 +174,8 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					else
 					{
 						LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
+						AprData.SaveDebugLog_Format(_T("CtrlThreadImgSave pImgPtr NULL"));
+
 					}
 
 					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave End"));

@@ -55,7 +55,7 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 	m_bKill = FALSE ;
 	m_CreateMode = nMode;
 	//이벤트 객체 생성
-	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, TRUE, FALSE, NULL);
+	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, FALSE, FALSE, NULL);
 	pEvent_ImageProcThread_Result = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 //	m_DisphWnd = NULL ;
@@ -101,7 +101,16 @@ void CImageProcThread::Kill( void )
 
 }
 
-#define MAX_INT 2147483647
+#define IMAGECUTTINGTAB_TIMEOUT 50
+#define TabPitch(a, b, c) ((a-b)+c)*(0.021)
+//92.0 +- 20
+#define MIN_TABPITCH 72 
+#define MAX_TABPITCH 112
+static int bforeImageLengtch = 0;
+static int bforeTabLeft = 0;
+
+static int RecipeInfoTabPitch = 0;
+
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 {
@@ -133,31 +142,26 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 	//CCounterInfo 에 값이 없을때 사용할 값
 	int useTabID = 64;
-	//CCounterInfo 에 값이 없을때 미리 사용한 값 저장
-	std::vector<int> quUserTabID;
 
 	UINT ret = 0;
 	//스래드 대기 여부
 	BOOL bThreadWait = TRUE;
+
+	//레시피 텝 피치 정보를 세팅한다.
+	RecipeInfoTabPitch = (int)AprData.m_pRecipeInfo->TabCond.dTabPitch;
+
+	//다음 사용할 Tab ID (BCD ID)
+	int nextBCDId = 64;
 	while (1)
 	{
-		//타임 주기 이벤트
-		//대기 상태일 때
-		if (bThreadWait)
-		{
-			ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), INFINITE);
-		}
-		//대기하지 않고 바로 처리한다.
-		else
-		{
-			ret = WAIT_OBJECT_0;
-		}
+		//이벤트 타임 Tab Find 주기 
+		ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), IMAGECUTTINGTAB_TIMEOUT);
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
 			return 0;
 		}
-		else if (ret == WAIT_OBJECT_0) //TIMEOUT시 명령
+		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
 			if (pThis == NULL)
 			{
@@ -174,31 +178,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				}
 			}
 
-			//프레임 크기
-			//Top Frame 크기
-			int nSizeFrmL = pQueueFrame_Top->GetSize();
-			//Bottom Frame 크기
-			int nSizeFrmR = pQueueFrame_Bottom->GetSize();
-
 			//프레임 정보가 Top1개 이상, Bottom 1개 이상
 			bHeadFlag = !pQueueFrame_Top->IsEmpty();
 			bTailFlag = !pQueueFrame_Bottom->IsEmpty();
 
-			//Top과 Bottom Frame 크기의 차가 FRAME_ACQ_ERROR_CHK_CNT 이상이면 에러 출력한다.
-			//if (abs(nSizeFrmL - nSizeFrmR) > FRAME_ACQ_ERROR_CHK_CNT) //의미 없음
-			//{
-
-			//	// 에러 처리 
-			//	CString strErrMsg;
-			//	strErrMsg.Format(_T("Frame Size Error : Top [%d], Bottom[%d], Inspect Status [%d], Process End!!!!"), nSizeFrmL, nSizeFrmR, pThis->m_pParent->IsInspection());
-			//	AprData.SaveErrorLog(strErrMsg);
-			//	AprData.SaveDebugLog_Format(strErrMsg);
-
-			//	//카메라의 에러를 세팅한다.
-			//	AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
-			//}
-
-		//Top과 Bottom  정보가 1개씩 이상이 되어야 한다.
+			//Top과 Bottom  정보가 1개씩 이상이 되어야 한다.
 			if (bHeadFlag && bTailFlag)
 			{
 				//TabFind TacTime
@@ -301,13 +285,60 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 //					double dTime = ctAna.WhatTimeIsIt_Double();
 
 					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(1)("*2*1*Now Tab Find Count<%d>, TabID QueueCount<%d>",
+					LOGDISPLAY_SPEC(7)("*2*1*Now Tab Find Count<%d> vs TabID QueueCount<%d>",
 						nVecSize, pCntQueueInCtrl->GetSize());
 
 
+					//Tab Id Q Size 
+					int TabQueueSize = pCntQueueInCtrl->GetSize();
 					//Tab 정보 크기 만큼 루프 돌다.
 					for (int i = 0; i < nVecSize; i++)
 					{
+
+						//Tab  정보 접근 임시 포인터 변수
+						CTabInfo* pTabInfo = &vecTabInfo[i];
+
+						//텝 피치 측정
+						if((bforeImageLengtch > 0) && (bforeTabLeft > 0))
+						{
+							//min 72 max 112 범위의 피치를 벗어날 경우 
+							int nTabPitch = (int)TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%d> @@@@ ", nTabPitch);
+							if ((MIN_TABPITCH > nTabPitch) || (MAX_TABPITCH < nTabPitch))
+							{
+								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
+								useTabID = 64;
+								nextBCDId = 64;
+								//Tab Id 정보 로그
+								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 접합부 Trigger Id Setting 초기화 @@@@ ");
+							}
+						}
+
+						bforeImageLengtch = pTabInfo->nImageLength;
+						bforeTabLeft = pTabInfo->nTabLeft;
+
+						//Trigger Tab Id 초기화 시 
+						if (AprData.m_NowLotData.m_bInitTabId && (useTabID != 64))
+						{
+							AprData.m_NowLotData.m_bInitTabId = FALSE;
+							useTabID = 64;
+							nextBCDId = 64;
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@Trigger Tab Id  초기화 시 Trigger Id Setting 초기화 @@@@ ");
+						}
+
+						//컨넥트 존 세팅 시
+						if ((useTabID != 64) && AprData.m_NowLotData.m_bConnectZone)
+						{
+							AprData.m_NowLotData.m_bConnectZone = FALSE;
+							useTabID = 64;
+							nextBCDId = 64;
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@ConnectZone Trigger Id Setting 초기화 @@@@ ");
+						}
+
+
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -318,109 +349,129 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//============================================================================================================
 #endif //SPCPLUS_CREATE
 
+						
 						//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 						CCounterInfo cntInfo;
+						//Tab Id를 Trigger에서 받은 값을 사용히지 않고 사용할 id를 사용한다.
 						cntInfo.nTabID = useTabID;
+						//Tab Total Count MAX
 						cntInfo.nTabIdTotalCount = MAX_INT;
+						//TabNo Trigger 수신에서 가져온 값
+						cntInfo.nTabNo = MAX_INT;
 
-						//Trigger input id 사용 예외처리
-						//queue에서 정보가 없을 때 들어올 값을 미리 사용한다.
-						//Tab Id 정보가 있을 경우
-						bool bNextTabId = false;
-						while (pCntQueueInCtrl->GetSize())
+						//Tab Id 를 받은 것이 있다면
+						if (TabQueueSize)
 						{
-							//정보를 하나 가지고 온다.
-							cntInfo = pCntQueueInCtrl->Pop();
-							//미리 땡겨 쓴 Tab Id가 있다면
-							//지울 최종 포인터
-							std::vector<int>::iterator itdelete = quUserTabID.end();
-							//end 까지 돌면서 true 인 지울 end 포인터를 백업한다.
-							if (quUserTabID.size())
+							//Tab Id 초기 값이 없을 경우 Trigger 에서 넘겨온 값을 사용한다.
+							if (useTabID == 64)
 							{
-								std::vector<int>::iterator it = quUserTabID.begin();
-								do
+								//Tab 을 찾은 갯수 만큼  돌았을 경우 맨 마지막 값을 사용한다.
+								if (nVecSize == (i + 1))
 								{
-									if ((*it) == cntInfo.nTabID)
+									//Trigger  에서 넘겨진 값이 있다면 맨 마지막 값을 가져온다.
+									int loopTabQueueSize = 0;
+									while (loopTabQueueSize < TabQueueSize)
 									{
-										itdelete = it;
+										//정보를 하나 가지고 온다.
+										cntInfo = pCntQueueInCtrl->Pop();
+										//Tab Id 정보 로그
+										LOGDISPLAY_SPEC(7)("@@@ A @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfo.nTabID, cntInfo.nTabNo, cntInfo.nTabIdTotalCount);
+
+										//루프 변수 증가
+										loopTabQueueSize++;
 									}
-									it++;
-								} while (quUserTabID.end() != it);
+								}
 							}
-							//지울 데이터가 있다면
-							if (quUserTabID.end() != itdelete)
-							{
-								//시작점 부터 true 설정된 데이터까지 지운다.
-								quUserTabID.erase(quUserTabID.begin(), itdelete);
-							}
-							//지울 데이터가 없다면
+							//아니면 Trigger Id 와 Tab찾은 갯수와 비교하여 세팅한다.
 							else
 							{
-								//다음에 사용할 id : 1 증가 시켜 저장
-								useTabID = cntInfo.nTabID + 1;
-								//Tab id는 0 ~ 63 까지 사용한다.
-								if (useTabID >= 64)
+
+								//Tab Id 정보 로그
+								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Id Size<%d> = Tab Image Size<%d> 비교<%d> @@@@ ", TabQueueSize, nVecSize, abs(TabQueueSize - nVecSize));
+
+								//Tab 찾은 갯수와 Tab Id Q 사이즈가 같다면 하나씩 
+								if (nVecSize == TabQueueSize)
 								{
-									useTabID = 0;
-								}
-								bNextTabId = true;
-							}
-						}
+									//Tab Id 확인용
+									CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
+									//Tab Id 정보 로그
+									LOGDISPLAY_SPEC(7)("@@@ B @@@@@@Tab Id 삭제 Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
 
-						//Tab id 정보가 없을 경우(미리 땡겨 쓴 Id 이거나 아직 못받았을 때)
-						if (bNextTabId == false)
-						{
-							//20개 이상 TabID가 안들어왔을 때는 ID를 64를 준다.
-							if (quUserTabID.size() > 5)
-							{
-								//다음 아이디를 할당한다.
-								cntInfo.nTabID = 64;
-							}
-							//20개 이하였을 때 다음 사용할 아이디를 할당한다.
-							else
-							{
-								//다음 아이디를 할당한다.
-								cntInfo.nTabID = useTabID;
-								//사용한 아이디를 backup 한다. 확인용
-								quUserTabID.push_back(cntInfo.nTabID);
-
-								//다음에 사용할 id : 1 증가 시켜 저장
-								useTabID = cntInfo.nTabID + 1;
-								//Tab id는 0 ~ 63 까지 사용한다.
-								if (useTabID >= 64)
-								{
-									useTabID = 0;
-								}
-							}	
-
-
-							if (AprData.m_System.m_nMissTabIdMax > 0)
-							{
-								AprData.m_nMissTabIdNow++;
-
-								if (AprData.m_nMissTabIdNow >= AprData.m_System.m_nMissTabIdMax)
-								{
-									CString strError;
-									strError.Format(_T("Miss Tab ID Error!! [Count: %d]"), AprData.m_nMissTabIdNow);
-
-									AprData.m_ErrStatus.SetError(CErrorStatus::en_MissTabID, strError);
-									AprData.m_NowLotData.m_nContinueCount = AprData.m_nCoutinuouCount + 1; //Tab ID의 INPUT을 못 받았을때, 강제 연속 알람
-
-									AprData.SaveDebugLog_Format(strError);
+									//가져온 id가 useTabID와 같다면
+									if (cntInfoTemp.nTabID == cntInfo.nTabID)
+									{
+										//Tab Id 매칭 확인 용
+										cntInfo.nTabIdTotalCount = cntInfoTemp.nTabIdTotalCount;
+										cntInfo.nTabNo = cntInfoTemp.nTabNo;
+									}
 								}
 								else
 								{
-									AprData.SaveDebugLog_Format(_T("Miss Tab ID [%d/%d]"), AprData.m_nMissTabIdNow, AprData.m_System.m_nMissTabIdMax);
+									//Tab Id 정보가 있는가 를 확인 후 
+									//삭제 및 Id 매칭 상태를 세팅한다.
+									if (pCntQueueInCtrl->FindTabId(cntInfo.nTabID))
+									{
+										int loopTabQueueSize = 0;
+										while (loopTabQueueSize < TabQueueSize)
+										{
+											//Tab Id 확인용
+											CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
+											//Tab Id 정보 로그
+											LOGDISPLAY_SPEC(7)("@@@ C @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
+
+											//Tab Id 정보가 같다면
+											if ((cntInfo.nTabID == cntInfoTemp.nTabID))
+											{
+												//Tab Total count 를 세팅한다.
+												//TabNo와 Tab Tatal count를 비교한다.
+												cntInfo.nTabIdTotalCount = cntInfoTemp.nTabIdTotalCount;
+												cntInfo.nTabNo = cntInfoTemp.nTabNo;
+												//빠져나감
+												break;
+											}
+											loopTabQueueSize++;
+										}
+									}
 								}
 
 							}
 
 						}
-						else
+
+						if ((cntInfo.nTabID >= 0) || (cntInfo.nTabID < 64))
 						{
-							AprData.m_nMissTabIdNow = 0;
+							//다음에 사용할 id : 1 증가 시켜 저장
+							useTabID = cntInfo.nTabID + 1;
+							//Tab id는 0 ~ 63 까지 사용한다.
+							if (useTabID >= 64)
+							{
+								useTabID = 0;
+							}
+
+							//로그 초기 세팅
+							if (nextBCDId == 64)
+							{
+								nextBCDId = cntInfo.nTabID;
+							}
+
+							//BCD ID 사용 체크 로그
+							else if (cntInfo.nTabID != nextBCDId)
+							{
+								CLogDisplayDlg::LogDisplayText(_T("BCD_ID_USE_ERROR "), _T("use Id<%d> next id<%d>"), cntInfo.nTabID, nextBCDId);
+
+								//Tab Id 정보 로그
+								LOGDISPLAY_SPEC(7)("@@@@@@@@@ BCD_ID_USE_ERROR use Id<%d> next id<%d>@@@@ ", cntInfo.nTabID, nextBCDId);
+							}
+
+							nextBCDId = cntInfo.nTabID + 1;
+							if (nextBCDId >= 64)
+							{
+								nextBCDId = 0;
+							}
+
 						}
 
+						
 						//Tab id 정보를 가져와서 지금의 id 정보를 확인한다.
 						if (cntInfo.nTabIdTotalCount != MAX_INT)
 						{
@@ -439,8 +490,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount);
 						}
 
-						//Tab  정보 접근 임시 포인터 변수
-						CTabInfo* pTabInfo = &vecTabInfo[i];
+						//Tab Id 정보 로그
+						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Id Info@@@@  LotId<%s> Tab Id<%d> TabNo<%d><%d> TabTotalcnt<%d>",
+							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
+
 
 						//Tab 정보에서 Left 크기, Right 크기
 						int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
@@ -603,7 +656,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pInfo->m_nTabLeft = pTabInfo->nTabLeft;
 						pInfo->m_nTabRight = pTabInfo->nTabRight;
 						pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
-						LOGDISPLAY_SPEC(7)("<<Proc>> CtrlThreadImgCuttingTab-use Tab id <%d> ", cntInfo.nTabID);
 
 						pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
 						pInfo->m_nBndElectrode = nBndElectrode;
@@ -694,26 +746,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				delete pFrmInfo_Bottom;
 				pFrmInfo_Bottom = NULL;
 
-//				double dSecond = ctAna.WhatTimeIsIt_Double();
-//				AprData.SetTactTime_1(dSecond);
 			}
-			//Top Frame 크기
-			nSizeFrmL = pQueueFrame_Top->GetSize();
-			//Bottom Frame 크기
-			nSizeFrmR = pQueueFrame_Bottom->GetSize();
 
-			//큐에 데이터가 있으면 기다리지 않고 실행하도록 설정
-			if (nSizeFrmL && nSizeFrmR)
-			{
-				bThreadWait = FALSE;
-			}
-			//없으면 대기
-			else
-			{
-				//Reset 호출
-				pThis->resetEvent_ImageProcThread_TabFind();
-				bThreadWait = TRUE;
-			}
 		}
 		else
 		{
@@ -903,6 +937,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						//Cell 추적 PLC에서 받은 ID (VIRTUAL_CELL_ID와 동일값 작성)	
 						CString	CellId = "";
 						CellId.Format(_T("%02d"), pTopInfo->m_nTabId_CntBoard);
+
+						//외관 판정 시 미응답에 의한 NG 발생시 처리 부분
+						InspInData->setDetectFallFlact(pTopInfo->m_bErrorFlag == TRUE ? "TRUE" : "FALSE");
+						InspInData->setDetectFallReasoAll(pTopInfo->m_bErrorFlag == TRUE ? "Foil-Inner Exposure, Foil-Outer Exposure, Foil-exposure" : "Null");
+
 						InspInData->setCellId(CellId);
 						//셀 카운트 번호
 						InspInData->setCellCountNo(CGlobalFunc::intToString(pTopInfo->nTabNo));

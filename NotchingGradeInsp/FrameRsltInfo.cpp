@@ -53,6 +53,9 @@ void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 
 	m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
 
+	// 외관 판정 시 Error 및 Over로 인한 부분을 처리하기 함.
+	m_bErrorFlag = pFrmInfo->m_bErrorFlag | pFrmInfo->m_bOverFlow;	
+
 	if (m_pTabRsltInfo != NULL) {
 		m_pTabRsltInfo->m_nHeadNo = m_nHeadNo;
 		m_pTabRsltInfo->m_nTabNo = nTabNo;

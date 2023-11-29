@@ -205,8 +205,8 @@ CSpcPlusManager* CSpcCreateJSONFileThread::popSpcPlus()
 	CSpcPlusManager* obj = NULL;
 	if (bCreate)
 	{
-		obj = m_SpcList.front();
 		::EnterCriticalSection(&m_csQueue);
+		obj = m_SpcList.front();
 		m_SpcList.pop();
 		::LeaveCriticalSection(&m_csQueue);
 	}

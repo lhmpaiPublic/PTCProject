@@ -298,6 +298,12 @@ public:
 	//Trigger Tab Id Total Count
 	int		m_nTabIdTotalCount;
 
+	//Trigger Tab Id 초기화
+	BOOL m_bInitTabId;
+
+	//ConnectZone
+	BOOL m_bConnectZone;
+
 	// 22.06.29 Ahn Add Start
 	int		m_nTopNG;
 	int		m_nBottomNG;
