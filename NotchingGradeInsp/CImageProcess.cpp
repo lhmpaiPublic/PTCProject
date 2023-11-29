@@ -6632,12 +6632,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		//	CImageProcess::SaveOriginImage(tabInfo.pImgPtr->m_pImagePtr, nWidth, tabInfo.nImageLength, str);
 		//}
 
-		{
-			CString str;
-			str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), nFrameCount);
+		//{
+		//	CString str;
+		//	str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), nFrameCount);
 
-			CImageProcess::SaveOriginImage(pImgPtr, nWidth, nHeight, str);
-		}
+		//	CImageProcess::SaveOriginImage(pImgPtr, nWidth, nHeight, str);
+		//}
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -6823,12 +6823,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			//	CImageProcess::SaveOriginImage(tabInfo.pImgPtr->m_pImagePtr, nWidth, tabInfo.nImageLength, str);
 			//}
 
-			{
-				CString str;
-				str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), nFrameCount);
+			//{
+			//	CString str;
+			//	str.Format(_T("Vec%d_%d"), pVecTabInfo->size(), nFrameCount);
 
-				CImageProcess::SaveOriginImage(pImgPtr, nWidth, nHeight, str);
-			}
+			//	CImageProcess::SaveOriginImage(pImgPtr, nWidth, nHeight, str);
+			//}
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		}	

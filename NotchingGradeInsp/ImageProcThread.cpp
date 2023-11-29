@@ -610,12 +610,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						////////////////////////////////////////////////////////////////////////////////////////////
 						// pyjtest : Tab 2개 인식 시 이미지 저장
-						if (nVecSize >= 2)
+						/*if (nVecSize >= 2)
 						{
 							CString str;
 							str.Format(_T("FrameCnt%d"), pTabInfo->nFrameCount);
 							CImageProcess::SaveOriginImage((BYTE*)pTabInfo->pImgPtr, nWidth, pTabInfo->nImageLength, str);
-						}
+						}*/
 
 
 
