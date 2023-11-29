@@ -485,6 +485,7 @@ public:
 	// 23.02.16 Ahn Add End
 
 	static BOOL	FindPetFilm(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos);
+	static BOOL SaveOriginImage(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CString strComment);
 
 };
 
