@@ -352,6 +352,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						
 						//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 						CCounterInfo cntInfo;
+						//Tab Id를 Trigger에서 받은 값을 사용히지 않고 사용할 id를 사용한다.
+						cntInfo.nTabID = useTabID;
+						//Tab Total Count MAX
+						cntInfo.nTabIdTotalCount = MAX_INT;
+						//TabNo Trigger 수신에서 가져온 값
+						cntInfo.nTabNo = MAX_INT;
 
 						//Tab Id 를 받은 것이 있다면
 						if (TabQueueSize)
@@ -359,8 +365,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//Tab Id 초기 값이 없을 경우 Trigger 에서 넘겨온 값을 사용한다.
 							if (useTabID == 64)
 							{
-								cntInfo.nTabIdTotalCount = MAX_INT;
-								cntInfo.nTabID = useTabID;
 								//Tab 을 찾은 갯수 만큼  돌았을 경우 맨 마지막 값을 사용한다.
 								if (nVecSize == (i + 1))
 								{
@@ -381,11 +385,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//아니면 Trigger Id 와 Tab찾은 갯수와 비교하여 세팅한다.
 							else
 							{
-								//Tab Id를 Trigger에서 받은 값을 사용히지 않고 사용할 id를 사용한다.
-								cntInfo.nTabID = useTabID;
-								//Tab Total Count MAX
-								cntInfo.nTabIdTotalCount = MAX_INT;
-
 
 								//Tab Id 정보 로그
 								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Id Size<%d> = Tab Image Size<%d> 비교<%d> @@@@ ", TabQueueSize, nVecSize, abs(TabQueueSize - nVecSize));
@@ -439,7 +438,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						}
 
-						if (cntInfo.nTabID != 64)
+						if ((cntInfo.nTabID >= 0) || (cntInfo.nTabID < 64))
 						{
 							//다음에 사용할 id : 1 증가 시켜 저장
 							useTabID = cntInfo.nTabID + 1;
