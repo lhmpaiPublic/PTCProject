@@ -607,8 +607,10 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 				SpcInDataDefectInfo->setDefectCameraNumber((pTabInfo->m_nHeadNo == 0) ? _T("1") : _T("2"));
 
 				//Rule Base Defect Type(불량명 기입) 
-				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface
-				CString DefectTypeRuleBaseName = (pDefInfo->nType == 0) ? "Foil-Exposure" : (pDefInfo->nType == 1) ? "Foil-ExposureOut" : "Surface";
+				// 결함 종류 0 : Foil Exposure, 1 : Foil ExposureOut, 2 : Surface(변경 전)
+				// 결함 종류 0 : Foil-Inner Exposure, 1: Foil-Outer Exposure, 2 : Foil-Exposure (변경 후)
+				CString DefectTypeRuleBaseName = (pDefInfo->nType == 0) ? "Foil-Inner Exposure" : (pDefInfo->nType == 1) ? "Foil-Outer Exposure" : "Foil-Exposure";
+
 				SpcInDataDefectInfo->setDefectTypeRuleBaseName(DefectTypeRuleBaseName);
 				SpcInDataDefectInfo->setDefectTypeRuleBaseNameReal(DefectTypeRuleBaseName);
 

@@ -76,6 +76,11 @@ private:
 	CString	m_VirtualCellId;
 	//Cell 판정결과	
 	CString	m_CellFinalJudge;
+	//외관 판정 시 미응답에 의한 NG 발생시 처리 (실패 -> True, 정상 -> False)
+	CString	m_DetectFallFlact;
+	//미응답 발생시 불량명 ( Foil-Inner Exposure, Foil-Outer Exposure, Foil-exposure), 정상 -> Null
+	CString	m_DetectFallReasoAll;
+
 	//외관 판정 결과 OK/NG/DLNG여부 	
 	CString	m_AppearanceJudgeResult;
 	//해당 Cell의 외관 NG 개수	
@@ -155,6 +160,12 @@ public:
 	void setVirtualCellId(CString	 VirtualCellId) { m_VirtualCellId = VirtualCellId; }
 	//Cell 판정결과	
 	void setCellFinalJudge(CString	CellFinalJudge) { m_CellFinalJudge = CellFinalJudge; }
+
+	//외관 판정 시 미응답에 의한 NG 발생시 처리 (실패 -> True, 정상 -> False)
+	void setDetectFallFlact(CString DetectFallFlact) { m_DetectFallFlact = DetectFallFlact; }
+	//미응답 발생시 불량명 ( Foil-Inner Exposure, Foil-Outer Exposure, Foil-exposure), 정상 -> Null
+	void setDetectFallReasoAll(CString DetectFallReasoAll) { m_DetectFallReasoAll = DetectFallReasoAll; }
+	
 	//외관 판정 결과 OK/NG/DLNG여부 	
 	void setAppearanceJudgeResult(CString	AppearanceJudgeResult) { m_AppearanceJudgeResult = AppearanceJudgeResult; }
 	//해당 Cell의 외관 NG 개수	
