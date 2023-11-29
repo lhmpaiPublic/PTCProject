@@ -339,7 +339,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 
 
-
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
@@ -359,6 +358,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//TabNo Trigger 수신에서 가져온 값
 						cntInfo.nTabNo = MAX_INT;
 
+						//Trigger 에서 받은 BCD ID
+						int nowBCDID = useTabID;
+
 						//Tab Id 를 받은 것이 있다면
 						if (TabQueueSize)
 						{
@@ -374,6 +376,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 									{
 										//정보를 하나 가지고 온다.
 										cntInfo = pCntQueueInCtrl->Pop();
+										//지금 받은 BCD ID
+										nowBCDID = cntInfo.nTabID;
 										//Tab Id 정보 로그
 										LOGDISPLAY_SPEC(7)("@@@ A @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfo.nTabID, cntInfo.nTabNo, cntInfo.nTabIdTotalCount);
 
@@ -394,6 +398,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								{
 									//Tab Id 확인용
 									CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
+									//지금 받은 BCD ID
+									nowBCDID = cntInfoTemp.nTabID;
 									//Tab Id 정보 로그
 									LOGDISPLAY_SPEC(7)("@@@ B @@@@@@Tab Id 삭제 Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
 
@@ -404,6 +410,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										cntInfo.nTabIdTotalCount = cntInfoTemp.nTabIdTotalCount;
 										cntInfo.nTabNo = cntInfoTemp.nTabNo;
 									}
+									
 								}
 								else
 								{
@@ -416,6 +423,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										{
 											//Tab Id 확인용
 											CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
+											//지금 받은 BCD ID
+											nowBCDID = cntInfoTemp.nTabID;
 											//Tab Id 정보 로그
 											LOGDISPLAY_SPEC(7)("@@@ C @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
 
@@ -469,6 +478,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								nextBCDId = 0;
 							}
 
+						}
+
+						//BCD ID 받은 값과 사용할 Tab Id 차가 3이상이면 
+						//BCD ID는 64이하이다.
+						if ((useTabID < 64) && (nowBCDID < 64) && (abs(useTabID - nowBCDID) > 3))
+						{
+							CLogDisplayDlg::LogDisplayText(_T("BCD_ID_USE_ERROR "), _T("@@@@@@@@@ useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ "), abs(useTabID - nowBCDID));
+
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@ BCD_ID_USE_ERROR useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ ", abs(useTabID - nowBCDID));
 						}
 
 						
