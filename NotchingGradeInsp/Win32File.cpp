@@ -587,10 +587,10 @@ CString	CWin32File::GetFileExceptionString( CFileException& rError )
 int CWin32File::IsNumAlpha(CString strData)
 {
 	//알파벳 또는 숫자가 아닌 문자가 몇개 인가 ? 
-	int bRet = FALSE;
+	int bRet = 0;
 	for (int idx = 0; idx < strData.GetLength(); idx++)
 	{
-		if (isalnum(strData.GetAt(idx)) == FALSE)
+		if (isalnum(strData.GetAt(idx)) == 0)
 		{
 			bRet++;
 		}
