@@ -91,6 +91,9 @@ public:
 	static CString GetFilename( LPCTSTR szFullPath, BOOL bExtention = TRUE ) ;
 	static CString	GetFileExceptionString( CFileException& rError ) ;
 
+	//문자열에 알파벳과 숫자만 검색하여 특수문자 있을 경우 FALSE
+	static int	IsNumAlpha(CString strData);
+
 };
 
 #endif // !defined(AFX_WIN32FILE_H__D9F673B3_0BEE_41D3_86B0_8E1A4C000CBE__INCLUDED_)

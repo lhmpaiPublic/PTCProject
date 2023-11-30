@@ -583,6 +583,20 @@ CString	CWin32File::GetFileExceptionString( CFileException& rError )
 	return ( str ) ;
 }
 
+//문자열에 알파벳과 숫자만 검색하여 특수문자 있을 경우 FALSE
+int CWin32File::IsNumAlpha(CString strData)
+{
+	//알파벳 또는 숫자가 아닌 문자가 몇개 인가 ? 
+	int bRet = FALSE;
+	for (int idx = 0; idx < strData.GetLength(); idx++)
+	{
+		if (isalnum(strData.GetAt(idx)) == FALSE)
+		{
+			bRet++;
+		}
+	}
+	return bRet;
+}
 
 int CWin32File::DeleteFilesByDate( CString &strDir, CTimeSpan &dt, BOOL bDeleteDir, BOOL bForce /*= FALSE*/ )
 {
