@@ -447,6 +447,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						}
 
+						//다음 Tab Id 를 사용할 값을 정하는 구간
 						if ((cntInfo.nTabID >= 0) || (cntInfo.nTabID < 64))
 						{
 							//다음에 사용할 id : 1 증가 시켜 저장
@@ -482,9 +483,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//BCD ID 받은 값과 사용할 Tab Id 차가 3이상이면 
 						//BCD ID는 64이하이다.
-						if ((useTabID < 64) && (nowBCDID < 64) && (abs(useTabID - nowBCDID) > 3))
+						int compareBCDID = abs(useTabID - nowBCDID);
+						if ((useTabID < 64) && (nowBCDID < 64) && ((compareBCDID > 40 ? 64 - compareBCDID : compareBCDID) > 3))
 						{
-							CLogDisplayDlg::LogDisplayText(_T("BCD_ID_USE_ERROR "), _T("@@@@@@@@@ useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ "), abs(useTabID - nowBCDID));
+							CLogDisplayDlg::LogDisplayText(_T("BCD_ID_USE_ERROR "), _T("@@@@@@@@@ useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ "), (compareBCDID > 40 ? 64 - compareBCDID : compareBCDID));
 
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@ BCD_ID_USE_ERROR useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ ", abs(useTabID - nowBCDID));
