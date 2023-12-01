@@ -159,6 +159,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
 	//계속해서 BCD ID가 뒤에 들어오던가 아니면 안 들어오던가 ? 
 	int TriggerBCDCountMAXINT = 0;
+
+	//Trigger BCD ID Size 0 시 Insp run 체크
+	int TriggerBCDIDSize0_RunCheck = 0;
 	while (1)
 	{
 		//이벤트 타임 Tab Find 주기 
@@ -390,6 +393,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab Id 를 받은 것이 있다면
 						if (TabQueueSize)
 						{
+							//Trigger BCD ID Size 0 시 Insp run 체크
+							TriggerBCDIDSize0_RunCheck = 0;
+
 							//Tab Id 초기 값이 없을 경우 Trigger 에서 넘겨온 값을 사용한다.
 							if (useTabID == 64)
 							{
@@ -471,6 +477,17 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							}
 
+						}
+						else
+						{
+							//run 체크
+							if (theApp.m_pSigProc && theApp.m_pSigProc->SigInRun())
+							{
+								//Trigger BCD ID Size 0 시 Insp run 체크
+								TriggerBCDIDSize0_RunCheck++;
+								//Tab Id 정보 로그
+								LOGDISPLAY_SPEC(8)("@@@@@@@@@Trigger BCD ID Size 0 Insp run 체크 Count<%d>@@@@ ", TriggerBCDIDSize0_RunCheck);
+							}
 						}
 
 						//다음 Tab Id 를 사용할 값을 정하는 구간
