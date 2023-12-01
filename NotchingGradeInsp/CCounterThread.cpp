@@ -448,6 +448,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						//초기값이 없다면 nextTabID 입력만
 						if (nextTabID == 255)
 						{
+							//초기화 한다.
+							pCntQueInPtr->ResetQueue();
+
+							//Tab Use Id 초기화 세팅
+							AprData.m_NowLotData.m_bInitTabId = TRUE;
+
 							nextTabID = wTempID + 1;
 							if (nextTabID >= 64)
 							{

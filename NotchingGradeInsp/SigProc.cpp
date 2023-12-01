@@ -21,6 +21,9 @@ CSigProc::CSigProc()
 	//memset(m_sIOBitOUT, 0x00, sizeof(m_sIOBitOUT) );
 
 	m_bSmsAlive = FALSE;
+
+	//컨넥트 존 설정 변수 초기화
+	m_bSigInConnectZone = FALSE;
 }
 
 CSigProc::~CSigProc()

@@ -152,6 +152,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 	//다음 사용할 Tab ID (BCD ID)
 	int nextBCDId = 64;
+
+	//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE
+	BOOL bBCDDiffBig = FALSE;
+
+	//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
+	//계속해서 BCD ID가 뒤에 들어오던가 아니면 안 들어오던가 ? 
+	int TriggerBCDCountMAXINT = 0;
 	while (1)
 	{
 		//이벤트 타임 Tab Find 주기 
@@ -338,6 +345,25 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@ConnectZone Trigger Id Setting 초기화 @@@@ ");
 						}
 
+						//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE
+						if ((useTabID != 64) && bBCDDiffBig)
+						{
+							bBCDDiffBig = FALSE;
+							useTabID = 64;
+							nextBCDId = 64;
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID 사용아이디 차가 3이상 초기화 @@@@ ");
+						}
+
+						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
+						if ((useTabID != 64) && (TriggerBCDCountMAXINT>5))
+						{
+							useTabID = 64;
+							nextBCDId = 64;
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID 사용아이디 차가 3이상 초기화 @@@@ ");
+						}
+
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -359,7 +385,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						cntInfo.nTabNo = MAX_INT;
 
 						//Trigger 에서 받은 BCD ID
-						int nowBCDID = useTabID;
+						int nowBCDID = cntInfo.nTabID;
 
 						//Tab Id 를 받은 것이 있다면
 						if (TabQueueSize)
@@ -448,7 +474,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 
 						//다음 Tab Id 를 사용할 값을 정하는 구간
-						if ((cntInfo.nTabID >= 0) || (cntInfo.nTabID < 64))
+						if (((cntInfo.nTabID >= 0) && (cntInfo.nTabID < 64)))
 						{
 							//다음에 사용할 id : 1 증가 시켜 저장
 							useTabID = cntInfo.nTabID + 1;
@@ -490,8 +516,21 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@ BCD_ID_USE_ERROR useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ ", abs(useTabID - nowBCDID));
+							
+							//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE 초기화
+							bBCDDiffBig = TRUE;
 						}
 
+						TriggerBCDCountMAXINT;
+
+						if (cntInfo.nTabIdTotalCount == MAX_INT)
+						{
+							TriggerBCDCountMAXINT++;
+						}
+						else
+						{
+							TriggerBCDCountMAXINT = 0;
+						}
 						
 						//Tab id 정보를 가져와서 지금의 id 정보를 확인한다.
 						if (cntInfo.nTabIdTotalCount != MAX_INT)

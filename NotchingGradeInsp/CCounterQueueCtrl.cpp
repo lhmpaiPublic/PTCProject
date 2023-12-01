@@ -64,6 +64,7 @@ CCounterInfo CCounterQueueCtrl::Pop()
 	::EnterCriticalSection(&m_csQueue);
 	CCounterInfo CntInfo;
 	CntInfo.nTabID = 64;
+	CntInfo.nTabNo = MAX_INT;
 	CntInfo.nTabIdTotalCount = MAX_INT;
 	if (!m_CntInfo.empty()) {
 		CntInfo = m_CntInfo.front();
