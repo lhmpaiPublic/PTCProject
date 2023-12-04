@@ -472,21 +472,21 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								{
 									//누락 Tab id Total 증가를 위한 세팅
 									//Tab Id 누락 된 카운트 증가를 위해서 백업한다.
-									int wLastTabIdbackup = wLastTabId;
+									int nextTabIDbackup = nextTabID;
 									//누락이 1개 일어 났을 때 마킹 정보를 바로 보낸다.
 									int omissCount = 0;
-									while (wLastTabIdbackup != wTempID)
+									while (nextTabIDbackup != wTempID)
 									{
-										//다음 id로 증가 및 유효 카운트 검사
-										wLastTabIdbackup++;
-										if (wLastTabIdbackup >= 64)
-											wLastTabIdbackup = 0;
-
 										//누락된 카운트를 올린다.
 										omissCount++;
 
 										//DIO Input Log
-										LOGDISPLAY_SPEC(7)(_T("@@%d### 누락 Input ID [%d] 누락 갯수<%d>"), ThreadLoopCount, wLastTabIdbackup, omissCount);
+										LOGDISPLAY_SPEC(7)(_T("@@%d### 누락 Input ID [%d] 누락 갯수<%d>"), ThreadLoopCount, nextTabIDbackup, omissCount);
+
+										//다음 id로 증가 및 유효 카운트 검사
+										nextTabIDbackup++;
+										if (nextTabIDbackup >= 64)
+											nextTabIDbackup = 0;
 
 									}
 									//누락 카운트가 0으로 초기화 한 데이터 일경우 카운터하지 않는다.
@@ -613,7 +613,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							AprData.SaveDebugLog_Format(strErrMsg);
 
 							//카메라의 에러를 세팅한다.
-							AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
+							//AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);
 						}
 
 

@@ -26,22 +26,26 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 	if ((pCbInfo == NULL) || (pView == NULL) || (pQueueCtrl == NULL) || (pWave == NULL))
 	{
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(0)(_T("**Cam Error** CGrabDalsaCameraLink AcqCallback함수 Object Pointer Receive 오류"));
+		LOGDISPLAY_SPECTXT(8)(_T("@@@ Cam Error** CGrabDalsaCameraLink AcqCallback함수 Object Pointer Receive 오류"));
 		return;
 	}
 
-	// 21.05.27 Ahn Add Start
-	if (pQueueCtrl != NULL){
+	// Cam Image Queue 제어 객체
+	if (pQueueCtrl != NULL)
+	{
 		int nEventCnt = pInfo->GetEventCount();		
 		int nEventType = pInfo->GetEventType();
 		
 		long nFrameCnt = pCbInfo->AddFrameCnt();
+
+		//SapXferNode 상속 객체
+		//Image 정보 객체
 		SapBuffer* pBuffer = pView->GetBuffer();
 
 		if (pBuffer == NULL)
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPEC(0)(_T("**Cam Error** CGrabDalsaCameraLink Buffer 오류 Frame Count<%d>"), nFrameCnt);
+			LOGDISPLAY_SPEC(8)(_T("@@@ Cam Error** CGrabDalsaCameraLink Buffer 오류 "));
 			return;
 		}
 
@@ -67,13 +71,15 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if (pCbInfo->GetMonitoringMode() == TRUE) 
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(0)(_T("**Cam Error** CGrabDalsaCameraLink AcqCallback함수 Monitering TRUE 오류"));
+			LOGDISPLAY_SPECTXT(8)(_T("@@@vCam Error** CGrabDalsaCameraLink AcqCallback함수 Monitering TRUE 오류"));
 
 			return;
 		}
 
 		if (pCbInfo->IsRun() == FALSE) 
 		{
+			//Log Camera Setting
+			LOGDISPLAY_SPECTXT(8)(_T("@@@vCam Error** CGrabDalsaCameraLink AcqCallback함수 Monitering TRUE 오류"));
 			return;
 		}
 
@@ -116,15 +122,12 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);
 
 				//Image Capture 정보 출력 로그
-				LOGDISPLAY_SPEC(6)(_T("FrameLog Head[%s], Width[%d], Height[%d], FrmCount[%d]"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
+				LOGDISPLAY_SPEC(8)(_T("@@@ Cam Pos[%s], Width[%d], Height[%d], FrmCount[%d]"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 
 				//얻은 이미지 정보를 TabFind 스래드로 전달하기 위해 queue 에 넣는다.
 				pQueueCtrl->PushBack(pFrmInfo);
 
 				theApp.m_nImageProcGrabberImageGet = GetTickCount();
-
-				//Image Capture 정보 출력 로그
-				LOGDISPLAY_SPEC(6)(_T("FrameLog Pos<%s> FrameCount<%d>"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", nFrameCnt);
 
 				//이미지 Top Bottom 모두 받으면 TabFind 스래드가 실행하도록 이벤트를 발생한다.
 				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
