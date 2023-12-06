@@ -357,9 +357,14 @@ private:
 
 	static CCriticalSection	m_cs;
 
+	//PLC 시그널 상태
+	BOOL m_SigInRun;
 public:
 	CSigProc();
 	virtual ~CSigProc();
+
+	//PLC 시그널 상태
+	BOOL GetSigInRun() { return m_SigInRun; }
 
 	static int GetPortBit(int iIntegration, int* piPort, BYTE* pByte); // 22.08.03 Ahn Modify to satic 
 	int SignalPortIn(WORD port, BYTE* data, BOOL bExtSt = FALSE, BOOL bLocal = FALSE);

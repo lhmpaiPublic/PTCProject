@@ -11,6 +11,8 @@ CSigProc::CSigProc()
 {
 	m_pPioCtrl = NULL;
 
+	m_SigInRun = FALSE;
+
 	if (theApp.m_pPioCtrl != NULL) {
 		m_pPioCtrl = theApp.m_pPioCtrl;
 	}
@@ -653,7 +655,7 @@ int CSigProc::SigInRun()
 		nAddress = enBitIn_Run;
 		nRet = SignalPortCheck(nAddress);
 	}
-
+	m_SigInRun = (nRet == TRUE) ? TRUE : FALSE;
 	return nRet;
 }
 

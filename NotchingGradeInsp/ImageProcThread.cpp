@@ -364,7 +364,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							useTabID = 64;
 							nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID 사용아이디 차가 3이상 초기화 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID가 5 < 이상 못받았을 때 초기화 @@@@ ");
 						}
 
 
@@ -481,7 +481,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						else
 						{
 							//run 체크
-							if (theApp.m_pSigProc && theApp.m_pSigProc->SigInRun())
+							if (theApp.m_pSigProc && theApp.m_pSigProc->GetSigInRun())
 							{
 								//Trigger BCD ID Size 0 시 Insp run 체크
 								TriggerBCDIDSize0_RunCheck++;
