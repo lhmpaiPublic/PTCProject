@@ -710,7 +710,7 @@ int  CImageProcSimDlg::AddDefectInfo(CImageProcess::_VEC_BLOCK* vecBlockFoilExp,
 			if (pBlockData->nPixelCnt < nMinSize[pBlockData->nType])
 				continue;
 
-			pBlockData->nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nCamPos], m_pRecipeInfo->dDefJudgeHeight, pBlockData->dJudgeSize, pBlockData->dHeight );
+			pBlockData->nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nCamPos], m_pRecipeInfo->dDefectYSize[nCamPos], pBlockData->dJudgeSize, pBlockData->dHeight );
 			
 //			if (pBlockData->nDefJudge == JUDGE_NG)
 //			{
@@ -1983,7 +1983,7 @@ void CImageProcSimDlg::InspectionAuto()
 		data.dDistance = tabRsltInfo.m_vecDefInfo[i]->dDistance; // 22.04.15 Ahn Add
 
 		int nHeadNo = (m_bModeTop == TRUE) ? CAM_POS_TOP : CAM_POS_BOTTOM;
-		data.nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nHeadNo], m_pRecipeInfo->dDefJudgeHeight, data.dJudgeSize, data.dHeight);
+		data.nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nHeadNo], m_pRecipeInfo->dDefectYSize[nHeadNo], data.dJudgeSize, data.dHeight);
 
 		m_pVecBlockAll->push_back(data);
 
@@ -2125,7 +2125,7 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 		else {
 			col = RGB(50, 230, 50);
 		}
-		strLine.Format(_T("Size_F %d:%.1lf um"), nDispCnt + 1, iter->dJudgeSize);
+		strLine.Format(_T("Size_F %d:%.1lf x %.1lf um"), nDispCnt + 1, iter->dJudgeSize, iter->dHeight );
 		CResultThread::DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine);
 
 		CRect defRect;
@@ -2160,7 +2160,7 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 
 		// Spetter 결함 사이즈 표시
 		if (nIdx < MAX_DISP_DEF_COUNT) {
-			strLine.Format(_T("Size_S %d:%.1lf um"), (nIdx + nDispCnt), iter->dJudgeSize);
+			strLine.Format(_T("Size_S %d:%.1lf x %.1lf um"), (nIdx + nDispCnt), iter->dJudgeSize, iter->dHeight);
 			CResultThread::DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine);
 		}
 		nIdx++;

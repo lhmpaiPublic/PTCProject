@@ -578,7 +578,10 @@
 #define IDC_ST_GROUP_SIGNAL_OUT         1224
 #define IDC_ED_FOIL_BOTH_NG_X_SIZE_BTM  1224
 #define IDC_ST_ALIVE_PULSE_IN           1225
+#define IDC_ED_FOIL_DEFECT_Y_SIZE_TOP   1225
 #define IDC_ST_ALIVE_PULSE_OUT          1226
+#define IDC_ED_FOIL_DEFECT_Y_SIZE_TOP2  1226
+#define IDC_ED_FOIL_DEFECT_Y_SIZE_BTM   1226
 #define IDC_ST_READY_IN                 1227
 #define IDC_ST_READY_OUT                1228
 #define IDC_ST_RUN_IN                   1229
@@ -679,12 +682,14 @@
 #define IDC_ST_GRAY_SIZE                1317
 #define IDC_GRAPH_TACT_TIME             1318
 #define IDC_ST_GROUP_PET_CHECK          1318
+#define IDC_ST_DEFECT_Y_SIZE            1318
 #define IDC_BTN_TACT_TIME               1319
 #define IDC_ST_PET_MATRIX               1319
 #define IDC_ST_PET_THRESHOLD            1320
 #define IDC_ST_DISP_IMAGE               1321
 #define IDC_ST_PET_CHECK_CNT            1321
 #define IDC_CROP_THUMB                  1322
+#define IDC_ST_FOIL_BOTH_NG_SIZE2       1322
 #define IDC_ST_SELECT_IMG               1323
 #define IDC_ST_ORG_IMAGE                1324
 #define IDC_GRID_DEFECT_INFO            1325

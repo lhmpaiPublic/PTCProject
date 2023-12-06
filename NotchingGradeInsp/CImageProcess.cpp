@@ -5952,7 +5952,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				dNgSize = pRecipeInfo->dSurfaceNgSize[pDefInfo->nHeadNo];
 				break;
 			}
-			pDefInfo->nRank = CTabRsltInfo::GetDefJudge( dNgSize, 0, pDefInfo->dJudgeSize, pDefInfo->dSizeY );
+			pDefInfo->nRank = CTabRsltInfo::GetDefJudge( dNgSize, pRecipeInfo->dDefectYSize[pDefInfo->nHeadNo], pDefInfo->dJudgeSize, pDefInfo->dSizeY );
 			// 22.07.20 Ahn Modify End
 			if (pDefInfo->nRank == JUDGE_NG)
 			{

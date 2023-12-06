@@ -113,6 +113,9 @@ public:
 	double dFoilExpBothNgSize[MAX_CAMERA_NO];
 	double dSurfaceNgSize[MAX_CAMERA_NO];
 
+	double dDefectYSize[MAX_CAMERA_NO];
+
+
 	double dIgnoreDistance;
 	double dIgnoreSize;
 	int nThresSurface[MAX_CAMERA_NO];

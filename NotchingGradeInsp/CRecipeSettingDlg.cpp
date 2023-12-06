@@ -102,6 +102,7 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 		m_dEdFoilExpOutNgSize[i] = 0.f;
 		m_dEdFoilExpBothNgSize[i] = 0.f;
 		m_dSurfaceNgSize[i] = 0.f;	
+		m_dEdDefectYSize[i] = 0.f;
 	}
 }
 
@@ -216,6 +217,9 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_PET_THRESHOLD, m_nEdPetThreshold);
 	DDX_Text(pDX, IDC_ED_PET_CHECK_CNT, m_nEdPetCheckCnt);
 
+	DDX_Text(pDX, IDC_ED_FOIL_DEFECT_Y_SIZE_TOP, m_dEdDefectYSize[CAM_POS_TOP]);
+	DDX_Text(pDX, IDC_ED_FOIL_DEFECT_Y_SIZE_BTM, m_dEdDefectYSize[CAM_POS_BOTTOM]);
+
 }
 
 
@@ -299,6 +303,8 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_PET_MATRIX_Y, &CRecipeSettingDlg::OnSetfocusEdPetMatrixY)
 	ON_EN_SETFOCUS(IDC_ED_PET_THRESHOLD, &CRecipeSettingDlg::OnSetfocusEdPetThreshold)
 	ON_EN_SETFOCUS(IDC_ED_PET_CHECK_CNT, &CRecipeSettingDlg::OnSetfocusEdPetCheckCnt)
+	ON_EN_SETFOCUS(IDC_ED_FOIL_DEFECT_Y_SIZE_TOP, &CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeTop)
+	ON_EN_SETFOCUS(IDC_ED_FOIL_DEFECT_Y_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeBtm)
 END_MESSAGE_MAP()
 
 
@@ -874,6 +880,7 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 			m_dEdFoilExpOutNgSize[i] = pRecipeInfo->dFoilExpOutNgSize[i];
 			m_dEdFoilExpBothNgSize[i] = pRecipeInfo->dFoilExpBothNgSize[i];
 			m_dSurfaceNgSize[i] = pRecipeInfo->dSurfaceNgSize[i];
+			m_dEdDefectYSize[i] = pRecipeInfo->dDefectYSize[i];
 		}
 
 
@@ -955,6 +962,7 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 			pRecipeInfo->dFoilExpOutNgSize[i] = m_dEdFoilExpOutNgSize[i];
 			pRecipeInfo->dFoilExpBothNgSize[i] = m_dEdFoilExpBothNgSize[i];
 			pRecipeInfo->dSurfaceNgSize[i] = m_dSurfaceNgSize[i];
+			pRecipeInfo->dDefectYSize[i] = m_dEdDefectYSize[i];
 		}
 
 
@@ -3044,5 +3052,31 @@ void CRecipeSettingDlg::OnSetfocusEdPetCheckCnt()
 	CString strMsg;
 	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
 	m_nEdPetCheckCnt = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeTop()
+{
+	double dValue, dMax, dMin;
+	dMax = 999.0;
+	dMin = 0.0;
+	dValue = m_dEdDefectYSize[CAM_POS_TOP];
+	CString strMsg;
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um). Not used if 0 or less"), dMin, dMax);
+	m_dEdDefectYSize[CAM_POS_TOP] = SetValue(dValue, strMsg, dMax, dMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeBtm()
+{
+	double dValue, dMax, dMin;
+	dMax = 999.0;
+	dMin = 0.0;
+	dValue = m_dEdDefectYSize[CAM_POS_BOTTOM];
+	CString strMsg;
+	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um). Not used if 0 or less"), dMin, dMax);
+	m_dEdDefectYSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
 }

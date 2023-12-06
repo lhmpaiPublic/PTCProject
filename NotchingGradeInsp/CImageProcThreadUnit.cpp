@@ -528,7 +528,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				{
 					//Foil Size 가져온다.
 					double dSizeX = AprData.m_pRecipeInfo->dFoilExpInNgSize[pFrmInfo->m_nHeadNo];
-					double dSizeY = AprData.m_pRecipeInfo->dDefJudgeHeight;
+					double dSizeY = AprData.m_pRecipeInfo->dDefectYSize[pFrmInfo->m_nHeadNo];
 
 					//알람코드 0 초기화
 					WORD wAlarmCode = 0x00;

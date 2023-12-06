@@ -219,7 +219,7 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 		} else {
 			col = RGB(50, 230, 50);
 		}
-		strLine.Format(_T("Size_F %d:%.1lf um"), nDispCnt +1, pDefInfo->dJudgeSize);
+		strLine.Format(_T("Size_F %d:%.1lf x %.1lf um"), nDispCnt +1, pDefInfo->dJudgeSize, pDefInfo->dSizeY);
 		DrawString( pDC, x, y + ((nDispCnt +1) * yPitch), col, strLine);
 
 		CRect defRect;
@@ -256,7 +256,7 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 
 		// Spetter 결함 사이즈 표시
 		if (nIdx < MAX_DISP_DEF_COUNT) {
-			strLine.Format(_T("Size_S %d:%.1lf um"), (nIdx + nDispCnt  ), pDefInfo->dJudgeSize);
+			strLine.Format(_T("Size_S %d:%.1lf x %.1lf um um"), (nIdx + nDispCnt  ), pDefInfo->dJudgeSize, pDefInfo->dSizeY);
 			DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt ) * yPitch), col, strLine);
 		}
 		nIdx++;
@@ -345,7 +345,7 @@ void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWid
 		else {
 			col = RGB(50, 230, 50);
 		}
-		strLine.Format(_T("Size_F %d:%.1lf um"), nDispCnt + 1, pDefInfo->dJudgeSize);
+		strLine.Format(_T("Size_F %d:%.1lf x %.1lf um"), nDispCnt + 1, pDefInfo->dJudgeSize, pDefInfo->dSizeY );
 		DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine);
 
 		CRect defRect;
@@ -380,7 +380,7 @@ void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWid
 
 		// Spetter 결함 사이즈 표시
 		if (nIdx < MAX_DISP_DEF_COUNT) {
-			strLine.Format(_T("Size_S %d:%.1lf um"), (nIdx + nDispCnt), pDefInfo->dJudgeSize);
+			strLine.Format(_T("Size_S %d:%.1lf x %.1lf um"), (nIdx + nDispCnt), pDefInfo->dJudgeSize, pDefInfo->dSizeY);
 			DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine);
 		}
 		nIdx++;
