@@ -1299,7 +1299,7 @@ void CRecipeSettingDlg::OnEnSetfocusFoilLinkRangeX()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	int nValue, nMax, nMin;
-	nMax = 20;
+	nMax = 999;
 	nMin = 0;
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nFoilLinkX;
@@ -1315,7 +1315,7 @@ void CRecipeSettingDlg::OnEnSetfocusDrossLinkRangeX()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	int nValue, nMax, nMin;
-	nMax = 20;
+	nMax = 999;
 	nMin = 0;
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nDrossLinkX;
@@ -1331,7 +1331,7 @@ void CRecipeSettingDlg::OnEnSetfocusFoilLinkRangeY()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	int nValue, nMax, nMin;
-	nMax = 20;
+	nMax = 999;
 	nMin = 0;
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nFoilLinkY;
@@ -1347,7 +1347,7 @@ void CRecipeSettingDlg::OnEnSetfocusDrossLinkRangeY()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	int nValue, nMax, nMin;
-	nMax = 20;
+	nMax = 999;
 	nMin = 0;
 	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
 	nValue = m_nDrossLinkY;
