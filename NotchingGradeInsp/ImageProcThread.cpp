@@ -843,6 +843,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	AfxEndThread(0);
 	pThis->m_bKill = FALSE;
 
+	//Tab Id 정보 로그
+	LOGDISPLAY_SPEC(7)("*** Thread **** CtrlThreadImgCuttingTab 종료됩니다 @@@@ ");
+
 	return 0;
 }
 
@@ -1637,6 +1640,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 	AfxEndThread(0);
 	pThis->m_bKill = FALSE;
+
+	//Tab Id 정보 로그
+	LOGDISPLAY_SPEC(7)("*** Thread **** CtrlThreadImgProc 종료됩니다 @@@@ ");
 
 	return 0;
 }

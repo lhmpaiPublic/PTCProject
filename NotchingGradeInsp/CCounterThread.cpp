@@ -718,5 +718,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 	}
 
+	//Tab Id 정보 로그
+	LOGDISPLAY_SPEC(7)("*** Thread **** CtrlThreadCounter 종료됩니다 @@@@ ");
+
 	return 0;
 }
