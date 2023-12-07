@@ -2458,7 +2458,7 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 		nLeftOffset = (int)( ( m_pRecipeInfo->dFoilExpInspWidth[CAM_POS_TOP] * 1000.0 ) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
 		if (m_pRecipeInfo->bEnableVGroove == TRUE)
 		{
-			nLeftOffset -= m_pRecipeInfo->TabCond.nNegVGrooveHeight;
+//			nLeftOffset -= m_pRecipeInfo->TabCond.nNegVGrooveHeight;
 		}
 
 		nRightOffset = (int)( (m_pRecipeInfo->dFoilOutInspWidth[CAM_POS_TOP] * 1000.0 ) / AprData.m_System.m_dResolX[CAM_POS_TOP] );
