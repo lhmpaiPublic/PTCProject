@@ -218,6 +218,9 @@ public:
 	BOOL m_bChkEnableDefLink;
 	afx_msg void OnBnClickedChkEnableDefLink();
 
+	BOOL m_bChkEnableVGroove;
+
+
 	void OnRefresh();
 	double m_dEdNgSizeHeight;
 	afx_msg void OnEnSetfocusEdNgXSize();
@@ -328,6 +331,7 @@ public:
 	afx_msg void OnSetfocusEdPetCheckCnt();
 	afx_msg void OnSetfocusEdFoilDefectYSizeTop();
 	afx_msg void OnSetfocusEdFoilDefectYSizeBtm();
+	afx_msg void OnBnClickedChkEnableVGroove();
 };
 
 

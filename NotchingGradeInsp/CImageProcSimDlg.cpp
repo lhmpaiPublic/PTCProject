@@ -2456,6 +2456,11 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 		// 22.05.09 Ahn Modify Start
 		//nLeftOffset = m_pRecipeInfo->TabCond.nCeramicHeight ;
 		nLeftOffset = (int)( ( m_pRecipeInfo->dFoilExpInspWidth[CAM_POS_TOP] * 1000.0 ) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
+		if (m_pRecipeInfo->bEnableVGroove == TRUE)
+		{
+			nLeftOffset -= m_pRecipeInfo->TabCond.nNegVGrooveHeight;
+		}
+
 		nRightOffset = (int)( (m_pRecipeInfo->dFoilOutInspWidth[CAM_POS_TOP] * 1000.0 ) / AprData.m_System.m_dResolX[CAM_POS_TOP] );
 		// 22.05.09 Ahn Modify End
 		nMeanLeftOffest = 70;

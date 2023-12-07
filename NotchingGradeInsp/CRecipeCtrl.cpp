@@ -303,6 +303,10 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strKey = _T("DARK_EMP_MODE");
 			strData.Format(_T("%d"), pRcpInfo->bDarkEmpMode);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey.Format(_T("ENABLE_V_GROOVE"));
+			strData.Format(_T("%d"), pRcpInfo->bEnableVGroove);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 		}
 
 		{
@@ -672,6 +676,10 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strKey = _T("DARK_EMP_MODE");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			pRcpInfo->bDarkEmpMode = atoi(buff);
+
+			strKey.Format(_T("ENABLE_V_GROOVE"));
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			pRcpInfo->bEnableVGroove = atoi(buff);
 		}
 
 

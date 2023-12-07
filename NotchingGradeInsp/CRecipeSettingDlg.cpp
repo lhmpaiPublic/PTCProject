@@ -71,6 +71,7 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	, m_nEdPetMatrixY(0)
 	, m_nEdPetThreshold(0)
 	, m_nEdPetCheckCnt(0)
+	, m_bChkEnableVGroove(FALSE)
 
 {
 	m_bRcpSelMode = bRcpSelMode ;
@@ -220,6 +221,9 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_FOIL_DEFECT_Y_SIZE_TOP, m_dEdDefectYSize[CAM_POS_TOP]);
 	DDX_Text(pDX, IDC_ED_FOIL_DEFECT_Y_SIZE_BTM, m_dEdDefectYSize[CAM_POS_BOTTOM]);
 
+	DDX_Check(pDX, IDC_CHK_ENABLE_V_GROOVE, m_bChkEnableVGroove);
+
+
 }
 
 
@@ -305,6 +309,7 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_PET_CHECK_CNT, &CRecipeSettingDlg::OnSetfocusEdPetCheckCnt)
 	ON_EN_SETFOCUS(IDC_ED_FOIL_DEFECT_Y_SIZE_TOP, &CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeTop)
 	ON_EN_SETFOCUS(IDC_ED_FOIL_DEFECT_Y_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeBtm)
+	ON_BN_CLICKED(IDC_CHK_ENABLE_V_GROOVE, &CRecipeSettingDlg::OnBnClickedChkEnableVGroove)
 END_MESSAGE_MAP()
 
 
@@ -872,6 +877,7 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		m_nEdPetThreshold = pRecipeInfo->nPetThreshold[nCamPos];
 		m_nEdPetCheckCnt = pRecipeInfo->nPetCheckCnt[nCamPos];
 
+		m_bChkEnableVGroove = pRecipeInfo->bEnableVGroove;
 
 
 		for( int i=0; i<MAX_CAMERA_NO; i++ )
@@ -990,6 +996,9 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		pRecipeInfo->nPetMatrixY[nCamPos] = m_nEdPetMatrixY;
 		pRecipeInfo->nPetThreshold[nCamPos] = m_nEdPetThreshold;
 		pRecipeInfo->nPetCheckCnt[nCamPos] = m_nEdPetCheckCnt;
+
+		pRecipeInfo->bEnableVGroove = m_bChkEnableVGroove;
+
 
 	}
 	OnRefresh();
@@ -2008,7 +2017,11 @@ void CRecipeSettingDlg::ShowControl()
 		pWnd = (CWnd*)GetDlgItem(IDC_ED_TAB_COAT_HEIGHT_MM);
 		if (pWnd != nullptr) {
 			pWnd->ShowWindow(bShowAnode);
-		}		
+		}
+		pWnd = (CWnd*)GetDlgItem(IDC_CHK_ENABLE_V_GROOVE);
+		if (pWnd != nullptr) {
+			pWnd->ShowWindow(bShowAnode);
+		}
 	}
 	{ // Cathode(음극) 
 		pWnd = (CWnd*)GetDlgItem(IDC_GROUP_CATHODE);
@@ -2683,7 +2696,7 @@ void CRecipeSettingDlg::DisplayLanguage()
 	}
 	pWnd = GetDlgItem(IDC_STATIC_GROOVE_HEIGHT);
 	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("V홈 높이음극"), _T("V Hight")));
+		pWnd->SetWindowTextA(_LANG(_T("V홈 높이"), _T("V Hight")));
 	}
 	pWnd = GetDlgItem(IDC_ST_TAB_WIDTH);
 	if (pWnd != nullptr) {
@@ -3079,4 +3092,31 @@ void CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeBtm()
 	strMsg.Format(_T("Range( %2.lf um ~ %.2lf um). Not used if 0 or less"), dMin, dMax);
 	m_dEdDefectYSize[CAM_POS_BOTTOM] = SetValue(dValue, strMsg, dMax, dMin);
 	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnBnClickedChkEnableVGroove()
+{
+	UpdateData(TRUE);
+
+	BOOL bShowAnode = m_bChkEnableVGroove;
+
+	CWnd* pWnd;
+	pWnd = (CWnd*)GetDlgItem(IDC_STATIC_GROOVE_HEIGHT);
+	if (pWnd != nullptr) {
+		pWnd->ShowWindow(bShowAnode);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_V_GROOVE_HEIGHT);
+	if (pWnd != nullptr) {
+		pWnd->ShowWindow(bShowAnode);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_V_GROOVE_HEIGHT_PIX);
+	if (pWnd != nullptr) {
+		pWnd->ShowWindow(bShowAnode);
+	}
+
+	UpdateData(FALSE);
+
 }

@@ -150,6 +150,8 @@ public:
 	int nPetThreshold[MAX_CAMERA_NO];
 	int nPetCheckCnt[MAX_CAMERA_NO];
 
+	BOOL bEnableVGroove;
+
 
 
 	enum {

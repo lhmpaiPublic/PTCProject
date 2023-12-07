@@ -492,6 +492,7 @@
 #define IDC_CHK_ENABLE_MARKER           1151
 #define IDC_CHK_NOTUSE_BACKUP           1151
 #define IDC_CHK_ENABLE_NON_NG_SAVE      1152
+#define IDC_CHK_ENABLE_V_GROOVE         1152
 #define IDC_CB_USERLIST                 1153
 #define IDC_CHK_ENABLE_MARKER3          1153
 #define IDC_CHK_ENABLE_NON_NG_STOP      1153
@@ -580,7 +581,6 @@
 #define IDC_ST_ALIVE_PULSE_IN           1225
 #define IDC_ED_FOIL_DEFECT_Y_SIZE_TOP   1225
 #define IDC_ST_ALIVE_PULSE_OUT          1226
-#define IDC_ED_FOIL_DEFECT_Y_SIZE_TOP2  1226
 #define IDC_ED_FOIL_DEFECT_Y_SIZE_BTM   1226
 #define IDC_ST_READY_IN                 1227
 #define IDC_ST_READY_OUT                1228
