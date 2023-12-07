@@ -2028,10 +2028,6 @@ void CRecipeSettingDlg::ShowControl()
 		if (pWnd != nullptr) {
 			pWnd->ShowWindow(bShowCathode);
 		}
-		pWnd = (CWnd*)GetDlgItem(IDC_STATIC_GROOVE_HEIGHT);
-		if (pWnd != nullptr) {
-			pWnd->ShowWindow(bShowCathode);
-		}
 		pWnd = (CWnd*)GetDlgItem(IDC_ST_COAT_HEIGHT);
 		if (pWnd != nullptr) {
 			pWnd->ShowWindow(bShowCathode);
@@ -2041,6 +2037,10 @@ void CRecipeSettingDlg::ShowControl()
 			pWnd->ShowWindow(bShowCathode);
 		}
 		pWnd = (CWnd*)GetDlgItem(IDC_ED_NEGA_TAB_COAT_HEIGHT_PIX);
+		if (pWnd != nullptr) {
+			pWnd->ShowWindow(bShowCathode);
+		}
+		pWnd = (CWnd*)GetDlgItem(IDC_STATIC_GROOVE_HEIGHT);
 		if (pWnd != nullptr) {
 			pWnd->ShowWindow(bShowCathode);
 		}
@@ -2054,6 +2054,22 @@ void CRecipeSettingDlg::ShowControl()
 		}
 	}
 	// 22.07.22 Ahn Add End
+
+	if (bShowAnode == TRUE)
+	{
+		pWnd = (CWnd*)GetDlgItem(IDC_STATIC_GROOVE_HEIGHT);
+		if (pWnd != nullptr) {
+			pWnd->ShowWindow(m_bChkEnableVGroove);
+		}
+		pWnd = (CWnd*)GetDlgItem(IDC_ED_V_GROOVE_HEIGHT);
+		if (pWnd != nullptr) {
+			pWnd->ShowWindow(m_bChkEnableVGroove);
+		}
+		pWnd = (CWnd*)GetDlgItem(IDC_ED_V_GROOVE_HEIGHT_PIX);
+		if (pWnd != nullptr) {
+			pWnd->ShowWindow(m_bChkEnableVGroove);
+		}
+	}
 }
 
 

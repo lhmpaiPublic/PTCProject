@@ -2456,16 +2456,18 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 		// 22.05.09 Ahn Modify Start
 		//nLeftOffset = m_pRecipeInfo->TabCond.nCeramicHeight ;
 		nLeftOffset = (int)( ( m_pRecipeInfo->dFoilExpInspWidth[CAM_POS_TOP] * 1000.0 ) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
-		if (m_pRecipeInfo->bEnableVGroove == TRUE)
-		{
-//			nLeftOffset -= m_pRecipeInfo->TabCond.nNegVGrooveHeight;
-		}
-
 		nRightOffset = (int)( (m_pRecipeInfo->dFoilOutInspWidth[CAM_POS_TOP] * 1000.0 ) / AprData.m_System.m_dResolX[CAM_POS_TOP] );
 		// 22.05.09 Ahn Modify End
 		nMeanLeftOffest = 70;
 		nMeanRightOffset = 70;
 		nTabRoundOffsetR = m_pRecipeInfo->TabCond.nRadiusW;
+
+		if (m_pRecipeInfo->bEnableVGroove == TRUE)
+		{
+			nLeftOffset += m_pRecipeInfo->TabCond.nNegVGrooveHeight;
+			nRightOffset += m_pRecipeInfo->TabCond.nNegVGrooveHeight;
+		}
+
 	}
 	// 22.01.05 Ahn Add End
 
@@ -2984,6 +2986,13 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	rcAll.top = 0;
 	rcAll.bottom = nHeight;
 
+
+	if (m_pRecipeInfo->bEnableVGroove == TRUE)
+	{
+		rcAll.right += m_pRecipeInfo->TabCond.nNegVGrooveHeight;
+	}
+
+
 	if (rcAll.left < 0)
 	{
 		rcAll.left = 0;
@@ -3013,8 +3022,19 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 
 	BYTE* pEdgePtr = pMeanPtr;
 
-	int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-	CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
+	if (m_pRecipeInfo->bEnableVGroove == FALSE)
+	{
+		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+		CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
+	}
+	else
+	{
+		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
+	}
+
+
 
 	CImageProcess::SmoothVecRoundData(&vecAllRndInfo, CImageProcess::en_FindLeft );
 

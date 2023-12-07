@@ -7772,6 +7772,12 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth,
 		nRightOffset = (int)((pRecipeInfo->dFoilOutInspWidth[CAM_POS_TOP] * 1000.0) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
 		// 22.05.09 Ahn Modify End
 		nTabRoundOffsetR = pRecipeInfo->TabCond.nRadiusW;
+
+		if (pRecipeInfo->bEnableVGroove == TRUE)
+		{
+			nLeftOffset += pRecipeInfo->TabCond.nNegVGrooveHeight;
+			nRightOffset += pRecipeInfo->TabCond.nNegVGrooveHeight;
+		}
 	}
 	// 22.01.05 Ahn Add End
 
@@ -8219,6 +8225,12 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWid
 	rcAll.top = 0;
 	rcAll.bottom = nHeight;
 
+	if (pRecipeInfo->bEnableVGroove == TRUE)
+	{
+		rcAll.right += pRecipeInfo->TabCond.nNegVGrooveHeight;
+	}
+
+
 	if (rcAll.left < 0)
 	{
 		rcAll.left = 0;
@@ -8258,8 +8270,19 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWid
 
 	BYTE* pEdgePtr = pMeanPtr;
 
-	int nThresBnd = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-	CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
+
+	if (pRecipeInfo->bEnableVGroove == FALSE)
+	{
+		int nThresBnd = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+		CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
+	}
+	else
+	{
+		int nThresBnd = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+		int nThresMax = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
+	}
+
 
 	CImageProcess::SmoothVecRoundData(&vecAllRndInfo, CImageProcess::en_FindLeft);
 
