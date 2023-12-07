@@ -83,7 +83,7 @@ void CThreadQueueCtrl::ThreadQueueCtrl_WatchThread()
 		ret = WaitForSingleObject(pEvent_ThreadQueueCtrl, WATCHTHREAD_TIMEOUT);
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
-			return;
+			break;
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{

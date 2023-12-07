@@ -79,7 +79,9 @@ BOOL CCounterQueueCtrl::FindTabId(int TabId)
 	BOOL b = FALSE;
 	::EnterCriticalSection(&m_csQueue);
 	CCounterInfo CntInfo;
-	while (m_CntInfo.size())
+	int CntInfosize = m_CntInfo.size();
+	int loop = 0;
+	while (loop < CntInfosize)
 	{
 		CntInfo = m_CntInfo.front();
 		if (CntInfo.nTabID == TabId)
@@ -87,6 +89,7 @@ BOOL CCounterQueueCtrl::FindTabId(int TabId)
 			b = TRUE;
 			break;
 		}
+		loop++;
 	}
 	::LeaveCriticalSection(&m_csQueue);
 	return b;

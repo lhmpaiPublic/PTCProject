@@ -221,7 +221,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 		ret = WaitForSingleObject(pThis->getEvent_CounterThread(), COUNTERINFOTHREAD_TIMEOUT);
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
-			return 0;
+			break;
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
