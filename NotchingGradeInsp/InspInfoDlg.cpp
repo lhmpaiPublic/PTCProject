@@ -15,6 +15,44 @@
 #include "CUserChangeDlg.h"			// 22.05.25 Son Add
 #include "CRecipeSelectDlg.h"		// 22.08.04 Ahn Add 
 // CInspInfoDlg 대화 상자
+static CString UiText1[][3] =
+{
+	{_T("검사 정보"), _T("Information"), _T("检查信息")},
+	{_T("사용자 변경"), _T("User Change"), _T("切换用户权限")},
+	{_T("작업수량"), _T("Count"), _T("数量")},
+	{_T("총 수량"), _T("Total"), _T("总数量")},
+	{_T("OK 수량"), _T("OK Count"), _T("OK数量")},
+	{_T("NG 수량"), _T("NG Count"), _T("NG数量")},
+	{_T("수    율"), _T("YIELD Count"), _T("良率")},
+	{_T("Select"), _T("Select"), _T("选择")},
+};
+
+enum UiText1Name
+{
+	ST_INSP_INFO,
+	BTN_USER_CHANGE,
+	ST_INSP_COUNT,
+	ST_TOTAL_COUNT,
+	ST_OK_COUNT,
+	ST_NG_COUNT,
+	ST_YIELD,
+	BTN_RECIPE_SELECT,
+	MAX_COUNT
+};
+
+static int UiText1NameText[] =
+{
+	IDC_ST_INSP_INFO,
+	IDC_BTN_USER_CHANGE,
+	IDC_ST_INSP_COUNT,
+	IDC_ST_TOTAL_COUNT,
+	IDC_ST_OK_COUNT,
+	IDC_ST_NG_COUNT,
+	IDC_ST_YIELD,
+	IDC_BTN_RECIPE_SELECT,
+
+};
+
 
 IMPLEMENT_DYNAMIC(CInspInfoDlg, CDialogEx)
 
@@ -61,7 +99,8 @@ END_MESSAGE_MAP()
 // CInspInfoDlg 메시지 처리기
 
 void CInspInfoDlg::DisplayLanguage()
-{
+
+/* {
 	CWnd* pWnd;
 	pWnd = (CWnd*)GetDlgItem(IDC_ST_INSP_INFO);
 	if (pWnd != nullptr) {
@@ -99,7 +138,21 @@ void CInspInfoDlg::DisplayLanguage()
 	}
 	
 }
-
+*/
+{
+	CWnd* pWnd;
+	CString strDispName;
+	for (int idx = 0; idx < MAX_COUNT; idx++)
+	{
+		pWnd = NULL;
+		pWnd = GetDlgItem(UiText1NameText[idx]);
+		if (pWnd != nullptr)
+		{
+			strDispName = UiText1[idx][__Lang];
+			pWnd->SetWindowTextA(strDispName);
+		}
+	}
+}
 
 BOOL CInspInfoDlg::OnInitDialog()
 {

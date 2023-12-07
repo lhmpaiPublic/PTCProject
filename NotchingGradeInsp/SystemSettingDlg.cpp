@@ -50,6 +50,7 @@ static CString UiText3[][3] =
 	{_T("결과 보존 기간(일)"), _T("Result save period(day)"), _T("数据保存时长（天）")},
 	{_T("저장"), _T("Save"), _T("保存")},
 	{_T("취소"), _T("Cancel"), _T("取消")},
+	{_T("이미지저장형식"), _T("Out Image Format"), _T("输出图像格式")},
 };
 
 enum UiText3Name
@@ -70,6 +71,7 @@ enum UiText3Name
 	ST_DELETE_PERIOD,
 	BTN_OK,
 	BTN_CANCEL,
+	ST_RESOLUTION_Y2,
 	MAX_COUNT
 };
 
@@ -90,7 +92,8 @@ static int UiText3NameText[] =
 	IDC_ST_JPEG_QUALITY,
 	IDC_ST_DELETE_PERIOD,
 	IDC_BTN_OK,
-	IDC_BTN_CANCEL
+	IDC_BTN_CANCEL,
+	IDC_ST_RESOLUTION_Y2
 };
 
 static CString UiText4[][3] =

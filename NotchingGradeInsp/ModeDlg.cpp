@@ -41,6 +41,7 @@ static CString UiText1[][3] =
 	{_T("시작"), _T("Run"), _T("开始")},
 	{_T("정지"), _T("Stop"), _T("停止")},
 	{_T("시뮬레이션"), _T("Simulation"), _T("模拟")},
+	{_T("HISTORY"), _T("HISTORY"), _T("历史履历")},
 };
 
 enum UiText1Name
@@ -51,6 +52,7 @@ enum UiText1Name
 	RAD_RUN,
 	RAD_STOP,
 	BTN_INSP_SIM,
+	RAD_HISTORY_MODE,
 	MAX_COUNT
 };
 
@@ -61,7 +63,8 @@ static int UiText1NameText[] =
 	IDC_BTN_DIRECTORY,
 	IDC_RAD_RUN,
 	IDC_RAD_STOP,
-	IDC_BTN_INSP_SIM
+	IDC_BTN_INSP_SIM,
+	IDC_RAD_HISTORY_MODE
 };
 
 
