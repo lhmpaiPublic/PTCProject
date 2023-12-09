@@ -878,6 +878,7 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_bChkTriggerMode = m_SysSetting.m_bTriggerMode;		
 		m_nEdMeanWidth = m_SysSetting.m_nEdgeSearchMean ;
 		m_dEdResolY = m_SysSetting.m_dResolY ;
+		m_SysSetting.m_dResolY1000P = m_dEdResolY;
 		m_bChkEnableMarker = m_SysSetting.m_bChkEnableMarker ;
 		m_nJpgSaveQulaity = m_SysSetting.m_nJpegSaveQuality ;
 		m_nEdOverflowCountMax = m_SysSetting.m_nOverflowCountMax;

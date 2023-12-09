@@ -102,7 +102,8 @@ void CImageProcThread::Kill( void )
 }
 
 #define IMAGECUTTINGTAB_TIMEOUT 50
-#define TabPitch(a, b, c, d) ((a-b)+c)*(d)
+//#define TabPitch(a, b, c, d) ((a-b)+c)*(d)
+#define TabPitch(a, b, c) ((a-b)+c)*(0.021)
 //92.0 +- 20
 #define MIN_TABPITCH 72 
 #define MAX_TABPITCH 112
@@ -312,12 +313,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[i];
 
-						double dResolY = (AprData.m_System.m_dResolY / 1000);
+						double dResolYLocal = (AprData.m_System.m_dResolY1000P / 1000);
 						//텝 피치 측정
 						if((bforeImageLengtch > 0) && (bforeTabLeft > 0))
 						{
 							//min 72 max 112 범위의 피치를 벗어날 경우 
-							int nTabPitch = (int)TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft, dResolY);
+							double nTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%d> @@@@ ", nTabPitch);
 							if ((MIN_TABPITCH > nTabPitch) || (MAX_TABPITCH < nTabPitch))
@@ -333,16 +334,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						bforeImageLengtch = pTabInfo->nImageLength;
 						bforeTabLeft = pTabInfo->nTabLeft;
 
-						int nWidth = abs(pTabInfo->nTabRight - pTabInfo->nTabLeft);
-						double realTabWidth = nWidth * dResolY;
+						int nWidthLocal = abs(pTabInfo->nTabRight - pTabInfo->nTabLeft);
+						double realTabWidth = nWidthLocal * dResolYLocal;
 
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Witch<%d> - 실제 넓이<%f> 분해능<%f>@@@@ ", nWidth, realTabWidth, AprData.m_System.m_dResolY);
+						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Witch<%d> - 실제 넓이<%f> 분해능<%f>@@@@ ", nWidthLocal, realTabWidth, AprData.m_System.m_dResolY1000P);
 
 						if ((MIN_TABWIDTH > realTabWidth) || (MAX_TABWIDTH < realTabWidth))
 						{
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 크기가 이상이 있을 때 TabSize<%d> @@@@ ", nWidth);
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 크기가 이상이 있을 때 TabSize<%d> @@@@ ", nWidthLocal);
 						}
 
 						//Trigger Tab Id 초기화 시 

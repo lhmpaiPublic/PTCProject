@@ -13,6 +13,9 @@ public:
 	double	m_dResolX[MAX_CAMERA_NO];
 	double	m_dResolY;
 
+	//분해능 계산 값 1/1000
+	double	m_dResolY1000P;
+
 	CString m_strSerialNo[MAX_CAMERA_NO]; 
 
 	// Camera Parameter 

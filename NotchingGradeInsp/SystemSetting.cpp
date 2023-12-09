@@ -8,6 +8,8 @@ CSystemSetting::CSystemSetting()
 {
 	//SPC+ 출력 여부 플래그 초기화
 	m_bDisableSpcPlus = FALSE;
+
+	m_dResolY1000P = 0.0;
 }
 
 
@@ -65,6 +67,7 @@ int CSystemSetting::FileCtrl(int nMode)
 			strKey = _T("RESOLUTION_VER") ;
 			::GetPrivateProfileString(strSection, strKey, "10.85", buff, 256, strFileName);
 			m_dResolY = atof(buff);
+			m_dResolY1000P = m_dResolY;
 
 			// 22.05.27 Ahn Add Start
 			strKey = _T("MACHINE_ID");
