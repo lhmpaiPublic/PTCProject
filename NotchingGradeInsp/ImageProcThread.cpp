@@ -101,20 +101,27 @@ void CImageProcThread::Kill( void )
 
 }
 
+double CImageProcThread::TabPitchCalculate(int bforeImageLengtch, int bforeTabLeft, int nownTabLeft, double dResolY)
+{
+	double realTabPitch = 0.0;
+	realTabPitch = (double)((bforeImageLengtch - bforeTabLeft) + nownTabLeft) * (dResolY / 1000.0);
+	return realTabPitch;
+}
+
 #define IMAGECUTTINGTAB_TIMEOUT 50
 //#define TabPitch(a, b, c, d) ((a-b)+c)*(d)
 #define TabPitch(a, b, c) ((a-b)+c)*(0.021)
 //92.0 +- 20
-#define MIN_TABPITCH 72 
-#define MAX_TABPITCH 112
+#define MIN_TABPITCH 72.0
+#define MAX_TABPITCH 112.0
 static int bforeImageLengtch = 0;
 static int bforeTabLeft = 0;
 
 //44.79
-#define MIN_TABWIDTH 35 
-#define MAX_TABWIDTH 55
+#define MIN_TABWIDTH 35.0
+#define MAX_TABWIDTH 55.0
 
-static int RecipeInfoTabPitch = 0;
+static double RecipeInfoTabPitch = 0;
 
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
@@ -313,14 +320,21 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[i];
 
-						double dResolYLocal = (AprData.m_System.m_dResolY1000P / 1000);
 						//텝 피치 측정
 						if((bforeImageLengtch > 0) && (bforeTabLeft > 0))
 						{
 							//min 72 max 112 범위의 피치를 벗어날 경우 
-							double nTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
+							double nTabPitch = 0.0;
+							if (AprData.m_System.m_dResolY1000P > 1.0)
+							{
+								nTabPitch = CImageProcThread::TabPitchCalculate(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft, AprData.m_System.m_dResolY1000P);
+							}
+							else
+							{
+								nTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
+							}
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%d> @@@@ ", nTabPitch);
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", nTabPitch, RecipeInfoTabPitch);
 							if ((MIN_TABPITCH > nTabPitch) || (MAX_TABPITCH < nTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
@@ -331,19 +345,27 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							}
 						}
 
+						//지금 텝의 길이를 저장한다.
 						bforeImageLengtch = pTabInfo->nImageLength;
+						//지금 텝 왼쪽 길이를 저장한다.
 						bforeTabLeft = pTabInfo->nTabLeft;
 
+						//지금 텝의 넓이를 구한다.
+						//분해능 / 1000.0
+						double dResolYLocal = (AprData.m_System.m_dResolY1000P / 1000);
+						//지금 텝의 길이
 						int nWidthLocal = abs(pTabInfo->nTabRight - pTabInfo->nTabLeft);
+						//실제 텝의 길이 44.0 
 						double realTabWidth = nWidthLocal * dResolYLocal;
 
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Witch<%d> - 실제 넓이<%f> 분해능<%f>@@@@ ", nWidthLocal, realTabWidth, AprData.m_System.m_dResolY1000P);
+						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Witch<%d> - 실제 텝 넓이<%f> 분해능<%f>@@@@ ", nWidthLocal, realTabWidth, AprData.m_System.m_dResolY1000P);
 
+						//실제 텝의 넓이 범위 확인 로그
 						if ((MIN_TABWIDTH > realTabWidth) || (MAX_TABWIDTH < realTabWidth))
 						{
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 크기가 이상이 있을 때 TabSize<%d> @@@@ ", nWidthLocal);
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 넓이가 이상이 있을 때 TabSize<%d> @@@@ ", nWidthLocal);
 						}
 
 						//Trigger Tab Id 초기화 시 
@@ -555,8 +577,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE 초기화
 							bBCDDiffBig = TRUE;
 						}
-
-						TriggerBCDCountMAXINT;
 
 						if (cntInfo.nTabIdTotalCount == MAX_INT)
 						{
