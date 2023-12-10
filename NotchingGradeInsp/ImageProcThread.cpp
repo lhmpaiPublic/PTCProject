@@ -104,8 +104,8 @@ void CImageProcThread::Kill( void )
 #define IMAGECUTTINGTAB_TIMEOUT 50
 #define TabPitch(a, b, c) ((a-b)+c)*(0.021)
 //92.0 +- 20
-#define MIN_TABPITCH 72 
-#define MAX_TABPITCH 112
+#define MIN_TABPITCH 72.0
+#define MAX_TABPITCH 112.0
 static int bforeImageLengtch = 0;
 static int bforeTabLeft = 0;
 
@@ -312,9 +312,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if((bforeImageLengtch > 0) && (bforeTabLeft > 0))
 						{
 							//min 72 max 112 범위의 피치를 벗어날 경우 
-							int nTabPitch = (int)TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
+							double nTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%d> @@@@ ", nTabPitch);
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%f> @@@@ ", nTabPitch);
 							if ((MIN_TABPITCH > nTabPitch) || (MAX_TABPITCH < nTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.

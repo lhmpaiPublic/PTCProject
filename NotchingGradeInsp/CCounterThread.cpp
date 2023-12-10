@@ -467,6 +467,10 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							//누락 로그 출력한다.
 							if (nextTabID != wTempID)
 							{
+								//Trigger TabId Check
+								CLogDisplayDlg::LogDisplayText(_T("TriggerTabIdCheck"), _T("========now TabId<%d> lost TabId<%d>"),
+									wTempID, nextTabID);
+
 								//얻은 Tab Id 범위 확인용
 								if ((wTempID >= 0) && (wTempID < 64))
 								{
@@ -584,6 +588,10 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						//받은 id
 						inputReadId.push_back(wTempID);
 
+						//Trigger TabId Check
+						CLogDisplayDlg::LogDisplayText(_T("TriggerTabIdCheck"), _T("======On==Trigger On TabId<%d>"),
+							wTempID);
+
 						//이전 id 갱신
 #if DIO_BOARD_NO // 0이 아니면
 						wLastInfo = wTempID;
@@ -642,7 +650,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						}
 					}
 
-					if ((TriggerOffCount % 5) == 0)
+					if ((TriggerOffCount % 4) == 0)
 					{
 						WORD wInSignal = 0x00;
 						dio.InputWord(&wInSignal);
@@ -653,6 +661,9 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 						if (wLastTabIdTriggerOff != wTempID)
 						{
+							//Trigger TabId Check
+							CLogDisplayDlg::LogDisplayText(_T("TriggerTabIdCheck"), _T("====Off====Trigger Off TabId<%d>"),
+								wTempID);
 							//DIO Input Log
 							LOGDISPLAY_SPEC(7)(_T("@@%d### TriggerOff Count<%d> input Tabid<%d><%d>"), ThreadLoopCount, TriggerOffCount, wTempID, wLastTabIdTriggerOff);
 
