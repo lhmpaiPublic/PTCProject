@@ -696,6 +696,9 @@ void CModeDlg::OnBnClickedRadRun()
 	
 	AprData.SaveDebugLog_Format(_T("<BUTTON CLICK> START"));
 
+	//Button Click Start/Stop 시 Tab Id 초기화
+	AprData.m_NowLotData.m_bInspStartStop = TRUE;
+
 	m_pDoc->SetInspState(enInspRun);
 
 	// 22.07.07 Ahn Delete Start

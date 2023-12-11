@@ -304,6 +304,9 @@ public:
 	//ConnectZone
 	BOOL m_bConnectZone;
 
+	//Start/Stop 버튼을 클릭했을 경우 설정됨
+	BOOL m_bInspStartStop;
+
 	// 22.06.29 Ahn Add Start
 	int		m_nTopNG;
 	int		m_nBottomNG;

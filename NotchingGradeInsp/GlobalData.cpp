@@ -1165,6 +1165,9 @@ void CLotInfo::ClearAllCount()
 	//ConnectZone
 	m_bConnectZone = FALSE;
 
+	//Start/Stop 버튼을 클릭했을 경우 설정됨
+	m_bInspStartStop = FALSE;
+
 	m_nTabCountNG = 0 ;
 	m_nTabCountOK = 0 ;
 	m_nLastTotalCnt = 0 ;
