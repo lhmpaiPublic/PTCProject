@@ -371,7 +371,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 
 						//Trigger Tab Id 초기화 시 
-						if (AprData.m_NowLotData.m_bInitTabId && (useTabID != 64))
+						if ((useTabID != 64) && AprData.m_NowLotData.m_bInitTabId)
 						{
 							AprData.m_NowLotData.m_bInitTabId = FALSE;
 							useTabID = 64;
@@ -407,6 +407,25 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID가 5 < 이상 못받았을 때 초기화 @@@@ ");
+						}
+
+						//Button Click Start/Stop 초기화
+						if ((useTabID != 64) && AprData.m_NowLotData.m_bInspStartStop == TRUE)
+						{
+							AprData.m_NowLotData.m_bInspStartStop = FALSE;
+							useTabID = 64;
+							nextBCDId = 64;
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD Insp Start/Stop 시 초기화 @@@@ ");
+						}
+
+						//Trigger에 받은 BCD ID 갯수가 2보다 크면 초기화
+						if ((useTabID != 64) && TabQueueSize > 2)
+						{
+							useTabID = 64;
+							nextBCDId = 64;
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD  Trigger에 받은 BCD ID 갯수가 2보다 크면 초기화 @@@@ ");
 						}
 
 
@@ -577,7 +596,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//BCD ID 받은 값과 사용할 Tab Id 차가 3이상이면 
 						//BCD ID는 64이하이다.
 						int compareBCDID = abs(useTabID - nowBCDID);
-						if ((useTabID < 64) && (nowBCDID < 64) && ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) > 3))
+						if ((useTabID < 64) && (nowBCDID < 64) && ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) > 2))
 						{
 							CLogDisplayDlg::LogDisplayText(_T("BCD_ID_USE_ERROR "), _T("@@@@@@@@@ useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ "), (compareBCDID > 40 ? 64 - compareBCDID : compareBCDID));
 
@@ -588,11 +607,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							bBCDDiffBig = TRUE;
 						}
 
+
+
+						//Trigger Tab Id를 받았는지 판단 기준
 						if (cntInfo.nTabIdTotalCount == MAX_INT)
 						{
 							if ((nowReciveTabId >= 0) && (nowReciveTabId < 64))
 							{
-								if (abs(nowReciveTabId - cntInfo.nTabIdTotalCount) > 3)
+								//Trigger 받은 Tab Id와 지금 사용할 Tab Id 차가 1 이상 일 때 카운트 증가
+								int compareBCDID = abs(nowReciveTabId - cntInfo.nTabID);
+								if ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) >= 1)
 								{
 									TriggerBCDCountMAXINT++;
 								}
