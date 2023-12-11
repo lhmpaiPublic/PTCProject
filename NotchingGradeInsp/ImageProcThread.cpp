@@ -569,11 +569,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Trigger Tab Id를 받았는지 판단 기준
 						if (cntInfo.nTabIdTotalCount == MAX_INT)
 						{
-							if ((nowReciveTabId >= 0) && (nowReciveTabId < 64) && (cntInfo.nTabID >= 0) && (cntInfo.nTabID < 64))
+							if ((nowReciveTabId >= 0) && (nowReciveTabId < 64))
 							{
-								//Trigger 받은 Tab Id와 지금 사용할 Tab Id 차가 2 이상 일 때 카운트 증가
+								//Trigger 받은 Tab Id와 지금 사용할 Tab Id 차가 1 이상 일 때 카운트 증가
 								int compareBCDID = abs(nowReciveTabId - cntInfo.nTabID);
-								if ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) > 2)
+								if ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) >= 1)
 								{
 									TriggerBCDCountMAXINT++;
 								}
