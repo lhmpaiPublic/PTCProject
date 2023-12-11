@@ -470,6 +470,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								//Trigger TabId Check
 								CLogDisplayDlg::LogDisplayText(_T("TriggerTabIdCheck"), _T("========now TabId<%d> lost TabId<%d>"),
 									wTempID, nextTabID);
+
 								//얻은 Tab Id 범위 확인용
 								if ((wTempID >= 0) && (wTempID < 64))
 								{
@@ -648,7 +649,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							}
 						}
 					}
-
 
 					if ((TriggerOffCount % 4) == 0)
 					{
