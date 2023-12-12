@@ -403,8 +403,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
 						if ((useTabID != 64) && (TriggerBCDCountMAXINT>5))
 						{
-							useTabID = 64;
-							nextBCDId = 64;
+							//useTabID = 64;
+							//nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID가 5 < 이상 못받았을 때 초기화 @@@@ ");
 						}
@@ -417,15 +417,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD Insp Start/Stop 시 초기화 @@@@ ");
-						}
-
-						//Trigger에 받은 BCD ID 갯수가 2보다 크면 초기화
-						if ((useTabID != 64) && TabQueueSize > 2)
-						{
-							useTabID = 64;
-							nextBCDId = 64;
-							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD  Trigger에 받은 BCD ID 갯수가 2보다 크면 초기화 @@@@ ");
 						}
 
 
@@ -541,6 +532,22 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 											}
 											loopTabQueueSize++;
 										}
+									}
+									else
+									{
+										if (TabQueueSize > 0)
+										{
+											int loopTabQueueSize = 0;
+											while (loopTabQueueSize < TabQueueSize)
+											{
+												//Tab Id 확인용
+												CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
+												//Tab Id 정보 로그
+												LOGDISPLAY_SPEC(7)("@@@ D - NotFind @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
+												loopTabQueueSize++;
+											}
+										}
+
 									}
 								}
 
