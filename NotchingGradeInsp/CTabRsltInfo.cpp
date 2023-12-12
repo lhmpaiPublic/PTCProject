@@ -128,7 +128,7 @@ int CTabRsltInfo::GetDefJudge(double dSizeX, double dSizeY, double dDefSizeX, do
 	if ((dDefSizeX > dSizeX) && (dSizeX > 0.0)) {
 		nJudge = JUDGE_NG;
 	}
-	else if ((dDefSizeY > dSizeY) && (dSizeY > 0.0)) {
+	if ((dDefSizeY > dSizeY) && (dSizeY > 0.0)) {
 		nJudge = JUDGE_NG;
 	}
 

@@ -303,6 +303,10 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strKey = _T("DARK_EMP_MODE");
 			strData.Format(_T("%d"), pRcpInfo->bDarkEmpMode);
 			SaveRecipePrameter( strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey.Format(_T("ENABLE_V_GROOVE"));
+			strData.Format(_T("%d"), pRcpInfo->bEnableVGroove);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 		}
 
 		{
@@ -382,6 +386,21 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strData.Format(_T("%.1lf"), pRcpInfo->dSurfaceNgSize[CAM_POS_BOTTOM]);
 			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 
+			strKey = _T("DEFECT_Y_SIZE_TOP");
+			strData.Format(_T("%.1lf"), pRcpInfo->dDefectYSize[CAM_POS_TOP]);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey = _T("DEFECT_Y_SIZE_BTM");
+			strData.Format(_T("%.1lf"), pRcpInfo->dDefectYSize[CAM_POS_BOTTOM]);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey = _T("DEFECT_Y_SIZE_TOP");
+			strData.Format(_T("%.1lf"), pRcpInfo->dDefectYSize[CAM_POS_TOP]);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey = _T("DEFECT_Y_SIZE_BTM");
+			strData.Format(_T("%.1lf"), pRcpInfo->dDefectYSize[CAM_POS_BOTTOM]);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 		}
 
 		{
@@ -657,6 +676,10 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strKey = _T("DARK_EMP_MODE");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			pRcpInfo->bDarkEmpMode = atoi(buff);
+
+			strKey.Format(_T("ENABLE_V_GROOVE"));
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			pRcpInfo->bEnableVGroove = atoi(buff);
 		}
 
 
@@ -748,6 +771,14 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strKey = _T("SURFACE_NG_SIZE_BTM");
 			::GetPrivateProfileString(strSection, strKey, "61.0", buff, 256, strFileName);
 			pRcpInfo->dSurfaceNgSize[CAM_POS_BOTTOM] = atof(buff);
+
+			strKey = _T("DEFECT_Y_SIZE_TOP");
+			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+			pRcpInfo->dDefectYSize[CAM_POS_TOP] = atof(buff);
+
+			strKey = _T("DEFECT_Y_SIZE_BTM");
+			::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+			pRcpInfo->dDefectYSize[CAM_POS_BOTTOM] = atof(buff);
 
 		}
 

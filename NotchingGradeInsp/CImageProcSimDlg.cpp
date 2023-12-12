@@ -710,7 +710,7 @@ int  CImageProcSimDlg::AddDefectInfo(CImageProcess::_VEC_BLOCK* vecBlockFoilExp,
 			if (pBlockData->nPixelCnt < nMinSize[pBlockData->nType])
 				continue;
 
-			pBlockData->nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nCamPos], m_pRecipeInfo->dDefJudgeHeight, pBlockData->dJudgeSize, pBlockData->dHeight );
+			pBlockData->nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nCamPos], m_pRecipeInfo->dDefectYSize[nCamPos], pBlockData->dJudgeSize, pBlockData->dHeight );
 			
 //			if (pBlockData->nDefJudge == JUDGE_NG)
 //			{
@@ -1983,7 +1983,7 @@ void CImageProcSimDlg::InspectionAuto()
 		data.dDistance = tabRsltInfo.m_vecDefInfo[i]->dDistance; // 22.04.15 Ahn Add
 
 		int nHeadNo = (m_bModeTop == TRUE) ? CAM_POS_TOP : CAM_POS_BOTTOM;
-		data.nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nHeadNo], m_pRecipeInfo->dDefJudgeHeight, data.dJudgeSize, data.dHeight);
+		data.nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nHeadNo], m_pRecipeInfo->dDefectYSize[nHeadNo], data.dJudgeSize, data.dHeight);
 
 		m_pVecBlockAll->push_back(data);
 
@@ -2125,7 +2125,7 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 		else {
 			col = RGB(50, 230, 50);
 		}
-		strLine.Format(_T("Size_F %d:%.1lf um"), nDispCnt + 1, iter->dJudgeSize);
+		strLine.Format(_T("Size_F %d:%.1lf x %.1lf um"), nDispCnt + 1, iter->dJudgeSize, iter->dHeight );
 		CResultThread::DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine);
 
 		CRect defRect;
@@ -2160,7 +2160,7 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 
 		// Spetter 결함 사이즈 표시
 		if (nIdx < MAX_DISP_DEF_COUNT) {
-			strLine.Format(_T("Size_S %d:%.1lf um"), (nIdx + nDispCnt), iter->dJudgeSize);
+			strLine.Format(_T("Size_S %d:%.1lf x %.1lf um"), (nIdx + nDispCnt), iter->dJudgeSize, iter->dHeight);
 			CResultThread::DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine);
 		}
 		nIdx++;
@@ -2461,6 +2461,13 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 		nMeanLeftOffest = 70;
 		nMeanRightOffset = 70;
 		nTabRoundOffsetR = m_pRecipeInfo->TabCond.nRadiusW;
+
+		if (m_pRecipeInfo->bEnableVGroove == TRUE)
+		{
+			nLeftOffset += m_pRecipeInfo->TabCond.nNegVGrooveHeight;
+			nRightOffset += m_pRecipeInfo->TabCond.nNegVGrooveHeight;
+		}
+
 	}
 	// 22.01.05 Ahn Add End
 
@@ -2979,6 +2986,13 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	rcAll.top = 0;
 	rcAll.bottom = nHeight;
 
+
+	if (m_pRecipeInfo->bEnableVGroove == TRUE)
+	{
+		rcAll.right += m_pRecipeInfo->TabCond.nNegVGrooveHeight;
+	}
+
+
 	if (rcAll.left < 0)
 	{
 		rcAll.left = 0;
@@ -3008,8 +3022,19 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 
 	BYTE* pEdgePtr = pMeanPtr;
 
-	int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-	CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
+	if (m_pRecipeInfo->bEnableVGroove == FALSE)
+	{
+		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+		CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
+	}
+	else
+	{
+		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
+	}
+
+
 
 	CImageProcess::SmoothVecRoundData(&vecAllRndInfo, CImageProcess::en_FindLeft );
 

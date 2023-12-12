@@ -113,6 +113,9 @@ public:
 	double dFoilExpBothNgSize[MAX_CAMERA_NO];
 	double dSurfaceNgSize[MAX_CAMERA_NO];
 
+	double dDefectYSize[MAX_CAMERA_NO];
+
+
 	double dIgnoreDistance;
 	double dIgnoreSize;
 	int nThresSurface[MAX_CAMERA_NO];
@@ -146,6 +149,8 @@ public:
 	int nPetMatrixY[MAX_CAMERA_NO];
 	int nPetThreshold[MAX_CAMERA_NO];
 	int nPetCheckCnt[MAX_CAMERA_NO];
+
+	BOOL bEnableVGroove;
 
 
 

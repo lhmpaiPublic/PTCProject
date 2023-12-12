@@ -218,6 +218,9 @@ public:
 	BOOL m_bChkEnableDefLink;
 	afx_msg void OnBnClickedChkEnableDefLink();
 
+	BOOL m_bChkEnableVGroove;
+
+
 	void OnRefresh();
 	double m_dEdNgSizeHeight;
 	afx_msg void OnEnSetfocusEdNgXSize();
@@ -306,6 +309,10 @@ public:
 	double m_dEdFoilExpBothNgSize[MAX_CAMERA_NO];
 	double m_dSurfaceNgSize[MAX_CAMERA_NO];
 
+	double m_dEdDefectYSize[MAX_CAMERA_NO];
+
+
+
 	afx_msg void OnSetfocusEdNgXSizeBtm();
 	afx_msg void OnSetfocusEdFoilOutNgXSizeBtm();
 	afx_msg void OnSetfocusEdFoilBothNgXSizeBtm();
@@ -322,6 +329,9 @@ public:
 	afx_msg void OnSetfocusEdPetMatrixY();
 	afx_msg void OnSetfocusEdPetThreshold();
 	afx_msg void OnSetfocusEdPetCheckCnt();
+	afx_msg void OnSetfocusEdFoilDefectYSizeTop();
+	afx_msg void OnSetfocusEdFoilDefectYSizeBtm();
+	afx_msg void OnBnClickedChkEnableVGroove();
 };
 
 
