@@ -500,6 +500,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										cntInfo.nTabIdTotalCount = cntInfoTemp.nTabIdTotalCount;
 										cntInfo.nTabNo = cntInfoTemp.nTabNo;
 									}
+									else
+									{
+										//Tab Id 정보 로그
+										LOGDISPLAY_SPEC(7)("@@@ B : 2 @@@@@@Tab Id 삭제 Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
+									}
 									
 								}
 								else
@@ -543,7 +548,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 												//Tab Id 확인용
 												CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
 												//Tab Id 정보 로그
-												LOGDISPLAY_SPEC(7)("@@@ D - NotFind @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
+												LOGDISPLAY_SPEC(7)("@@@ D - TabId NotFind @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
 												loopTabQueueSize++;
 											}
 										}
