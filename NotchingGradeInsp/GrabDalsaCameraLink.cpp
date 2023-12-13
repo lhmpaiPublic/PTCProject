@@ -130,7 +130,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				theApp.m_nImageProcGrabberImageGet = GetTickCount();
 
 				//이미지 Top Bottom 모두 받으면 TabFind 스래드가 실행하도록 이벤트를 발생한다.
-				CGrabDalsaCameraLink::m_pImageProcessCtrl->GrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
+				CGrabDalsaCameraLink::m_pImageProcessCtrl->EventGrabDalsaCameraLink(pFrmInfo->m_nHeadNo, pFrmInfo->m_nFrameCount);
 
 
 				bImageExit = true;

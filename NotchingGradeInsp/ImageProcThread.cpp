@@ -55,7 +55,7 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 	m_bKill = FALSE ;
 	m_CreateMode = nMode;
 	//이벤트 객체 생성
-	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, FALSE, FALSE, NULL);
+	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, TRUE, FALSE, NULL);
 	pEvent_ImageProcThread_Result = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 //	m_DisphWnd = NULL ;
@@ -177,14 +177,23 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	int TriggerBCDIDSize0_RunCheck = 0;
 	while (1)
 	{
-		//이벤트 타임 Tab Find 주기 
-		ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), IMAGECUTTINGTAB_TIMEOUT);
+		//타임 주기 이벤트
+		//대기 상태일 때
+		if (bThreadWait)
+		{
+			ret = WaitForSingleObject(pThis->getEvent_ImageProcThread_TabFind(), INFINITE);
+		}
+		//대기하지 않고 바로 처리한다.
+		else
+		{
+			ret = WAIT_OBJECT_0;
+		}
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
 			break;
 		}
-		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
+		else if (ret == WAIT_OBJECT_0) //TIMEOUT시 명령
 		{
 			if (pThis == NULL)
 			{
@@ -200,6 +209,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					}
 				}
 			}
+
+			//프레임 크기
+			//Top Frame 크기
+			int nSizeFrmL = pQueueFrame_Top->GetSize();
+			//Bottom Frame 크기
+			int nSizeFrmR = pQueueFrame_Bottom->GetSize();
 
 			//프레임 정보가 Top1개 이상, Bottom 1개 이상
 			bHeadFlag = !pQueueFrame_Top->IsEmpty();
@@ -914,6 +929,23 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				delete pFrmInfo_Bottom;
 				pFrmInfo_Bottom = NULL;
 
+			}
+			//Top Frame 크기
+			nSizeFrmL = pQueueFrame_Top->GetSize();
+			//Bottom Frame 크기
+			nSizeFrmR = pQueueFrame_Bottom->GetSize();
+
+			//큐에 데이터가 있으면 기다리지 않고 실행하도록 설정
+			if (nSizeFrmL && nSizeFrmR)
+			{
+				bThreadWait = FALSE;
+			}
+			//없으면 대기
+			else
+			{
+				//Reset 호출
+				pThis->resetEvent_ImageProcThread_TabFind();
+				bThreadWait = TRUE;
 			}
 
 		}

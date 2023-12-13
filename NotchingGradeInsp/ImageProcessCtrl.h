@@ -204,7 +204,7 @@ public :
 
 	//CamType : Top 0, Bottom 1 카메라 이미지를 받았을 때
 	//FrameCtn : Camera에서 이벤트로 받은 이미지 번호 : Top, Bottom 각각
-	void GrabDalsaCameraLink(int CamType, int FrameCnt);
+	void EventGrabDalsaCameraLink(int CamType, int FrameCnt);
 
 
 
