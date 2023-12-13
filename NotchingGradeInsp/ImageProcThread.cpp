@@ -112,8 +112,8 @@ double CImageProcThread::TabPitchCalculate(int bforeImageLengtch, int bforeTabLe
 //#define TabPitch(a, b, c, d) ((a-b)+c)*(d)
 #define TabPitch(a, b, c) ((a-b)+c)*(0.021)
 //92.0 +- 20
-#define MIN_TABPITCH 72.0
-#define MAX_TABPITCH 112.0
+#define MIN_TABPITCH 25.0
+#define MAX_TABPITCH 25.0
 static int bforeImageLengtch = 0;
 static int bforeTabLeft = 0;
 
@@ -122,6 +122,7 @@ static int bforeTabLeft = 0;
 #define MAX_TABWIDTH 55.0
 
 static double RecipeInfoTabPitch = 0;
+static double RecipeInfoTabWidth = 0;
 
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
@@ -161,7 +162,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 	//레시피 텝 피치 정보를 세팅한다.
 	RecipeInfoTabPitch = (int)AprData.m_pRecipeInfo->TabCond.dTabPitch;
-
+	RecipeInfoTabWidth = (int)AprData.m_pRecipeInfo->TabCond.dTabWidth;
 	//다음 사용할 Tab ID (BCD ID)
 	int nextBCDId = 64;
 
@@ -337,7 +338,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", nTabPitch, RecipeInfoTabPitch);
 
-							if ((MIN_TABPITCH > nTabPitch) || (MAX_TABPITCH < nTabPitch))
+							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > nTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < nTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
 								useTabID = 64;
@@ -361,13 +362,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						double realTabWidth = nWidthLocal * dResolYLocal;
 
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Witch<%d> - 실제 텝 넓이<%f> 분해능<%f>@@@@ ", nWidthLocal, realTabWidth, AprData.m_System.m_dResolY1000P);
+						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Witch<%d> - Recipe Width<%f> 실제 텝 넓이<%f> 분해능<%f>@@@@ ", nWidthLocal, RecipeInfoTabWidth, realTabWidth, AprData.m_System.m_dResolY1000P);
 
 						//실제 텝의 넓이 범위 확인 로그
 						if ((MIN_TABWIDTH > realTabWidth) || (MAX_TABWIDTH < realTabWidth))
 						{
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 넓이가 이상이 있을 때 TabSize<%d> @@@@ ", nWidthLocal);
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 넓이가 이상이 있을 때 Tab Width<%f>@@@@ ", nWidthLocal);
 						}
 
 						//Trigger Tab Id 초기화 시 
@@ -406,7 +407,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID가 5 < 이상 못받았을 때 초기화 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID가 5 < 이상 틀어짐이 있을 때 초기화 @@@@ ");
 						}
 
 						//Button Click Start/Stop 초기화
