@@ -855,10 +855,11 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 									, pRsltInfo->m_pTabRsltInfo->sysTime.wSecond
 									, pRsltInfo->m_pTabRsltInfo->sysTime.wMilliseconds
 								);
-								strPath.Format(_T("%s\\Overlay\\%s_%s_%s%s")
+								strPath.Format(_T("%s\\Overlay\\%s_%s_%d_%s%s")
 									, pRsltInfo->m_pTabRsltInfo->m_chImagePath
 									, AprData.m_NowLotData.m_strLotNo
 									, (pRsltInfo->m_pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TAB") : _T("BOTTOM")
+									, pRsltInfo->m_pTabRsltInfo->m_nTabNo + 1
 									, strTime
 									, strImageFormat
 								);
