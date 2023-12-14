@@ -1535,10 +1535,14 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								, strMarkReason
 								, (pTopInfo->m_pTabRsltInfo->m_bIsPET == TRUE) ? _T("PET") : _T("")
 							);
-							CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
+							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
+
+
+							strResult.TrimRight();
+							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write CSV(%d) [%s%s][%s]"),
+								nRet, pTopInfo->nTabNo, strFilePath, strCsvFileName, strResult );
 						}
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write CSV"), pTopInfo->nTabNo);
 
 
 						//SPC 객체 소스에서 컴파일 여부 결정
