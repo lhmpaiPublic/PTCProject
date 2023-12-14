@@ -1540,7 +1540,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							strResult.TrimRight();
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write CSV(%d) [%s%s][%s]"),
-								nRet, pTopInfo->nTabNo, strFilePath, strCsvFileName, strResult );
+								pTopInfo->nTabNo, nRet, strFilePath, strCsvFileName, strResult );
 						}
 
 

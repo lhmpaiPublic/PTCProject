@@ -1422,7 +1422,7 @@ int	CWin32File::TextSave1Line( LPCTSTR lpszPath, LPCTSTR lpszFname, LPCTSTR lpsz
 
 	filesize = ( UINT)( strlen( lpszSavemsg ) ) ;
 	if ( filesize <= 0 ) {
-		return ( -1 ) ;
+		return ( -2 ) ;
 	}
 
 	BOOL	bIndexSave = TRUE ;
@@ -1436,7 +1436,7 @@ int	CWin32File::TextSave1Line( LPCTSTR lpszPath, LPCTSTR lpszFname, LPCTSTR lpsz
 		filename.ReleaseBuffer() ;
 		if ( _stat( filename.GetBuffer( 0 ), &st_buf ) != 0 ) {
 			filename.ReleaseBuffer() ;
-			return ( -1 ) ;
+			return ( -3 ) ;
 		}
 		filename.ReleaseBuffer() ;
 		if ( iMaxFileSize > 0 ) {
@@ -1458,7 +1458,7 @@ int	CWin32File::TextSave1Line( LPCTSTR lpszPath, LPCTSTR lpszFname, LPCTSTR lpsz
 		if ( bErrflag == TRUE ) {
 			AfxMessageBox( GetFileExceptionString( errorex ) ) ;
 		}
-		return ( -1 ) ;
+		return ( -4 ) ;
 	}
 
 	file.SeekToEnd() ;
