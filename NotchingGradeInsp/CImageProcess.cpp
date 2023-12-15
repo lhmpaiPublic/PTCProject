@@ -4156,8 +4156,11 @@ double CImageProcess::CalcDefectMaxSize_Round(BYTE* pImgPtr, int nWidth, int nHe
 				nMaxCount = nCount;
 			}
 		}
+//		double dTest = hypot((nMaxCount * AprData.m_System.m_dResolX[CAM_POS_TOP]), (nMaxCount * AprData.m_System.m_dResolY));
+
 		double dRate = ( AprData.m_System.m_dResolY + AprData.m_System.m_dResolX[CAM_POS_TOP] ) / 2 ;
 		pBlock->dJudgeSize = nMaxCount * dRate ;
+
 	}
 	else {
 		double dSlopeRate = AprData.m_System.m_dResolX[CAM_POS_TOP] / AprData.m_System.m_dResolY;
@@ -8135,13 +8138,13 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth,
 			{
 				pData->nDefPos = en_LeftRound; // 22.08.25 Ahn Add
 				CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
-				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
+//				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
 			else if (rcRightRnd.PtInRect(ptCenter) == TRUE)
 			{
 				pData->nDefPos = en_RightRound; // 22.08.25 Ahn Add
 				CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
-				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
+//				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
 			else
 			{
