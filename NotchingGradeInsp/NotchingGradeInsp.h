@@ -83,6 +83,17 @@ public :
 
 	static int GetFileVersion(CString& strVersion);
 	static CString& GetAppBuildInfo(void);	
+
+	/**
+	Get File Time Info
+	@param        strPath          File Path
+	@param        outCreate        Create Time
+	@param        outAccess        Access Time
+	@param        outWrite         Write Time
+	@return
+	*/
+	static void GetFileTimes(CString strPath, SYSTEMTIME* outCreate, SYSTEMTIME* outAccess, SYSTEMTIME* outWrite);
+
 ////KANG 22.01.07 Add Start
 //	CResultView* GetResultViewPrt();
 ////KANG 22.01.07 Add End
