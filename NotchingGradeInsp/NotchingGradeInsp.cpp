@@ -510,7 +510,12 @@ int CNotchingGradeInspApp::GetFileVersion(CString& strVersion)
 	vRv = HIWORD(vsf.dwFileVersionLS);
 	vBd = LOWORD(vsf.dwFileVersionLS);
 
-	strVersion.Format(_T("%d-%d-%d-%d Build:%s"), vMj, vMn, vRv, vBd, GetAppBuildInfo());
+	SYSTEMTIME timeCreate{};
+	SYSTEMTIME timeAccess{};
+	SYSTEMTIME timeWrite{};
+
+	GetFileTimes(fname, &timeCreate, &timeAccess, &timeWrite);
+	strVersion.Format(_T("버전정보 : %d-%d-%d-%d 만든 날짜 : %d.%d.%d %d:%d:%d"), vMj, vMn, vRv, vBd, timeCreate.wYear, timeCreate.wMonth, timeCreate.wDay, timeCreate.wHour, timeCreate.wMinute, timeCreate.wSecond);
 
 	return 0;
 }
@@ -535,6 +540,79 @@ CString& CNotchingGradeInspApp::GetAppBuildInfo(void)
 
 	return strBuildInfo;
 }
+
+/**
+Get File Time Info
+@param        strPath          File Path
+@param        outCreate        Create Time
+@param        outAccess        Access Time
+@param        outWrite         Write Time
+@return
+*/
+void CNotchingGradeInspApp::GetFileTimes(CString strPath, SYSTEMTIME* outCreate, SYSTEMTIME* outAccess, SYSTEMTIME* outWrite)
+{
+	if (strPath.IsEmpty())
+		return;
+
+	HANDLE hFile = NULL;
+	try
+	{
+		// 파일을 엽니다. (파일 핸들을 연다고 표현함)
+		hFile = CreateFile(strPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile != INVALID_HANDLE_VALUE)
+		{
+			FILETIME timeCreate;
+			FILETIME timeAccess;
+			FILETIME timeWrite;
+
+			// 여기서 생성 시간, 접근 시간, 쓰기 시간을 받아옵니다.
+			BOOL bRet = GetFileTime(hFile, &timeCreate, &timeAccess, &timeWrite);
+			if (bRet == FALSE)
+				return;
+
+			SYSTEMTIME stimeCreate;
+			SYSTEMTIME stimeAccess;
+			SYSTEMTIME stimeWrite;
+
+			if (outCreate != nullptr)
+			{
+				// 받아온 생성 시간을 시스템 시간으로 변환 (이때 시간은 UTC 시간으로 반환)
+				bRet = FileTimeToSystemTime(&timeCreate, &stimeCreate);
+				if (bRet)
+					// UTC 시간을 Local 시간으로 변환
+					SystemTimeToTzSpecificLocalTime(NULL, &stimeCreate, outCreate);
+			}
+			if (outAccess != nullptr)
+			{
+				// 받아온 접근 시간을 시스템 시간으로 변환 (이때 시간은 UTC 시간으로 반환)
+				bRet = FileTimeToSystemTime(&timeAccess, &stimeAccess);
+				if (bRet)
+					// UTC 시간을 Local 시간으로 변환
+					SystemTimeToTzSpecificLocalTime(NULL, &stimeAccess, outAccess);
+			}
+			if (outWrite != nullptr)
+			{
+				// 받아온 쓰기 시간을 시스템 시간으로 변환 (이때 시간은 UTC 시간으로 반환)
+				bRet = FileTimeToSystemTime(&timeWrite, &stimeWrite);
+				if (bRet)
+					// UTC 시간을 Local 시간으로 변환
+					SystemTimeToTzSpecificLocalTime(NULL, &stimeWrite, outWrite);
+			}
+		}
+		// 파일을 닫습니다. (핸들을 닫는다고 표현함)
+		CloseHandle(hFile);
+	}
+	catch (CException& e)
+	{
+		TCHAR szException[1024] = { 0, };
+		e.GetErrorMessage(szException, 1024);
+		TRACE(szException);
+
+		CloseHandle(hFile);
+		hFile = NULL;
+	}
+}
+
 
 ////KANG 22.01.07 Add Start
 //CResultView* CNotchingGradeInspApp::GetResultViewPrt()
