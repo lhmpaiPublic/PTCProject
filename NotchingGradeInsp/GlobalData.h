@@ -223,6 +223,15 @@ public:
 
 	WORD wDummy4[15];
 
+	WORD wCell_TriggerID; // 사용안함
+	WORD wCell_Judge; // 사용안함
+	WORD wCell_NgCode; // 사용안함
+
+	WORD wDummy5[2];
+
+	WORD wDuplicateNG_Cell_ID[64]; // NG 중복 카운트 ID 0~63, OK=0, NG=1
+
+
 } _SEQ_OUT_DATA_SMS;
 
 typedef struct stSeqDataOutAllSms {
@@ -327,7 +336,7 @@ public:
 
 	_SEQ_OUT_DATA_SMS			m_SeqDataOutSms;
 	_SEQ_OUT_DATA_LOT_END_SMS	m_SeqDataLotEndSms;
-	_CELL_JUDGE_SMS				m_stCellJudgeSms;
+//	_CELL_JUDGE_SMS				m_stCellJudgeSms;
 	_ALARM_CODE_CELL_JUDGE_SMS	m_stAlarmCodeAndCellJudgeSms;
 
 
@@ -514,6 +523,10 @@ public :
 	//InspStatus = Live Signal : 1, 가동불가 : 0
 	void SpcPluusStatus(CString InspStatus);
 #endif //SPCPLUS_CREATE
+
+
+	int FileCtrl_DuplicateNG(int nMode, int nID=0, int nJudge=0);
+
 
 protected :
 	void InitRecipe();

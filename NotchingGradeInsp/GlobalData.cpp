@@ -97,6 +97,8 @@ CGlobalData::CGlobalData(void)
 	m_globalStr.SetOutImageFormat(".jpg");
 
 	m_nMissTabIdNow = 0;
+
+	FileCtrl_DuplicateNG(MODE_READ);
 }
 
 CGlobalData::~CGlobalData(void)
@@ -1179,5 +1181,48 @@ void CLotInfo::ClearAllCount()
 
 	memset(&m_SeqDataOutSms, 0x0000, sizeof(_SEQ_OUT_DATA_SMS));
 	memset(&m_SeqDataLotEndSms, 0x0000, sizeof(_SEQ_OUT_DATA_LOT_END_SMS));
+
+}
+
+
+int CGlobalData::FileCtrl_DuplicateNG(int nMode, int nID, int nJudge )
+{
+	CString strSaveFile;
+	CString strFileName;
+
+	strFileName.Format(_T("DuplicateNgInfo"));
+	strSaveFile.Format(_T("%s\\%s.ini"), AprData.m_strDataPath, strFileName);
+
+	CString strSection;
+	CString strKey;
+	CString strData;
+	char buff[256];
+
+	switch (nMode)
+	{
+	case	MODE_READ:
+		strSection = _T("DUPLICATE_NG_INFO");
+
+		for (int i = 0; i < 64; i++)
+		{
+			strKey.Format(_T("CELL_ID_%02d"), i);
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
+			AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[i] = atoi(buff);
+		}
+
+		break;
+
+
+	case	MODE_WRITE:
+		strSection = _T("DUPLICATE_NG_INFO");
+		strKey.Format(_T("CELL_ID_%02d"), nID);
+		strData.Format(_T("%d"), nJudge );
+		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
+
+		break;
+	}
+
+
+	return 0;
 
 }

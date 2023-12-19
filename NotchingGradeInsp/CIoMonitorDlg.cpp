@@ -406,7 +406,16 @@ void CIoMonitorDlg::MakeGridCtrl()
 
 		case 3:
 			pGridCtrl = &m_GridWordOut;
-			m_nRows = en_OutWord_Max + 1;
+			//m_nRows = en_OutWord_Max + 1;
+
+			if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
+			{
+				m_nRows = CSigProc::enSmsWordWriteMaxSize + 1;
+			}
+			else
+			{
+				m_nRows = CSigProc::enWordWriteMaxSize + 1;
+			}
 			break;
 
 		default:
@@ -1318,8 +1327,6 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 			break;
 
 
-
-
 		case	CSigProc::en_SmsWordWrite_Cell_Trigger_ID:
 			strRet = _T("Cell ID");
 			break;
@@ -1336,6 +1343,15 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 			strRet = _T("");
 			break;
 		}
+
+
+		if ( (nRow >= CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID) && (nRow < CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID + 64))
+		{
+			strRet.Format(_T("Cell ID %d"), nRow - CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID );
+		}
+
+
+
 	}
 	else
 	{

@@ -1338,6 +1338,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 										int nNgCode = 1; // 임시, 정의되지 않음
 
 										pSigProc->WriteAlarmCodeAndJudge(wAlarmCode, nId, nJudge, nNgCode);
+
+										if( (nId >= 0) && (nId < 64) )
+										{
+											AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[nId] = (nTopJudge == JUDGE_NG) ? 1 : 0;
+
+											AprData.FileCtrl_DuplicateNG(MODE_WRITE, nId, AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[nId]);
+										}
 									}
 									else
 									{

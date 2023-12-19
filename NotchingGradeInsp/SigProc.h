@@ -323,7 +323,9 @@ public:
 		en_SmsWordWrite_NG_Code = 82, en_SmsWordWrite_NG_Code_Len = 1,
 
 
-		enSmsWordWriteMaxSize = 100,
+		enSmsWordWrite_DuplicateNG_Cell_ID = 85, enSmsWordWrite_DuplicateNG_Cell_ID_Len = 64,
+
+		enSmsWordWriteMaxSize = 149,
 
 	};
 	// Siemens Word Address End
