@@ -2435,29 +2435,23 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 
 	int nOffset = 50;
 
-	// 22.01.05 Ahn Add Start
 	int nLeftOffset;	
 	int nRightOffset;
 	int nMeanLeftOffest;
 	int nMeanRightOffset;
 	int nTabRoundOffsetR;
-	//if (m_pRecipeInfo->bNegativeMode == TRUE) {
-	// 22.09.15 Ahn Modify Start
-	//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
-	if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
-	// 22.09.15 Ahn Modify End
+	if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+	{
 		nLeftOffset = (int)( (double)m_pRecipeInfo->TabCond.nNegCoatHeight  );
 		nRightOffset = (int)((m_pRecipeInfo->dFoilOutInspWidth[CAM_POS_TOP] * 1000.0) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
 		nMeanLeftOffest = (int)((double)m_pRecipeInfo->TabCond.nNegCoatHeight );
 		nMeanRightOffset = 50 ;
 		nTabRoundOffsetR = m_pRecipeInfo->TabCond.nNegCoatHeight;
 	}
-	else {
-		// 22.05.09 Ahn Modify Start
-		//nLeftOffset = m_pRecipeInfo->TabCond.nCeramicHeight ;
+	else
+	{
 		nLeftOffset = (int)( ( m_pRecipeInfo->dFoilExpInspWidth[CAM_POS_TOP] * 1000.0 ) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
 		nRightOffset = (int)( (m_pRecipeInfo->dFoilOutInspWidth[CAM_POS_TOP] * 1000.0 ) / AprData.m_System.m_dResolX[CAM_POS_TOP] );
-		// 22.05.09 Ahn Modify End
 		nMeanLeftOffest = 70;
 		nMeanRightOffset = 70;
 		nTabRoundOffsetR = m_pRecipeInfo->TabCond.nRadiusW;
@@ -2469,7 +2463,6 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 		}
 
 	}
-	// 22.01.05 Ahn Add End
 
 	CRect rcAll;
 	CRect rcLeft;
@@ -3158,16 +3151,10 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	if (GetTabHeadPos(&tabPos, &nLevel) < 0) return -1;
 
 	int nOffset = 50;
-
-	// 22.01.05 Ahn Add Start
 	int nLeftOffset;
-	int nMeanLeftOffest;
-	int nMeanRightOffset;
 	int nTabRoundOffsetR;
 
 	nLeftOffset = m_pRecipeInfo->TabCond.nNegVGrooveHeight + m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP] ;
-	nMeanLeftOffest = m_pRecipeInfo->TabCond.nNegCoatHeight ;
-	nMeanRightOffset = 50;
 	nTabRoundOffsetR = m_pRecipeInfo->TabCond.nNegCoatHeight;
 
 
@@ -3180,22 +3167,13 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	int nOutRange = m_pRecipeInfo->TabCond.nNegCoatHeight ;
 	rcRight.right = rcLeft.right = nLevel + nOutRange;
 
-	CRect rcEdgeMean;
-	rcEdgeMean.bottom = nHeight;
-	rcEdgeMean.top = 0;
-	rcEdgeMean.left = nLevel - nMeanLeftOffest;
-	rcEdgeMean.right = nLevel + nMeanRightOffset;
 
-	// 22.11.07 Ahn Modify Start
 	if ((rcAll.right > nWidth) || (rcAll.left < 0)) {
 		return -1;
 	}
-	// 22.11.07 Ahn Modify End
 
 	rcAll.top = rcLeft.top = 0;
 	rcAll.bottom = rcRight.bottom = nHeight;
-//	rcLeft.bottom = tabPos.cx - 200; //m_pRecipeInfo->nFoilExpInspWidth[ CAM_POS_TOP ] ; 
-//	rcRight.top = tabPos.cy + 200;//m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 	rcLeft.bottom = tabPos.cx;
 	rcRight.top = tabPos.cy;
 
@@ -3205,11 +3183,10 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	CRect rcRightRnd;
 	rcLeftRnd = rcLeft;
 	rcRightRnd = rcRight;
-	rcLeftRnd.right = rcRightRnd.right = nLevel + nTabRoundOffsetR; // Tab Level 필요
+	rcLeftRnd.right = rcRightRnd.right = nLevel + nTabRoundOffsetR;
 	rcLeftRnd.top = rcLeft.bottom - m_pRecipeInfo->TabCond.nRadiusH;
 	rcRightRnd.bottom = rcRightRnd.top + m_pRecipeInfo->TabCond.nRadiusH;
 
-	// Test
 	CImageProcess::CheckRect(&rcLeft, nWidth, nHeight);
 	CImageProcess::CheckRect(&rcLeftRnd, nWidth, nHeight);
 	CImageProcess::CheckRect(&rcRight, nWidth, nHeight);
@@ -3219,6 +3196,7 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	CTimeAnalyzer cta;
 	cta.Clear();
 	cta.StopWatchStart();
+
 	int* pnResultArr;
 	pnResultArr = new int[nHeight];
 	memset(pnResultArr, 0, sizeof(int) * nHeight);
@@ -3231,15 +3209,9 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	int nOffsetY = 0;
 
 	int nMeanSize = MEAN_SIZE_HOR;
-	// 22.01.06 Ahn Add Start
-	int nHeadBndry;
-	nHeadBndry = nLevel + nTabRoundOffsetR;
-	// 22.01.06 Ahn Add End
-	// 22.05.30 Ahn Modify Start
-	//rcRightRnd.right = rcLeftRnd.right = rcAll.right = nHeadBndry;
+	int nHeadBndry = nLevel + nTabRoundOffsetR;
 	int nInspRangeRight = nLevel + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 	rcRightRnd.right = rcLeftRnd.right = rcAll.right = nInspRangeRight;
-	// 22.05.30 Ahn Modify End
 
 	int nMaskRight = nHeadBndry - 30;
 
@@ -3258,23 +3230,15 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	memset(pStdPtr, 0x0f, sizeof(BYTE) * nWidth * nHeight);
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcLeft, 15, 15, CImageProcess::en_FillTop);
 	CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcRight, 15, 15, CImageProcess::en_FillBottom);
-	//CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcLeftRnd, 15, 15, CImageProcess::en_FillTop);
-	//CImageProcess::ImageMean_Part(pImgPtr, pStdPtr, nWidth, nHeight, rcRightRnd, 15, 15, CImageProcess::en_FillBottom);
 
 	BYTE* pProcPtr = m_pBmpStd[en_ProcImage5]->GetImgPtr();
 	memset(pProcPtr, 0x0f, sizeof(BYTE) * nWidth * nHeight);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcLeft, 3, 3, CImageProcess::en_FillTop);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcRight, 3, 3, CImageProcess::en_FillBottom);
-	//CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcLeftRnd, 3, 3, CImageProcess::en_FillTop);
-	//CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcRightRnd, 3, 3, CImageProcess::en_FillBottom);
 
-	// 22.05.30 Ahn Add Start 
 	CImageProcess::GetMinImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcLeft);
 	CImageProcess::GetMinImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcRight);
 
-	//CImageProcess::GetMaxImage(pMaxnPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcLeft);
-	//CImageProcess::GetMaxImage(pMaxnPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcRight);
-	// 22.05.30 Ahn Add End
 	// 비교 처리용 이미지 
 	double dMeanProc = cta.WhatTimeIsIt_Double();
 	CString strMeanTime2;
@@ -3299,53 +3263,44 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	int  bLocalRet = 0;
 
 	BYTE* pEdgePtr;
-	// 22.05.30 Ahn Modify Start
-	//pEdgePtr = pProcPtr;
 	pEdgePtr = pMeanPtr;
-	// 22.05.30 Ahn Modify End
 
-	// 23.01.20 Ahn Modify Start
 	BOOL bRollMode ;
-	//if (m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_TOP] == CImageProcess::en_Edge_MaxDiff) {
-	//	bLocalRet = CImageProcess::EdgeDetectImageToBoth_RndInfo(pEdgePtr, pRsltPtr, &vecLeftRndInfo, nWidth, nHeight, rcTemp, nEdgeWidth, 2, DIR_VER);
-	// 23.02.15 Ahn Modify Start
-	if( m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1 ){
+	if( m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1 )
+	{
 		bRollMode = TRUE ;
-	// 23.02.15 Ahn Modify End
 		bLocalRet = CImageProcess::EdgeDetectImageToBoth_BaseBright(pEdgePtr, pRsltPtr, &vecLeftRndInfo, nWidth, nHeight, rcTemp, nThresBnd, nThresMax, CImageProcess::en_TopSide, nLevel, CImageProcess::en_FindLeft);
 	}
-	else {
-		bRollMode = FALSE; // 22.02.14 Ahn Add 
+	else
+	{
+		bRollMode = FALSE;
 		bLocalRet = CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecLeftRndInfo, nWidth, nHeight, rcTemp, nThresBnd, nThresMax, CImageProcess::en_TopSide, nLevel, CImageProcess::en_FindLeft);
 	}
-	// 23.01.20 Ahn Modify End
 
-	BYTE* pThresPtr = m_pBmpStd[en_ProcImage7]->GetImgPtr();
-	BYTE* pPreFltPtr = pImgPtr;
 
-	if (bLocalRet < 0) {
+	if (bLocalRet < 0)
+	{
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_Negative>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
 
 		return -1;
 	}
+
 	rcLeftRnd.right = nMaskRight;
-	// 23.01.20 Ahn Modify Start
-	//CImageProcess::GetBoundaryRoundInfo_ByBriDist(pProcPtr, pRsltPtr, nWidth, nHeight, rcLeftRnd, nThresBnd, nMaskRight, &vecLeftRndInfo, CImageProcess::en_FindLeft, CImageProcess::en_FindFromLeft);
 	CImageProcess::GetBoundaryRoundInfo_ByBriDist(pProcPtr, pRsltPtr, nWidth, nHeight, rcLeftRnd, nThresBnd, nMaskRight, &vecLeftRndInfo, CImageProcess::en_FindLeft, CImageProcess::en_FindFromLeft, bRollMode );
-	// 23.01.20 Ahn Modify End
 	CImageProcess::SmoothVecRoundData(&vecLeftRndInfo, CImageProcess::en_FindLeft);
 
 	int nLeftSize = (int)vecLeftRndInfo.size();
-	if (nLeftSize <= 0) {
-
+	if (nLeftSize <= 0)
+	{
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("<<ProceTopAll_Negative>>에러 - vecLeftRndInfo Left EdgeLine Vector Size is 0"));
 		return -1;
 	}
 	rcLeft.top = vecLeftRndInfo[0].y;
 	rcLeft.bottom = vecLeftRndInfo[nLeftSize - 1].y;
-	if (rcLeft.bottom < nLeftSize - 1) {
+	if (rcLeft.bottom < nLeftSize - 1)
+	{
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("<<ProceTopAll_Negative>>에러 - vecLeftRndInfo Left 엣지라인 데이터 사이즈 이상."));
 
@@ -3369,17 +3324,17 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	rcTemp.top = rcRightRnd.bottom;
 	rcTemp.right = rcRightRnd.right;
 
-	if (m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_TOP] == CImageProcess::en_Edge_MaxDiff) {
+	if (m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_TOP] == CImageProcess::en_Edge_MaxDiff)
+	{
 		bLocalRet = CImageProcess::EdgeDetectImageToBoth_RndInfo(pEdgePtr, pRsltPtr, &vecRightRndInfo, nWidth, nHeight, rcTemp, nEdgeWidth, 2, DIR_VER);
 	}
-	else {
-		// 22.05.30 Ahn Modify Start
+	else
+	{
 		bLocalRet = CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecRightRndInfo, nWidth, nHeight, rcTemp, nThresBnd, nThresMax, CImageProcess::en_TopSide, nLevel, CImageProcess::en_FindRight);
-		// 22.05.30 Ahn Modify End
 	}
-	if (bLocalRet < 0) {
-
-		//DEBUG_LOG.txt
+	if (bLocalRet < 0)
+	{
+	//DEBUG_LOG.txt
 		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_Negative>>에러 - vecRightRndInfo Edge found faile, ret = %d"), bLocalRet);
 
 		return -2;
@@ -3388,8 +3343,8 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	CImageProcess::SmoothVecRoundData(&vecRightRndInfo, CImageProcess::en_FindRight);
 
 	int nRightSize = (int)vecRightRndInfo.size();
-	if (nRightSize <= 0) {
-
+	if (nRightSize <= 0)
+	{
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("<<ProceTopAll_Negative>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0"));
 
@@ -3401,7 +3356,8 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 	rcRight.top = vecRightRndInfo[0].y;
 	rcRight.bottom = vecRightRndInfo[nRightSize - 1].y;
-	if (rcRight.bottom < nRightSize - 1) {
+	if (rcRight.bottom < nRightSize - 1)
+	{
 
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("<<ProceTopAll_Negative>>에러 - vecRightRndInfo Right 엣지라인 데이터 사이즈 이상."));
@@ -3419,6 +3375,8 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 	CRegionInfo roiInfo;
 	CString strThres;
+
+	BYTE* pThresPtr = new BYTE[nWidth * nHeight + 1];//m_pBmpStd[en_ProcImage7]->GetImgPtr();
 
 	memset(pThresPtr, 0x00, sizeof(BYTE) * nWidth * nHeight);
 	roiInfo.SetRoiPtr(pThresPtr);
@@ -3439,52 +3397,22 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	rcRightDiff.top = rcRightRnd.bottom;
 	rcLeftDiff = rcLeft;
 	rcRightDiff = rcRight;
-	pPreFltPtr = pProcPtr;
-
-	// 21.10.22 Ahn Add End
 
 	BYTE btThreshold = (BYTE)m_pRecipeInfo->nFoilExpThresOrigin[CAM_POS_TOP];
-	CImageProcess::DiffProcImage(pPreFltPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcLeftDiff, m_pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, m_pRecipeInfo->bDarkEmpMode);
-	CImageProcess::DiffProcImage(pPreFltPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcRightDiff, m_pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, m_pRecipeInfo->bDarkEmpMode);
+	CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcLeftDiff, m_pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, m_pRecipeInfo->bDarkEmpMode);
+	CImageProcess::DiffProcImage(pProcPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcRightDiff, m_pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, m_pRecipeInfo->bDarkEmpMode);
 
 
-	// 22.01.19 Ahn Add Start
-//	BOOL bUseErosionTest = TRUE;
-////	BYTE* pErsPtr = new BYTE[nWidth * nHeight + 1 ];
-// 	   memset(pStdPtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1 );
-//	if (bUseErosionTest == TRUE) {
-//
-//		CImageProcess::Threshold_Default(pDiffPtr, pThresPtr, &vecLeftRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, rcLeft, TRUE);
-//		CImageProcess::Threshold_Default(pDiffPtr, pThresPtr, &vecRightRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, rcRight, FALSE);
-//
-//		CImageProcess::Erosion(pThresPtr, pErosPtr, nWidth, nHeight, 0, rcAll, CImageProcess::en_FoilExp_Bit | CImageProcess::en_Dross_Bit);
-//		CImageProcess::RemoveNoise(pErosPtr, nWidth, nHeight, CImageProcess::en_Filter_8, rcAll, CImageProcess::en_FoilExp_Bit | CImageProcess::en_Dross_Bit);
-//		CImageProcess::Exptention( pErosPtr, pThresPtr, nWidth, nHeight, 0, rcAll, CImageProcess::en_FoilExp_Bit | CImageProcess::en_Dross_Bit);
-//	//	SWAP(BYTE*, pThresPtr, pErosPtr);
-//
-//		roiInfo.SetRoiPtr(pErosPtr);
-//		roiInfo.SetRect(rcLeft);
-//		CImageProcess::CollectFifo(pThresPtr, &roiInfo, &vecLeftRndInfo, nWidth, nHeight, nStartX, nEndX , TRUE, CAM_POS_TOP);
-//		roiInfo.SetRect(rcRight);
-//		CImageProcess::CollectFifo(pThresPtr, &roiInfo, &vecRightRndInfo, nWidth, nHeight, nStartX, nEndX, FALSE, CAM_POS_TOP);
-//	}else 
-	{
-		roiInfo.SetRect(rcLeft);
-		CImageProcess::Threshold_RoundMask_Negative(pDiffPtr, &roiInfo, &vecLeftRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, nMaskRight, FALSE);
-		roiInfo.SetRect(rcRight);
-		CImageProcess::Threshold_RoundMask_Negative(pDiffPtr, &roiInfo, &vecRightRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, nMaskRight, FALSE);
-	}
-	// 22.01.19 Ahn Add End
+	roiInfo.SetRect(rcLeft);
+	CImageProcess::Threshold_RoundMask_Negative(pDiffPtr, &roiInfo, &vecLeftRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, nMaskRight, FALSE);
+	roiInfo.SetRect(rcRight);
+	CImageProcess::Threshold_RoundMask_Negative(pDiffPtr, &roiInfo, &vecRightRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, nMaskRight, FALSE);
+
 	CImageProcess::_VEC_BLOCK vecBlockFoilExp;
 	vecBlockFoilExp.clear();
 
-
-	if (m_pRecipeInfo->bDisableProcDiff == FALSE) {
-		CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiInfo.GetFifoPtr());
-	}
-
+	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiInfo.GetFifoPtr());
 	CImageProcess::LoopLabeling(&roiInfo, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
-//	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilOutMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 
 	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
