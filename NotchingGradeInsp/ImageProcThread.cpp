@@ -175,6 +175,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 	//Trigger BCD ID Size 0 시 Insp run 체크
 	int TriggerBCDIDSize0_RunCheck = 0;
+
+	//PET 설정 값
+	int nPETCount = 0;
+	BOOL bPETBCDIdSet = FALSE;
 	while (1)
 	{
 		//타임 주기 이벤트
@@ -433,6 +437,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD Insp Start/Stop 시 초기화 @@@@ ");
+						}
+
+						//PET가 런 진행 시 초기화
+						if ((useTabID != 64) && (bPETBCDIdSet== TRUE))
+						{
+							bPETBCDIdSet = FALSE;
+							useTabID = 64;
+							nextBCDId = 64;
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@PET RUN 진행 시 초기화 @@@@ ");
 						}
 
 
@@ -846,7 +860,28 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
 
 
+						//PET 가 인식 된 시점 부터 카운트 증가한다.
+						if ((pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET))
+						{
+							//PET로 인식된 카운트를 올린다.
+							nPETCount++;
+							bPETBCDIdSet = FALSE;
+						}
+						//PET RUN 이 끝나는 시점이거나 처음부터 PET가 아니거나
+						else
+						{
+							//PET RUN이 1번 이상이고 PET BCD Id 초기화 변수가 FALSE 이면 초기화를 세팅한다.
+							if ((nPETCount > 0) && (bPETBCDIdSet == FALSE))
+							{
+								//PET 시 Tab 카운트 출력
+								LOGDISPLAY_SPEC(7)("@@@@@@@@@ PET Run Count<%d> @@@@ ", nPETCount);
 
+								//PET 초기화 카운트 초기화
+								nPETCount = 0;
+								//PET 초기화 변수 설정
+								bPETBCDIdSet = TRUE;
+							}
+						}
 
 
 
