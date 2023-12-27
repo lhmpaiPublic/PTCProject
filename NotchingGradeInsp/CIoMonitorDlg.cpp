@@ -1345,10 +1345,10 @@ CString CIoMonitorDlg::GetOutWordName(int nRow)
 		}
 
 
-		if ( (nRow >= CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID) && (nRow < CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID + 64))
-		{
-			strRet.Format(_T("Cell ID %d"), nRow - CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID );
-		}
+		//if ( (nRow >= CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID) && (nRow < CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID + 64))
+		//{
+		//	strRet.Format(_T("Cell ID %d"), nRow - CSigProc::enSmsWordWrite_DuplicateNG_Cell_ID );
+		//}
 
 
 

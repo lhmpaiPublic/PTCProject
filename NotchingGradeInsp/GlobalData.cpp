@@ -98,7 +98,7 @@ CGlobalData::CGlobalData(void)
 
 	m_nMissTabIdNow = 0;
 
-	FileCtrl_DuplicateNG(MODE_READ);
+	//FileCtrl_DuplicateNG(MODE_READ);
 }
 
 CGlobalData::~CGlobalData(void)
@@ -1207,7 +1207,7 @@ int CGlobalData::FileCtrl_DuplicateNG(int nMode, int nID, int nJudge )
 		{
 			strKey.Format(_T("CELL_ID_%02d"), i);
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
-			AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[i] = atoi(buff);
+			//AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[i] = atoi(buff);
 		}
 
 		break;

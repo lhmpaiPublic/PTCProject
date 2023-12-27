@@ -221,15 +221,15 @@ public:
 	WORD wAlarmExist;
 	WORD wAlarmCode[24];
 
-	WORD wDummy4[15];
+	//WORD wDummy4[15];
 
-	WORD wCell_TriggerID; // 사용안함
-	WORD wCell_Judge; // 사용안함
-	WORD wCell_NgCode; // 사용안함
+	//WORD wCell_TriggerID; // 사용안함
+	//WORD wCell_Judge; // 사용안함
+	//WORD wCell_NgCode; // 사용안함
 
-	WORD wDummy5[2];
+	//WORD wDummy5[2];
 
-	WORD wDuplicateNG_Cell_ID[64]; // NG 중복 카운트 ID 0~63, OK=0, NG=1
+	//WORD wDuplicateNG_Cell_ID[64]; // NG 중복 카운트 ID 0~63, OK=0, NG=1
 
 
 } _SEQ_OUT_DATA_SMS;

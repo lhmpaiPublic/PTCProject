@@ -1374,12 +1374,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 										pSigProc->WriteAlarmCodeAndJudge(wAlarmCode, nId, nJudge, nNgCode);
 
-										if( (nId >= 0) && (nId < 64) )
-										{
-											AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[nId] = (nTopJudge == JUDGE_NG) ? 1 : 0;
+										//if( (nId >= 0) && (nId < 64) )
+										//{
+										//	AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[nId] = (nTopJudge == JUDGE_NG) ? 1 : 0;
 
-											AprData.FileCtrl_DuplicateNG(MODE_WRITE, nId, AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[nId]);
-										}
+										//	AprData.FileCtrl_DuplicateNG(MODE_WRITE, nId, AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[nId]);
+										//}
 									}
 									else
 									{
