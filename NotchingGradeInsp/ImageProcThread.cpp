@@ -108,6 +108,13 @@ double CImageProcThread::TabPitchCalculate(int bforeImageLengtch, int bforeTabLe
 	return realTabPitch;
 }
 
+int CImageProcThread::TabPitcPixelhCalculate(double RecipeTabPitch, double dResolY)
+{
+	int TabPitchPixel = 0;
+	TabPitchPixel = (int)(RecipeTabPitch * (1000.0 / dResolY));
+	return TabPitchPixel;
+}
+
 #define IMAGECUTTINGTAB_TIMEOUT 50
 //#define TabPitch(a, b, c, d) ((a-b)+c)*(d)
 #define TabPitch(a, b, c) ((a-b)+c)*(0.021)
@@ -163,6 +170,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//레시피 텝 피치 정보를 세팅한다.
 	RecipeInfoTabPitch = (int)AprData.m_pRecipeInfo->TabCond.dTabPitch;
 	RecipeInfoTabWidth = (int)AprData.m_pRecipeInfo->TabCond.dTabWidth;
+
+	//Tab 인식을 하지 못했을 때 사용할 검사 이미지 길이 계산하다.
+	//1.0 은 0으로 판단에 문제로 입력된 값
+	if (AprData.m_System.m_dResolY1000P > 1.0)
+	{
+		AprData.m_System.m_nTabImageLength = TabPitcPixelhCalculate(RecipeInfoTabPitch, AprData.m_System.m_dResolY1000P);
+	}
+
 	//다음 사용할 Tab ID (BCD ID)
 	int nextBCDId = 64;
 
@@ -346,6 +361,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//min 72 max 112 범위의 피치를 벗어날 경우 
 
 							double nTabPitch = 0.0;
+							//1.0 은 0으로 판단에 문제로 입력된 값
 							if (AprData.m_System.m_dResolY1000P > 1.0)
 							{
 								nTabPitch = CImageProcThread::TabPitchCalculate(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft, AprData.m_System.m_dResolY1000P);
@@ -360,10 +376,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > nTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < nTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
-								useTabID = 64;
-								nextBCDId = 64;
+								//useTabID = 64;
+								//nextBCDId = 64;
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 접합부 Trigger Id Setting 초기화 @@@@ ");
+								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 접합부 Trigger Id Setting @@@@ ");
 							}
 						}
 
@@ -397,27 +413,28 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							useTabID = 64;
 							nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Trigger Tab Id  초기화 시 Trigger Id Setting 초기화 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@Trigger Tab Id  초기화 시 Trigger Id Setting @@@@ ");
+							CLogDisplayDlg::LogDisplayText(_T("BCDId_init"), _T("=======Trigger Tab Id  초기화 시 Trigger Id Setting 초기화 @@@@"));
 						}
 
 						//컨넥트 존 세팅 시
 						if ((useTabID != 64) && AprData.m_NowLotData.m_bConnectZone)
 						{
 							AprData.m_NowLotData.m_bConnectZone = FALSE;
-							useTabID = 64;
-							nextBCDId = 64;
+							//useTabID = 64;
+							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@ConnectZone Trigger Id Setting 초기화 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@ConnectZone Trigger Id Setting @@@@ ");
 						}
 
 						//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE
 						if ((useTabID != 64) && bBCDDiffBig)
 						{
 							bBCDDiffBig = FALSE;
-							useTabID = 64;
-							nextBCDId = 64;
+							//useTabID = 64;
+							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID 사용아이디 차가 3이상 초기화 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID 사용아이디 차가 3이상@@@@ ");
 						}
 
 						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
@@ -426,27 +443,27 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID가 5 < 이상 틀어짐이 있을 때 초기화 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID가 5 < 이상 틀어짐이 있을 때@@@@ ");
 						}
 
 						//Button Click Start/Stop 초기화
 						if ((useTabID != 64) && AprData.m_NowLotData.m_bInspStartStop == TRUE)
 						{
 							AprData.m_NowLotData.m_bInspStartStop = FALSE;
-							useTabID = 64;
-							nextBCDId = 64;
+							//useTabID = 64;
+							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD Insp Start/Stop 시 초기화 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD Insp Start/Stop 시 @@@@ ");
 						}
 
 						//PET가 런 진행 시 초기화
 						if ((useTabID != 64) && (bPETBCDIdSet== TRUE))
 						{
 							bPETBCDIdSet = FALSE;
-							useTabID = 64;
-							nextBCDId = 64;
+							//useTabID = 64;
+							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@PET RUN 진행 시 초기화 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@PET RUN 진행 시 @@@@ ");
 						}
 
 
@@ -621,8 +638,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//BCD ID 사용 체크 로그
 							else if (cntInfo.nTabID != nextBCDId)
 							{
-								CLogDisplayDlg::LogDisplayText(_T("BCD_ID_USE_ERROR "), _T("use Id<%d> next id<%d>"), cntInfo.nTabID, nextBCDId);
-
 								//Tab Id 정보 로그
 								LOGDISPLAY_SPEC(7)("@@@@@@@@@ BCD_ID_USE_ERROR use Id<%d> next id<%d>@@@@ ", cntInfo.nTabID, nextBCDId);
 							}
@@ -638,12 +653,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//BCD ID 받은 값과 사용할 Tab Id 차가 3이상이면 
 						//BCD ID는 64이하이다.
 						int compareBCDID = abs(useTabID - nowBCDID);
-						if ((useTabID < 64) && (nowBCDID < 64) && ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) > 2))
+						if ((useTabID < 64) && (nowBCDID < 64) && ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) > 1))
 						{
-							CLogDisplayDlg::LogDisplayText(_T("BCD_ID_USE_ERROR "), _T("@@@@@@@@@ useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ "), (compareBCDID > 40 ? 64 - compareBCDID : compareBCDID));
-
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@ BCD_ID_USE_ERROR useTabID = nowBCDID 차가 <%d> 이상이다 @@@@ ", abs(useTabID - nowBCDID));
+							LOGDISPLAY_SPEC(7)(" =======@@@ Input BCD Id <=> useTabID<%d>와 nowBCDID<%d> 차가 <%d> 이상이다 @@@@ ", useTabID, nowBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
 							
 							//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE 초기화
 							bBCDDiffBig = TRUE;
@@ -676,14 +689,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							int diffval = abs(AprData.m_NowLotData.m_nTabCount - cntInfo.nTabIdTotalCount);
 							if (diffval != countdiff)
 							{
-								CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("========LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>=countdiff<%d>"),
+								LOGDISPLAY_SPEC(7)(_T("========LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>=countdiff<%d>"),
 									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount, diffval);
 								countdiff = diffval;
 							}
 						}
 						else
 						{
-							CLogDisplayDlg::LogDisplayText(_T("DIODataProcError"), _T("========LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
+							LOGDISPLAY_SPEC(7)(_T("========LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
 								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount);
 						}
 

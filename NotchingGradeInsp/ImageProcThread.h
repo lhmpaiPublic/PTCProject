@@ -65,6 +65,8 @@ public:
 	void setEvent_ImageProcThread_Result() { SetEvent(pEvent_ImageProcThread_Result); }
 
 	static double TabPitchCalculate(int bforeImageLengtch, int bforeTabLeft, int nownTabLeft, double dResolY);
+
+	static int TabPitcPixelhCalculate(double RecipeTabPitch, double dResolY);
 protected :
 	BOOL	m_bKill ;
 	int		m_nThreadId ;

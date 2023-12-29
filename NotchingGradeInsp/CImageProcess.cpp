@@ -6299,7 +6299,19 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	int nLevel = 0 ; 
 
 	CImageProcess::VEC_SECTOR vecSector;
-	int nBaseTabPitch = RecipeInfo.TabCond.nTabPitch;
+
+	int nBaseTabPitch = 0;
+	//Tab 인식을 하지 못했을 때 사용할 검사 이미지 길이 (계산된 값 사용)
+	if (AprData.m_System.m_nTabImageLength > 90)
+	{
+		nBaseTabPitch = AprData.m_System.m_nTabImageLength;
+	}
+	else
+	{
+		nBaseTabPitch = RecipeInfo.TabCond.nTabPitch;
+	}
+	LOGDISPLAY_SPEC(7)("=====@@ Base Tab  f<%f> n<%d> =============== ", AprData.m_System.m_nTabImageLength, RecipeInfo.TabCond.nTabPitch);
+
 	int nBaseTabWidth = RecipeInfo.TabCond.nTabWidth;
 	int nBaseTabBlank = nBaseTabPitch - nBaseTabWidth;
 	int nBaseTabHalfPitch = nBaseTabPitch / 2;
