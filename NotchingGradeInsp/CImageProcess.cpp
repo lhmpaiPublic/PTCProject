@@ -6286,6 +6286,13 @@ int CImageProcess::DivisionTab_byFixSize(const BYTE* pImgPtr, const BYTE* pImgBt
 	return nRet;
 }
 
+int CImageProcess::TabPitcPixelhCalculate(double RecipeTabPitch, double dResolY)
+{
+	int TabPitchPixel = 0;
+	TabPitchPixel = (int)(RecipeTabPitch * (1000.0 / dResolY));
+	return TabPitchPixel;
+}
+
 // 22.11.18 Ahn Modify Start
 int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFindPos, int *pnLevel, CRecipeInfo& RecipeInfo, CTabInfo* pResvTabInfo, _VEC_TAB_INFO* pVecTabInfo, int nFrameCount)
 // 22.11.18 Ahn Modify End
@@ -6300,17 +6307,26 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 	CImageProcess::VEC_SECTOR vecSector;
 
+	//Tab 인식을 하지 못했을 때 사용할 검사 이미지 길이 계산하다.
+	// 초기 계산 값이 커서 BCD Id가 남는 경우 발생 비교 하기 위한 로그
+	//1.0 은 0으로 판단에 문제로 입력된 값
+	int nTabPitchCalc = 0;
+	if (AprData.m_System.m_dResolY1000P > 1.0)
+	{
+		double dTabPitch = RecipeInfo.TabCond.dTabPitch;
+		//분해능을 이용하여 실제 길이에서 픽셀 단위의 Tab Pitch를 얻는다.
+		nTabPitchCalc = TabPitcPixelhCalculate(dTabPitch, AprData.m_System.m_dResolY1000P);
+		LOGDISPLAY_SPEC(7)("=====@@ Base Tab  calc val f<%f>n<%d> =============== ", dTabPitch, nTabPitchCalc);
+	}
+
+	//Tab의 기본 Pitch(레시피에 입력된 값(double, int 값 )
 	int nBaseTabPitch = 0;
-	//Tab 인식을 하지 못했을 때 사용할 검사 이미지 길이 (계산된 값 사용)
-	if (AprData.m_System.m_nTabImageLength > 90)
-	{
-		nBaseTabPitch = AprData.m_System.m_nTabImageLength;
-	}
-	else
-	{
-		nBaseTabPitch = RecipeInfo.TabCond.nTabPitch;
-	}
-	LOGDISPLAY_SPEC(7)("=====@@ Base Tab  f<%f> n<%d> =============== ", AprData.m_System.m_nTabImageLength, RecipeInfo.TabCond.nTabPitch);
+
+	//계산된 값을 사용하지 않고 로그만 찍는다.(로그 검사 후 적용 예정)
+	nBaseTabPitch = RecipeInfo.TabCond.nTabPitch;
+
+	//기존 계산된 값과 지금 계산 값 비교 로그 출력
+	LOGDISPLAY_SPEC(7)("=====@@ Base Tab  calc val<%d> setting val<%d> =============== ", nTabPitchCalc, nBaseTabPitch);
 
 	int nBaseTabWidth = RecipeInfo.TabCond.nTabWidth;
 	int nBaseTabBlank = nBaseTabPitch - nBaseTabWidth;

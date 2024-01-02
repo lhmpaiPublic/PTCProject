@@ -108,13 +108,6 @@ double CImageProcThread::TabPitchCalculate(int bforeImageLengtch, int bforeTabLe
 	return realTabPitch;
 }
 
-int CImageProcThread::TabPitcPixelhCalculate(double RecipeTabPitch, double dResolY)
-{
-	int TabPitchPixel = 0;
-	TabPitchPixel = (int)(RecipeTabPitch * (1000.0 / dResolY));
-	return TabPitchPixel;
-}
-
 #define IMAGECUTTINGTAB_TIMEOUT 50
 //#define TabPitch(a, b, c, d) ((a-b)+c)*(d)
 #define TabPitch(a, b, c) ((a-b)+c)*(0.021)
@@ -171,12 +164,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	RecipeInfoTabPitch = (int)AprData.m_pRecipeInfo->TabCond.dTabPitch;
 	RecipeInfoTabWidth = (int)AprData.m_pRecipeInfo->TabCond.dTabWidth;
 
-	//Tab 인식을 하지 못했을 때 사용할 검사 이미지 길이 계산하다.
-	//1.0 은 0으로 판단에 문제로 입력된 값
-	if (AprData.m_System.m_dResolY1000P > 1.0)
-	{
-		AprData.m_System.m_nTabImageLength = TabPitcPixelhCalculate(RecipeInfoTabPitch, AprData.m_System.m_dResolY1000P);
-	}
 
 	//다음 사용할 Tab ID (BCD ID)
 	int nextBCDId = 64;
@@ -443,7 +430,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID가 5 < 이상 틀어짐이 있을 때@@@@ ");
+							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID의 Output 역전현상이 5번 < 이상 연속으로 들어올 때 역전카운트<%d>@@@@ ", TriggerBCDCountMAXINT);
 						}
 
 						//Button Click Start/Stop 초기화
@@ -514,7 +501,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										nowBCDID = cntInfo.nTabID;
 
 										//Tab Id 정보 로그
-										LOGDISPLAY_SPEC(7)("@@@ A @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfo.nTabID, cntInfo.nTabNo, cntInfo.nTabIdTotalCount);
+										LOGDISPLAY_SPEC(7)("@@@ A @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfo.nTabID, cntInfo.nTabNo, cntInfo.nTabIdTotalCount);
 
 										//루프 변수 증가
 										loopTabQueueSize++;
@@ -528,81 +515,63 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								//Tab Id 정보 로그
 								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Id Size<%d> = Tab Image Size<%d> 비교<%d> @@@@ ", TabQueueSize, nVecSize, abs(TabQueueSize - nVecSize));
 
-								//Tab 찾은 갯수와 Tab Id Q 사이즈가 같다면 하나씩 
-								if (nVecSize == TabQueueSize)
-								{
-									//Tab Id 확인용
-									CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
-									//지금 받은 BCD ID
-									nowBCDID = cntInfoTemp.nTabID;
-									//지금 받은 아이디 세팅
-									nowReciveTabId = nowBCDID;
-									//Tab Id 정보 로그
-									LOGDISPLAY_SPEC(7)("@@@ B @@@@@@Tab Id 삭제 Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
 
-									//가져온 id가 useTabID와 같다면
-									if (cntInfoTemp.nTabID == cntInfo.nTabID)
+								//Tab Id 정보가 있는가 를 확인 후 
+								//삭제 및 Id 매칭 상태를 세팅한다.
+								if (pCntQueueInCtrl->FindTabId(cntInfo.nTabID))
+								{
+									int loopTabQueueSize = 0;
+									while (loopTabQueueSize < TabQueueSize)
 									{
-										//Tab Id 매칭 확인 용
-										cntInfo.nTabIdTotalCount = cntInfoTemp.nTabIdTotalCount;
-										cntInfo.nTabNo = cntInfoTemp.nTabNo;
-									}
-									else
-									{
+										//Tab Id 확인용
+										CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
+										//지금 받은 BCD ID
+										nowBCDID = cntInfoTemp.nTabID;
+										//지금 받은 아이디 세팅
+										nowReciveTabId = nowBCDID;
 										//Tab Id 정보 로그
-										LOGDISPLAY_SPEC(7)("@@@ B : 2 @@@@@@Tab Id 삭제 Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
+										LOGDISPLAY_SPEC(7)("@@@ B @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
+
+										//Tab Id 정보가 같다면
+										if ((cntInfo.nTabID == cntInfoTemp.nTabID))
+										{
+											//Tab Total count 를 세팅한다.
+											//TabNo와 Tab Tatal count를 비교한다.
+											cntInfo.nTabIdTotalCount = cntInfoTemp.nTabIdTotalCount;
+											cntInfo.nTabNo = cntInfoTemp.nTabNo;
+
+											//Tab Id 정보 로그
+											LOGDISPLAY_SPEC(7)("@@@ B : 1 @@@@@@사용된 Tab Id 삭제됨@@@@ ");
+
+											//빠져나감
+											break;
+										}
+										else
+										{
+											//Tab Id 정보 로그
+											LOGDISPLAY_SPEC(7)("@@@ B : 2 @@@@@@미리 사용된 Tab Id 삭제됨@@@@ ");
+										}
+										loopTabQueueSize++;
 									}
-									
 								}
+								//BCD Id와 얻은 이미지 갯수가 다른데도 BCD Id를 못찾았을 때 들어온다.
 								else
 								{
-									//Tab Id 정보가 있는가 를 확인 후 
-									//삭제 및 Id 매칭 상태를 세팅한다.
-									if (pCntQueueInCtrl->FindTabId(cntInfo.nTabID))
+									//BCD Id가 증가현상이 발생하면 모드 삭제한다.
+									if ((nVecSize + 2) < TabQueueSize)
 									{
 										int loopTabQueueSize = 0;
 										while (loopTabQueueSize < TabQueueSize)
 										{
 											//Tab Id 확인용
 											CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
-											//지금 받은 BCD ID
-											nowBCDID = cntInfoTemp.nTabID;
-											//지금 받은 아이디 세팅
-											nowReciveTabId = nowBCDID;
 											//Tab Id 정보 로그
-											LOGDISPLAY_SPEC(7)("@@@ C @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
-
-											//Tab Id 정보가 같다면
-											if ((cntInfo.nTabID == cntInfoTemp.nTabID))
-											{
-												//Tab Total count 를 세팅한다.
-												//TabNo와 Tab Tatal count를 비교한다.
-												cntInfo.nTabIdTotalCount = cntInfoTemp.nTabIdTotalCount;
-												cntInfo.nTabNo = cntInfoTemp.nTabNo;
-												//빠져나감
-												break;
-											}
+											LOGDISPLAY_SPEC(7)("@@@ C - TabId NotFind Queue Overflow @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
 											loopTabQueueSize++;
 										}
 									}
-									else
-									{
-										if (TabQueueSize > 0)
-										{
-											int loopTabQueueSize = 0;
-											while (loopTabQueueSize < TabQueueSize)
-											{
-												//Tab Id 확인용
-												CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
-												//Tab Id 정보 로그
-												LOGDISPLAY_SPEC(7)("@@@ D - TabId NotFind @@@@@@Tab Id 삭제번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
-												loopTabQueueSize++;
-											}
-										}
 
-									}
 								}
-
 							}
 
 						}
@@ -611,10 +580,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//run 체크
 							if (theApp.m_pSigProc && theApp.m_pSigProc->GetSigInRun())
 							{
-								//Trigger BCD ID Size 0 시 Insp run 체크
-								TriggerBCDIDSize0_RunCheck++;
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(8)("@@@@@@@@@Trigger BCD ID Size 0 Insp run 체크 Count<%d>@@@@ ", TriggerBCDIDSize0_RunCheck);
+								LOGDISPLAY_SPEC(8)("@@@@@@@@@Trigger BCD ID Not Recive Insp run Count<%d>@@@@ ", ++TriggerBCDIDSize0_RunCheck);
+							}
+							else
+							{
+								//Tab Id 정보 로그
+								LOGDISPLAY_SPEC(8)("@@@@@@@@@Trigger BCD ID Not Recive Insp not run @@@@ ");
 							}
 						}
 

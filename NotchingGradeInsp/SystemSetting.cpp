@@ -11,8 +11,6 @@ CSystemSetting::CSystemSetting()
 
 	m_dResolY1000P = 0.0;
 
-	//Tab 인식을 하지 못했을 때 사용할 검사 이미지 길이
-	m_nTabImageLength = 0;
 }
 
 

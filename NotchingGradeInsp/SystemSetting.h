@@ -16,9 +16,6 @@ public:
 	//분해능 계산 값 1/1000
 	double	m_dResolY1000P;
 
-	//Tab 인식을 하지 못했을 때 사용할 검사 이미지 길이
-	int	m_nTabImageLength;
-
 	CString m_strSerialNo[MAX_CAMERA_NO]; 
 
 	// Camera Parameter 

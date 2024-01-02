@@ -462,6 +462,8 @@ public:
 	// 22.11.18 Ahn Modify End
 	static int DivisionTab_byFixSize(const BYTE* pImgPtr, const BYTE *pImgBtmPtr, int nWidth, int nHeight, int nFixSize, int nStartPos, int nEndPos, BOOL bIsPET, _VEC_TAB_INFO* VecTabInfo);
 
+	//Tab Pitch를 계산해서 사용하기
+	static int TabPitcPixelhCalculate(double RecipeTabPitch, double dResolY);
 
 	// Analyze Image
 	static int GetHistoList(BYTE* pImgPtr, int nWidth, int nHeight, CRect rcRange, int* nHistoArr);
