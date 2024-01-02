@@ -191,10 +191,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	//테스트 타임 id 생성
 	DWORD markingTestTimeOut = GetTickCount();
 
-	//Trigger Off Time 을 체크하기 위한 변수
-	//Off 타임이 길어지면 Tab id 유효 시간을 늘려준다.
-	int TriggerOffCount = 0;
-
 	UINT ret = 0;
 
 	//m_nTabIdTotalCount 를 백업 해둔다.
@@ -390,8 +386,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				//Trigger 펄스 bit true
 				if (bTriggerBit == TRUE)
 				{
-					//Trigger 타임이 Off 시간을 체크하기 위해 세팅
-					TriggerOffCount = 0;
 #if DIO_BOARD_NO // 0이 아니면
 					WORD wTempID = wLastInfo_Output;
 #else
@@ -406,6 +400,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//이전에 받았던 id와 다르다면 추가
 					if (wTempID != wLastTabId)
 					{
+						CLogDisplayDlg::LogDisplayDatText(_T("TriggerBCDId_Read"), _T("== Num(%d) = Trigger On Read ==== BCD Id <%d>"), wTempID);
+
 						//BCD ID 얻는 시점에 TabNo는?
 						int TabNo = AprData.m_NowLotData.m_nTabCount;
 
@@ -450,7 +446,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										omissCount++;
 
 										//DIO Input Log
-										LOGDISPLAY_SPEC(7)(_T("@@(%d)### 누락 Input ID [%d] 누락 갯수<%d>"), ThreadLoopCount, nextTabIDbackup, omissCount);
+										LOGDISPLAY_SPEC(7)(_T("@@(%d)### 누락 BCD ID [%d] 누락 갯수<%d>"), ThreadLoopCount, nextTabIDbackup, omissCount);
 
 										//다음 id로 증가 및 유효 카운트 검사
 										nextTabIDbackup++;
@@ -522,11 +518,9 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 #if DIO_BOARD_NO // 0이 아니면
 						wLastInfo = wTempID;
 						wLastTabId = wTempID;
-						wLastTabIdTriggerOff = wTempID;
 #else
 						wLastInfo = wTempID;
 						wLastTabId = wTempID;
-						wLastTabIdTriggerOff = wTempID;
 #endif
 						int nCntQueSize = pCntQueInPtr->GetSize();
 
@@ -560,25 +554,21 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				//Trigger 펄스 bit false
 				else
 				{
-					//트리거 카운트 증가해셔 30이상이면 대기 상태의 id의 유휴시간을 늘려준다.
-					TriggerOffCount++;
+					WORD wInSignal = 0x00;
+					dio.InputWord(&wInSignal);
 
-					if ((TriggerOffCount % 4) == 0)
+					// 22.04.06 Ahn Modify Start
+					WORD wTempID;
+					wTempID = 0x3F & (wInSignal >> 1);
+
+					if (wLastTabIdTriggerOff != wTempID)
 					{
-						WORD wInSignal = 0x00;
-						dio.InputWord(&wInSignal);
+						CLogDisplayDlg::LogDisplayDatText(_T("TriggerBCDId_Read"), _T("== Num(%d) = Trigger Off Read ==== BCD Id <%d>"), wTempID);
 
-						// 22.04.06 Ahn Modify Start
-						WORD wTempID;
-						wTempID = 0x3F & (wInSignal >> 1);
+						//DIO Input Log
+						LOGDISPLAY_SPEC(7)(_T("@@(%d)### Trigger Off Read input Tabid<%d><%d>"), ThreadLoopCount, wTempID, wLastTabIdTriggerOff);
 
-						if (wLastTabIdTriggerOff != wTempID)
-						{
-							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("@@(%d)### TriggerOff Count<%d> input Tabid<%d><%d>"), ThreadLoopCount, TriggerOffCount, wTempID, wLastTabIdTriggerOff);
-
-							wLastTabIdTriggerOff = wTempID;
-						}
+						wLastTabIdTriggerOff = wTempID;
 					}
 
 #if DIO_BOARD_NO // 0이 아니면

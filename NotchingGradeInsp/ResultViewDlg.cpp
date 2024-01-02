@@ -160,15 +160,8 @@ void CResultViewDlg::OnSize(UINT nType, int cx, int cy)
 		pMakeText->EnableWindow(false);
 		pMakeDay->EnableWindow(false);
 		
-		//실행파일 컴파일 정보 출력
-		CString strCompileInfo;
-		CString strVersion;
-		//정보를 만들기 위한 함수
-		CNotchingGradeInspApp::GetFileVersion(strVersion);
-		//출력을 텍스트를 만든다.
-		strCompileInfo.Format(_T("NotchingGradeInsp %s"), strVersion);
-		//정보를 윈도우에 출력한다.
-		pMakeDay->SetWindowText(strCompileInfo);
+		//프로그램 버전 정보를 윈도우에 출력한다.
+		pMakeDay->SetWindowText(GlobalVersion);
 		
 	}
 
