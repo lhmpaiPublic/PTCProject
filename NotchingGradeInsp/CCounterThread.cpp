@@ -10,6 +10,8 @@ std::vector<MarkSendInfo> CCounterThread::m_MarkSendInfoData;
 typedef std::vector<MarkSendInfo>::iterator MarkSendInfoData_iterator;
 BOOL CCounterThread::m_bMarkSendInfoDataSynch = FALSE;
 
+typedef std::vector<int>::iterator inputReadId_iterator;
+
 void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, bool bSendComplate)
 {
 	if ((TabId >= 0) && (TabId < 64))
@@ -181,7 +183,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	bool bMarkingDataSend = false;
 	//마킹 보내는 중 20 sec 후 신호 제거
 
-	//마킹 input ID 및 읽었을 때 TickTime
+	//마킹 input ID 읽었을 때
 	std::vector<int> inputReadId;
 	//
 	BOOL bOutputBitStatus = FALSE;
@@ -240,6 +242,10 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 			//스래드 주기 카운터 증가
 			ThreadLoopCount++;
+			if (ThreadLoopCount > 10000)
+			{
+				ThreadLoopCount = 1;
+			}
 
 			//마킹을 위한 플로우 추가
 			//마킹을 위한 시간을 세팅
@@ -290,7 +296,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							{
 								CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
 								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("(%d)마킹 타임이 유효 할 때 input id size<%d>, marking data size<%d>"), inputReadId.size(), CCounterThread::m_MarkSendInfoData.size());
+								LOGDISPLAY_SPEC(7)(_T("(%d)마킹 타임이 유효 할 때 input id size<%d>, marking data size<%d>"), ThreadLoopCount, inputReadId.size(), CCounterThread::m_MarkSendInfoData.size());
 
 								for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 								{
@@ -319,6 +325,33 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										if (CCounterThread::m_MarkSendInfoData[idx].TabId == inputReadId[0])
 										{
 											inputReadId.erase(inputReadId.begin());
+										}
+										else
+										{
+											//마킹 input Id가 2개 이상이면 처리한다.
+											if (inputReadId.size() >= 2)
+											{
+												//지울 최종 포인터
+												inputReadId_iterator itdelete = inputReadId.end();
+												//시작 점
+												inputReadId_iterator it = inputReadId.begin();
+												//end 까지 돌면서 true 인 지울 end 포인터를 백업한다.
+												while (inputReadId.end() != it)
+												{
+													if ((*it) == CCounterThread::m_MarkSendInfoData[idx].TabId)
+													{
+														itdelete = it;
+													}
+													it++;
+												}
+
+												//지울 데이터가 있다면
+												if (inputReadId.end() != itdelete)
+												{
+													//시작점 부터 찾은 input id까지 지운다.
+													inputReadId.erase(inputReadId.begin(), itdelete);
+												}
+											}
 										}
 
 										break;

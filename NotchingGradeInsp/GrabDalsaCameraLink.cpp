@@ -79,8 +79,8 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if (pCbInfo->IsRun() == FALSE) 
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(8)(_T("@@@vCam Error** CGrabDalsaCameraLink AcqCallback함수 Monitering TRUE 오류"));
-			return;
+			LOGDISPLAY_SPECTXT(8)(_T("@@@vCam Error** CGrabDalsaCameraLink AcqCallback함수 Not Run Image Get"));
+			//return;
 		}
 
 #ifdef USE_PLCCONNECTZONE
