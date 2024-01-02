@@ -36,6 +36,7 @@ protected:
 public:
 	afx_msg void OnBnClickedBtnFileOpen();
 	afx_msg void OnBnClickedBtnProcAll();
+	afx_msg void OnBnClickedBtnProcAll_kjk(); //231123 test kjk
 	afx_msg void OnClickGridCtrlDef(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickGridCtrlRecipeSet(NMHDR* pNMHDR, LRESULT* pResult);
 
@@ -205,6 +206,7 @@ public :
 	afx_msg void OnBnClickedBtnRecipeSet();
 	virtual BOOL DestroyWindow();
 	afx_msg void OnBnClickedBtnTest();
+
 	BOOL m_bChkDefLink;
 	BOOL m_bUsePreFilter;
 	BOOL m_bDispDefect;
@@ -228,6 +230,8 @@ public:
 
 private :
 	void InspectionAuto();
+	void InspectionAuto_kjk(); //231123 Test
+
 	void LoopLabelingTest();
 	// 22.06.04 Ahn Add Start
 	int SaveCropAndResultSave();

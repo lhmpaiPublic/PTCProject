@@ -142,7 +142,8 @@ void CImageProcSimDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CImageProcSimDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_FILE_OPEN, &CImageProcSimDlg::OnBnClickedBtnFileOpen)
-	ON_BN_CLICKED(IDC_BTN_PROC_ALL, &CImageProcSimDlg::OnBnClickedBtnProcAll)
+//	ON_BN_CLICKED(IDC_BTN_PROC_ALL, &CImageProcSimDlg::OnBnClickedBtnProcAll) // 231123 kjk test 원본임
+	ON_BN_CLICKED(IDC_BTN_PROC_ALL, &CImageProcSimDlg::OnBnClickedBtnProcAll_kjk)
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BTN_IMG_ORG, &CImageProcSimDlg::OnBnClickedBtnImgOrg)
 	ON_BN_CLICKED(IDC_BTN_IMG_PROC1, &CImageProcSimDlg::OnBnClickedBtnImgProc1)
@@ -668,6 +669,42 @@ void CImageProcSimDlg::OnBnClickedBtnProcAll()
 	}
 
 	UpdateData(FALSE);
+}
+
+void CImageProcSimDlg::OnBnClickedBtnProcAll_kjk()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_bLoadImage == FALSE) return;
+
+
+	//////////////////////////////////////////////////////////////////////////
+	// 검사 전 선택된 레시피 다시 로드 함
+	int nSelNo = m_cmbRecipeSelect.GetCurSel();
+	m_cmbRecipeSelect.SetCurSel(nSelNo);
+
+	CString strRcpName;
+	m_cmbRecipeSelect.GetWindowText(strRcpName);
+
+	CRecipeCtrl rcpCtrl;
+	if (m_pRecipeInfo != nullptr) {
+		rcpCtrl.LoadRecipe(m_pRecipeInfo, strRcpName);
+	}
+	//////////////////////////////////////////////////////////////////////////
+
+	UpdateRecipeGrid();
+
+	// 23.02.03 Ahn Modify Start
+	InspectionAuto_kjk(); // Foil 노출 검사.	
+
+	//	int nLocalRet = ProcessFoilExpInRect();
+	//	// Image Crop 및 결과 저장.
+	//	if (nLocalRet >= 0) {
+	//		SaveCropAndResultSave() ;
+	//	}
+	//	// 23.02.03 Ahn Modify End
+
+	Invalidate(FALSE);
 }
 
 int  CImageProcSimDlg::AddDefectInfo(CImageProcess::_VEC_BLOCK* vecBlockFoilExp, CImageProcess::_VEC_BLOCK* vecBlockDross, int nCamPos, BOOL bModeClear/*=TRUE*/ )
@@ -1992,6 +2029,92 @@ void CImageProcSimDlg::InspectionAuto()
 	UpdateGrid();
 }
 
+void CImageProcSimDlg::InspectionAuto_kjk()
+{
+	// 231123 autoinspect Test kjk
+
+	UpdateData(TRUE);
+
+	if ((m_pRecipeInfo == NULL) || (m_pRecipeInfo->m_strRecipeName.GetLength() <= 0))
+	{
+		MessageBox(_T("레시피를 선택해 주세요."));
+		return;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// 검사 전 선택된 레시피 다시 로드 함
+	int nSelNo = m_cmbRecipeSelect.GetCurSel();
+	m_cmbRecipeSelect.SetCurSel(nSelNo);
+
+	CString strRcpName;
+	m_cmbRecipeSelect.GetWindowText(strRcpName);
+
+	CRecipeCtrl rcpCtrl;
+	if (m_pRecipeInfo != nullptr) {
+		rcpCtrl.LoadRecipe(m_pRecipeInfo, strRcpName);
+	}
+	//////////////////////////////////////////////////////////////////////////
+
+	UpdateRecipeGrid(); // 22.09.16 Ahn Add 
+
+#if 1 //231124
+	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
+#endif
+
+	if (m_bModeTop == TRUE)
+	{
+		// 22.01.17 Ahn Modify Start
+		// 22.09.15 Ahn Modify End
+		//if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
+		if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+		{
+			// 22.09.15 Ahn Modify End
+			ProceTopAll_AreaDiff();
+		}
+		else
+		{ // Negative Mode
+			// 23.02.16 Ahn Modify Start
+			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1)
+			{
+				ProcTopAll_BrightRoll();
+			}
+			else
+			{
+				ProceTopAll_Negative();
+			}
+			// 23.02.16 Ahn Modify End
+		}
+		// 22.01.17 Ahn Modify End
+	}
+	else
+	{
+		// 22.01.17 Ahn Modify Start
+		// 22.09.15 Ahn Modify End
+		//if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
+		if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+		{
+			// 22.09.15 Ahn Modify End
+			ProceBottomAll_AreaDiff();
+		}
+		else
+		{// Negative Mode
+			// 23.02.16 Ahn Modify Start
+			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1)
+			{
+				ProcBottomAll_BrightRoll();
+			}
+			else
+			{
+				ProceBottomAll_Negative();
+			}
+			// 23.02.16 Ahn Modify End
+		}
+		// 22.01.17 Ahn Modify End
+	}
+
+	UpdateData(FALSE);
+}
+
 void CImageProcSimDlg::OnBnClickedBtnTest()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -2016,8 +2139,8 @@ void CImageProcSimDlg::OnBnClickedBtnTest()
 
 
 	// 23.02.03 Ahn Modify Start
-	InspectionAuto(); // Foil 노출 검사.	
-
+	//	InspectionAuto(); // Foil 노출 검사.	
+	InspectionAuto_kjk(); //231124 kjk
 
 
 //	int nLocalRet = ProcessFoilExpInRect();
