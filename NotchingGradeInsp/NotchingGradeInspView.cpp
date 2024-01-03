@@ -1495,11 +1495,9 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 		theApp.m_pImgProcCtrl->TabCountReset();
 		AprData.SaveLotLog(_T("!! Tab No And Queue Reset !!"));
 		AprData.SaveDebugLog_Format(_T("!! Tab No And Queue Reset !!"));
-		AprData.SaveMemoryLog(_T("!! Tab No And Queue Reset !!"));
 
 		AprData.m_NowLotData.ClearAllCount();
 		AprData.SaveDebugLog_Format(_T("!! ClearAllCount !!"));
-		AprData.SaveMemoryLog(_T("!! ClearAllCount !!"));
 
 		AprData.FileCtrl_LotInfo(CGlobalData::en_mode_LotEnd);
 

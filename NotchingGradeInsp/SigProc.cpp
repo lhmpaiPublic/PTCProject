@@ -659,10 +659,9 @@ int CSigProc::SigInRun()
 	if (m_SigInRun != nRet)
 	{
 		m_SigInRun = (nRet == TRUE) ? TRUE : FALSE;
-		//메모리 로그 기록
-		CString strMsg;
-		strMsg.Format(_T("PLC Run SigIn Stat<%s>"), (nRet == TRUE)? "RUN" : "Not Run");
-		AprData.SaveMemoryLog(strMsg);
+
+		//디버그 로그 기록
+		AprData.SaveDebugLog_Format(_T("PLC Run SigIn Stat<%s>"), (nRet == TRUE)? "RUN" : "Not Run");
 
 		//DIO Input Log
 		LOGDISPLAY_SPEC(7)(_T(">>> PLC Run SigIn Stat<<<  < %s>"), (nRet == TRUE)? "RUN" : "Not Run");

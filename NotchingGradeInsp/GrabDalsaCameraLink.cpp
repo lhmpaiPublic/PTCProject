@@ -120,6 +120,11 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);
 
+				//메모리 로그 기록
+				strMsg = "";
+				strMsg.Format(_T("FrameLog Head[%s], FrmNum[%d]"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP":"BOTTOM", pFrmInfo->m_nFrameCount);
+				AprData.SaveMemoryLog(strMsg);
+
 				//Image Capture 정보 출력 로그
 				LOGDISPLAY_SPEC(8)(_T("@@@ Cam Pos[%s], Width[%d], Height[%d], FrmCount[%d]"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 

@@ -329,8 +329,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 //					double dTime = ctAna.WhatTimeIsIt_Double();
 
 					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(7)("*2*1*Now Tab Find Count<%d> vs TabID QueueCount<%d>",
-						nVecSize, pCntQueueInCtrl->GetSize());
+					LOGDISPLAY_SPEC(7)("Now 검사 이미지 갯수<%d> vs BCD Id 갯수<%d> 갯수 차이<%d>",
+						nVecSize, pCntQueueInCtrl->GetSize(), abs(nVecSize - pCntQueueInCtrl->GetSize()));
+
+					//메모리 로그 기록
+					CString strMsg = "";
+					strMsg.Format("Now Insp Image count<%d> vs BCD Id count<%d> Diff count<%d>",
+						nVecSize, pCntQueueInCtrl->GetSize(), abs(nVecSize - pCntQueueInCtrl->GetSize()));
+					AprData.SaveMemoryLog(strMsg);
 
 
 					//Tab Id Q Size 
@@ -360,6 +366,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", nTabPitch, RecipeInfoTabPitch);
 
+							//메모리 로그 기록
+							CString strMsg = "";
+							strMsg.Format("Tab Pitch<%f> RecipeTabPitch<%f> ", nTabPitch, RecipeInfoTabPitch);
+							AprData.SaveMemoryLog(strMsg);
+
 							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > nTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < nTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
@@ -367,6 +378,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								//nextBCDId = 64;
 								//Tab Id 정보 로그
 								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 접합부 Trigger Id Setting @@@@ ");
+
+								//메모리 로그 기록
+								strMsg = "";
+								strMsg.Format("Tab Pitch Error ==========  ");
+								AprData.SaveMemoryLog(strMsg);
 							}
 						}
 
@@ -402,6 +418,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@Trigger Tab Id  초기화 시 Trigger Id Setting @@@@ ");
 							CLogDisplayDlg::LogDisplayText(_T("BCDId_init"), _T("=======Trigger Tab Id  초기화 시 Trigger Id Setting 초기화 @@@@"));
+
 						}
 
 						//컨넥트 존 세팅 시
@@ -431,6 +448,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID의 Output 역전현상이 5번 < 이상 연속으로 들어올 때 역전카운트<%d>@@@@ ", TriggerBCDCountMAXINT);
+
+							//메모리 로그 기록
+							CString strMsg = "";
+							strMsg.Format(_T("Reverse (Input Output) BCD ID : Continue Count<%d>"), TriggerBCDCountMAXINT);
+							AprData.SaveMemoryLog(strMsg);
 						}
 
 						//Button Click Start/Stop 초기화
@@ -625,13 +647,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//BCD ID 받은 값과 사용할 Tab Id 차가 3이상이면 
 						//BCD ID는 64이하이다.
 						int compareBCDID = abs(useTabID - nowBCDID);
-						if ((useTabID < 64) && (nowBCDID < 64) && ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) > 1))
+						if ((useTabID < 64) && (nowBCDID < 64) && ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) > 2))
 						{
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)(" =======@@@ Input BCD Id <=> useTabID<%d>와 nowBCDID<%d> 차가 <%d> 이상이다 @@@@ ", useTabID, nowBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
 							
 							//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE 초기화
 							bBCDDiffBig = TRUE;
+
 						}
 
 
@@ -844,6 +867,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						pInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
 
+						//메모리 로그 기록(TOP)
+						strMsg = "";
+						strMsg.Format(_T("TOP Insp Image Info FrameNum<%d>, TabNo<%d>, BCD ID<%d>"), pInfo->m_nFrameCount, pInfo->nTabNo, pInfo->m_nTabId_CntBoard);
+						AprData.SaveMemoryLog(strMsg);
+
 
 						//PET 가 인식 된 시점 부터 카운트 증가한다.
 						if ((pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET))
@@ -851,6 +879,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//PET로 인식된 카운트를 올린다.
 							nPETCount++;
 							bPETBCDIdSet = FALSE;
+
+							//메모리 로그 기록
+							CString strMsg = "";
+							strMsg.Format(_T("PET Run Count<%d>"), nPETCount);
+							AprData.SaveMemoryLog(strMsg);
 						}
 						//PET RUN 이 끝나는 시점이거나 처음부터 PET가 아니거나
 						else
@@ -911,6 +944,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						pBtmInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
 
+						//메모리 로그 기록(TOP)
+						strMsg = "";
+						strMsg.Format(_T("BOTTOM Insp Image Info FrameNum<%d>, TabNo<%d>, BCD ID<%d>"), pBtmInfo->m_nFrameCount, pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard);
+						AprData.SaveMemoryLog(strMsg);
+
 
 						// 22.12.09 Ahn Add Start
 						//프레임 처리 시간 세팅
@@ -933,11 +971,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//Lot Data Tab 번호를 증가 시킨다.
 						AprData.m_NowLotData.m_nTabCount++;
-
-						//메모리 로그 기록
-						CString strMsg;
-						strMsg.Format(_T("Find Image Tab TotalCount<%d>"), AprData.m_NowLotData.m_nTabCount);
-						AprData.SaveMemoryLog(strMsg);
 
 					}
 					//처리한 Tab 정보를 삭제한다.
@@ -1372,18 +1405,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 										pSigProc->WriteAlarmCode(wAlarmCode);
 									}
 
-									CString strLog;
-									strLog.Format(_T("!!!! NG_STOP Signal Output [0x%x]!!!!"), wAlarmCode);
-									AprData.SaveMemoryLog(strLog);
-
-									//								int nId, nJudge, nCode ;
-									//								nId = pTopInfo->m_nTabId_CntBoard ;
-
-
-									//								nJudge = tab.nJudge ;
-									//								nCode = wAlarmCode ;
-									//								pSigProc->ReportJudge(nId, nJudge, nCode);
-																	// 22.12.12 Ahn Add End
 								}
 							}
 						}
@@ -1428,20 +1449,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> Call Enter"));
-
 							//마킹 정보를 세팅한다.
 							//input id 스래드에서 보낸다.
 							CCounterThread::MarkSendInfo_Push_back(pTopInfo->m_nTabId_CntBoard, wOutPut);
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Ink Marking> :: Output ID<%d>, Value<%d>"),
-								((wOutPut >> 2)&0x3F), wOutPut);
-
 							CString strMsg;
-							strMsg.Format(_T("Output ID[%d]_OutPutValue[0x%x]_TabNo[%d] : VISION Marking[%s], PLC Marking[%s]"),
-								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1,
-								(AprData.m_System.m_bChkEnableMarker == FALSE) ? _T("SKIP") : _T("USE"),
-								(bMarkingActive == FALSE) ? _T("SKIP") : _T("USE"));
+							strMsg.Format(_T("Output Make BCD ID[%d]_OutPutValue[0x%x]_TabNo[%d]"),
+								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1);
 							AprData.SaveMemoryLog(strMsg);
 
 
@@ -1701,7 +1715,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							//						WORD wResetCode = 0x00;
 							//						pSigProc->WriteAlarmCode(wResetCode);
 
-							AprData.SaveMemoryLog(_T("------ NG_STOP Signal OFF ------"));
+							AprData.SaveDebugLog_Format(_T("------ NG_STOP Signal OFF ------"));
 							bJudgeNG = FALSE;
 							bClearFlag = FALSE;// 22.03.28 Ahn Add
 						}
