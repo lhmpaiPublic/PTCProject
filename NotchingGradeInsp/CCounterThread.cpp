@@ -303,7 +303,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										LOGDISPLAY_SPEC(7)(_T("$$$(%d)== input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), ThreadLoopCount, inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
 
 										CString strMsg;
-										strMsg.Format(_T("Output Send Id[%d]_OutPutValue[0x%x]"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+										strMsg.Format(_T("Output Send BCD Id[%d]_OutPutValue[0x%x]"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
 										AprData.SaveMemoryLog(strMsg);
 
 										//마킹 데이터 넣고
@@ -423,6 +423,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							{
 								nextTabID = 0;
 							}
+							
+							//메모리 로그 기록
+							CString strMsg = "";
+							strMsg.Format(_T("First BCD Id Use BCD Id<%d>"), wTempID);
+							AprData.SaveMemoryLog(strMsg);
 						}
 						//초기값 세팅 상태에서 만 검사한다.
 						else
@@ -448,6 +453,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										//DIO Input Log
 										LOGDISPLAY_SPEC(7)(_T("@@(%d)### 누락 BCD ID [%d] 누락 갯수<%d>"), ThreadLoopCount, nextTabIDbackup, omissCount);
 
+										//메모리 로그 기록
+										CString strMsg;
+										strMsg.Format(_T("Lose input BCD ID  [%d]"), nextTabIDbackup);
+										AprData.SaveMemoryLog(strMsg);
+
 										//다음 id로 증가 및 유효 카운트 검사
 										nextTabIDbackup++;
 										if (nextTabIDbackup >= 64)
@@ -456,7 +466,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 									}
 									//누락 카운트가 0으로 초기화 한 데이터 일경우 카운터하지 않는다.
 									//Tab Id Queue도 초기화 한다.
-									if ((wTempID == 0) && (omissCount > 1))
+									if ((wTempID == 0) && (omissCount > 5))
 									{
 										//초기화 한다.
 										pCntQueInPtr->ResetQueue();
@@ -465,6 +475,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										AprData.m_NowLotData.m_bInitTabId = TRUE;
 										//DIO Input Log
 										LOGDISPLAY_SPEC(7)(_T("@@(%d)### Input ID 초기화 TabId[%d]- ResetQ - BeforId[%d]"), ThreadLoopCount, wTempID, wLastTabId);
+
+										//메모리 로그 기록
+										CString strMsg = "";
+										strMsg.Format(_T("Over All Vision BCD Id Initialize Before BCD Id<%d>=Init BCD Id<%d>"), nextTabID-1, wTempID);
+										AprData.SaveMemoryLog(strMsg);
 									}
 									//초기화가 아닌 경우
 									else
@@ -478,10 +493,6 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 									nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
 
 								}
-								//메모리 로그 기록
-								CString strMsg;
-								strMsg.Format(_T("Input ID [%d] 누락"), nextTabID);
-								AprData.SaveMemoryLog(strMsg);
 
 								LOGDISPLAY_SPEC(7)(_T("Loop(%d) = Input ID 누락 before<%d> ^^ now<%d>"), ThreadLoopCount, wLastTabId, wTempID);
 							}
@@ -526,7 +537,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 						//메모리 로그 기록
 						CString strMsg;
-						strMsg.Format(_T("Input ID[%d], Queue Count<%d>"), cntInfo.nTabID, nCntQueSize);
+						strMsg.Format(_T("Input BCD ID[%d], BCD ID BuffSize<%d> Receive "), cntInfo.nTabID, nCntQueSize);
 						AprData.SaveMemoryLog(strMsg);
 
 						//DIO Input Log
