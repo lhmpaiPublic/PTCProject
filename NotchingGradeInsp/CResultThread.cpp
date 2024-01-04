@@ -765,7 +765,6 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 				if (pRsltInfo != NULL)
 				{
-					theApp.m_nImageProcResultProcCrop = GetTickCount();
 
 #ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================

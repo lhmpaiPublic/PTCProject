@@ -228,7 +228,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								//// 경계 검출
 								//int nUpper = 20 * nCount;
 								//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0, 0);
-								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetBundary_FromPrjData",
 								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
 								//	);
 

@@ -97,7 +97,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 			while (pQueuePtr->GetSize())
 			{
-				theApp.m_nImageProcResultImageSave = GetTickCount();
 
 				// Image 하나 가지고 오고 삭제함.
 				CImgSaveInfo* pSaveInfo = pQueuePtr->Pop();
@@ -128,12 +127,12 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 						delete pSaveInfo;
 						pSaveInfo = NULL;
 					}
-					continue;
+					break;
 				}
 
 				if (pSaveInfo->m_strSavePath.GetLength() > 0)
 				{
-					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave Enter"));
+					LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgSave : %s"), pSaveInfo->m_strSavePath);
 
 //					DWORD dwTic = GetTickCount();
 
@@ -165,9 +164,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 						bmp.SaveBitmap(pSaveInfo->m_strSavePath);
 
-						//					AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CtrlThreadImgSave : %d ms [%s]"), GetTickCount() - dwTic, pSaveInfo->m_strSavePath);
-
-
 						delete[]pImgPtr;
 						pImgPtr = NULL;
 					}
@@ -178,14 +174,13 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 					}
 
-					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave End"));
-
 				}
 				if (pSaveInfo)
 				{
 					delete pSaveInfo;
 					pSaveInfo = NULL;
 				}
+				break;
 			}
 			//큐에 데이터가 있으면 기다리지 않고 실행하도록 설정
 			if (pQueuePtr->GetSize())

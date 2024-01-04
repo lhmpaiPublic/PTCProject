@@ -400,7 +400,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//이전에 받았던 id와 다르다면 추가
 					if (wTempID != wLastTabId)
 					{
-						CLogDisplayDlg::LogDisplayDatText(_T("TriggerBCDId_Read"), _T("== Num(%d) = Trigger On Read ==== BCD Id <%d>"), wTempID);
+						CLogDisplayDlg::LogDisplayDatText(_T("TriggerBCDId_Read"), _T("== Num(%d) = Trigger On Read ==== BCD Id <%d>"), ThreadLoopCount, wTempID);
 
 						//BCD ID 얻는 시점에 TabNo는?
 						int TabNo = AprData.m_NowLotData.m_nTabCount;
@@ -574,7 +574,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 					if (wLastTabIdTriggerOff != wTempID)
 					{
-						CLogDisplayDlg::LogDisplayDatText(_T("TriggerBCDId_Read"), _T("== Num(%d) = Trigger Off Read ==== BCD Id <%d>"), wTempID);
+						CLogDisplayDlg::LogDisplayDatText(_T("TriggerBCDId_Read"), _T("== Num(%d) = Trigger Off Read ==== BCD Id <%d>"), ThreadLoopCount, wTempID);
 
 						//DIO Input Log
 						LOGDISPLAY_SPEC(7)(_T("@@(%d)### Trigger Off Read input Tabid<%d><%d>"), ThreadLoopCount, wTempID, wLastTabIdTriggerOff);

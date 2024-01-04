@@ -287,11 +287,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
 					int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
 
-					LOGDISPLAY_SPEC(5)("<<Proc>> Tab_Find_Pos<%d>-Head_Image_Boundary_Electorde_Level<%d>+Recipe_CameraHeight<%d> ",
-						nTabFindPos
-						, nBndElectrode
-						, AprData.m_pRecipeInfo->TabCond.nCeramicHeight);
-
 					//이미지 프로세싱을 위한 클래스 
 					//이미지 Tab 정보에서 Tab을 그룹으로 나누기
 					//PET Check TOP
@@ -722,8 +717,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								strError = "RIGHT-RecipeInfo의 Tab-Radius 보다 작은 Error";
 							}
-							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case-RadiusW-<%s> : ERRORFLAG 1",
-								strError);
 
 							nErrorNo = 1;
 
@@ -746,8 +739,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								strError = "FIRST_TabDonotProc Error";
 							}
-							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<%s> : ERRORFLAG 2",
-								strError);
 
 							AprData.m_NowLotData.m_bProcError = FALSE;
 							nErrorNo = 2;
@@ -762,8 +753,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (bErrorAll == TRUE)
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
-
-							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<ErrorAll> : ERRORFLAG 3");
 
 							nErrorNo = 3;
 
@@ -780,8 +769,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
 
-							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<Level:%d> : ERRORFLAG 4", nLevel);
-
 							nErrorNo = 4;
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: nLevel Error (nLevel:%d <= 0)"),
@@ -796,10 +783,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (nLevel >= (nWidth-1) )
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
-							LOGDISPLAY_SPEC(5)("<<Proc>> CtrlThreadImgCuttingTab-Case<Level:%d >= nWidth - 100 : %d> : ERRORFLAG 5", nLevel, nWidth - 100);
 
 							nErrorNo = 5;
-
 
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: nLevel Error (nLevel:%d >= (nWidth:%d - 100 ))"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLevel, nWidth);
@@ -869,7 +854,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//메모리 로그 기록(TOP)
 						strMsg = "";
-						strMsg.Format(_T("TOP Insp Image Info FrameNum<%d>, TabNo<%d>, BCD ID<%d>"), pInfo->m_nFrameCount, pInfo->nTabNo, pInfo->m_nTabId_CntBoard);
+						strMsg.Format(_T("TOP Insp Image Info FrameNum<%d>, TabNo<%d>, BCD ID<%d>"), pInfo->m_nFrameCount, pInfo->nTabNo+1, pInfo->m_nTabId_CntBoard);
 						AprData.SaveMemoryLog(strMsg);
 
 
@@ -946,7 +931,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//메모리 로그 기록(TOP)
 						strMsg = "";
-						strMsg.Format(_T("BOTTOM Insp Image Info FrameNum<%d>, TabNo<%d>, BCD ID<%d>"), pBtmInfo->m_nFrameCount, pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard);
+						strMsg.Format(_T("BOTTOM Insp Image Info FrameNum<%d>, TabNo<%d>, BCD ID<%d>"), pBtmInfo->m_nFrameCount, pBtmInfo->nTabNo+1, pBtmInfo->m_nTabId_CntBoard);
 						AprData.SaveMemoryLog(strMsg);
 
 
@@ -1130,7 +1115,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			//일정한 시간이 지나도 처리하지 못했을 때
 			if (pUnitTop && pUnitBtm)
 			{
-				theApp.m_nImageProcImageTabFind = GetTickCount();
 
 				////이미지 처리 스래드 (대기 스래드)
 				////출력 대기 이벤트 객체 push
@@ -1165,7 +1149,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					if ((topWaitVal == 1) && (btmWaitVal == 1))
 					{
-						theApp.m_nImageProcInspDataGet = GetTickCount();
 
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
@@ -1691,8 +1674,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						CImageProcessCtrl::GetResultPtr(CAM_POS_TOP)->PushBack((CFrameInfo*)pTopInfo);
 						CImageProcessCtrl::GetResultPtr(CAM_POS_BOTTOM)->PushBack((CFrameInfo*)pBtmInfo);
-
-						theApp.m_nImageProcResultProcPush = GetTickCount();
 
 						LOGDISPLAY_SPEC(8)("CtrlThreadImgProc TabNo<%d>-TabId<%d> - Result info Push",
 							pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard

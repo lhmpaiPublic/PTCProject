@@ -4379,7 +4379,6 @@ long CImageProcess::GetAreaSum_BetweenThreshold(BYTE* pImage, int nWidth, int nH
 // 22.04.14 Ahn Add Start
 // 23.02.24 Ahn Modify Start
 //int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTargetBright, int nMode)
-bool bOkDisplay = false;
 int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTargetBright, int nMode, BOOL bFindDark /*=FALSE*/, bool bLogOk)
 // 23.02.24 Ahn Modify End
 {
@@ -4496,8 +4495,7 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 
 // 22.04.13 Ahn Add Start
 
-bool bOkSampleLog = false;
-int CImageProcess::FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel, bool bLogOk)
+int CImageProcess::FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pVecSector);
@@ -4593,24 +4591,8 @@ int CImageProcess::FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHei
 		int nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
 //		int nUpperBright = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];//pyjtest
 
-		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll, bLogOk);
+		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 
-		if (bLogOk)
-		{
-			if (bOkSampleLog == true)
-			{
-				bOkSampleLog = false;
-				LOGDISPLAY_SPEC(5)("<<Proc>> FindTabLevel_Simple-Level<%d> = FindBoundary_FromPrjData nWidth<%d>-nUpperBright<%d>-en_FindFromRight<%d>-bUseDarkRoll<%d> OkSample",
-					*pnLevel, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
-			}
-
-			if (*pnLevel == 0)
-			{
-				bOkSampleLog = true;
-				LOGDISPLAY_SPEC(5)("<<Proc>> FindTabLevel_Simple-Level<%d> = FindBoundary_FromPrjData nWidth<%d>-nUpperBright<%d>-en_FindFromRight<%d>-bUseDarkRoll<%d>",
-					*pnLevel, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
-			}
-		}
 		delete[] pnPrjData;
 		pnPrjData = NULL;
 	}
@@ -4621,7 +4603,7 @@ int CImageProcess::FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHei
 // 22.04.13 Ahn Add End
 
 // 음극 Tab을 찾고 Tab 중심에서 검사 라인을 유추함.
-int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel , bool bLogOk)
+int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pVecSector);
@@ -4643,14 +4625,12 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	nLocalRet = CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, pVecSector);
 	if (nLocalRet <= 0)
 	{
-		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::FindTabPos Error -1 ");
 		return -1;
 	}
 
 	nLocalRet = CImageProcess::CombineTabSector(pVecSector, *pRecipeInfo);
 	if (nLocalRet < 0)
 	{
-		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::CombineTabSector Error -2");
 		return -2;
 	}
 
@@ -4658,8 +4638,6 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	int nSize = (int)pVecSector->size();
 	int nTabWidth;
 	int nFindIdx = 0 ;
-
-	LOGDISPLAY_SPEC(5)("<<Proc>> pVecSector Size<%d>", nSize);
 
 	ST_SECTOR* pstSector = NULL ;
 	for (i = 0; i < nSize; i++) 
@@ -4680,7 +4658,6 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 		}
 		else
 		{
-			LOGDISPLAY_SPEC(5)("<<Proc>> pstSector NULL");
 			return -3;
 		}
 	}
@@ -4698,28 +4675,8 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
 	// 경계 검출
 	int nUpper = 20 * nCount;
-	int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nWidth, 20, 0, pRecipeInfo->TabCond.nNegCoatHeight, true);
+	int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nWidth, 20, 0, pRecipeInfo->TabCond.nNegCoatHeight);
 	*pnLevel = nBundary - pRecipeInfo->TabCond.nNegCoatHeight ;
-
-	LOGDISPLAY_SPEC(5)("<<Proc>>11 FindTab_Negative-Level<%d> = FindBoundary_FromPrjData nWidth<%d>-CompLen<%d>-nBundary<%d>-RecipeTabNegCoatHeight<%d>",
-		*pnLevel, nWidth, 20, nBundary, pRecipeInfo->TabCond.nNegCoatHeight);
-
-	if (bLogOk)
-	{
-		if (bOkSampleLog == true)
-		{
-			bOkSampleLog = false;
-			LOGDISPLAY_SPEC(5)("<<Proc>> FindTab_Negative-Level<%d> = FindBoundary_FromPrjData nWidth<%d>-CompLen<%d>-nBundary<%d>-RecipeTabNegCoatHeight<%d> OkSample",
-				*pnLevel, nWidth, 20, nBundary, pRecipeInfo->TabCond.nNegCoatHeight);
-		}
-
-		if ((*pnLevel) == 0)
-		{
-			bOkSampleLog = true;
-			LOGDISPLAY_SPEC(5)("<<Proc>> FindTab_Negative-Level<%d> = FindBoundary_FromPrjData nWidth<%d>-CompLen<%d>-nBundary<%d>-RecipeTabNegCoatHeight<%d>",
-				*pnLevel, nWidth, 20, nBundary, pRecipeInfo->TabCond.nNegCoatHeight);
-		}
-	}
 
 	delete[] pnPrjData;
 	return nRet;
@@ -4843,7 +4800,7 @@ int CImageProcess::FindLevelBottom_BrightRoll(BYTE* pImgPtr, int nWidth, int nHe
 }
 // 23.02.24 Ahn Add End
 
-int CImageProcess::GetBundary_FromPrjData(int* pnPrjData, int nLength, int nCompLen, int nMode, int nNegCoatHeight , bool bLogOk)
+int CImageProcess::GetBundary_FromPrjData(int* pnPrjData, int nLength, int nCompLen, int nMode, int nNegCoatHeight)
 {
 	int nTop = 0;
 	int nBtm = 0 ;
@@ -4892,31 +4849,6 @@ int CImageProcess::GetBundary_FromPrjData(int* pnPrjData, int nLength, int nComp
 		{
 			strCompLenVec.push_back(strCompLena);
 			strCompLena = "";
-		}
-	}
-
-	if (bLogOk)
-	{
-		if (bOkDisplay == true)
-		{
-			bOkDisplay = false;
-			LOGDISPLAY_SPEC(5)("<<Proc>> FindBoundary_FromPrjData-Bundary<%d> = PrjData :",
-				nMaxPos);
-			for (int i = 0; i < strCompLenVec.size(); i++)
-				LOGDISPLAY_SPEC(5)("Bundary<%d>@@ %s ",
-					nMaxPos, strCompLenVec[i]);
-		}
-
-		if (nNegCoatHeight == nMaxPos)
-		{
-			bOkDisplay = true;
-			LOGDISPLAY_SPEC(5)("<<Proc>> FindBoundary_FromPrjData-Bundary<%d> = PrjData : ",
-				nMaxPos);
-
-			for (int i = 0; i < strCompLenVec.size(); i++)
-				LOGDISPLAY_SPEC(5)("Bundary<%d>@@ %s ",
-					nMaxPos, strCompLenVec[i]);
-
 		}
 	}
 
@@ -6272,8 +6204,7 @@ int CImageProcess::DivisionTab_byFixSize(const BYTE* pImgPtr, const BYTE* pImgBt
 		CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
 		nLastSavePos += nFixSize ;
 
-		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::DivisionTab_byFixSize-TabInfopush-count<%d> : ERRORFLAG",
-			++Tab_byFixSizeCount);
+		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::DivisionTab_byFixSize-TabInfopush-count");
 
 		pVecTabInfo->push_back(tabInfo);
 	}
@@ -6346,28 +6277,20 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		//모드가 음극 일 경우 처리
 		if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 		{
-			nLocalRet = CImageProcess::FindTab_Negative(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel, true);
+			nLocalRet = CImageProcess::FindTab_Negative(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
 
 			if (nLocalRet < 0)
 			{
 				//	return nLocalRet; // 21.12.28 Ahn Delete 
 			}
 			*pnLevel = nLevel;
-			if (*pnLevel == 0)
-			{
-				LOGDISPLAY_SPEC(5)("<<Proc>> bLevel<%d><%d>  =============== ", *pnLevel, nLevel);
-			}
-
-			//		AprData.SaveDebugLog_Format(_T("FindTab_Negative nLevel=%d, Return=%d"), nLevel, nLocalRet);
 
 		}
 		//모드가 양극 일 경우 처리
 		else
 		{
-			nLocalRet = CImageProcess::FindTabLevel_Simple(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel, true);
+			nLocalRet = CImageProcess::FindTabLevel_Simple(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
 			*pnLevel = nLevel;
-
-			//		AprData.SaveDebugLog_Format(_T("FindTabLevel_Simple nLevel=%d"), nLevel);
 
 		}
 	}
@@ -6514,8 +6437,6 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nRight = pResvTabInfo->nImageLength;
 			tabInfo.nImageLength = pResvTabInfo->nImageLength;
 			tabInfo.m_bErrorFlag = TRUE;
-			LOGDISPLAY_SPEC(5)("<<Proc>> DivisionTab_FromImageToTabInfo-Case<%d> : ERRORFLAG",
-				nCase);
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag );
 
@@ -6543,8 +6464,6 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nRight = pResvTabInfo->nImageLength + nSendLength ;
 			tabInfo.nImageLength = pResvTabInfo->nImageLength + nSendLength ;
 			tabInfo.m_bErrorFlag = TRUE;
-			LOGDISPLAY_SPEC(5)("<<Proc>> DivisionTab_FromImageToTabInfo-Case<%d> : ERRORFLAG",
-				nCase);
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag);
 

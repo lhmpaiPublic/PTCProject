@@ -251,7 +251,7 @@ public:
 	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum = TRUE);
 	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, int nStartX, int nEndX, int nStartY, int nEndY, int nDir, int nSampling, BOOL bModeSum = TRUE);
 	//static int GetAverageFromPrjData(int* pPrjData, int* pAveData, int nLength, int nAveRage);
-	static int GetBundary_FromPrjData(int* pnPrjData, int nLength, int nCompWidth, int nMode, int nNegCoatHeight , bool bLogOk = false);
+	static int GetBundary_FromPrjData(int* pnPrjData, int nLength, int nCompWidth, int nMode, int nNegCoatHeight );
 
 	// 평균화 처리 
 	static int MeanImageDirection_Round(const BYTE* pImage, BYTE* pMeanImg, int nWidth, int nHeight, CRect rectProc, int nMeanSize, int nThresLevel);
@@ -368,14 +368,14 @@ public:
 	static int FindTabLevel_FromProjection(int* pnPrjData, int nLength, int nCompWidth); // CompWidth으로 좌우 비교하여 차이가 가장 많이나는 위치를 찾는 함수.
 
 	// 22.04.13 Ahn Add Start
-	static int FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel, bool bLogOk = false);
+	static int FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHeight, int nFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel);
 	// 23.02.24 Ahn Modify Start
 	//static int FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTargetBright, int nMode);
 	static int FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTargetBright, int nMode, BOOL bFindDark = FALSE, bool bLogOk = false);
 	// 23.02.24 Ahn Modify End
 	// 22.04.13 Ahn Add End
 
-	static int FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel, bool bLogOk = false);
+	static int FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo *pRecipeInfo, VEC_SECTOR *pVecSector, int *pnLevel);
 	static int FindLevelBottom_Negative(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int* pnLevel, int nFindDir );
 	// 23.02.24 Ahn Add Start
 	static int FindLevelBottom_BrightRoll(BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int* pnLevel, int nFindDir);

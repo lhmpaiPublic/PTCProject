@@ -194,7 +194,6 @@ void CInspDlg::OnSize(UINT nType, int cx, int cy)
 
 }
 
-static DWORD backImageProcThreadTimeCount = 0;
 void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
@@ -224,33 +223,8 @@ void CInspDlg::OnTimer(UINT_PTR nIDEvent)
 
 		UpdateData(FALSE);
 
-//		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CInspDlg Update : %d ms"), GetTickCount() - dwTic);
-
-
-//		dwTic = GetTickCount();
-
 		theApp.m_pImgProcCtrl->SaveErrorData();
 
-//		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> [TACT] CInspDlg SaveErrorData : %d ms"), GetTickCount() - dwTic);
-
-		if (backImageProcThreadTimeCount++ > 10)
-		{
-			DWORD currentTime = GetTickCount();
-
-			LOGDISPLAY_SPEC(8)(_T("<<<<<<<<<<<<<<<<<<ImageProcThreadTime>>>>>>>>>>>>>>>> curr<%d> imgGet<%d> TabFind<%d> InspDataGet<%d>"),
-				currentTime
-				, currentTime - theApp.m_nImageProcGrabberImageGet
-				, currentTime - theApp.m_nImageProcImageTabFind
-				, currentTime - theApp.m_nImageProcInspDataGet);
-
-			LOGDISPLAY_SPEC(8)(_T("<<<<<<<<<<<<<<<<<<ImageProcThreadTime>>>>>>>>>>>>>>>> curr<%d> ResultPush<%d> ResultCrop<%d> ResultSave<%d>"),
-				currentTime
-				, currentTime - theApp.m_nImageProcResultProcPush
-				, currentTime - theApp.m_nImageProcResultProcCrop
-				, currentTime - theApp.m_nImageProcResultImageSave);
-
-			backImageProcThreadTimeCount = 0;
-		}
 		SetRenewalTimer();
 	}
 
