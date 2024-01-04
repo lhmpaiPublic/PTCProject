@@ -552,12 +552,12 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 		if((AprData.m_NowLotData.m_strLotNo.GetLength() > 5) && (CWin32File::IsNumAlpha(AprData.m_NowLotData.m_strLotNo) == 0))
 		{
 			SPCINFO->setLotId(AprData.m_NowLotData.m_strLotNo);
-			LOGDISPLAY_SPEC(3)("SPC+=====Lot Id 설정<%s> ", AprData.m_NowLotData.m_strLotNo);
+			LOGDISPLAY_SPEC(3)("!! SPC+=====Lot Id 설정<%s> ", AprData.m_NowLotData.m_strLotNo);
 		}
 		else
 		{
 			SPCINFO->setLotId("NA");
-			LOGDISPLAY_SPEC(3)("SPC+=====Lot Id 설정에러 - 숫자또는영문이 아님");
+			LOGDISPLAY_SPEC(3)("!! SPC+=====Lot Id 설정에러 - 숫자또는영문이 아님");
 		}
 #endif //SPCPLUS_CREATE
 

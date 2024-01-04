@@ -57,7 +57,7 @@ void CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread()
 #ifdef SPCPLUS_CREATE
 		else
 		{
-				LOGDISPLAY_SPEC(3)("SPC+===== CreateSpcCreateJSONFileThread 실패 === ");
+				LOGDISPLAY_SPEC(3)("!! SPC+===== CreateSpcCreateJSONFileThread 실패 === ");
 		}
 #endif //SPCPLUS_CREATE
 	}
@@ -85,7 +85,7 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
-	LOGDISPLAY_SPEC(3)("SPC+===== ThreadProc 생성");
+	LOGDISPLAY_SPEC(3)("!! SPC+===== ThreadProc 생성");
 #endif //SPCPLUS_CREATE
 
 	while (pMain)
@@ -122,7 +122,7 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 			{
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
-				LOGDISPLAY_SPEC(3)("SPC+===== Make Json File 생성 루프 Create FALSE");
+				LOGDISPLAY_SPEC(3)("!! SPC+===== Make Json File 생성 루프 Create FALSE");
 #endif //SPCPLUS_CREATE
 				break;
 			}
@@ -136,7 +136,7 @@ UINT CSpcCreateJSONFileThread::ThreadProc(LPVOID param)
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
-	LOGDISPLAY_SPEC(3)("SPC+===== ThreadProc 소멸");
+	LOGDISPLAY_SPEC(3)("!! SPC+===== ThreadProc 소멸");
 #endif //SPCPLUS_CREATE
 	return 0;
 }
@@ -150,7 +150,7 @@ void CSpcCreateJSONFileThread::CreateThread()
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-		LOGDISPLAY_SPEC(3)("SPC+===== pEvent_SpcCreateJSONFileThread CreateEvent <%s> === ", (pEvent_SpcCreateJSONFileThread == NULL) ? "실패":"성공");
+		LOGDISPLAY_SPEC(3)("!! SPC+===== pEvent_SpcCreateJSONFileThread CreateEvent <%s> === ", (pEvent_SpcCreateJSONFileThread == NULL) ? "실패":"성공");
 #endif //SPCPLUS_CREATE
 
 	//스래드 생성
@@ -179,7 +179,7 @@ void CSpcCreateJSONFileThread::AddSpcPlusManager(CSpcPlusManager* obj)
 #ifdef SPCPLUS_CREATE
 	else
 	{
-		LOGDISPLAY_SPEC(3)("SPC+===== Add Spc Manager Failed None Run === ");
+		LOGDISPLAY_SPEC(3)("!! SPC+===== Add Spc Manager Failed None Run === ");
 	}
 #endif //SPCPLUS_CREATE
 }
@@ -193,7 +193,7 @@ void CSpcCreateJSONFileThread::AddSpcPlus(CSpcPlusManager* obj)
 		m_SpcList.push(obj);
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-		LOGDISPLAY_SPEC(3)("SPC+===== SPCPlusMamager Size<%d> === ", m_SpcList.size());
+		LOGDISPLAY_SPEC(3)("!! SPC+===== SPCPlusMamager Size<%d> === ", m_SpcList.size());
 #endif //SPCPLUS_CREATE
 		::LeaveCriticalSection(&m_csQueue);
 	}

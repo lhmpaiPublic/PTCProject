@@ -132,7 +132,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 				if (pSaveInfo->m_strSavePath.GetLength() > 0)
 				{
-					LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgSave : %s"), pSaveInfo->m_strSavePath);
+					LOGDISPLAY_SPEC(8)(_T("## CtrlThreadImgSave : %s"), pSaveInfo->m_strSavePath);
 
 //					DWORD dwTic = GetTickCount();
 

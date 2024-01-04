@@ -689,7 +689,7 @@ void CImgDisplayDlg::UpdateDefInfoGrid(CDefectInfo* pInfo)
 
 		switch (nRow) {
 		case	en_Def_TabNo:
-			strText.Format(_T("%d"), pInfo->nTabNo );
+			strText.Format(_T("%d"), pInfo->nTabNo+1 );
 			break;
 		case	en_Def_No:
 			strText.Format(_T("%d"), pInfo->nDefNo );

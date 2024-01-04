@@ -5777,8 +5777,8 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 #ifdef SPCPLUS_CREATE			
 	//SPC+ INSP===================================================================================================
 	//SPC+ 정보 출력 로그
-	LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo CellNo<%d>, CAM<%s>, BlockData Count<%d>"
-		, pTabRsltInfo->m_nTabNo
+	LOGDISPLAY_SPEC(3)("!! SPC+=====DefectInfo CellNo<%d>, CAM<%s>, BlockData Count<%d>"
+		, pTabRsltInfo->m_nTabNo+1
 		,(pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP":"BOTTOM"
 		,nSize);
 	//===========================================================================================================
@@ -6247,7 +6247,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		double dTabPitch = RecipeInfo.TabCond.dTabPitch;
 		//분해능을 이용하여 실제 길이에서 픽셀 단위의 Tab Pitch를 얻는다.
 		nTabPitchCalc = TabPitcPixelhCalculate(dTabPitch, AprData.m_System.m_dResolY1000P);
-		LOGDISPLAY_SPEC(7)("=====@@ Base Tab  calc val f<%f>n<%d> =============== ", dTabPitch, nTabPitchCalc);
+		LOGDISPLAY_SPEC(7)("@@ Base Tab  calc val f<%f>n<%d> =============== ", dTabPitch, nTabPitchCalc);
 	}
 
 	//Tab의 기본 Pitch(레시피에 입력된 값(double, int 값 )
@@ -6257,7 +6257,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	nBaseTabPitch = RecipeInfo.TabCond.nTabPitch;
 
 	//기존 계산된 값과 지금 계산 값 비교 로그 출력
-	LOGDISPLAY_SPEC(7)("=====@@ Base Tab  calc val<%d> setting val<%d> =============== ", nTabPitchCalc, nBaseTabPitch);
+	LOGDISPLAY_SPEC(7)("@@ Base Tab  calc val<%d> setting val<%d> =============== ", nTabPitchCalc, nBaseTabPitch);
 
 	int nBaseTabWidth = RecipeInfo.TabCond.nTabWidth;
 	int nBaseTabBlank = nBaseTabPitch - nBaseTabWidth;

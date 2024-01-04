@@ -33,9 +33,6 @@ protected:
 	//프로세싱 끝 확인 함수 슬립타임 이벤트 객체
 	HANDLE	m_heventProcEnd_SleepTime;
 
-	//m_hEventProcEnd의 타임아웃 카운트
-	static int ProcEnd_WaitCount;
-
 	int m_nErrorCode;
 
 	//타임아웃 여부 변수
@@ -59,7 +56,7 @@ public:
 	int Kill();
 	BOOL IsProcEnd();
 	//EVENT 결과 
-	int eventProcEnd_WaitTime(CString CamPos);
+	int eventProcEnd_WaitTime(CString CamPos, int& PosLoopCount);
 
 	int ForceStop();	
 	void SendResult();

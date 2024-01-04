@@ -45,7 +45,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if (pBuffer == NULL)
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPEC(8)(_T("@@@ Cam Error** CGrabDalsaCameraLink Buffer 오류 "));
+			LOGDISPLAY_SPEC(8)(_T("## Cam Error** CGrabDalsaCameraLink Buffer 오류 "));
 			return;
 		}
 
@@ -126,7 +126,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				AprData.SaveMemoryLog(strMsg);
 
 				//Image Capture 정보 출력 로그
-				LOGDISPLAY_SPEC(8)(_T("@@@ Cam Pos[%s], Width[%d], Height[%d], FrmCount[%d]"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
+				LOGDISPLAY_SPEC(8)(_T("## Cam Pos[%s], Width[%d], Height[%d], FrmCount[%d]"), (pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 
 				//얻은 이미지 정보를 TabFind 스래드로 전달하기 위해 queue 에 넣는다.
 				pQueueCtrl->PushBack(pFrmInfo);

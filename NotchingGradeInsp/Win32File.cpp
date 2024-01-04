@@ -428,7 +428,7 @@ BOOL CWin32File::FolderFileExists(LPCTSTR szFilename)
 int ret = _taccess(szFilename, CWin32File::enExist);
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-		LOGDISPLAY_SPEC(3)(" FolderFileExists=<%s>=ret<%d>= ", szFilename, ret);
+		LOGDISPLAY_SPEC(3)("!! FolderFileExists=<%s>=ret<%d>= ", szFilename, ret);
 #endif //SPCPLUS_CREATE
 	return (ret != -1);
 }

@@ -149,7 +149,7 @@ void CSpcInspManager::makeJSONFile()
 		m_SpcInspInData->JsonFileName(strJsonFileName);
 		//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
-		LOGDISPLAY_SPEC(3)("SPC PRINT INFO <%s>/<%s> ", strPath, strJsonFileName);
+		LOGDISPLAY_SPEC(3)("!! SPC PRINT INFO <%s>/<%s> ", strPath, strJsonFileName);
 #endif //SPCPLUS_CREATE
 
 		CString strMakeJsonData = "";
@@ -198,7 +198,7 @@ void CSpcInspManager::makeJSONFile()
 		CGlobalFunc::makeJSONFile(strPath, strJsonFileName, strMakeJsonData);
 		//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
-		LOGDISPLAY_SPEC(3)("SPC PRINT : <%s>/<%s> ", strPath, strJsonFileName);
+		LOGDISPLAY_SPEC(3)("!! SPC PRINT : <%s>/<%s> ", strPath, strJsonFileName);
 #endif //SPCPLUS_CREATE
 
 	}
@@ -208,7 +208,7 @@ void CSpcInspManager::makeJSONFile()
 	{
 	
 	//SPC+ 정보 출력 로그
-		LOGDISPLAY_SPEC(3)("SPC+=====CSpcInspManager NONE RUN ");
+		LOGDISPLAY_SPEC(3)("!! SPC+=====CSpcInspManager NONE RUN ");
 	}
 #endif //SPCPLUS_CREATE
 

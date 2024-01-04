@@ -53,7 +53,7 @@ int CQueueCtrl::PushBack( CFrameInfo *pFrmInfo )
 				if (pFrmInfo->nTabNo > 0)
 				{
 					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - push-ResultFrameData",
-						(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+						(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1, pFrmInfo->m_nTabId_CntBoard
 						);
 				}
 			}
@@ -88,7 +88,7 @@ CFrameInfo *CQueueCtrl::Pop()
 				if (pInfo->nTabNo > 0)
 				{
 					LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - pop-ResultFrameData",
-						(pInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pInfo->nTabNo, pInfo->m_nTabId_CntBoard
+						(pInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pInfo->nTabNo+1, pInfo->m_nTabId_CntBoard
 						);
 				}
 			}

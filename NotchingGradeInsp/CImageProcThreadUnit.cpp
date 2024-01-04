@@ -16,8 +16,6 @@
 #define WAITEVENTTIME_PROCEND 20
 #define MAX_WAITEVENTTIME_PROCEND 500
 
-int CImageProcThreadUnit::ProcEnd_WaitCount = 0;
-
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
@@ -45,8 +43,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 		pOrgImg = new BYTE[ImgTotalSize];
 		memset(pOrgImg, 0, sizeof(BYTE) * ImgTotalSize);
 
-		LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ThreadEnter",
-			(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+		LOGDISPLAY_SPEC(8)("## <<%s>>>UnitThread TabNo<%d>-TabId<%d> - ThreadEnter",
+			(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1, pFrmInfo->m_nTabId_CntBoard
 			);
 	}
 	else
@@ -134,10 +132,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				int nHeadNo = pFrmInfo->m_nHeadNo;
 				//이미지 데이터 : CFrameInfo에 저장된 이미지 데이터를 가져온다.
 				CopyMemory(pOrgImg, pFrmInfo->GetImagePtr(), sizeof(BYTE) * (nWidth * nHeight));
-				if (nHeight < 6000)
-				{
-					LOGDISPLAY_SPEC(8)("=======Origin Image Size Height<%d> TabNo<%d> ==========================", nHeight, pFrmInfo->nTabNo);
-				}
+
 				//Trigger Tab Id
 				pFrameRsltInfo->m_nTabId_CntBoard = pFrmInfo->m_nTabId_CntBoard;
 				//Defec 정보 출력 시 Cell id 나오도록 정보 입력
@@ -209,39 +204,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//양극이면
 							if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 							{
-								// 2023.10.17. pyj del
-								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-								// Tab Level
-								//int* pnPrj = new int[nWidth];
-
-								//CRect rcPrj;
-								//rcPrj.top = nTabLeft;
-								//rcPrj.bottom = nTabRight;
-								//rcPrj.left = 0;
-								//rcPrj.right = nWidth;
-
-								//int nCount = CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rcPrj, DIR_VER, 10, 0);
-								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection",
-								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-								//	);
-
-								//// 경계 검출
-								//int nUpper = 20 * nCount;
-								//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrj, nWidth, 20, 0, 0);
-								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-								//	);
-
-								//nTabLevel = nBundary - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
-
-								//if (nTabLevel <= 0 || nTabLevel >= nWidth-1 )
-								//{
-								//	nTabLevel = pFrmInfo->m_nTabLevel;
-								//}
-
-								//if (pnPrj != NULL)
-								//{
-								//	delete[] pnPrj;
-								//}
+								
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 								nTabLevel = pFrmInfo->m_nTabLevel;// 2023.10.17. pyj add
@@ -267,88 +230,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//음극이면 ImageProcessTopSide_AreaDiff 실행
 							else
 							{
-								// 2023.10.17. pyj del
-								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-								// Tab Level
-								//int nTabLevelLeft = 0;
-								//int nTabLevelRight = 0;
-
-								//CRect rect;
-								//int nPrjWidth = 2000;
-								//if (nWidth < 2000)
-								//{
-								//	nPrjWidth = nWidth;
-								//}
-								//rect.left = nWidth - nPrjWidth;
-								//rect.right = nWidth;
-								//rect.top = 0;
-								//rect.bottom = nHeight - 1;
-								//int nSamplingSize = nHeight / 100;
-								//int* pnPrj = new int[nPrjWidth];
-
-								//// Tab Left
-								//rect.top = 100;
-								//rect.bottom = nTabLeft - AprData.m_pRecipeInfo->TabCond.nRadiusH;
-								//if (rect.bottom < rect.top)
-								//{
-								//	AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Left] Error - Invalid Find Area"));
-								//}
-
-
-								//BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[nHeadNo] == 1) ? FALSE : TRUE;
-
-								//CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection 1",
-								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-								//	);
-
-								//nTabLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
-								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - FindBoundary_FromPrjData 1",
-								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-								//	);
-
-
-
-
-								//// Tab Right
-								//rect.top = nTabRight + AprData.m_pRecipeInfo->TabCond.nRadiusH;
-								//rect.bottom = nHeight - 100;
-								//if (rect.top < 0 || rect.bottom < rect.top)
-								//{
-								//	AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <Tab Level Find> Tab [Right] Error - Invalid Find Area"));
-								//}
-
-								//CImageProcess::GetProjection(pOrgImg, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
-								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - GetProjection 2",
-								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-								//	);
-
-								//nTabLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[nHeadNo], CImageProcess::en_FindFromRight, bUseDarkRoll);
-								//LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - FindBoundary_FromPrjData 2",
-								//	(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
-								//	);
-
-
-
-
-								//nTabLevelLeft += rect.left;
-								//nTabLevelRight += rect.left;
-
-								//if (nTabLevelLeft <= nPrjWidth+1 || nTabLevelRight <= nPrjWidth+1
-								//	|| nTabLevelLeft >= nWidth-1 || nTabLevelRight >= nWidth-1 )
-								//{
-								//	nTabLevel = pFrmInfo->m_nTabLevel;
-								//}
-								//else
-								//{
-								//	nTabLevel = (nTabLevelLeft + nTabLevelRight) / 2;
-								//}
-
-								//if (pnPrj != NULL)
-								//{
-								//	delete[] pnPrj;
-								//}
-
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -402,7 +283,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//이미지 처리 프로세서 함수 ImageProcessDetectSurface 
 							nLocalRet = CImageProcess::ImageProcessDetectSurface(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, rcArea, pFrameRsltInfo->m_pTabRsltInfo, CAM_POS_TOP, FALSE);
 							LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessDetectSurface",
-								(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+								(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1, pFrmInfo->m_nTabId_CntBoard
 								);
 
 
@@ -430,7 +311,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							if (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) {
 								nLocalRet = CImageProcess::ImageProcessBottomSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
 								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessBottomSide_BrightRoll",
-									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1, pFrmInfo->m_nTabId_CntBoard
 									);
 
 							}
@@ -438,7 +319,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							else {
 								nLocalRet = CImageProcess::ImageProcessBottomSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
 								LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - ImageProcessBottomSide_Negative",
-									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+									(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1, pFrmInfo->m_nTabId_CntBoard
 									);
 
 							}
@@ -514,7 +395,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
-				LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================JUDGE TabNo<%d>", pFrmInfo->nTabNo);
 				// 22.04.18 Ahn Add Start
 				//ImageProc: Tab 에 대한 이미지 최대 사이즈 저장
 				double dMaxSize = pFrameRsltInfo->m_pTabRsltInfo->SortingDefect(0);
@@ -574,7 +454,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
-				LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================SPC+ TabNo<%d>", pFrmInfo->nTabNo);
 				//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 				//SPC+ ALARM===================================================================================================
@@ -663,7 +542,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//이미지를 저장 변수가  TRUE이면
 				if (bSave == TRUE)
 				{
-					LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================Save TabNo<%d>", pFrmInfo->nTabNo);
 
 					//선택된 이미지 저장 포맷
 					//SystemSetting Dlg 에서 설정한다.
@@ -725,6 +603,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						, strImageFormat
 					);
 
+					LOGDISPLAY_SPEC(8)("## Save TabNo<%d> : 파일명 : %s ", pFrmInfo->nTabNo+1, strFileName);
+
 					// 22.05.27 Ahn Modify End
 					//ImageProc: 이미지저장 플레그를 TRUE로 설정한다.
 					pFrameRsltInfo->m_pTabRsltInfo->m_bImageFlag = TRUE;
@@ -741,9 +621,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				// 처리 완료
 
-				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ProcEnd"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo);
-
-				LOGDISPLAY_SPEC(8)("=======Unit Thread Point ==========================End TabNo<%d>", pFrmInfo->nTabNo);
+				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ProcEnd"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1);
 
 				//파일저장 프레임 결과 정보에 저장한다.
 				pFrameRsltInfo->Copy(pFrmInfo);
@@ -774,7 +652,7 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 //	m_pQueueCtrl = pQueueCtrl;
 
 	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Create",
-		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo, pFrmInfo->m_nTabId_CntBoard
+		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1, pFrmInfo->m_nTabId_CntBoard
 		);
 
 	//ImageProc Proc Start 이벤트 객체 생성
@@ -910,54 +788,33 @@ BOOL CImageProcThreadUnit::IsProcEnd()
 
 //EVENT 결과 
 #define EVENTPROCEND_TIMEOUT 3
-int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos)
+int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos, int& PosLoopCount)
 {
 	int retval = 0;
-	++CImageProcThreadUnit::ProcEnd_WaitCount;
+	++PosLoopCount;
 	if (m_bProcEnd)
 	{
-		CImageProcThreadUnit::ProcEnd_WaitCount = 0;
-		AprData.SaveDebugLog_Format(_T("<CImageProcThreadUnit> LoopCount-exit<%d> CamPos<%s>"), ProcEnd_WaitCount, CamPos);
 		retval = 1;
 	}
 	else
 	{
-		if (ProcEnd_WaitCount > 50)
+		if (PosLoopCount > 50)
 		{
-			CImageProcThreadUnit::ProcEnd_WaitCount = 0;
-			LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-timeout<%d> CamPos<%s>"), ProcEnd_WaitCount, CamPos
-				);
-
-			////파일저장 프레임 결과 정보에 저장한다.
-			//if (m_pFrmRsltInfo == NULL)
-			//{
-			//	m_pFrmRsltInfo = new CFrameRsltInfo();
-			//}
-			//m_pFrmRsltInfo->Copy(m_pFrmInfo);
-			//m_pFrmRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_NG;
-			//m_pFrmRsltInfo->m_pTabRsltInfo->m_wNgReason |= ((m_pFrmRsltInfo->m_nHeadNo == CAM_POS_TOP) ? CTabRsltBase::en_Reason_FoilExpIn_Top : CTabRsltBase::en_Reason_FoilExpIn_Btm);
-
-			//theApp.ErrOutput("eventProcEnd_WaitTime", CErrorStatus::en_ProcessError);
-
 			//타임아웃 여부 변수
 			m_bTimeOut = TRUE;
 			retval = 2;
-			
-		}
-		else
-		{
-			if (ProcEnd_WaitCount > 45)
-			{
-				CString ErrorLog;
-				ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  COUNT<%d> CamPos<%s>============================="), 
-					ProcEnd_WaitCount, CamPos);
-				AprData.SaveErrorLog(ErrorLog);
 
-				LOGDISPLAY_SPEC(8)(_T("<CImageProcThreadUnit> LoopCount-loop<%d> CamPos<%s>"), ProcEnd_WaitCount, CamPos
-					);
-			}
-			WaitForSingleObject(m_heventProcEnd_SleepTime, EVENTPROCEND_TIMEOUT);
 		}
+
+		if (PosLoopCount > 45)
+		{
+			CString ErrorLog;
+			ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  COUNT<%d> CamPos<%s>============================="),	PosLoopCount, CamPos);
+			AprData.SaveErrorLog(ErrorLog);
+
+			LOGDISPLAY_SPEC(8)(_T("## <CImageProcThreadUnit> Looping Count<%d> CamPos<%s>"), PosLoopCount, CamPos);
+		}
+		WaitForSingleObject(m_heventProcEnd_SleepTime, EVENTPROCEND_TIMEOUT);
 	}
 	return retval;
 }

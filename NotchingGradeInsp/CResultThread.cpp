@@ -553,8 +553,8 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 #ifdef SPCPLUS_CREATE			
 	//SPC+ INSP===================================================================================================
 	//SPC+ 정보 출력 로그
-	LOGDISPLAY_SPEC(3)("SPC+=====DefectInfo CellNo<%d>, CAM<%s>, Defect Info Count<%d>"
-		, pTabInfo->m_nTabNo
+	LOGDISPLAY_SPEC(3)("!! SPC+=====DefectInfo TabNo<%d>, CAM<%s>, Defect Info Count<%d>"
+		, pTabInfo->m_nTabNo+1
 		, (pTabInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM"
 		, nDefCount);
 	//===========================================================================================================
@@ -709,7 +709,7 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 		}
 		else
 		{
-			LOGDISPLAY_SPEC(8)("SaveCropImage Defect Info delete NJULL");
+			LOGDISPLAY_SPEC(8)("## SaveCropImage Defect Info delete NJULL");
 		}
 	}
 }
@@ -916,7 +916,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
-						LOGDISPLAY_SPEC(3)("SPC+===== JSON 생성 Insp AddSpcPlusManager === Trigger 받은 시간<%s>", InspInData->getVisionInputTime());
+						LOGDISPLAY_SPEC(3)("!! SPC+===== JSON 생성 Insp AddSpcPlusManager === Trigger 받은 시간<%s>", InspInData->getVisionInputTime());
 #endif //SPCPLUS_CREATE
 
 						//JSON 파일 생성을 위한 스래드에 추가한다.
@@ -925,9 +925,9 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 					else
 					{
 						//SPC+ 정보 출력 로그
-						LOGDISPLAY_SPEC(3)("SPC+=====FrameCount<%d>, Frame Kind : %s = Cell Count : %d === JSON 생성 NONE"
+						LOGDISPLAY_SPEC(3)("!! SPC+=====FrameCount<%d>, Frame Kind : %s = TabNo : %d === JSON 생성 NONE"
 							, pRsltInfo->m_nFrameCount
-							, (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo);
+							, (pRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM", pRsltInfo->nTabNo+1);
 					}
 					//===========================================================================================================
 #endif //SPCPLUS_CREATE
@@ -940,7 +940,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 				}
 				else
 				{
-					LOGDISPLAY_SPEC(8)("CtrlThreadResultProc CFrameRsltInfo Object delete NULL");
+					LOGDISPLAY_SPEC(8)("## CtrlThreadResultProc CFrameRsltInfo Object delete NULL");
 				}
 
 			}

@@ -496,7 +496,7 @@ void CModeDlg::OnBnClickedBtnExit()
 		AprData.SaveErrorLog(_T("============================= SHUTDWON PROGRAM ============================="));
 		AprData.SaveDebugLog_Format(_T("============================= SHUTDWON PROGRAM ============================="));
 
-		LOGDISPLAY_SPEC(8)(_T("============================= SHUTDWON PROGRAM ============================="));
+		LOGDISPLAY_SPEC(8)(_T("## SHUTDWON PROGRAM ============================="));
 
 		AprData.SaveDebugLog_Format(_T("<BUTTON CLICK> exit the application"));
 		AfxGetMainWnd()->PostMessageA(WM_CLOSE);

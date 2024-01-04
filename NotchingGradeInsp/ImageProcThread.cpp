@@ -304,7 +304,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						bErrorAll = TRUE;
 
 						AprData.SaveDebugLog_Format(_T(">>>>>> Miss Tab Vec [T/B:%d][F/V:%d] : Size=%d, QueueCount=%d, FrameCountTop=%d, FrameCountBtm=%d "), 
-							pFrmInfo_Top->m_nTabId_CntBoard, pFrmInfo_Top->nTabNo, nVecSize, pCntQueueInCtrl->GetSize(), pFrmInfo_Top->m_nFrameCount, pFrmInfo_Bottom->m_nFrameCount );
+							pFrmInfo_Top->m_nTabId_CntBoard, pFrmInfo_Top->nTabNo+1, nVecSize, pCntQueueInCtrl->GetSize(), pFrmInfo_Top->m_nFrameCount, pFrmInfo_Bottom->m_nFrameCount );
 					}
 					nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
 
@@ -324,7 +324,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 //					double dTime = ctAna.WhatTimeIsIt_Double();
 
 					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(7)("Now 검사 이미지 갯수<%d> vs BCD Id 갯수<%d> 갯수 차이<%d>",
+					LOGDISPLAY_SPEC(7)("@@Now 검사 이미지 갯수<%d> vs BCD Id 갯수<%d> 갯수 차이<%d>",
 						nVecSize, pCntQueueInCtrl->GetSize(), abs(nVecSize - pCntQueueInCtrl->GetSize()));
 
 					//메모리 로그 기록
@@ -359,7 +359,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								nTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
 							}
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", nTabPitch, RecipeInfoTabPitch);
+							LOGDISPLAY_SPEC(7)("@@Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", nTabPitch, RecipeInfoTabPitch);
 
 							//메모리 로그 기록
 							CString strMsg = "";
@@ -372,7 +372,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								//useTabID = 64;
 								//nextBCDId = 64;
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 접합부 Trigger Id Setting @@@@ ");
+								LOGDISPLAY_SPEC(7)("@@Tab 접합부 Trigger Id Setting @@@@ ");
 
 								//메모리 로그 기록
 								strMsg = "";
@@ -395,13 +395,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						double realTabWidth = nWidthLocal * dResolYLocal;
 
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Witch<%d> - Recipe Width<%f> 실제 텝 넓이<%f> 분해능<%f>@@@@ ", nWidthLocal, RecipeInfoTabWidth, realTabWidth, AprData.m_System.m_dResolY1000P);
+						LOGDISPLAY_SPEC(7)("@@Tab Witch<%d> - Recipe Width<%f> 실제 텝 넓이<%f> 분해능<%f>@@@@ ", nWidthLocal, RecipeInfoTabWidth, realTabWidth, AprData.m_System.m_dResolY1000P);
 
 						//실제 텝의 넓이 범위 확인 로그
 						if ((MIN_TABWIDTH > realTabWidth) || (MAX_TABWIDTH < realTabWidth))
 						{
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab 넓이가 이상이 있을 때 Tab Width<%f>@@@@ ", nWidthLocal);
+							LOGDISPLAY_SPEC(7)("@@Tab 넓이가 이상이 있을 때 Tab Width<%f>@@@@ ", nWidthLocal);
 						}
 
 						//Trigger Tab Id 초기화 시 
@@ -411,7 +411,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							useTabID = 64;
 							nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@Trigger Tab Id  초기화 시 Trigger Id Setting @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@Trigger Tab Id  초기화 시 Trigger Id Setting @@@@ ");
 							CLogDisplayDlg::LogDisplayText(_T("BCDId_init"), _T("=======Trigger Tab Id  초기화 시 Trigger Id Setting 초기화 @@@@"));
 
 						}
@@ -423,7 +423,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@ConnectZone Trigger Id Setting @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@ConnectZone Trigger Id Setting @@@@ ");
 						}
 
 						//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE
@@ -433,7 +433,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID 사용아이디 차가 3이상@@@@ ");
+							LOGDISPLAY_SPEC(7)("@@BCD ID 사용아이디 차가 3이상@@@@ ");
 						}
 
 						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
@@ -442,7 +442,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD ID의 Output 역전현상이 5번 < 이상 연속으로 들어올 때 역전카운트<%d>@@@@ ", TriggerBCDCountMAXINT);
+							LOGDISPLAY_SPEC(7)("@@BCD ID의 Output 역전현상이 5번 < 이상 연속으로 들어올 때 역전카운트<%d>@@@@ ", TriggerBCDCountMAXINT);
 
 							//메모리 로그 기록
 							CString strMsg = "";
@@ -457,7 +457,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@BCD Insp Start/Stop 시 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@BCD Insp Start/Stop 시 @@@@ ");
 						}
 
 						//PET가 런 진행 시 초기화
@@ -467,7 +467,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@@@@@@@@PET RUN 진행 시 @@@@ ");
+							LOGDISPLAY_SPEC(7)("@@PET RUN 진행 시 @@@@ ");
 						}
 
 
@@ -518,7 +518,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										nowBCDID = cntInfo.nTabID;
 
 										//Tab Id 정보 로그
-										LOGDISPLAY_SPEC(7)("@@@ A @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfo.nTabID, cntInfo.nTabNo, cntInfo.nTabIdTotalCount);
+										LOGDISPLAY_SPEC(7)("@@ A @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfo.nTabID, cntInfo.nTabNo+1, cntInfo.nTabIdTotalCount);
 
 										//루프 변수 증가
 										loopTabQueueSize++;
@@ -530,7 +530,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Id Size<%d> = Tab Image Size<%d> 비교<%d> @@@@ ", TabQueueSize, nVecSize, abs(TabQueueSize - nVecSize));
+								LOGDISPLAY_SPEC(7)("@@Tab Id Size<%d> = Tab Image Size<%d> 비교<%d> @@@@ ", TabQueueSize, nVecSize, abs(TabQueueSize - nVecSize));
 
 
 								//Tab Id 정보가 있는가 를 확인 후 
@@ -547,7 +547,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										//지금 받은 아이디 세팅
 										nowReciveTabId = nowBCDID;
 										//Tab Id 정보 로그
-										LOGDISPLAY_SPEC(7)("@@@ B @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
+										LOGDISPLAY_SPEC(7)("@@ B @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo+1, cntInfoTemp.nTabIdTotalCount);
 
 										//Tab Id 정보가 같다면
 										if ((cntInfo.nTabID == cntInfoTemp.nTabID))
@@ -558,7 +558,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 											cntInfo.nTabNo = cntInfoTemp.nTabNo;
 
 											//Tab Id 정보 로그
-											LOGDISPLAY_SPEC(7)("@@@ B : 1 @@@@@@사용된 Tab Id 삭제됨@@@@ ");
+											LOGDISPLAY_SPEC(7)("@@ B : 1 @@@@@@사용된 Tab Id 삭제됨@@@@ ");
 
 											//빠져나감
 											break;
@@ -566,7 +566,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										else
 										{
 											//Tab Id 정보 로그
-											LOGDISPLAY_SPEC(7)("@@@ B : 2 @@@@@@미리 사용된 Tab Id 삭제됨@@@@ ");
+											LOGDISPLAY_SPEC(7)("@@ B : 2 @@@@@@미리 사용된 Tab Id 삭제됨@@@@ ");
 										}
 										loopTabQueueSize++;
 									}
@@ -583,7 +583,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 											//Tab Id 확인용
 											CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
 											//Tab Id 정보 로그
-											LOGDISPLAY_SPEC(7)("@@@ C - TabId NotFind Queue Overflow @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo, cntInfoTemp.nTabIdTotalCount);
+											LOGDISPLAY_SPEC(7)("@@ C - TabId NotFind Queue Overflow @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo+1, cntInfoTemp.nTabIdTotalCount);
 											loopTabQueueSize++;
 										}
 									}
@@ -598,12 +598,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							if (theApp.m_pSigProc && theApp.m_pSigProc->GetSigInRun())
 							{
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(8)("@@@@@@@@@Trigger BCD ID Not Recive Insp run Count<%d>@@@@ ", ++TriggerBCDIDSize0_RunCheck);
+								LOGDISPLAY_SPEC(8)("## Trigger BCD ID Not Recive Insp run Count<%d>@@@@ ", ++TriggerBCDIDSize0_RunCheck);
 							}
 							else
 							{
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(8)("@@@@@@@@@Trigger BCD ID Not Recive Insp not run @@@@ ");
+								LOGDISPLAY_SPEC(8)("## Trigger BCD ID Not Recive Insp not run @@@@ ");
 							}
 						}
 
@@ -628,7 +628,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							else if (cntInfo.nTabID != nextBCDId)
 							{
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(7)("@@@@@@@@@ BCD_ID_USE_ERROR use Id<%d> next id<%d>@@@@ ", cntInfo.nTabID, nextBCDId);
+								LOGDISPLAY_SPEC(7)("@@ BCD_ID_USE_ERROR use Id<%d> next id<%d>@@@@ ", cntInfo.nTabID, nextBCDId);
 							}
 
 							nextBCDId = cntInfo.nTabID + 1;
@@ -645,7 +645,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if ((useTabID < 64) && (nowBCDID < 64) && ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) > 2))
 						{
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)(" =======@@@ Input BCD Id <=> useTabID<%d>와 nowBCDID<%d> 차가 <%d> 이상이다 @@@@ ", useTabID, nowBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
+							LOGDISPLAY_SPEC(7)("@@ Input BCD Id <=> useTabID<%d>와 nowBCDID<%d> 차가 <%d> 이상이다 @@@@ ", useTabID, nowBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
 							
 							//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE 초기화
 							bBCDDiffBig = TRUE;
@@ -679,20 +679,20 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							int diffval = abs(AprData.m_NowLotData.m_nTabCount - cntInfo.nTabIdTotalCount);
 							if (diffval != countdiff)
 							{
-								LOGDISPLAY_SPEC(7)(_T("========LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>=countdiff<%d>"),
+								LOGDISPLAY_SPEC(7)(_T("@@LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>=countdiff<%d>"),
 									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount, diffval);
 								countdiff = diffval;
 							}
 						}
 						else
 						{
-							LOGDISPLAY_SPEC(7)(_T("========LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
+							LOGDISPLAY_SPEC(7)(_T("@@LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
 								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount);
 						}
 
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@@@@@@@@Tab Id Info@@@@  LotId<%s> Tab Id<%d> TabNo<%d><%d> TabTotalcnt<%d>",
-							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
+						LOGDISPLAY_SPEC(7)("@@Tab Id Info@@@@  LotId<%s> Tab Id<%d> TabNo<%d><%d> TabTotalcnt<%d>",
+							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo+1, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
 
 
 						//Tab 정보에서 Left 크기, Right 크기
@@ -877,7 +877,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							if ((nPETCount > 0) && (bPETBCDIdSet == FALSE))
 							{
 								//PET 시 Tab 카운트 출력
-								LOGDISPLAY_SPEC(7)("@@@@@@@@@ PET Run Count<%d> @@@@ ", nPETCount);
+								LOGDISPLAY_SPEC(7)("@@ PET Run Count<%d> @@@@ ", nPETCount);
 
 								//PET 초기화 카운트 초기화
 								nPETCount = 0;
@@ -946,7 +946,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						double TabFind_TacTime = CGlobalFunc::GetDiffTime(start_TabFind, dFrequency_TabFind);
 						//Image Cutting Tab 정보 출력 로그
 						LOGDISPLAY_SPEC(4)("*TacTime - TabFind : TabID-[%d], TabNo-[%d], TacTime[%f]",
-							pInfo->m_nTabId_CntBoard,  pInfo->nTabNo, TabFind_TacTime
+							pInfo->m_nTabId_CntBoard,  pInfo->nTabNo+1, TabFind_TacTime
 							);
 
 
@@ -1005,7 +1005,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	pThis->m_bKill = FALSE;
 
 	//Tab Id 정보 로그
-	LOGDISPLAY_SPEC(7)("*** Thread **** CtrlThreadImgCuttingTab 종료됩니다 @@@@ ");
+	LOGDISPLAY_SPEC(7)("@@ Thread **** CtrlThreadImgCuttingTab 종료됩니다 @@@@ ");
 
 	return 0;
 }
@@ -1086,12 +1086,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pUnitTop = topPtr->deQueue();
 					if (pUnitTop)
 					{
-						LOGDISPLAY_SPEC(8)("TopQueueCtrl TopPtr Get pUnitTop");
+						LOGDISPLAY_SPEC(8)("## TopQueueCtrl TopPtr Get pUnitTop");
 					}
 				}
 				else
 				{
-					LOGDISPLAY_SPEC(8)("TopQueueCtrl TopPtr Get NULL");
+					LOGDISPLAY_SPEC(8)("## TopQueueCtrl TopPtr Get NULL");
 				}
 			}
 			if (pUnitBtm == NULL)
@@ -1102,12 +1102,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					pUnitBtm = btmPtr->deQueue();
 					if (pUnitBtm)
 					{
-						LOGDISPLAY_SPEC(8)("BtmQueueCtrl BtmPtr Get pUnitBtm");
+						LOGDISPLAY_SPEC(8)("## BtmQueueCtrl BtmPtr Get pUnitBtm");
 					}
 				}
 				else
 				{
-					LOGDISPLAY_SPEC(8)("BtmQueueCtrl BtmPtr Get NULL");
+					LOGDISPLAY_SPEC(8)("## BtmQueueCtrl BtmPtr Get NULL");
 				}
 			}
 
@@ -1116,35 +1116,30 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 			if (pUnitTop && pUnitBtm)
 			{
 
-				////이미지 처리 스래드 (대기 스래드)
-				////출력 대기 이벤트 객체 push
-				//HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-				////순서대로 push 저장한다.
-				//pThis->m_pParent->ImgProcWaitThread_Event_push(hEvent);
-
 				int topWaitVal = 0;
 				int btmWaitVal = 0;
 
+				int ProcEnd_WaitCountTop = 0;
+				int ProcEnd_WaitCountBottom = 0;
+
 				//로그 출력 -  Unit Loop count 10개
-				int UnitLoopCount = 0;
 				while (1)
 				{
 
 					if (pThis->m_bKill == TRUE)
 					{
-						LOGDISPLAY_SPEC(8)(_T("<CImageProcThread> TabNo<%d> CtrlThreadImgProc pThis->m_bKill == TRUE"), pUnitTop->m_pFrmInfo->nTabNo
-							);
+						LOGDISPLAY_SPEC(8)(_T("## <CImageProcThread> TabNo<%d> CtrlThreadImgProc pThis->m_bKill == TRUE"), pUnitTop->m_pFrmInfo->nTabNo+1);
 
 						break;
 					}
 
 					if (topWaitVal != 1)
 					{
-						topWaitVal = pUnitTop->eventProcEnd_WaitTime("TOP");
+						topWaitVal = pUnitTop->eventProcEnd_WaitTime("TOP", ProcEnd_WaitCountTop);
 					}
 					if (btmWaitVal != 1)
 					{
-						btmWaitVal = pUnitBtm->eventProcEnd_WaitTime("BOTTOM");
+						btmWaitVal = pUnitBtm->eventProcEnd_WaitTime("BOTTOM", ProcEnd_WaitCountBottom);
 					}
 
 					if ((topWaitVal == 1) && (btmWaitVal == 1))
@@ -1153,14 +1148,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
 
-						LOGDISPLAY_SPEC(8)("<<%s>>>CtrlThreadImgProc TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
-							"Top", pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
-							);
-						LOGDISPLAY_SPEC(8)("<<%s>>>CtrlThreadImgProc TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
-							"Btm", pBtmInfo->nTabNo, pBtmInfo->m_nTabId_CntBoard
-							);
+						LOGDISPLAY_SPEC(8)("## <<%s>>>CtrlThreadImgProc TabNo<%d>-TabId<%d> - ResultProcWait-Enter LoopCount<%d>",
+							"Top", pTopInfo->nTabNo+1, pTopInfo->m_nTabId_CntBoard, ProcEnd_WaitCountTop);
+						LOGDISPLAY_SPEC(8)("## <<%s>>>CtrlThreadImgProc TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
+							"Btm", pBtmInfo->nTabNo+1, pBtmInfo->m_nTabId_CntBoard, ProcEnd_WaitCountBottom);
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pTopInfo->nTabNo);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pTopInfo->nTabNo+1);
 
 
 
@@ -1398,12 +1391,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							AprData.m_NowLotData.m_nContinueCount = 0; // 22.08.09 Ahn Add
 							AprData.m_NowLotData.m_secNgJudge.AddOkTab(pTopInfo->nTabNo, AprData.m_nSectorBaseCount/*AprData.m_pRecipeInfo->nSectorCount*/);
 
-//							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Result OK :: OK Tab Count <%d>"), AprData.m_NowLotData.m_nTabCountOK);
-
 						}
 						// 결과 Queue에 보냄
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write NG Code To PLC"), pTopInfo->nTabNo);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write NG Code To PLC"), pTopInfo->nTabNo+1);
 
 
 
@@ -1493,7 +1484,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						}
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write Judge To PLC"), pTopInfo->nTabNo);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write Judge To PLC"), pTopInfo->nTabNo+1);
 
 
 
@@ -1564,7 +1555,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							strResult.TrimRight();
 							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write CSV(%d) [%s%s][%s]"),
-								pTopInfo->nTabNo, nRet, strFilePath, strCsvFileName, strResult );
+								pTopInfo->nTabNo+1, nRet, strFilePath, strCsvFileName, strResult );
 						}
 
 
@@ -1675,26 +1666,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						CImageProcessCtrl::GetResultPtr(CAM_POS_TOP)->PushBack((CFrameInfo*)pTopInfo);
 						CImageProcessCtrl::GetResultPtr(CAM_POS_BOTTOM)->PushBack((CFrameInfo*)pBtmInfo);
 
-						LOGDISPLAY_SPEC(8)("CtrlThreadImgProc TabNo<%d>-TabId<%d> - Result info Push",
-							pTopInfo->nTabNo, pTopInfo->m_nTabId_CntBoard
-							);
-
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- pRsltQueueCtrl->PushBack()"), tempTabNo);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- pRsltQueueCtrl->PushBack()"), tempTabNo+1);
 
 
 						AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- OutputBit"), tempTabNo);
-
-
-						// 22.02.17 Ahn Modify End
-
-						// 22.02.17 Ahn Modify Start
 						if (bClearFlag == TRUE)
 						{
-							//						CSigProc *pSigProc = theApp.m_pSigProc;
-							//						WORD wResetCode = 0x00;
-							//						pSigProc->WriteAlarmCode(wResetCode);
 
 							AprData.SaveDebugLog_Format(_T("------ NG_STOP Signal OFF ------"));
 							bJudgeNG = FALSE;
@@ -1705,46 +1683,16 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
-						LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout");
+						LOGDISPLAY_SPEC(8)("## CtrlThreadImgProc - ResultProcWait-Timeout Top<%d> Bottom<%d>", topWaitVal, btmWaitVal);
 
 						CString ErrorLog;
 						ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  ============================="));
 						AprData.SaveErrorLog(ErrorLog);
 
-						if (topWaitVal == 2)
-						{
-							LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout === <TOP>");
-
-							//DWORD nExitCode = NULL;
-							//GetExitCodeThread(pUnitTop->m_pThread->m_hThread, &nExitCode);
-							//TerminateThread(pUnitTop->m_pThread->m_hThread, nExitCode);
-							//pUnitTop->m_pThread = NULL;
-						}
-
-						if (btmWaitVal == 2)
-						{
-							LOGDISPLAY_SPEC(8)("CtrlThreadImgProc - ResultProcWait-Timeout === <BOTTOM>");
-
-							//DWORD nExitCode = NULL;
-							//GetExitCodeThread(pUnitBtm->m_pThread->m_hThread, &nExitCode);
-							//TerminateThread(pUnitBtm->m_pThread->m_hThread, nExitCode);
-							//pUnitBtm->m_pThread = NULL;
-						}
-
 						break;
 					}
-					else
-					{
-						if (UnitLoopCount++ > 45)
-						{
-							LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgProc - ResultProcWait-loop"));
-						}
-					}
+
 				}
-
-				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> ResultProc End") );
-
-				LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> ResultProc End"));
 
 				//Unit Thread 에서 빠져나오지 못했을 때 체크
 				if (topWaitVal == 1)
@@ -1754,10 +1702,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						delete pUnitTop;
 						pUnitTop = NULL;
 					}
-				}
-				else
-				{
-					LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> topWaitVal Error"));
 				}
 
 				//Unit Thread 에서 빠져나오지 못했을 때 체크
@@ -1769,11 +1713,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						pUnitBtm = NULL;
 					}
 				}
-				else
-				{
-					LOGDISPLAY_SPEC(8)(_T("<CtrlThreadImgProc> btmWaitVal Error"));
-				}
-
 
 				////출력 대기 이벤트 객체 pop, 이벤트 닫기
 				//pThis->m_pParent->ImgProcWaitThread_Event_pop();
@@ -1791,7 +1730,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	pThis->m_bKill = FALSE;
 
 	//Tab Id 정보 로그
-	LOGDISPLAY_SPEC(7)("*** Thread **** CtrlThreadImgProc 종료됩니다 @@@@ ");
+	LOGDISPLAY_SPEC(7)("@@ Thread **** CtrlThreadImgProc 종료됩니다 @@@@ ");
 
 	return 0;
 }

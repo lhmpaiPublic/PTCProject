@@ -352,7 +352,6 @@ int CResultViewDlg::UpdateGrid()
 					break;
 				case	en_col_CELL_NO:
 					strText.Format( _T("%d"), pInfo->nTabNo + 1 ) ;
-					LOGDISPLAY_SPEC(8)("UpdateGrid - defect TabNo<%d> view Enter", pInfo->nTabNo);
 					break;
 				case	en_col_CELL_ID:
 					strText.Format(_T("%d"), pInfo->nCellId);

@@ -42,7 +42,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 				if (CCounterThread::m_MarkSendInfoData.end() != itdelete)
 				{
 					//DIO Input Log
-					LOGDISPLAY_SPEC(7)(_T("지울 데이터가 있다면size<%d> id<%d>까지"), CCounterThread::m_MarkSendInfoData.size(), itdelete->TabId);
+					LOGDISPLAY_SPEC(7)(_T("@@지울 데이터가 있다면size<%d> id<%d>까지"), CCounterThread::m_MarkSendInfoData.size(), itdelete->TabId);
 
 					//시작점 부터 true 설정된 데이터까지 지운다.
 					CCounterThread::m_MarkSendInfoData.erase(CCounterThread::m_MarkSendInfoData.begin(), itdelete);
@@ -58,7 +58,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 		MarkSendInfoData.bSendComplate = bSendComplate;
 		CCounterThread::m_MarkSendInfoData.push_back(MarkSendInfoData);
 		//DIO Input Log
-		LOGDISPLAY_SPEC(7)(_T("마킹 데이터 id<%d> OutputData<%d>"), TabId, MarkingOutputData);
+		LOGDISPLAY_SPEC(7)(_T("@@마킹 데이터 id<%d> OutputData<%d>"), TabId, MarkingOutputData);
 	}
 
 }
@@ -257,7 +257,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					if (bOutputBitStatus == FALSE)
 					{
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("Loop(%d)== 마킹 정보를 쓰고 eOut_PULSE 15sec 유지한다."), ThreadLoopCount);
+						LOGDISPLAY_SPEC(7)(_T("@@Loop(%d)== 마킹 정보를 쓰고 eOut_PULSE 15sec 유지한다."), ThreadLoopCount);
 
 						dio.OutputBit(CAppDIO::eOut_PULSE, TRUE);
 						bOutputBitStatus = TRUE;
@@ -272,7 +272,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				if (bOutputBitStatus == TRUE)
 				{
 					//DIO Input Log
-					LOGDISPLAY_SPEC(7)(_T("Loop(%d)== 마킹 eOut_PULSE FALSE 시간을 10 sec 유지"), ThreadLoopCount);
+					LOGDISPLAY_SPEC(7)(_T("@@Loop(%d)== 마킹 eOut_PULSE FALSE 시간을 10 sec 유지"), ThreadLoopCount);
 
 					dio.OutputBit(CAppDIO::eOut_PULSE, FALSE);
 					bOutputBitStatus = FALSE;
@@ -292,7 +292,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							{
 								CCounterThread::m_bMarkSendInfoDataSynch = TRUE;
 								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("(%d)마킹 타임이 유효 할 때 input id size<%d>, marking data size<%d>"), ThreadLoopCount, inputReadId.size(), CCounterThread::m_MarkSendInfoData.size());
+								LOGDISPLAY_SPEC(7)(_T("@@(%d)마킹 타임이 유효 할 때 input id size<%d>, marking data size<%d>"), ThreadLoopCount, inputReadId.size(), CCounterThread::m_MarkSendInfoData.size());
 
 								for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 								{
@@ -300,7 +300,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 									if (CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
 									{
 										//DIO Input Log
-										LOGDISPLAY_SPEC(7)(_T("$$$(%d)== input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), ThreadLoopCount, inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
+										LOGDISPLAY_SPEC(7)(_T("@@(%d)== input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), ThreadLoopCount, inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
 
 										CString strMsg;
 										strMsg.Format(_T("Output Send BCD Id[%d]_OutPutValue[0x%x]"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
@@ -362,7 +362,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				else
 				{
 					//DIO Input Log
-					LOGDISPLAY_SPEC(7)(_T("Loop(%d)== Out_PULSE FALSE 세팅 후 20초 전"), ThreadLoopCount);
+					LOGDISPLAY_SPEC(7)(_T("@@Loop(%d)== Out_PULSE FALSE 세팅 후 20초 전"), ThreadLoopCount);
 				}
 			}
 
@@ -494,7 +494,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 								}
 
-								LOGDISPLAY_SPEC(7)(_T("Loop(%d) = Input ID 누락 before<%d> ^^ now<%d>"), ThreadLoopCount, wLastTabId, wTempID);
+								LOGDISPLAY_SPEC(7)(_T("@@Loop(%d) = Input ID 누락 before<%d> ^^ now<%d>"), ThreadLoopCount, wLastTabId, wTempID);
 							}
 							//다음에 받을 ID를 세팅한다.
 							nextTabID = wTempID + 1;
@@ -640,7 +640,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	}
 
 	//Tab Id 정보 로그
-	LOGDISPLAY_SPEC(7)("*** Thread **** CtrlThreadCounter 종료됩니다 @@@@ ");
+	LOGDISPLAY_SPEC(7)("@@Thread **** CtrlThreadCounter 종료됩니다 @@@@ ");
 
 	return 0;
 }
