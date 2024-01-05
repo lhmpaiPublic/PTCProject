@@ -48,6 +48,9 @@ using namespace Gdiplus;
 //Notching.Release.Version_년(4).월(2).일(2).(배포 횟수 : r01 ~ r99)
 static CString GlobalVersion = "Notching.Release.Version_2024.01.02.r01";
 
+//UI를 관리하기 위한 클래스
+#include "UiManager.h"
+
 //FrameInfo 이미지 저장 메모리 풀
 #include "FrameImagePtr.h"
 

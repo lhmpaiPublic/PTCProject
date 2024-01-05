@@ -188,6 +188,8 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	//SPC+ JSON파일 생성을 위한 스래드 모듈을 생성한다.
 	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
 #endif //SPCPLUS_CREATE
+	//UI manager 객체 생성
+	CUiManager::CreateUiManager();
 
 	//CDebugSetDlg DebugSet;
 	//if (DebugSet.DoModal() == IDOK) {
@@ -286,6 +288,9 @@ int CNotchingGradeInspApp::ExitInstance()
 	//전역 객체 소멸
 	delete objSpcInfo;
 #endif //SPCPLUS_CREATE
+
+	//UI manager 객체 소멸
+	CUiManager::ExitUiManager();
 
 	//사용한 Image 메모리풀 해제
 	FrameImagePtr::ReleasePool();

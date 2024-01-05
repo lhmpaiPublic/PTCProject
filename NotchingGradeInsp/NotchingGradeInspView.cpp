@@ -10,6 +10,9 @@
 #include "NotchingGradeInsp.h"
 #endif
 
+//UI manager
+#include "UiManager.h"
+
 #include "MainFrm.h"
 #include "NotchingGradeInspDoc.h"
 #include "NotchingGradeInspView.h"
@@ -74,6 +77,9 @@ END_MESSAGE_MAP()
 
 CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 {
+	//생성 시 인스턴스 객체 세팅
+	UIMGR->setNotchingGradeInspView(this);
+
 	// TODO: 여기에 생성 코드를 추가합니다.
 	m_pInspDlg = NULL;
 	m_pDefMapDlg = NULL; // 22.11.09 Ahn Add
@@ -134,6 +140,9 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 
 CNotchingGradeInspView::~CNotchingGradeInspView()
 {
+	//소멸 시 인스턴스 객체 삭제
+	UIMGR->delNotchingGradeInspView();
+
 	if (m_pInspDlg != nullptr) {
 		if (m_pInspDlg->m_hWnd != nullptr) {
 			m_pInspDlg->DestroyWindow();

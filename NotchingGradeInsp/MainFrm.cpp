@@ -69,6 +69,9 @@ CMainFrame::CMainFrame() noexcept
 {
 	// TODO: 여기에 멤버 초기화 코드를 추가합니다.
 
+	//생성 시 인스턴스 객체 세팅
+	UIMGR->setMainFrame(this);
+
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
 	m_clrBkColor = RGB(235,238,252);
 
@@ -99,6 +102,8 @@ CMainFrame::CMainFrame() noexcept
 
 CMainFrame::~CMainFrame()
 {
+	//소멸 시 인스턴스 객체 삭제
+	UIMGR->delMainFrame();
 
 	if (m_pWndTopPanel != nullptr) {
 		delete m_pWndTopPanel;
