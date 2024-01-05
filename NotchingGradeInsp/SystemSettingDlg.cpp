@@ -93,6 +93,11 @@ static int UiText3NameText[] =
 	IDC_BTN_CANCEL
 };
 
+static CString UiText4[][3] =
+{
+	{_T("시스템 설정을 적용 및 저장 하시겠습니까?"), _T("Do you want to apply and save system settings?"), _T("是否要保存系统设定")}
+};
+
 // CSystemSettingDlg 대화 상자
 
 IMPLEMENT_DYNAMIC(CSystemSettingDlg, CDialogEx)
@@ -256,7 +261,7 @@ void CSystemSettingDlg::OnBnClickedBtnOk()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
 
-	if (MessageBox(_T("시스템 설정을 적용 및 저장 하시겠습니까?"), 0, MB_YESNO) == IDYES) {
+	if (MessageBox(UiText4[0][__Lang], 0, MB_YESNO) == IDYES) {
 		m_SysSetting.FileCtrl(MODE_WRITE);
 		AprData.m_System = m_SysSetting;
 	}
@@ -431,20 +436,7 @@ int CSystemSettingDlg::MakeGridCtrl()
 		Item.mask = GVIF_TEXT;
 		Item.row = 0;
 		Item.col = nCol;
-		//switch (nCol) {
-		//case	 0:
-		//	Item.strText = _LANG( _T("파라메터명"), _T("Param Name") );
-		//	break;
-		//case	 1:
-		//	Item.strText = _LANG(_T("카메라 1"), _T("Camera 1"));
-		//	break;
-		//case	 2:
-		//	Item.strText = _LANG(_T("카메라 2"), _T("Camera 2"));
-		//	break;
-		//default:
-		//	Item.strText = _T("");
-		//	break;
-		//}
+		//col 타이틀 테스트 세팅
 		Item.strText = UiText1[nCol][__Lang];
 
 		//폰트 픽셀 넓이 저정
@@ -455,19 +447,6 @@ int CSystemSettingDlg::MakeGridCtrl()
 
 		pGridCtrl->SetItem(&Item);
 	}
-	// 22.07.25 Ahn Modify Start
-	//CString strParamName[en_CamParamMax] = { _T("분해능X"), _T("Line Rate"), _T("노광시간"), _T("게인"), _T("뷰 폭"), _T("뷰 높이"), _T("뷰 오프셋")};
-	//CString strParamName[en_CamParamMax];// = { _T("분해능X"), _T("Line Rate"), _T("노광시간"), _T("게인"), _T("뷰 폭"), _T("뷰 높이"), _T("뷰 오프셋"), _T("좌우반전") };
-	// 22.07.25 Ahn Modify End
-	//// 22.09.01 Ahn Add Start
-	//strParamName[en_CamResolutionHor] = _LANG(_T("분해능X"), _T("X Resolution"));
-	//strParamName[en_CamAquisitionRate] = _LANG(_T("라인 레이트"), _T("Line Rate"));
-	//strParamName[en_CamExposureTime] = _LANG(_T("노광시간"), _T("ExposureTime"));
-	//strParamName[en_CamGain] = _LANG(_T("게인"), _T("Gain"));
-	//strParamName[en_CamViewWidth] = _LANG(_T("뷰 폭"), _T("Width"));
-	//strParamName[en_CamViewHeight] = _LANG(_T("뷰 높이"), _T("Height"));
-	//strParamName[en_CamViewOffset] = _LANG(_T("뷰 옵셋"), _T("View Offset"));
-	//strParamName[en_CamImgFlipMode] = _LANG(_T("좌우반전"), _T("Flip Mode"));
 
 	//// 22.09.01 Ahn Add End
 	for (int nRow = 1; nRow < pGridCtrl->GetRowCount(); nRow++)
@@ -482,6 +461,7 @@ int CSystemSettingDlg::MakeGridCtrl()
 
 			if (nRow < pGridCtrl->GetFixedRowCount())
 				strText.Format(_T("Column %d"), nCol);
+			//Row 타이틀 세팅
 			else if (nCol < pGridCtrl->GetFixedColumnCount())
 				strText.Format(_T("%s"), UiText2[nRow - 1][__Lang]);
 			else
@@ -1262,103 +1242,6 @@ void CSystemSettingDlg::DisplayLanguage()
 			pWnd->SetWindowTextA(strDispName);
 		}
 	}
-
-	/*pWnd = GetDlgItem(IDC_ST_MACHINE_TYPE);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("검사 장비 설정"), _T("Equipment type Setting"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-	
-	pWnd = GetDlgItem(IDC_RAD_ANODE_MODE);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("양극 검사"), _T("Anode inspection"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_RAD_CATHODE_MODE);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("음극 검사"), _T("Cathode inspection"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_ST_CAM_PARAM);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("카메라 파라메터"), _T("Camera parameter"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_ST_BASE_SETTING);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("공통 설정"), _T("Common parameter"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_ST_RESOLUTION_Y);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("분해능 Y"), _T("Resolution Y"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_CHK_EXTERNAL_TRIGGER);
-	if (pWnd != nullptr) {
-		strDispName = _LANG( _T("외부동기(해제시 내부동기)"), _T("Enable external trigger"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_ST_LANG_SETTING);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("표시 언어 설정"), _T("Display Language"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-	
-	pWnd = GetDlgItem(IDC_ST_OTHER_SETTING);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("기타 설정"), _T("Other"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_CHK_ENABLE_MARKER);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("마커사용"), _T("Use marker"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_CHK_MARKING_ALL);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("모든 탭 마킹출력"), _T("Marking all tab"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_CHK_ENABLE_NG_STOP);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("NG Stop(시스템 설정 우선)"), _T("Use NG Stop"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_ST_JPEG_QUALITY);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("JPEG 저장 품질"), _T("JPEG save quality"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_ST_DELETE_PERIOD);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("결과 보존 기간(일)"), _T("Result save period(day)"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-	
-	pWnd = GetDlgItem(IDC_BTN_OK);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("저장"), _T("Save"));
-		pWnd->SetWindowTextA(strDispName);
-	}
-
-	pWnd = GetDlgItem(IDC_BTN_CANCEL);
-	if (pWnd != nullptr) {
-		strDispName = _LANG(_T("취소"), _T("Cancel"));
-		pWnd->SetWindowTextA(strDispName);
-	}*/
-
 }
 // 22.09.01 Ahn Add End
 

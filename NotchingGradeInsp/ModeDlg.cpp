@@ -33,6 +33,38 @@
 #include "CTactTimeGraphDlg.h"
 // 22.12.09 Ahn Add End
 
+static CString UiText1[][3] =
+{
+	{_T("검사모드"), _T("Inspect Mode"), _T("检查模式")},
+	{_T("설정모드"), _T("Recipe Setting"), _T("设定模式")},
+	{_T("저장경로"), _T("Directory"), _T("阴极模式")},
+	{_T("시작"), _T("Run"), _T("开始")},
+	{_T("정지"), _T("Stop"), _T("停止")},
+	{_T("시뮬레이션"), _T("Simulation"), _T("模拟")},
+};
+
+enum UiText1Name
+{
+	RADI_INSP_MODE,
+	RAD_COND_MODE,
+	BTN_DIRECTORY,
+	RAD_RUN,
+	RAD_STOP,
+	BTN_INSP_SIM,
+	MAX_COUNT
+};
+
+static int UiText1NameText[] =
+{
+	IDC_RADI_INSP_MODE,
+	IDC_RAD_COND_MODE,
+	IDC_BTN_DIRECTORY,
+	IDC_RAD_RUN,
+	IDC_RAD_STOP,
+	IDC_BTN_INSP_SIM
+};
+
+
 IMPLEMENT_DYNAMIC(CModeDlg, CDialogEx)
 
 CModeDlg::CModeDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=nullptr*/)
@@ -812,6 +844,19 @@ void CModeDlg::EnableChild(BOOL bMode)
 void CModeDlg::DisplayLanguage()
 {
 	CWnd* pWnd;
+	CString strDispName;
+	for (int idx = 0; idx < MAX_COUNT; idx++)
+	{
+		pWnd = NULL;
+		pWnd = GetDlgItem(UiText1NameText[idx]);
+		if (pWnd != nullptr)
+		{
+			strDispName = UiText1[idx][__Lang];
+			pWnd->SetWindowTextA(strDispName);
+		}
+	}
+	
+	/*CWnd* pWnd;
 	
 	pWnd = GetDlgItem(IDC_RADI_INSP_MODE);
 	if (pWnd != nullptr) {
@@ -837,7 +882,7 @@ void CModeDlg::DisplayLanguage()
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("시뮬레이션"), _T("Simulation")));
 	}
-
+	*/
 
 }
 
