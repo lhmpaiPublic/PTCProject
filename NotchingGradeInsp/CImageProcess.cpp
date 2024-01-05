@@ -4662,23 +4662,71 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 		}
 	}
 
+	//CRect rcPrj;
+	//int* pnPrjData;
+	//pnPrjData = new int[nWidth];
+	//memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+	//rcPrj.top = pstSector->nStartPos;
+	//rcPrj.bottom = pstSector->nEndPos;
+	//rcPrj.left = 0;
+	//rcPrj.right = nWidth;
+
+	//int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
+	//// 경계 검출
+	//int nUpper = 20 * nCount;
+	//int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nWidth, 20, 0, pRecipeInfo->TabCond.nNegCoatHeight);
+	//*pnLevel = nBundary - pRecipeInfo->TabCond.nNegCoatHeight ;
+
+	//delete[] pnPrjData;
+
+
+
+
+
 	CRect rcPrj;
 	int* pnPrjData;
 	pnPrjData = new int[nWidth];
 	memset(pnPrjData, 0x00, sizeof(int) * nWidth);
 
-	rcPrj.top = pstSector->nStartPos;
-	rcPrj.bottom = pstSector->nEndPos;
+	rcPrj.top = 0;
+	rcPrj.bottom = pstSector->nStartPos - 20;
 	rcPrj.left = 0;
 	rcPrj.right = nWidth;
 
-	int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
-	// 경계 검출
-	int nUpper = 20 * nCount;
-	int nBundary = CImageProcess::GetBundary_FromPrjData(pnPrjData, nWidth, 20, 0, pRecipeInfo->TabCond.nNegCoatHeight);
-	*pnLevel = nBundary - pRecipeInfo->TabCond.nNegCoatHeight ;
+	int nCount = 0;
+	int nUpperBright = 0;
+
+	nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, TRUE);
+	BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+	nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
+
+	int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
+
+
+
+	memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+	rcPrj.top = pstSector->nEndPos + 20;
+	rcPrj.bottom = nHeight;
+	rcPrj.left = 0;
+	rcPrj.right = nWidth;
+
+	nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, TRUE);
+	nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
+
+	int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
+
+
+
+	*pnLevel = (nLevelLeft + nLevelRight) / 2;
+
 
 	delete[] pnPrjData;
+	pnPrjData = NULL;
+
+
+
 	return nRet;
 }
 
