@@ -24,6 +24,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 	//스래드 객체 정보에 멤버 Frame Info 정보 객체
 	CFrameInfo* pFrmInfo = pCtrl->m_pFrmInfo;
+	//TabNo
+	int TabNoBackup = pFrmInfo->nTabNo;
 	//이미지 프로세싱용 버퍼
 	BYTE* pOrgImg = NULL;
 	//이미지 넓이
@@ -55,9 +57,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 	//프레임의 결과 정보를 생성해서 외부와 연결한다.
 	//스래드 안에서 프레임 결과 정보 객체 생성한다.
 	//스래드안에서 생성된 객체는 스래드 안에서 소멸해야하는데 안하고 있다.
-	CFrameRsltInfo* pFrameRsltInfo;
-	pFrameRsltInfo = new CFrameRsltInfo;
-	pCtrl->m_pFrmRsltInfo = pFrameRsltInfo;
+	CFrameRsltInfo* pFrameRsltInfo = pCtrl->m_pFrmRsltInfo;
 
 	//이미지 저장여부 객체 생성
 	BOOL bBitmapSave = FALSE;
@@ -623,6 +623,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ProcEnd"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1);
 
+				LOGDISPLAY_SPEC(8)("## Result Copy TabNo<%d> <%s> ===== ", pFrmInfo->nTabNo + 1, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm");
+
 				//파일저장 프레임 결과 정보에 저장한다.
 				pFrameRsltInfo->Copy(pFrmInfo);
 
@@ -642,6 +644,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 	delete[]pOrgImg;
 
+	LOGDISPLAY_SPEC(8)("@@ TabNo<%d> Thread **** CImageProcThreadUnit 종료됩니다 @@@@ ", TabNoBackup+1);
+
 	return 0;
 }
 
@@ -649,33 +653,42 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 IMPLEMENT_DYNCREATE(CImageProcThreadUnit, CWinThread)
 CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 {
-//	m_pQueueCtrl = pQueueCtrl;
+	m_pFrmRsltInfo = new CFrameRsltInfo;
 
-	LOGDISPLAY_SPEC(6)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Create",
-		(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1, pFrmInfo->m_nTabId_CntBoard
-		);
+	if (m_pFrmRsltInfo)
+	{
+		LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Create",
+			(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo + 1, pFrmInfo->m_nTabId_CntBoard
+			);
 
-	//ImageProc Proc Start 이벤트 객체 생성
-	m_hEventProcStart = ::CreateEvent(NULL, TRUE, FALSE, NULL);
-	m_bEventProcStart = FALSE;
-	m_hEventRun = ::CreateEvent(NULL, TRUE, FALSE, NULL);
-	//ImageProc: Image Proc Thread Proc End 이벤트객체 생성
-	m_hEventProcEnd = ::CreateEvent(NULL, TRUE, FALSE, NULL);
-	m_bProcEnd = FALSE;
-	m_hEventForceStop = ::CreateEvent(NULL, TRUE, FALSE, NULL);
-	//ImageProc: CtrlImageProcThread 종료처리 이벤트 객체 생성
-	m_hEventKillThread = ::CreateEvent(NULL, TRUE, FALSE, NULL);
-	m_hEventKilled = ::CreateEvent(NULL, TRUE, FALSE, NULL);
-	m_hSendResult = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		//ImageProc Proc Start 이벤트 객체 생성
+		m_hEventProcStart = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		m_bEventProcStart = FALSE;
+		m_hEventRun = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		//ImageProc: Image Proc Thread Proc End 이벤트객체 생성
+		m_hEventProcEnd = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		m_bProcEnd = FALSE;
+		m_hEventForceStop = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		//ImageProc: CtrlImageProcThread 종료처리 이벤트 객체 생성
+		m_hEventKillThread = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		m_hEventKilled = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+		m_hSendResult = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 
-	m_heventProcEnd_SleepTime = ::CreateEvent(NULL, FALSE, FALSE, NULL);
+		m_heventProcEnd_SleepTime = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 
-	m_pFrmInfo = pFrmInfo;
-	m_pThread = NULL;
-	m_nErrorCode = 0;
+		m_pFrmInfo = pFrmInfo;
+		m_pThread = NULL;
+		m_nErrorCode = 0;
 
-	//타임아웃 여부 변수
-	m_bTimeOut = FALSE;
+		//타임아웃 여부 변수
+		m_bTimeOut = FALSE;
+	}
+	else
+	{
+		LOGDISPLAY_SPEC(8)("<<%s>>>UnitThread TabNo<%d>-TabId<%d> - Create Failed !!",
+			(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo + 1, pFrmInfo->m_nTabId_CntBoard
+			);
+	}
 }
 
 CImageProcThreadUnit::~CImageProcThreadUnit()
@@ -809,7 +822,7 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos, int& PosLoopCoun
 		if (PosLoopCount > 45)
 		{
 			CString ErrorLog;
-			ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  COUNT<%d> CamPos<%s>============================="),	PosLoopCount, CamPos);
+			ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  COUNT<%d> CamPos<%s> TabNo<%d>============================="),	PosLoopCount, CamPos, m_pFrmInfo->nTabNo+1);
 			AprData.SaveErrorLog(ErrorLog);
 
 			LOGDISPLAY_SPEC(8)(_T("## <CImageProcThreadUnit> Looping Count<%d> CamPos<%s>"), PosLoopCount, CamPos);

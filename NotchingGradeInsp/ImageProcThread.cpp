@@ -1144,7 +1144,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					if ((topWaitVal == 1) && (btmWaitVal == 1))
 					{
-
+						//CImageProcThreadUnit에서 결과 저장 객체를 가져온다.
+						//CFrameRsltInfo의 생성을 CImageProcThreadUnit 생성자에서 생성하도록 수정됨
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
 
@@ -1590,7 +1591,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								//SPC+ 전송용 이미지 파일 저장 정보
 								if (CSpcInfo::Inst()->getSPCStartFlag())
 								{
-									pFrmRsltInfo->m_nWidth;
 									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize + 1];
@@ -1605,7 +1605,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								//기존 이미지 저장정보
 								if ((pFrmRsltInfo->m_bSaveFlag) && (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE))
 								{
-									pFrmRsltInfo->m_nWidth;
 									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize + 1];
@@ -1683,11 +1682,135 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
-						LOGDISPLAY_SPEC(8)("## CtrlThreadImgProc - ResultProcWait-Timeout Top<%d> Bottom<%d>", topWaitVal, btmWaitVal);
+						LOGDISPLAY_SPEC(8)("## ==== UNIT LOOPPING ERROR  ==== Top<%d> Bottom<%d>", topWaitVal, btmWaitVal);
 
 						CString ErrorLog;
 						ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  ============================="));
 						AprData.SaveErrorLog(ErrorLog);
+
+						//CImageProcThreadUnit에서 결과 저장 객체를 가져온다.
+						//CFrameRsltInfo의 생성을 CImageProcThreadUnit 생성자에서 생성하도록 수정됨
+						CFrameRsltInfo* pTopInfo = NULL;
+						if(pUnitTop)
+							pTopInfo = pUnitTop->GetResultPtr();
+						CFrameRsltInfo* pBtmInfo = NULL;
+						if(pUnitBtm)
+							pBtmInfo = pUnitBtm->GetResultPtr();
+
+						if (pTopInfo && pBtmInfo)
+						{
+							LOGDISPLAY_SPEC(8)("## === UNIT LOOPPING ERROR === Info Print Start ==  ");
+							CString strCsvFileName;
+							CString strFilePath;
+							strFilePath.Format(_T("%s\\"), AprData.m_strNowCsvPath);
+
+							strCsvFileName.Format(_T("%s.csv"), AprData.m_NowLotData.m_strLotNo);
+
+							int nMarkSel1 = 0;
+							int nMarkSel2 = 0;
+
+							WORD wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, JUDGE_NG, JUDGE_NG, nMarkSel1, nMarkSel2);
+
+							CString strMarking = _T("△");
+							CString strMarkReason = _T("");
+
+							CString strTime;
+							CString strJudge = _T("OK");
+							CString strBtmJudge = _T("OK");
+							CString strTopJudge = _T("OK");
+
+							int nSurfaceNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][RANK_NG] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_NG];
+							int nFoilExpNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][RANK_NG] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_NG]
+								+ pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][RANK_NG] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_NG];
+
+							double 	dTopMaxSize = pTopInfo->m_pTabRsltInfo->m_dMaxSizeDef;
+							double 	dBtmMaxSize = pBtmInfo->m_pTabRsltInfo->m_dMaxSizeDef;
+
+							SYSTEMTIME* pSysTime;
+							pSysTime = &(pTopInfo->m_pTabRsltInfo->sysTime);
+
+							strTime.Format(_T("%02d:%02d:%02d(%03d)"), pSysTime->wHour, pSysTime->wMinute, pSysTime->wSecond, pSysTime->wMilliseconds);
+
+							//피더파일에 기록하기
+							CString strResult = _T("");
+							strResult.Format(_T("%s,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
+								, AprData.m_NowLotData.m_strLotNo
+								, pTopInfo->nTabNo + 1
+								, pTopInfo->m_nTabId_CntBoard
+								, strTime
+								, strJudge
+								, strTopJudge
+								, strBtmJudge
+								, nSurfaceNgCnt
+								, nFoilExpNgCnt
+								, dTopMaxSize
+								, dBtmMaxSize
+								, strMarking
+								, strMarkReason
+								, _T("OVER")
+							);
+							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
+
+
+							//이미지 저장 포맷
+							CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
+
+							//Top Image 저장
+							if (pTopInfo->GetImagePtr())
+							{
+								int nImgSizeTop = pTopInfo->m_nWidth * pTopInfo->m_nHeight;
+								//ImageProc: 이미지저장명 결정 생성
+								CString strFileNameTop = _T("");
+								strFileNameTop.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
+									, INSPECTION_TYPE
+									, strTime
+									, AprData.m_System.m_strMachineID
+									, AprData.m_NowLotData.m_strLotNo
+									, pTopInfo->nTabNo + 1
+									, (pTopInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TAB") : _T("BTM")
+									, _T("OVER")
+									, strImageFormat
+								);
+
+								CImgSaveInfo* pSaveInfoTop = new CImgSaveInfo;
+								BYTE* pImgSavePtrTop;
+								pImgSavePtrTop = new BYTE[nImgSizeTop + 1];
+								memset(pImgSavePtrTop, 0x00, sizeof(BYTE) * nImgSizeTop + 1);
+								memcpy(pImgSavePtrTop, pTopInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSizeTop);
+								pSaveInfoTop->SetImgPtr(pImgSavePtrTop, pTopInfo->m_nWidth, pTopInfo->m_nHeight);
+								pSaveInfoTop->m_strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameTop);
+								pImgSaveQueueCtrl->PushBack(pSaveInfoTop);
+							}
+
+							//Bottom Image 저장
+							if (pBtmInfo->GetImagePtr())
+							{
+								int nImgSizeBottom = pBtmInfo->m_nWidth * pBtmInfo->m_nHeight;
+								//ImageProc: 이미지저장명 결정 생성
+								CString strFileNameBottom = _T("");
+								strFileNameBottom.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
+									, INSPECTION_TYPE
+									, strTime
+									, AprData.m_System.m_strMachineID
+									, AprData.m_NowLotData.m_strLotNo
+									, pBtmInfo->nTabNo + 1
+									, (pBtmInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TAB") : _T("BTM")
+									, _T("OVER")
+									, strImageFormat
+								);
+
+								CImgSaveInfo* pSaveInfoBottom = new CImgSaveInfo;
+								BYTE* pImgSavePtrBottom;
+								pImgSavePtrBottom = new BYTE[nImgSizeBottom + 1];
+								memset(pImgSavePtrBottom, 0x00, sizeof(BYTE) * nImgSizeBottom + 1);
+								memcpy(pImgSavePtrBottom, pBtmInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSizeBottom);
+								pSaveInfoBottom->SetImgPtr(pImgSavePtrBottom, pBtmInfo->m_nWidth, pBtmInfo->m_nHeight);
+								pSaveInfoBottom->m_strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameBottom);
+								pImgSaveQueueCtrl->PushBack(pSaveInfoBottom);
+							}
+
+							LOGDISPLAY_SPEC(8)("## === UNIT LOOPPING ERROR === Info Print End ==  ");
+						}
 
 						break;
 					}
