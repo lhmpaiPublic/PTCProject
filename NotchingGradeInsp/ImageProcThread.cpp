@@ -1817,29 +1817,28 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 				}
 
-				//Unit Thread 에서 빠져나오지 못했을 때 체크
-				if (topWaitVal == 1)
+				//객체 확인
+				if (pUnitTop)
 				{
-					if (pUnitTop)
+					//Unit Thread 에서 빠져나오지 못했을 때 체크
+					if (topWaitVal == 1)
 					{
 						delete pUnitTop;
-						pUnitTop = NULL;
 					}
+					pUnitTop = NULL;
 				}
 
-				//Unit Thread 에서 빠져나오지 못했을 때 체크
-				if (btmWaitVal == 1)
+				//객체 확인
+				if (pUnitBtm)
 				{
-					if (pUnitBtm)
+					//Unit Thread 에서 빠져나오지 못했을 때 체크
+					if (btmWaitVal == 1)
 					{
 						delete pUnitBtm;
-						pUnitBtm = NULL;
 					}
+					pUnitBtm = NULL;
 				}
 
-				////출력 대기 이벤트 객체 pop, 이벤트 닫기
-				//pThis->m_pParent->ImgProcWaitThread_Event_pop();
-				//CloseHandle(hEvent);
 			}
 
 		}
