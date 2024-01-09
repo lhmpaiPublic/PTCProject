@@ -71,6 +71,7 @@ CModeDlg::CModeDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=
 	m_pTactGraph = NULL ;
 	// 22.12.12 Ahn Add End
 
+	m_nTimerInterval_DeviceCheck = 2000; // 240108
 }
 
 CModeDlg::~CModeDlg()
@@ -719,9 +720,17 @@ void CModeDlg::OnBnClickedRadRun()
 	}
 	else {
 		// TCP/IP
+		int result = 0;
+
 		theApp.m_pLightCtrl->Open();
-		theApp.m_pImgProcCtrl->LightON();
-		theApp.m_pLightCtrl->Close();
+		result = theApp.m_pImgProcCtrl->LightON();
+//		theApp.m_pLightCtrl->Close();  // 원본 240108 
+//		OutputDebugString("[OnBnClickedRadRun] SetTimer \n");
+		if(result >= 0 && result != 2) SetTimer(T_CHECK_DEVICE, m_nTimerInterval_DeviceCheck, 0);// 240108
+		else {
+		//OnBnClickedRadStop()
+		//	theApp.m_pLightCtrl->Close();
+		}
 	}
 
 	Refresh();
@@ -758,10 +767,16 @@ void CModeDlg::OnBnClickedRadStop()
 		}
 		else {
 			// TCP/IP
+#if 0
 			theApp.m_pLightCtrl->Open();
 			theApp.m_pImgProcCtrl->LightOFF();
 			Sleep(150);
 			theApp.m_pLightCtrl->Close();
+#else 
+			// 240108
+			theApp.m_pImgProcCtrl->LightOFF();
+			KillTimer(T_CHECK_DEVICE);
+#endif
 		}
 	}
 
@@ -908,6 +923,37 @@ void CModeDlg::OnTimer(UINT_PTR nIDEvent)
 		UpdateData(FALSE);
 
 	}
+#if 1 //240108
+	else if (nIDEvent == T_CHECK_DEVICE) {
+		KillTimer(T_CHECK_DEVICE);
+
+		if(CheckDevice() == TRUE) return;
+
+		if(((CButton*)GetDlgItem(IDC_RAD_STOP))->GetCheck() == FALSE) SetTimer(T_CHECK_DEVICE, m_nTimerInterval_DeviceCheck, NULL);
+
+	}
+	else;
+#endif
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+BOOL CModeDlg::CheckDevice()
+{
+	OutputDebugString("[CModeDlg] CheckDevice Start \n");
+	// LED 장비가 응답하지 않으면 에러를 발생한다.
+	if (theApp.m_pLightCtrl->CheckDevice() > 0  /*ping Check error*/) {
+		OutputDebugString("[CModeDlg] CheckDevice Error!! \n");
+		
+		CString strMsg;
+		strMsg.Format(_LANG(_T("조명 이상 발생."), _T("Check lamp.")));
+		AprData.m_ErrStatus.SetError(CErrorStatus::en_LampError, strMsg); 
+	
+		return TRUE;
+	}
+	else {
+		;
+	}
+
+	return FALSE;
 }

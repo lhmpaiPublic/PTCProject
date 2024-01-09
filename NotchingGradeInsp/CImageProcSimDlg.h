@@ -36,7 +36,6 @@ protected:
 public:
 	afx_msg void OnBnClickedBtnFileOpen();
 	afx_msg void OnBnClickedBtnProcAll();
-	afx_msg void OnBnClickedBtnProcAll_kjk(); //231123 test kjk
 	afx_msg void OnClickGridCtrlDef(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnClickGridCtrlRecipeSet(NMHDR* pNMHDR, LRESULT* pResult);
 
@@ -230,8 +229,11 @@ public:
 
 private :
 	void InspectionAuto();
-	void InspectionAuto_kjk(); //231123 Test
-
+	void DrawLine(); //230109
+	void DrawLine_Top(); //230109
+	void DrawLine_Bottom(); //230109
+	void DrawLine_Top_Negative(); //230109
+	void DrawLine_Bottom_Negative(); //230109
 	void LoopLabelingTest();
 	// 22.06.04 Ahn Add Start
 	int SaveCropAndResultSave();

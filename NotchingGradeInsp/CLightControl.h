@@ -100,6 +100,9 @@ public :
 	BOOL bRS232Mode = FALSE;
 	int SendNRecvRS232(char* pSendBuff, char* pRecvBuff, int nCmdLen, int nRecvLen, long lTimeOver);
 	int SendNRecvRS232(int unit, char* pSendBuff, char* pRecvBuff, int nCmdLen, int nRecvLen, long lTimeOver); //231102 유닛전달 추가.
+
+	// LED 장비 확인 함수. 240108
+	int CheckDevice();
 #endif
 
 private :
