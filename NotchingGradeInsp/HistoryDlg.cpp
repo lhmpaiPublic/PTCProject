@@ -23,6 +23,38 @@
 
 // CHistoryDlg 대화 상자
 
+static CString UiText1[][3] =
+{
+	{_T("Search"), _T("Search"), _T("搜索")},
+	{_T("Excel\r\nExport"), _T("Excel\r\nExport"), _T("Excel\r\nExport")},
+	{_T("Patch Open"), _T("Patch Open"), _T("打开路径")},
+	{_T("Clear"), _T("Clear"), _T("清楚")},
+	{_T("이전"), _T("Before"), _T("上一个")},
+	{_T("다음"), _T("Next"), _T("下一个")},
+	{_T("SERCH"), _T("SERCH"), _T("搜索")},
+};
+
+enum UiText1Name
+{
+	BTN_SEARCH,
+	BTN_EXPORT,
+	BTN_CLEAR,
+	BTN_MOVE_PREV,
+	BTN_MOVE_NEXT,
+	ST_SERCH_HISTORY,
+	MAX_COUNT
+};
+
+static int UiText1NameText[] =
+{
+	IDC_BTN_SEARCH,
+	IDC_BTN_EXPORT,
+	IDC_BTN_CLEAR,
+	IDC_BTN_MOVE_PREV,
+	IDC_BTN_MOVE_NEXT,
+	IDC_ST_SERCH_HISTORY,
+};
+
 IMPLEMENT_DYNAMIC(CHistoryDlg, CDialogEx)
 
 CHistoryDlg::CHistoryDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=nullptr*/)
@@ -528,7 +560,7 @@ BOOL CHistoryDlg::OnInitDialog()
 	m_ImgList.Add(&bmpImgSm, RGB(0, 255, 0));
 	m_CalCtrl.SetImageList(&m_ImgList);
 	m_CalCtrl.SetCurrentDate(COleDateTime::GetCurrentTime());
-
+	DisplayLanguage();
 	COleDateTime OleDataTime;
 	OleDataTime = m_CalCtrl.GetCurrentDate();
 	m_nCurMonth = OleDataTime.GetMonth();
@@ -2504,6 +2536,22 @@ void CHistoryDlg::OnBnClickedBtnMoveNext()
 
 			if ((m_startRow + MAX_GRIDDISPLAY) < m_pVtList->size()) m_startRow += MAX_GRIDDISPLAY;
 			MakeGridSearchList();
+		}
+	}
+}
+
+void CHistoryDlg::DisplayLanguage()
+{
+	CWnd* pWnd;
+	CString strText;
+	for (int idx = 0; idx < MAX_COUNT; idx++)
+	{
+		pWnd = NULL;
+		pWnd = GetDlgItem(UiText1NameText[idx]);
+		if (pWnd != nullptr)
+		{
+			strText = UiText1[idx][__Lang];
+			pWnd->SetWindowTextA(strText);
 		}
 	}
 }

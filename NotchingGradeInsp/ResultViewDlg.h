@@ -50,7 +50,7 @@ public:
 private :
 	// 22.06.23 Ahn Add Start
 	CImageViewerDlg* m_pImageViewerDlg;
-
+	void DisplayLanguage();
 	enum {
 		en_col_No	= 0,
 		en_col_InspTime = 1,

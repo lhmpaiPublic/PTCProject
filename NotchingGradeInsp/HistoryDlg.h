@@ -99,6 +99,7 @@ private:
 	static UINT FreeAsyncThread(LPVOID param);
 	void CreateExpandView(LPCTSTR lpszImageFileName);
 	void DestroyExpandView();
+	void DisplayLanguage();
 //KANG 22.05.24 Add End
  
 	// 22.02.11 Ahn Add Start
