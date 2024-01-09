@@ -661,6 +661,9 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 			(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo + 1, pFrmInfo->m_nTabId_CntBoard
 			);
 
+		//먼저 검사 이미지 원본 정보 포인터를 세팅한다.
+		m_pFrmRsltInfo->SetImgPtr( pFrmInfo->GetImagePtr());
+
 		//ImageProc Proc Start 이벤트 객체 생성
 		m_hEventProcStart = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 		m_bEventProcStart = FALSE;
@@ -673,8 +676,6 @@ CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 		m_hEventKillThread = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 		m_hEventKilled = ::CreateEvent(NULL, TRUE, FALSE, NULL);
 		m_hSendResult = ::CreateEvent(NULL, TRUE, FALSE, NULL);
-
-		m_heventProcEnd_SleepTime = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 
 		m_pFrmInfo = pFrmInfo;
 		m_pThread = NULL;
@@ -727,8 +728,6 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 	::CloseHandle(m_hEventKillThread);
 	::CloseHandle(m_hEventKilled);
 	::CloseHandle(m_hSendResult);
-
-	::CloseHandle(m_heventProcEnd_SleepTime);
 }
 
 
@@ -800,7 +799,6 @@ BOOL CImageProcThreadUnit::IsProcEnd()
 }
 
 //EVENT 결과 
-#define EVENTPROCEND_TIMEOUT 3
 int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos, int& PosLoopCount)
 {
 	int retval = 0;
@@ -811,7 +809,7 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos, int& PosLoopCoun
 	}
 	else
 	{
-		if (PosLoopCount > 50)
+		if (PosLoopCount >= 50)
 		{
 			//타임아웃 여부 변수
 			m_bTimeOut = TRUE;
@@ -827,7 +825,6 @@ int CImageProcThreadUnit::eventProcEnd_WaitTime(CString CamPos, int& PosLoopCoun
 
 			LOGDISPLAY_SPEC(8)(_T("## <CImageProcThreadUnit> Looping Count<%d> CamPos<%s>"), PosLoopCount, CamPos);
 		}
-		WaitForSingleObject(m_heventProcEnd_SleepTime, EVENTPROCEND_TIMEOUT);
 	}
 	return retval;
 }

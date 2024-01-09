@@ -64,6 +64,9 @@ public:
 	HANDLE getEvent_ImageProcThread_Result() { return pEvent_ImageProcThread_Result; }
 	void setEvent_ImageProcThread_Result() { SetEvent(pEvent_ImageProcThread_Result); }
 
+	HANDLE getEvent_ImageProcThread_InspComplate() { return pEvent_ImageProcThread_InspComplate; }
+	void setEvent_ImageProcThread_InspComplate() { SetEvent(pEvent_ImageProcThread_InspComplate); }
+
 	static double TabPitchCalculate(int bforeImageLengtch, int bforeTabLeft, int nownTabLeft, double dResolY);
 
 protected :
@@ -72,8 +75,13 @@ protected :
 	CWinThread* m_pThread ;				//!< 스래드 객체
 
 	//동기화 이벤트 객체
+	//카메라에서 이미지를 받았을 때 이벤트 객체
 	HANDLE pEvent_ImageProcThread_TabFind;
+	//CImageProcThreadUnit가 이미지 프로세싱하는 첫번째 객체를 가져오기 위한 루프 이벤트 객체
 	HANDLE pEvent_ImageProcThread_Result;
+	//CImageProceThreadUnit 검사가 완료상태 확인용 루프 이벤트 객체
+	HANDLE pEvent_ImageProcThread_InspComplate;
+
 	//생성모드
 	int m_CreateMode;
 protected:

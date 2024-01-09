@@ -43,11 +43,29 @@ CImageProcThread::CImageProcThread(CImageProcessCtrl *pParent)
 {
 	m_pParent = pParent ;
 	m_pThread = NULL ;
-	m_CreateMode = 0;
+	m_CreateMode = -1;
+	pEvent_ImageProcThread_TabFind = NULL;
+	pEvent_ImageProcThread_Result = NULL;
+	pEvent_ImageProcThread_InspComplate = NULL;
 }
 
 CImageProcThread::~CImageProcThread(void)
 {
+	if (pEvent_ImageProcThread_TabFind)
+	{
+		::CloseHandle(pEvent_ImageProcThread_TabFind);
+		pEvent_ImageProcThread_TabFind = NULL;
+	}
+	if (pEvent_ImageProcThread_Result)
+	{
+		::CloseHandle(pEvent_ImageProcThread_Result);
+		pEvent_ImageProcThread_Result = NULL;
+	}
+	if (pEvent_ImageProcThread_InspComplate)
+	{
+		::CloseHandle(pEvent_ImageProcThread_InspComplate);
+		pEvent_ImageProcThread_InspComplate = NULL;
+	}
 }
 
 void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : Image Proc Mode 
@@ -57,6 +75,7 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 	//이벤트 객체 생성
 	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, TRUE, FALSE, NULL);
 	pEvent_ImageProcThread_Result = CreateEvent(NULL, FALSE, FALSE, NULL);
+	pEvent_ImageProcThread_InspComplate = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 //	m_DisphWnd = NULL ;
 	if ( m_pThread == NULL ) {
@@ -91,7 +110,7 @@ void CImageProcThread::Kill( void )
 		{
 			setEvent_ImageProcThread_TabFind();
 		}
-		else
+		if (m_CreateMode == 1)
 		{
 			setEvent_ImageProcThread_Result();
 		}
@@ -1014,6 +1033,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 #define IMAGEPROCTHREAD_RESULT_TIMEOUT 10
 
+#define IMAGEPROCTHREAD_INSPCOMPLATE_TIMEOUT 3
+
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {
 	//스래드생성 시 넘긴 객체 포인터
@@ -1752,6 +1773,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 
 
+							CString strTimeImage;
+							strTimeImage.Format(_T("%02d_%02d_%02d_%03d"), pSysTime->wHour, pSysTime->wMinute, pSysTime->wSecond, pSysTime->wMilliseconds);
+
 							//이미지 저장 포맷
 							CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
 
@@ -1763,7 +1787,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								CString strFileNameTop = _T("");
 								strFileNameTop.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
 									, INSPECTION_TYPE
-									, strTime
+									, strTimeImage
 									, AprData.m_System.m_strMachineID
 									, AprData.m_NowLotData.m_strLotNo
 									, pTopInfo->nTabNo + 1
@@ -1790,7 +1814,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								CString strFileNameBottom = _T("");
 								strFileNameBottom.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
 									, INSPECTION_TYPE
-									, strTime
+									, strTimeImage
 									, AprData.m_System.m_strMachineID
 									, AprData.m_NowLotData.m_strLotNo
 									, pBtmInfo->nTabNo + 1
@@ -1813,6 +1837,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 
 						break;
+					}
+					else
+					{
+						WaitForSingleObject(pThis->getEvent_ImageProcThread_InspComplate(), IMAGEPROCTHREAD_INSPCOMPLATE_TIMEOUT);
 					}
 
 				}

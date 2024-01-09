@@ -19,14 +19,14 @@ public:
 	static int	GetLimitSeqNo(eIOTYPE type);
 	static CString GetIoName(int mode)
 	{
-		CString str = "NoDefine";
+		CString str = _T("NoDefine");
 		switch (mode)
 		{
-		case eIO_Ccl: str = "CC-Link"; break;
-		case eIO_Api: str = "ContecIo"; break;
-		case eIO_Fbi: str = "InterfaceIo"; break;
-		case eIO_MXCtrl: str = "MX Control"; break;
-		case eIO_AXL: str = "AJIN-DIO"; break;
+		case eIO_Ccl: str = _T("CC-Link"); break;
+		case eIO_Api: str = _T("ContecIo"); break;
+		case eIO_Fbi: str = _T("InterfaceIo"); break;
+		case eIO_MXCtrl: str = _T("MX Control"); break;
+		case eIO_AXL: str = _T("AJIN-DIO"); break;
 		default: ASSERT(FALSE); ; break;
 		}
 		return (str);
