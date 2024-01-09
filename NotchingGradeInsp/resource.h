@@ -312,6 +312,7 @@
 #define IDC_ED_TAB_PITCH_PIX            1041
 #define IDC_ED_WORD_OUT_ADDRESS         1041
 #define IDC_EDIT_GRAPH_SIZE_FOILEXP     1041
+#define IDC_ST_STOP_STATE               1041
 #define IDC_ED_TAB_WIDTH_PIX            1042
 #define IDC_BUTTON_EXIT                 1042
 #define IDC_ST_CAMERA_STATE             1042
