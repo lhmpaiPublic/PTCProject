@@ -27,7 +27,6 @@ CLightControl::CLightControl(void)
 
 	//230922 kjk
 	m_pRS232Dlg = new CLightRS232Dlg();
-
 }
 CLightControl::~CLightControl()
 {
@@ -168,6 +167,7 @@ int CLightControl::DeleteUnit(void)
 int CLightControl::Open(void)
 {
 	BOOL bTimeOut = FALSE;
+
 #if 1 // 230922 kjk	 
 	if (AprData.m_System.m_nRS232_Mode == 1) bRS232Mode = TRUE;
 #endif
@@ -177,6 +177,7 @@ int CLightControl::Open(void)
 	}
 
 	if ( m_bOpened == FALSE) {
+
 		if (bRS232Mode == FALSE) {
 			// 기존 TCP
 			//	CString strIpAddress = _T("192.168.10.10");
@@ -207,6 +208,10 @@ int CLightControl::Open(void)
 						if (cp.Ping(strIpAddress[i]) == 0) {
 							if (cp.IsConnect() == TRUE) {
 								bDone[i] = TRUE;
+								LOGDISPLAY_ALL("[Open] LED Open 성공[%d]", i); //240108
+							}
+							else {
+								LOGDISPLAY_ALL("[Open] LED Open 실패[%d]", i); //240108
 							}
 						}
 					}
@@ -625,6 +630,53 @@ int CLightControl::SendNRecvRS232(int unit, char* pSendBuff, char* pRecvBuff, in
 	}
 
 	return 0;
+}
+
+// 230108
+// LED 상태를 주기적인 ping을 보내서 확인하기 위한 함수
+// m_nTimerInterval_DeviceCheck 2000, 현재 2초로 되어있음.
+// return 0 정상
+// 1 : MainLED 이상
+// 2 : SubLED 이상 
+int CLightControl::CheckDevice()
+{
+	CPing cp;
+	cp.SetMaxLoopCount(3);
+	cp.SetNotReceiveResponse_ReplyTimeout(FALSE);
+	cp.SetWaitReplyTimeout(1, 100);
+	BOOL bDone[MAX_LIGHT_UNIT];
+
+	CString strIpAddress[MAX_LIGHT_UNIT];
+	for (int i = 0; i < MAX_LIGHT_UNIT; i++) {
+		strIpAddress[i].Format(_T("192.168.10.16%d"), i + 1);
+	}
+
+	int i = 0;
+	{
+		// 22.07.06 Ahn Modify Start
+		//for ( i = 0; i < MAX_LIGHT_UNIT; i++){
+		for (i = 0; i < m_nMaxLight; i++) {
+			// 22.07.06 Ahn Modify End
+			if (bDone[i] == TRUE) {
+				//	continue;
+			}
+			if (cp.Ping(strIpAddress[i]) == 0) {
+				if (cp.IsConnect() == TRUE) {
+					bDone[i] = TRUE;
+				}
+				else {
+					bDone[i] = FALSE;
+					LOGDISPLAY_ALL("[CLightControl] CheckDevice() error!! LED No:<%d>", i);
+				}
+			}
+		}
+	}
+
+	if (bDone[0] == FALSE) return 1;
+	else if (bDone[1] == FALSE) return 2;
+	else return 0;
+
+//	return 0;
 }
 
 int CLightControl::SetLevel_8Bit(int unit, int ch, BYTE level)
