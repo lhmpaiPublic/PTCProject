@@ -39,6 +39,8 @@
 
 //using namespace HalconCpp;
 
+CString CImageProcThread::gKeyIdString = _T("");
+
 CImageProcThread::CImageProcThread(CImageProcessCtrl *pParent)
 {
 	m_pParent = pParent ;
@@ -1068,6 +1070,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 	BOOL bMarkingActive = FALSE;
 	BOOL bClearFlag = FALSE;
+	//Key Id를 받았는지 확인
+	BOOL bReciveKeyId = FALSE;
 
 	UINT ret = 0;
 
@@ -1085,6 +1089,31 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
+			//Key Id String 로컬 객체 초기 세팅
+			CString strKeyIdString = _T("");
+			//지멘스 Key Id 읽은 데이터
+			int KeyIdSize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID);
+			strKeyIdString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[0], KeyIdSize);
+
+			//초기값 세팅 후 변화가 일어나는지 확인
+			if (CImageProcThread::gKeyIdString != strKeyIdString)
+			{
+				LOGDISPLAY_SPEC(2)("$$ PLC String KeyId Hex Data<%s>", strKeyIdString);
+				//변화된 값을 저장한다.
+				CImageProcThread::gKeyIdString = strKeyIdString;
+				//키 초기값 세팅
+				if ((bReciveKeyId == FALSE) && CImageProcThread::gKeyIdString != _T(""))
+				{
+					//Key Id를 받았는지 확인
+					bReciveKeyId = TRUE;
+				}
+
+				//지멘스 Dummy 읽은 데이터
+				int DummySize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy);
+				CString strDummyString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy[0], DummySize);
+				LOGDISPLAY_SPEC(2)("$$ PLC String Dummy Hex Data<%s>", strDummyString);
+			}
+
 
 			if (pThis == NULL) {
 				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> pThis == NULL"));
@@ -1538,6 +1567,20 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							else {
 								strMarking.Format(_T("Χ"));
 							}
+
+							//통합비전 BCD Id에 대한 Key 번호
+							//PLC에서 받은 데이터가 있는가 확인 후 세팅한다.
+							WORD nKeyId = -1;
+							if (bReciveKeyId)
+							{
+								//BCD ID 범위 확인
+								if (pTopInfo->m_nTabId_CntBoard >= 0 && pTopInfo->m_nTabId_CntBoard <= 63)
+								{
+									nKeyId = AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[pTopInfo->m_nTabId_CntBoard];
+									LOGDISPLAY_SPEC(2)("$$ PLC Key Id<%d> TabNo<%d> BCD Id<%d>", nKeyId, pTopInfo->nTabNo + 1, pTopInfo->m_nTabId_CntBoard);
+								}
+							}
+
 							CString strTime;
 							CString strJudge = _T("OK");
 							CString strBtmJudge = _T("OK");
@@ -1555,11 +1598,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							//,  Top Surface max Size, Btm Surface Max Size, InkMarking, InkMarkingReason
 							// 23.01.06 Ahn Modify Start
 							//strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s\r\n")
-							strResult.Format(_T("%s,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
 								// 23.01.06 Ahn Modify End
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
 								, pTopInfo->m_nTabId_CntBoard
+								, nKeyId
 								, strTime
 								, strJudge
 								, strTopJudge
@@ -1752,12 +1796,26 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							strTime.Format(_T("%02d:%02d:%02d(%03d)"), pSysTime->wHour, pSysTime->wMinute, pSysTime->wSecond, pSysTime->wMilliseconds);
 
+							//통합비전 BCD Id에 대한 Key 번호
+							//PLC에서 받은 데이터가 있는가 확인 후 세팅한다.
+							WORD nKeyId = -1;
+							if (bReciveKeyId)
+							{
+								//BCD ID 범위 확인
+								if (pTopInfo->m_nTabId_CntBoard >= 0 && pTopInfo->m_nTabId_CntBoard <= 63)
+								{
+									nKeyId = AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[pTopInfo->m_nTabId_CntBoard];
+									LOGDISPLAY_SPEC(2)("$$ PLC Key Id<%d> TabNo<%d> BCD Id<%d>", nKeyId, pTopInfo->nTabNo + 1, pTopInfo->m_nTabId_CntBoard);
+								}
+							}
+
 							//피더파일에 기록하기
 							CString strResult = _T("");
-							strResult.Format(_T("%s,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
 								, pTopInfo->m_nTabId_CntBoard
+								, nKeyId
 								, strTime
 								, strJudge
 								, strTopJudge

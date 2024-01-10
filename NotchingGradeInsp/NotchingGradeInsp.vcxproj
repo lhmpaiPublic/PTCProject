@@ -140,7 +140,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -155,7 +155,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -450,6 +450,7 @@
     <ClInclude Include="CRecipeSettingDlg.h" />
     <ClInclude Include="CRecipeTableCtrl.h" />
     <ClInclude Include="GlobalFunc.h" />
+    <ClInclude Include="GSurpport\StrSuport.h" />
     <ClInclude Include="Light232.h" />
     <ClInclude Include="MemoryMgr\FrameImagePtr.h" />
     <ClInclude Include="MemoryMgr\MemoryPool.h" />
@@ -632,6 +633,7 @@
     <ClCompile Include="GrabberCtrl.cpp" />
     <ClCompile Include="GrabDalsaCameraLink.cpp" />
     <ClCompile Include="GraphDlg.cpp" />
+    <ClCompile Include="GSurpport\StrSuport.cpp" />
     <ClCompile Include="HistoryDlg.cpp" />
     <ClCompile Include="ImageProcessCtrl.cpp" />
     <ClCompile Include="ImageProcThread.cpp" />

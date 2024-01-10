@@ -9,6 +9,12 @@
 #define PCH_H
 
 // 여기에 미리 컴파일하려는 헤더 추가
+//라이브러리 파일
+#include <string>
+#include <vector>
+
+
+//생성 파일
 #include "framework.h"
 #include "GlobalDef.h"
 
@@ -26,6 +32,7 @@ using namespace Gdiplus;
 
 //멀티 바이트 속성으로 컴파일 시 중국어 경고 끄기
 #pragma warning(disable: 4566)
+#pragma warning(disable: 4819)
 
 #pragma comment(linker, "/HEAP:4000000000")
 
@@ -51,6 +58,8 @@ using namespace Gdiplus;
 //Notching.Release.Version_년(4).월(2).일(2).(배포 횟수 : r01 ~ r99)
 static CString GlobalVersion = _T("Notching.Release.Version_2024.01.09.r01");
 
+//Glabal Surpport 클래스
+#include "StrSuport.h"
 //UI를 관리하기 위한 클래스
 #include "UiManager.h"
 

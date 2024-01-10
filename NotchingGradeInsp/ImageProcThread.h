@@ -69,6 +69,8 @@ public:
 
 	static double TabPitchCalculate(int bforeImageLengtch, int bforeTabLeft, int nownTabLeft, double dResolY);
 
+	//Key Id 변경 상태 파악용 
+	static CString gKeyIdString;
 protected :
 	BOOL	m_bKill ;
 	int		m_nThreadId ;
