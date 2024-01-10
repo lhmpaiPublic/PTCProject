@@ -592,7 +592,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										loopTabQueueSize++;
 									}
 								}
-								//BCD Id와 얻은 이미지 갯수가 다른데도 BCD Id를 못찾았을 때 들어온다.
+								//BCD Id를 못찾았을 때 들어온다.
 								else
 								{
 									//BCD Id가 증가현상이 발생하면 모드 삭제한다.
@@ -697,23 +697,23 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (cntInfo.nTabIdTotalCount != MAX_INT)
 						{
 							static int countdiff = 0;
-							int diffval = abs(AprData.m_NowLotData.m_nTabCount - cntInfo.nTabIdTotalCount);
+							int diffval = abs((AprData.m_NowLotData.m_nTabCount+1) - cntInfo.nTabIdTotalCount);
 							if (diffval != countdiff)
 							{
 								LOGDISPLAY_SPEC(7)(_T("@@LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>=countdiff<%d>"),
-									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount, diffval);
+									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount+1, cntInfo.nTabIdTotalCount, diffval);
 								countdiff = diffval;
 							}
 						}
 						else
 						{
 							LOGDISPLAY_SPEC(7)(_T("@@LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
-								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount);
+								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount+1);
 						}
 
 						//Tab Id 정보 로그
 						LOGDISPLAY_SPEC(7)("@@Tab Id Info@@@@  LotId<%s> Tab Id<%d> TabNo<%d><%d> TabTotalcnt<%d>",
-							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo+1, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
+							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo+1, AprData.m_NowLotData.m_nTabCount+1, cntInfo.nTabIdTotalCount);
 
 
 						//Tab 정보에서 Left 크기, Right 크기
