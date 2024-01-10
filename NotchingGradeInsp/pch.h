@@ -24,6 +24,9 @@ using namespace Gdiplus;
 #pragma comment(lib, "AxL.lib")
 #endif
 
+//멀티 바이트 속성으로 컴파일 시 중국어 경고 끄기
+#pragma warning(disable: 4566)
+
 #pragma comment(linker, "/HEAP:4000000000")
 
 //검사 프로그램 명
