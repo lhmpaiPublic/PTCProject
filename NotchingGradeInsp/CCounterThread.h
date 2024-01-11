@@ -27,6 +27,10 @@ public:
 	static std::vector<MarkSendInfo> m_MarkSendInfoData;
 	static void MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, bool bSendComplate = false);
 	static BOOL m_bMarkSendInfoDataSynch;
+
+	//딮 스위치 꺼졌을 때 Output 마킹정보를 받지 못하도록 하는 플래그
+	//Trigger BCD Id 가 계속적으로 들어오지 않는데 Output Marking 정보가 계속 생성되어 싸이는 것을 방지하는 플래그
+	static __int64 deepSwitchOff;
 protected:
 	BOOL	m_bKill;
 	int		m_nThreadId;
