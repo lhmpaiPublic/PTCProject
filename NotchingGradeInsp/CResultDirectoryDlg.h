@@ -28,4 +28,5 @@ public:
 	CString m_strCsvPath;
 	CString m_strNgImagePath;
 	CString m_strOkImagePath;
+	void DisplayLanguage();
 };

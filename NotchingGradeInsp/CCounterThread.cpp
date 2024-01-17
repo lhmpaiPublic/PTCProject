@@ -406,7 +406,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						int TabNo = AprData.m_NowLotData.m_nTabCount;
 
 						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("@@(%d)### DIO ID before<%d> ^^ now<%d> TabNo<%d>"), ThreadLoopCount, wLastTabId, wTempID, TabNo);
+						LOGDISPLAY_SPEC(7)(_T("@@(%d)### DIO ID before<%d> ^^ now<%d> TabNo<%d>"), ThreadLoopCount, wLastTabId, wTempID, TabNo+1);
 
 						//누락된 input 아이디를 찾는다.
 						//초기값이 없다면 nextTabID 입력만
@@ -436,13 +436,13 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							//누락 로그 출력한다.
 							if (nextTabID != wTempID)
 							{
-
 								//얻은 Tab Id 범위 확인용
 								if ((wTempID >= 0) && (wTempID < 64))
 								{
 									//누락 Tab id Total 증가를 위한 세팅
 									//Tab Id 누락 된 카운트 증가를 위해서 백업한다.
 									int nextTabIDbackup = nextTabID;
+									int nextTabIDbackupLog = nextTabID;
 									//누락이 1개 일어 났을 때 마킹 정보를 바로 보낸다.
 									int omissCount = 0;
 									while (nextTabIDbackup != wTempID)
@@ -458,6 +458,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										strMsg.Format(_T("Lose input BCD ID  [%d]"), nextTabIDbackup);
 										AprData.SaveMemoryLog(strMsg);
 
+										nextTabIDbackupLog = nextTabIDbackup;
 										//다음 id로 증가 및 유효 카운트 검사
 										nextTabIDbackup++;
 										if (nextTabIDbackup >= 64)
@@ -478,7 +479,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 										//메모리 로그 기록
 										CString strMsg = "";
-										strMsg.Format(_T("Over All Vision BCD Id Initialize Before BCD Id<%d>=Init BCD Id<%d>"), nextTabID-1, wTempID);
+										strMsg.Format(_T("Over All Vision BCD Id Initialize Before BCD Id<%d>=Init BCD Id<%d>"), wLastTabId, wTempID);
 										AprData.SaveMemoryLog(strMsg);
 									}
 									//초기화가 아닌 경우
@@ -491,6 +492,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 									}
 									//Tab id Count 백업
 									nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
+
+									CLogDisplayDlg::LogDisplayDatText(_T("TriggerBCDId_Read"), _T("== Num(%d) = BCD Id Lost from <%d> to <%d> "), ThreadLoopCount, nextTabID, nextTabIDbackupLog);
 
 								}
 
@@ -509,7 +512,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						//Tab Id 
 						cntInfo.nTabID = wTempID;
 						//Tab No(번호)
-						cntInfo.nTabNo = TabNo;
+						cntInfo.nTabNo = TabNo+1;
 						//Tab Total Count 
 						//Tab Total Count를 증가 시킨다.
 						AprData.m_NowLotData.m_nTabIdTotalCount++;

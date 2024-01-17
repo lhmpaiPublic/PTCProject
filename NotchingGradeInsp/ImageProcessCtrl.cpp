@@ -683,7 +683,8 @@ int CImageProcessCtrl::LightON()
 	}
 
 
-	return 0;
+//	return 0; 
+	return nRet; // 240108 수정
 }
 
 int CImageProcessCtrl::LightOFF()

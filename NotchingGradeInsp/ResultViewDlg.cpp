@@ -26,6 +26,25 @@
 
 #define IDC_RESULT_LIST	1001
 
+
+
+static CString UiText1[][3] =
+{
+	{_T("No."), _T("No."), _T("No.")},
+	{_T("검사시각"), _T("Insp Time"), _T("检查时间")},
+	{_T("LOT_ID"), _T("LOT_ID"), _T("LOT_ID")},
+	{_T("CELL_NO"), _T("CELL_NO"), _T("CELL_NO")},
+	{_T("CELL_ID"), _T("CELL_ID"), _T("CELL_ID")},
+	{_T("불량위치"), _T("Position"), _T("不良位置")},
+	{_T("불량종류"), _T("NG Type"), _T("不良种类")},
+	{_T("결함판정"), _T("Judgement"), _T("缺陷判定")},
+	{_T("불량 사이즈"), _T("Size"), _T("不良尺寸")},
+	{_T("마킹"), _T("Marking"), _T("喷码")},
+	{_T("Pos Y"), _T("Pos Y"), _T("Pos Y")},
+	{_T("이미지"), _T("Img Path"), _T("图片路径")},
+};
+
+
 IMPLEMENT_DYNAMIC(CResultViewDlg, CDialogEx)
 
 CResultViewDlg::CResultViewDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=nullptr*/)
@@ -236,8 +255,10 @@ int CResultViewDlg::MakeGrid()
 			END_CATCH
 			// 22.06.23 Ahn Modify Start
 			//CString strTitle[en_Max_GridCols] = { _T("No."),_T("검사시각"),_T("LOT_ID"),_T("CELL_ID"),_T("불량위치"),_T("불량종류"),_T("불량 사이즈"), _T("Ink Marking"), _T("Image Path") };
+			/*
 			CString strTitle[en_Max_GridCols];
-			strTitle[en_col_No]			= _T("No.") ;
+		
+			strTitle[en_col_No] = _T("No.");
 			strTitle[en_col_InspTime]	= _LANG(_T("검사시각"), _T("Insp Time")) ;
 			strTitle[en_col_LOT_ID]		= _T("LOT_ID");
 			strTitle[en_col_CELL_NO]	= _T("CELL_NO");
@@ -249,6 +270,8 @@ int CResultViewDlg::MakeGrid()
 			strTitle[en_col_InkMarking] = _LANG(_T("마킹"), _T("Marking"));
 			strTitle[en_col_DefPosY]	= _LANG(_T("Pos Y"), _T("Pos Y"));
 			strTitle[en_col_ImagePath]	= _LANG(_T("이미지"), _T("Img Path"));
+			*/
+
 			// 22.06.26 Ahn Modify End
 
 			int nColWidth = 50;
@@ -259,13 +282,14 @@ int CResultViewDlg::MakeGrid()
 				Item.mask = GVIF_TEXT;
 				Item.row = 0;
 				Item.col = nCol;
-				Item.strText = strTitle[ nCol ];		
+				Item.strText = UiText1[nCol][__Lang];
 
 				//폰트 픽셀 넓이 저정
 				CDC* dc = GetDC();
-				m_pResultList->setGrideFontWidth(nCol, dc, strTitle[nCol], 47);
+				m_pResultList->setGrideFontWidth(nCol, dc, Item.strText,47);
 				//cd 메모리 해제
 				ReleaseDC(dc);
+
 
 				// 22.06.30 Ahn Add End
 				m_pResultList->SetItem(&Item);
@@ -913,5 +937,3 @@ void CResultViewDlg::LoadLastLotData()
 		}
 	}	
 }
-
-// 22.07.07 Ahn Add End

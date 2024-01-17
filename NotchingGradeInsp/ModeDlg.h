@@ -7,6 +7,7 @@
 #define AUTO_START_TIMER 1111
 #define AUTO_START_DELAY 1000
 
+#define T_CHECK_DEVICE 8858 //240108
 
 class CNotchingGradeInspDoc;
 class CNotchingGradeInspView;
@@ -102,4 +103,13 @@ public :
 	// 23.02.16 Ahn Add End
 
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+#if 1 // 240108
+//	INT_PTR     m_nTimer_DeviceCheck;
+	int         m_nTimerInterval_DeviceCheck;
+
+	// LED 장비 확인 함수.
+	afx_msg BOOL CheckDevice();
+#endif
+
 };

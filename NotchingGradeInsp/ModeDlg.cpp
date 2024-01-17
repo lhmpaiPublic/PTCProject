@@ -33,6 +33,59 @@
 #include "CTactTimeGraphDlg.h"
 // 22.12.09 Ahn Add End
 
+static CString UiText1[][3] =
+{
+	{_T("검사모드"), _T("Inspect Mode"), _T("检查模式")},
+	{_T("설정모드"), _T("Recipe Setting"), _T("设定模式")},
+	{_T("저장경로"), _T("Directory"), _T("阴极模式")},
+	{_T("시작"), _T("Run"), _T("开始")},
+	{_T("정지"), _T("Stop"), _T("停止")},
+	{_T("시뮬레이션"), _T("Simulation"), _T("模拟")},
+	{_T("HISTORY"), _T("HISTORY"), _T("历史履历")},
+	{_T("LIVE"), _T("LIVE"), _T("实时")},//JJ
+	{_T("Tact time"), _T("Tact time"), _T("Tact time")},
+	{_T("CAM"), _T("CAM"), _T("相机")},
+	{_T("PLC"), _T("PLC"), _T("PLC")},
+	{_T("I/O"), _T("I/O"), _T("I/O")},
+	{_T("LAMP"), _T("LAMP"), _T("光源")},
+};
+
+enum UiText1Name
+{
+	RADI_INSP_MODE,
+	RAD_COND_MODE,
+	BTN_DIRECTORY,
+	RAD_RUN,
+	RAD_STOP,
+	BTN_INSP_SIM,
+	RAD_HISTORY_MODE,
+	CHK_SWITCH_DISP, //JJ
+	BTN_TACT_TIME,
+	ST_CAMERA_STATE,
+	ST_PLC_STATE,
+	ST_IO_STATE,
+	ST_LIGHT_STATE,
+	MAX_COUNT
+};
+
+static int UiText1NameText[] =
+{
+	IDC_RADI_INSP_MODE,
+	IDC_RAD_COND_MODE,
+	IDC_BTN_DIRECTORY,
+	IDC_RAD_RUN,
+	IDC_RAD_STOP,
+	IDC_BTN_INSP_SIM,
+	IDC_RAD_HISTORY_MODE,
+	IDC_CHK_SWITCH_DISP, //JJ
+	IDC_BTN_TACT_TIME,
+	IDC_ST_CAMERA_STATE,
+	IDC_ST_PLC_STATE,
+	IDC_ST_IO_STATE,
+	IDC_ST_LIGHT_STATE,
+};
+
+
 IMPLEMENT_DYNAMIC(CModeDlg, CDialogEx)
 
 CModeDlg::CModeDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=nullptr*/)
@@ -71,6 +124,7 @@ CModeDlg::CModeDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=
 	m_pTactGraph = NULL ;
 	// 22.12.12 Ahn Add End
 
+	m_nTimerInterval_DeviceCheck = 2000; // 240108
 }
 
 CModeDlg::~CModeDlg()
@@ -272,22 +326,22 @@ BOOL CModeDlg::OnInitDialog()
 	m_stCameraState.SetFont(&m_fontTitle);
 	m_stCameraState.SetTextColor(RGB(64, 64, 64));
 	m_stCameraState.SetBackgroundColor(RGB(255, 100, 100));
-	m_stCameraState.SetWindowText(_T("CAM"));
+	//m_stCameraState.SetWindowText(_T("CAM"));
 
 	m_stPlcState.SetFont(&m_fontTitle);
 	m_stPlcState.SetTextColor(RGB(64, 64, 64));
 	m_stPlcState.SetBackgroundColor(RGB(255, 100, 100));
-	m_stPlcState.SetWindowText(_T("PLC"));
+	//m_stPlcState.SetWindowText(_T("PLC"));
 
 	m_stIoState.SetFont(&m_fontTitle);
 	m_stIoState.SetTextColor(RGB(64, 64, 64));
 	m_stIoState.SetBackgroundColor(RGB(255, 100, 100));
-	m_stIoState.SetWindowText(_T("I/O"));
+	//m_stIoState.SetWindowText(_T("I/O"));
 
 	m_stLightState.SetFont(&m_fontTitle);
 	m_stLightState.SetTextColor(RGB(64, 64, 64));
 	m_stLightState.SetBackgroundColor(RGB(255, 100, 100));
-	m_stLightState.SetWindowText(_T("Lamp"));
+	//m_stLightState.SetWindowText(_T("Lamp"));
 	// 22.06.30 Ahn Add End
 
 	// 22.07.04 Ahn Add Start
@@ -588,7 +642,7 @@ void CModeDlg::Refresh()
 			clrBk = RGB(255, 100, 100);
 		}
 		m_stPlcState.SetBackgroundColor(clrBk);
-		m_stPlcState.SetWindowText(_T("PLC"));
+		//m_stPlcState.SetWindowText(_T("PLC"));
 	}
 	if (m_bIoLastFlag != bIo) {
 		if (bIo == TRUE) {
@@ -598,7 +652,7 @@ void CModeDlg::Refresh()
 			clrBk = RGB(255, 100, 100);
 		}
 		m_stIoState.SetBackgroundColor(clrBk);
-		m_stIoState.SetWindowText(_T("I/O"));
+		//m_stIoState.SetWindowText(_T("I/O"));
 	}
 
 #if 0 //test 231102
@@ -616,7 +670,7 @@ void CModeDlg::Refresh()
 			clrBk = RGB(255, 100, 100);
 		}
 		m_stLightState.SetBackgroundColor(clrBk);
-		m_stLightState.SetWindowText(_T("Lamp"));
+		//m_stLightState.SetWindowText(_T("Lamp"));
 //	}
 	if ( m_bCamLastFlag != bGrabber) {
 		if(bGrabber){
@@ -626,7 +680,7 @@ void CModeDlg::Refresh()
 			clrBk = RGB(255, 100, 100);
 		}
 		m_stCameraState.SetBackgroundColor(clrBk);
-		m_stCameraState.SetWindowText(_T("CAM"));
+		//m_stCameraState.SetWindowText(_T("CAM"));
 	}
 	// 22.07.01 Ahn Add End
 
@@ -719,9 +773,17 @@ void CModeDlg::OnBnClickedRadRun()
 	}
 	else {
 		// TCP/IP
+		int result = 0;
+
 		theApp.m_pLightCtrl->Open();
-		theApp.m_pImgProcCtrl->LightON();
-		theApp.m_pLightCtrl->Close();
+		result = theApp.m_pImgProcCtrl->LightON();
+//		theApp.m_pLightCtrl->Close();  // 원본 240108 
+//		OutputDebugString("[OnBnClickedRadRun] SetTimer \n");
+		if(result >= 0 && result != 2) SetTimer(T_CHECK_DEVICE, m_nTimerInterval_DeviceCheck, 0);// 240108
+		else {
+		//OnBnClickedRadStop()
+		//	theApp.m_pLightCtrl->Close();
+		}
 	}
 
 	Refresh();
@@ -758,10 +820,16 @@ void CModeDlg::OnBnClickedRadStop()
 		}
 		else {
 			// TCP/IP
+#if 0
 			theApp.m_pLightCtrl->Open();
 			theApp.m_pImgProcCtrl->LightOFF();
 			Sleep(150);
 			theApp.m_pLightCtrl->Close();
+#else 
+			// 240108
+			theApp.m_pImgProcCtrl->LightOFF();
+			KillTimer(T_CHECK_DEVICE);
+#endif
 		}
 	}
 
@@ -812,6 +880,19 @@ void CModeDlg::EnableChild(BOOL bMode)
 void CModeDlg::DisplayLanguage()
 {
 	CWnd* pWnd;
+	CString strDispName;
+	for (int idx = 0; idx < MAX_COUNT; idx++)
+	{
+		pWnd = NULL;
+		pWnd = GetDlgItem(UiText1NameText[idx]);
+		if (pWnd != nullptr)
+		{
+			strDispName = UiText1[idx][__Lang];
+			pWnd->SetWindowTextA(strDispName);
+		}
+	}
+	
+	/*CWnd* pWnd;
 	
 	pWnd = GetDlgItem(IDC_RADI_INSP_MODE);
 	if (pWnd != nullptr) {
@@ -837,7 +918,7 @@ void CModeDlg::DisplayLanguage()
 	if (pWnd != nullptr) {
 		pWnd->SetWindowTextA(_LANG(_T("시뮬레이션"), _T("Simulation")));
 	}
-
+	*/
 
 }
 
@@ -908,6 +989,37 @@ void CModeDlg::OnTimer(UINT_PTR nIDEvent)
 		UpdateData(FALSE);
 
 	}
+#if 1 //240108
+	else if (nIDEvent == T_CHECK_DEVICE) {
+		KillTimer(T_CHECK_DEVICE);
+
+		if(CheckDevice() == TRUE) return;
+
+		if(((CButton*)GetDlgItem(IDC_RAD_STOP))->GetCheck() == FALSE) SetTimer(T_CHECK_DEVICE, m_nTimerInterval_DeviceCheck, NULL);
+
+	}
+	else;
+#endif
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+BOOL CModeDlg::CheckDevice()
+{
+	OutputDebugString("[CModeDlg] CheckDevice Start \n");
+	// LED 장비가 응답하지 않으면 에러를 발생한다.
+	if (theApp.m_pLightCtrl->CheckDevice() > 0  /*ping Check error*/) {
+		OutputDebugString("[CModeDlg] CheckDevice Error!! \n");
+		
+		CString strMsg;
+		strMsg.Format(_LANG(_T("조명 이상 발생."), _T("Check lamp.")));
+		AprData.m_ErrStatus.SetError(CErrorStatus::en_LampError, strMsg); 
+	
+		return TRUE;
+	}
+	else {
+		;
+	}
+
+	return FALSE;
 }

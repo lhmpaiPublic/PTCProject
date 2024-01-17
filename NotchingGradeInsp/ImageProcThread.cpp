@@ -39,15 +39,35 @@
 
 //using namespace HalconCpp;
 
+CString CImageProcThread::gKeyIdString = _T("");
+
 CImageProcThread::CImageProcThread(CImageProcessCtrl *pParent)
 {
 	m_pParent = pParent ;
 	m_pThread = NULL ;
-	m_CreateMode = 0;
+	m_CreateMode = -1;
+	pEvent_ImageProcThread_TabFind = NULL;
+	pEvent_ImageProcThread_Result = NULL;
+	pEvent_ImageProcThread_InspComplate = NULL;
 }
 
 CImageProcThread::~CImageProcThread(void)
 {
+	if (pEvent_ImageProcThread_TabFind)
+	{
+		::CloseHandle(pEvent_ImageProcThread_TabFind);
+		pEvent_ImageProcThread_TabFind = NULL;
+	}
+	if (pEvent_ImageProcThread_Result)
+	{
+		::CloseHandle(pEvent_ImageProcThread_Result);
+		pEvent_ImageProcThread_Result = NULL;
+	}
+	if (pEvent_ImageProcThread_InspComplate)
+	{
+		::CloseHandle(pEvent_ImageProcThread_InspComplate);
+		pEvent_ImageProcThread_InspComplate = NULL;
+	}
 }
 
 void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : Image Proc Mode 
@@ -57,6 +77,7 @@ void CImageProcThread::Begin( int nMode ) // nMode  0 : Image Merge Mode , 1 : I
 	//이벤트 객체 생성
 	pEvent_ImageProcThread_TabFind = CreateEvent(NULL, TRUE, FALSE, NULL);
 	pEvent_ImageProcThread_Result = CreateEvent(NULL, FALSE, FALSE, NULL);
+	pEvent_ImageProcThread_InspComplate = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 //	m_DisphWnd = NULL ;
 	if ( m_pThread == NULL ) {
@@ -91,7 +112,7 @@ void CImageProcThread::Kill( void )
 		{
 			setEvent_ImageProcThread_TabFind();
 		}
-		else
+		if (m_CreateMode == 1)
 		{
 			setEvent_ImageProcThread_Result();
 		}
@@ -571,7 +592,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										loopTabQueueSize++;
 									}
 								}
-								//BCD Id와 얻은 이미지 갯수가 다른데도 BCD Id를 못찾았을 때 들어온다.
+								//BCD Id를 못찾았을 때 들어온다.
 								else
 								{
 									//BCD Id가 증가현상이 발생하면 모드 삭제한다.
@@ -676,23 +697,23 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (cntInfo.nTabIdTotalCount != MAX_INT)
 						{
 							static int countdiff = 0;
-							int diffval = abs(AprData.m_NowLotData.m_nTabCount - cntInfo.nTabIdTotalCount);
+							int diffval = abs((AprData.m_NowLotData.m_nTabCount+1) - cntInfo.nTabIdTotalCount);
 							if (diffval != countdiff)
 							{
 								LOGDISPLAY_SPEC(7)(_T("@@LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>=countdiff<%d>"),
-									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount, diffval);
+									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount+1, cntInfo.nTabIdTotalCount, diffval);
 								countdiff = diffval;
 							}
 						}
 						else
 						{
 							LOGDISPLAY_SPEC(7)(_T("@@LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
-								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount);
+								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount+1);
 						}
 
 						//Tab Id 정보 로그
 						LOGDISPLAY_SPEC(7)("@@Tab Id Info@@@@  LotId<%s> Tab Id<%d> TabNo<%d><%d> TabTotalcnt<%d>",
-							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo+1, AprData.m_NowLotData.m_nTabCount, cntInfo.nTabIdTotalCount);
+							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo+1, AprData.m_NowLotData.m_nTabCount+1, cntInfo.nTabIdTotalCount);
 
 
 						//Tab 정보에서 Left 크기, Right 크기
@@ -1014,6 +1035,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 #define IMAGEPROCTHREAD_RESULT_TIMEOUT 10
 
+#define IMAGEPROCTHREAD_INSPCOMPLATE_TIMEOUT 3
+
 UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 {
 	//스래드생성 시 넘긴 객체 포인터
@@ -1047,6 +1070,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 	BOOL bMarkingActive = FALSE;
 	BOOL bClearFlag = FALSE;
+	//Key Id를 받았는지 확인
+	BOOL bReciveKeyId = FALSE;
 
 	UINT ret = 0;
 
@@ -1064,6 +1089,31 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
+			//Key Id String 로컬 객체 초기 세팅
+			CString strKeyIdString = _T("");
+			//지멘스 Key Id 읽은 데이터
+			int KeyIdSize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID);
+			strKeyIdString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[0], KeyIdSize);
+
+			//초기값 세팅 후 변화가 일어나는지 확인
+			if (CImageProcThread::gKeyIdString != strKeyIdString)
+			{
+				LOGDISPLAY_SPEC(2)("$$ PLC String KeyId Hex Data<%s>", strKeyIdString);
+				//변화된 값을 저장한다.
+				CImageProcThread::gKeyIdString = strKeyIdString;
+				//키 초기값 세팅
+				if ((bReciveKeyId == FALSE) && CImageProcThread::gKeyIdString != _T(""))
+				{
+					//Key Id를 받았는지 확인
+					bReciveKeyId = TRUE;
+				}
+
+				//지멘스 Dummy 읽은 데이터
+				int DummySize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy);
+				CString strDummyString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy[0], DummySize);
+				LOGDISPLAY_SPEC(2)("$$ PLC String Dummy Hex Data<%s>", strDummyString);
+			}
+
 
 			if (pThis == NULL) {
 				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> pThis == NULL"));
@@ -1144,7 +1194,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 					if ((topWaitVal == 1) && (btmWaitVal == 1))
 					{
-
+						//CImageProcThreadUnit에서 결과 저장 객체를 가져온다.
+						//CFrameRsltInfo의 생성을 CImageProcThreadUnit 생성자에서 생성하도록 수정됨
 						CFrameRsltInfo* pTopInfo = pUnitTop->GetResultPtr();
 						CFrameRsltInfo* pBtmInfo = pUnitBtm->GetResultPtr();
 
@@ -1516,6 +1567,20 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							else {
 								strMarking.Format(_T("Χ"));
 							}
+
+							//통합비전 BCD Id에 대한 Key 번호
+							//PLC에서 받은 데이터가 있는가 확인 후 세팅한다.
+							WORD nKeyId = -1;
+							if (bReciveKeyId)
+							{
+								//BCD ID 범위 확인
+								if (pTopInfo->m_nTabId_CntBoard >= 0 && pTopInfo->m_nTabId_CntBoard <= 63)
+								{
+									nKeyId = AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[pTopInfo->m_nTabId_CntBoard];
+									LOGDISPLAY_SPEC(2)("$$ PLC Key Id<%d> TabNo<%d> BCD Id<%d>", nKeyId, pTopInfo->nTabNo + 1, pTopInfo->m_nTabId_CntBoard);
+								}
+							}
+
 							CString strTime;
 							CString strJudge = _T("OK");
 							CString strBtmJudge = _T("OK");
@@ -1533,11 +1598,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							//,  Top Surface max Size, Btm Surface Max Size, InkMarking, InkMarkingReason
 							// 23.01.06 Ahn Modify Start
 							//strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s\r\n")
-							strResult.Format(_T("%s,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
 								// 23.01.06 Ahn Modify End
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
 								, pTopInfo->m_nTabId_CntBoard
+								, nKeyId
 								, strTime
 								, strJudge
 								, strTopJudge
@@ -1590,7 +1656,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								//SPC+ 전송용 이미지 파일 저장 정보
 								if (CSpcInfo::Inst()->getSPCStartFlag())
 								{
-									pFrmRsltInfo->m_nWidth;
 									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize + 1];
@@ -1605,7 +1670,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								//기존 이미지 저장정보
 								if ((pFrmRsltInfo->m_bSaveFlag) && (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE))
 								{
-									pFrmRsltInfo->m_nWidth;
 									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize + 1];
@@ -1683,40 +1747,184 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 					}
 					else if ((topWaitVal == 2) || (btmWaitVal == 2))
 					{
-						LOGDISPLAY_SPEC(8)("## CtrlThreadImgProc - ResultProcWait-Timeout Top<%d> Bottom<%d>", topWaitVal, btmWaitVal);
+						LOGDISPLAY_SPEC(8)("## ==== UNIT LOOPPING ERROR  ==== Top<%d> Bottom<%d>", topWaitVal, btmWaitVal);
 
 						CString ErrorLog;
 						ErrorLog.Format(_T("============================= UNIT LOOPPING ERROR  ============================="));
 						AprData.SaveErrorLog(ErrorLog);
 
+						//CImageProcThreadUnit에서 결과 저장 객체를 가져온다.
+						//CFrameRsltInfo의 생성을 CImageProcThreadUnit 생성자에서 생성하도록 수정됨
+						CFrameRsltInfo* pTopInfo = NULL;
+						if(pUnitTop)
+							pTopInfo = pUnitTop->GetResultPtr();
+						CFrameRsltInfo* pBtmInfo = NULL;
+						if(pUnitBtm)
+							pBtmInfo = pUnitBtm->GetResultPtr();
+
+						if (pTopInfo && pBtmInfo)
+						{
+							LOGDISPLAY_SPEC(8)("## === UNIT LOOPPING ERROR === Info Print Start ==  ");
+							CString strCsvFileName;
+							CString strFilePath;
+							strFilePath.Format(_T("%s\\"), AprData.m_strNowCsvPath);
+
+							strCsvFileName.Format(_T("%s.csv"), AprData.m_NowLotData.m_strLotNo);
+
+							int nMarkSel1 = 0;
+							int nMarkSel2 = 0;
+
+							WORD wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, JUDGE_NG, JUDGE_NG, nMarkSel1, nMarkSel2);
+
+							CString strMarking = _T("△");
+							CString strMarkReason = _T("");
+
+							CString strTime;
+							CString strJudge = _T("OK");
+							CString strBtmJudge = _T("OK");
+							CString strTopJudge = _T("OK");
+
+							int nSurfaceNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][RANK_NG] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_NG];
+							int nFoilExpNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][RANK_NG] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_NG]
+								+ pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][RANK_NG] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP_OUT][JUDGE_NG];
+
+							double 	dTopMaxSize = pTopInfo->m_pTabRsltInfo->m_dMaxSizeDef;
+							double 	dBtmMaxSize = pBtmInfo->m_pTabRsltInfo->m_dMaxSizeDef;
+
+							SYSTEMTIME* pSysTime;
+							pSysTime = &(pTopInfo->m_pTabRsltInfo->sysTime);
+
+							strTime.Format(_T("%02d:%02d:%02d(%03d)"), pSysTime->wHour, pSysTime->wMinute, pSysTime->wSecond, pSysTime->wMilliseconds);
+
+							//통합비전 BCD Id에 대한 Key 번호
+							//PLC에서 받은 데이터가 있는가 확인 후 세팅한다.
+							WORD nKeyId = -1;
+							if (bReciveKeyId)
+							{
+								//BCD ID 범위 확인
+								if (pTopInfo->m_nTabId_CntBoard >= 0 && pTopInfo->m_nTabId_CntBoard <= 63)
+								{
+									nKeyId = AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[pTopInfo->m_nTabId_CntBoard];
+									LOGDISPLAY_SPEC(2)("$$ PLC Key Id<%d> TabNo<%d> BCD Id<%d>", nKeyId, pTopInfo->nTabNo + 1, pTopInfo->m_nTabId_CntBoard);
+								}
+							}
+
+							//피더파일에 기록하기
+							CString strResult = _T("");
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
+								, AprData.m_NowLotData.m_strLotNo
+								, pTopInfo->nTabNo + 1
+								, pTopInfo->m_nTabId_CntBoard
+								, nKeyId
+								, strTime
+								, strJudge
+								, strTopJudge
+								, strBtmJudge
+								, nSurfaceNgCnt
+								, nFoilExpNgCnt
+								, dTopMaxSize
+								, dBtmMaxSize
+								, strMarking
+								, strMarkReason
+								, _T("OVER")
+							);
+							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
+
+
+							CString strTimeImage;
+							strTimeImage.Format(_T("%02d_%02d_%02d_%03d"), pSysTime->wHour, pSysTime->wMinute, pSysTime->wSecond, pSysTime->wMilliseconds);
+
+							//이미지 저장 포맷
+							CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
+
+							//Top Image 저장
+							if (pTopInfo->GetImagePtr())
+							{
+								int nImgSizeTop = pTopInfo->m_nWidth * pTopInfo->m_nHeight;
+								//ImageProc: 이미지저장명 결정 생성
+								CString strFileNameTop = _T("");
+								strFileNameTop.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
+									, INSPECTION_TYPE
+									, strTimeImage
+									, AprData.m_System.m_strMachineID
+									, AprData.m_NowLotData.m_strLotNo
+									, pTopInfo->nTabNo + 1
+									, (pTopInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TAB") : _T("BTM")
+									, _T("OVER")
+									, strImageFormat
+								);
+
+								CImgSaveInfo* pSaveInfoTop = new CImgSaveInfo;
+								BYTE* pImgSavePtrTop;
+								pImgSavePtrTop = new BYTE[nImgSizeTop + 1];
+								memset(pImgSavePtrTop, 0x00, sizeof(BYTE) * nImgSizeTop + 1);
+								memcpy(pImgSavePtrTop, pTopInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSizeTop);
+								pSaveInfoTop->SetImgPtr(pImgSavePtrTop, pTopInfo->m_nWidth, pTopInfo->m_nHeight);
+								pSaveInfoTop->m_strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameTop);
+								pImgSaveQueueCtrl->PushBack(pSaveInfoTop);
+							}
+
+							//Bottom Image 저장
+							if (pBtmInfo->GetImagePtr())
+							{
+								int nImgSizeBottom = pBtmInfo->m_nWidth * pBtmInfo->m_nHeight;
+								//ImageProc: 이미지저장명 결정 생성
+								CString strFileNameBottom = _T("");
+								strFileNameBottom.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
+									, INSPECTION_TYPE
+									, strTimeImage
+									, AprData.m_System.m_strMachineID
+									, AprData.m_NowLotData.m_strLotNo
+									, pBtmInfo->nTabNo + 1
+									, (pBtmInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TAB") : _T("BTM")
+									, _T("OVER")
+									, strImageFormat
+								);
+
+								CImgSaveInfo* pSaveInfoBottom = new CImgSaveInfo;
+								BYTE* pImgSavePtrBottom;
+								pImgSavePtrBottom = new BYTE[nImgSizeBottom + 1];
+								memset(pImgSavePtrBottom, 0x00, sizeof(BYTE) * nImgSizeBottom + 1);
+								memcpy(pImgSavePtrBottom, pBtmInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSizeBottom);
+								pSaveInfoBottom->SetImgPtr(pImgSavePtrBottom, pBtmInfo->m_nWidth, pBtmInfo->m_nHeight);
+								pSaveInfoBottom->m_strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameBottom);
+								pImgSaveQueueCtrl->PushBack(pSaveInfoBottom);
+							}
+
+							LOGDISPLAY_SPEC(8)("## === UNIT LOOPPING ERROR === Info Print End ==  ");
+						}
+
 						break;
 					}
+					else
+					{
+						WaitForSingleObject(pThis->getEvent_ImageProcThread_InspComplate(), IMAGEPROCTHREAD_INSPCOMPLATE_TIMEOUT);
+					}
 
 				}
 
-				//Unit Thread 에서 빠져나오지 못했을 때 체크
-				if (topWaitVal == 1)
+				//객체 확인
+				if (pUnitTop)
 				{
-					if (pUnitTop)
+					//Unit Thread 에서 빠져나오지 못했을 때 체크
+					if (topWaitVal == 1)
 					{
 						delete pUnitTop;
-						pUnitTop = NULL;
 					}
+					pUnitTop = NULL;
 				}
 
-				//Unit Thread 에서 빠져나오지 못했을 때 체크
-				if (btmWaitVal == 1)
+				//객체 확인
+				if (pUnitBtm)
 				{
-					if (pUnitBtm)
+					//Unit Thread 에서 빠져나오지 못했을 때 체크
+					if (btmWaitVal == 1)
 					{
 						delete pUnitBtm;
-						pUnitBtm = NULL;
 					}
+					pUnitBtm = NULL;
 				}
 
-				////출력 대기 이벤트 객체 pop, 이벤트 닫기
-				//pThis->m_pParent->ImgProcWaitThread_Event_pop();
-				//CloseHandle(hEvent);
 			}
 
 		}

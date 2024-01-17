@@ -221,18 +221,15 @@ public:
 	WORD wAlarmExist;
 	WORD wAlarmCode[24];
 
-	//WORD wDummy4[15];
-
-	//WORD wCell_TriggerID; // 사용안함
-	//WORD wCell_Judge; // 사용안함
-	//WORD wCell_NgCode; // 사용안함
-
-	//WORD wDummy5[2];
-
-	//WORD wDuplicateNG_Cell_ID[64]; // NG 중복 카운트 ID 0~63, OK=0, NG=1
-
-
 } _SEQ_OUT_DATA_SMS;
+
+#define SEQDATASMS_DUMMY 210
+#define SEQDATASMS_KEYID 64
+typedef struct stSeqDataInSms {
+public:
+	WORD wCell_KeyID_Dummy[SEQDATASMS_DUMMY]; //Cell Key까지 더미 데이터
+	WORD wCell_KeyID[SEQDATASMS_KEYID]; //통합비전의 Cell(한번 검사에 필요한 영역)에 대한 부여된 ID
+} _SEQ_In_DATA_SMS;
 
 typedef struct stSeqDataOutAllSms {
 public:
@@ -338,6 +335,11 @@ public:
 	_SEQ_OUT_DATA_LOT_END_SMS	m_SeqDataLotEndSms;
 //	_CELL_JUDGE_SMS				m_stCellJudgeSms;
 	_ALARM_CODE_CELL_JUDGE_SMS	m_stAlarmCodeAndCellJudgeSms;
+
+	//지멘스 Read 블럭으로
+	_SEQ_In_DATA_SMS m_ReadDataSms;
+	//Read Count : 50초 주기로 읽기
+	int m_ReadCount;
 
 
 	// 22.07.11 Ahn Add Start

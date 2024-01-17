@@ -57,7 +57,7 @@ namespace UserModeDefine {
 	} eMode;
 
 	// 22.09.15 Ahn Add Start
-	static const char* szName[enMax] = { _T("OPERATOR_MODE"),_T("ENGINEER_MODE"), _T("MAKER_MODE") }; 
+	static const CString szName[enMax] = { _T("OPERATOR_MODE"),_T("ENGINEER_MODE"), _T("MAKER_MODE") }; 
 	// 22.09.15 Ahn Add End
 };
 // 22.05.25 Son Add End

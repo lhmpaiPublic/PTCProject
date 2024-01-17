@@ -468,23 +468,6 @@ int CSystemSetting::FileCtrl(int nMode)
 		// 23.02.17 Son Add End
 
 		{
-			strSection = _T("RS232_SETTING");
-			strKey = _T("RS232_MODE");
-			strData.Format(_T("%d"), m_nRS232_Mode);
-			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-
-			strKey = _T("RS232_BAUDRATE");
-			strData.Format(_T("%d"), m_nRS232_Baudrate);
-			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-
-			strKey = _T("RS232_COMPORT_TOP");
-			strData.Format(_T("%s"), m_strRS232_COMPORT_TOP); // 231011 format %d->%s kjk
-			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-
-			strKey = _T("RS232_COMPORT_BOTTOM");
-			strData.Format(_T("%s"), m_strRS232_COMPORT_BOTTOM); // 231011 format %d->%s kjk
-			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-
 			//			strKey = _T("SLAVE_ID");
 			// 			strData.Format(_T("%d"), );
 			// 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);

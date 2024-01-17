@@ -26,9 +26,6 @@ CFrameRsltInfo::~CFrameRsltInfo(void)
 
 void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 {
-	m_pImagePtr = pFrmInfo->GetImagePtr();
-	pFrmInfo->SetImgPtr(NULL); // 안하면 죽음.
-
 	m_nFrameCount = pFrmInfo->m_nFrameCount;
 	m_nHeadNo = pFrmInfo->m_nHeadNo;
 	m_nHeight = pFrmInfo->m_nHeight;		// Image 길이
@@ -56,11 +53,17 @@ void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 	// 외관 판정 시 Error 및 Over로 인한 부분을 처리하기 함.
 	m_bErrorFlag = pFrmInfo->m_bErrorFlag | pFrmInfo->m_bOverFlow;	
 
-	if (m_pTabRsltInfo != NULL) {
+	if (m_pTabRsltInfo != NULL)
+	{
 		m_pTabRsltInfo->m_nHeadNo = m_nHeadNo;
 		m_pTabRsltInfo->m_nTabNo = nTabNo;
-		m_pTabRsltInfo->m_nCellId = pFrmInfo->m_nTabId_CntBoard;
+		m_pTabRsltInfo->m_nCellId = m_nTabId_CntBoard;
 	}
+
+	//이미지 포인터는 생성 시 넘겨서 삭제됨
+	//이미지를 Save 할 때까지 포인터가 살아 있어야 해서 NULL로 만듬
+	//안하면 소멸자에서 포인터 메모리 해제됨
+	pFrmInfo->SetImgPtr(NULL); // 안하면 죽음.
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE

@@ -27,6 +27,230 @@
 
 // CRecipeSettingDlg 대화 상자
 
+static CString UiText1[][3] =
+{
+	{_T("레시피 설정"), _T("Recipe Setting"), _T("Recipe Setting")},
+	{_T("레시피명"), _T("Recipe Name"), _T("Recipe名")},
+	{_T("메모"), _T("Memo"), _T("备注")},
+	{_T("레시피 번호"), _T("Recipe No."), _T("Recipe编号")},
+	{_T("등록"), _T("Regist"), _T("登录")},
+	{_T("삭제"), _T("Delete"), _T("删除")},
+	{_T("프로그램정보"), _T("Program Info"), _T("程序信息")},
+	{_T("가져오기"), _T("Load"), _T("导入")},
+	{_T("기타 설정"), _T("Other Setting"), _T("其他设置")},
+	{_T("IMAGE 저장 간격"), _T("IMAGE Save Interval"), _T("图片保存间隔")},
+	{_T("NG만 저장"), _T("Save only NG Image"), _T("只保存NG")},
+	{_T("비교처리 미사용"), _T("Diable Diff"), _T("TAB设置")},
+	{_T("Tab 정보"), _T("Tab Setting"), _T("TAB设置")},
+	{_T("입력단위[mm]"), _T("Input[mm]"), _T("输入单位[]")},
+	{_T("단위[Pix]"), _T("Unit[Pix]"), _T("单位{pix]")},
+	{_T("음극"), _T("CATHODE"), _T("阴极")},
+	{_T("탭 코팅 높이"), _T("Tab coat Height"), _T("Tab涂层高度")},
+	{_T("V홈 높이"), _T("V Hight"), _T("V 沟槽高度")},
+	{_T("탭폭"), _T("Tab Width"), _T("Tab宽")},
+	{_T("탭 피치"), _T("Tab Pitch"), _T("Tab Pitch")},
+	{_T("라운드 반지름"), _T("Round radius"), _T("倒角半径")},
+	{_T("양극"), _T("Anode"), _T("阳极")},
+	{_T("Tab코팅높이"), _T("Tab shoulder coat size"), _T("Tab 涂层高度")},
+	{_T("Bottom코팅높이"), _T("Bottom coat size"), _T("Bottom涂层高度")},
+	{_T("Tab코팅높이"), _T("Tab coat size"), _T("Tab 涂层高度")},
+	{_T("엣지 검출 조건"), _T("Edge Detect Condition"), _T("Edge识别条件")},
+	{_T("코팅부 휘도(Min/Max)"), _T("Coat Bright(Min/Max)"), _T("电极辉度(MimMax)")},
+	{_T("롤부 휘도(Min/Max)"), _T("Roll Bright(Min/Max)"), _T("滚轮辉度(MimMax)")},
+	{_T("조명설정"), _T("Light Setting"), _T("照明设置")},
+	{_T("마킹설정"), _T("Marking Setting"), _T("喷码设置")},
+	{_T("검출력 설정"), _T("Detect Info"), _T("检出力设定")},
+	{_T("검출레벨(원화상)"), _T("Threshold(Org)"), _T("Threshold(Org)")},
+	{_T("검출레벨(하한)"), _T("Threshold(Lower)"), _T("Threshold(Lower)")},
+	{_T("검사범위[mm]"), _T("Insp Range[mm]"), _T("检查范围[mm]")},
+	{_T("최소검출 사이즈[Pix]"), _T("Min Size[Pix]"), _T("最小检出尺寸[pix]")},
+	{_T("마스크오프셋"), _T("Mask offset"), _T("Mask Offset[Pix]")},
+	{_T("전극표면 검출 설정"), _T("Surface Defect Setting"), _T("表面缺陷设置")},
+	{_T("표면검사 미사용"), _T("Disable surface detection"), _T("禁用表面检查")},
+	{_T("스레스홀드"), _T("Threshold"), _T("Threshold")},
+	{_T("마스크오프셋[Pix]"), _T("Mask Offset[Pix]"), _T("Mask Offset[Pix]")},
+	{_T("최소검출 사이즈[Pix]"), _T("Min size[Pix]"), _T("最小检出尺寸[pix]")},
+	{_T("결함 링크 사용"), _T("Enable Defect Link"), _T("缺陷连接功能")},
+	{_T("연결거리 X[Pix]"), _T("Distance X[Pix]"), _T("连接距离 X[Pix]")},
+	{_T("연결거리 Y[Pix]"), _T("Disatance Y[Pix]"), _T("连接记录 Y[Pix]")},
+	{_T("검출배율"), _T("Magnification"), _T("检出倍率")},
+	{_T("결함 판정"), _T("Defect Judgement"), _T("缺陷判定")},
+	{_T("가로(화면기준)"), _T("Horizon"), _T("地平线")},
+	{_T("표면결함 NG 사이즈"), _T("Surface NG Size"), _T("Surface NG Size")},
+	{_T("NG 알람 설정"), _T("NG Alarm"), _T("NG报警器")},
+	{_T("연속결함 알람"), _T("Continuous detect alarm"), _T("连续报警")},
+	{_T("구간결함 알람"), _T("Section detect alarm"), _T("断面报警")},
+	{_T("Foil exp 결함 제거"), _T("Foil_Exp_In Defect Remove"), _T("缺陷屏蔽功能")},
+	{_T("결함 제거 거리[um]"), _T("Remove distance[um]"), _T("缺陷屏蔽距离[um]")},
+	{_T("제거 결함 크기[um]"), _T("Remove size[um]"), _T("缺陷屏蔽大小[um]")},
+	{_T("결함 그레이 판정"), _T("Defect Judgement Gray"), _T("Defect Judgement Gray")},
+	{_T("NG 멈춤"), _T("NG Stop"), _T("NG停机")},
+	{_T("Disable Pet Flim Detection"), _T("Disable Pet Flim Detection"), _T("Disable Pet Flim Detection")},
+	{_T("Matrix(X/Y,ea)"), _T("Matrix(X/Y,ea)"), _T("Matrix(X/Y,ea)")},
+	{_T("Threshold (over)"), _T("Threshold (over)"), _T("Threshold (over)")},
+	{_T("Check Count (over)"), _T("Check Count (over)"), _T("Check Count (over)")},
+	{_T("Dark Roll"), _T("Dark Roll"), _T("暗色Roll")},
+	{_T("Bright Roll"), _T("Bright Roll"), _T("亮色Roll")},
+	{_T("Roll Mode"), _T("Roll Mode"), _T("Roll 模式")},
+	{_T("Tab Bright"), _T("Tab Bright"), _T("Tab 辉度")},
+	{_T("Tab Foil Lowest"), _T("Tab Foil Lowest"), _T("Tab 金属箔 最低亮度")},
+
+};
+
+enum UiText1Name
+{
+	ST_GROUP_RCP_SET,
+	ST_RECIPE_NAME,
+	ST_RECIPE_NAME2,
+	ST_RECIPE_NO,
+	BTN_REGIST,
+	BTN_DELETE,
+	BTN_PROGRAMINFO,
+	BTN_LOAD,
+	ST_OTHER_SETTING,
+	STATIC_IMAGESAVEINTERVAL,
+	CHK_SAVE_ONLY_NG_TAB,
+	CHK_DISABLE_PROC_DIFF,
+	ST_GROUP_TAB_INFO,
+	ST_INPUT_MM,
+	ST_INPUT_PIX,
+	GROUP_CATHODE,
+	ST_COAT_HEIGHT,
+	STATIC_GROOVE_HEIGHT,
+	ST_TAB_WIDTH,
+	ST_TAB_PITCH,
+	ST_ROUND_RADIUS,
+	GROUP_ANODE,
+	ST_TOP_COAT_HEIGHT,
+	ST_BTM_COAT_HEIGHT,
+	ST_TAB_COAT_HEIGHT,
+	ST_EDGE_DETECT_COND,
+	ST_COAT_BRIGHT,
+	ST_ROLL_BRIGHT,
+	ST_LIGHT_SETTING,
+	ST_MARKING_SETTING,
+	ST_DETECT_INFO,
+	ST_THRES_ORG,
+	ST_THRES_LOWER,
+	ST_INSP_WIDTH,
+	ST_DET_MIN_SIZE,
+	ST_MASK_OFFSET,
+	ST_GROUP_SPETTER,
+	CHK_DISABLE_SPTTER,
+	ST_THRES_SURFACE,
+	ST_MASK_SURFACE,
+	ST_MIN_SIZE_SURFACE,
+	CHK_ENABLE_DEF_LINK,
+	ST_LINK_RANGE_X,
+	ST_LINK_RANGE_Y,
+	ST_MAGNIFICATION,
+	ST_GROUP_JUDGE,
+	ST_HORIZON,
+	ST_SURFACE_NG_SIZE,
+	ST_NG_ALARM_SETTING,
+	ST_CONTINUE_ALRAM,
+	ST_SECTION_ALARM,
+	ST_FOIL_DEF_REMOVE,
+	ST_FOIL_DEF_REMOVE_DISTANCE,
+	ST_FOIL_DEF_REMOVE_SIZE,
+	ST_GRAY_SIZE,
+	CHK_NG_STOP,
+	CHK_DISABLE_PET,
+	ST_PET_MATRIX,
+	ST_PET_THRESHOLD,
+	PET_CHECK_CNT,
+	RAD_DARK_ROLL,
+	RAD_BRIGHT_ROLL,
+	STATIC_ROOL_MODE,
+	STATIC_TAB_BRIGHT,
+	STATIC_LOWEST,
+	MAX_COUNT
+};
+
+static int UiText1NameText[] =
+{
+	IDC_ST_GROUP_RCP_SET,
+	IDC_ST_RECIPE_NAME,
+	IDC_ST_RECIPE_NAME2,
+	IDC_ST_RECIPE_NO,
+	IDC_BTN_REGIST,
+	IDC_BTN_DELETE,
+	IDC_BTN_PROGRAMINFO,
+	IDC_BTN_LOAD,
+	IDC_ST_OTHER_SETTING,
+	IDC_STATIC_IMAGESAVEINTERVAL,
+	IDC_CHK_SAVE_ONLY_NG_TAB,
+	IDC_CHK_DISABLE_PROC_DIFF,
+	IDC_ST_GROUP_TAB_INFO,
+	IDC_ST_INPUT_MM,
+	IDC_ST_INPUT_PIX,
+	IDC_GROUP_CATHODE,
+	IDC_ST_COAT_HEIGHT,
+	IDC_STATIC_GROOVE_HEIGHT,
+	IDC_ST_TAB_WIDTH,
+	IDC_ST_TAB_PITCH,
+	IDC_ST_ROUND_RADIUS,
+	IDC_GROUP_ANODE,
+	IDC_ST_TOP_COAT_HEIGHT,
+	IDC_ST_BTM_COAT_HEIGHT,
+	IDC_ST_TAB_COAT_HEIGHT,
+	IDC_ST_EDGE_DETECT_COND,
+	IDC_ST_COAT_BRIGHT,
+	IDC_ST_ROLL_BRIGHT,
+	IDC_ST_LIGHT_SETTING,
+	IDC_ST_MARKING_SETTING,
+	IDC_ST_DETECT_INFO,
+	IDC_ST_THRES_ORG,
+	IDC_ST_THRES_LOWER,
+	IDC_ST_INSP_WIDTH,
+	IDC_ST_DET_MIN_SIZE,
+	IDC_ST_MASK_OFFSET,
+	IDC_ST_GROUP_SPETTER,
+	IDC_CHK_DISABLE_SPTTER,
+	IDC_ST_THRES_SURFACE,
+	IDC_ST_MASK_SURFACE,
+	IDC_ST_MIN_SIZE_SURFACE,
+	IDC_CHK_ENABLE_DEF_LINK,
+	IDC_ST_LINK_RANGE_X,
+	IDC_ST_LINK_RANGE_Y,
+	IDC_ST_MAGNIFICATION,
+	IDC_ST_GROUP_JUDGE,
+	IDC_ST_HORIZON,
+	IDC_ST_SURFACE_NG_SIZE,
+	IDC_ST_NG_ALARM_SETTING,
+	IDC_ST_CONTINUE_ALRAM,
+	IDC_ST_SECTION_ALARM,
+	IDC_ST_FOIL_DEF_REMOVE,
+	IDC_ST_FOIL_DEF_REMOVE_DISTANCE,
+	IDC_ST_FOIL_DEF_REMOVE_SIZE,
+	IDC_ST_GRAY_SIZE,
+	IDC_CHK_NG_STOP,
+	IDC_CHK_DISABLE_PET,
+	IDC_ST_PET_MATRIX,
+	IDC_ST_PET_THRESHOLD,
+	IDC_ST_PET_CHECK_CNT,
+	IDC_RAD_DARK_ROLL,
+	IDC_RAD_BRIGHT_ROLL,
+	IDC_STATIC_ROOL_MODE,
+	IDC_STATIC_TAB_BRIGHT,
+	IDC_STATIC_LOWEST,
+};
+
+static CString UiText2[][3] =
+{
+	{_T("1탭분사"), _T("1 Tab"), _T("单喷1片")},
+	{_T("3탭분사"), _T("3 Tab"), _T("单喷3片")},
+};
+
+
+static CString UiText3[][3] =
+{
+	{_T("번호"), _T("No."), _T("编号")},
+	{_T("레시피 명"), _T("Recipe Name"), _T("Recipe名")},
+	{_T("메모"), _T("Memo"), _T("备注")},
+};
+
+
 IMPLEMENT_DYNAMIC(CRecipeSettingDlg, CDialogEx)
 
 CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo, CWnd* pParent /*=nullptr*/)
@@ -1635,16 +1859,17 @@ int CRecipeSettingDlg::MakeGridCtrl_RecipeTable()
 	//CString strTitle[CRecipeSettingDlg::en_RcpName_MaxCols] = { _T("번호"), _T("레시피 명"),_T("메모") };
 	CString strTitle[CRecipeSettingDlg::en_RcpName_MaxCols]; //  = { _T("번호"), _T("레시피 명"),_T("메모") };
 
+
 	for (int i = 0; i < en_RcpName_MaxCols; i++) {
 		switch (i) {
 		case	en_RcpTable_No:
-			strTitle[i] = _LANG(_T("번호"), _T("No."));
+			strTitle[i] = UiText3[0][__Lang];
 			break;
 		case	en_RcpTable_Name:
-			strTitle[i] = _LANG(_T("레시피 명"), _T("Recipe Name"));
+			strTitle[i] = UiText3[1][__Lang];
 			break;
 		case	en_RcpName_Memo:
-			strTitle[i] = _LANG(_T("메모"), _T("Memo"));
+			strTitle[i] = UiText3[2][__Lang];
 			break;
 		}
 	}
@@ -2425,14 +2650,16 @@ int CRecipeSettingDlg::UpdateGrid_Marking()
 				}
 					break;
 				case	en_MarkingType:
-					switch (m_pRecipeInfo->nMarkingType[nDefType]) {
+					strText = UiText2[m_pRecipeInfo->nMarkingType[nDefType]][__Lang];
+					/*switch (m_pRecipeInfo->nMarkingType[nDefType]) 
+					{
 					case	0:
-						strText.Format(_LANG( _T("1탭 분사"), _T("1 Tab") ) );						
+						strText = UiText2[0][__Lang];
 						break;
 					case	1:
-						strText.Format(_LANG( _T("3탭 분사"), _T("3 Tab") ) );
+						strText = UiText2[1][__Lang];
 						break;
-					}
+					}*/
 					break;
 				}
 
@@ -2639,6 +2866,20 @@ void CRecipeSettingDlg::OnEnSetfocusEdSectorCount()
 // 22.09.05 Ahn Add Start
 void CRecipeSettingDlg::DisplayLanguage()
 {
+	CWnd* pWnd;
+	CString strText;
+	for (int idx = 0; idx < MAX_COUNT; idx++)
+	{
+		pWnd = NULL;
+		pWnd = GetDlgItem(UiText1NameText[idx]);
+		if (pWnd != nullptr)
+		{
+			strText = UiText1[idx][__Lang];
+			pWnd->SetWindowTextA(strText);
+		}
+	}
+}
+/* {
 	CWnd* pWnd;
 	CString strText;
 
@@ -2866,6 +3107,7 @@ void CRecipeSettingDlg::DisplayLanguage()
 	// 22.11.21 Ahn Modify End
 
 }
+*/
 // 22.09.05 Ahn Add End
 
 // 22.09.19 Ahn Add Start

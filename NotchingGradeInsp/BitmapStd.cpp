@@ -43,12 +43,12 @@ namespace
 				TRACE( _T( "LoadLibrary Failure.(%s)\n" ), g_szLibrary ) ;
 				nRet = -1 ;
 			} else {
-				EncodeJpg	= ( DLL_EncodeJpg)	GetProcAddress( g_hDll, _T( "EncodeJpg" ) ) ;
-				GetInfoJpg	= ( DLL_GetInfoJpg)	GetProcAddress( g_hDll, _T( "GetInfoJpg" ) ) ;
-				DecodeJpg	= ( DLL_DecodeJpg)	GetProcAddress( g_hDll, _T( "DecodeJpg" ) ) ;
-				EncodePng	= ( DLL_EncodePng)	GetProcAddress( g_hDll, _T( "EncodePng" ) ) ;
-				GetInfoPng	= ( DLL_GetInfoPng)	GetProcAddress( g_hDll, _T( "GetInfoPng" ) ) ;
-				DecodePng	= ( DLL_DecodePng)	GetProcAddress( g_hDll, _T( "DecodePng" ) ) ;
+				EncodeJpg	= ( DLL_EncodeJpg)	GetProcAddress( g_hDll, "EncodeJpg" ) ;
+				GetInfoJpg	= ( DLL_GetInfoJpg)	GetProcAddress( g_hDll, "GetInfoJpg" ) ;
+				DecodeJpg	= ( DLL_DecodeJpg)	GetProcAddress( g_hDll, "DecodeJpg" ) ;
+				EncodePng	= ( DLL_EncodePng)	GetProcAddress( g_hDll, "EncodePng" ) ;
+				GetInfoPng	= ( DLL_GetInfoPng)	GetProcAddress( g_hDll, "GetInfoPng" ) ;
+				DecodePng	= ( DLL_DecodePng)	GetProcAddress( g_hDll, "DecodePng" ) ;
 				if ( EncodeJpg == NULL ) {
 					TRACE( _T( "GetProcAddress Failure.(%s)\n" ), _T( "EncodeJpg" ) ) ;
 					nRet = -1 ;
@@ -711,12 +711,12 @@ int CBitmapStd::ReadBitmap( CWnd *pwnd, CString *pszSelectName /*= NULL*/ )
 #if	!defined( NOT_USE_BMPSTD_CRITICALSECTION )
 	CSingleLock	cs( GetBmpCriticalSection(), TRUE ) ;
 #endif
-	char	szFilters[] = "BitMapFiles(*.bmp)|*.bmp|AllFiles(*.*)|*.*||" ;
+	CString	szFilters = _T("BitMapFiles(*.bmp)|*.bmp|AllFiles(*.*)|*.*||") ;
 
 	if ( pwnd == NULL ) {
 		pwnd = AfxGetMainWnd() ;
 	}
-	CString	szDefaultName = "*.bmp" ;
+	CString	szDefaultName = _T("*.bmp") ;
 	if ( pszSelectName != NULL ) {
 		int	iPosition = pszSelectName->ReverseFind( '\\' ) ;
 		if ( iPosition >= 0 ) {
@@ -726,7 +726,7 @@ int CBitmapStd::ReadBitmap( CWnd *pwnd, CString *pszSelectName /*= NULL*/ )
 		}
 	}
 
-	CFileDialog dlg( TRUE, "bmp", szDefaultName, OFN_HIDEREADONLY, szFilters, pwnd ) ;
+	CFileDialog dlg( TRUE, _T("bmp"), szDefaultName, OFN_HIDEREADONLY, szFilters, pwnd ) ;
 
 	if ( dlg.DoModal() == IDOK ) {
 		CString filename ;
@@ -969,7 +969,7 @@ int CBitmapStd::SaveBitmap( CWnd *pwnd, LPCTSTR pszInitDir )
 	if ( pwnd == NULL ) {
 		pwnd = AfxGetMainWnd() ;
 	}
-	CFileDialog dlg( FALSE, _T( "bmp" ), "*.bmp", OFN_HIDEREADONLY, szFilter, pwnd ) ;
+	CFileDialog dlg( FALSE, _T( "bmp" ), _T("*.bmp"), OFN_HIDEREADONLY, szFilter, pwnd ) ;
 
 	dlg.m_ofn.lpstrInitialDir = pszInitDir ;
 	if ( dlg.DoModal() == IDOK ) {

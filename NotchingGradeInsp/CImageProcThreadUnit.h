@@ -30,9 +30,6 @@ protected:
 	HANDLE	m_hEventKilled;
 	HANDLE	m_hSendResult;
 
-	//프로세싱 끝 확인 함수 슬립타임 이벤트 객체
-	HANDLE	m_heventProcEnd_SleepTime;
-
 	int m_nErrorCode;
 
 	//타임아웃 여부 변수
