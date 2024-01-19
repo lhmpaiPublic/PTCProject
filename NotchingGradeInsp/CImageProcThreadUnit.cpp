@@ -385,6 +385,37 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				}
 
+				// Check Bright - PET 감지 안되고, 정상 또는 비정상 검사 진행 할 때 휘도 확인
+				if (pFrmInfo->m_bIsPET == FALSE)
+				{
+					CImageProcess::_BRIGHT_INFO stBrightInfo;
+					BOOL bIsBrightError = CImageProcess::CheckBright(pOrgImg, nWidth, nHeight, *AprData.m_pRecipeInfo, &stBrightInfo, pFrmInfo->m_nHeadNo);
+
+					if (bIsBrightError == TRUE)
+					{
+						AprData.SaveDebugLog_Format(_T("<<CtrlImageProcThread>> <CheckBright> <%s> <BCD:%d> <TabNo:%d> - [Bright Error] Area (L:%d, T:%d, R:%d, B:%d), Min:%d, Max:%d, Now:%d")
+							, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+							, pFrameRsltInfo->m_nTabId_CntBoard
+							, pFrameRsltInfo->nTabNo + 1
+							, AprData.m_pRecipeInfo->nCheckBrightL[pFrmInfo->m_nHeadNo]
+							, AprData.m_pRecipeInfo->nCheckBrightT[pFrmInfo->m_nHeadNo]
+							, AprData.m_pRecipeInfo->nCheckBrightR[pFrmInfo->m_nHeadNo]
+							, AprData.m_pRecipeInfo->nCheckBrightB[pFrmInfo->m_nHeadNo]
+							, AprData.m_pRecipeInfo->nCheckBrightRangeMin[pFrmInfo->m_nHeadNo]
+							, AprData.m_pRecipeInfo->nCheckBrightRangeMax[pFrmInfo->m_nHeadNo]						
+							, stBrightInfo.nBright
+						);
+
+						AprData.m_ErrStatus.SetError(CErrorStatus::en_BrightError, _T("Image Bright Error!! Check the light or electrode."));
+
+						AprData.m_NowLotData.m_nContinueCount = AprData.m_nCoutinuouCount + 1; //강제 연속 알람
+
+					}
+				}
+
+
+
+
 				// 22.04.18 Ahn Add Start
 				//ImageProc: Tab 에 대한 이미지 최대 사이즈 저장
 				double dMaxSize = pFrameRsltInfo->m_pTabRsltInfo->SortingDefect(0);

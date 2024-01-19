@@ -31,7 +31,7 @@ public :
 		en_DioError			= 0x000010,
 		en_ProcessError		= 0x000011,
 		en_MissTabID		= 0x000012,
-
+		en_BrightError		= 0x000013,
 
 		en_DiskCapacityAlarm	= 0x100001,
 		en_DiskCapacityWarning  = 0x100002,

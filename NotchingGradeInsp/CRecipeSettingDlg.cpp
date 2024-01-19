@@ -296,6 +296,15 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	, m_nEdPetThreshold(0)
 	, m_nEdPetCheckCnt(0)
 	, m_bChkEnableVGroove(FALSE)
+	, m_bChkDisableBrightCheck(FALSE)
+	, m_nEdCheckBrightL(0)
+	, m_nEdCheckBrightT(0)
+	, m_nEdCheckBrightR(0)
+	, m_nEdCheckBrightB(0)
+	, m_nEdCheckBrightRangeMin(0)
+	, m_nEdCheckBrightRangeMax(0)
+	, m_nEdCheckBrightOverCnt(0)
+
 
 {
 	m_bRcpSelMode = bRcpSelMode ;
@@ -448,6 +457,18 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHK_ENABLE_V_GROOVE, m_bChkEnableVGroove);
 
 
+	DDX_Check(pDX, IDC_CHK_DISABLE_BRIGHT, m_bChkDisableBrightCheck);
+	DDX_Text(pDX, IDC_ED_BRIGHT_AREA_L, m_nEdCheckBrightL);
+	DDX_Text(pDX, IDC_ED_BRIGHT_AREA_T, m_nEdCheckBrightT);
+	DDX_Text(pDX, IDC_ED_BRIGHT_AREA_R, m_nEdCheckBrightR);
+	DDX_Text(pDX, IDC_ED_BRIGHT_AREA_B, m_nEdCheckBrightB);
+	DDX_Text(pDX, IDC_ED_BRIGHT_RANGE_MIN, m_nEdCheckBrightRangeMin);
+	DDX_Text(pDX, IDC_ED_BRIGHT_RANGE_MAX, m_nEdCheckBrightRangeMax);
+	DDX_Text(pDX, IDC_ED_BRIGHT_OVER_CNT, m_nEdCheckBrightOverCnt);
+
+
+
+
 }
 
 
@@ -534,6 +555,14 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_FOIL_DEFECT_Y_SIZE_TOP, &CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeTop)
 	ON_EN_SETFOCUS(IDC_ED_FOIL_DEFECT_Y_SIZE_BTM, &CRecipeSettingDlg::OnSetfocusEdFoilDefectYSizeBtm)
 	ON_BN_CLICKED(IDC_CHK_ENABLE_V_GROOVE, &CRecipeSettingDlg::OnBnClickedChkEnableVGroove)
+	ON_BN_CLICKED(IDC_CHK_DISABLE_BRIGHT, &CRecipeSettingDlg::OnBnClickedChkDisableBright)
+	ON_EN_SETFOCUS(IDC_ED_BRIGHT_AREA_L, &CRecipeSettingDlg::OnSetfocusEdBrightAreaL)
+	ON_EN_SETFOCUS(IDC_ED_BRIGHT_AREA_R, &CRecipeSettingDlg::OnSetfocusEdBrightAreaR)
+	ON_EN_SETFOCUS(IDC_ED_BRIGHT_AREA_T, &CRecipeSettingDlg::OnSetfocusEdBrightAreaT)
+	ON_EN_SETFOCUS(IDC_ED_BRIGHT_AREA_B, &CRecipeSettingDlg::OnSetfocusEdBrightAreaB)
+	ON_EN_SETFOCUS(IDC_ED_BRIGHT_RANGE_MIN, &CRecipeSettingDlg::OnSetfocusEdBrightRangeMin)
+	ON_EN_SETFOCUS(IDC_ED_BRIGHT_RANGE_MAX, &CRecipeSettingDlg::OnSetfocusEdBrightRangeMax)
+	ON_EN_SETFOCUS(IDC_ED_BRIGHT_OVER_CNT, &CRecipeSettingDlg::OnSetfocusEdBrightOverCnt)
 END_MESSAGE_MAP()
 
 
@@ -1104,6 +1133,18 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		m_bChkEnableVGroove = pRecipeInfo->bEnableVGroove;
 
 
+		m_bChkDisableBrightCheck = pRecipeInfo->bDisableBrightCheck;
+		m_nEdCheckBrightL = pRecipeInfo->nCheckBrightL[nCamPos];
+		m_nEdCheckBrightT = pRecipeInfo->nCheckBrightT[nCamPos];
+		m_nEdCheckBrightR = pRecipeInfo->nCheckBrightR[nCamPos];
+		m_nEdCheckBrightB = pRecipeInfo->nCheckBrightB[nCamPos];
+		m_nEdCheckBrightRangeMin = pRecipeInfo->nCheckBrightRangeMin[nCamPos];
+		m_nEdCheckBrightRangeMax = pRecipeInfo->nCheckBrightRangeMax[nCamPos];
+		m_nEdCheckBrightOverCnt = pRecipeInfo->nCheckBrightOverCnt;
+
+
+
+
 		for( int i=0; i<MAX_CAMERA_NO; i++ )
 		{
 			m_dEdNgSizeWidth[i] = pRecipeInfo->dFoilExpInNgSize[i];
@@ -1222,6 +1263,16 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		pRecipeInfo->nPetCheckCnt[nCamPos] = m_nEdPetCheckCnt;
 
 		pRecipeInfo->bEnableVGroove = m_bChkEnableVGroove;
+
+
+		pRecipeInfo->bDisableBrightCheck = m_bChkDisableBrightCheck;
+		pRecipeInfo->nCheckBrightL[nCamPos] = m_nEdCheckBrightL;
+		pRecipeInfo->nCheckBrightT[nCamPos] = m_nEdCheckBrightT;
+		pRecipeInfo->nCheckBrightR[nCamPos] = m_nEdCheckBrightR;
+		pRecipeInfo->nCheckBrightB[nCamPos] = m_nEdCheckBrightB;
+		pRecipeInfo->nCheckBrightRangeMin[nCamPos] = m_nEdCheckBrightRangeMin;
+		pRecipeInfo->nCheckBrightRangeMax[nCamPos] = m_nEdCheckBrightRangeMax;
+		pRecipeInfo->nCheckBrightOverCnt = m_nEdCheckBrightOverCnt;
 
 
 	}
@@ -3377,4 +3428,118 @@ void CRecipeSettingDlg::OnBnClickedChkEnableVGroove()
 
 	UpdateData(FALSE);
 
+}
+
+
+void CRecipeSettingDlg::OnBnClickedChkDisableBright()
+{
+	UpdateData(TRUE);
+
+	ShowControl();
+
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdBrightAreaL()
+{
+	int nValue, nMax, nMin;
+	nMax = 999999;
+	nMin = 0;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdCheckBrightL;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdCheckBrightL = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdBrightAreaR()
+{
+	int nValue, nMax, nMin;
+	nMax = 999999;
+	nMin = 0;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdCheckBrightR;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdCheckBrightR = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdBrightAreaT()
+{
+	int nValue, nMax, nMin;
+	nMax = 999999;
+	nMin = 0;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdCheckBrightT;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdCheckBrightT = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdBrightAreaB()
+{
+	int nValue, nMax, nMin;
+	nMax = 999999;
+	nMin = 0;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdCheckBrightB;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdCheckBrightB = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdBrightRangeMin()
+{
+	int nValue, nMax, nMin;
+	nMax = 255;
+	nMin = 0;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdCheckBrightRangeMin;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdCheckBrightRangeMin = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdBrightRangeMax()
+{
+	int nValue, nMax, nMin;
+	nMax = 255;
+	nMin = 0;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdCheckBrightRangeMax;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdCheckBrightRangeMax = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnSetfocusEdBrightOverCnt()
+{
+	int nValue, nMax, nMin;
+	nMax = 999999;
+	nMin = 0;
+	int m_nSelCamPos = m_TabDetectCond.GetCurSel();
+	nValue = m_nEdCheckBrightOverCnt;
+
+	CString strMsg;
+	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
+	m_nEdCheckBrightOverCnt = SetValue(nValue, strMsg, nMax, nMin);
+	UpdateData(FALSE);
 }

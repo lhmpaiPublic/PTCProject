@@ -332,6 +332,25 @@ public:
 	afx_msg void OnSetfocusEdFoilDefectYSizeTop();
 	afx_msg void OnSetfocusEdFoilDefectYSizeBtm();
 	afx_msg void OnBnClickedChkEnableVGroove();
+
+
+	BOOL m_bChkDisableBrightCheck;
+	int m_nEdCheckBrightL;
+	int m_nEdCheckBrightT;
+	int m_nEdCheckBrightR;
+	int m_nEdCheckBrightB;
+	int m_nEdCheckBrightRangeMin;
+	int m_nEdCheckBrightRangeMax;
+	int m_nEdCheckBrightOverCnt;
+
+	afx_msg void OnBnClickedChkDisableBright();
+	afx_msg void OnSetfocusEdBrightAreaL();
+	afx_msg void OnSetfocusEdBrightAreaR();
+	afx_msg void OnSetfocusEdBrightAreaT();
+	afx_msg void OnSetfocusEdBrightAreaB();
+	afx_msg void OnSetfocusEdBrightRangeMin();
+	afx_msg void OnSetfocusEdBrightRangeMax();
+	afx_msg void OnSetfocusEdBrightOverCnt();
 };
 
 

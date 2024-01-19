@@ -174,6 +174,15 @@ public:
 
 	typedef std::vector< _PET_INFO > VEC_PET_INFO;
 
+	typedef struct
+	{
+		CRect rcArea;
+		int nBright;
+		BOOL bError;
+
+	} _BRIGHT_INFO;
+
+
 	// >>>>>>>>>>>>>>>>>>>> 여기부터 제작 필요 >>>>>>>>>>>>>>>>>>>>>>>
 	//Filter 처리
 	static int FilterProc(BYTE* pImgae, BYTE* pResultPtr, int nFilterNo) { return 0; };
@@ -488,6 +497,8 @@ public:
 
 	static BOOL	FindPetFilm(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos);
 	static BOOL SaveOriginImage(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CString strComment);
+
+	static BOOL CheckBright(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, _BRIGHT_INFO* stBrightInfo, int nCamPos);
 
 };
 

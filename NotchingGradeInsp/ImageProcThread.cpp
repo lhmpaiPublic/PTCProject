@@ -327,8 +327,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						AprData.SaveDebugLog_Format(_T(">>>>>> Miss Tab Vec [T/B:%d][F/V:%d] : Size=%d, QueueCount=%d, FrameCountTop=%d, FrameCountBtm=%d "), 
 							pFrmInfo_Top->m_nTabId_CntBoard, pFrmInfo_Top->nTabNo+1, nVecSize, pCntQueueInCtrl->GetSize(), pFrmInfo_Top->m_nFrameCount, pFrmInfo_Bottom->m_nFrameCount );
 					}
-					nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
-
+					//nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo); // Btm Edge 인식 함수 변경 : 해당 함수 사용 시 동일 조건임에도 이상 동작 발생. 원인 미상
+					nBneElectrodeBtm = CImageProcess::FindLevelBottom_Negative(pTailPtr->m_pImagePtr, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
 
 					// PET Check BOTTOM
 					CImageProcess::VEC_PET_INFO* pvstPetInfoBtm = new CImageProcess::VEC_PET_INFO;
@@ -814,8 +814,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 						// 22.09.30 Ahn Add End
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> nVecSize:%d/%d, ImageLength:%d, FrameCount:%d, TabStartPosInFrame:%d, TabLeft:%d, TabRight:%d, nLevel:%d"),
-							i, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel);
+						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> nVecSize:%d/%d, ImageLength:%d, FrameCount:%d, TabStartPosInFrame:%d, TabLeft:%d, TabRight:%d, nLevel:%d, nBtmLevel:%d"),
+							i, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel, nBtmLevel);
 
 
 

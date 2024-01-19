@@ -153,6 +153,17 @@ public:
 	BOOL bEnableVGroove;
 
 
+	BOOL bDisableBrightCheck;
+	int nCheckBrightL[MAX_CAMERA_NO];
+	int nCheckBrightT[MAX_CAMERA_NO];
+	int nCheckBrightR[MAX_CAMERA_NO];
+	int nCheckBrightB[MAX_CAMERA_NO];
+	int nCheckBrightRangeMin[MAX_CAMERA_NO];
+	int nCheckBrightRangeMax[MAX_CAMERA_NO];
+	int nCheckBrightOverCnt;
+
+
+
 
 	enum {
 		en_RankCond_Size = 0,

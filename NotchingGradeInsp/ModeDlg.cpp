@@ -524,7 +524,6 @@ void CModeDlg::OnBnClickedBtnInspSim()
 
 void CModeDlg::OnBnClickedBtnLog()
 {
-
 	CIoMonitorDlg dlg(this);
  	dlg.DoModal();
 

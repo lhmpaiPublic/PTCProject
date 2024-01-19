@@ -286,6 +286,8 @@ void CImageDispDlg::OnPaint()
 	DrawMask(&mdc);
 
 	DrawPetArea(&mdc);
+	
+	DrawBrightCheckArea(&mdc);
 
 	dc.BitBlt(0, 0, rcWnd.Width(), rcWnd.Height(), &mdc, 0, 0, SRCCOPY);
 	mdc.SelectObject(pOldBm);
@@ -1411,6 +1413,100 @@ void CImageDispDlg::DrawPetArea(CDC* pDC)
 		}
 	}
 }
+
+
+void CImageDispDlg::DrawBrightCheckArea(CDC* pDC)
+{
+	if (m_bDispBoundary == FALSE) return;
+
+
+	CImageProcess::_BRIGHT_INFO* pstBrightInfo = NULL;
+	pstBrightInfo = m_pParent->GetBrightInfo();
+
+	if ( (pstBrightInfo->rcArea.right - pstBrightInfo->rcArea.left) <= 0
+		|| (pstBrightInfo->rcArea.bottom - pstBrightInfo->rcArea.top) <= 0 )
+	{
+		return;
+	}
+
+
+	CBitmapStd* pBmpDest = m_pBmpDraw->GetBitmap();
+	if (pBmpDest == NULL) {
+		return;
+	}
+	int	nRet = 0;
+	CRect	rc;
+	//	CPen	hSelPen, *hselold = NULL ;
+	int	nBitCount = pBmpDest->GetBitCount();
+
+
+	GetClientRect(&rc);
+
+
+	CPen	hpen, * hpenold = NULL;
+
+	// 마스크 위치 계산 
+	CRect rcDefect;
+	rcDefect.left = pstBrightInfo->rcArea.left / m_nZoomOutH;
+	rcDefect.right = (pstBrightInfo->rcArea.right + 1) / m_nZoomOutH;
+	rcDefect.top = pstBrightInfo->rcArea.top / m_nZoomOutV;
+	rcDefect.bottom = (pstBrightInfo->rcArea.bottom + 1) / m_nZoomOutV;
+	rcDefect.NormalizeRect();
+
+	if (rcDefect.IntersectRect(&rcDefect, &m_rcCur) == 0) {
+		//	return ;
+	}
+
+
+	if (pstBrightInfo->bError == TRUE)
+	{
+		hpen.CreatePen(PS_SOLID, 1, RGB(255, 64, 64));
+	}
+	else
+	{
+		hpen.CreatePen(PS_SOLID, 1, RGB(64, 64, 255));
+	}
+	hpenold = pDC->SelectObject(&hpen);
+
+	int nExtSize = 5;
+	int nOffsetX = 0;
+	int nOffsetY = 0;
+	nOffsetX -= m_rcCur.left;
+	nOffsetY -= m_rcCur.top;
+	rcDefect.OffsetRect(nOffsetX, nOffsetY);
+	double rate = (double)m_nDrawRate / (double)m_nScopeRate;
+	rcDefect.left = (long)(rcDefect.left * rate) - nExtSize;
+	rcDefect.right = (long)(rcDefect.right * rate) + nExtSize;
+	rcDefect.top = (long)(rcDefect.top * rate) - nExtSize;
+	rcDefect.bottom = (long)(rcDefect.bottom * rate) + nExtSize;
+
+	pDC->MoveTo(rcDefect.left, rcDefect.top);
+	pDC->LineTo(rcDefect.right, rcDefect.top);
+	pDC->LineTo(rcDefect.right, rcDefect.bottom);
+	pDC->LineTo(rcDefect.left, rcDefect.bottom);
+	pDC->LineTo(rcDefect.left, rcDefect.top);
+
+	pDC->SetBkMode(TRANSPARENT);
+
+	if (pstBrightInfo->bError == TRUE)
+	{
+		pDC->SetTextColor(RGB(255, 64, 64));
+	}
+	else
+	{
+		pDC->SetTextColor(RGB(64, 64, 255));
+	}
+
+	CString strBright;
+	strBright.Format(_T("%d"), pstBrightInfo->nBright);
+	pDC->DrawText(strBright, rcDefect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+
+	hpenold = pDC->SelectObject(&hpen);
+	hpen.DeleteObject();
+
+}
+
 
 
 void CImageDispDlg::DrawArea(CDC* pDC)

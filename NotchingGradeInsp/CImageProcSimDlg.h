@@ -105,7 +105,8 @@ public :
 	CImageProcess::VEC_PET_INFO* m_pvstPetInfo;
 	CImageProcess::VEC_PET_INFO* GetPetInfo() { return m_pvstPetInfo; };
 
-
+	CImageProcess::_BRIGHT_INFO* m_pstBrightInfo;
+	CImageProcess::_BRIGHT_INFO* GetBrightInfo() { return m_pstBrightInfo; };
 
 //KANG 22.01.07 Add Start
 	void LoadImageFile(LPCTSTR lpszFileName);

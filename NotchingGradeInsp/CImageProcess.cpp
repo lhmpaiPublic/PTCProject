@@ -5832,6 +5832,12 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 	//===========================================================================================================
 #endif //SPCPLUS_CREATE
 
+
+	AprData.SaveDebugLog_Format( _T("<AddDefectInfoByBlockInfo> <%s> TabNo:%d, BlockData Count:%d")
+		, (pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM"
+		, pTabRsltInfo->m_nTabNo + 1
+		, nSize);
+
 	int nCount = 0; 
 	for (int i = 0; i < nSize; i++)
 	{
@@ -6070,6 +6076,12 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 		}
 		// 22.05.25 Ahn Add End
 	}
+
+	AprData.SaveDebugLog_Format(_T("<AddDefectInfoByBlockInfo> <%s> TabNo:%d, Result Count:%d")
+		, (pTabRsltInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP" : "BOTTOM"
+		, pTabRsltInfo->m_nTabNo + 1
+		, nCount);
+
 
 	return 0;
 }
@@ -9717,6 +9729,82 @@ BOOL CImageProcess::FindPetFilm(const BYTE* pOrgImg, int nImageWidth, int nImage
 
 	return bRet;
 }
+
+
+
+BOOL CImageProcess::CheckBright(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, _BRIGHT_INFO* stBrightInfo, int nCamPos)
+{
+	if (RecipeInfo.bDisableBrightCheck == TRUE)
+	{
+		return FALSE;
+	}
+
+	DWORD dwStart = GetTickCount();
+
+	BOOL bRet = FALSE;
+
+	int nStartX = RecipeInfo.nCheckBrightL[nCamPos];
+	int nStartY = RecipeInfo.nCheckBrightT[nCamPos];
+	int nEndX = RecipeInfo.nCheckBrightR[nCamPos];
+	int nEndY = RecipeInfo.nCheckBrightB[nCamPos];
+	int nRangeMin = RecipeInfo.nCheckBrightRangeMin[nCamPos];
+	int nRangeMax = RecipeInfo.nCheckBrightRangeMax[nCamPos];
+	
+	if (nStartX < 0) { nStartX = 0; }
+	if (nStartY < 0) { nStartY = 0; }
+	if (nEndX < 0) { nEndX = 0; }
+	if (nEndX >= nImageWidth) { nEndX = nImageWidth - 1; }
+	if (nEndY < 0) { nEndY = 0; }
+	if (nEndY >= nImageHeight) { nEndY = nImageHeight - 1; }
+
+
+	int nSum = 0;
+	int nCount = 0;
+	for (int y = nStartY; y < nEndY; y++)
+	{
+		BYTE* pLinePtr = (BYTE*)pOrgImg + (nImageWidth * y);
+		for (int x = nStartX; x < nEndX; x++)
+		{
+			nSum += (int)*(pLinePtr + x);
+			nCount++;
+		}
+	}
+	if (nCount != 0)
+	{
+		int nBrightNow = nSum / nCount;
+
+		CRect rcArea;
+		rcArea.left = nStartX;
+		rcArea.top = nStartY;
+		rcArea.right = nEndX;
+		rcArea.bottom = nEndY;
+
+		stBrightInfo->rcArea = rcArea;
+		stBrightInfo->nBright = nBrightNow;
+
+		if (nBrightNow >= nRangeMin && nBrightNow <= nRangeMax)
+		{
+			stBrightInfo->bError = FALSE; // OK
+		}
+		else
+		{
+			stBrightInfo->bError = TRUE; // NG
+		}
+
+	}
+
+	bRet = stBrightInfo->bError;
+
+
+	DWORD dwTact = GetTickCount() - dwStart;
+	CString strTict;
+	strTict.Format(_T("%d"), dwTact);
+//	AfxMessageBox(strTict);
+
+
+	return bRet;
+}
+
 
 
 BOOL CImageProcess::SaveOriginImage(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CString strComment)

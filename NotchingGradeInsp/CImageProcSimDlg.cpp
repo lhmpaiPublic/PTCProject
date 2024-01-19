@@ -98,6 +98,11 @@ CImageProcSimDlg::~CImageProcSimDlg()
 		m_pvstPetInfo = NULL;
 	}
 
+	if (m_pstBrightInfo != NULL) {
+		delete m_pstBrightInfo;
+		m_pstBrightInfo = NULL;
+	}
+
 	if (m_pFontGrid != NULL) {
 		delete m_pFontGrid;
 		m_pFontGrid = NULL;
@@ -505,6 +510,9 @@ BOOL CImageProcSimDlg::OnInitDialog()
 		m_pvstPetInfo->clear();
 	}
 
+	if (m_pstBrightInfo == NULL) {
+		m_pstBrightInfo = new CImageProcess::_BRIGHT_INFO;
+	}
 
 	int iEdge = GetSystemMetrics(SM_CYEDGE);
 	int nTitleHeight = GetSystemMetrics(SM_CYCAPTION) + iEdge;
@@ -1760,34 +1768,44 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 	int nFindLevel = 0;
 
 	BOOL bIsPET = FALSE;
+	BOOL bIsBrightError = FALSE;
 	if (m_bModeTop == TRUE)
 	{
 		CTabInfo RsvTabInfo;
 		int nLevel = 0;
 
 		//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
-		int nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pImgPtr, nWidth, nHeight, AprData.m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
+		int nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pImgPtr, nWidth, nHeight, m_pRecipeInfo, /*CImageProcess::en_FindFromRight*/CImageProcess::en_FindFromLeft);
 
 		//Tab 정보를 저장할 vector 임시 객체
 		CImageProcess::_VEC_TAB_INFO vecTabInfo;
 
 		//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
-		int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
-		CImageProcess::DivisionTab_FromImageToTabInfo(pImgPtr, pImgPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, 0);
+		int nTabFindPos = nBndElectrode + m_pRecipeInfo->TabCond.nCeramicHeight;
+		CImageProcess::DivisionTab_FromImageToTabInfo(pImgPtr, pImgPtr, nWidth, nHeight, nTabFindPos, &nLevel, *m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, 0);
 
 		nFindLevel = nLevel;
 
-		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, m_pvstPetInfo, CAM_POS_TOP); // Graphic Draw 용
+		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *m_pRecipeInfo, m_pvstPetInfo, CAM_POS_TOP); // Graphic Draw 용
+
+		bIsBrightError = CImageProcess::CheckBright(pImgPtr, nWidth, nHeight, *m_pRecipeInfo, m_pstBrightInfo, CAM_POS_TOP); // Graphic Draw 용
+
+
 	}
 	else
 	{
 		int nBtmLevel = 0;
 
-		int nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo);
+		//int nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nBtmLevel, m_pRecipeInfo);
+
+
+		CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
 
 		nFindLevel = nBtmLevel;
 
-		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, m_pvstPetInfo, CAM_POS_BOTTOM);
+		bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, *m_pRecipeInfo, m_pvstPetInfo, CAM_POS_BOTTOM);
+	
+		bIsBrightError = CImageProcess::CheckBright(pImgPtr, nWidth, nHeight, *m_pRecipeInfo, m_pstBrightInfo, CAM_POS_BOTTOM); // Graphic Draw 용
 	}
 
 
@@ -1950,7 +1968,9 @@ void CImageProcSimDlg::InspectionAuto()
 				CImageProcess::FindLevelBottom_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromLeft);
 				CImageProcess::ImageProcessBottomSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
 			}
-			else {
+			else
+			{
+				//CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nLevel, AprData.m_pRecipeInfo);
 				CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromRight);
 				CImageProcess::ImageProcessBottomSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
 			}
@@ -1989,6 +2009,7 @@ void CImageProcSimDlg::InspectionAuto()
 		m_pVecBlockAll->push_back(data);
 
 	}
+
 
 	UpdateGrid();
 }

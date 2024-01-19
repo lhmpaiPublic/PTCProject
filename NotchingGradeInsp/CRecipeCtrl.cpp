@@ -282,6 +282,41 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 				strData.Format(_T("%d"), pRcpInfo->nPetCheckCnt[i]);
 				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 
+
+				// Bright Check
+				strKey = _T("DISABLE_BRIGHT_CHECK");
+				strData.Format(_T("%d"), pRcpInfo->bDisableBrightCheck);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("CHECK_BRIGHT_L_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nCheckBrightL[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("CHECK_BRIGHT_T_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nCheckBrightT[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("CHECK_BRIGHT_R_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nCheckBrightR[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("CHECK_BRIGHT_B_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nCheckBrightB[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("CHECK_BRIGHT_RANGE_MIN_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nCheckBrightRangeMin[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("CHECK_BRIGHT_RANGE_MAX_%01d"), i);
+				strData.Format(_T("%d"), pRcpInfo->nCheckBrightRangeMax[i]);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+
+				strKey.Format(_T("CHECK_BRIGHT_OVER_CNT") );
+				strData.Format(_T("%d"), pRcpInfo->nCheckBrightOverCnt);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
 			}
 
 			strKey = _T("BMP_SAVE_INTERVAL");
@@ -615,7 +650,7 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 				pRcpInfo->bEnableDefectLink[i] = atoi(buff);
 
 				// 22.05.10 Ahn Add Start
-				strKey.Format( _T("DISABLE_SPETTER_INSPECTION"), i ) ;
+				strKey.Format( _T("DISABLE_SPETTER_INSPECTION") ) ;
 				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 				pRcpInfo->bDisableSurface = atoi(buff) ;
 
@@ -635,7 +670,7 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 				// 22.06.08 Ahn Add End
 
 				// PET CHECK
-				strKey.Format(_T("DISABLE_PET_INSPECTION"), i);
+				strKey.Format(_T("DISABLE_PET_INSPECTION") );
 				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 				pRcpInfo->bDisablePET = atoi(buff);
 
@@ -655,7 +690,48 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 				::GetPrivateProfileString(strSection, strKey, "3", buff, 256, strFileName);
 				pRcpInfo->nPetCheckCnt[i] = atoi(buff);
 
+
+
+
+				// Bright Check
+				strKey.Format(_T("DISABLE_BRIGHT_CHECK"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->bDisableBrightCheck = atoi(buff);
+
+				strKey.Format(_T("CHECK_BRIGHT_L_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->nCheckBrightL[i] = atoi(buff);
+
+				strKey.Format(_T("CHECK_BRIGHT_T_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->nCheckBrightT[i] = atoi(buff);
+
+				strKey.Format(_T("CHECK_BRIGHT_R_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->nCheckBrightR[i] = atoi(buff);
+
+				strKey.Format(_T("CHECK_BRIGHT_B_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->nCheckBrightB[i] = atoi(buff);
+
+				strKey.Format(_T("CHECK_BRIGHT_RANGE_MIN_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->nCheckBrightRangeMin[i] = atoi(buff);
+
+				strKey.Format(_T("CHECK_BRIGHT_RANGE_MAX_%01d"), i);
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->nCheckBrightRangeMax[i] = atoi(buff);
+
+				strKey.Format(_T("CHECK_BRIGHT_OVER_CNT"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->nCheckBrightOverCnt = atoi(buff);
+
+
 			}
+
+
+
+
 
 			strKey = _T("BMP_SAVE_INTERVAL");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
