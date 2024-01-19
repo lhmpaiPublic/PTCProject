@@ -685,7 +685,7 @@ void CRecipeSettingDlg::OnEnSetfocusEdTopCoatHeightMm()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	double dValue, dMax, dMin;
 	dMax = 20.0;
-	dMin = 0.9;
+	dMin = 0.0;//0.9;
 	dValue = m_dTopCoatH;
 	CString strMsg;
 //	strMsg.Format(_T("탑 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
@@ -702,7 +702,7 @@ void CRecipeSettingDlg::OnEnSetfocusEdBtmCoatHeightMm()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	double dValue, dMax, dMin;
 	dMax = 9.9;
-	dMin = 0.9;
+	dMin = 0.0;//0.9;
 	dValue = m_dBtmCoatH;
 	CString strMsg;
 //	strMsg.Format(_T("버틈 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
@@ -719,7 +719,7 @@ void CRecipeSettingDlg::OnEnSetfocusEdTabCoatHeightMm()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	double dValue, dMax, dMin;
 	dMax = 50.0;
-	dMin = 0.9;
+	dMin = 0.0;//0.9;
 	dValue = this->m_dTabCoatH;
 	CString strMsg;
 //	strMsg.Format(_T("버틈 검사부의 코팅 높이 입력해 주세요. 범위( %.3lf ~ %.3lf )"), dMin, dMax);
