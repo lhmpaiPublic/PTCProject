@@ -451,8 +451,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if ((useTabID != 64) && bBCDDiffBig)
 						{
 							bBCDDiffBig = FALSE;
-							//useTabID = 64;
-							//nextBCDId = 64;
+							// 240119 요청에 의해 주석제거.
+							useTabID = 64;
+							nextBCDId = 64; 
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@BCD ID 사용아이디 차가 3이상@@@@ ");
 						}
