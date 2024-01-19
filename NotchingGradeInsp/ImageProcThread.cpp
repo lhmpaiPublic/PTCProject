@@ -328,7 +328,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							pFrmInfo_Top->m_nTabId_CntBoard, pFrmInfo_Top->nTabNo+1, nVecSize, pCntQueueInCtrl->GetSize(), pFrmInfo_Top->m_nFrameCount, pFrmInfo_Bottom->m_nFrameCount );
 					}
 					//nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo); // Btm Edge 인식 함수 변경 : 해당 함수 사용 시 동일 조건임에도 이상 동작 발생. 원인 미상
-					nBneElectrodeBtm = CImageProcess::FindLevelBottom_Negative(pTailPtr->m_pImagePtr, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+					
+					if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+					{
+						CImageProcess::FindTabLevel(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
+						nBneElectrodeBtm = nBtmLevel;
+					}
+					else
+					{
+						nBneElectrodeBtm = CImageProcess::FindLevelBottom_Negative(pTailPtr->m_pImagePtr, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+					}
 
 					// PET Check BOTTOM
 					CImageProcess::VEC_PET_INFO* pvstPetInfoBtm = new CImageProcess::VEC_PET_INFO;

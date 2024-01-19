@@ -1753,6 +1753,20 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 		return ;
 
 
+	//////////////////////////////////////////////////////////////////////////
+	// 검사 전 선택된 레시피 다시 로드 함
+	int nSelNo = m_cmbRecipeSelect.GetCurSel();
+	m_cmbRecipeSelect.SetCurSel(nSelNo);
+
+	CString strRcpName;
+	m_cmbRecipeSelect.GetWindowText(strRcpName);
+
+	CRecipeCtrl rcpCtrl;
+	if (m_pRecipeInfo != nullptr) {
+		rcpCtrl.LoadRecipe(m_pRecipeInfo, strRcpName);
+	}
+	//////////////////////////////////////////////////////////////////////////
+
 	CTabRsltInfo tabRsltInfo;
 	CBitmapStd* pBmpStd;
 	pBmpStd = m_pBmpStd[en_OrgImage];
@@ -1798,8 +1812,14 @@ void CImageProcSimDlg::OnBnClickedBtnRecipeSet()
 
 		//int nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nBtmLevel, m_pRecipeInfo);
 
-
-		CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+		if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+		{
+			CImageProcess::FindTabLevel(pImgPtr, nWidth, nHeight, &nBtmLevel, m_pRecipeInfo->TabCond, m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
+		}
+		else
+		{
+			CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+		}
 
 		nFindLevel = nBtmLevel;
 
@@ -2503,6 +2523,9 @@ void CImageProcSimDlg::DrawLine_Bottom()
 		CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromRight);
 	}
 
+//	CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromRight);
+
+
 	if (nLevel < 0)
 	{
 		AfxMessageBox(_T("Tab Level 이상 !!"));
@@ -2525,10 +2548,12 @@ void CImageProcSimDlg::DrawLine_Bottom()
 	if (rcAll.left < 0)
 	{
 		rcAll.left = 0;
+		return;
 	}
-	if (rcAll.right >= nWidth)
+	if (rcAll.right >= nWidth-1)
 	{
 		rcAll.right = (nWidth - 1);
+		return;
 	}
 
 
