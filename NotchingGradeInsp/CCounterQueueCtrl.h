@@ -22,7 +22,7 @@ public :
 	int GetSize();
 	BOOL IsEmpty();
 	CCounterInfo Pop();
-	BOOL FindTabId(int TabId);
+	CCounterInfo FindLastTabId(int nTabId);
 	int CalcMaxQueueSize(int nAcqBufSize, int nOneTabSize);
 	void SetMaxQueueSize( int nSize );
 
@@ -32,6 +32,7 @@ protected :
 
 private:
 	std::queue< CCounterInfo > m_CntInfo;
+	std::queue< CCounterInfo > m_CntInfoLast;
 
 };
 
