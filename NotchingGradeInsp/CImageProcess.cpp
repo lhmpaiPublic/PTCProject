@@ -6030,7 +6030,8 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				}
 			}
 			// 22.11.21 Ahn Modify Start - JUDGE_GRAY
-			else if (pTabRsltInfo->m_nJudge < JUDGE_NG)
+			//else if (pTabRsltInfo->m_nJudge < JUDGE_NG)
+			else if (pDefInfo->nRank < JUDGE_NG)
 			{
 				if ((pRecipeInfo->dFoileGraySize  > 0.0) && (pDefInfo->dJudgeSize > pRecipeInfo->dFoileGraySize))
 				{
