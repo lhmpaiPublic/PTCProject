@@ -379,17 +379,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//min 72 max 112 범위의 피치를 벗어날 경우 
 
 							double nTabPitch = 0.0;
+							double CellLength = 0.0;
 							//1.0 은 0으로 판단에 문제로 입력된 값
 							if (AprData.m_System.m_dResolY1000P > 1.0)
 							{
 								nTabPitch = CImageProcThread::TabPitchCalculate(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft, AprData.m_System.m_dResolY1000P);
+								CellLength = pTabInfo->nImageLength * (AprData.m_System.m_dResolY1000P/1000.0);
 							}
 							else
 							{
 								nTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
 							}
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", nTabPitch, RecipeInfoTabPitch);
+							LOGDISPLAY_SPEC(7)("@@Cell Length<%f> Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", CellLength, nTabPitch, RecipeInfoTabPitch);
 
 							//메모리 로그 기록
 							CString strMsg = "";
@@ -425,7 +427,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						double realTabWidth = nWidthLocal * dResolYLocal;
 
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@Tab Witch<%d> - Recipe Width<%f> 실제 텝 넓이<%f> 분해능<%f>@@@@ ", nWidthLocal, RecipeInfoTabWidth, realTabWidth, AprData.m_System.m_dResolY1000P);
+						LOGDISPLAY_SPEC(7)("@@Tab Witch<%d> - Recipe Width<%f> 실제 텝 넓이<%f> 분해능<%f>@@@@ ",  nWidthLocal, RecipeInfoTabWidth, realTabWidth, AprData.m_System.m_dResolY1000P);
 
 						//실제 텝의 넓이 범위 확인 로그
 						if ((MIN_TABWIDTH > realTabWidth) || (MAX_TABWIDTH < realTabWidth))

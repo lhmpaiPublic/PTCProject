@@ -6454,7 +6454,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		{ // 새 Frame에 탭 정보 있음.
 
 			// 22.10.06 Ahn Add Start
-			int nDistance = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nStartPos ;
+			//int nDistance = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nStartPos ;
 
 			// 22.10.06 Ahn Add End
 			if (pResvTabInfo->nTabWidth > 0)
