@@ -1162,6 +1162,9 @@ void CLotInfo::ClearAllCount()
 	//Trigger Tab Id Total Count
 	m_nTabIdTotalCount = 0;
 
+	//제일 마지막 받은 BCD ID 
+	m_nLastBCDId = 64;
+
 	//Trigger Tab Id 초기화
 	m_bInitTabId = FALSE;
 

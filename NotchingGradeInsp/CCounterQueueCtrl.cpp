@@ -22,7 +22,6 @@ void CCounterQueueCtrl::ResetQueue()
 	for (i = 0; i < size; i++) 
 	{
 		m_CntInfo.pop();
-		m_CntInfoLast.pop();
 	}
 	::LeaveCriticalSection(&m_csQueue);
 
@@ -33,7 +32,6 @@ int CCounterQueueCtrl::PushBack(CCounterInfo CntInfo)
 	::EnterCriticalSection(&m_csQueue);
 	
 	m_CntInfo.push(CntInfo);
-	m_CntInfoLast.push(CntInfo);
 
 	// 21.12.27 Ahn Add Start
 	int nSize = (int)m_CntInfo.size();;
@@ -71,28 +69,10 @@ CCounterInfo CCounterQueueCtrl::Pop()
 	if (!m_CntInfo.empty()) {
 		CntInfo = m_CntInfo.front();
 		m_CntInfo.pop();
-		m_CntInfoLast.pop();
 	}
 	::LeaveCriticalSection(&m_csQueue);
 	return CntInfo;
 }
-
-CCounterInfo CCounterQueueCtrl::FindLastTabId(int nTabId)
-{
-	CCounterInfo CntInfo;
-	CntInfo.nTabID = nTabId;
-
-	::EnterCriticalSection(&m_csQueue);
-	while (!m_CntInfoLast.empty())
-	{
-		CntInfo = m_CntInfoLast.front();
-		m_CntInfoLast.pop();
-	}
-	::LeaveCriticalSection(&m_csQueue);
-	
-	return CntInfo;
-}
-
 
 int CCounterQueueCtrl::CalcMaxQueueSize(int nAcqBufSize, int nOneTabSize)
 {

@@ -521,8 +521,10 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						CCounterInfo cntInfo;
 						//Tab Id 
 						cntInfo.nTabID = wTempID;
+						//제일 마지막 받은 BCD ID 
+						AprData.m_NowLotData.m_nLastBCDId = cntInfo.nTabID;
 						//Tab No(번호)
-						cntInfo.nTabNo = TabNo+1;
+						cntInfo.nTabNo = TabNo;
 						//Tab Total Count 
 						//Tab Total Count를 증가 시킨다.
 						AprData.m_NowLotData.m_nTabIdTotalCount++;

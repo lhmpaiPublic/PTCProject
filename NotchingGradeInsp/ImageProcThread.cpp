@@ -590,7 +590,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										cntInfo.nTabNo = cntInfoTemp.nTabNo;
 
 										//Tab Id 정보 로그
-										LOGDISPLAY_SPEC(7)("@@ B : 1 @@@@@@사용된 Tab Id 삭제됨@@@@ ");
+										LOGDISPLAY_SPEC(7)("@@ B : 1 @@@@@@지금 사용할 BCD Id 삭제됨@@@@ ");
 
 										//빠져나감
 										break;
@@ -598,7 +598,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 									else
 									{
 										//Tab Id 정보 로그
-										LOGDISPLAY_SPEC(7)("@@ B : 2 @@@@@@미리 사용된 Tab Id 삭제됨@@@@ ");
+										LOGDISPLAY_SPEC(7)("@@ B : 2 @@@@@@미리 사용된 BCD Id 삭제됨@@@@ ");
 									}
 									loopTabQueueSize++;
 								}
@@ -656,21 +656,32 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 						//제일 마지막 Id를 가져온다.
-						//큐가 비워있으면 지금의 Id를 가져온다.
-						lastBCDID = pCntQueueInCtrl->FindLastTabId(cntInfo.nTabID).nTabID;
+						//사용하기 전에 들어왔나 확인 후 사용
+						if (AprData.m_NowLotData.m_nLastBCDId != 64)
+						{
+							lastBCDID = AprData.m_NowLotData.m_nLastBCDId;
+							//다음 ID가 들어왔나 확인하기 위해서 64 초기화
+							AprData.m_NowLotData.m_nLastBCDId = 64;
+						}
+						//마지막 아이디를 모른다면(누락현상에 의한 )
+						//지금 사용한 ID 세팅
+						else
+						{
+							lastBCDID = nowBCDID;
+						}
 
-						//BCD ID 받은 값과 사용할 Tab Id 차가 3이상이면 
+						//BCD ID 받은 값과 사용할 Tab Id 차가 2이상이면 
 						int compareBCDID = abs(lastBCDID - nowBCDID);
 						if ((lastBCDID < 64) && (nowBCDID < 64) && ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) >= 2))
 						{
-							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@ Input BCD Id <=> lastTabID<%d>와 nowBCDID<%d> 차가 <%d> 이상이다 @@@@ ", lastBCDID, nowBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
 							
 							//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE 초기화
 							bBCDDiffBig = TRUE;
 
 						}
 
+						//Tab Id 정보 로그
+						LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 @@@@ ", lastBCDID, nowBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
 
 
 						//Trigger Tab Id를 받았는지 판단 기준
