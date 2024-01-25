@@ -1627,9 +1627,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								, strMarking
 								, strMarkReason
 								, (pTopInfo->m_pTabRsltInfo->m_bIsPET == TRUE) ? _T("PET") : _T("Foil")
-								, (pTopInfo->m_bErrorTabPitch == TRUE) ? _T("Fail") : _T("OK")
+								, (pTopInfo->m_bErrorTabPitch == TRUE) ? _T("X") : _T("OK")
 								, pTopInfo->m_dTabPitch
-								, (pTopInfo->m_bErrorTabWitch == TRUE) ? _T("Fail") : _T("OK")
+								, (pTopInfo->m_bErrorTabWitch == TRUE) ? _T("X") : _T("OK")
 								, pTopInfo->m_dTabWidth
 							);
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
