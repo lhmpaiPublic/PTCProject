@@ -458,17 +458,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 
 						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
-						if ((useTabID != 64) && (TriggerBCDCountMAXINT>5))
+						if (TriggerBCDCountMAXINT>5)
 						{
 							//useTabID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@BCD ID의 Output 역전현상이 5번 < 이상 연속으로 들어올 때 역전카운트<%d>@@@@ ", TriggerBCDCountMAXINT);
-
-							//메모리 로그 기록
-							CString strMsg = "";
-							strMsg.Format(_T("Error == Reverse Input - Output BCD ID : Continue Count<%d>  ====="), TriggerBCDCountMAXINT);
-							AprData.SaveMemoryLog(strMsg);
+							LOGDISPLAY_SPEC(7)("@@BCD ID의 역전현상이 <%d>번  이상으로 들어옴 ?? @@@@ ", TriggerBCDCountMAXINT);
 						}
 
 						//Button Click Start/Stop 초기화
@@ -512,13 +507,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						cntInfo.nTabNo = MAX_INT;
 
 						//Trigger 에서 받은 BCD ID
-						int nowBCDID = cntInfo.nTabID;
+						int nowUseBCDID = cntInfo.nTabID;
 
 						//Trigger 에서 받은 마지막 BCD ID를 가져온다.
 						int lastBCDID = cntInfo.nTabID;
-
-						//지금 받은 아이디로 차를 계산해서 계속적으로 나올 때 초기화
-						int nowReciveTabId = 64;
 
 						//Tab Id 를 받은 것이 있다면
 						if (TabQueueSize)
@@ -529,6 +521,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//Tab Id 초기 값이 없을 경우 Trigger 에서 넘겨온 값을 사용한다.
 							if (useTabID == 64)
 							{
+								//Tab Id 정보 로그
+								LOGDISPLAY_SPEC(7)("@@ Trigger에서 받은 BCD ID 사용 @@@@ ");
+
 								//Tab 을 찾은 갯수 만큼  돌았을 경우 맨 마지막 값을 사용한다.
 								if (nVecSize == (i + 1))
 								{
@@ -539,7 +534,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										//정보를 하나 가지고 온다.
 										cntInfo = pCntQueueInCtrl->Pop();
 										//지금 받은 BCD ID
-										nowBCDID = cntInfo.nTabID;
+										nowUseBCDID = cntInfo.nTabID;
 
 										//Tab Id 정보 로그
 										LOGDISPLAY_SPEC(7)("@@ A @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfo.nTabID, cntInfo.nTabNo+1, cntInfo.nTabIdTotalCount);
@@ -555,7 +550,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(7)("@@Tab Id Size<%d> = Tab Image Size<%d> 비교<%d> @@@@ ", TabQueueSize, nVecSize, abs(TabQueueSize - nVecSize));
+								LOGDISPLAY_SPEC(7)("@@Tab Id 개수<%d> = Tab Image 개수<%d> 비교<%d> @@@@ ", TabQueueSize, nVecSize, TabQueueSize - nVecSize);
 
 								//사용한 Id까지 찾아서 지운다.
 								//찾지 못했을 때는 모두 지운다.
@@ -564,8 +559,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								{
 									//Tab Id 확인용
 									CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
-									//지금 받은 아이디 세팅
-									nowReciveTabId = nowBCDID;
 									//Tab Id 정보 로그
 									LOGDISPLAY_SPEC(7)("@@ B @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo + 1, cntInfoTemp.nTabIdTotalCount);
 
@@ -576,6 +569,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										//TabNo와 Tab Tatal count를 비교한다.
 										cntInfo.nTabIdTotalCount = cntInfoTemp.nTabIdTotalCount;
 										cntInfo.nTabNo = cntInfoTemp.nTabNo;
+
+										//지금 받은 BCD ID
+										nowUseBCDID = cntInfoTemp.nTabID;
 
 										//Tab Id 정보 로그
 										LOGDISPLAY_SPEC(7)("@@ B : 1 @@@@@@지금 사용할 BCD Id 삭제됨@@@@ ");
@@ -655,13 +651,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//지금 사용한 ID 세팅
 						else
 						{
-							lastBCDID = nowBCDID;
+							lastBCDID = nowUseBCDID;
 						}
 
-						if ((lastBCDID < 64) && (nowBCDID < 64))
+						if ((lastBCDID < 64) && (nowUseBCDID < 64))
 						{
 							//BCD ID 받은 값과 사용할 Tab Id 차가 2이상이면 
-							int compareBCDID = abs(lastBCDID - nowBCDID);
+							int compareBCDID = abs(lastBCDID - nowUseBCDID);
 							if ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) >= 2)
 							{
 								bBCDDiffBig = TRUE;
@@ -669,10 +665,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							}
 
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 @@@@ ", lastBCDID, nowBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
+							LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 @@@@ ", lastBCDID, nowUseBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
 
 							CString strMsg;
-							strMsg.Format("last BCD ID<%d> = now BCD ID<%d> Diff <%d> Over @@@@ ", lastBCDID, nowBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
+							strMsg.Format("last BCD ID<%d> = now BCD ID<%d> Diff <%d> Over @@@@ ", lastBCDID, nowUseBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
 							AprData.SaveMemoryLog(strMsg);
 
 						}
@@ -680,39 +676,20 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Trigger Tab Id를 받았는지 판단 기준
 						if (cntInfo.nTabIdTotalCount == MAX_INT)
 						{
-							if ((nowReciveTabId >= 0) && (nowReciveTabId < 64))
-							{
-								//Trigger 받은 Tab Id와 지금 사용할 Tab Id 차가 1 이상 일 때 카운트 증가
-								int compareBCDID = abs(nowReciveTabId - cntInfo.nTabID);
-								if ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) >= 1)
-								{
-									TriggerBCDCountMAXINT++;
-								}
-							}
+							TriggerBCDCountMAXINT++;
+							//Tab Id 정보 로그
+							LOGDISPLAY_SPEC(7)("@@ Reverse BCD_ID <%d>번 받지 못함 @@@@ ", TriggerBCDCountMAXINT);
+
+							//메모리 로그 기록
+							CString strMsg = "";
+							strMsg.Format(_T("Error == Reverse BCD ID Count<%d>  ====="), TriggerBCDCountMAXINT);
+							AprData.SaveMemoryLog(strMsg);
 						}
 						else
 						{
 							TriggerBCDCountMAXINT = 0;
 						}
 						
-						//Tab id 정보를 가져와서 지금의 id 정보를 확인한다.
-						if (cntInfo.nTabIdTotalCount != MAX_INT)
-						{
-							static int countdiff = 0;
-							int diffval = abs((AprData.m_NowLotData.m_nTabCount+1) - cntInfo.nTabIdTotalCount);
-							if (diffval != countdiff)
-							{
-								LOGDISPLAY_SPEC(7)(_T("@@LotId<%s> TabCount TabId<%d>TCount<%d>TIdCount<%d>=countdiff<%d>"),
-									AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount+1, cntInfo.nTabIdTotalCount, diffval);
-								countdiff = diffval;
-							}
-						}
-						else
-						{
-							LOGDISPLAY_SPEC(7)(_T("@@LotId<%s> TabCount Lost TabId<%d>TCount<%d>"),
-								AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, AprData.m_NowLotData.m_nTabCount+1);
-						}
-
 						//Tab Id 정보 로그
 						LOGDISPLAY_SPEC(7)("@@Tab Id Info@@@@  LotId<%s> Tab Id<%d> TabNo<%d><%d> TabTotalcnt<%d>",
 							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo+1, AprData.m_NowLotData.m_nTabCount+1, cntInfo.nTabIdTotalCount);
