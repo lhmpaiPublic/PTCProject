@@ -1219,6 +1219,13 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pTopInfo->nTabNo+1);
 
 
+						CString strMsg;
+						strMsg.Format(_T("LotId<%s> TabNo<%d> JUDGE : Top-<%s> Bottom-<%s>")
+							, AprData.m_NowLotData.m_strLotNo
+							,pTopInfo->nTabNo + 1
+							,(pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK"
+							,(pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK");
+						AprData.SaveMemoryLog(strMsg);
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
