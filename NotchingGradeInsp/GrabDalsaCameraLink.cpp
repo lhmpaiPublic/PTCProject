@@ -233,7 +233,7 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 			strMsg.Format(_T("%d: %s\n"), m_nServerIndex, serverName);
 
 			//서버명 복사
-			CorStrncpy(acqServerName, serverName, MAX_PATH);
+			CorStrncpy(acqServerName, serverName, CORSERVER_MAX_STRLEN);
 
 			//디버그 출력
 			TRACE(strMsg);

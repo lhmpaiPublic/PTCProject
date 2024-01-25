@@ -33,7 +33,7 @@ int CLogDisplayDlg::FolderFindCount = 0;
 CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 
 static CWin32File StaticFile;
-CString CLogDisplayDlg::StaticCurrentPath = "D:\\NotchingTextLog";
+CString CLogDisplayDlg::StaticCurrentPath = LOGTEXTFILEFOLDER;
 
 CString CLogDisplayDlg::StaticDatPath = "D:\\DAT\\FOIL\\LOG\\BCDID";
 
@@ -113,13 +113,14 @@ void CLogDisplayDlg::LogDisplayText(CString FileName, const char* format, ...)
 	);
 
 	FileName += strData.Left(11);
+	CString TextLogFolderName = StaticCurrentPath + strData.Left(8);
 
-	if (CWin32File::FolderFileExists(StaticCurrentPath) == FALSE)
+	if (CWin32File::FolderFileExists(TextLogFolderName) == FALSE)
 	{
-		CWin32File::CreateDirectory(StaticCurrentPath);
+		CWin32File::CreateDirectory(TextLogFolderName);
 	}
 
-	StaticFile.TextSave1Line(StaticCurrentPath , FileName+(".txt"), strData, "at", FALSE, 999999999);
+	StaticFile.TextSave1Line(TextLogFolderName, FileName+(".txt"), strData, "at", FALSE, 999999999);
 }
 
 void CLogDisplayDlg::LogDisplayDatText(CString FileName, const char* format, ...)
@@ -214,7 +215,7 @@ CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 	::GetCurrentDirectory(_MAX_PATH, LogTextpath);
 	StaticCurrentPath = LogTextpath;
 
-	StaticCurrentPath += CString("\\NotchingTextLog");
+	StaticCurrentPath += LOGTEXTFILEFOLDER;
 
 }
 
