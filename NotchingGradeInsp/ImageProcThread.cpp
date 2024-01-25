@@ -133,14 +133,14 @@ double CImageProcThread::TabPitchCalculate(int bforeImageLengtch, int bforeTabLe
 //#define TabPitch(a, b, c, d) ((a-b)+c)*(d)
 #define TabPitch(a, b, c) ((a-b)+c)*(0.021)
 //92.0 +- 20
-#define MIN_TABPITCH 25.0
-#define MAX_TABPITCH 25.0
+#define MIN_TABPITCH 5.0
+#define MAX_TABPITCH 5.0
 static int bforeImageLengtch = 0;
 static int bforeTabLeft = 0;
 
 //44.79
-#define MIN_TABWIDTH 35.0
-#define MAX_TABWIDTH 55.0
+#define MIN_TABWIDTH 40.0
+#define MAX_TABWIDTH 50.0
 
 static double RecipeInfoTabPitch = 0;
 static double RecipeInfoTabWidth = 0;
@@ -366,33 +366,49 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[i];
 
+						//Tab Pitch 구하기
+						double dTabPitch = 0.0;
+						BOOL bErrorTabPitch = FALSE;
+						//셀 크기 구하기
+						double dCellLength = 0.0;
+
+						//실제 텝의 넓이 구하기
+						double dRrealTabWidth = 0.0;
+						BOOL bErrorTabWidth = FALSE;
+
 						//텝 피치 측정
 						if((bforeImageLengtch > 0) && (bforeTabLeft > 0))
 						{
 							//min 72 max 112 범위의 피치를 벗어날 경우 
 
-							double nTabPitch = 0.0;
-							double CellLength = 0.0;
 							//1.0 은 0으로 판단에 문제로 입력된 값
 							if (AprData.m_System.m_dResolY1000P > 1.0)
 							{
-								nTabPitch = CImageProcThread::TabPitchCalculate(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft, AprData.m_System.m_dResolY1000P);
-								CellLength = pTabInfo->nImageLength * (AprData.m_System.m_dResolY1000P/1000.0);
+								dTabPitch = CImageProcThread::TabPitchCalculate(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft, AprData.m_System.m_dResolY1000P);
+								dCellLength = pTabInfo->nImageLength * (AprData.m_System.m_dResolY1000P/1000.0);
 							}
 							else
 							{
-								nTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
+								dTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
 							}
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@Cell Length<%f> Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", CellLength, nTabPitch, RecipeInfoTabPitch);
+							LOGDISPLAY_SPEC(7)("@@Cell Length<%f> Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", dCellLength, dTabPitch, RecipeInfoTabPitch);
 
-							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > nTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < nTabPitch))
+							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > dTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < dTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
 								//useTabID = 64;
 								//nextBCDId = 64;
 								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(7)("@@Tab 접합부 Trigger Id Setting @@@@ ");
+								if (((RecipeInfoTabPitch - MIN_TABPITCH) > dTabPitch))
+								{
+									LOGDISPLAY_SPEC(7)("@@Tab Pitch가  작다@@@@ ");
+								}
+								else if (((RecipeInfoTabPitch + MAX_TABPITCH) < dTabPitch))
+								{
+									LOGDISPLAY_SPEC(7)("@@Tab Pitch가  크다@@@@ ");
+								}
+								bErrorTabPitch = TRUE;
 
 								//메모리 로그 기록
 								strMsg = "";
@@ -412,16 +428,17 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//지금 텝의 길이
 						int nWidthLocal = abs(pTabInfo->nTabRight - pTabInfo->nTabLeft);
 						//실제 텝의 길이 44.0 
-						double realTabWidth = nWidthLocal * dResolYLocal;
+						dRrealTabWidth = nWidthLocal * dResolYLocal;
 
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@Tab Witch<%d> - Recipe Width<%f> 실제 텝 넓이<%f> 분해능<%f>@@@@ ",  nWidthLocal, RecipeInfoTabWidth, realTabWidth, AprData.m_System.m_dResolY1000P);
+						LOGDISPLAY_SPEC(7)("@@Tab Witch 픽셀<%d> - Recipe Width<%f>mm 실제 텝 넓이<%f>mm 분해능<%f>@@@@ ",  nWidthLocal, RecipeInfoTabWidth, dRrealTabWidth, AprData.m_System.m_dResolY1000P);
 
 						//실제 텝의 넓이 범위 확인 로그
-						if ((MIN_TABWIDTH > realTabWidth) || (MAX_TABWIDTH < realTabWidth))
+						if ((MIN_TABWIDTH > dRrealTabWidth) || (MAX_TABWIDTH < dRrealTabWidth))
 						{
+							bErrorTabWidth = TRUE;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@Tab 넓이가 이상이 있을 때 Tab Width<%f>@@@@ ", nWidthLocal);
+							LOGDISPLAY_SPEC(7)("@@Tab 넓이가 이상이 있을 때 == @@@@ ");
 						}
 
 						//Trigger Tab Id 초기화 시 
@@ -446,7 +463,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							LOGDISPLAY_SPEC(7)("@@ConnectZone Trigger Id Setting @@@@ ");
 						}
 
-						//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE
+						//BCD ID 사용(useTabID)아이디 차가 2이상이면 TRUE
 						if ((useTabID != 64) && bBCDDiffBig)
 						{
 							bBCDDiffBig = FALSE;
@@ -454,7 +471,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							useTabID = 64;
 							nextBCDId = 64; 
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@BCD ID 사용아이디 차가 3이상@@@@ ");
+							LOGDISPLAY_SPEC(7)("@@BCD ID 사용아이디 차가 2이상@@@@ ");
 						}
 
 						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
@@ -654,7 +671,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							lastBCDID = nowUseBCDID;
 						}
 
-						if ((lastBCDID < 64) && (nowUseBCDID < 64))
+						if ((lastBCDID >= 0) && (lastBCDID < 64) && (nowUseBCDID >= 0) && (nowUseBCDID < 64))
 						{
 							//BCD ID 받은 값과 사용할 Tab Id 차가 2이상이면 
 							int compareBCDID = abs(lastBCDID - nowUseBCDID);
@@ -814,6 +831,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						CFrameInfo* pInfo;
 						pInfo = new CFrameInfo;
 
+						//Tab Pitch 이상 여부
+						pInfo->m_bErrorTabPitch = bErrorTabPitch;
+						pInfo->m_dTabPitch = dTabPitch;
+
+						//Tab Width 이상 여부
+						pInfo->m_bErrorTabWitch = bErrorTabWidth;
+						pInfo->m_dTabWidth = dRrealTabWidth;
+
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPc+ 객체를 Top에 추가한다.
@@ -892,6 +917,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
 						CFrameInfo* pBtmInfo;
 						pBtmInfo = new CFrameInfo;
+
+						//Tab Pitch 이상 여부
+						pBtmInfo->m_bErrorTabPitch = bErrorTabPitch;
+						pBtmInfo->m_dTabPitch = dTabPitch;
+
+						//Tab Width 이상 여부
+						pBtmInfo->m_bErrorTabWitch = bErrorTabWidth;
+						pBtmInfo->m_dTabWidth = dRrealTabWidth;
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -1577,7 +1610,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							//,  Top Surface max Size, Btm Surface Max Size, InkMarking, InkMarkingReason
 							// 23.01.06 Ahn Modify Start
 							//strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s\r\n")
-							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s,%s,%.2lf,%s,%.2lf\r\n")
 								// 23.01.06 Ahn Modify End
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
@@ -1593,7 +1626,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								, dBtmMaxSize
 								, strMarking
 								, strMarkReason
-								, (pTopInfo->m_pTabRsltInfo->m_bIsPET == TRUE) ? _T("PET") : _T("")
+								, (pTopInfo->m_pTabRsltInfo->m_bIsPET == TRUE) ? _T("PET") : _T("Foil")
+								, (pTopInfo->m_bErrorTabPitch == TRUE) ? _T("Fail") : _T("OK")
+								, pTopInfo->m_dTabPitch
+								, (pTopInfo->m_bErrorTabWitch == TRUE) ? _T("Fail") : _T("OK")
+								, pTopInfo->m_dTabWidth
 							);
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 

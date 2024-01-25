@@ -158,6 +158,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//프레임 결과 정보/Tab  결과정보 프레임 In 위치 세팅
 				pFrameRsltInfo->m_pTabRsltInfo->nTabStartPosInFrame = pFrmInfo->nTabStartPosInFrame;
 
+				//Tab Pitch 이상 여부
+				pFrameRsltInfo->m_bErrorTabPitch = pFrmInfo->m_bErrorTabPitch;
+				pFrameRsltInfo->m_dTabPitch = pFrmInfo->m_dTabPitch;
+
+				//Tab Width 이상 여부
+				pFrameRsltInfo->m_bErrorTabWitch = pFrmInfo->m_bErrorTabWitch;
+				pFrameRsltInfo->m_dTabWidth = pFrmInfo->m_dTabWidth;
+
 				int nLocalRet = 0;
 
 				// 22.02.24 Ahn Add Start
