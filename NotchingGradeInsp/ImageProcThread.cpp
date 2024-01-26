@@ -532,6 +532,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab Id 를 받은 것이 있다면
 						if (TabQueueSize)
 						{
+							//Tab Id를 받은 것이 있다면 -1 세팅한다.
+							cntInfo.nTabIdTotalCount = -1;
+
 							//Trigger BCD ID Size 0 시 Insp run 체크
 							TriggerBCDIDSize0_RunCheck = 0;
 
@@ -621,6 +624,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								//Tab Id 정보 로그
 								LOGDISPLAY_SPEC(8)("## Trigger BCD ID Not Recive Insp not run @@@@ ");
 							}
+
 						}
 
 						//다음 Tab Id 를 사용할 값을 정하는 구간
@@ -705,6 +709,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						else
 						{
 							TriggerBCDCountMAXINT = 0;
+							if (cntInfo.nTabIdTotalCount == -1)
+							{
+								//Tab Id 정보 로그
+								LOGDISPLAY_SPEC(7)("@@ BCD ID를 받기 전에 사용하고 있다 @@@@ ", TriggerBCDCountMAXINT);
+							}
 						}
 						
 						//Tab Id 정보 로그
