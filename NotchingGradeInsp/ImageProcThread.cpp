@@ -1220,9 +1220,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 
 						CString strMsg;
-						strMsg.Format(_T("LotId<%s> TabNo<%d> JUDGE : Top-<%s> Bottom-<%s>")
+						strMsg.Format(_T("LotId<%s> TabNo<%d> TabId<%d> JUDGE : Top-<%s> Bottom-<%s>")
 							, AprData.m_NowLotData.m_strLotNo
 							,pTopInfo->nTabNo + 1
+							,pTopInfo->m_nTabId_CntBoard
 							,(pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK"
 							,(pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK");
 						AprData.SaveMemoryLog(strMsg);

@@ -1243,6 +1243,72 @@ int CBitmapStd::SaveBitmap( CString &filepath )
 	return ( nRet ) ;
 }
 
+//GdiPlus JPG저장 함수
+int CBitmapStd::SaveJPG(CString& filepath)
+{
+	int	nRet = 0;
+	try
+	{
+		BITMAPINFO* pbmi = NULL;
+		CString filename, expname;
+		int	j;
+		j = filepath.ReverseFind(_T('.'));
+		if (j <= 0)
+		{
+			filename = filepath;
+			filepath += _T(".JPG");
+			expname = _T("JPG");
+		}
+		else
+		{
+			expname = filepath.Right(filepath.GetLength() - j - 1);
+			filename = filepath.Left(j);
+		}
+		expname.MakeUpper();
+
+		if ((expname.Compare(_T("JPG")) == 0) || (expname.Compare(_T("JPEG")) == 0))
+		{
+
+			BITMAPINFO* pbmi = (BITMAPINFO*)m_ptr;
+			BYTE* pimg = (BYTE*)pbmi;
+			pimg += sizeof(BITMAPINFOHEADER);
+			pimg += pbmi->bmiHeader.biClrUsed * sizeof(RGBQUAD);
+
+			Gdiplus::Bitmap* image;
+			image = Gdiplus::Bitmap::FromBITMAPINFO(pbmi, pimg);
+
+			int nQuality = m_nJpegQuality;
+			Gdiplus::EncoderParameters EncoderParameters;
+			EncoderParameters.Count = 1;
+			EncoderParameters.Parameter[0].NumberOfValues = 1;
+			EncoderParameters.Parameter[0].Guid = Gdiplus::EncoderQuality;
+			EncoderParameters.Parameter[0].Type = Gdiplus::EncoderParameterValueTypeLong;
+			EncoderParameters.Parameter[0].Value = &nQuality;
+
+			CLSID   encoderClsid;
+			// Get the CLSID of the JPEG encoder.
+			GetEncoderClsid(L"image/jpeg", &encoderClsid);
+			CStringW wStr = (CStringW)filepath.GetBuffer(0);
+			image->Save(wStr, &encoderClsid, &EncoderParameters);
+
+			delete image;
+		}
+	}
+	catch (CException* e)
+	{
+		TCHAR szError[512];
+		memset(szError, 0x00, sizeof(szError));
+		e->GetErrorMessage(szError, 512);
+		e->Delete();
+		nRet = -1;
+	}
+	catch (...)
+	{
+		nRet = -1;
+	}
+	return (nRet);
+}
+
 
 void CBitmapStd::GetImgSize( int *v )
 {

@@ -42,6 +42,9 @@ public :
 	virtual int SaveBitmap( CWnd *pwnd = NULL, CString *pszSelectName = NULL ) ;
 	virtual int SaveBitmap( CString &filepath ) ;
 
+	//GdiPlus JPG저장 함수
+	int SaveJPG(CString& filepath);
+
 	//Gdiplus 인코딩 Guiid 가져오기
 	static int GetEncoderClsid(const WCHAR* format, CLSID* pClsid);
 
