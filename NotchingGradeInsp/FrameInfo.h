@@ -64,6 +64,15 @@ public :
 
 	BOOL m_bIsPET;		// PET 인식
 
+	//Tab Pitch 가 이상이 있을 때
+	BOOL m_bErrorTabPitch;
+	//Tab Pitch(mm)
+	double m_dTabPitch;
+
+	//Tab Width(넓이)가 이상이 있을 때
+	BOOL m_bErrorTabWitch;
+	//Tab Pitch(mm)
+	double m_dTabWidth;
 
 
 //SPC 객체 소스에서 컴파일 여부 결정

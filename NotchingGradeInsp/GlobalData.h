@@ -307,6 +307,9 @@ public:
 	//Trigger Tab Id 초기화
 	BOOL m_bInitTabId;
 
+	//제일 마지막 받은 BCD ID 
+	int m_nLastBCDId;
+
 	//ConnectZone
 	BOOL m_bConnectZone;
 

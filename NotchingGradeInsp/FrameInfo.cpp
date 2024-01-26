@@ -12,6 +12,16 @@ CFrameInfo::CFrameInfo(void)
 	m_bOverFlow = FALSE;
 	// 23.02.20 Ahn Add End
 
+	//Tab Pitch 가 이상이 있을 때
+	m_bErrorTabPitch = FALSE;
+	//Tab Pitch(mm)
+	m_dTabPitch = 0.0f;
+
+	//Tab Width(넓이)가 이상이 있을 때
+	m_bErrorTabWitch = FALSE;
+	//Tab Pitch(mm)
+	m_dTabWidth = 0.0f;
+
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
