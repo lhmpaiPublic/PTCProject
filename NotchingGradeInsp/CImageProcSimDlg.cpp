@@ -1964,6 +1964,56 @@ void CImageProcSimDlg::InspectionAuto()
 		CString strTime = _T("Division Time ");
 		CString strTact;
 		CTimeAnalyzer ctAna;
+
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 기준 Edge 다시 찾음 - 자동 운전 중 전처리에서 못 찾는 경우 발생
+		CRect rcPrj;
+		int* pnPrjData;
+		pnPrjData = new int[nWidth];
+		memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+		rcPrj.top = 0;
+		rcPrj.bottom = tabPos.cx - m_pRecipeInfo->TabCond.nNegCoatHeight;
+		rcPrj.left = 0;
+		rcPrj.right = nWidth;
+
+		int nCount = 0;
+		int nUpperBright = 0;
+
+		nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+		BOOL bUseDarkRoll = (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+		nUpperBright = nCount * ((m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
+
+		int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
+
+
+
+		memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+		rcPrj.top = tabPos.cy + m_pRecipeInfo->TabCond.nNegCoatHeight;
+		rcPrj.bottom = nHeight;
+		rcPrj.left = 0;
+		rcPrj.right = nWidth;
+
+		nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+		nUpperBright = nCount * ((m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
+
+		int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
+
+
+
+		nLevel = (nLevelLeft + nLevelRight) / 2;
+
+
+		if (pnPrjData != NULL)
+		{
+			delete[] pnPrjData;
+		}
+
+
+
+
 		if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 		{
 			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1)
