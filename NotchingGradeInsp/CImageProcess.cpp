@@ -5903,7 +5903,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				if ((pRecipeInfo->dSurfaceGraySize > 0.0) && ( pDefInfo->dJudgeSize > pRecipeInfo->dSurfaceGraySize ))
 				{
 					pDefInfo->nRank = JUDGE_GRAY;
-					pTabRsltInfo->m_nJudge = JUDGE_GRAY;
+					//pTabRsltInfo->m_nJudge = JUDGE_GRAY; // 결함 후보가 한 탭에 다수일때 Gray 판정 결함이 있는 경우 최종 결과가 Gray로 OK 판정나서 제거 함
 				}
 			}
 
@@ -6036,7 +6036,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 				if ((pRecipeInfo->dFoileGraySize  > 0.0) && (pDefInfo->dJudgeSize > pRecipeInfo->dFoileGraySize))
 				{
 					pDefInfo->nRank = JUDGE_GRAY;
-					pTabRsltInfo->m_nJudge = JUDGE_GRAY;
+					//pTabRsltInfo->m_nJudge = JUDGE_GRAY; // 결함 후보가 한 탭에 다수일때 Gray 판정 결함이 있는 경우 최종 결과가 Gray로 OK 판정나서 제거 함
 
 					// JUDGE_GRAY도 결함 제거 기능에 포함
 					if ((pRecipeInfo->dIgnoreDistance < pDefInfo->dDistance) && (pRecipeInfo->dIgnoreDistance > 0)
