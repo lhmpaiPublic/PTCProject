@@ -682,6 +682,12 @@ void CMainFrame::ReflashAll()
 	// 22.07.27 Ahn Add End
 }
 
+//마킹 BCD ID를 갱신한다.
+void CMainFrame::UpdateBCDID()
+{
+	m_pHistoryDlg->UpdateBCDID();
+}
+
 void CMainFrame::ResetAndRefreshAll()
 {
 	// 22.07.21 Ahn Modify Start

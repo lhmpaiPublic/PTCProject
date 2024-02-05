@@ -251,6 +251,7 @@
 #define IDC_ED_IMAGE_1                  1033
 #define IDC_ED_ALARM_OUT                1033
 #define IDC_EDIT_MACHINE_MODE           1033
+#define IDC_EDIT_BCDID_DIFF             1033
 #define IDC_EDIT2                       1034
 #define IDC_ED_TAB_WIDTH_MM             1034
 #define IDC_CHECK_LOW_09                1034
@@ -730,6 +731,7 @@
 #define IDC_STATIC_NG_SAVE_PATH         1347
 #define IDC_STATIC_OK_SAVE_PATH         1348
 #define IDC_STATIC_LOWEST               1349
+#define IDC_SPIN_BCDID_DIFF             1352
 #define IDS_VIEW_RESULT                 32773
 #define ID_INSP_INFO_VIEW               32775
 #define ID_TREND_VIEW                   32777
@@ -755,7 +757,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        422
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1350
+#define _APS_NEXT_CONTROL_VALUE         1353
 #define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

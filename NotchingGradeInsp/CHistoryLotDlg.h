@@ -29,6 +29,7 @@ protected :
 	CGridCtrl*				m_pHistoryList;
 	CFont*					m_pFontGrid;
 
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
@@ -68,4 +69,8 @@ public:
 	void RefreshAll();
 	afx_msg void OnClose();
 	virtual void OnOK();
+
+	//마킹 BCD ID를 갱신한다.
+	void UpdateBCDID();
+	afx_msg void OnDeltaposSpinBcdidDiff(NMHDR* pNMHDR, LRESULT* pResult);
 };

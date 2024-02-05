@@ -57,7 +57,8 @@ public:
 	// 22.07.21 Ahn Modify Start
 	void ResetResultViewDlg();
 
-
+	//마킹 BCD ID를 갱신한다.
+	void UpdateBCDID();
 
 	void LoadHistoryData();
 // 22.07.21 Ahn Delete Start

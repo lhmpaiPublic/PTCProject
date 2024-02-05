@@ -307,6 +307,12 @@ public:
 	//Trigger Tab Id 초기화
 	BOOL m_bInitTabId;
 
+	//다음에 사용될 BCD ID
+	int m_nUseBCDID;
+
+	//BCD ID 증감 값
+	int m_BCDIDVal;
+
 	//제일 마지막 받은 BCD ID 
 	int m_nLastBCDId;
 

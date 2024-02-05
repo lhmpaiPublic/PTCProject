@@ -1,4 +1,5 @@
 ﻿#include "pch.h"
+#include "MainFrm.h"
 #include "ImageProcThread.h"
 #include "ImageProcessCtrl.h"
 #include "Bitmapstd.h"
@@ -174,9 +175,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	BOOL bFirstTab = TRUE;
 	// 22.04.06 Ahn Add End
 
-	//CCounterInfo 에 값이 없을때 사용할 값
-	int useTabID = 64;
-
 	UINT ret = 0;
 	//스래드 대기 여부
 	BOOL bThreadWait = TRUE;
@@ -189,7 +187,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//다음 사용할 Tab ID (BCD ID)
 	int nextBCDId = 64;
 
-	//BCD ID 사용(useTabID)아이디 차가 3이상이면 TRUE
+	//BCD ID 사용 아이디 차가 3이상이면 TRUE
 	BOOL bBCDDiffBig = FALSE;
 
 	//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
@@ -397,7 +395,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > dTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < dTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
-								//useTabID = 64;
+								//AprData.m_NowLotData.m_nUseBCDID = 64;
 								//nextBCDId = 64;
 								//Tab Id 정보 로그
 								if (((RecipeInfoTabPitch - MIN_TABPITCH) > dTabPitch))
@@ -442,10 +440,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 
 						//Trigger Tab Id 초기화 시 
-						if ((useTabID != 64) && AprData.m_NowLotData.m_bInitTabId)
+						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && AprData.m_NowLotData.m_bInitTabId)
 						{
 							AprData.m_NowLotData.m_bInitTabId = FALSE;
-							useTabID = 64;
+							AprData.m_NowLotData.m_nUseBCDID = 64;
 							nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@Trigger Tab Id  초기화 시 Trigger Id Setting @@@@ ");
@@ -454,21 +452,21 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 
 						//컨넥트 존 세팅 시
-						if ((useTabID != 64) && AprData.m_NowLotData.m_bConnectZone)
+						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && AprData.m_NowLotData.m_bConnectZone)
 						{
 							AprData.m_NowLotData.m_bConnectZone = FALSE;
-							//useTabID = 64;
+							//AprData.m_NowLotData.m_nUseBCDID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@ConnectZone Trigger Id Setting @@@@ ");
 						}
 
-						//BCD ID 사용(useTabID)아이디 차가 2이상이면 TRUE
-						if ((useTabID != 64) && bBCDDiffBig)
+						//BCD ID 사용 아이디 차가 2이상이면 TRUE
+						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && bBCDDiffBig)
 						{
 							bBCDDiffBig = FALSE;
 							// 240119 요청에 의해 주석제거.
-							useTabID = 64;
+							AprData.m_NowLotData.m_nUseBCDID = 64;
 							nextBCDId = 64; 
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@BCD ID 사용아이디 차가 2이상@@@@ ");
@@ -477,27 +475,27 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
 						if (TriggerBCDCountMAXINT>5)
 						{
-							//useTabID = 64;
+							//AprData.m_NowLotData.m_nUseBCDID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@BCD ID의 역전현상이 <%d>번  이상으로 들어옴 ?? @@@@ ", TriggerBCDCountMAXINT);
 						}
 
 						//Button Click Start/Stop 초기화
-						if ((useTabID != 64) && AprData.m_NowLotData.m_bInspStartStop == TRUE)
+						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && AprData.m_NowLotData.m_bInspStartStop == TRUE)
 						{
 							AprData.m_NowLotData.m_bInspStartStop = FALSE;
-							//useTabID = 64;
+							//AprData.m_NowLotData.m_nUseBCDID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@BCD Insp Start/Stop 시 @@@@ ");
 						}
 
 						//PET가 런 진행 시 초기화
-						if ((useTabID != 64) && (bPETBCDIdSet== TRUE))
+						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && (bPETBCDIdSet== TRUE))
 						{
 							bPETBCDIdSet = FALSE;
-							//useTabID = 64;
+							//AprData.m_NowLotData.m_nUseBCDID = 64;
 							//nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@PET RUN 진행 시 @@@@ ");
@@ -517,7 +515,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
 						CCounterInfo cntInfo;
 						//Tab Id를 Trigger에서 받은 값을 사용히지 않고 사용할 id를 사용한다.
-						cntInfo.nTabID = useTabID;
+						cntInfo.nTabID = AprData.m_NowLotData.m_nUseBCDID;
 						//Tab Total Count MAX
 						cntInfo.nTabIdTotalCount = MAX_INT;
 						//TabNo Trigger 수신에서 가져온 값
@@ -539,7 +537,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							TriggerBCDIDSize0_RunCheck = 0;
 
 							//Tab Id 초기 값이 없을 경우 Trigger 에서 넘겨온 값을 사용한다.
-							if (useTabID == 64)
+							if (cntInfo.nTabID == 64)
 							{
 								//Tab Id 정보 로그
 								LOGDISPLAY_SPEC(7)("@@ Trigger에서 받은 BCD ID 사용 @@@@ ");
@@ -631,11 +629,21 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (((cntInfo.nTabID >= 0) && (cntInfo.nTabID < 64)))
 						{
 							//다음에 사용할 id : 1 증가 시켜 저장
-							useTabID = cntInfo.nTabID + 1;
+							AprData.m_NowLotData.m_nUseBCDID = cntInfo.nTabID + 1;
 							//Tab id는 0 ~ 63 까지 사용한다.
-							if (useTabID >= 64)
+							if (AprData.m_NowLotData.m_nUseBCDID >= 64)
 							{
-								useTabID = 0;
+								AprData.m_NowLotData.m_nUseBCDID = 0;
+							}
+
+							//BCD ID 틀어짐을 조정한 값이 0 아니면 초기화 한다.
+							if (AprData.m_NowLotData.m_BCDIDVal != 0)
+							{
+								CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+								if (pFrame)
+								{
+									pFrame->UpdateBCDID();
+								}
 							}
 
 							//로그 초기 세팅
@@ -679,17 +687,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							//BCD ID 받은 값과 사용할 Tab Id 차가 2이상이면 
 							int compareBCDID = abs(lastBCDID - nowUseBCDID);
-							if ((compareBCDID > 32 ? 64 - compareBCDID : compareBCDID) >= 2)
+							int BCDIDDiff = (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID);
+							if (BCDIDDiff >= 10)
 							{
 								bBCDDiffBig = TRUE;
 
 							}
 
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 @@@@ ", lastBCDID, nowUseBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
+							int nDiffLog = (cntInfo.nTabIdTotalCount == -1)? BCDIDDiff * -1 : BCDIDDiff;
+							LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 @@@@ ", lastBCDID, nowUseBCDID, nDiffLog);
 
 							CString strMsg;
-							strMsg.Format("last BCD ID<%d> = now BCD ID<%d> Diff <%d> Over @@@@ ", lastBCDID, nowUseBCDID, (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID));
+							strMsg.Format("last BCD ID<%d> = now BCD ID<%d> Diff <%d> Over @@@@ ", lastBCDID, nowUseBCDID, nDiffLog);
 							AprData.SaveMemoryLog(strMsg);
 
 						}
