@@ -295,6 +295,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 					//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
+					//CImageProcess::en_FindFromLeft : 찾는 방향 양극이면 오른쪽에서 왼쪽으로 찾음
+					//return nBndElectrode : 실제 이미지에서 휘도 중 시작할 점을 찾음 - 휘도 샘플링을 이용하여 위치를 찾음
 					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr->m_pImagePtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
 
 					// 22.05.09 Ahn Add End
@@ -304,6 +306,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					int nBtmLevel = 0;
 
 					//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
+					//휘도로 찾은 위치에 레시피 설정 높이를 더하여 Tab Find Pos 잡는다.
 					int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
 
 					//이미지 프로세싱을 위한 클래스 

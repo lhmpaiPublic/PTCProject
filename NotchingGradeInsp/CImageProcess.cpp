@@ -575,13 +575,16 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 	int nDestHeight = nEndY - nStartY;
 
 	int nTemp;
+	//실제 얻은 이미지 높이보다 작은데 
+	//왜 : 얻을 때 nHeight - 1 해서
+	//실제 들어오지 않음
 	if (nEndY > nHeight)
 	{
 		nTemp = nEndY - nHeight;
 		nEndY = nHeight;
 		nStartY -= nTemp;
 	}
-
+	//밑에서 0
 	if (nStartY < 0)
 	{
 		nStartY = 0;
@@ -599,46 +602,65 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 
 	BYTE* pLine;
 	int nCount = 0 ; // 22.06.24 Ahn Add 
+	//Y축을 기준으로 X축 샘플링
 	if (nDir == DIR_HOR)
 	{
+		//샘플링할 X축 갯수
 		nCount = ((nEndX - nStartX) / nSampling);
-
+		//최소 1개 이상은 있다
 		if (nCount <= 0)
 			nCount = 1;
-
+		//프로젝션 샘플링 버퍼 초기화
 		memset(pProjection, 0x00, sizeof(int) * (nDestHeight));
 		for (y = nStartY; y < nEndY; y++)
 		{
 			pLine = (BYTE*)pImage + (nWidth * y);
+			//샘플링 2000개 버퍼에 휘도 값을 플러스 한다.
+			//X 축의 휘도값을 합치는 작업이다.
 			for (x = nStartX; x < nEndX; x += nSampling)
 			{
+				//샘플링으로 선택된 라인의 휘도를 합한 값
 				pProjection[y - nStartY] += *(pLine + x);
 			}
 		}
+		//SUM 을 한 값이나 아니면 평균값이나 선택
 		if (bModeSum == FALSE)
 		{
+			//샘플링한 휘도 값의 평균 값을 계산한다.
+			//Y축 갯수 만큼 담아 온다.
 			for (y = nStartY; y < nEndY; y++)
 			{
 				pProjection[y - nStartY] = pProjection[y - nStartY] / nCount;
 			}
 		}
 	}
+	//X 축 기준으로 Y 축 샘플링
 	else
 	{
+		//프로젝션 샘플링 버퍼 초기화
 		memset(pProjection, 0x00, sizeof(int) * (nDestWidth));
+		//실제 이미지 끝점에서 샘플링 시작점 / 샘플링 값으로 나눔 갯수
 		nCount = ((nEndY - nStartY) / nSampling);
+		//나눈값이 0보다 작거나 같을 경우 최소 1개 샘플링
 		if (nCount <= 0) nCount = 1;
-
+		//Y의 스타트 에서 끝까지 샘플링 만큼 건너 뛰기
 		for (y = nStartY; y < nEndY; y += nSampling)
 		{
+			//X의 포인터 이미지 샘플링 배수 만큼 이동
 			pLine = (BYTE*)pImage + (nWidth * y);
+			//샘플링 2000개 버퍼에 휘도 값을 플러스 한다.
+			//Y 축의 휘도값을 합치는 작업이다.
 			for (x = nStartX; x < nEndX; x++)
 			{
+				//샘플링으로 선택된 라인의 휘도를 합한 값
 				pProjection[x - nStartX] += *(pLine + x);
 			}
 		}
+		//SUM 을 한 값이나 아니면 평균값이나 선택
 		if (bModeSum == FALSE)
 		{
+			//샘플링한 휘도 값의 평균 값을 계산한다.
+			//X축 갯수 만큼 담아 온다.
 			for (x = nStartX; x < nEndX; x++)
 			{
 				pProjection[x - nStartX] = pProjection[x - nStartX] / nCount;
@@ -4211,38 +4233,61 @@ int CImageProcess::DivideSectionBetweenThreshold(int* pnPrjData, int nPrjLength,
 	BOOL bFound = FALSE;
 	pVecSector->clear();
 
+	//이전 맥스 값
 	int nBefore = en_Max;
+	//시작 위치
 	int nStartPos = 0;
+	//섹터 구조체 변수
 	ST_SECTOR sect;
 
+	//휘도 Y축 기준 X축 평균 
+	//이미지 height 길이 갯수만큼 돌면서 : X 축 휘도 값 평균 확인
 	for (i = 0; i < nPrjLength; i++)
 	{
+		//X축 평균 휘도가 브라이트 Min 보다 크고, Max 보다 작거나 같다면 (범위 안이면) 카운트 증가
 		if ((pnPrjData[i] >= nThresMin) && (pnPrjData[i] <= nThresMax))
 		{
 			nCount++;
 		}
+		//휘도 값이 벗어 날 경우
 		else
 		{
+			//nMinLength : 10으로 로컬 세팅됨
+			//10 이상일 경우 휘도 범위가 지나가고 벗어나서 들어올 경우
+			//섹터 정보를  저장한다.
 			if (nCount >= nMinLength)
 			{
+				//섹터 정보
+				//섹터의 시작 위치 정보
 				sect.nStartPos = nStartPos;
+				//섹터 끝 위치
 				sect.nEndPos = i - 1;
+				//섹터 삭제 : 삭제가 필요해서 설정한 값으로 생각
 				sect.bDelete = FALSE;
+				//섹터 정보 저장
 				pVecSector->push_back(sect);
 			}
+			//휘도 정상범위 카운터 0 초기화
 			nCount = 0;
+			//시작 위치를 재 설정 : Height 지난 값 + 1
 			nStartPos = i + 1;
 		}
 	}
-
+	//for 문이 끝나는 시점에서 10 이상의 휘도 범위가 있었다면 
+	//섹터 정보로 저장한다.
 	if (nCount >= nMinLength)
 	{
+		//섹터 정보
+		//섹터의 시작 위치 정보
 		sect.nStartPos = nStartPos;
+		//섹터 끝 위치
 		sect.nEndPos = i - 1;
+		//섹터 삭제 : 삭제가 필요해서 설정한 값으로 생각
 		sect.bDelete = FALSE;
+		//섹터 정보 저장
 		pVecSector->push_back(sect);
 	}
-
+	//저장된 Sector 정보 사이즈 
 	nCount = (int)pVecSector->size();
 
 	return nCount;
@@ -4391,70 +4436,99 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 
 	int backpnPrjData = 0;
 	int nLevel_back = 0;
+	//블랙 롤 일 경우 찾는 방법
 	if (bFindDark == TRUE) {
 		backpnPrjData = 0;
-	// 23.02.24 Ahn Add End
+	// 찾는 방향 : 왼쪽에서 오른쪽
 		if (nMode == en_FindFromRight) {
+			//휘도 샘플링 프로젝션 길이 만큼 돌면서
 			for (i = nLength - 1; i > 0; i--) 
 			{
+				//휘도 샘플링 데이터 가 레시피 세라믹 휘도 최저 값 비교
+				//샘플링 최저 값이 세라믹 휘도 보다 크면 그 값을 취하고 검사 종료
 				if (pnPrjData[i] > nTargetBright) 
 				{
+					// 위치 값 저장하고 찾기를 빠져 나감
 					nLevel = i;
 					break;
 				}
+				//빽 데이터 비교(전 휘도 샘플링 데이터와 비교)
 				if (pnPrjData[i] > backpnPrjData)
 				{
+					//휘도 중 제일 큰 데이터 만 저장 함
 					backpnPrjData = pnPrjData[i];
+					//휘도 중 제일 큰 값의 위치 값을 백업
 					nLevel_back = i;
 				}
+				//제일 큰 휘도 값의  pnPrjData 위치 
 				nLevel = nLevel_back;
 			}
 		}
+		//찾는 방향 오른쪽에서 왼쪽
 		else {
 			for (i = 0; i < nLength; i++)
 			{
+				//휘도 샘플링 데이터 가 레시피 세라믹 휘도 최저 값 비교
+				//샘플링 최저 값이 세라믹 휘도 보다 크면 그 값을 취하고 검사 종료
 				if (pnPrjData[i] > nTargetBright) 
 				{
+					// 위치 값 저장하고 찾기를 빠져 나감
 					nLevel = i;
 					break;
 				}
+				//빽 데이터 비교(전 휘도 샘플링 데이터와 비교)
 				if (pnPrjData[i] > backpnPrjData)
 				{
+					//휘도 중 제일 큰 데이터 만 저장 함
 					backpnPrjData = pnPrjData[i];
 					nLevel_back = i;
 				}
 				nLevel = nLevel_back;
 			}
 		}
-	// 23.02.24 Ahn Add Start
+	// 블랙롤이 아닐 경우
 	}
 	else 
 	{
 		backpnPrjData = 2147483647;
+		// 찾는 방향 : 왼쪽에서 오른쪽
 		if (nMode == en_FindFromRight) {
+			//휘도 샘플링 프로젝션 길이 만큼 돌면서
 			for (i = nLength - 1; i > 0; i--) 
 			{
+				//휘도 샘플링 데이터 가 레시피 세라믹 휘도 최저 값 비교
+				//샘플링 최저 값이 세라믹 휘도 보다 작으면 그 값을 취하고 검사 종료
 				if (pnPrjData[i] < nTargetBright) {
+					// 위치 값 저장하고 찾기를 빠져 나감
 					nLevel = i;
 					break;
 				}
+				//빽 데이터 비교(전 휘도 샘플링 데이터와 비교)
 				if (pnPrjData[i] < backpnPrjData)
 				{
+					//휘도 중 제일 큰 데이터 만 저장 함
 					backpnPrjData = pnPrjData[i];
 					nLevel_back = i;
 				}
 				nLevel = nLevel_back;
 			}
 		}
+		//찾는 방향 오른쪽에서 왼쪽
 		else {
+			//휘도 샘플링 프로젝션 길이 만큼 돌면서
 			for (i = 0; i < nLength; i++) {
+				//휘도 샘플링 데이터 가 레시피 세라믹 휘도 최저 값 비교
+				//샘플링 최저 값이 세라믹 휘도 보다 작으면 그 값을 취하고 검사 종료
 				if (pnPrjData[i] < nTargetBright)
 				{
+					// 위치 값 저장하고 찾기를 빠져 나감
 					nLevel = i;
 					break;
 				}
+				//빽 데이터 비교(전 휘도 샘플링 데이터와 비교)
 				if (pnPrjData[i] < backpnPrjData)
 				{
+					//휘도 중 제일 큰 데이터 만 저장 함
 					backpnPrjData = pnPrjData[i];
 					nLevel_back = i;
 				}
@@ -4609,53 +4683,76 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	ASSERT(pVecSector);
 	ASSERT(pnLevel);
 
+	//
 	int nRet = 0;
+	//샘플링 값
 	int nSampling = 10 ;
+	//Tab을 찾기 위한 위치 스타트 점
 	int nStartPos = nTabFindPos;
+	//Tab Find 끝나는 점
+	//샘플링 건너뛰기 갯수 만큼
 	int nEndPos = nStartPos + (nSampling * 10);
 
+	//샘플링 끝나는 점이 실제 이미지 크기 보다 크면 실제 이미지를 Max로 
 	if (nEndPos > nWidth) {
 		nEndPos = nWidth;
 	}
+	//레시피의 Bright  최저 값
 	int thMin = pRecipeInfo->TabCond.nTabMinBright; // pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];
+	//레시피 Bright 최대 값 255
 	int thMax = 255;
 
+	//섹터를 저장할 vector 초기화
 	pVecSector->clear();
+	//로컬 Ret
 	int nLocalRet = 0;
+	//로컬 Tab Pos 찾는다.
 	nLocalRet = CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, pVecSector);
+	//섹터 정보가 없다면 -1 리턴(오류)
 	if (nLocalRet <= 0)
 	{
 		return -1;
 	}
-
+	//섹터 정보 에서 레시피 설정된 Tab Width (탭 넓이 의 1.2배) 보다 작을 때 섹터 정보를 삭제 한다.
+	//휘도 범위 안을 10 이상 가지고 있는 Sector 정보에서 필요 없는 정보를 삭제 하는 함수
 	nLocalRet = CImageProcess::CombineTabSector(pVecSector, *pRecipeInfo);
+	//남아 있는 섹터 정보가 없다면 오류
 	if (nLocalRet < 0)
 	{
 		return -2;
 	}
 
 	int i = 0; 
+	//섹터 정보 갯수가 남아 있다면
 	int nSize = (int)pVecSector->size();
 	int nTabWidth;
+	//찾은 인덱스 값
 	int nFindIdx = 0 ;
 
 	ST_SECTOR* pstSector = NULL ;
+	//남은 섹터 정보 갯수만큼 돈다.
 	for (i = 0; i < nSize; i++) 
 	{
+		//섹터에 남아 있는 휘도에서 얻은 끝 점(위치)에 스타트 점뺀 값이 Tab Width 구한다.
 		nTabWidth = (*pVecSector)[i].nEndPos - (*pVecSector)[i].nStartPos;
+		//얻은 Tab Width 에서 레시피 설정된 Tab Width 뺀 값이 
+		//Tab 찾아서 빠져나감
 		if( abs(nTabWidth - pRecipeInfo->TabCond.nTabWidth) < (pRecipeInfo->TabCond.nTabWidth / 3 )) 
 		{
+			//Tab 있는 섹터 정보 
 			pstSector = &(*pVecSector)[i];
 			break;
 		}
 	}
-
+	//찾은 tab이 있는 섹터 정보를 찾지 못했으면
 	if (pstSector == NULL) 
 	{
+		//사이즈가 있으면 첫번째 정보를 Tab 섹터 정보로 넘긴다.
 		if (nSize)
 		{
 			pstSector = &(*pVecSector)[0];
 		}
+		//아니면 오류
 		else
 		{
 			return -3;
@@ -4686,32 +4783,45 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 
 	CRect rcPrj;
 	int* pnPrjData;
+	//프로젯션 : 휘도로 찾은 저장 버퍼
 	pnPrjData = new int[nWidth];
 	memset(pnPrjData, 0x00, sizeof(int) * nWidth);
 
+	//프로젝션을 할 설정 범위
+	//높이 시작
 	rcPrj.top = 0;
+	//높이 끝
+	//섹터 정보 시작점에서 20 뺀 값
 	rcPrj.bottom = pstSector->nStartPos - 20;
+	//넓이 시작
 	rcPrj.left = 0;
+	//넓이 끝
 	rcPrj.right = nWidth;
 
 	int nCount = 0;
 	int nUpperBright = 0;
-
+	//실제 이미지에서 프로젝션 설정 범위와 샘플링 10 휘도 샘플 데이터 pnPrjData X축 샘플링 데이터
+	//프로젝션 휘도 총합을 가져온다.
 	nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, TRUE);
+	//블랙 롤일 경우 TRUE
 	BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+	//X 축 샘플링된 갯수 * 배수(레시피 세라믹 브라이트 로우 값 롤의 브라이트 하이 값 빼기 1/2
 	nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
-
+	//X 축 휘도로 찾은 다크롤의 왼쪽 위치 값을 찾는다.
 	int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 
 
-
+	//이전 프로젝션 데이터 초기화
 	memset(pnPrjData, 0x00, sizeof(int) * nWidth);
-
+	//프로젝션 높이 시작 점
 	rcPrj.top = pstSector->nEndPos + 20;
+	//프로젝션 높이 끝점
 	rcPrj.bottom = nHeight;
+	//넓이 시작 점
 	rcPrj.left = 0;
+	//넓이 끝 점
 	rcPrj.right = nWidth;
-
+	//프로젝터 범위 설정 값의 휘도 평균이 아닌 합한 총 값을 가져온다.
 	nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, TRUE);
 	nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
 
@@ -5118,22 +5228,40 @@ int CImageProcess::FindTabPos_New(BYTE* pImagePtr, int nWidth, int nHeight, int 
 // Image의 주어진 rect 위치의 Projection값을 얻어와 Threshold Min~Max 사이의 연속된 Vector들을 얻어오는 함수.
 int CImageProcess::FindTabPos(const BYTE* pImagePtr, int nWidth, int nHeight, int nStartPos, int nEndPos, int nThresMin, int nThresMax, VEC_SECTOR* pVecSector)
 {
+	//프로젝션 샘플링을 하기 위한 위치 정보 및 크기
 	CRect rect;
+	//넓이 시작 위치
 	rect.left = nStartPos;
+	//넓이  끝 위치
 	rect.right = nEndPos;
+	// 높이 시작 위치
 	rect.top = 0;
+	//높이 끝 위치 : 최대 실제 이미지 높이 세팅
 	rect.bottom = nHeight;
 
+	//갯수
 	int nCount;
-
+	//브라이트 Min : 레시피 설정 값
+	//브라이트 Max : 255
+	//Min이 크면 스왑
 	if (nThresMin > nThresMax) {
 		SWAP(int, nThresMax, nThresMin);
 	}
 
 	// DIR_HOR 
+	//프로젝션 샘플링 버퍼
 	int* pnPrj = new int[nHeight];
 
+	//실제 이미지를 프로젝션 하여 데이터를 가져 온다.
+	//Y축 기준 X축 프로젝션 샘플링을 1 설정으로 높이 모두 한다.
+	//pnPrj : 휘도 샘플링 데이터 -> Height 버퍼에 X축 시작점에서 끝점까지 평균을 가져온다.
 	GetProjection(pImagePtr, pnPrj, nWidth, nHeight, rect, DIR_HOR, 1, FALSE);
+
+	//휘도 정보를 가지고 섹터 정보를 얻는다.
+	//pnPrj : 휘도 X축 평균
+	//nHeight : 실제 이미지 Y축 높이
+	//nThresMin : 브라이트 최소 값
+	//nThresMax : 브라이트 최대 값
 	nCount = DivideSectionBetweenThreshold(pnPrj, nHeight, nThresMin, nThresMax, 10, pVecSector);
 
 	delete[]pnPrj;
@@ -5143,21 +5271,32 @@ int CImageProcess::FindTabPos(const BYTE* pImagePtr, int nWidth, int nHeight, in
 int CImageProcess::CombineTabSector(VEC_SECTOR* pVecSector, CRecipeInfo& RecipeInfo)
 {
 	ASSERT(pVecSector);
-
+	//찾은 섹터 갯수
 	int nSize = (int)pVecSector->size();
+	//레시피 설정값에 1.2배 정보 Range 값
 	int nTabCheckRange = (int)( RecipeInfo.TabCond.nTabWidth * 1.2 ) ;
 
+	//섹터 정보 갯수 만큼 
+	//레시피 설정 Tab Width 기준보다 작을 때 삭제 해 나가는 구간
 	for (int i = 0; i < nSize - 1 ; i++) {
+		//섹터 정보 delete 정보가 TRUE 처리안함
 		if ((*pVecSector)[i].bDelete == TRUE) continue;
+		//겉의 for의 섹터 정보 다음 섹터 정보
 		for (int j = i + 1; j < nSize; j++) {
+			//섹터 정보 delete 정보가 TRUE 처리안함
 			if ((*pVecSector)[j].bDelete == TRUE) continue;
+			//섹터 정보 끝 점에서 시작 점의 길이가 레시피 설정 값의 1.2배보다 작다면
 			if ( ((*pVecSector)[j].nEndPos - (*pVecSector)[i].nStartPos ) <= nTabCheckRange) {
+				//겉의 섹터 끝 점에 다음 섹터의 끝 점
 				(*pVecSector)[i].nEndPos = (*pVecSector)[j].nEndPos;
+				//다음 섹터 정보는 삭제 로 설정한다.
 				(*pVecSector)[j].bDelete = TRUE;
 			}
 		}
 	}
 
+	//섹터 정보 시작에서 끝까지
+	//delete 가 TRUE 설정되었으면 섹터 정보를 삭제한다.
 	VEC_SECTOR::iterator iter ;
 	for (iter = pVecSector->begin(); iter != pVecSector->end(); ) {
 		if( iter->bDelete == TRUE  ){
@@ -6314,32 +6453,46 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	//Tab의 기본 Pitch(레시피에 입력된 값(double, int 값 )
 	int nBaseTabPitch = 0;
 
-	//계산된 값을 사용하지 않고 로그만 찍는다.(로그 검사 후 적용 예정)
+	//기준이되는 레시피 Tab Pitch 
 	nBaseTabPitch = RecipeInfo.TabCond.nTabPitch;
 
 	//기존 계산된 값과 지금 계산 값 비교 로그 출력
 	LOGDISPLAY_SPEC(7)("@@ Base Tab  calc val<%d> setting val<%d> =============== ", nTabPitchCalc, nBaseTabPitch);
 
+	//기준이되는 레시피 Tab 넓이값
 	int nBaseTabWidth = RecipeInfo.TabCond.nTabWidth;
+	//기준이되는 Tab 오른쪽에서 왼쪽까지 잘려나간 Tab이 아닌 부분의 Width
 	int nBaseTabBlank = nBaseTabPitch - nBaseTabWidth;
+	//기준이되는 레시피 Tab Pitch 1/2 값
 	int nBaseTabHalfPitch = nBaseTabPitch / 2;
+	//기준이 되는 레시피 Tab Pitch 에서 Tab 넓이를 뺀 값의 1/2 : Tab 없는 부분을 기준으로 짜르기 위한 길이
 	int nPairSholderLength = (nBaseTabPitch - nBaseTabWidth) / 2;
 
+	//실제 이미지 X 넓이의 오른쪽 좌표에서 220 뺀값을 기준으로 Tab Find Pos 설정
 	int nTabFindPos = ( nWidth - 220 ) ; 
 
-
+	//Cell 기준의 검사 이미지 데이터 정보를 저장하기 위한 클래스 벡터(vector 컨테이너)
+	//_PET_INFO 구조체 : PET 정보를 담을 벡터 컨테이너
 	VEC_PET_INFO* pvstPetInfo = new VEC_PET_INFO;
 	pvstPetInfo->clear();
 
+	//PET 필름 Cell 부분을 확인한다.
+	//TOP 이미지 데이터 만을 검사 한다.
 	BOOL bIsPET = CImageProcess::FindPetFilm(pImgPtr, nWidth, nHeight, RecipeInfo, pvstPetInfo, CAM_POS_TOP);
 
+	//PET 가 아닐 경우  Sector 정보를 얻는다.
 	if (bIsPET == FALSE)
 	{
 		//모드가 음극 일 경우 처리
 		if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 		{
+			//섹터 정보를 얻는다.
+			//실제 이미지 정보 이미지 데이터, 넓이, 높이, 
+			//TabFindPos : Tab 찾기 위한 위치 시작 점
+			//RecipeInfo : 레시피 정보
+			//vecSector : Cell를 만들기 위한 Sector 정보 받음
 			nLocalRet = CImageProcess::FindTab_Negative(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
-
+			//섹터 정보가 0보다 작다면
 			if (nLocalRet < 0)
 			{
 				//	return nLocalRet; // 21.12.28 Ahn Delete 
@@ -6359,7 +6512,8 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	{		
 		AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> [ Detected PET - TAB ]"));
 	}
-
+	//PET 정보가 있다면
+	//정보 삭제
 	if (pvstPetInfo != NULL) {
 		pvstPetInfo->clear();
 		delete pvstPetInfo;
@@ -9089,12 +9243,21 @@ int CImageProcess::GetMaxImage(BYTE* pResultPtr, BYTE* pSrcPtr, BYTE* pTarPtr, i
 int CImageProcess::GetBoundaryOfElectorde(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nFindDir)
 {
 	CRect rect;
+	//프로젝션 할 버퍼 크기
 	int nPrjWidth = 2000;
+	//실제 얻은 이미지 크기 nWidth 에서 프로젝션할 nPrjWidth 차가 이미지 왼쪽 시작점
 	rect.left = (nWidth - nPrjWidth );
+	//실제 이미지의 오른쪽 크기 픽셀 점
 	rect.right = nWidth;
+	//실제 이미지 Hight 시작점
 	rect.top = 0;
+	//실제 얻은 이미지 크기에서 1 제거? 좌표값
 	rect.bottom = nHeight - 1;
+	//샘플링할 높이 픽셀 크기 : 실제 이미지 높이/100 
 	int nSamplingSize = nHeight / 100;
+	//프로젝션 해서 얻어 올 버퍼 
+	//프로젝션 할 실제 넓이에서 2000을 뺀 위치에서 부터 실제 넗이 갯수 까지
+	//X축 Width의 휘도 평균 값을 가져오기 위한 버퍼
 	int* pnPrj = new int[nPrjWidth];
 
 	//DarkRoll  사용여부 체크
@@ -9102,11 +9265,21 @@ int CImageProcess::GetBoundaryOfElectorde(const BYTE* pImgPtr, int nWidth, int n
 	BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 
 	//프로젝션 이미지 데이터 생성 샘플링 값 높이/100
+	//프로젝션 샘플링을 실제 이미지에서 pnPrj 로 가져 온다
+	//넗이는 2000을 뺀 시작점에서 넓이 끝까지
 	CImageProcess::GetProjection(pImgPtr, pnPrj, nWidth, nHeight, rect, DIR_VER, nSamplingSize, FALSE);
+
 	//프로젝션 데이터로 바운드리 크기를 찾는다.
+	//pnPrj : 휘도 샘플링 데이터
+	//nPrjWidth : 휘도 샘플링 Width 값
+	//nCeramicBrightLow : 코딩부 세라믹 최저값
+	//nFindDir : 찾는 방향 (코딩부 세라믹 최저값을 이용하여 ~~ 찾음)
+	// return : nBndElectrode -> 휘도 샘플링 버퍼의 롤과 레시피 , 찾는 방향에 따른 휘도 위치 값을 받는다 : 레시피 기준 또는 샘플링의 데이터의 값 비교 로 얻음
 	int nBndElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], nFindDir, bUseDarkRoll ) ;
 
 	//찾는 위치가 Left
+	//찾는 방향이 오른쪽에서 왼쪽이면
+	//left 일 경우 실제 이미지의 잘라 버린 데이터 위치를 추가 해야 실제 얻은 미미지에서 의 위치가 된다.
 	if (nFindDir == en_FindFromLeft) {
 		nBndElectrode += (nWidth - nPrjWidth);
 	}
