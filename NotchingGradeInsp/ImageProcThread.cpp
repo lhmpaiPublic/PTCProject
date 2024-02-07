@@ -161,7 +161,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	BOOL bReservFrmNo = -1;
 	int nLastLengh = 0;
 	int nLastWidth = 0;
-	CTabInfo reservTabInfo;
 	CString strMsg;
 	CString strTemp;
 	CTabInfo RsvTabInfo;
@@ -464,15 +463,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							LOGDISPLAY_SPEC(7)("@@ConnectZone Trigger Id Setting @@@@ ");
 						}
 
-						//BCD ID 사용 아이디 차가 2이상이면 TRUE
+						//Trigger Last BCD ID와 사용 아이디 차가 많이 날 경우 TRUE
 						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && bBCDDiffBig)
 						{
 							bBCDDiffBig = FALSE;
 							// 240119 요청에 의해 주석제거.
 							AprData.m_NowLotData.m_nUseBCDID = 64;
 							nextBCDId = 64; 
-							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@BCD ID 사용아이디 차가 2이상@@@@ ");
 						}
 
 						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
@@ -688,6 +685,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						if ((lastBCDID >= 0) && (lastBCDID < 64) && (nowUseBCDID >= 0) && (nowUseBCDID < 64))
 						{
+							//백업용 Tab Info Image Length
+							int RsvTabInfonImageLength = RsvTabInfo.nImageLength;
 							//BCD ID 받은 값과 사용할 Tab Id 차가 2이상이면 
 							int compareBCDID = abs(lastBCDID - nowUseBCDID);
 							int BCDIDDiff = (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID);
@@ -699,10 +698,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							//Tab Id 정보 로그
 							int nDiffLog = (cntInfo.nTabIdTotalCount == -1)? BCDIDDiff * -1 : BCDIDDiff;
-							LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 @@@@ ", lastBCDID, nowUseBCDID, nDiffLog);
+							LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 RsImgLen<%d>@@@@ ", lastBCDID, nowUseBCDID, nDiffLog, RsvTabInfonImageLength);
 
 							CString strMsg;
-							strMsg.Format("last BCD ID<%d> = now BCD ID<%d> Diff <%d> Over @@@@ ", lastBCDID, nowUseBCDID, nDiffLog);
+							strMsg.Format("last BCD ID<%d> = now BCD ID<%d> Diff <%d> Over RsImgLen<%d>@@@@ ", lastBCDID, nowUseBCDID, nDiffLog, RsvTabInfonImageLength);
 							AprData.SaveMemoryLog(strMsg);
 
 						}
