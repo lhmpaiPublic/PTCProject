@@ -4439,7 +4439,7 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 	//블랙 롤 일 경우 찾는 방법
 	if (bFindDark == TRUE) {
 		backpnPrjData = 0;
-	// 찾는 방향 : 왼쪽에서 오른쪽
+	// 찾는 방향 : 오른쪽에서 왼쪽
 		if (nMode == en_FindFromRight) {
 			//휘도 샘플링 프로젝션 길이 만큼 돌면서
 			for (i = nLength - 1; i > 0; i--) 
@@ -4460,11 +4460,11 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 					//휘도 중 제일 큰 값의 위치 값을 백업
 					nLevel_back = i;
 				}
-				//제일 큰 휘도 값의  pnPrjData 위치 
+				//설정 치 보다 큰 찾은 값이 없다면 사용할 위치 값
 				nLevel = nLevel_back;
 			}
 		}
-		//찾는 방향 오른쪽에서 왼쪽
+		//찾는 방향 왼쪽에서 오른쪽
 		else {
 			for (i = 0; i < nLength; i++)
 			{
@@ -4483,6 +4483,7 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 					backpnPrjData = pnPrjData[i];
 					nLevel_back = i;
 				}
+				//설정 치 보다 큰 찾은 값이 없다면 사용할 위치 값
 				nLevel = nLevel_back;
 			}
 		}
@@ -4491,7 +4492,7 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 	else 
 	{
 		backpnPrjData = 2147483647;
-		// 찾는 방향 : 왼쪽에서 오른쪽
+		// 찾는 방향 : 오른쪽에서 왼쪽
 		if (nMode == en_FindFromRight) {
 			//휘도 샘플링 프로젝션 길이 만큼 돌면서
 			for (i = nLength - 1; i > 0; i--) 
@@ -4510,10 +4511,11 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 					backpnPrjData = pnPrjData[i];
 					nLevel_back = i;
 				}
+				//설정 치 보다 작은 찾은 값이 없다면 사용할 위치 값
 				nLevel = nLevel_back;
 			}
 		}
-		//찾는 방향 오른쪽에서 왼쪽
+		//찾는 방향 왼쪽에서 오른쪽
 		else {
 			//휘도 샘플링 프로젝션 길이 만큼 돌면서
 			for (i = 0; i < nLength; i++) {
@@ -4532,6 +4534,7 @@ int CImageProcess::FindBoundary_FromPrjData(int* pnPrjData, int nLength, int nTa
 					backpnPrjData = pnPrjData[i];
 					nLevel_back = i;
 				}
+				//설정 치 보다 작은 찾은 값이 없다면 사용할 위치 값
 				nLevel = nLevel_back;
 			}
 		}
@@ -4575,35 +4578,54 @@ int CImageProcess::FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHei
 	ASSERT(pVecSector);
 	ASSERT(pnLevel);
 
+	//샘플링 할값 설정
 	int nRet = 0;
+	//샘플링 빈도 : 넓이 / 10
 	int nSampling = 10;
+	//샘플링 시작 점
 	int nStartPos = nFindPos ;
+	//샘플링 끝 점 : 시작 점에서 샘플링 빈도 * 10 : 10개 한다.
 	int nEndPos = nStartPos + (nSampling * 10);
 
+	//샘플링 끝 점이 실제 얻은 이미지 Width 보다 크면 Width 값
 	if (nEndPos > nWidth) {
 		nEndPos = nWidth;
 	}
 
+	//레시피 세라믹 위치 휘도 값 Min
 	int thMin = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; //(int)(pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2;
+	//세라믹 휘도 Max
 	int thMax = 255;
 
 	pVecSector->clear();
+
+	//찾은 섹터의 갯수
 	int nLocalRet = 0;
+
+	//레시피 세라믹 휘도 값을 이용하여 롤과 탭을 구분한다.
+	//nLocalRet : 찾은 Sector 갯수
 	nLocalRet = CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, pVecSector);
 	if (nLocalRet <= 0) {
 		return -1;
 	}
+
+	//찾은 섹터 값을 이용하여 실제 Tab을 가지는 섹터 정보를 추출한다.
+	//위에서 얻은 섹터 정보를 다음 섹터 정보와 합치는 작업을 하여 만들어 낸다.
 	nLocalRet = CImageProcess::CombineTabSector(pVecSector, *pRecipeInfo);
 	if (nLocalRet < 0) {
 		return -2;
 	}
 
+	//레시피 Tab Width 를 이용하여  얻기 위한 세팅
 	int i = 0;
+	//섹터 갯수
 	int nSize = (int)pVecSector->size();
 	int nTabWidth;
 	int nFindIdx = 0;
 	int nLevelFindPos = 0;
 
+	//섹터 정보가 1개라도 있으면 실제 Tab이 있는 섹터를 찾기 위해서 
+	//레시피 Tab Width 를 이용하여  얻는다.
 	ST_SECTOR* pstSector = NULL;
 	for (i = 0; i < nSize; i++) {
 		nTabWidth = (*pVecSector)[i].nEndPos - (*pVecSector)[i].nStartPos;
@@ -4612,61 +4634,113 @@ int CImageProcess::FindTabLevel_Simple(const BYTE* pImgPtr, int nWidth, int nHei
 			break;
 		}
 	}
-
+	//섹터 갯수는 있는데 Tab으로 인식하지 못했을 때는
+	//찾는 섹터에서 첫번째 섹터를 취한다.
 	if (pstSector == NULL)
 	{
+		//찾은 섹터가 있을 때
 		if (nSize)
 		{
 			pstSector = &(*pVecSector)[0];
 		}
+		// 찾은 섹터가 없을 경우
 		else
 		{
 			return -3;
 		}
 	}
 
+	//마지막 엣지
+	//지금의 섹터 이전 섹터 End pos(이전 섹터의 끝점)
 	int nLastEdge = 0;
+	//제일 큰 이전 섹터 End Pos 에서 지금 섹터의 Start Pos 거리
+	//nDistance 최대 값 백업
 	int nMaxDistPos = 0 ;
+	//제일 긴 nMaxDistPos의 시작 위치 값 백업
+	//nMaxDistPos 값을 다시 찾았을 때
 	int nMaxStartPos = 0 ;
+	//nMaxDistPos 값을 다시 찾았을 때의 지금 섹터 시작 점
 	int nMaxEndPos = 0 ;
+	//
 	int nDistance;
+
+	//얻은 섹터 갯수 만큼 
 	for (i = 0; i < nSize ; i++) {
+		//찾은 섹터의 첫번 째 점에서 이전 섹터 End 점까지 거리
 		nDistance = (*pVecSector)[i].nStartPos - nLastEdge ;
+
+		//백업한 거리 보다 더 큰 거리 값을 얻었으면
 		if (nMaxDistPos < nDistance) {
+			//최대 거리의 이전 섹터 끝 점을 시작 점으로 
 			nMaxStartPos = nLastEdge;
+			//최대 거리의 지금 섹터 시작 점을  끝 점으로
 			nMaxEndPos = (*pVecSector)[i].nStartPos;
-			nMaxDistPos = nDistance; // 22.04.26 Ahn Add
+			//다음 섹터의 거리를 비교하기 위해서 백업한다.
+			nMaxDistPos = nDistance;
 		}
+		//지금의 섹터의 End Pos를 백업한다.
+		//다음 섹터의 스타트 점과의 거리를 계산하기 위한 값이다.
 		nLastEdge = (*pVecSector)[i].nEndPos;
 	}
-
-	nDistance = nHeight - (*pVecSector)[nSize-1].nEndPos; // 22.04.26 Ahn Modify
+	//nSize : 섹터의 갯수
+	//nSize - 1 를 해야 인텍스가 된다(vector 0부터)
+	//섹터의 마지막 인덱스의 End Pos에서 실제 이미지 Height(끝) 거리를 얻는다.
+	//마지막 섹터에서 남은 거리
+	nDistance = nHeight - (*pVecSector)[nSize-1].nEndPos; 
+	//찾은 Max 백업 거리보다 크면 취한다.
 	if (nDistance > nMaxDistPos) {
+
+		//최대 거리의 이전 섹터 끝 점
+		//최대 거리의 Max의 시작 점으로 마지막 섹터의 End Pos를
 		nMaxStartPos = (*pVecSector)[nSize-1].nEndPos;
-		nMaxEndPos = nHeight ; // 22.04.26 Ahn Modify
+		//최대 거리의 Max의 끝 점으로 실제 이미지 넓이를 취한다.
+		nMaxEndPos = nHeight ; 
 	}
 
+	//시작 점과 끝 점이 0이상 일 대
 	if ((nMaxStartPos >= 0) && (nMaxEndPos > 0)) {
+		//시작 점과 끝 점의 중간 값
 		int nCenterPos = (int)( (nMaxStartPos + nMaxEndPos) / 2 ) ;
 
+		//프로젝션 샘플링 범위 설정
 		CRect rcPrj;
+		//프로젝션 샘플링 데이터 버퍼 실제 이미지 X 넓이 만큼
 		int* pnPrjData;
 		pnPrjData = new int[nWidth];
 		memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+		//프로젝션 샘플링 할 실제 이미지의 Y 범위(20 + 20 = 40 픽셀)
 		rcPrj.top = nCenterPos - 20 ;
 		rcPrj.bottom = nCenterPos + 20 ;
+		//X의 실제 이미지 범위 값(전체)
 		rcPrj.left = 0;
 		rcPrj.right = nWidth;
 
+		//프로젝션 샘플링 데이터를 가져 온다.
+		//pImgPtr : 실제 이미지 데이터
+		//pnPrjData : 샘플링 데이터를 가져 올 버퍼
+		//nWidth : 실제 이미지 넓이
+		//nHeight : 실제 이미지 높이
+		//rcPrj : 프로젝션 할 실제 이미지의 위치 및 범위 값
+		//DIR_VER : X 축으로 합친다.
+		//nSampling : rcPrj <- 범위 에서 샘플링 됨(y 값 시작에서 끝까지 거리 를 샘플링 값으로 나눔) 1/nSampling
+		//TRUE : 휘도 샘플링 데이터를 총합으로 가져온다. (FALSE ; 평균을 가져온다.)
 		int nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, TRUE);
 
+
+		//블랙롤 인가를 레시피 데이터에서 가져온다.
+		//블랙 롤의 경우 nUpperBright 보다 작다면 샘플링 된 데이터 최대 값
+		//블랙 롤이 아닐 경우 최소 값
 		BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 
+		//nCount Y축 샘플링 갯수 에 세라믹 레시피 설정 휘도와 Roll 부 레시피 휘도 평균를 곱하여 
 		int nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
 //		int nUpperBright = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];//pyjtest
 
+		//롤과의 경계를 찾는데 오른쪽부터 찾아서 롤 휘도를 벗어나면 그 위치가 세라믹 코팅부
+		//아니면 최대 값을 가지는 부분이 경계 선
 		*pnLevel = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 
+		//프로젝션 샘플링 버퍼 삭제
 		delete[] pnPrjData;
 		pnPrjData = NULL;
 	}
@@ -4690,7 +4764,7 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	//Tab을 찾기 위한 위치 스타트 점
 	int nStartPos = nTabFindPos;
 	//Tab Find 끝나는 점
-	//샘플링 건너뛰기 갯수 만큼
+	//샘플링 건너뛰기 갯수 만큼 : 샘플링 빈도 10 * 10 : 10개 한다.
 	int nEndPos = nStartPos + (nSampling * 10);
 
 	//샘플링 끝나는 점이 실제 이미지 크기 보다 크면 실제 이미지를 Max로 
@@ -4698,6 +4772,7 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 		nEndPos = nWidth;
 	}
 	//레시피의 Bright  최저 값
+	//레시피의 Tab Min 값을 이용하여 롤과 Tab 위치 찾기 위한 값
 	int thMin = pRecipeInfo->TabCond.nTabMinBright; // pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP];
 	//레시피 Bright 최대 값 255
 	int thMax = 255;
@@ -4707,6 +4782,7 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	//로컬 Ret
 	int nLocalRet = 0;
 	//로컬 Tab Pos 찾는다.
+	//Tab의 휘도 값을 이용하여 롤과 Tab을 구분한다.
 	nLocalRet = CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, pVecSector);
 	//섹터 정보가 없다면 -1 리턴(오류)
 	if (nLocalRet <= 0)
@@ -4753,6 +4829,7 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 			pstSector = &(*pVecSector)[0];
 		}
 		//아니면 오류
+		//섹터를 못찾았으면 들어오지 않는데?
 		else
 		{
 			return -3;
@@ -4788,10 +4865,9 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	memset(pnPrjData, 0x00, sizeof(int) * nWidth);
 
 	//프로젝션을 할 설정 범위
-	//높이 시작
+	//높이 시작 : 0에서 
 	rcPrj.top = 0;
-	//높이 끝
-	//섹터 정보 시작점에서 20 뺀 값
+	//높이 끝 : 섹터 정보 시작점에서 20 뺀 값까지만
 	rcPrj.bottom = pstSector->nStartPos - 20;
 	//넓이 시작
 	rcPrj.left = 0;
@@ -4804,18 +4880,24 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	//프로젝션 휘도 총합을 가져온다.
 	nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, TRUE);
 	//블랙 롤일 경우 TRUE
+	//블랙 롤의 경우 nUpperBright 보다 작다면 샘플링 된 데이터 최대 값
+	//블랙 롤이 아닐 경우 최소 값
 	BOOL bUseDarkRoll = (pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 	//X 축 샘플링된 갯수 * 배수(레시피 세라믹 브라이트 로우 값 롤의 브라이트 하이 값 빼기 1/2
+	//nCont : 배수는 샘플링한 갯수에 설정 휘도를 해야 총합과 비교 가능
+	//nCount Y축 샘플링 갯수 에 세라믹 레시피 설정 휘도와 Roll 부 레시피 휘도 평균를 곱하여 
 	nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
-	//X 축 휘도로 찾은 다크롤의 왼쪽 위치 값을 찾는다.
+	//X 축 휘도로 찾은 값에서
+	//세라믹 코팅 부 휘도와 Roll 휘도 평균 값을 오른쪽에서 부터 검사 해서 크면 된다.
+	//이유는 롤의 윗 부분을 검사하는 부분이고, 롤이 아닌 부분을 만나면 바로 그 점이 세라믹 부분이다.
 	int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 
 
 	//이전 프로젝션 데이터 초기화
 	memset(pnPrjData, 0x00, sizeof(int) * nWidth);
-	//프로젝션 높이 시작 점
+	//프로젝션 높이 : 섹터의 끝점에서부터 검사하여
 	rcPrj.top = pstSector->nEndPos + 20;
-	//프로젝션 높이 끝점
+	//프로젝션 높이 : 실제 이미지 높이 끝까지
 	rcPrj.bottom = nHeight;
 	//넓이 시작 점
 	rcPrj.left = 0;
@@ -4823,15 +4905,19 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	rcPrj.right = nWidth;
 	//프로젝터 범위 설정 값의 휘도 평균이 아닌 합한 총 값을 가져온다.
 	nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, TRUE);
+	//X 축 샘플링된 갯수 * 배수(레시피 세라믹 브라이트 로우 값 롤의 브라이트 하이 값 빼기 1/2
+	//nCont : 배수는 샘플링한 갯수에 설정 휘도를 해야 총합과 비교 가능
 	nUpperBright = nCount * ((pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);//pyjtest : 주기적인 NG 발생건, 양극에서 이 값 계산으로 인해 기준 Edge 인식 못하는 경우가 발생하는 듯
-
+	//X 축 휘도로 찾은 값에서
+	//세라믹 코팅 부 휘도와 Roll 휘도 평균 값을 오른쪽에서 부터 검사 해서 크면 된다.
+	//이유는 롤의 아래 부분을 검사하는 부분이고, 롤이 아닌 부분을 만나면 바로 그 점이 세라믹 부분이다.
 	int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 
 
-
+	//롤의 윗부분과 아랫부분의 평균 점이 세라믹 경계선이 된다.
 	*pnLevel = (nLevelLeft + nLevelRight) / 2;
 
-
+	//프로젝션 샘플링 버퍼 제거
 	delete[] pnPrjData;
 	pnPrjData = NULL;
 
@@ -5286,6 +5372,7 @@ int CImageProcess::CombineTabSector(VEC_SECTOR* pVecSector, CRecipeInfo& RecipeI
 			//섹터 정보 delete 정보가 TRUE 처리안함
 			if ((*pVecSector)[j].bDelete == TRUE) continue;
 			//섹터 정보 끝 점에서 시작 점의 길이가 레시피 설정 값의 1.2배보다 작다면
+			//Tab Width 1.2배의 크기보다 작다면 합친다.
 			if ( ((*pVecSector)[j].nEndPos - (*pVecSector)[i].nStartPos ) <= nTabCheckRange) {
 				//겉의 섹터 끝 점에 다음 섹터의 끝 점
 				(*pVecSector)[i].nEndPos = (*pVecSector)[j].nEndPos;
@@ -6378,34 +6465,52 @@ int CImageProcess::DivisionTab_byFixSize(const BYTE* pImgPtr, const BYTE* pImgBt
 	ASSERT(pImgPtr);
 	ASSERT(pVecTabInfo);
 
+	//끝 위치 Y
 	int nRet = nEndPos ;
 
+	//레시피 Tab Pitch 나누어 몇개인가 계산
 	int nSize = (nEndPos - nStartPos) / nFixSize;
 
+	//새로 얻은 이미지에서 이전 Tab Info Image 에 붙이고 남은 위치 가 시작점
 	int nLastSavePos = nStartPos; 
 
+	//레시피 Tab Pitch 로 자를 이미지 크기가 있다면 로그
 	if( nSize > 0 )
 	{
 		AprData.SaveDebugLog_Format( _T("<DivisionTab_byFixSize> <CTabInfo> m_bErrorFlag = 1") );
 	}
 
-
+	//레시피 Tab Pitch 로 자를 이미지 크기가 있다면
+	//갯 수만 큼 이미지 자른다.그리고 정보도 세팅한다.
+	//Tab Info : 정상적인 Tab Info가 아니다.
 	for (int i = 0; i < nSize; i++)
 	{
+		//얻을 Tab Info 클래스 객체
 		CTabInfo tabInfo;
+		//Sector 정보가 없으므로 에러 (즉 Tab Widtch가 없는 남은 이미지로 )
 		tabInfo.m_bErrorFlag = TRUE;
+		//PET 여부 설정 세팅
 		tabInfo.m_bIsPET = bIsPET;
+		//이미지 길이는 레시피 세팅된 Tab Pitch 값이다.
 		tabInfo.nImageLength = nFixSize;
+
+		//Top 이미지 데이터 저장 메모리 생성
 		tabInfo.pImgPtr = new FrameImagePtr();
 		memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
+		//새로운 이미지를 Tab Info Image 에 copy
 		CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
+
+		//Bottom 이미지 데이터 저장 메모리 생성
 		tabInfo.pImgBtmPtr = new FrameImagePtr();
 		memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
+		//새로운 이미지를 Tab Info Image 에 copy
 		CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
+
+		//copy 하고 남은 이미지 위치 점
 		nLastSavePos += nFixSize ;
 
 		LOGDISPLAY_SPEC(5)("<<Proc>> CImageProcess::DivisionTab_byFixSize-TabInfopush-count");
-
+		//Tab Info push
 		pVecTabInfo->push_back(tabInfo);
 	}
 
@@ -6466,6 +6571,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	//기준이되는 레시피 Tab Pitch 1/2 값
 	int nBaseTabHalfPitch = nBaseTabPitch / 2;
 	//기준이 되는 레시피 Tab Pitch 에서 Tab 넓이를 뺀 값의 1/2 : Tab 없는 부분을 기준으로 짜르기 위한 길이
+	//이전 Tab 끝과 다음 Tab 처음 사이의 길이의 반
 	int nPairSholderLength = (nBaseTabPitch - nBaseTabWidth) / 2;
 
 	//실제 이미지 X 넓이의 오른쪽 좌표에서 220 뺀값을 기준으로 Tab Find Pos 설정
@@ -6497,13 +6603,25 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			{
 				//	return nLocalRet; // 21.12.28 Ahn Delete 
 			}
+			//롤의 윗부분과 아랫부분의 평균 점이 세라믹 경계선이 된다.
+			//X 넓이에서 롤과의 경계점을 찾은 값
+			//Tab을 가운데로 양쪽에 롤 존재 : 1/2 평균 중점
 			*pnLevel = nLevel;
 
 		}
 		//모드가 양극 일 경우 처리
 		else
 		{
+			//섹터 정보를 얻는다.
+			//실제 이미지 정보 이미지 데이터, 넓이, 높이, 
+			//TabFindPos : Tab 찾기 위한 위치 시작 점
+			//RecipeInfo : 레시피 정보
+			//vecSector : Cell를 만들기 위한 Sector 정보 받음
 			nLocalRet = CImageProcess::FindTabLevel_Simple(pImgPtr, nWidth, nHeight, nTabFindPos, &RecipeInfo, &vecSector, &nLevel);
+
+			//롤의 윗부분과 아랫부분의 평균 점이 세라믹 경계선이 된다.
+			//X 넓이에서 롤과의 경계점을 찾은 값
+			//Tab을 가운데로 양쪽에 롤 존재 : 1/2 평균 중점
 			*pnLevel = nLevel;
 
 		}
@@ -6522,20 +6640,16 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 
 	int nLastSavePos = 0;
+	//찾은 섹터의 갯수
 	int nSize = (int)vecSector.size();
 
-
+	//섹터 정보가 있음
 	bool bSectorInfo = TRUE;
 	if (nSize == 0)
 	{
 		AprData.SaveDebugLog(_T("==에러== 이미지에서 Sector 정보 찾지 못함"));
 		bSectorInfo = FALSE;
 	}
-
-
-
-
-
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -6556,21 +6670,19 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
-
-
-
-
-
+	//Tab Info를 만들기 위한 case 
 	int nCase = -1;
+	//이전에 얻은 Image 데이터가 있다면
+	//Cell : 검사를 위한 Y축(TabPitch : 레시피 설정 범위의 )으로 자른 단위
+	//이전 이미지 데이터에서 Cell를 만들고 남은 이미지 데이터
 	if( pResvTabInfo->pImgPtr != NULL )
 	{
 		// 지난 Frame에서 보내지 못하고 남은 Image가 있음.
-		CTabInfo tabInfo;		
+		//Tab Info를 담을 클래스 객체
+		CTabInfo tabInfo;
+		//남은 이전 Top(Tab이 있는 이미지 데이터)
 		BYTE *pTempPtr = pResvTabInfo->pImgPtr->m_pImagePtr;
+		//남은 이전 Bottom(Tab이 없는 이미지 데이터)
 		BYTE *pTempBtmPtr = pResvTabInfo->pImgBtmPtr->m_pImagePtr;
 
 
@@ -6585,56 +6697,68 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-		// 예약 Tab과 첫번째 Tab이 붙은 Tab인가??
-		// 예약 정보에 Tab이 존재하는가?
+		// PEC 부분인가 설정
 		tabInfo.m_bIsPET = bIsPET;
 
+		//이전 이미지에 지금 얻은 이미지를 Y으로 가져올 길이
+		//새로 들어온 이미지를 이전 이미지에 붙여서 보낼 높이이다.(Y축 높이)
 		int nSendLength = 0;
 
-
+		//새로온 이미지에서 Tab 정보가 없을 때
+		//섹터 정보가 없을 경우
 		if (nSize <= 0)
 		{
-			// case 2,3,4는 해당되지 않음
+			//백업된 이전 Tab Info에서 Image 길이가 Tab Pitch 보다 크면 
+			//이전 남은 이미지 크기가 레시피 설정 텝 피치를 벗어날 경우
 			if (pResvTabInfo->nImageLength > nBaseTabPitch)
 			{
-				nCase = 0; // 통으로 보냄.
+				//이전 데이터가 이미 Cell 크기를 가지고 있으므로 전체를 하나의 셀로 보낸다.
+				nCase = 0;
 			}
+			//이전 남은 이미지 데이터 Tab Width(탭의 넓이) 0이하
+			//탭이 없을 때
 			else if (pResvTabInfo->nTabWidth <= 0)
 			{
-				nCase = 1; // 사이즈로 잘라보냄
+				//다음 이미지를 Cell 크기에 맞게 잘라 붙여서 보낸다.
+				nCase = 1;
 			}
 		}
+		//Tab 에 대한 Sector 정보가 있다.
 		else
-		{ // 새 Frame에 탭 정보 있음.
-
-			// 22.10.06 Ahn Add Start
-			//int nDistance = (pResvTabInfo->nImageLength - pResvTabInfo->nTabRight) + vecSector[0].nStartPos ;
-
-			// 22.10.06 Ahn Add End
+		{ 
+			//이전 남은 Tab Info에 Tab Width 정보가 있다면
 			if (pResvTabInfo->nTabWidth > 0)
-			{ // 예약 Tab에 Tab정보 있음. // 2또는 3
-
+			{
+				//이전 Tab Info 길이에서 Tab Left를 뺀값(탭 시작점 남는 길이) 에 새로 얻은 이미지 섹터(tab 정보의 끝 위치까지)끝까지 더해서
 				int nTabWidth = (pResvTabInfo->nImageLength - pResvTabInfo->nTabLeft) + vecSector[0].nEndPos;
 
-				// 22.09.06 Ahn Modify End
+				//레시피에 설정한 Tab Width의 1.2배 안에(작으면) 들어오면
+				//새로운 이미지 정보의 섹터 정보에 의해 Cell 정보를 만들 수 있는지 판단
 				if (nTabWidth <= (int)((double)nBaseTabWidth * 1.2))
-				{ // 22.06.22 Ahn Modify 1.2 -> 1.4
-					//한탭으로 판단.
+				{
+					//다음 섹터 정보에서 붙일 이미지 정보를 찾는다.
 					nCase = 3;
 				}
+				//Tab Width를 넘어갈 경우 Sector 의 Tab 정보를 사용하지 않는다.
+				//이진 이미지에 온전한 Tab width 정보가 있음
 				else
-				{ // 앞에꺼만 보내면 됨.	
+				{ 
+					//다음 이미지의 남은 Cell 길이 만큼만 붙여 넣는다.
 					nCase = 2;
 				}
 			}
+			//이전에 남은 Tab Info에 Tab Width 가 없다.
+			//Tab Width 크기가 0이다.
 			else
-			{ // 앞에 탭 정보 없음.
+			{ 
 
-				// 따로 보낼까?
+				// 이전 Tab Info 전체 길이 + 새로운 Image Sector 정보의 End pos 가 레시피 설정 Tab Pitch를 넘어간다.
+				//밑에서 사용 없음 : case 이 안나올 가능성
 				if ((pResvTabInfo->nImageLength + vecSector[0].nEndPos) > (int)((double)nBaseTabPitch * 1.2))
 				{
 					nCase = 5;
 				}
+				// 이전 Tab Info 전체 길이 + 새로운 Image Sector 정보의 End pos 가 레시피 Tab Pitch 보다는 작아야 한다.
 				else
 				{
 					nCase = 4;
@@ -6647,24 +6771,39 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		BOOL bResvSend = FALSE;
 		switch (nCase)
 		{
-		case	0 : // 통으로 보냄
+		case	0 : 
+			//tab Info
+			//Cell 의 왼쪽 시작 점(Y축 시작)
 			tabInfo.nLeft = 0;
+			//Cell의 오른쪽 끝점(y축 높이)
 			tabInfo.nRight = pResvTabInfo->nImageLength;
+			//Cell의 Y축 시작점에서 끝점까지 거리
 			tabInfo.nImageLength = pResvTabInfo->nImageLength;
+			//tab 정보가 잘못 되었음 설정
 			tabInfo.m_bErrorFlag = TRUE;
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag );
 
+			//tab Info의 Image 데이터 정보 메모리 생성
+			//Top : Tab 있는 Image
 			tabInfo.pImgPtr = new FrameImagePtr();
 			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			//Bottom : Tab이 없는 image
 			tabInfo.pImgBtmPtr = new FrameImagePtr();
 			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
-			// 22.11.18 Ahn Add Start
+
+
+			//tab Info에 만들어지는 Grab에서 얻은 순서(count) 세팅
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount ;
+			//이전 남은 정보의 시작위치 점
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
-			// 22.11.18 Ahn Add End
+
+			//생성된 tab Info Image 메모리에 Copy
+			//Top : Tab이 있는 이미지
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			//Bottom : Tab 이 없는 Image
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			//마지막 점
 			nLastSavePos = 0 ; 
 
 
@@ -6673,71 +6812,115 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			break;
 
 
-		case	1: // 앞뒤 다 없어거나, 그냥 사이즈에 맞춰 잘라보냄.
+		case	1: 
+			//tab Info
+			//Cell 의 왼쪽 시작 점(Y축 시작)
 			tabInfo.nLeft = 0;
+			//Cell를 만들기 위해 y축(잘라 붙여야 되는 길이 계산
 			nSendLength = nBaseTabPitch - pResvTabInfo->nImageLength ;
+			//Cell의 오른쪽 끝점
 			tabInfo.nRight = pResvTabInfo->nImageLength + nSendLength ;
+			//Cell의 시작점에서 끝점까지 거리
 			tabInfo.nImageLength = pResvTabInfo->nImageLength + nSendLength ;
+			//tab Info에 에러 세팅
 			tabInfo.m_bErrorFlag = TRUE;
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <nCase=%d> <CTabInfo> m_bErrorFlag=%d"), nCase, tabInfo.m_bErrorFlag);
 
+			//tab Info의 Image 데이터 정보 메모리 생성
+			//Top : Tab 있는 Image
 			tabInfo.pImgPtr = new FrameImagePtr();
 			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
+
+			//Bottom : Tab이 없는 image
 			tabInfo.pImgBtmPtr = new FrameImagePtr();
 			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
-			// 22.11.18 Ahn Add Start
+			
+			//사용되는 Grab Image 번호
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
 
-			// 22.11.18 Ahn Add End
+			//생성된 tab Info Image 메모리에 Copy
+			//Top 에 이전 Top 이미지 복사
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			//Bottom에 이전 Bottom 이미지 복사
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			//Top에 새로얻은 Image를 nSendLength 만큼 덧 붙인다.
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
+			//Bottom에 새로얻은 Image를 nSendLength 만큼 덧 붙인다.
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
-			nLastSavePos = nSendLength;
 
+			//새로 들어온 이미지에서 잘라 붙인 크기 만큼의 위치
+			nLastSavePos = nSendLength;
 
 			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> case 1 nLastSavePos = %d"), nLastSavePos);
 
 			break;
 
-
-		case	2 : // 예약Tab 정보에 Tab이 있어서 뒤에 꺼 붙여보냄.
+		case	2 : 
+			//남은 이미지에 Tab Width 가 남아 있을 경우 세팅 값
+			//tab Info
+			// 이전 Tab Info에서 Tab의 왼쪽 점 세팅(Cell의 Tab 시작 점이 된다)
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
+			// 이전 Tab Info에서 Tab의 오른쪽 점 세팅
+			//이전 남은 정보에 Tab Width가 모두 있다.
 			tabInfo.nTabRight = pResvTabInfo->nTabRight;
-			// 22.11.18 Ahn Add Start
+
+			//이전 Tab Info의 Image 순서 세팅
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
-			// 22.11.18 Ahn Add End
+			
+			//새로 들어온 이미지를 사용해야 하는가를 설정
+			//새로운 이미지 Copy 해서 Cell 정보를 만든다.
 			bResvSend = TRUE;
 
 			break;
 
 
-		case	3 :	// 앞뒤 Tab 정보가 하나로 판단 붙여서 보냄
+		case	3 :	
+
+			//남은 이미지에 Tab Width 가 남아 있을 경우 세팅 값
+			//tab Info
+			// 이전 Tab Info에서 Tab의 왼쪽 점 세팅(Cell의 Tab 시작 점이 된다)
 			tabInfo.nTabLeft = pResvTabInfo->nTabLeft;
+			//Tab Width 정보가 작으므로 이전 전체 길이에 새로 얻은 섹터 정보의 Tab 정보를 더한다.
+			//온전한 Tab Width 길이를 만든다.
 			tabInfo.nTabRight = pResvTabInfo->nImageLength + vecSector[0].nEndPos ;
-			// 22.11.18 Ahn Add Start
+
+
+			//이전 Tab Info의 Image 순서 세팅
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
-			// 22.11.18 Ahn Add End
+			
+			//사용한 섹터 정보를 지운다.
 			vecSector.erase(vecSector.begin());
+
+			//새로 들어온 이미지를 사용해야 하는가를 설정
+			//새로운 이미지 Copy 해서 Cell 정보를 만든다.
 			bResvSend = TRUE;
 
 			break;
 
 
-		case	4 :	// 앞에 Tab 정보가 없어 그냥 뒤에꺼 앞에 붙여서 보냄.
+		case	4 :	
 
+			//이전에 남은 Tab Info에 Tab Width 가 없다.
+			//tab Info
+			// 이진 남은 Tab Info에 Tab Width 가 없으므로 새로 얻은 Tab Width 시작점이 Tab Left가 된다.
 			tabInfo.nTabLeft = pResvTabInfo->nImageLength + vecSector[0].nStartPos;
+			//5 case가 아니므로 새로 얻은 Image의 Sector 정보의 Tab Width 가 Tab Right 가 된다.
 			tabInfo.nTabRight = pResvTabInfo->nImageLength + vecSector[0].nEndPos;
-			// 22.11.18 Ahn Add Start
+			
+			// 이전 Tab Info의 Image 순서 세팅
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
-			// 22.11.18 Ahn Add End
+
+			//사용한 섹터 정보를 지운다.
 			vecSector.erase(vecSector.begin());
+
+			//새로 들어온 이미지를 사용해야 하는가를 설정
+			//새로운 이미지 Copy 해서 Cell 정보를 만든다.
 			bResvSend = TRUE;
 
 			break;
@@ -6747,43 +6930,68 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			break;
 		}
 
+		//새로 얻은 이미지에서 Image 데이터를 덧 붙어야 할 경우
 		if (bResvSend == TRUE)
 		{
+			//만들어 지는 tab Info
+			//Cell에서 Tab Width 의 중앙(TabWidth 중앙)
+			//2,3,4 case에서 Tab Width 왼쪽 오른쪽 점 정보은 모두 얻어서 
 			tabInfo.nCenter = (tabInfo.nTabRight + tabInfo.nTabLeft) / 2;
-			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;			// 센터기준으로 할지 오른쪽 기준으로 자를지....
+
+			//Cell의 오른쪽 끝점 은 : Tab Width 중앙에서 레시피 설정 치 Tab Pitch의 반(Half) 를 더하면 나온다.
+			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;
+
+			//새로운 이미지 정보에서 남은 이전 Tab Info에 붙여질 Image 길이를 계산한다.
 			nSendLength = tabInfo.nRight - pResvTabInfo->nImageLength;
 
 			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> nSendLength(%d) = tabInfo.nRight(%d) - pResvTabInfo->nImageLength(%d)"), nSendLength, tabInfo.nRight, pResvTabInfo->nImageLength);
 
 
-			// 22.03.30 Ahn Add Start
+			//새로운 Image 의 얻은 Y축 높이가(Image 높이) 붙여야 하는 Image 길이보다 작으면 
+			//얻은 이미지 높이 값으로 세팅한다. 예외처리
 			if (nSendLength > nHeight)
 			{
 				nSendLength = nHeight;
 			}
-			// 22.03.30 Ahn Add End
+
+			//붙여질 새로운 이미지의 길이에 남은 Image 길이가 Tab Info (한 Cell의) 전체 길이가 된다.
 			tabInfo.nImageLength = nSendLength + pResvTabInfo->nImageLength;
+
+			//tab Info의 Image 데이터 정보 메모리 생성
+			//Top : Tab 있는 Image
 			tabInfo.pImgPtr = new FrameImagePtr();
 			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+
+			//이전 남은 Image를 Tab Info 정보로 copy
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pResvTabInfo->pImgPtr->m_pImagePtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			//새로운 Image 정보를 덧붙일 길이만큼 잘라 붙인다.
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
+
+			//tab Info의 Image 데이터 정보 메모리 생성
+			//Bottom : Tab 없는 Image
 			tabInfo.pImgBtmPtr = new FrameImagePtr();
 			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+
+			//이전 남은 Image를 Tab Info 정보로 copy
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pResvTabInfo->pImgBtmPtr->m_pImagePtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			//새로운 Image 정보를 덧붙일 길이만큼 잘라 붙인다.
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
+
+			//새로 들어온 이미지에서 잘라 붙인 크기 만큼의 위치
+			//새로 얻은 이미지에서 Cell로만들고 남은 Image 좌표
 			nLastSavePos = nSendLength;
 
 			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> bResvSend == TRUE nLastSavePos = %d, tabInfo.nRight = %d, pResvTabInfo->nImageLength = %d"), nLastSavePos, tabInfo.nRight, pResvTabInfo->nImageLength );
 
 
-			// 22.11.18 Ahn Add Start
+			// 이전 Tab Info의 Image 순서 세팅
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount ;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame ;
-			// 22.11.18 Ahn Add End
 
 		}
 
 		//텝정보를 저장한다.
+		//이전 남은 Tab Info가 있을 때 만들어 진 정보를 push한다.
 		pVecTabInfo->push_back(tabInfo);
 		AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> pVecTabInfo->push_back 1 Size<%d> "), pVecTabInfo->size());
 
@@ -6838,18 +7046,21 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 
 
-
+		//사용 된 이전 남은 Tab Info 정보는 삭제한다.
+		//Top Image 정보 삭제
 		if (pResvTabInfo->pImgPtr != NULL)
 		{
 			delete pResvTabInfo->pImgPtr;
 			pResvTabInfo->pImgPtr = NULL;
 
 		}
+		//Bottom Image 정보 삭제
 		if (pResvTabInfo->pImgBtmPtr != NULL)
 		{
 			delete pResvTabInfo->pImgBtmPtr;
 			pResvTabInfo->pImgBtmPtr = NULL;
 		}
+		//가지고 있던 이전 Tab Info 를 초기화한다.
 		pResvTabInfo->ResetData();
 	}
 
@@ -6861,27 +7072,40 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		AprData.SaveDebugLog_Format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> ** 이미지에서 Sector 정보 찾지았지만 기존이미지 통합과정에서 삭제됨"), nCase);
 	}
 
+	//남은 Tab Info Image 가 있을 때 2, 3, 4 case 시 들어온다. : 남은 섹터 정보
+	//남은 Tab Info Image 가 없을 때 : nLastSavePos 0
 	if (nSize <= 0) 
 	{
-	 // Tab을 찾지 못하여 길이 우선으로 잘라서 보냄.
-
+		//잘려지고 남은 길이는 case 1 이다.
 		int nSendAbleLeng = (nHeight - nLastSavePos);
+		//얻은 Image의 Y 넓이가 레시피 설정  Pitch 몇개 인가 계산
 		int nSendAbleCount = nSendAbleLeng / nBaseTabPitch ;
 
+		//레시피에 설정한 Tab Pitch 로 자른다. : nSendAbleCount > 0 이면
 		nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight, bIsPET, pVecTabInfo);
 
 		AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> nSize <= 0 nLastSavePos = %d"), nLastSavePos);
 
 	}
+	//섹터 정보가 있을 경우
+	//남은 Tab Info Image 가 있을 때 : 0, 1 로 쓰지 않은 섹터 정보가 남아 있다.
+	//남은 Tab Info Image 가 없을 때 : 섹터 정보가 있다.
 	else
 	{
+		//nPairSholderLength : 이전 Tab 끝과 다음 Tab 처음 사이의 길이의 반 : Cell의 두 롤 부분의 한쪽 롤 길이
+		//새로운 이미지에서 왼쪽의 시작 점 : nLastSavePos 0 이면 이전 Tab Info 가 없는 것이다.
+		//새로 얻은 섹터 nStartPos 길이에서  한쪽 롤 길이와 이전 Tab Info에 잘라 붙이고 남은 길이를 합한 값을 뺀다.
+		//Start Pos 에서 nPairSholderLength를 빼면 딱 Cell의 시작 점이 된다.
 		int nLeftSize = ( ( vecSector[0].nStartPos - nPairSholderLength ) - nLastSavePos);
 		int nDivCnt = 0;
 
-		//Last Save Pos를 다시 구한다.
+		//새로 얻은 섹터 nStartPos 길이에서  한쪽 롤 길이와 이전 Tab Info에 잘라 붙이고 남은 길이를 합한 값을 뺀 값이 Cell 얻을 길이가 된다면 ?
+		//가능성 없음 ? 한번에  큰 Image Pixel를 얻을 때는 나올 수 있다.
 		if (nLeftSize > nBaseTabPitch ) 
 		{
+			//레시피 설정 Tab Pitch 로 나누어 몇개 나오나 계산
 			nDivCnt = nLeftSize / nBaseTabPitch ;
+			//남는 다면 계산한다.
 			if (nDivCnt > 0) 
 			{
 				nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nLastSavePos + nLeftSize, bIsPET, pVecTabInfo);
@@ -6893,61 +7117,93 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 		AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> <vecSector.Size=%d>"), nSize);
 
+		//새로운 Image 에서 섹터 정보가 있다면 
+		//섹터 정보 만큼 
 		for (int i = 0; i < nSize; i++) 
 		{
+			//Tab Info 클래스 객체
 			CTabInfo tabInfo;
+			//섹터 정보의 Tab Width 시작 위치가 사용한 위치 보다 작거나 같다면
+			//Tab Info를 만들지 않는다.
 			if (vecSector[i].nStartPos <= nLastSavePos) 
 			{
 				//DEBUG_LOG.txt
 				AprData.SaveDebugLog_Format(_T("<<DivisionTab_FromImageToTabInfo>>처리 - 이미지처리 Case<%d> Scetor 정보 처리 ** Scetor Start Pos가 Last Save Pos 보다 작거나 같을 때 continue(패스) 처리번호<%d/%d>"), nCase, i, nSize);
 				continue;
 			}
+
+			//섹터 정보의 Tab Width 시작 위치가 사용한 위치 보다 크면
+			//Tab Width의 왼쪽 점
 			tabInfo.nTabLeft = vecSector[i].nStartPos - nLastSavePos;
+			//Tab Width 오른쪽 점
 			tabInfo.nTabRight = vecSector[i].nEndPos - nLastSavePos;
+			//Tab Width 의 길이
 			tabInfo.nTabWidth = tabInfo.nTabRight - tabInfo.nTabLeft;
+			//Tab Info Cell의 왼쪽 점
 			tabInfo.nLeft = 0;
+			//Tab Width 중앙을 Center로
 			tabInfo.nCenter = (tabInfo.nTabRight + tabInfo.nTabLeft) / 2;
-			// 21.09.02 Ahn Add Start
-			// Tab Width  미달인 경우, 센터기준이 아닌 오른쪽 기준으로 자름.
+			
+
+			//탭의 시작점이 0이면
 			if (vecSector[i].nStartPos == 0) {
+				//nPairSholderLength : 이전 Tab 끝과 다음 Tab 처음 사이의 길이의 반 : Cell의 두 롤 부분의 한쪽 롤 길이
+				//Tab width 에 한쪽 롤 크기 더한다.
 				tabInfo.nRight = tabInfo.nTabRight + nPairSholderLength;
 
 			}
 			else
 			{
+				//Cell의 중앙 점에서 레시피 Tab Pitch 의 반을 더한다.
 				tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;
 
 			}
-			// 21.09.02 Ahn Add Start
+
+			//Cell의 중앙 점에서 레시피 Tab Pitch 의 반을 더한다.
 			tabInfo.nRight = tabInfo.nCenter + nBaseTabHalfPitch;
+			//nRight 가 Cell 의 총 길이가 된다.
 			tabInfo.nImageLength = tabInfo.nRight ;
 
 			AprData.SaveDebugLog_Format(_T("<DivisionTab_FromImageToTabInfo> (tabInfo.nImageLength<%d> + nLastSavePos<%d>) > nHeight<%d> "), tabInfo.nImageLength, nLastSavePos, nHeight);
 
-
+			//지금 만들 Cell 전체 길이 nImageLength 에 이전 Cell에 사용 한 nLastSavePos 의 합의 길이가
+			//새로 얻은 이미지 높이(y축 길이 : 진행 방향)보다 크면 백업
 			if ((tabInfo.nImageLength + nLastSavePos) > nHeight)
 			{ 
-
-				// 보낼 이미지 사이즈가 남은 이미지 사이즈 보다 큰경우 
+				//새로 얻은 이미지 Height 에서 모자라는 값 계산
 				int nBackupSize = tabInfo.nImageLength -( (tabInfo.nImageLength + nLastSavePos) - nHeight ) ;
+
+				//Tab Info 백업 정보로 세팅한다.
 				*pResvTabInfo = tabInfo;
+				//기존의 사용한 Top Image 메모리 데이터 삭제
 				if (pResvTabInfo->pImgPtr != NULL) {
 					delete pResvTabInfo->pImgPtr;
 				}
+				//기존 사용한 Botton Image 메모리 데이터 삭제
 				if (pResvTabInfo->pImgBtmPtr != NULL) {
 					delete pResvTabInfo->pImgBtmPtr;
 				}
+
+				//백업 Image 메모리를 생성한다.
+				//Top Image 데이터 
 				pResvTabInfo->pImgPtr = new FrameImagePtr();
 				memset(pResvTabInfo->pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
+
+				//Bottom Image 데이터
 				pResvTabInfo->pImgBtmPtr = new FrameImagePtr();
 				memset(pResvTabInfo->pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
+				//백업할 계산된 사이즈
 				pResvTabInfo->nImageLength = nBackupSize;
 
-				// 22.11.18 Ahn Add Start
+				// 지금 image 순서
 				pResvTabInfo->nFrameCount = nFrameCount;
+				//지금 이미지에서 사용하고 남은 위치
 				pResvTabInfo->nTabStartPosInFrame = nLastSavePos;
-				// 22.11.18 Ahn Add End 
+
+				//Image backup 저장한다.(다음 Image 정보와 합하여 사용 됨)
+				// top 남은 이미지를 copy
 				CopyMemory(pResvTabInfo->pImgPtr->m_pImagePtr, pImgPtr + ( nWidth * nLastSavePos ) , sizeof(BYTE) * nWidth * nBackupSize);
+				//bottom 남은 이미지를 copy
 				CopyMemory(pResvTabInfo->pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nBackupSize);
 
 				//DEBUG_LOG.txt
@@ -6956,19 +7212,29 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 				return 0;
 			}
 
+			//지금 만들 Cell 전체 길이 nImageLength 에 이전 Cell에 사용 한 nLastSavePos 의 합의 길이가
+			//새로 얻은 이미지 높이(y축 길이 : 진행 방향)보다 작거나 같으면 백업하지 않는다.
+			//Tab Info Cell Image 객체 생성
+			//Top Image 데이터 저장 메모리 생성
 			tabInfo.pImgPtr = new FrameImagePtr();
 			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* tabInfo.nImageLength* nWidth + 1);
+			//Image 데이터 copy
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
+
+			//Bottom Image 데이터 저장 메모리 생성
 			tabInfo.pImgBtmPtr = new FrameImagePtr();
 			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * tabInfo.nImageLength * nWidth + 1);
+			//Image 데이터 copy
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
 
-			// 22.11.18 Ahn Add Start
+			//grab Image 얻은 순서
 			tabInfo.nFrameCount = nFrameCount ;
+			//얻은 Image 의 사용하고 남은 위치 점
 			tabInfo.nTabStartPosInFrame = nLastSavePos ;
-			// 22.11.18 Ahn Add End
 
+			//남은 이미지 점 다시 계산 for 문
 			nLastSavePos = nLastSavePos + tabInfo.nImageLength;
+			//만들어진 Cell 정보를 저장한다.
 			pVecTabInfo->push_back(tabInfo);
 
 			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> pVecTabInfo->push_back(tabInfo) nLastSavePos = %d"), nLastSavePos);
@@ -6998,11 +7264,14 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 		}	
 		
-
+		//새로 얻은 Image 의 높이에서 마지막 사용하고 남은 높이(크기)를 뺀 값이
+		//레시피 설정 Tab Pitch 보다 크면 FixSize Tab Info 정보를 만든다.
 		int nRightSize = (nHeight - nLastSavePos) ;
 		if ( nRightSize > nBaseTabPitch )
 		{
+			//Tab Info 만들어 질 갯수
 			int nSendLeng = nRightSize / nBaseTabPitch;
+			//FixSize Tab Info 생성
 			nLastSavePos = DivisionTab_byFixSize(pImgPtr, pImgBtmPtr, nWidth, nHeight, nBaseTabPitch, nLastSavePos, nHeight, bIsPET, pVecTabInfo);
 
 			AprData.SaveDebugLog_Format(_T(">>>>>>>>>>>>>>>>>>>> nRightSize > nBaseTabPitch nLastSavePos = %d"), nLastSavePos);
@@ -7011,21 +7280,28 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 	}
 
+	//새로 얻은 Image 의 높이에서 마지막 사용하고 남은 높이(크기)를 뺀 값이 있다면 다음 Image 취득 시 이용하기 위해서 백업한다.
 	int nLeftSize = nHeight - nLastSavePos;
 	if ( nLeftSize > 0 )
 	{
+		//백업 객체 의 Image 데이터 메모리 생성
+		//Top Image 데이터
 		pResvTabInfo->pImgPtr = new FrameImagePtr();
 		memset(pResvTabInfo->pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
+		//Bottom Imae 데이터
 		pResvTabInfo->pImgBtmPtr = new FrameImagePtr();
 		memset(pResvTabInfo->pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
+		//사용하고 남은 Image 길이
 		pResvTabInfo->nImageLength = nLeftSize;
 
-		// 22.11.18 Ahn Add Start
+		//Grab Image 얻은 순서
 		pResvTabInfo->nFrameCount = nFrameCount ;
+		//새로얻은 이미지에서 쓰고 남은 점
 		pResvTabInfo->nTabStartPosInFrame = nLastSavePos ;
-		// 22.11.18 Ahn Add End 
 
+		//Top Image 데이터 copy
 		CopyMemory(pResvTabInfo->pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
+		//Bottom Image 데이트 copy
 		CopyMemory(pResvTabInfo->pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
 
 		AprData.SaveDebugLog_Format( _T("<DivisionTab_FromImageToTabInfo> CopyMemory pResvTabInfo->pImgPtr") );
@@ -9273,17 +9549,17 @@ int CImageProcess::GetBoundaryOfElectorde(const BYTE* pImgPtr, int nWidth, int n
 	//pnPrj : 휘도 샘플링 데이터
 	//nPrjWidth : 휘도 샘플링 Width 값
 	//nCeramicBrightLow : 코딩부 세라믹 최저값
-	//nFindDir : 찾는 방향 (코딩부 세라믹 최저값을 이용하여 ~~ 찾음)
+	//nFindDir : 찾는 방향 (코딩부 세라믹 최저값을 이용하여 ~~ 찾음) : 왼쪽에서 오른쪽 찾음
 	// return : nBndElectrode -> 휘도 샘플링 버퍼의 롤과 레시피 , 찾는 방향에 따른 휘도 위치 값을 받는다 : 레시피 기준 또는 샘플링의 데이터의 값 비교 로 얻음
 	int nBndElectrode = CImageProcess::FindBoundary_FromPrjData(pnPrj, nPrjWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], nFindDir, bUseDarkRoll ) ;
 
 	//찾는 위치가 Left
-	//찾는 방향이 오른쪽에서 왼쪽이면
+	//찾는 방향이 왼쪽에서 오른쪽
 	//left 일 경우 실제 이미지의 잘라 버린 데이터 위치를 추가 해야 실제 얻은 미미지에서 의 위치가 된다.
 	if (nFindDir == en_FindFromLeft) {
 		nBndElectrode += (nWidth - nPrjWidth);
 	}
-
+	//샘플링 프로젝션 버퍼 메모리 해제
 	delete[] pnPrj;
 
 	return nBndElectrode;
@@ -9784,6 +10060,7 @@ int	CImageProcess::GetBrightAverage(const BYTE* pOrgImg, int nWidth, int nHeight
 
 BOOL CImageProcess::FindPetFilm(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, VEC_PET_INFO* vstPetInfo, int nCamPos)
 {
+	//PET 찾지 않는다면
 	if (RecipeInfo.bDisablePET == TRUE)
 	{
 		return FALSE;
