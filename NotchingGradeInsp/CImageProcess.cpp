@@ -8910,7 +8910,7 @@ int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth,
 	int nMeanSize = MEAN_SIZE_HOR;
 	int nHeadBndry = nLineLevel + nTabRoundOffsetR;
 	int nInspRangeRight = nLineLevel + pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
-	rcRightRnd.right = rcLeftRnd.right = rcAll.right = nInspRangeRight;
+	//	rcRightRnd.right = rcLeftRnd.right = rcAll.right = nInspRangeRight; // 삭제
 
 	int nMaskRight = nHeadBndry - 30;
 
@@ -8918,6 +8918,8 @@ int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth,
 	{
 		nMaskRight = nWidth - 1;
 	}
+
+	rcRightRnd.right = rcLeftRnd.right = rcAll.right = nMaskRight; // 추가 및 변경
 
 
 	BYTE* pRsltPtr = new BYTE[nSizeAll + 1];

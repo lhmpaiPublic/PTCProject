@@ -2774,7 +2774,7 @@ void CImageProcSimDlg::DrawLine_Top_Negative()
 	int nMeanSize = MEAN_SIZE_HOR;
 	int nHeadBndry = nLevel + nTabRoundOffsetR;
 	int nInspRangeRight = nLevel + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
-	rcRightRnd.right = rcLeftRnd.right = rcAll.right = nInspRangeRight;
+	//	rcRightRnd.right = rcLeftRnd.right = rcAll.right = nInspRangeRight; // 삭제
 
 	int nMaskRight = nHeadBndry - 30;
 
@@ -2782,6 +2782,8 @@ void CImageProcSimDlg::DrawLine_Top_Negative()
 	{
 		nMaskRight = nWidth - 1;
 	}
+
+	rcRightRnd.right = rcLeftRnd.right = rcAll.right = nMaskRight; //추가 및 변경
 
 
 	double dTime = cta.WhatTimeIsIt_Double();
