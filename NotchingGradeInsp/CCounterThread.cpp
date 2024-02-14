@@ -86,7 +86,12 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 
 void CCounterThread::RecivePacket(char* data, int len)
 {
-	
+
+	int a = 0;
+
+
+
+
 }
 
 CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
@@ -94,6 +99,8 @@ CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 	m_pParent = pParent;
 	m_MarkSendInfoData.clear();
 	m_TriggerSocket = NULL;
+
+	ConnectTrigger(_T("192.168.0.198"), 34700);
 }
 CCounterThread::~CCounterThread()
 {

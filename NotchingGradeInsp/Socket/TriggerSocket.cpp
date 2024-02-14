@@ -43,8 +43,6 @@ CTriggerSocket::CTriggerSocket( LPCTSTR lpszIpAddress, int protocol, CTriggerSoc
 	{
 		m_btRecv = new char[ TCP_MAX_DATA ] ;
 	}
-
-	m_pTriggerSocketCall = NULL;
 }
 
 
