@@ -633,7 +633,8 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	// 22.07.01 Ahn Add Start
 	//strLine.Format(_T("LOT ID,Cell No,검사시각,Judge,Top,Btm,Top Defect Size X,Top Defect Size Y, BTM Defect Size X, BTM Defect Size Y,Ink Marking,Marking Reason\r\n"));
 	//strLine.Format(_T("LOT ID,Cell No,Cell ID,Key ID,검사시각,Judge,Tab,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason\r\n"));
-	strLine.Format(_T("LOT ID,Cell No,Cell ID,Key ID,Time,Judge,Tab,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason,PET Stat,Pitch Stat,Tab Pitch Size,Width Stat,Tab Width Size\r\n"));
+	//strLine.Format(_T("LOT ID,Cell No,Cell ID,Key ID,Time,Judge,Tab,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason,PET Stat,Pitch Stat,Tab Pitch Size,Width Stat,Tab Width Size\r\n"));
+	strLine.Format(_T("LOT ID,Cell No,Cell ID,Key ID,Time,Judge,Tab,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason,PET Stat,Pitch Stat,Tab Pitch Size,Width Stat,Tab Width Size, FoilExpTap_In, FoilExpTap_Out, FoilExpBtm_In, FoilExpBtm_Out,\r\n"));
 	// 22.07.01 Ahn Add End
 	CString strFileName;
 	strFileName.Format( _T("%s.csv"), AprData.m_NowLotData.m_strLotNo ) ;

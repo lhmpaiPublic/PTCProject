@@ -1824,6 +1824,24 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							CString strMarking = _T("△");
 							CString strMarkReason = _T("");
 
+#if 1 // 240212
+//							pSeqOutData->wFoilExpInTopCount
+							DWORD dwFoilExpInTopCount = 0;
+							DWORD dwFoilExpOutTopCount = 0;
+							DWORD dwFoilExpSurfaceTopCount = 0; //??
+
+							DWORD dwFoilExpInBottomCount = 0;
+							DWORD dwFoilExpOutBottomCount = 0;
+							DWORD dwFoilExpSurfaceBottomCount = 0; //??
+
+							dwFoilExpInTopCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopCount;
+							dwFoilExpOutTopCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutTopCount;
+
+							dwFoilExpInBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount;
+							dwFoilExpOutBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount;
+#endif
+
+
 							CString strTime;
 							CString strJudge = _T("OK");
 							CString strBtmJudge = _T("OK");
@@ -1856,7 +1874,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							//피더파일에 기록하기
 							CString strResult = _T("");
-							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
+//							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s\r\n")
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%d,%d,%d,%d,%s\r\n")
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
 								, pTopInfo->m_nTabId_CntBoard
@@ -1871,6 +1890,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								, dBtmMaxSize
 								, strMarking
 								, strMarkReason
+								,dwFoilExpInTopCount
+								,dwFoilExpOutTopCount
+								,dwFoilExpInBottomCount
+								,dwFoilExpOutBottomCount
 								, _T("OVER")
 							);
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
