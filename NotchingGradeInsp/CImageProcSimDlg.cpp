@@ -2634,7 +2634,7 @@ void CImageProcSimDlg::DrawLine_Bottom()
 	else
 	{
 		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
 	}
 
@@ -3095,7 +3095,7 @@ void CImageProcSimDlg::DrawLine_Bottom_Negative()
 		CImageProcess::EdgeDetectImageToBoth_RndInfo(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nEdgeWidth, 2, DIR_VER);
 	}
 	else {
-		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
 	}
 	delete[]pnResultArr;
@@ -4188,7 +4188,7 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	else
 	{
 		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
 	}
 
@@ -4784,7 +4784,7 @@ int CImageProcSimDlg::ProceBottomAll_Negative()
 		CImageProcess::EdgeDetectImageToBoth_RndInfo(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nEdgeWidth, 2, DIR_VER);
 	}
 	else {
-		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
 	}
 	delete[]pnResultArr;

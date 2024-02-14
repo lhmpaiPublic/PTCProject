@@ -2402,7 +2402,7 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 				// 22.11.07 Ahn Modify End
 					BYTE btLevel = *(pLinePtr + x);
 					// 22.05.30 Ahn Modify Start
-					if (btLevel > nThresMax) {
+					if (btLevel < nThresMax) {
 						// 23.01.06 Ahn Modify Start
 						//bNotFound = FALSE;
 						//nLastPosX = pnRsltArr[y] = x;
@@ -2446,7 +2446,7 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 				for (x = nXEnd - 1; x >= nXStart; x--) {
 					BYTE btLevel = *(pLinePtr + x);
 					// 22.05.30 Ahn Modify Start
-					if (btLevel > nThresMax) {
+					if (btLevel < nThresMax) {
 						// 23.01.06 Ahn Modify Start
 						//bNotFound = FALSE;
 						//nLastPosX = pnRsltArr[y] = x;
@@ -2492,7 +2492,7 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 				for (x = nXStart; x < nXEnd; x++) {
 					BYTE btLevel = *(pLinePtr + x);
 					// 22.05.30 Ahn Modify Start
-					if (btLevel > nThresMax) {
+					if (btLevel < nThresMax) {
 						bNotFound = FALSE;
 						pnRsltArr[y] = x ;
 						break;
@@ -2522,7 +2522,7 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 				for (x = nXEnd - 1; x >= nXStart; x--) {
 					BYTE btLevel = *(pLinePtr + x);
 					// 22.05.30 Ahn Modify Start
-					if (btLevel > nThresMax) {
+					if (btLevel < nThresMax) {
 						break;
 					}
 					else {
@@ -8720,7 +8720,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWid
 	else
 	{
 		int nThresBnd = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-		int nThresMax = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		int nThresMax = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
 	}
 
@@ -9292,7 +9292,7 @@ int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWid
 	}
 	else {
 		int nThresBnd = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-		int nThresMax = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+		int nThresMax = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 
 		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLineLevel,  CImageProcess::en_FindLeft);
 //		AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessBottomSide_Negative> EdgeDetectByRndInfo_Negative : Finish") );
