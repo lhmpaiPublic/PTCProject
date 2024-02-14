@@ -72,4 +72,6 @@ static CString GlobalVersion = _T("Notching.Release.Version_2024.02.08.r01");
 #include "SpcPlusManager.h"
 #include "SpcInData.h"
 
+#include "TriggerSocket.h"
+
 #endif //PCH_H

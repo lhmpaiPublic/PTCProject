@@ -155,7 +155,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -511,6 +511,7 @@
     <ClInclude Include="SetValue\SetValueFunc.h" />
     <ClInclude Include="SetValue\SetValueRes.h" />
     <ClInclude Include="SigProc.h" />
+    <ClInclude Include="Socket\TriggerSocket.h" />
     <ClInclude Include="SpcPlus\ISpcIf.h" />
     <ClInclude Include="SpcPlus\SpcAlarmInData.h" />
     <ClInclude Include="SpcPlus\SpcAlarmManager.h" />
@@ -675,6 +676,7 @@
     <ClCompile Include="SetValue\SetValueEdit.cpp" />
     <ClCompile Include="SetValue\SetValueFunc.cpp" />
     <ClCompile Include="SigProc.cpp" />
+    <ClCompile Include="Socket\TriggerSocket.cpp" />
     <ClCompile Include="SpcPlus\SpcAlarmInData.cpp" />
     <ClCompile Include="SpcPlus\SpcAlarmManager.cpp" />
     <ClCompile Include="SpcPlus\SpcCreateJSONFileThread.cpp" />

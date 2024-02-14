@@ -5,6 +5,8 @@
 #include "CCounterQueueCtrl.h"
 #include "GlobalData.h"
 #include "SigProc.h"
+#include "WinTool.h"
+#include "TriggerSocket.h"
 
 std::vector<MarkSendInfo> CCounterThread::m_MarkSendInfoData;
 typedef std::vector<MarkSendInfo>::iterator MarkSendInfoData_iterator;
@@ -82,10 +84,16 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 
 }
 
+void CCounterThread::RecivePacket(char* data, int len)
+{
+	
+}
+
 CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 {
 	m_pParent = pParent;
 	m_MarkSendInfoData.clear();
+	m_TriggerSocket = NULL;
 }
 CCounterThread::~CCounterThread()
 {
@@ -659,5 +667,104 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	//Tab Id 정보 로그
 	LOGDISPLAY_SPEC(7)("@@Thread **** CtrlThreadCounter 종료됩니다 @@@@ ");
 
+	return 0;
+}
+
+
+int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
+{
+	if (m_TriggerSocket != NULL) {
+		delete m_TriggerSocket;
+		m_TriggerSocket = NULL;
+	}
+	m_TriggerSocket = new CTriggerSocket(ip, mode, this);
+
+	int	bRet;
+	int	errorcode = 0;
+	if (mode == CTriggerSocket::TCP_MODE) {
+		if (m_TriggerSocket->Create() == 0) {
+			CString strError;
+			DWORD dwErrCode = ::GetLastError();
+			strError = FormatErrorMsg(dwErrCode);
+			//DEBUG_LOG.txt
+			AprData.SaveDebugLog_Format(_T("<<CLightSocket>>에러 - strError<%s>"), strError);
+
+			return (-1);
+		}
+		bRet = m_TriggerSocket->Connect(ip, port);
+	}
+	else {
+		if (m_TriggerSocket->Create(port, SOCK_DGRAM, FD_READ) == 0) {
+			//			errorcode = GetLastError() ;
+			CString strError;
+			strError = ::FormatErrorMsg(::GetLastError());
+			return (-1);
+		}
+		bRet = m_TriggerSocket->Connect(ip, port);
+	}
+
+	if (bRet == FALSE) {
+		DWORD dwErrorCode = GetLastError();
+		CString	strErMsg = _T("");
+		switch (dwErrorCode) {
+		case	WSANOTINITIALISED:
+			strErMsg.Format(_T("이 API를 사용하기 전에 AfxSocketInit 호출이 성공적인 완료가 필요합니다."));
+			break;
+		case	WSAENETDOWN:
+			strErMsg.Format(_T("Windows 소켓 구현이 네트워크 서브 시스템의 이상을 검출했습니다."));
+			break;
+		case	WSAEADDRINUSE:
+			strErMsg.Format(_T("지정한 주소는 사용중입니다."));
+			break;
+		case	WSAEINPROGRESS:
+			strErMsg.Format(_T("실행중인 Windows 소켓 작업이 차단되어 있습니다."));
+			break;
+		case	WSAEADDRNOTAVAIL:
+			strErMsg.Format(_T("지정된 주소는 로컬 컴퓨터에서 사용할 수 없습니다."));
+			break;
+		case	WSAEAFNOSUPPORT:
+			strErMsg.Format(_T("지정한 주소 제품군이 소켓에서 지원하지 않습니다."));
+			break;
+		case	WSAECONNREFUSED:
+			strErMsg.Format(_T("연결을 시도했으나 거부되었습니다."));
+			break;
+		case	WSAEDESTADDRREQ:
+			strErMsg.Format(_T("목적지 주소가 필요합니다."));
+			break;
+		case	WSAEFAULT:
+			strErMsg.Format(_T("인수 SockAddr_in가 잘못되었습니다."));
+			break;
+		case	WSAEINVAL:
+			strErMsg.Format(_T("호스트 주소가 잘못되었습니다."));
+			break;
+		case	WSAEISCONN:
+			strErMsg.Format(_T("소켓은 이미 연결되어 있습니다."));
+			return(0); //break ;
+		case	WSAEMFILE:
+			strErMsg.Format(_T("유효한 파일 디스크립터가 아닙니다."));
+			break;
+		case	WSAENETUNREACH:
+			strErMsg.Format(_T("현재 호스트에서 네트워크에 연결할 수 없습니다."));
+			break;
+		case	WSAENOBUFS:
+			strErMsg.Format(_T("사용가능한 버퍼 공간이 없습니다. 소켓을 연결할 수 없습니다."));
+			break;
+		case	WSAENOTSOCK:
+			strErMsg.Format(_T("디스크립터가 소켓이 아닙니다."));
+			break;
+		case	WSAETIMEDOUT:
+			strErMsg.Format(_T("연결을 시도했지만 시간에 연결할 수 없습니다."));
+			break;
+		case	WSAEWOULDBLOCK:
+			return (0);
+		default:
+			strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
+			break;
+		}
+		//DEBUG_LOG.txt
+		AprData.SaveDebugLog_Format(_T("<<CLightSocket Connect Error>>에러 - strErMsg<%s>"), strErMsg);
+
+		return (-1);
+	}
 	return 0;
 }

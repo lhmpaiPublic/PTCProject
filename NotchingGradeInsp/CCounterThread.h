@@ -8,7 +8,7 @@ struct MarkSendInfo
 };
 
 class CImageProcessCtrl;
-class CCounterThread
+class CCounterThread : public CTriggerSocketCall
 {
 public:
 	CCounterThread(CImageProcessCtrl* pParent);
@@ -40,11 +40,14 @@ protected:
 	BOOL	m_bRunFlag;
 // 22.04.06 Ahn Add End
 
+	CTriggerSocket* m_TriggerSocket;
 public :	
 	static UINT CtrlThreadCounter(LPVOID pParam);
 
-	static int GeTabIdFormCounter();
-//	static WORD GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nType1, int nType2, int nMarkSel1, int nMarkSel2);
+	int ConnectTrigger(const CString& ip, int port, int mode = CTriggerSocket::TCP_MODE);
+
+	virtual void RecivePacket(char* data, int len);
+
 	static int GetTabId_FromSignal(WORD wInPutSignal);
 
 	// 동기화 이벤트 객체
