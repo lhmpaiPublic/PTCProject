@@ -8653,7 +8653,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWid
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-	if (nLineLevel < 0)
+	if (nLineLevel < 0 || nLineLevel >= nWidth - 1)
 	{
 		AprData.SaveDebugLog(_T("<<ImageProcessBottomSide_AreaDiff>>에러 - !!! Tab Level 이상 !!!"));
 
