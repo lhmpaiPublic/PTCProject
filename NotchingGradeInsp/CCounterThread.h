@@ -8,6 +8,7 @@ struct MarkSendInfo
 };
 
 class CImageProcessCtrl;
+class CCounterQueueCtrl;
 class CCounterThread : public CTriggerSocketCall
 {
 public:
@@ -41,6 +42,11 @@ protected:
 // 22.04.06 Ahn Add End
 
 	CTriggerSocket* m_TriggerSocket;
+
+	CCounterQueueCtrl* m_pCntQueInPtr;
+
+	//마킹 input ID 읽었을 때
+	static std::vector<int> m_inputReadId;
 public :	
 	static UINT CtrlThreadCounter(LPVOID pParam);
 
