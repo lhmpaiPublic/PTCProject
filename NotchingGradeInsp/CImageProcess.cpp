@@ -9216,22 +9216,27 @@ int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWid
 	//rcAll.right = nLineLevel + pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
 	rcAll.left = nLineLevel - pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM];
 	rcAll.right = nLineLevel + pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM] + pRecipeInfo->TabCond.nNegVGrooveHeight;
-
-
 	rcAll.top = 0;
 	rcAll.bottom = nHeight;
 
-	if (nLineLevel < 0) {
+	if (nLineLevel < 0 || nLineLevel >= nWidth-1 ) {
 
 		//DEBUG_LOG.txt
 		AprData.SaveDebugLog(_T("<<ImageProcessBottomSide_Negative>>에러 - !!! Tab Level 이상 !!!"));
 
 		return -1;
 	}
+
+	if (rcAll.left >= rcAll.right) {
+		rcAll.left = rcAll.right - 1;
+	}
+
 	if (rcAll.left < 0) {
 		rcAll.left = 0;
 	}
-	if (rcAll.right >= nWidth) {
+
+
+	if (rcAll.right >= nWidth-1) {
 		rcAll.right = (nWidth - 1);
 	}
 
