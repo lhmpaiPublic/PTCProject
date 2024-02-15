@@ -140,7 +140,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>

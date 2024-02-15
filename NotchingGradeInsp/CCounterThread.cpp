@@ -86,10 +86,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 
 void CCounterThread::RecivePacket(char* data, int len)
 {
-
-	int a = 0;
-
-
+	int nCnt = 0;
 
 
 }
