@@ -116,6 +116,12 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				pFrmInfo->m_nBand = 1;
 				pFrmInfo->m_nHeadNo = pCbInfo->m_nHeadNo - 1;
 
+				if (pFrmInfo->m_nHeadNo == CAM_POS_TOP)
+				{
+					//Image Total Count
+					AprData.m_NowLotData.m_unGTotalImageCount += pFrmInfo->m_nHeight;
+				}
+
 				CString strMsg = "";
 				strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);

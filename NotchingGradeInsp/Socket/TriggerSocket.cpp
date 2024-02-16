@@ -56,6 +56,8 @@ CTriggerSocket::~CTriggerSocket()
 	m_bConnected = FALSE ;
 	m_bDisConnected = TRUE ;
 
+	m_pTriggerSocketCall = NULL;
+
 	::DeleteCriticalSection( &csFunc ) ;
 }
 

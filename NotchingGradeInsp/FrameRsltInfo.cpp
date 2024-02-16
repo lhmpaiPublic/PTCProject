@@ -60,6 +60,15 @@ void CFrameRsltInfo::Copy(CFrameInfo* pFrmInfo)
 		m_pTabRsltInfo->m_nCellId = m_nTabId_CntBoard;
 	}
 
+	//Tab Pitch(mm)
+	m_dTabPitch = pFrmInfo->m_dTabPitch;
+
+	//Cell Pitch(mm)
+	m_unCellLength = pFrmInfo->m_unCellLength;
+
+	//Tab Size(mm)
+	m_dTabWidth = pFrmInfo->m_dTabWidth;
+
 	//이미지 포인터는 생성 시 넘겨서 삭제됨
 	//이미지를 Save 할 때까지 포인터가 살아 있어야 해서 NULL로 만듬
 	//안하면 소멸자에서 포인터 메모리 해제됨

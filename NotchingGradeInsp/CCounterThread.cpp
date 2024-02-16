@@ -15,6 +15,8 @@ __int64 CCounterThread::deepSwitchOff = 0;
 
 std::vector<int> CCounterThread::m_inputReadId;
 
+CRITICAL_SECTION CCounterThread::m_csQueueReadId;
+
 typedef std::vector<int>::iterator inputReadId_iterator;
 
 //다음에 찾을 TabID - ID 누력 여부 확인용
@@ -57,7 +59,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 				MarkSendInfoData_iterator it = CCounterThread::m_MarkSendInfoData.begin();
 				while (it != CCounterThread::m_MarkSendInfoData.end())
 				{
-					LOGDISPLAY_SPEC(7)(_T("@@마킹 데이터 추가 id<%d> OutputData<%d>"), it->TabId, it->MarkingOutputData);
+					LOGDISPLAY_SPEC(7)(_T("@@마킹 데이터 삭제 id<%d> OutputData<%d>"), it->TabId, it->MarkingOutputData);
 					it++;
 				}
 				CCounterThread::m_MarkSendInfoData.clear();
@@ -210,10 +212,14 @@ void CCounterThread::RecivePacket(char* data, int len)
 			AprData.m_NowLotData.m_nTabIdTotalCount++;
 			cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
 
+			AprData.m_NowLotData.m_unGTotalEncoderCount += nEncodeCnt;
+
 			m_pCntQueInPtr->PushBack(cntInfo);
 
 			//받은 id
+			::EnterCriticalSection(&m_csQueueReadId);
 			m_inputReadId.push_back(nID);
+			::LeaveCriticalSection(&m_csQueueReadId);
 
 			//이전 받은 BCD iD
 			wLastTabId = nID;
@@ -231,22 +237,32 @@ void CCounterThread::RecivePacket(char* data, int len)
 
 CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 {
+	::InitializeCriticalSection(&m_csQueueReadId);
+
 	m_pParent = pParent;
 	m_MarkSendInfoData.clear();
 	m_TriggerSocket = NULL;
 
-#ifdef USE_BCDCOUNTER
-	ConnectTrigger(_T("192.168.0.198"), 34700);
-#endif //USE_BCDCOUNTER
-
-	m_pCntQueInPtr = m_pParent->GetCounterQueInPtr();
 }
 CCounterThread::~CCounterThread()
 {
+	if (m_TriggerSocket)
+	{
+		delete m_TriggerSocket;
+		m_TriggerSocket = NULL;
+	}
+	::DeleteCriticalSection(&m_csQueueReadId);
 }
 void CCounterThread::Begin()
 {
 	m_bKill = FALSE;
+
+	//BCD iD 저장 큐 포인터 얻음
+	m_pCntQueInPtr = m_pParent->GetCounterQueInPtr();
+
+#ifdef USE_BCDCOUNTER
+	ConnectTrigger(_T("192.168.0.198"), 34700);
+#endif //USE_BCDCOUNTER
 
 	if (m_pThread == NULL) {
 
@@ -349,7 +365,10 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 		if ((nTabIdTotalCount_backup != 0) && (AprData.m_NowLotData.m_nTabIdTotalCount != nTabIdTotalCount_backup))
 		{
 			//input Id 받은 시간 목록 초기화
+			::EnterCriticalSection(&m_csQueueReadId);
 			m_inputReadId.clear();
+			::LeaveCriticalSection(&m_csQueueReadId);
+			
 			pCntQueInPtr->ResetQueue();
 			nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
 		}
@@ -452,20 +471,18 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				//마킹 정보를 보내기 위한 세팅을 한다.
 				if (markingSendFALSETimeOut < nowTickCount)
 				{
-					// 받은 input id data가 있으면
-					if (m_inputReadId.size())
+
+					for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 					{
-
-						//DIO Input Log
-						LOGDISPLAY_SPEC(7)(_T("@@(%d)마킹 타임이 유효 할 때 input id size<%d>, marking data size<%d>"), ThreadLoopCount, m_inputReadId.size(), CCounterThread::m_MarkSendInfoData.size());
-
-						for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
+						//input id와 마킹할 id가 같으면
+						if (CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
 						{
-							//input id와 마킹할 id가 같으면
-							if (CCounterThread::m_MarkSendInfoData[idx].bSendComplate == false)
+							//지울 최종 포인터
+							inputReadId_iterator itdelete = m_inputReadId.end();
+
+							// 받은 input id data가 있으면
+							if (m_inputReadId.size())
 							{
-								//지울 최종 포인터
-								inputReadId_iterator itdelete = m_inputReadId.end();
 								//시작 점
 								inputReadId_iterator it = m_inputReadId.begin();
 								//end 까지 돌면서 true 인 지울 end 포인터를 백업한다.
@@ -478,37 +495,55 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 									}
 									it++;
 								}
-
-								//Marking Data에 대한 id를 찾았으면
-								if (m_inputReadId.end() != itdelete)
-								{
-									//DIO Input Log
-									LOGDISPLAY_SPEC(7)(_T("@@(%d)== input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), ThreadLoopCount, m_inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
-
-									//마킹 데이터 넣고
-									dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
-									//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
-									Sleep(1);
-									//sednd 후 지우기 위한 플래그 true;
-									CCounterThread::m_MarkSendInfoData[idx].bSendComplate = true;
-									//마킹 보내는 타임 설정
-									markingSendTimeOut = GetTickCount() + 5 + 15;
-									//마킹을 보내는 플래그 설정 켜기
-									bMarkingDataSend = TRUE;
-
-									//DIO Input Log
-									LOGDISPLAY_SPEC(7)(_T("@@지울 데이터가 있다면 id<%d>까지"), (*itdelete));
-
-									//시작점 부터 true 설정된 데이터까지 지운다.
-									m_inputReadId.erase(m_inputReadId.begin(), itdelete);
-									//마킹 정보를 보냈으면 빠져나온다.
-									break;
-								}
-
 							}
-							else
+
+							//Marking Data에 대한 id를 찾았으면
+							if (m_inputReadId.end() != itdelete)
 							{
+								//DIO Input Log
+								LOGDISPLAY_SPEC(7)(_T("@@(%d)== input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), ThreadLoopCount, m_inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
+
+								//마킹 데이터 넣고
+								dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+								//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
+								Sleep(1);
+								//sednd 후 지우기 위한 플래그 true;
+								CCounterThread::m_MarkSendInfoData[idx].bSendComplate = true;
+								//마킹 보내는 타임 설정
+								markingSendTimeOut = GetTickCount() + 5 + 15;
+								//마킹을 보내는 플래그 설정 켜기
+								bMarkingDataSend = TRUE;
+
+								//DIO Input Log
+								LOGDISPLAY_SPEC(7)(_T("@@지울 데이터가 있다면 id<%d>까지"), (*itdelete));
+
+								//시작점 부터 true 설정된 데이터까지 지운다.
+								::EnterCriticalSection(&m_csQueueReadId);
+								m_inputReadId.erase(m_inputReadId.begin(), itdelete);
+								::LeaveCriticalSection(&m_csQueueReadId);
+								//마킹 정보를 보냈으면 빠져나온다.
+								break;
 							}
+							else if ((CCounterThread::m_MarkSendInfoData.size() - idx) >= 2)
+							{
+								//DIO Input Log
+								LOGDISPLAY_SPEC(7)(_T("@@(%d)== 마킹할 데이터가 많아서 보낸다 sendid<%d>"), ThreadLoopCount, CCounterThread::m_MarkSendInfoData[idx].TabId);
+
+								//마킹 데이터 넣고
+								dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+								//마킹 정보를 보내고 5sec Out_PULSE TRUE 세팅
+								Sleep(1);
+								//sednd 후 지우기 위한 플래그 true;
+								CCounterThread::m_MarkSendInfoData[idx].bSendComplate = true;
+								//마킹 보내는 타임 설정
+								markingSendTimeOut = GetTickCount() + 5 + 15;
+								//마킹을 보내는 플래그 설정 켜기
+								bMarkingDataSend = TRUE;
+
+								//마킹 정보를 보냈으면 빠져나온다.
+								break;
+							}
+
 						}
 					}
 				}
@@ -681,7 +716,10 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
 						
 						//받은 id
+						::EnterCriticalSection(&m_csQueueReadId);
 						m_inputReadId.push_back(wTempID);
+						::LeaveCriticalSection(&m_csQueueReadId);
+						
 						//마킹정보 들어오는 카운트 수
 						CCounterThread::deepSwitchOff = 0;
 
@@ -906,3 +944,4 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 	}
 	return 0;
 }
+

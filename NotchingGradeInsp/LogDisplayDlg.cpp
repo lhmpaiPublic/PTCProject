@@ -37,6 +37,8 @@ CString CLogDisplayDlg::StaticCurrentPath = LOGTEXTFILEFOLDER;
 
 CString CLogDisplayDlg::StaticDatPath = "D:\\DAT\\FOIL\\LOG\\BCDID";
 
+static CString StaticTabCounterPath = "D:\\DAT\\FOIL\\LOG\\TABCOUNTER";
+
 CString strLogNameList =
 "0 Init_FromExecute_Error_0 0,"
 "1 TabID_ImageCount_TabCount_1 0,"
@@ -157,6 +159,40 @@ void CLogDisplayDlg::LogDisplayDatText(CString FileName, const char* format, ...
 	StaticFile.TextSave1Line(StaticDatPath, FileName + (".txt"), strData, "at", FALSE, 999999999);
 }
 
+void CLogDisplayDlg::LogTabCounterText(CString FileName, const char* format, ...)
+{
+	va_list arg;
+	int done;
+	char str[MAX_DISPLAYLOG] = { 0, };
+	va_start(arg, format);
+	done = vsprintf_s(str, format, arg);
+	va_end(arg);
+	CString strData;
+
+	SYSTEMTIME	sysTime;
+	::GetLocalTime(&sysTime);
+
+	strData.Format(_T("%04d%02d%02d_%02d:%02d:%02d:%03d:	%s\r\n")
+		, sysTime.wYear
+		, sysTime.wMonth
+		, sysTime.wDay
+		, sysTime.wHour
+		, sysTime.wMinute
+		, sysTime.wSecond
+		, sysTime.wMilliseconds
+		, str
+	);
+
+	FileName += strData.Left(11);
+
+	if (CWin32File::FolderFileExists(StaticTabCounterPath) == FALSE)
+	{
+		CWin32File::CreateDirectory(StaticTabCounterPath);
+	}
+
+	StaticFile.TextSave1Line(StaticTabCounterPath, FileName + (".txt"), strData, "at", FALSE, 999999999);
+}
+
 void CLogDisplayDlg::LogDisplayMessageText(const char* data)
 {
 	CString strData;
@@ -209,14 +245,6 @@ CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 	, m_ComboSpecialLogNameStr(_T(""))
 {
 	::InitializeCriticalSection(&m_csQueueLog);
-
-	char	LogTextpath[_MAX_PATH];
-	memset(LogTextpath, 0x00, sizeof(LogTextpath));
-	::GetCurrentDirectory(_MAX_PATH, LogTextpath);
-	StaticCurrentPath = LogTextpath;
-
-	StaticCurrentPath += LOGTEXTFILEFOLDER;
-
 }
 
 CLogDisplayDlg::~CLogDisplayDlg()
@@ -309,6 +337,16 @@ BOOL CLogDisplayDlg::OnInitDialog()
 			}
 		}
 	}
+
+	CString FilePath;
+	char	LogTextpath[_MAX_PATH];
+	memset(LogTextpath, 0x00, sizeof(LogTextpath));
+	::GetCurrentDirectory(_MAX_PATH, LogTextpath);
+	FilePath.Format(_T("%s\\%s")
+		, LogTextpath
+		, LOGTEXTFILEFOLDER
+	);
+	StaticCurrentPath = FilePath;
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.

@@ -46,6 +46,8 @@ protected:
 
 	//마킹 input ID 읽었을 때
 	static std::vector<int> m_inputReadId;
+
+	static CRITICAL_SECTION m_csQueueReadId;
 public :	
 	static UINT CtrlThreadCounter(LPVOID pParam);
 

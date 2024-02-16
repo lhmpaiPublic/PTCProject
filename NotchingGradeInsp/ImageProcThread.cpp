@@ -199,6 +199,32 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//PET 설정 값
 	int nPETCount = 0;
 	BOOL bPETBCDIdSet = FALSE;
+
+	//Tab Counter log 변수들
+	//총 Encoder Count 수
+	UINT64 unTotalEncoderCount = 0;
+
+	//총 Image Count 수
+	UINT64 unTotalImageCount = 0;
+
+	//총 Image Count 수
+	UINT64 unTotalCellLength = 0;
+
+	CString logStringEncoderCounter = 
+		_T("TabNo	%d	")
+		_T("BCDID	%d	")
+		_T("globalEncoderTotal	%d	")
+		_T("globalImageTotal	%d	")
+		_T("Diff_globalEnImg	%d	")
+		_T("EncoderTotal	%d	")
+		_T("ImageTotal	%d	")
+		_T("Diff_EnImg	%d	")
+		_T("NowEnCount	%d	")
+		_T("NowCellLen	%d	")
+		_T("TotalCellLen	%d	")
+		_T("Diff_ImgUseTotal	%d")
+		;
+
 	while (1)
 	{
 		//타임 주기 이벤트
@@ -234,6 +260,22 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				}
 			}
 
+			//TabNo 0으로 초기화 시 초기화한다.
+			if (AprData.m_NowLotData.m_nTabCount == 0)
+			{
+				//총 Encoder Count 수
+				unTotalEncoderCount = 0;
+				//총 Image Count 수
+				unTotalImageCount = 0;
+				//총 Image Count 수
+				unTotalCellLength = 0;
+
+				//Encoder Total Count
+				AprData.m_NowLotData.m_unGTotalEncoderCount = 0;
+				//Image Total Count
+				AprData.m_NowLotData.m_unGTotalImageCount = 0;
+			}
+
 			//프레임 크기
 			//Top Frame 크기
 			int nSizeFrmL = pQueueFrame_Top->GetSize();
@@ -261,6 +303,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				int nHeight = pFrmInfo_Top->m_nHeight;
 				int nFrmWIdth = pFrmInfo_Top->m_nWidth;
 				int nWidth = nFrmWIdth;
+
+				//총 Image Count 수 누적
+				unTotalImageCount += pFrmInfo_Top->m_nHeight;
 
 
 				//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Bottom 객체를 가져온다.
@@ -362,6 +407,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//Tab 정보 크기 만큼 루프 돌다.
 					for (int i = 0; i < nVecSize; i++)
 					{
+						//Trigger에서 BCD ID를 받은 값 받지 못했으면 64
+						UINT unTriggerBCDID = 64;
+						//BCD ID 받았을 때 Counter 없으면 0
+						UINT unNowEncderCount = 0;
+						//지금 Cell의 크기
+						UINT unNowCellLength = 0;
 
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[i];
@@ -422,6 +473,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//지금 텝 왼쪽 길이를 저장한다.
 						bforeTabLeft = pTabInfo->nTabLeft;
 
+						//지금 셀의 크기
+						unNowCellLength = pTabInfo->nImageLength;
+
 						//지금 텝의 넓이를 구한다.
 						//분해능 / 1000.0
 						double dResolYLocal = (AprData.m_System.m_dResolY1000P / 1000);
@@ -449,7 +503,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							nextBCDId = 64;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@Trigger Tab Id  초기화 시 Trigger Id Setting @@@@ ");
-							CLogDisplayDlg::LogDisplayText(_T("BCDId_init"), _T("=======Trigger Tab Id  초기화 시 Trigger Id Setting 초기화 @@@@"));
 
 						}
 
@@ -554,6 +607,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 										//지금 받은 BCD ID
 										nowUseBCDID = cntInfo.nTabID;
 
+										//Trigger BCD ID 받은 값
+										unTriggerBCDID = cntInfo.nTabID;
+										//Encoder Count 수
+										unNowEncderCount = cntInfo.nEnCoderCount;
+
+										//Encoder Counter 누적
+										unTotalEncoderCount += unNowEncderCount;
+
 										//Tab Id 정보 로그
 										LOGDISPLAY_SPEC(7)("@@ A @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfo.nTabID, cntInfo.nTabNo+1, cntInfo.nTabIdTotalCount);
 
@@ -577,6 +638,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								{
 									//Tab Id 확인용
 									CCounterInfo cntInfoTemp = pCntQueueInCtrl->Pop();
+
+									//Encoder Counter 누적
+									unTotalEncoderCount += cntInfoTemp.nEnCoderCount;
+
 									//Tab Id 정보 로그
 									LOGDISPLAY_SPEC(7)("@@ B @@@@@@Tab Id 삭제 Q번호<%d> Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", loopTabQueueSize, cntInfoTemp.nTabID, cntInfoTemp.nTabNo + 1, cntInfoTemp.nTabIdTotalCount);
 
@@ -590,6 +655,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 										//지금 받은 BCD ID
 										nowUseBCDID = cntInfoTemp.nTabID;
+
+										//Trigger BCD ID 받은 값
+										unTriggerBCDID = cntInfoTemp.nTabID;
+										//Encoder Count 수
+										unNowEncderCount = cntInfo.nEnCoderCount;
 
 										//Tab Id 정보 로그
 										LOGDISPLAY_SPEC(7)("@@ B : 1 @@@@@@지금 사용할 BCD Id 삭제됨@@@@ ");
@@ -860,6 +930,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pInfo->m_bErrorTabWitch = bErrorTabWidth;
 						pInfo->m_dTabWidth = dRrealTabWidth;
 
+						//Cell Pitch(mm)
+						pInfo->m_unCellLength = pTabInfo->nImageLength;
+
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPc+ 객체를 Top에 추가한다.
@@ -1002,6 +1075,26 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						LOGDISPLAY_SPEC(4)("*TacTime - TabFind : TabID-[%d], TabNo-[%d], TacTime[%f]",
 							pInfo->m_nTabId_CntBoard,  pInfo->nTabNo+1, TabFind_TacTime
 							);
+
+
+						//Tab Counter Log
+						//Total Cell 길이 (누적 Cell 크기)
+						unTotalCellLength += unNowCellLength;
+						CLogDisplayDlg::LogTabCounterText(_T("TabCounter"),
+							logStringEncoderCounter
+							,pInfo->nTabNo + 1
+							,unTriggerBCDID
+							,AprData.m_NowLotData.m_unGTotalEncoderCount
+							,AprData.m_NowLotData.m_unGTotalImageCount
+							,(AprData.m_NowLotData.m_unGTotalEncoderCount - AprData.m_NowLotData.m_unGTotalImageCount)
+							,unTotalEncoderCount
+							,unTotalImageCount
+							,(unTotalEncoderCount - unTotalImageCount)
+							,unNowEncderCount
+							,unNowCellLength
+							,unTotalCellLength
+							,(unTotalImageCount - unTotalCellLength)
+						);
 
 
 						//스래드에 처리할 정보를 저장 TOP, BOTTOM
@@ -1639,7 +1732,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							//,  Top Surface max Size, Btm Surface Max Size, InkMarking, InkMarkingReason
 							// 23.01.06 Ahn Modify Start
 							//strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s\r\n")
-							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s,%s,%.2lf,%s,%.2lf\r\n")
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s,%s,%.2lf,%s,%.2lf,%d\r\n")
 								// 23.01.06 Ahn Modify End
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
@@ -1660,6 +1753,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								, pTopInfo->m_dTabPitch
 								, (pTopInfo->m_bErrorTabWitch == TRUE) ? _T("X") : _T("OK")
 								, pTopInfo->m_dTabWidth
+								, pTopInfo->m_unCellLength
 							);
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 

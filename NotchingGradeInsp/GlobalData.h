@@ -304,6 +304,12 @@ public:
 	//Trigger Tab Id Total Count
 	int		m_nTabIdTotalCount;
 
+	//Encoder Total Count
+	UINT64 m_unGTotalEncoderCount;
+
+	//Image Total Count
+	UINT64 m_unGTotalImageCount;
+
 	//Trigger Tab Id 초기화
 	BOOL m_bInitTabId;
 

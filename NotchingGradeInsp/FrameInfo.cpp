@@ -17,6 +17,8 @@ CFrameInfo::CFrameInfo(void)
 	//Tab Pitch(mm)
 	m_dTabPitch = 0.0f;
 
+	m_unCellLength = 0;
+
 	//Tab Width(넓이)가 이상이 있을 때
 	m_bErrorTabWitch = FALSE;
 	//Tab Pitch(mm)
