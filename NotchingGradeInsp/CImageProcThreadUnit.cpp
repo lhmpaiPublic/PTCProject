@@ -16,6 +16,8 @@
 #define WAITEVENTTIME_PROCEND 20
 #define MAX_WAITEVENTTIME_PROCEND 500
 
+UINT CImageProcThreadUnit::m_unNGSyCount = 0;
+
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
@@ -538,10 +540,12 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					switch (nJudge) {
 					case	JUDGE_NG:
 					case	JUDGE_GRAY:
+						CImageProcThreadUnit::m_unNGSyCount++;
 						bSaveCrop = TRUE;
 						break;
 					case	JUDGE_OK:
 					default:
+						CImageProcThreadUnit::m_unNGSyCount = 0;
 						break;
 					}
 					//CString strFilePath;
@@ -552,7 +556,23 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//if (bSaveCrop == TRUE && pFrmInfo->m_bErrorFlag == FALSE && pFrmInfo->m_bOverFlow == FALSE)
 					if (bSaveCrop == TRUE)
 					{
-						pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = TRUE;
+						//연속 NG가 5개 이상 나올 경우 NG  이미지를 100장마다 저장한다.
+						if (CImageProcThreadUnit::m_unNGSyCount >= 5)
+						{
+							if ((CImageProcThreadUnit::m_unNGSyCount % 100) == 0)
+							{
+								pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = TRUE;
+							}
+							else
+							{
+								pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = FALSE;
+							}
+
+						}
+						else
+						{
+							pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = TRUE;
+						}
 
 					}
 
@@ -568,7 +588,23 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				//Judge GRAY 또는 NG이면 bSave TRUE 모든 파일 저장
 				if ((nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG))
 				{
-					pFrmInfo->m_bSaveFlag = TRUE;
+					//연속 NG가 5개 이상 나올 경우 NG  이미지를 100장마다 저장한다.
+					if (CImageProcThreadUnit::m_unNGSyCount >= 5)
+					{
+						if ((CImageProcThreadUnit::m_unNGSyCount % 100) == 0)
+						{
+							pFrmInfo->m_bSaveFlag = TRUE;
+						}
+						else
+						{
+							pFrmInfo->m_bSaveFlag = FALSE;
+						}
+
+					}
+					else
+					{
+						pFrmInfo->m_bSaveFlag = TRUE;
+					}
 				}
 				//Judge가 OK이면bSaveOnlyNgTab가 FALsE 이고, nBmpSaveInterval이 0이상일 때 저장
 				else
