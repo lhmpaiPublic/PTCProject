@@ -260,6 +260,7 @@ void CCounterThread::Begin()
 	//BCD iD 저장 큐 포인터 얻음
 	m_pCntQueInPtr = m_pParent->GetCounterQueInPtr();
 
+//Encoder Counter 사용여부
 #ifdef USE_BCDCOUNTER
 	ConnectTrigger(_T("192.168.0.198"), 34700);
 #endif //USE_BCDCOUNTER
