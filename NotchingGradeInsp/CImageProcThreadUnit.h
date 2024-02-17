@@ -34,6 +34,9 @@ protected:
 
 	//타임아웃 여부 변수
 	BOOL m_bTimeOut;
+
+	//Thread NG 연속 나올 경우(10) 이미지 저장을 100에 한번 하도록 설정하는 플래그
+	static UINT m_unNGSyCount;
 public:
 	CWinThread* m_pThread;
 	//m_hEventProcEnd 대신 사용 
