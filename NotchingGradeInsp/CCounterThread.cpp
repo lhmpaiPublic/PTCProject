@@ -810,9 +810,9 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				pCntQueInPtr->ResetQueue();
 
 				//마킹 하기위한 값 제거
-				if (inputReadId.size())
+				if (m_inputReadId.size())
 				{
-					inputReadId.clear();
+					m_inputReadId.clear();
 				}
 
 				WORD wInSignal = 0x00;
