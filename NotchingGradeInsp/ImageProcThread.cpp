@@ -229,7 +229,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		_T("NowEncoderCount	%d	")
 		_T("NowCellLen	%d	")
 		_T("TotalCellLen	%d	")
-		_T("Diff_ImgUseTotal	%d")
+		_T("Diff_ImgUseTotal	%d	")
+		_T("LastInputBCDID	%d")
 		;
 #endif //USE_BCDCOUNTER
 
@@ -618,8 +619,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//Tab Id 초기 값이 없을 경우 Trigger 에서 넘겨온 값을 사용한다.
 							if (cntInfo.nTabID == 64)
 							{
+
+//Encoder Counter 사용여부
+#ifdef USE_BCDCOUNTER
 								//초기화(Trigger Id 가져다 쓰기)
 								bBCDIdInit = true;
+#endif //USE_BCDCOUNTER
 
 								//Tab Id 정보 로그
 								LOGDISPLAY_SPEC(7)("@@ Trigger에서 받은 BCD ID 사용 @@@@ ");
@@ -1116,6 +1121,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 //Encoder Counter 사용여부
 #ifdef USE_BCDCOUNTER
+						//Tab Counter에서 받은 마지막 BCD ID
+						int nLastInputBCDId = CCounterThread::GetInputReadId();
+
 						//Tab Counter Log
 						//Total Cell 길이 (누적 Cell 크기)
 						unTotalCellLength += unNowCellLength;
@@ -1138,6 +1146,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							,unNowCellLength
 							,unTotalCellLength
 							,(unTotalImageCount - unTotalCellLength)
+							,nLastInputBCDId
 						);
 #endif //USE_BCDCOUNTER
 

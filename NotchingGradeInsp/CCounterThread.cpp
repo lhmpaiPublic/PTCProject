@@ -17,6 +17,9 @@ std::vector<int> CCounterThread::m_inputReadId;
 
 CRITICAL_SECTION CCounterThread::m_csQueueReadId;
 
+//마킹 데이터 동기화
+CRITICAL_SECTION CCounterThread::m_csQueueMarkingData;
+
 typedef std::vector<int>::iterator inputReadId_iterator;
 
 //다음에 찾을 TabID - ID 누력 여부 확인용
@@ -44,7 +47,12 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 			MarkSendInfoData.TabId = TabId;
 			MarkSendInfoData.MarkingOutputData = MarkingOutputData;
 			MarkSendInfoData.bSendComplate = bSendComplate;
+
+			::EnterCriticalSection(&m_csQueueMarkingData);
 			CCounterThread::m_MarkSendInfoData.push_back(MarkSendInfoData);
+			::LeaveCriticalSection(&m_csQueueMarkingData);
+
+
 			//DIO Input Log
 			LOGDISPLAY_SPEC(7)(_T("@@마킹 데이터 추가 id<%d> OutputData<%d>"), TabId, MarkingOutputData);
 		}
@@ -62,11 +70,29 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 					LOGDISPLAY_SPEC(7)(_T("@@마킹 데이터 삭제 id<%d> OutputData<%d>"), it->TabId, it->MarkingOutputData);
 					it++;
 				}
+				
+				::EnterCriticalSection(&m_csQueueMarkingData);
 				CCounterThread::m_MarkSendInfoData.clear();
+				::LeaveCriticalSection(&m_csQueueMarkingData);
 			}
 		}
 	}
 
+}
+
+int CCounterThread::GetInputReadId()
+{
+	int BCDIdVal = -1;
+
+	//받은 id
+	::EnterCriticalSection(&m_csQueueReadId);
+	if (m_inputReadId.size())
+	{
+		BCDIdVal = m_inputReadId[m_inputReadId.size()-1];
+	}
+	::LeaveCriticalSection(&m_csQueueReadId);
+
+	return BCDIdVal;
 }
 
 void CCounterThread::RecivePacket(char* data, int len)
@@ -139,7 +165,6 @@ void CCounterThread::RecivePacket(char* data, int len)
 						//누락 Tab id Total 증가를 위한 세팅
 						//Tab Id 누락 된 카운트 증가를 위해서 백업한다.
 						int nextTabIDbackup = nextTabID;
-						int nextTabIDbackupLog = nextTabID;
 						//누락이 1개 일어 났을 때 마킹 정보를 바로 보낸다.
 						int omissCount = 0;
 						while (nextTabIDbackup != nID)
@@ -155,7 +180,6 @@ void CCounterThread::RecivePacket(char* data, int len)
 							strMsg.Format(_T("Lose input BCD ID  [%d]"), nextTabIDbackup);
 							AprData.SaveMemoryLog(strMsg);
 
-							nextTabIDbackupLog = nextTabIDbackup;
 							//다음 id로 증가 및 유효 카운트 검사
 							nextTabIDbackup++;
 							if (nextTabIDbackup >= 64)
@@ -239,6 +263,8 @@ CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 {
 	::InitializeCriticalSection(&m_csQueueReadId);
 
+	::InitializeCriticalSection(&m_csQueueMarkingData);
+
 	m_pParent = pParent;
 	m_MarkSendInfoData.clear();
 	m_TriggerSocket = NULL;
@@ -252,6 +278,8 @@ CCounterThread::~CCounterThread()
 		m_TriggerSocket = NULL;
 	}
 	::DeleteCriticalSection(&m_csQueueReadId);
+
+	::DeleteCriticalSection(&m_csQueueMarkingData);
 }
 void CCounterThread::Begin()
 {
@@ -426,8 +454,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 					//DIO Input Log
 					LOGDISPLAY_SPEC(7)(_T("@@지울 데이터가 있다면size<%d> id<%d>까지"), CCounterThread::m_MarkSendInfoData.size(), itdelete->TabId);
 
+					::EnterCriticalSection(&m_csQueueMarkingData);
 					//시작점 부터 true 설정된 데이터까지 지운다.
 					CCounterThread::m_MarkSendInfoData.erase(CCounterThread::m_MarkSendInfoData.begin(), itdelete);
+					::LeaveCriticalSection(&m_csQueueMarkingData);
+
 				}
 			}
 
@@ -473,6 +504,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 				if (markingSendFALSETimeOut < nowTickCount)
 				{
 
+					::EnterCriticalSection(&m_csQueueMarkingData);
 					for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 					{
 						//input id와 마킹할 id가 같으면
@@ -547,6 +579,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 						}
 					}
+					::LeaveCriticalSection(&m_csQueueMarkingData);
 				}
 				else
 				{

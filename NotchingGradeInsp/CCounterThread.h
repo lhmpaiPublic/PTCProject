@@ -25,6 +25,10 @@ public:
 
 	//동기화 이벤트 객체
 	HANDLE pEvent_CounterThread;
+
+	//마킹 데이터 동기화
+	static CRITICAL_SECTION m_csQueueMarkingData;
+	//마킹 데이터 정보
 	static std::vector<MarkSendInfo> m_MarkSendInfoData;
 	static void MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, bool bSendComplate = false);
 
@@ -50,6 +54,8 @@ protected:
 	static CRITICAL_SECTION m_csQueueReadId;
 public :	
 	static UINT CtrlThreadCounter(LPVOID pParam);
+
+	static int GetInputReadId();
 
 	int ConnectTrigger(const CString& ip, int port, int mode = CTriggerSocket::TCP_MODE);
 

@@ -18,6 +18,10 @@
 
 UINT CImageProcThreadUnit::m_unNGSyCount = 0;
 
+//원본 이미지 저장 여부
+//원본 저장 시 부하를 줄이기 위해서 세팅
+#define IMAGE_SAVE 0
+
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 {
@@ -531,10 +535,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					CPoint cpNgPos;
 					cpNgPos.SetPoint(0, 0);
 
-					// 22.11.21 Ahn Modify Start - JUDGE_GRAY
-					//if (nJudge == JUDGE_NG) {
-					//	bSaveCrop = TRUE ;
-					//}
 
 					//Judge가 NG, GRAY, OK 에 대한 bSaveCrop 설정
 					switch (nJudge) {
@@ -548,9 +548,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						CImageProcThreadUnit::m_unNGSyCount = 0;
 						break;
 					}
-					//CString strFilePath;
-					//strFilePath.Format(_T("%s\\"), AprData.m_strNowNgPath );
-					//::_tcsnccpy_s(pFrameRsltInfo->m_pTabRsltInfo->m_chCropPath, _countof(pFrameRsltInfo->m_pTabRsltInfo->m_chCropPath), strFilePath.GetBuffer(0), _TRUNCATE);
 
 					//bSaveCrop TRUE이면 Tab 결과 정보 Crop 이미지 플레그를 TRUE로 설정
 					//if (bSaveCrop == TRUE && pFrmInfo->m_bErrorFlag == FALSE && pFrmInfo->m_bOverFlow == FALSE)
@@ -585,7 +582,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				BOOL bSave = FALSE;
 				pFrmInfo->m_bSaveFlag = FALSE;
 
-#define IMAGE_SAVE 0
 #if IMAGE_SAVE
 				//Judge GRAY 또는 NG이면 bSave TRUE 모든 파일 저장
 				if ((nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG))
@@ -637,7 +633,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 #else
 				BOOL bSave = FALSE;
-
+#if IMAGE_SAVE
 
 				// 22.11.21 Ahn Modify Start - JUDGE_GRAY
 				//if ( (nJudge == JUDGE_NG) || (bSaveOkDef == TRUE ) ){
@@ -646,6 +642,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				if ((nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG))
 				{
 					bSave = TRUE;
+					pFrmInfo->m_bSaveFlag = TRUE;
 				}
 				//Judge가 OK이면bSaveOnlyNgTab가 FALsE 이고, nBmpSaveInterval이 0이상일 때 저장
 				else
@@ -659,15 +656,19 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							if (AprData.m_pRecipeInfo->nBmpSaveInterval == 1)
 							{
 								bSave = TRUE;
+								pFrmInfo->m_bSaveFlag = TRUE;
 							}
 							//비트맵 레벨이 1이 아니면 체크 : Tab 번호를 레벨로 나눈다
 							else if ((pFrmInfo->nTabNo % AprData.m_pRecipeInfo->nBmpSaveInterval) == 0)
 							{
 								bSave = TRUE;
+								pFrmInfo->m_bSaveFlag = TRUE;
 							}
 						}
 					}
 				}
+#endif // IMAGE_SAVE
+
 #endif //SPCPLUS_CREATE
 
 
@@ -697,12 +698,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//이미지 저장 포맷
 					CString strImageFormat = AprData.getGSt()->GetOutImageFormat();
 
-					// 22.05.31 Ahn Delete Start - Image Save Thread
-					//CBitmapStd bmp(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, 8);
-					//bmp.SetImage(pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->GetImagePtr());
-					//// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
-					//bmp.SetJpegQuality(AprData.m_System.m_nJpegSaveQuality);
-					// 22.05.31 Ahn Delete End
 
 					//파일 이름 객체 생성
 					CString strFileName;
@@ -710,14 +705,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					CString strPath;
 					//Judge 객체 생성
 					CString strJudge;
-					// 22.11.21 Ahn Modify Start - JUDGE_GRAY
-					//if (nJudge == JUDGE_NG) {
-					//	strPath = AprData.m_strNowNgPath;
-					//	strJudge = _T("NG");
-					//} else {
-					//	strPath = AprData.m_strNowOkPath;
-					//	strJudge = _T("OK");
-					//}
+
 
 					//Judge 별 저장 경로를 가져온다.
 					switch (nJudge)
@@ -736,9 +724,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						break;
 					}
 
-					// 22.11.21 Ahn Modify End
 
-					// 22.05.27 Ahn Modify Start
 					//ImageProc: 이미지저장명 결정 생성
 					strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
 						, INSPECTION_TYPE
@@ -753,13 +739,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 					LOGDISPLAY_SPEC(8)("## Save TabNo<%d> : 파일명 : %s ", pFrmInfo->nTabNo+1, strFileName);
 
-					// 22.05.27 Ahn Modify End
 					//ImageProc: 이미지저장 플레그를 TRUE로 설정한다.
 					pFrameRsltInfo->m_pTabRsltInfo->m_bImageFlag = TRUE;
 
-					// 22.05.31 Ahn Delete Start - Image Save Thread
-					// bmp.SaveBitmap(strFileName);
-					// 22.05.31 Ahn Delete End - Image Save Thread
 
 					//ImageProc:  이미지파일저장명과 경로를 저장
 					::_tcsnccpy_s(pFrameRsltInfo->m_pTabRsltInfo->m_chImageFile, _countof(pFrameRsltInfo->m_pTabRsltInfo->m_chImageFile), strFileName.GetBuffer(0), _TRUNCATE);
