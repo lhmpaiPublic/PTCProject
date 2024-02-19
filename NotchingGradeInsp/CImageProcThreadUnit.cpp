@@ -582,9 +582,11 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 #ifdef SPCPLUS_CREATE
 				//SPC+ ALARM===================================================================================================
 				//Save 상태값 초기화
-				BOOL bSave = TRUE;
+				BOOL bSave = FALSE;
 				pFrmInfo->m_bSaveFlag = FALSE;
 
+#define IMAGE_SAVE 0
+#if IMAGE_SAVE
 				//Judge GRAY 또는 NG이면 bSave TRUE 모든 파일 저장
 				if ((nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG))
 				{
@@ -593,6 +595,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					{
 						if ((CImageProcThreadUnit::m_unNGSyCount % 100) == 0)
 						{
+							bSave = TRUE;
 							pFrmInfo->m_bSaveFlag = TRUE;
 						}
 						else
@@ -603,6 +606,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					}
 					else
 					{
+						bSave = TRUE;
 						pFrmInfo->m_bSaveFlag = TRUE;
 					}
 				}
@@ -617,16 +621,20 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							//비트맵 레벨이 1이면 저장
 							if (AprData.m_pRecipeInfo->nBmpSaveInterval == 1)
 							{
+								bSave = TRUE;
 								pFrmInfo->m_bSaveFlag = TRUE;
 							}
 							//비트맵 레벨이 1이 아니면 체크 : Tab 번호를 레벨로 나눈다
 							else if ((pFrmInfo->nTabNo % AprData.m_pRecipeInfo->nBmpSaveInterval) == 0)
 							{
+								bSave = TRUE;
 								pFrmInfo->m_bSaveFlag = TRUE;
 							}
 						}
 					}
 				}
+#endif // IMAGE_SAVE
+
 #else
 				BOOL bSave = FALSE;
 
@@ -670,14 +678,14 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 #endif
 
 
-
+#if IMAGE_SAVE
 				// PET 감지 시 이미지 저장				
 				if (pFrmInfo->m_bIsPET == TRUE)
 				{
 					bSave = TRUE;
 					pFrmInfo->m_bSaveFlag = TRUE;
 				}
-
+#endif // IMAGE_SAVE
 
 				//이미지를 저장 변수가  TRUE이면
 				if (bSave == TRUE)
