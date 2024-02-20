@@ -440,6 +440,7 @@ public :
 	int SigOutAlarmExist(int nMode);
 	int SigOutAlarmNgResetAck(int nMode);
 
+	BOOL SigOutDataReset(); //240221 kjk 
 
 	// Word
 	int ReadBlockAllData(CSequenceData *pSeqData);

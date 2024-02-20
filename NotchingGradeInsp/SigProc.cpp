@@ -1156,6 +1156,8 @@ int CSigProc::SigOutTabZeroReset(int nMode)
 	//int nAddress = enBitOut_TabZeroReset;
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
+		// 240221 kjk. dataReset to PLC
+		SigOutDataReset();
 		nAddress = enSmsBitOut_TabZeroReset;
 	}
 	else {
@@ -1199,6 +1201,67 @@ int CSigProc::SigOutAlarmNgResetAck(int nMode)
 
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
+}
+
+// 230221 kjk 문사원 요청에 의해
+// LOT End 시 PLC 에 데이터 초기화 값 전달.
+BOOL CSigProc::SigOutDataReset()
+{
+	/*
+	    Data Report V1[검사수량](ea)
+		Data Report V2[OK 수량](ea)
+		Data Report V3[NG 수량](ea)
+		Data Report V4[양품률](%)
+		Data Report V5[불량률](%)
+		Data Report V6[가동률](%)
+		연속 알람 발생 수량
+		구간 알람 발생 수량
+		Foil Exposure In Top - 불량알람 수량
+		Foil Exposure In Bot - 불량알람 수량
+		Foil Exposure Out Top - 불량알람 수량
+		Foil Exposure Out Bot - 불량알람 수량
+		Foil Exposure Both Top - 불량알람 수량
+		Foil Exposure Both Bot - 불량알람 수량
+		Spatter Top - 불량알람 수량   // 없다 
+		Spatter Bot - 불량알람 수량   // 없다
+		실시간 NG Tab 수 Top   
+		실시간 NG Tab 수 Bottom
+		Lot End 시점 NG Tab 수 Top
+		Lot End 시점 NG Tab 수 Bottom
+		*/
+
+	int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
+
+	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV1 = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV2 = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV3 = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV4 = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV5 = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV6 = 0;
+
+	AprData.m_NowLotData.m_SeqDataOutSms.wContinueAlarmCount = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wSectorAlarmCount = 0;
+
+	AprData.m_NowLotData.m_SeqDataOutSms.wAlarmCode[0] = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wAlarmCode[1] = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wAlarmCode[2] = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wAlarmCode[3] = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wAlarmCode[4] = 0;
+
+	AprData.m_NowLotData.m_SeqDataOutSms.wTopNgRealTimeCount = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wBottomNgRealTimeCount = 0;
+
+	AprData.m_NowLotData.m_SeqDataOutSms.wTopNgLotEndCount = 0;
+	AprData.m_NowLotData.m_SeqDataOutSms.wBottomNgLotEndCount = 0;
+
+	short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
+	int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
+	if (WritePLC_Block_device(nAddress, pData, nSize) != 0)
+	{
+		AprData.SaveDebugLog(_T("[SigOutDataReset] DATA SEND Error")); 
+	}
+
+	return 0;
 }
 
 
