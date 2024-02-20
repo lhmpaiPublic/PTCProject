@@ -1117,7 +1117,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab Counter Log
 						//Total Cell 길이 (누적 Cell 크기)
 						unTotalCellLength += unNowCellLength;
-						CLogDisplayDlg::LogTabCounterText(_T("TabCounter"),
+						LOGDISPLAY_SPEC(11)(
 							logStringEncoderCounter
 							,pInfo->nTabNo + 1
 							,unTriggerBCDID
