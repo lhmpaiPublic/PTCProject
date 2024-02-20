@@ -571,9 +571,9 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				if ((nJudge == JUDGE_GRAY) || (nJudge == JUDGE_NG))
 				{
 					//연속 NG가 5개 이상 나올 경우 NG  이미지를 100장마다 저장한다.
-					if (CImageProcThreadUnit::m_unNGSyCount >= 5)
+					if (CImageProcThreadUnit::m_unNGSyCount >= 10)
 					{
-						if ((CImageProcThreadUnit::m_unNGSyCount % 100) == 0)
+						if ((CImageProcThreadUnit::m_unNGSyCount % 10) == 0)
 						{
 							bSave = TRUE;
 							pFrmInfo->m_bSaveFlag = TRUE;

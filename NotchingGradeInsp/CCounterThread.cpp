@@ -535,7 +535,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							if (m_inputReadId.end() != itdelete)
 							{
 								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("@@(%d)== input id와 마킹할 id가 같으면 보낸다inputid<%d>sendid<%d>"), ThreadLoopCount, m_inputReadId[0], CCounterThread::m_MarkSendInfoData[idx].TabId);
+								LOGDISPLAY_SPEC(11)(_T("@@OOO send Marking Id TRUE inputid <%d> Data<%d>"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
 
 								//마킹 데이터 넣고
 								dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
@@ -558,10 +558,11 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								//마킹 정보를 보냈으면 빠져나온다.
 								break;
 							}
+							//남은 마킹 정보가 2개 이상이면 보낸다.
 							else if ((CCounterThread::m_MarkSendInfoData.size() - idx) >= 2)
 							{
 								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("@@(%d)== 마킹할 데이터가 많아서 보낸다 sendid<%d>"), ThreadLoopCount, CCounterThread::m_MarkSendInfoData[idx].TabId);
+								LOGDISPLAY_SPEC(11)(_T("@@XXX send Marking Id FALSE inputid <%d> Data<%d>"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
 
 								//마킹 데이터 넣고
 								dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);

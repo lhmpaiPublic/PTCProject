@@ -1175,7 +1175,7 @@ void CLotInfo::ClearAllCount()
 	m_BCDIDVal = 0;
 
 	//제일 마지막 받은 BCD ID 
-	m_nLastBCDId = 64;
+	m_nLastBCDId = 0;
 
 	//Trigger Tab Id 초기화
 	m_bInitTabId = FALSE;

@@ -200,11 +200,15 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	int nPETCount = 0;
 	BOOL bPETBCDIdSet = FALSE;
 
+	//Last Backup
+	int LastBCDIDBackup = 0;
+
 //Encoder Counter 사용여부
 #ifdef USE_BCDCOUNTER
 	//Tab Counter log 변수들
 	//총 Encoder Count 수
 	UINT64 unTotalEncoderCount = 0;
+	UINT64 unTotalEncoderCountBackup = 0;
 
 	//총 Image Count 수
 	UINT64 unTotalImageCount = 0;
@@ -427,8 +431,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #ifdef USE_BCDCOUNTER
 						//Trigger에서 BCD ID를 받은 값 받지 못했으면 64
 						UINT unTriggerBCDID = 64;
-						//BCD ID 받았을 때 Counter 없으면 0
-						UINT unNowEncderCount = 0;
 						//지금 Cell의 크기
 						UINT unNowCellLength = 0;
 						//실제 Tab Counter에 받은 마지막의 BCD ID
@@ -436,6 +438,18 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//BCD Id init(초기화 여부) BCD ID를 트리거 ID로 써는지 여부
 						bool bBCDIdInit = FALSE;
 #endif //USE_BCDCOUNTER
+
+						//Last Backup
+						if ((AprData.m_NowLotData.m_nLastBCDId) >= 0 && (AprData.m_NowLotData.m_nLastBCDId < 64))
+						{
+							LastBCDIDBackup = AprData.m_NowLotData.m_nLastBCDId;
+						}
+
+						//다음에 사용될 BCD ID가 범위 밖을 경우 
+						if ((AprData.m_NowLotData.m_nUseBCDID) < 0 || (AprData.m_NowLotData.m_nUseBCDID >= 64))
+						{
+							AprData.m_NowLotData.m_nUseBCDID = LastBCDIDBackup;
+						}
 
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[i];
@@ -471,8 +485,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > dTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < dTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
-								//AprData.m_NowLotData.m_nUseBCDID = 64;
-								//nextBCDId = 64;
 								//Tab Id 정보 로그
 								if (((RecipeInfoTabPitch - MIN_TABPITCH) > dTabPitch))
 								{
@@ -523,60 +535,62 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 
 						//Trigger Tab Id 초기화 시 
-						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && AprData.m_NowLotData.m_bInitTabId)
+						if (AprData.m_NowLotData.m_bInitTabId)
 						{
 							AprData.m_NowLotData.m_bInitTabId = FALSE;
-							AprData.m_NowLotData.m_nUseBCDID = 64;
-							nextBCDId = 64;
+							AprData.m_NowLotData.m_nUseBCDID = LastBCDIDBackup;
+							nextBCDId = LastBCDIDBackup;
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@Trigger Tab Id  초기화 시 Trigger Id Setting @@@@ ");
+							LOGDISPLAY_SPEC(11)("@@Trigger Tab Id  init is BCD ID Setting @@@@ ");
 
 						}
 
 						//컨넥트 존 세팅 시
-						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && AprData.m_NowLotData.m_bConnectZone)
+						if (AprData.m_NowLotData.m_bConnectZone)
 						{
 							AprData.m_NowLotData.m_bConnectZone = FALSE;
-							//AprData.m_NowLotData.m_nUseBCDID = 64;
-							//nextBCDId = 64;
+							//AprData.m_NowLotData.m_nUseBCDID = LastBCDIDBackup;
+							//nextBCDId = LastBCDIDBackup;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@ConnectZone Trigger Id Setting @@@@ ");
 						}
 
 						//Trigger Last BCD ID와 사용 아이디 차가 많이 날 경우 TRUE
-						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && bBCDDiffBig)
+						if (bBCDDiffBig)
 						{
 							bBCDDiffBig = FALSE;
 							// 240119 요청에 의해 주석제거.
-							AprData.m_NowLotData.m_nUseBCDID = 64;
-							nextBCDId = 64; 
+							AprData.m_NowLotData.m_nUseBCDID = LastBCDIDBackup;
+							nextBCDId = LastBCDIDBackup;
+
+							LOGDISPLAY_SPEC(11)("@@TabCounter and ImageCounter Diff Big is BCD ID Setting @@@@ ");
 						}
 
 						//Trigger BCD 수신 카운터 변수가 MAX_INT를 5개 이상 들어온다면 초기화한다.
-						if (TriggerBCDCountMAXINT>5)
+						if (TriggerBCDCountMAXINT>=2)
 						{
-							//AprData.m_NowLotData.m_nUseBCDID = 64;
-							//nextBCDId = 64;
+							//AprData.m_NowLotData.m_nUseBCDID = LastBCDIDBackup;
+							//nextBCDId = LastBCDIDBackup;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@BCD ID의 역전현상이 <%d>번  이상으로 들어옴 ?? @@@@ ", TriggerBCDCountMAXINT);
 						}
 
 						//Button Click Start/Stop 초기화
-						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && AprData.m_NowLotData.m_bInspStartStop == TRUE)
+						if (AprData.m_NowLotData.m_bInspStartStop == TRUE)
 						{
 							AprData.m_NowLotData.m_bInspStartStop = FALSE;
-							//AprData.m_NowLotData.m_nUseBCDID = 64;
-							//nextBCDId = 64;
+							//AprData.m_NowLotData.m_nUseBCDID = LastBCDIDBackup;
+							//nextBCDId = LastBCDIDBackup;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@BCD Insp Start/Stop 시 @@@@ ");
 						}
 
 						//PET가 런 진행 시 초기화
-						if ((AprData.m_NowLotData.m_nUseBCDID != 64) && (bPETBCDIdSet== TRUE))
+						if (bPETBCDIdSet== TRUE)
 						{
 							bPETBCDIdSet = FALSE;
-							//AprData.m_NowLotData.m_nUseBCDID = 64;
-							//nextBCDId = 64;
+							AprData.m_NowLotData.m_nUseBCDID = LastBCDIDBackup;
+							nextBCDId = LastBCDIDBackup;
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@PET RUN 진행 시 @@@@ ");
 						}
@@ -645,11 +659,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #ifdef USE_BCDCOUNTER
 										//Trigger BCD ID 받은 값
 										unTriggerBCDID = cntInfo.nTabID;
-										//Encoder Count 수
-										unNowEncderCount = cntInfo.nEnCoderCount;
 
 										//Encoder Counter 누적
-										unTotalEncoderCount += unNowEncderCount;
+										unTotalEncoderCount += cntInfo.nEnCoderCount;
 #endif //USE_BCDCOUNTER
 
 										//Tab Id 정보 로그
@@ -700,8 +712,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 #ifdef USE_BCDCOUNTER
 										//Trigger BCD ID 받은 값
 										unTriggerBCDID = cntInfoTemp.nTabID;
-										//Encoder Count 수
-										unNowEncderCount = cntInfo.nEnCoderCount;
 #endif //USE_BCDCOUNTER
 
 										//Tab Id 정보 로그
@@ -798,12 +808,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						if ((lastBCDID >= 0) && (lastBCDID < 64) && (nowUseBCDID >= 0) && (nowUseBCDID < 64))
 						{
-							//백업용 Tab Info Image Length
-							int RsvTabInfonImageLength = RsvTabInfo.nImageLength;
 							//BCD ID 받은 값과 사용할 Tab Id 차가 2이상이면 
 							int compareBCDID = abs(lastBCDID - nowUseBCDID);
 							int BCDIDDiff = (compareBCDID > 32 ? 64 - compareBCDID : compareBCDID);
-							if (BCDIDDiff >= 10)
+							if (BCDIDDiff >= 2)
 							{
 								bBCDDiffBig = TRUE;
 
@@ -811,11 +819,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							//Tab Id 정보 로그
 							int nDiffLog = (cntInfo.nTabIdTotalCount == -1)? BCDIDDiff * -1 : BCDIDDiff;
-							LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 RsImgLen<%d>@@@@ ", lastBCDID, nowUseBCDID, nDiffLog, RsvTabInfonImageLength);
-
-							CString strMsg;
-							strMsg.Format("last BCD ID<%d> = now BCD ID<%d> Diff <%d> Over RsImgLen<%d>@@@@ ", lastBCDID, nowUseBCDID, nDiffLog, RsvTabInfonImageLength);
-							AprData.SaveMemoryLog(strMsg);
+							LOGDISPLAY_SPEC(7)("@@ last BCD ID<%d>와 now BCD ID<%d> 차가 <%d> 이상이다 @@@@ ", lastBCDID, nowUseBCDID, nDiffLog);
 
 						}
 
@@ -945,20 +949,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> nVecSize:%d/%d, ImageLength:%d, FrameCount:%d, TabStartPosInFrame:%d, TabLeft:%d, TabRight:%d, nLevel:%d, nBtmLevel:%d"),
 							i, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel, nBtmLevel);
-
-
-
-
-						////////////////////////////////////////////////////////////////////////////////////////////
-						// pyjtest : Tab 2개 인식 시 이미지 저장
-						/*if (nVecSize >= 2)
-						{
-							CString str;
-							str.Format(_T("FrameCnt%d"), pTabInfo->nFrameCount);
-							CImageProcess::SaveOriginImage((BYTE*)pTabInfo->pImgPtr, nWidth, pTabInfo->nImageLength, str);
-						}*/
-
-
 
 
 						//프레임 정보 임시 객체(Top 프레임 정보 처리)
@@ -1131,8 +1121,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							logStringEncoderCounter
 							,pInfo->nTabNo + 1
 							,unTriggerBCDID
+							,unRealLastBCDID
 							,nowUseBCDID
-							, unRealLastBCDID
 							,(unTriggerBCDID == nowUseBCDID)? "X" : "O"
 							,((int)unRealLastBCDID - (int)nowUseBCDID)
 							, bBCDIdInit ? "O" : "X"
@@ -1142,12 +1132,14 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							,unTotalEncoderCount
 							,unTotalImageCount
 							,(unTotalEncoderCount - unTotalImageCount)
-							,unNowEncderCount
+							,(unTotalEncoderCount - unTotalEncoderCountBackup)
 							,unNowCellLength
 							,unTotalCellLength
 							,(unTotalImageCount - unTotalCellLength)
 							,nLastInputBCDId
 						);
+
+						unTotalEncoderCountBackup = unTotalEncoderCount;
 #endif //USE_BCDCOUNTER
 
 						//스래드에 처리할 정보를 저장 TOP, BOTTOM
