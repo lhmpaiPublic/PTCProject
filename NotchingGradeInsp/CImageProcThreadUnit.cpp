@@ -20,7 +20,7 @@ UINT CImageProcThreadUnit::m_unNGSyCount = 0;
 
 //원본 이미지 저장 여부
 //원본 저장 시 부하를 줄이기 위해서 세팅
-#define IMAGE_SAVE 0
+#define IMAGE_SAVE 1
 
 // CImageProcThreadUnit
 UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
@@ -553,23 +553,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//if (bSaveCrop == TRUE && pFrmInfo->m_bErrorFlag == FALSE && pFrmInfo->m_bOverFlow == FALSE)
 					if (bSaveCrop == TRUE)
 					{
-						//연속 NG가 5개 이상 나올 경우 NG  이미지를 100장마다 저장한다.
-						if (CImageProcThreadUnit::m_unNGSyCount >= 5)
-						{
-							if ((CImageProcThreadUnit::m_unNGSyCount % 100) == 0)
-							{
-								pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = TRUE;
-							}
-							else
-							{
-								pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = FALSE;
-							}
-
-						}
-						else
-						{
-							pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = TRUE;
-						}
+						pFrameRsltInfo->m_pTabRsltInfo->m_bCropImgFlag = TRUE;
 
 					}
 

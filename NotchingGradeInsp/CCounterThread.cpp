@@ -256,6 +256,7 @@ void CCounterThread::RecivePacket(char* data, int len)
 
 	AprData.SaveDebugLog_Format(_T("ID:%d, Encode Count = %d"), nID, nEncodeCnt);
 
+	LOGDISPLAY_SPEC(7)(_T("ID:%d, Encode Count = %d"), nID, nEncodeCnt);
 
 }
 
