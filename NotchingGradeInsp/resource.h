@@ -267,6 +267,7 @@
 #define IDC_ED_MSGSTR                   1034
 #define IDC_ED_ALARM_BIT                1034
 #define IDC_BUT_ADDRESS_SETTING         1034
+#define IDC_EDIT_BCDID_NOW              1034
 #define IDC_EDIT3                       1035
 #define IDC_ED_TAB_RADIUS_MM            1035
 #define IDC_CHECK_LOW_10                1035
@@ -278,6 +279,8 @@
 #define IDC_BTN_USER_CHANGE             1035
 #define IDC_ED_OK_IMAGE_PATH            1035
 #define IDC_EDIT_EDGE_DET_MEAN_WIDTH    1035
+#define IDC_EDIT_BCDID_DIFF3            1035
+#define IDC_EDIT_BCDID_LAST             1035
 #define IDC_ED_TOP_COAT_HEIGHT_MM       1036
 #define IDC_CHECK_LOW_11                1036
 #define IDC_ED_DIFF_REF_LIGHT_02        1036
@@ -732,6 +735,9 @@
 #define IDC_STATIC_OK_SAVE_PATH         1348
 #define IDC_STATIC_LOWEST               1349
 #define IDC_SPIN_BCDID_DIFF             1352
+#define IDC_STATIC_BCDID_DIFF           1353
+#define IDC_STATIC_BCDID_NOW            1354
+#define IDC_STATIC_BCDID_LAST           1355
 #define IDS_VIEW_RESULT                 32773
 #define ID_INSP_INFO_VIEW               32775
 #define ID_TREND_VIEW                   32777
@@ -757,7 +763,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        422
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1353
+#define _APS_NEXT_CONTROL_VALUE         1354
 #define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

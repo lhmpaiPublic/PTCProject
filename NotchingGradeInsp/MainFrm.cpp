@@ -688,6 +688,12 @@ void CMainFrame::UpdateBCDID()
 	m_pHistoryDlg->UpdateBCDID();
 }
 
+//마킹 BCD ID를 출럭한다.
+void CMainFrame::UpdateBCDIDData(int nowBCDID, int lastBCDID)
+{
+	m_pHistoryDlg->UpdateBCDIDData(nowBCDID, lastBCDID);
+}
+
 void CMainFrame::ResetAndRefreshAll()
 {
 	// 22.07.21 Ahn Modify Start

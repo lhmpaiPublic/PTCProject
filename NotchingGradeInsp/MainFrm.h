@@ -60,6 +60,9 @@ public:
 	//마킹 BCD ID를 갱신한다.
 	void UpdateBCDID();
 
+	//마킹 BCD ID를 출럭한다.
+	void UpdateBCDIDData(int nowBCDID, int lastBCDID);
+
 	void LoadHistoryData();
 // 22.07.21 Ahn Delete Start
 //// 22.06.24 Ahn Modify Start
