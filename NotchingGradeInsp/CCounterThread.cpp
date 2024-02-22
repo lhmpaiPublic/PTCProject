@@ -100,6 +100,10 @@ void CCounterThread::RecivePacket(char* data, int len)
 
 	//BCD ID 얻는 시점에 TabNo는?
 	int TabNo = AprData.m_NowLotData.m_nTabCount;
+	if ((AprData.m_NowLotData.m_nTabIdTotalCount > (TabNo + 10)) || (AprData.m_NowLotData.m_nTabIdTotalCount < (TabNo - 10)))
+	{
+		AprData.m_NowLotData.m_nTabIdTotalCount = TabNo;
+	}
 
 	int nCnt = 0;
 
@@ -233,10 +237,12 @@ void CCounterThread::RecivePacket(char* data, int len)
 			cntInfo.nTabNo = TabNo;
 			//Tab Total Count 
 			//Tab Total Count를 증가 시킨다.
-			AprData.m_NowLotData.m_nTabIdTotalCount++;
 			cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
+			AprData.m_NowLotData.m_nTabIdTotalCount++;
 
 			AprData.m_NowLotData.m_unGTotalEncoderCount += nEncodeCnt;
+
+			LOGDISPLAY_SPEC(11)(_T("ID:%d, Encode Count = %d TabTotal<%d>TabNo<%d>"), nID, nEncodeCnt, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
 
 			m_pCntQueInPtr->PushBack(cntInfo);
 
@@ -255,8 +261,6 @@ void CCounterThread::RecivePacket(char* data, int len)
 	}
 
 	AprData.SaveDebugLog_Format(_T("ID:%d, Encode Count = %d"), nID, nEncodeCnt);
-
-	LOGDISPLAY_SPEC(11)(_T("ID:%d, Encode Count = %d"), nID, nEncodeCnt);
 
 }
 

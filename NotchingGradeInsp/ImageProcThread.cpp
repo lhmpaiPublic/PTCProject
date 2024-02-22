@@ -146,6 +146,9 @@ static int bforeTabLeft = 0;
 static double RecipeInfoTabPitch = 0;
 static double RecipeInfoTabWidth = 0;
 
+//초기 실행 상태 확인 플래그
+static bool bNowExecFlag = true;
+
 // Queue에서 받아온 Frame Image를 Tab 으로 구분해서 처리용 Queue로 저장 하는 Thread
 UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 {
@@ -204,8 +207,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//사용할 BCD ID가 들어오지 않았을 경우 사용
 	int nUseBCDIDBackup = 0;
 
-	//초기 실행 상태 플래그
-	static bool bNowExecFlag = true;
+
+	//Image의 남은 픽셀 수 백업용
+	//전에 남은 이미지 보다 작아 질 때
+	UINT unNotUseCellLengthBackup = 0;
+	//남은 Cell 크기(남은 이미지 픽셀수
+	UINT unNotUseCellLength = 0;
 
 //Encoder Counter 사용여부
 #ifdef USE_BCDCOUNTER
@@ -235,6 +242,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		_T("NowCellLen	%d	")
 		_T("TotalCellLen	%d	")
 		_T("Diff_ImgUseTotal	%d	")
+		_T("CellLen_notUse	%d	")
 		_T("LastInputBCDID	%d")
 		;
 #endif //USE_BCDCOUNTER
@@ -379,6 +387,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//PET Check TOP
 					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr->m_pImagePtr, pTailPtr->m_pImagePtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
 
+					//이미지를 합하여 Cell을 만들고 남은 픽셀 수
+					unNotUseCellLength = RsvTabInfo.nImageLength;
+
 
 					//Tab 정보 크기, Tab 정보가 없다면 에러처리
 					int nVecSize = (int)vecTabInfo.size();
@@ -425,11 +436,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					{
 //Encoder Counter 사용여부
 #ifdef USE_BCDCOUNTER
-						//지금 Cell의 크기
-						UINT unNowCellLength = 0;
+						
 						//실제 Tab Counter에 받은 마지막의 BCD ID
 						UINT unRealLastBCDID = AprData.m_NowLotData.m_nLastBCDId;
 #endif //USE_BCDCOUNTER
+
+						//지금 Cell의 크기
+						UINT unNowCellLength = 0;
 
 						//Last Backup
 						if ((AprData.m_NowLotData.m_nLastBCDId) >= 0 && (AprData.m_NowLotData.m_nLastBCDId < 64))
@@ -501,12 +514,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//지금 텝 왼쪽 길이를 저장한다.
 						bforeTabLeft = pTabInfo->nTabLeft;
 
-
-//Encoder Counter 사용여부
-#ifdef USE_BCDCOUNTER
 						//지금 셀의 크기
 						unNowCellLength = pTabInfo->nImageLength;
-#endif //USE_BCDCOUNTER
 
 						//지금 텝의 넓이를 구한다.
 						//분해능 / 1000.0
@@ -905,6 +914,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							,unNowCellLength
 							,unTotalCellLength
 							,(unTotalImageCount - unTotalCellLength)
+							,unNotUseCellLength
 							,nLastInputBCDId
 						);
 
@@ -921,6 +931,28 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					}
 					//처리한 Tab 정보를 삭제한다.
 					vecTabInfo.clear();
+
+					//BCD ID가 많이 남아 있을 경우 삭제한다.
+					if (pCntQueueInCtrl->GetSize() >= 2)
+					{
+						if (unNotUseCellLength != 0)
+						{
+							//이전의 Cell 크기를 비교해서 2000 이상 차이가 나면 들어온다.
+							if (unNotUseCellLengthBackup > (unNotUseCellLength + 2000))
+							{
+								//BCD ID 버퍼를 모두 주운다.
+								while (pCntQueueInCtrl->GetSize())
+								{
+									CCounterInfo info = pCntQueueInCtrl->Pop();
+									LOGDISPLAY_SPEC(4)("delete BCD ID == <%d>", info.nTabID);
+								}
+							}
+						}
+						
+					}
+					//이전 Cell 크기 백업한다.
+					unNotUseCellLengthBackup = unNotUseCellLength;
+
 				}
 
 				//초기 실행 상태 플래그를 변경한다.
