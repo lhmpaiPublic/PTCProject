@@ -13,6 +13,7 @@ CImageProcessCtrl* CGrabDalsaCameraLink::m_pImageProcessCtrl = NULL;
 #include "ImageProcThread.h"
 
 int nImageNoneExit = 0;
+static UINT64 GrabCallTimeBackup = 0;
 static void AcqCallback(SapXferCallbackInfo* pInfo)
 {
 	//	SapView* pView = (SapView*)pInfo->GetContext();
@@ -109,6 +110,14 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 			if (pImg && pFrmInfo)
 			{
+				//시스템 시간
+				UINT64 localGrabCallTime = GetTickCount();
+				pFrmInfo->m_GrabCallTime = localGrabCallTime - GrabCallTimeBackup;
+				GrabCallTimeBackup = localGrabCallTime;
+
+				//지금의 Last BCD ID
+				pFrmInfo->m_GrabCallBCDId = AprData.m_NowLotData.m_nLastBCDId;
+
 				pFrmInfo->SetImgPtr(pImg);
 				pFrmInfo->m_nHeight = nHeight;
 				pFrmInfo->m_nWidth = nWidth;
@@ -177,11 +186,13 @@ CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
 	m_fZoomRateVer = (float)0.1 ;
 	m_bRun = FALSE;
 	m_bInit = FALSE;
-	m_bCameraLInkComplet = FALSE; // 22.05.20 Ahn Add
-	// 22.05.26 Ahn Add Start
+	m_bCameraLInkComplet = FALSE; 
+	
 	m_nImgWidth = AprData.m_System.m_nCamViewWidth ; 
 	m_nImgHeight = AprData.m_System.m_nCamViewHeight ;
-	// 22.05.26 Ahn Add End
+
+	GrabCallTimeBackup = GetTickCount();
+	
 }
 
 CGrabDalsaCameraLink::~CGrabDalsaCameraLink(void)

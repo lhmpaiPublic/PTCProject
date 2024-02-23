@@ -689,9 +689,9 @@ void CMainFrame::UpdateBCDID()
 }
 
 //마킹 BCD ID를 출럭한다.
-void CMainFrame::UpdateBCDIDData(int nowBCDID, int lastBCDID)
+void CMainFrame::UpdateBCDIDData(int nowBCDID, int lastBCDID, int grabBCDID)
 {
-	m_pHistoryDlg->UpdateBCDIDData(nowBCDID, lastBCDID);
+	m_pHistoryDlg->UpdateBCDIDData(nowBCDID, lastBCDID, grabBCDID);
 }
 
 void CMainFrame::ResetAndRefreshAll()

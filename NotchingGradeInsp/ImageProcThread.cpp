@@ -232,6 +232,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		_T("LotID	%s	")
 		_T("LastBCDID	%d	")
 		_T("NowBCDID	%d	")
+		_T("GrabCallBCDID	%d	")
+		_T("GrabCallTime	%d	")
 		_T("globalEncoderTotal	%d	")
 		_T("globalImageTotal	%d	")
 		_T("Diff_globalEnImg	%d	")
@@ -389,6 +391,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//이미지를 합하여 Cell을 만들고 남은 픽셀 수
 					unNotUseCellLength = RsvTabInfo.nImageLength;
+
+					//Grab Call Time과 BCD ID를 백업한다.
+					RsvTabInfo.m_GrabCallBCDId = pFrmInfo_Top->m_GrabCallBCDId;
+					RsvTabInfo.m_GrabCallTime = pFrmInfo_Top->m_GrabCallTime;
 
 
 					//Tab 정보 크기, Tab 정보가 없다면 에러처리
@@ -904,6 +910,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							,pInfo->nTabNo + 1
 							,unRealLastBCDID
 							,cntInfo.nTabID
+							,pTabInfo->m_GrabCallBCDId
+							,pTabInfo->m_GrabCallTime
 							,AprData.m_NowLotData.m_unGTotalEncoderCount
 							,AprData.m_NowLotData.m_unGTotalImageCount
 							,(AprData.m_NowLotData.m_unGTotalEncoderCount - AprData.m_NowLotData.m_unGTotalImageCount)
@@ -923,7 +931,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 						if (pFrame)
 						{
-							pFrame->UpdateBCDIDData(cntInfo.nTabID, unRealLastBCDID);
+							pFrame->UpdateBCDIDData(cntInfo.nTabID, unRealLastBCDID, pTabInfo->m_GrabCallBCDId);
 						}
 #endif //USE_BCDCOUNTER
 

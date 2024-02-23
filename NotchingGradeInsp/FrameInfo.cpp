@@ -24,6 +24,12 @@ CFrameInfo::CFrameInfo(void)
 	//Tab Pitch(mm)
 	m_dTabWidth = 0.0f;
 
+	//Grab Image 얻은 시점의 BCD ID
+	m_GrabCallBCDId = 64;
+
+	//Grab Call 호출 타임(ms)
+	m_GrabCallTime = 0;
+
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE

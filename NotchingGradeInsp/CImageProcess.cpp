@@ -6801,6 +6801,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			//생성된 tab Info Image 메모리에 Copy
 			//Top : Tab이 있는 이미지
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+
+			//Grab Call Time과 BCD ID를 기록한다.
+			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
+			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+
 			//Bottom : Tab 이 없는 Image
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			//마지막 점
@@ -6844,6 +6849,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			//생성된 tab Info Image 메모리에 Copy
 			//Top 에 이전 Top 이미지 복사
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+
+			//Grab Call Time과 BCD ID를 기록한다.
+			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
+			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+
 			//Bottom에 이전 Bottom 이미지 복사
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			//Top에 새로얻은 Image를 nSendLength 만큼 덧 붙인다.

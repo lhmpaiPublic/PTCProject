@@ -736,8 +736,10 @@
 #define IDC_STATIC_BCDID_NOW            1354
 #define IDC_STATIC_BCDID_LAST           1355
 #define IDC_BCDID_NOWTEXT               1356
-#define IDC_STATIC_BCDID_NOW3           1357
 #define IDC_BCDID_LASTTEXT              1357
+#define IDC_STATIC_BCDID_GRAB           1358
+#define IDC_BCDID_LASTTEXT2             1359
+#define IDC_BCDID_GRABTEXT              1359
 #define IDS_VIEW_RESULT                 32773
 #define ID_INSP_INFO_VIEW               32775
 #define ID_TREND_VIEW                   32777

@@ -79,6 +79,11 @@ public :
 	//Tab Size(mm)
 	double m_dTabWidth;
 
+	//Grab Image 얻은 시점의 BCD ID
+	int m_GrabCallBCDId;
+
+	//Grab Call 호출 타임(ms)
+	UINT64 m_GrabCallTime;
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE

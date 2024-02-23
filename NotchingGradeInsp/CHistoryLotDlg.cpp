@@ -144,6 +144,18 @@ void CHistoryLotDlg::OnSize(UINT nType, int cx, int cy)
 		GetDlgItem(IDC_BCDID_LASTTEXT)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 		GetDlgItem(IDC_BCDID_LASTTEXT)->SetFont(&font);
 
+		CRect rcBCDID7;
+		GetDlgItem(IDC_BCDID_LASTTEXT)->GetClientRect(&rcBCDID7);
+		nCx += rcBCDID7.right + 20;
+		GetDlgItem(IDC_STATIC_BCDID_GRAB)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		GetDlgItem(IDC_STATIC_BCDID_GRAB)->SetFont(&font);
+
+		CRect rcBCDID8;
+		GetDlgItem(IDC_STATIC_BCDID_GRAB)->GetClientRect(&rcBCDID8);
+		nCx += rcBCDID8.right + 20;
+		//BCD ID 조정 컨트롤
+		GetDlgItem(IDC_BCDID_GRABTEXT)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+
 
 	}
 }
@@ -253,10 +265,11 @@ void CHistoryLotDlg::UpdateBCDID()
 }
 
 //마킹 BCD ID를 출럭한다.
-void CHistoryLotDlg::UpdateBCDIDData(int nowBCDID, int lastBCDID)
+void CHistoryLotDlg::UpdateBCDIDData(int nowBCDID, int lastBCDID, int grabBCDID)
 {
-	GetDlgItem(IDC_EDIT_BCDID_DIFF)->SetWindowTextA(std::to_string(nowBCDID).c_str());
-	GetDlgItem(IDC_EDIT_BCDID_DIFF)->SetWindowTextA(std::to_string(lastBCDID).c_str());
+	GetDlgItem(IDC_BCDID_NOWTEXT)->SetWindowTextA(std::to_string(nowBCDID).c_str());
+	GetDlgItem(IDC_BCDID_LASTTEXT)->SetWindowTextA(std::to_string(lastBCDID).c_str());
+	GetDlgItem(IDC_BCDID_GRABTEXT)->SetWindowTextA(std::to_string(lastBCDID).c_str());
 }
 
 int CHistoryLotDlg::UpdateHistoryGrid()

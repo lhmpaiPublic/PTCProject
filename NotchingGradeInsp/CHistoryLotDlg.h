@@ -74,7 +74,7 @@ public:
 	void UpdateBCDID();
 
 	//마킹 BCD ID를 출럭한다.
-	void UpdateBCDIDData(int nowBCDID, int lastBCDID);
+	void UpdateBCDIDData(int nowBCDID, int lastBCDID, int grabBCDID);
 
 	afx_msg void OnDeltaposSpinBcdidDiff(NMHDR* pNMHDR, LRESULT* pResult);
 };

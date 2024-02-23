@@ -58,29 +58,24 @@ public:
 	double dHeight;
 	double dJudgeSize;
 	int nDefJudge;
-	// Pos
-	// 22.07.20 Ahn Modify Start
-	//int nLeft;
-	//int nRight;
-	//int nTop;
-	//int nBottom;
+
 	CRect rcRect;
-	// 22.07.20 Ahn Modify End
+
 	//int nExtPixCnt; // 외곽의 Pixel 수
 	int nMaxPosY;
 	BOOL bDeleteFlag;
-	// 22.02.23 Ahn Add Start
+
 	BOOL bDistanceOut;	
 	double dDistance;
-	// 22.02.23 Ahn Add End
+
 	//std::vector< CPixel > m_VecCircum;// 22.04.15 Ahn Add
 	int nDefPos; // 0 : Left 1 :Left Round 2 : Right 3 : Right Round 
 };
 
 class CTabInfo {
 public:
-	CTabInfo() { nFrameCount = 0; nTabLeft = 0; nTabRight = 0; nLeft = 0; nRight = 0; nTabNo = 0; nTabNoInFrame = 0; nCenter = 0; nImageLength = 0; nTabStartPosInFrame = 0; nTabWidth = 0; m_bErrorFlag = FALSE;  pImgPtr = NULL; pImgBtmPtr = NULL;  };
-	void ResetData() { nFrameCount = 0; nTabLeft = 0; nTabRight = 0; nLeft = 0; nRight = 0; nTabNo = 0; nTabNoInFrame = 0; nCenter = 0; nImageLength = 0; nTabStartPosInFrame = 0; nTabWidth = 0; pImgPtr = NULL; pImgBtmPtr = NULL; };
+	CTabInfo() { nFrameCount = 0; nTabLeft = 0; nTabRight = 0; nLeft = 0; nRight = 0; nTabNo = 0; nTabNoInFrame = 0; nCenter = 0; nImageLength = 0; nTabStartPosInFrame = 0; nTabWidth = 0; m_bErrorFlag = FALSE;  m_GrabCallBCDId = 64;  m_GrabCallTime = 0;  pImgPtr = NULL; pImgBtmPtr = NULL; };
+	void ResetData() { nFrameCount = 0; nTabLeft = 0; nTabRight = 0; nLeft = 0; nRight = 0; nTabNo = 0; nTabNoInFrame = 0; nCenter = 0; nImageLength = 0; nTabStartPosInFrame = 0; nTabWidth = 0; m_GrabCallBCDId = 64;  m_GrabCallTime = 0; pImgPtr = NULL; pImgBtmPtr = NULL; };
 	int nFrameCount;	//
 	int nTabNoInFrame;	// 
 	int nTabNo;		//
@@ -95,12 +90,17 @@ public:
 
 	//QWORD qwHeadStPos;	// 검사 시작 Frame 을 기준으로 Tab Head의 Pixel 위치
 	int	nTabStartPosInFrame ; // Frame에서 Tab의 시작위치 (거리계산용)
-// 21.08.31 Ahn Add Start
+
+	//Grab Image 얻은 시점의 BCD ID
+	int m_GrabCallBCDId;
+
+	//Grab Call 호출 타임(ms)
+	UINT64 m_GrabCallTime;
+
 //	int nWidth;
 	int nImageLength;
 	FrameImagePtr* pImgPtr;
 	FrameImagePtr* pImgBtmPtr;
-// 21.08.31 Ahn Add End
 };
 
 class CRegionInfo {
