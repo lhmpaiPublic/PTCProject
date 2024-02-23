@@ -552,8 +552,22 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Encoder Count 값
 						cntInfo.nEnCoderCount = 0;
 
+						//BCD ID가 많이 남아 있을 경우 검사 진행 후 다음 BCD ID를 사용한다.
+						//Grab 부여 BCD ID가 범위 안에 있고
+						//이전 BCD ID 사용 여부
+						bool bBforeUseBCDID = false;
+						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+						{
+							//BCD Id Buffer 갯수가 얻은 Image Cell 갯수 보다 작고
+							//BCD ID 이전 ID와 Grab Call BCD ID가 같으면 이전 BCD ID를 사용한다.
+							if ((TabQueueSize <= (nVecSize - 1)) && (nUseBCDIDBackup == pTabInfo->m_GrabCallBCDId))
+							{
+								bBforeUseBCDID = true;
+							}
+						}
+
 						//Tab Id 를 받은 것이 있다면
-						if (TabQueueSize)
+						if (TabQueueSize && (bBforeUseBCDID == false))
 						{
 
 							//Tab Id 정보 로그
