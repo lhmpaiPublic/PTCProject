@@ -242,7 +242,7 @@ void CCounterThread::RecivePacket(char* data, int len)
 
 			AprData.m_NowLotData.m_unGTotalEncoderCount += nEncodeCnt;
 
-			LOGDISPLAY_SPEC(11)(_T("ID:%d, Encode Count = %d TabTotal<%d>TabNo<%d>"), nID, nEncodeCnt, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
+			LOGDISPLAY_SPEC(11)(_T("ID:	%d	Encode Count	%d	TabTotal<%d>TabNo<%d>"), nID, nEncodeCnt, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
 
 			m_pCntQueInPtr->PushBack(cntInfo);
 
@@ -539,7 +539,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							if (m_inputReadId.end() != itdelete)
 							{
 								//DIO Input Log
-								LOGDISPLAY_SPEC(11)(_T("@@OOO send Marking Id TRUE inputid <%d> Data<%d>"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+								LOGDISPLAY_SPEC(11)(_T("send Marking Id TRUE inputid	%d	Data	%d"), 
+									CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
 
 								//마킹 데이터 넣고
 								dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
@@ -566,7 +567,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							else if ((CCounterThread::m_MarkSendInfoData.size() - idx) >= 2)
 							{
 								//DIO Input Log
-								LOGDISPLAY_SPEC(11)(_T("@@XXX send Marking Id FALSE inputid <%d> Data<%d>"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+								LOGDISPLAY_SPEC(11)(_T("send Marking Id FALSE inputid	%d	Data	%d"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
 
 								//마킹 데이터 넣고
 								dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);

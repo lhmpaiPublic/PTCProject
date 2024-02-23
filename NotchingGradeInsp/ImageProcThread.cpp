@@ -429,13 +429,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					BOOL bIsPET_Btm = CImageProcess::FindPetFilm(pTailPtr->m_pImagePtr, nWidth, nHeight, *AprData.m_pRecipeInfo, pvstPetInfoBtm, CAM_POS_BOTTOM);
 					pFrmInfo_Bottom->m_bIsPET = bIsPET_Btm;
 
-
 					//Tab Id Q Size 
 					int TabQueueSize = pCntQueueInCtrl->GetSize();
-
-					//Image Cutting Tab 정보 출력 로그
-					LOGDISPLAY_SPEC(7)("@@Now 검사 이미지 갯수<%d> vs BCD Id 갯수<%d> 갯수 차이<%d>",
-						nVecSize, TabQueueSize, abs(nVecSize - TabQueueSize));
 
 					//Tab 정보 크기 만큼 루프 돌다.
 					for (int idxi = 0; idxi < nVecSize; idxi++)
@@ -591,6 +586,32 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								cntInfo = pCntQueueInCtrl->Pop();
 							}
 
+							//BCD ID가 많이 남아 있을 경우 검사 진행 후 다음 BCD ID를 사용한다.
+							if (TabQueueSize >= (nVecSize + 1))
+							{
+								//남은 이미지 셀이 0보다 크고
+								if (unNotUseCellLength > 0)
+								{
+									if (unNotUseCellLengthBackup > unNotUseCellLength + 1000)
+									{
+										//Grab 부여 BCD ID가 범위 안에 있고
+										if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+										{
+											//Grab BCD ID와  쓰려고 하는 BCD ID가 다르다면 다음 BCD ID를 사용한다.
+											if (cntInfo.nTabID != pTabInfo->m_GrabCallBCDId)
+											{
+												//Tab Id 정보 로그
+												LOGDISPLAY_SPEC(11)("BCD ID delete	%d	===================", cntInfo.nTabID);
+												//정보를 하나 가지고 온다.
+												cntInfo = pCntQueueInCtrl->Pop();
+											}
+										}
+									}
+								}
+
+							}
+
+
 							//사용한 BCD ID  백업
 							nUseBCDIDBackup = cntInfo.nTabID;
 
@@ -615,23 +636,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						}
 
-
-						//Trigger Tab Id를 받았는지 판단 기준
-						if (cntInfo.nTabIdTotalCount == MAX_INT)
-						{
-							TriggerBCDCountMAXINT++;
-							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@ Reverse BCD_ID <%d>번 받지 못함 @@@@ ", TriggerBCDCountMAXINT);
-						}
-						else
-						{
-							TriggerBCDCountMAXINT = 0;
-							if (cntInfo.nTabIdTotalCount == -1)
-							{
-								//Tab Id 정보 로그
-								LOGDISPLAY_SPEC(7)("@@ BCD ID를 받기 전에 사용하고 있다 @@@@ ", TriggerBCDCountMAXINT);
-							}
-						}
 						
 						//Tab Id 정보 로그
 						LOGDISPLAY_SPEC(7)("@@Tab Id Info@@@@  LotId<%s> Tab Id<%d> TabNo<%d><%d> TabTotalcnt<%d>",
@@ -946,24 +950,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//처리한 Tab 정보를 삭제한다.
 					vecTabInfo.clear();
 
-					//BCD ID가 많이 남아 있을 경우 삭제한다.
-					if (pCntQueueInCtrl->GetSize() >= 2)
-					{
-						if (unNotUseCellLength != 0)
-						{
-							//이전의 Cell 크기를 비교해서 2000 이상 차이가 나면 들어온다.
-							if (unNotUseCellLengthBackup > (unNotUseCellLength + 2000))
-							{
-								//BCD ID 버퍼를 모두 주운다.
-								while (pCntQueueInCtrl->GetSize())
-								{
-									CCounterInfo info = pCntQueueInCtrl->Pop();
-									LOGDISPLAY_SPEC(4)("delete BCD ID == <%d>", info.nTabID);
-								}
-							}
-						}
-						
-					}
 					//이전 Cell 크기 백업한다.
 					unNotUseCellLengthBackup = unNotUseCellLength;
 
