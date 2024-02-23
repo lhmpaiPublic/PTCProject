@@ -921,7 +921,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						unTotalEncoderCountBackup = unTotalEncoderCount;
 
 						CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-						pFrame->UpdateBCDIDData(cntInfo.nTabID, unRealLastBCDID);
+						if (pFrame)
+						{
+							pFrame->UpdateBCDIDData(cntInfo.nTabID, unRealLastBCDID);
+						}
 #endif //USE_BCDCOUNTER
 
 						//스래드에 처리할 정보를 저장 TOP, BOTTOM

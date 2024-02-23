@@ -98,10 +98,13 @@ void CHistoryLotDlg::OnSize(UINT nType, int cx, int cy)
 		CRect rectParent;
 		GetWindowRect(&rectParent);
 
+		CFont font;
+		font.CreatePointFont(100, "굴림");
 		
 		//BCD ID 조정 텍스트
 		int nCx = 5;
 		GetDlgItem(IDC_STATIC_BCDID_DIFF)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		GetDlgItem(IDC_STATIC_BCDID_DIFF)->SetFont(&font);
 
 		CRect rcBCDID1;
 		GetDlgItem(IDC_STATIC_BCDID_DIFF)->GetClientRect(&rcBCDID1);
@@ -119,23 +122,27 @@ void CHistoryLotDlg::OnSize(UINT nType, int cx, int cy)
 		GetDlgItem(IDC_SPIN_BCDID_DIFF)->GetClientRect(&rcBCDID3);
 		nCx += rcBCDID3.right+20;
 		GetDlgItem(IDC_STATIC_BCDID_NOW)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		GetDlgItem(IDC_STATIC_BCDID_NOW)->SetFont(&font);
 
 		CRect rcBCDID4;
 		GetDlgItem(IDC_STATIC_BCDID_NOW)->GetClientRect(&rcBCDID4);
 		nCx += rcBCDID4.right + 20;
 		//BCD ID 조정 컨트롤
-		GetDlgItem(IDC_EDIT_BCDID_NOW)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		GetDlgItem(IDC_BCDID_NOWTEXT)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		GetDlgItem(IDC_BCDID_NOWTEXT)->SetFont(&font);
 
 		CRect rcBCDID5;
-		GetDlgItem(IDC_EDIT_BCDID_NOW)->GetClientRect(&rcBCDID5);
+		GetDlgItem(IDC_BCDID_NOWTEXT)->GetClientRect(&rcBCDID5);
 		nCx += rcBCDID5.right + 20;
 		GetDlgItem(IDC_STATIC_BCDID_LAST)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		GetDlgItem(IDC_STATIC_BCDID_LAST)->SetFont(&font);
 
 		CRect rcBCDID6;
 		GetDlgItem(IDC_STATIC_BCDID_LAST)->GetClientRect(&rcBCDID6);
 		nCx += rcBCDID6.right + 20;
 		//BCD ID 조정 컨트롤
-		GetDlgItem(IDC_EDIT_BCDID_LAST)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		GetDlgItem(IDC_BCDID_LASTTEXT)->SetWindowPos(NULL, nCx, cy - 25, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		GetDlgItem(IDC_BCDID_LASTTEXT)->SetFont(&font);
 
 
 	}
