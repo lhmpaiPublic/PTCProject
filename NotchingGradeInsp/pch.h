@@ -59,7 +59,7 @@ using namespace Gdiplus;
 
 //글로벌 버전 정보 로컬 세팅
 //Notching.Release.Version_년(4).월(2).일(2).(배포 횟수 : r01 ~ r99)
-static CString GlobalVersion = _T("Notching.Release.Version_2024.02.21.r01");
+static CString GlobalVersion = _T("Notching.Release.Version_2024.02.22.r01");
 
 //Glabal Surpport 클래스
 #include "StrSuport.h"
