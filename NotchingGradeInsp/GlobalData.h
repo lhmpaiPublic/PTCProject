@@ -307,6 +307,9 @@ public:
 	//Encoder Total Count
 	UINT64 m_unGTotalEncoderCount;
 
+	//BCD ID input time
+	UINT64 m_nBCDIDInputTime;
+
 	//Image Total Count
 	UINT64 m_unGTotalImageCount;
 

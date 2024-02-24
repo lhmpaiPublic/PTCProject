@@ -233,6 +233,9 @@ void CCounterThread::RecivePacket(char* data, int len)
 			//제일 마지막 받은 BCD ID 
 			AprData.m_NowLotData.m_nLastBCDId = cntInfo.nTabID;
 
+			//BCD ID input time
+			AprData.m_NowLotData.m_nBCDIDInputTime = GetTickCount();
+
 			//Tab No(번호)
 			cntInfo.nTabNo = TabNo;
 			//Tab Total Count 

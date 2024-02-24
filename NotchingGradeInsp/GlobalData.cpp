@@ -1165,6 +1165,9 @@ void CLotInfo::ClearAllCount()
 	//Encoder Total Count
 	m_unGTotalEncoderCount = 0;
 
+	//BCD ID input time
+	m_nBCDIDInputTime = GetTickCount();
+
 	//Image Total Count
 	m_unGTotalImageCount = 0;
 
