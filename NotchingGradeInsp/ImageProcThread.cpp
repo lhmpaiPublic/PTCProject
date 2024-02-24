@@ -623,6 +623,22 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 									}
 								}
 
+								//BCD ID Buffer에 2개 이상의 ID가 있다면 지운다.
+								if (pCntQueueInCtrl->GetSize() >= 2)
+								{
+									//Size 까지
+									while (pCntQueueInCtrl->GetSize())
+									{
+										//다음 BCD ID 가져온다.
+										cntInfo = pCntQueueInCtrl->Pop();
+										//Grab 시 BCD ID 와 같으면 빠져 나가고 아니며 맨 마지막 것을 사용한다.
+										if (cntInfo.nTabID == pTabInfo->m_GrabCallBCDId)
+										{
+											break;
+										}
+									}
+								}
+
 							}
 
 
