@@ -6670,6 +6670,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+			//Grab Call Time과 BCD ID를 기록한다.
+	UINT64 nGrabCallTimebackup = pResvTabInfo->m_GrabCallTime;
+	UINT64 nGrabCallBCDIdbackup = pResvTabInfo->m_GrabCallBCDId;
+
+
 	//Tab Info를 만들기 위한 case 
 	int nCase = -1;
 	//이전에 얻은 Image 데이터가 있다면
@@ -6798,13 +6803,13 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			//이전 남은 정보의 시작위치 점
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
-			//생성된 tab Info Image 메모리에 Copy
-			//Top : Tab이 있는 이미지
-			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-
 			//Grab Call Time과 BCD ID를 기록한다.
 			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
 			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+
+			//생성된 tab Info Image 메모리에 Copy
+			//Top : Tab이 있는 이미지
+			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 
 			//Bottom : Tab 이 없는 Image
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
@@ -6845,14 +6850,14 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
+			//Grab Call Time과 BCD ID를 기록한다.
+			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
+			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+
 
 			//생성된 tab Info Image 메모리에 Copy
 			//Top 에 이전 Top 이미지 복사
 			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
-
-			//Grab Call Time과 BCD ID를 기록한다.
-			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
-			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
 
 			//Bottom에 이전 Bottom 이미지 복사
 			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
@@ -6880,6 +6885,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			//이전 Tab Info의 Image 순서 세팅
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
+
+			//Grab Call Time과 BCD ID를 기록한다.
+			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
+			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
 			
 			//새로 들어온 이미지를 사용해야 하는가를 설정
 			//새로운 이미지 Copy 해서 Cell 정보를 만든다.
@@ -6902,6 +6911,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			//이전 Tab Info의 Image 순서 세팅
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
+
+			//Grab Call Time과 BCD ID를 기록한다.
+			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
+			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
 			
 			//사용한 섹터 정보를 지운다.
 			vecSector.erase(vecSector.begin());
@@ -6925,6 +6938,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			// 이전 Tab Info의 Image 순서 세팅
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
+
+			//Grab Call Time과 BCD ID를 기록한다.
+			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
+			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
 
 			//사용한 섹터 정보를 지운다.
 			vecSector.erase(vecSector.begin());
@@ -6998,6 +7015,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount ;
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame ;
 
+			//Grab Call Time과 BCD ID를 기록한다.
+			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
+			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+
 		}
 
 		//텝정보를 저장한다.
@@ -7022,13 +7043,6 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		//	CImageProcess::SaveOriginImage(pImgPtr, nWidth, nHeight, str);
 		//}
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
 
 
 
@@ -7241,6 +7255,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nFrameCount = nFrameCount ;
 			//얻은 Image 의 사용하고 남은 위치 점
 			tabInfo.nTabStartPosInFrame = nLastSavePos ;
+
+			//Grab Call Time과 BCD ID를 기록한다.
+			tabInfo.m_GrabCallTime = nGrabCallTimebackup;
+			tabInfo.m_GrabCallBCDId = nGrabCallBCDIdbackup;
 
 			//남은 이미지 점 다시 계산 for 문
 			nLastSavePos = nLastSavePos + tabInfo.nImageLength;

@@ -207,6 +207,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//사용할 BCD ID가 들어오지 않았을 경우 사용
 	int nUseBCDIDBackup = 0;
 
+	//Last BCD ID 백업
+	int nLastBCDIdBackup = 0;
+
 
 	//Image의 남은 픽셀 수 백업용
 	//전에 남은 이미지 보다 작아 질 때
@@ -561,8 +564,21 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							loop++;
 						}
 
-						//BCD ID를 Last BCD ID로 세팅
-						cntInfo.nTabID = AprData.m_NowLotData.m_nLastBCDId;
+						if (nLastBCDIdBackup != AprData.m_NowLotData.m_nLastBCDId)
+						{
+							//BCD ID를 Last BCD ID로 세팅
+							cntInfo.nTabID = AprData.m_NowLotData.m_nLastBCDId;
+						}
+						else
+						{
+							nUseBCDIDBackup++;
+							if (nUseBCDIDBackup >= 64)
+								nUseBCDIDBackup = 0;
+							cntInfo.nTabID = nUseBCDIDBackup;
+						}
+
+
+						nLastBCDIdBackup = AprData.m_NowLotData.m_nLastBCDId;
 
 						//사용한 BCD ID  백업
 						nUseBCDIDBackup = cntInfo.nTabID;
@@ -877,7 +893,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 						if (pFrame)
 						{
-							pFrame->UpdateBCDIDData(cntInfo.nTabID, unRealLastBCDID, pTabInfo->m_GrabCallBCDId);
+							pFrame->UpdateBCDIDData(cntInfo.nTabID, (int)unRealLastBCDID, (int)pTabInfo->m_GrabCallBCDId);
 						}
 #endif //USE_BCDCOUNTER
 

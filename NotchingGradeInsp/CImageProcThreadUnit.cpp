@@ -710,12 +710,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 
 					//ImageProc: 이미지저장명 결정 생성
-					strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s%s")
+					strFileName.Format(_T("%s_%s_%s_%s_%d_%d_%s_%s%s")
 						, INSPECTION_TYPE
 						, strTime
 						, AprData.m_System.m_strMachineID
 						, AprData.m_NowLotData.m_strLotNo
 						, pFrmInfo->nTabNo + 1
+						, pFrmInfo->m_nTabId_CntBoard
 						, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? _T("TAB") : _T("BTM")
 						, strJudge
 						, strImageFormat
