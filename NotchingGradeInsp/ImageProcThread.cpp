@@ -552,119 +552,30 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Encoder Count 값
 						cntInfo.nEnCoderCount = 0;
 
-						//BCD ID가 많이 남아 있을 경우 검사 진행 후 다음 BCD ID를 사용한다.
-						//Grab 부여 BCD ID가 범위 안에 있고
-						//이전 BCD ID 사용 여부
-						bool bBforeUseBCDID = false;
-						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+						//Size 까지
+						int loop = 0;
+						while (TabQueueSize >= loop)
 						{
-							//BCD Id Buffer 갯수가 얻은 Image Cell 갯수 보다 작고
-							//BCD ID 이전 ID와 Grab Call BCD ID가 같으면 이전 BCD ID를 사용한다.
-							if ((TabQueueSize <= (nVecSize - 1)) && (nUseBCDIDBackup == pTabInfo->m_GrabCallBCDId))
-							{
-								bBforeUseBCDID = true;
-							}
+							//다음 BCD ID 가져온다.
+							cntInfo = pCntQueueInCtrl->Pop();
+							loop++;
 						}
 
-						//Tab Id 를 받은 것이 있다면
-						if (TabQueueSize && (bBforeUseBCDID == false))
-						{
+						//BCD ID를 Last BCD ID로 세팅
+						cntInfo.nTabID = AprData.m_NowLotData.m_nLastBCDId;
 
-							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@ Trigger에서 받은 BCD ID 사용 @@@@ ");
-
-							//프로그램 실행 후 한번만 들어온다.
-							if (bNowExecFlag)
-							{
-																
-								//얻은 Tab 정보의 끝에서
-								if (idxi == (nVecSize - 1))
-								{
-									//버퍼의 마지막 BCD ID 데이터를 가져온다.
-									while (pCntQueueInCtrl->GetSize())
-									{
-										//정보를 하나 가지고 온다.
-										cntInfo = pCntQueueInCtrl->Pop();
-									}
-								}
-								else
-								{
-									//정보를 하나 가지고 온다.
-									cntInfo = pCntQueueInCtrl->Pop();
-								}
-								
-							}
-							else
-							{
-								//정보를 하나 가지고 온다.
-								cntInfo = pCntQueueInCtrl->Pop();
-							}
-
-							//BCD ID가 많이 남아 있을 경우 검사 진행 후 다음 BCD ID를 사용한다.
-							if (TabQueueSize >= (nVecSize + 1))
-							{
-								//남은 이미지 셀이 0보다 크고
-								if (unNotUseCellLength > 0)
-								{
-									if (unNotUseCellLengthBackup > unNotUseCellLength + 1000)
-									{
-										//Grab 부여 BCD ID가 범위 안에 있고
-										if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
-										{
-											//Grab BCD ID와  쓰려고 하는 BCD ID가 다르다면 다음 BCD ID를 사용한다.
-											if (cntInfo.nTabID != pTabInfo->m_GrabCallBCDId)
-											{
-												//Tab Id 정보 로그
-												LOGDISPLAY_SPEC(11)("BCD ID delete	%d	===================", cntInfo.nTabID);
-												//정보를 하나 가지고 온다.
-												cntInfo = pCntQueueInCtrl->Pop();
-											}
-										}
-									}
-								}
-
-								//BCD ID Buffer에 2개 이상의 ID가 있다면 지운다.
-								if (pCntQueueInCtrl->GetSize() >= 2)
-								{
-									//Size 까지
-									while (pCntQueueInCtrl->GetSize())
-									{
-										//다음 BCD ID 가져온다.
-										cntInfo = pCntQueueInCtrl->Pop();
-										//Grab 시 BCD ID 와 같으면 빠져 나가고 아니며 맨 마지막 것을 사용한다.
-										if (cntInfo.nTabID == pTabInfo->m_GrabCallBCDId)
-										{
-											break;
-										}
-									}
-								}
-
-							}
+						//사용한 BCD ID  백업
+						nUseBCDIDBackup = cntInfo.nTabID;
 
 
-							//사용한 BCD ID  백업
-							nUseBCDIDBackup = cntInfo.nTabID;
-
-							//Encoder Counter 사용여부
+						//Encoder Counter 사용여부
 #ifdef USE_BCDCOUNTER
 							//Encoder Counter 누적
-							unTotalEncoderCount += cntInfo.nEnCoderCount;
+						unTotalEncoderCount += cntInfo.nEnCoderCount;
 #endif //USE_BCDCOUNTER
 
 							//Tab Id 정보 로그
 							LOGDISPLAY_SPEC(7)("@@ USE Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ",  cntInfo.nTabID, cntInfo.nTabNo + 1, cntInfo.nTabIdTotalCount);
-
-
-						}
-						else
-						{
-							//전에 사용한 BCD ID 사용
-							cntInfo.nTabID = nUseBCDIDBackup;
-
-							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@ 이전에  받은 BCD ID 사용 @@@@ ");
-
-						}
 
 						
 						//Tab Id 정보 로그
