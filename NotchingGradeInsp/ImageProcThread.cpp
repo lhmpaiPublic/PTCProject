@@ -942,6 +942,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						LOGDISPLAY_SPEC(11)(
 							logStringEncoderCounter
 							,pInfo->nTabNo + 1
+							,AprData.m_NowLotData.m_strLotNo
 							,unRealLastBCDID
 							,cntInfo.nTabID
 							,pTabInfo->m_GrabCallBCDId
