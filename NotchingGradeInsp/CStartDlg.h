@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "CUserLoginDlg.h"
 
 // CStartDlg 대화 상자
 

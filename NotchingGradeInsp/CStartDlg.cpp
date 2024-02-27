@@ -145,6 +145,16 @@ void CStartDlg::OnBnClickedBtnSystemSet()
 
 	KillTimer(T_ID_START);
 
+#if 1 // 240227 kjk 추가
+	CUserLoginDlg dlgLogin;
+	dlgLogin.DoModal();
+
+	if (dlgLogin.bLogin == FALSE) {
+		return;
+	}
+
+#endif
+
 	CSystemSettingDlg dlg(this);
 	if (dlg.DoModal() == IDOK) {
 	}

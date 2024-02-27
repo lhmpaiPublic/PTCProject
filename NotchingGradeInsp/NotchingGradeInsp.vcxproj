@@ -449,6 +449,7 @@
     <ClInclude Include="CRecipeSelectDlg.h" />
     <ClInclude Include="CRecipeSettingDlg.h" />
     <ClInclude Include="CRecipeTableCtrl.h" />
+    <ClInclude Include="CUserLoginDlg.h" />
     <ClInclude Include="GlobalFunc.h" />
     <ClInclude Include="GSurpport\StrSuport.h" />
     <ClInclude Include="Light232.h" />
@@ -624,6 +625,7 @@
     <ClCompile Include="CTactTImeGraphDlg.cpp" />
     <ClCompile Include="CThreadQueueCtrl.cpp" />
     <ClCompile Include="CUserChangeDlg.cpp" />
+    <ClCompile Include="CUserLoginDlg.cpp" />
     <ClCompile Include="DIOTestDlg.cpp" />
     <ClCompile Include="excel.cpp" />
     <ClCompile Include="FrameInfo.cpp" />
