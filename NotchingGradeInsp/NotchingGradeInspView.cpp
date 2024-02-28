@@ -547,7 +547,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		switch (m_nStatus)
 		{
 		case	en_CameraReset:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_CameraReset"));
 			m_nCamErrorResetCnt++;
 			if (GrabberResetReqest() == 0)
 			{
@@ -578,7 +577,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			// 22.05.19 Ahn Add End
 		case	en_Initialize:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Initialize"));
 
 			pSigProc->SigOutEncoderZeroSet(FALSE);
 			pSigProc->SigOutLotEndAck(FALSE);
@@ -596,7 +594,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_InspStop:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_InspStop"));
 
 			if (IsInspReady() == TRUE )
 			{
@@ -629,7 +626,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_WaitReady:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_WaitReady"));
 
 			if (IsInspReady() == FALSE)
 			{
@@ -728,7 +724,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			else if (pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
-//				AprData.SaveDebugLog_Format(_T("<OnTimer> en_Ready, Run ON"));
 			}
 
 			break;
@@ -738,7 +733,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_PrepareRun:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_PrepareRun"));
 
 			if (m_pDeleteThread != nullptr)
 			{
@@ -1531,10 +1525,8 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 
 		theApp.m_pImgProcCtrl->TabCountReset();
 		AprData.SaveLotLog(_T("!! Tab No And Queue Reset !!"));
-		AprData.SaveDebugLog_Format(_T("!! Tab No And Queue Reset !!"));
 
 		AprData.m_NowLotData.ClearAllCount();
-		AprData.SaveDebugLog_Format(_T("!! ClearAllCount !!"));
 
 		AprData.FileCtrl_LotInfo(CGlobalData::en_mode_LotEnd);
 
@@ -1546,6 +1538,7 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 		pFrame->ReflashAll();
 		pFrame->ResetResultViewDlg();
 
+		AprData.SaveDebugLog_Format(_T("SEND PLC ZERO RESET ON AND CLEAR ALL COUNT"));
 
 	}
 	if ((bSigIn == FALSE) && (m_bTabCountResetFlag == TRUE))

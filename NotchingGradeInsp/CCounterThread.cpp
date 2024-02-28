@@ -893,7 +893,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 {
-	if (m_TriggerSocket != NULL) {
+	if (m_TriggerSocket != NULL) 
+	{
 		delete m_TriggerSocket;
 		m_TriggerSocket = NULL;
 	}
@@ -901,21 +902,25 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 
 	int	bRet;
 	int	errorcode = 0;
-	if (mode == CTriggerSocket::TCP_MODE) {
-		if (m_TriggerSocket->Create() == 0) {
+	if (mode == CTriggerSocket::TCP_MODE)
+	{
+		if (m_TriggerSocket->Create() == 0) 
+		{
 			CString strError;
 			DWORD dwErrCode = ::GetLastError();
 			strError = FormatErrorMsg(dwErrCode);
-			//DEBUG_LOG.txt
-			AprData.SaveDebugLog_Format(_T("<<CLightSocket>>에러 - strError<%s>"), strError);
+
+			//Tab Id 정보 로그
+			LOGDISPLAY_SPEC(11)("ERROR	:	%s ", strError);
 
 			return (-1);
 		}
 		bRet = m_TriggerSocket->Connect(ip, port);
 	}
-	else {
-		if (m_TriggerSocket->Create(port, SOCK_DGRAM, FD_READ) == 0) {
-			//			errorcode = GetLastError() ;
+	else 
+	{
+		if (m_TriggerSocket->Create(port, SOCK_DGRAM, FD_READ) == 0) 
+		{
 			CString strError;
 			strError = ::FormatErrorMsg(::GetLastError());
 			return (-1);
@@ -923,7 +928,8 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 		bRet = m_TriggerSocket->Connect(ip, port);
 	}
 
-	if (bRet == FALSE) {
+	if (bRet != 0) 
+	{
 		DWORD dwErrorCode = GetLastError();
 		CString	strErMsg = _T("");
 		switch (dwErrorCode) {
@@ -981,8 +987,8 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 			strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
 			break;
 		}
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<CLightSocket Connect Error>>에러 - strErMsg<%s>"), strErMsg);
+		//Tab Id 정보 로그
+		LOGDISPLAY_SPEC(11)("ERROR	Socket Connect :	%s ", strErMsg);
 
 		return (-1);
 	}

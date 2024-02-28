@@ -2342,8 +2342,6 @@ void CImageProcSimDlg::DrawLine_Top()
 
 	if (bLocalRet < 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
 		return;
 	}
 	rcLeftRnd.right = nMaskRight;
@@ -2353,17 +2351,11 @@ void CImageProcSimDlg::DrawLine_Top()
 	int nLeftSize = (int)vecLeftRndInfo.size();
 	if (nLeftSize <= 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecLeftRndInfo Left EdgeLine Vector Size is 0"));
-
 		return;
 	}
 	rcLeft.top = vecLeftRndInfo[0].y;
 	rcLeft.bottom = vecLeftRndInfo[nLeftSize - 1].y;
 	if (rcLeft.bottom < nLeftSize - 1) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecLeftRndInfo Left 엣지라인 데이터 사이즈 이상."));
 
 		CString strMsg;
 		strMsg.Format(_T("Left 엣지라인 데이터 사이즈 이상."));
@@ -2393,8 +2385,6 @@ void CImageProcSimDlg::DrawLine_Top()
 	}
 	if (bLocalRet < 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecRightRndInfo Edge found faile, ret = %d."), bLocalRet);
 		return;
 	}
 
@@ -2402,9 +2392,6 @@ void CImageProcSimDlg::DrawLine_Top()
 
 	int nRightSize = (int)vecRightRndInfo.size();
 	if (nRightSize <= 0) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0"));
 
 		CString strMsg;
 		strMsg.Format(_T("Right EdgeLine Vector Size is 0"));
@@ -2415,9 +2402,6 @@ void CImageProcSimDlg::DrawLine_Top()
 	rcRight.top = vecRightRndInfo[0].y;
 	rcRight.bottom = vecRightRndInfo[nRightSize - 1].y;
 	if (rcRight.bottom < nRightSize - 1) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecRightRndInfo Right 엣지라인 데이터 사이즈 이상."));
 
 		CString strMsg;
 		strMsg.Format(_T("Right 엣지라인 데이터 사이즈 이상."));
@@ -2845,8 +2829,6 @@ void CImageProcSimDlg::DrawLine_Top_Negative()
 
 	if (bLocalRet < 0)
 	{
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_Negative>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
 
 		return ;
 	}
@@ -2899,9 +2881,6 @@ void CImageProcSimDlg::DrawLine_Top_Negative()
 	}
 	if (bLocalRet < 0)
 	{
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_Negative>>에러 - vecRightRndInfo Edge found faile, ret = %d"), bLocalRet);
-
 		return ;
 	}
 
@@ -3801,9 +3780,6 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 	BYTE* pPreFltPtr = pImgPtr;
 
 	if (bLocalRet < 0) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
 		return -1;
 	}
 	rcLeftRnd.right = nMaskRight;
@@ -3813,18 +3789,12 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 	int nLeftSize = (int)vecLeftRndInfo.size();
 	if (nLeftSize <= 0) {
 		
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecLeftRndInfo Left EdgeLine Vector Size is 0"));
-
 		return -1;
 	}
 	rcLeft.top = vecLeftRndInfo[0].y;
 	rcLeft.bottom = vecLeftRndInfo[nLeftSize - 1].y;
 	if (rcLeft.bottom < nLeftSize - 1) {
 		
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecLeftRndInfo Left 엣지라인 데이터 사이즈 이상."));
-
 		CString strMsg;
 		strMsg.Format(_T("Left 엣지라인 데이터 사이즈 이상."));
 		MessageBox(strMsg);
@@ -3853,8 +3823,6 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 	}
 	if (bLocalRet < 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecRightRndInfo Edge found faile, ret = %d."), bLocalRet);
 		return -2;
 	}
 
@@ -3862,9 +3830,6 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 
 	int nRightSize = (int)vecRightRndInfo.size();
 	if (nRightSize <= 0) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0"));
 
 		CString strMsg;
 		strMsg.Format(_T("Right EdgeLine Vector Size is 0"));
@@ -3875,9 +3840,6 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 	rcRight.top = vecRightRndInfo[0].y;
 	rcRight.bottom = vecRightRndInfo[nRightSize - 1].y;
 	if (rcRight.bottom < nRightSize - 1) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_AreaDiff>>에러 - vecRightRndInfo Right 엣지라인 데이터 사이즈 이상."));
 
 		CString strMsg;
 		strMsg.Format(_T("Right 엣지라인 데이터 사이즈 이상."));
@@ -4445,9 +4407,6 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 
 	if (bLocalRet < 0)
 	{
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_Negative>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
-
 		return -1;
 	}
 
@@ -4499,9 +4458,6 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	}
 	if (bLocalRet < 0)
 	{
-	//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProceTopAll_Negative>>에러 - vecRightRndInfo Edge found faile, ret = %d"), bLocalRet);
-
 		return -2;
 	}
 
@@ -6103,8 +6059,6 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 	if (bLocalRet < 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecLeftRndInfo Edge found faile, ret = %d"), bLocalRet);
 		return -1;
 	}
 	//rcLeftRnd.right = nMaskRight;
@@ -6114,16 +6068,11 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	int nLeftSize = (int)vecLeftRndInfo.size();
 	if (nLeftSize <= 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecLeftRndInfo Left EdgeLine Vector Size is 0"));
 		return -1;
 	}
 	rcLeft.top = vecLeftRndInfo[0].y;
 	rcLeft.bottom = vecLeftRndInfo[nLeftSize - 1].y;
 	if (rcLeft.bottom < nLeftSize - 1) {
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecLeftRndInfo Left 엣지라인 데이터 사이즈 이상."));
-
 		CString strMsg;
 		strMsg.Format(_T("Left 엣지라인 데이터 사이즈 이상."));
 		MessageBox(strMsg);
@@ -6153,8 +6102,6 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	if (bLocalRet < 0) {
 		CString strMsg;
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo 엣지라인 데이터 사이즈 이상."), bLocalRet);
 		return -2;
 	}
 
@@ -6162,8 +6109,6 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 	int nRightSize = (int)vecRightRndInfo.size();
 	if (nRightSize <= 0) {
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0."), bLocalRet);
 
 		CString strMsg;
 		strMsg.Format(_T("Right EdgeLine Vector Size is 0"));
@@ -6174,9 +6119,6 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	rcRight.top = vecRightRndInfo[0].y;
 	rcRight.bottom = vecRightRndInfo[nRightSize - 1].y;
 	if (rcRight.bottom < nRightSize - 1) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcFoilExpInRect_Cathode>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0."), bLocalRet);
 
 		CString strMsg;
 		strMsg.Format(_T("Right 엣지라인 데이터 사이즈 이상."));
@@ -6607,9 +6549,6 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 
 	if (bLocalRet < 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcTopAll_BrightRoll>>에러 - vecLeftRndInfo Edge found faile, ret = %d."), bLocalRet);
-
 		return -3;
 	}
 	//rcLeftRnd.right = nMaskRight;
@@ -6621,16 +6560,11 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 
 	int nLeftSize = (int)vecLeftRndInfo.size();
 	if (nLeftSize <= 0) {
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcTopAll_BrightRoll>>에러 - vecLeftRndInfo Left EdgeLine Vector Size is 0."));
 		return -4;
 	}
 	rcLeft.top = vecLeftRndInfo[0].y;
 	rcLeft.bottom = vecLeftRndInfo[nLeftSize - 1].y;
 	if (rcLeft.bottom < nLeftSize - 1) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcTopAll_BrightRoll>>에러 - vecLeftRndInfo Left 엣지라인 데이터 사이즈 이상."));
 
 		CString strMsg;
 		strMsg.Format(_T("Left 엣지라인 데이터 사이즈 이상."));
@@ -6654,9 +6588,6 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 
 	if (bLocalRet < 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcTopAll_BrightRoll>>에러 - vecRightRndInfo Edge found faile, ret = %d"), bLocalRet);
-
 		return -6;
 	}
 
@@ -6664,8 +6595,6 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 
 	int nRightSize = (int)vecRightRndInfo.size();
 	if (nRightSize <= 0) {
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcTopAll_BrightRoll>>에러 - vecRightRndInfo Right EdgeLine Vector Size is 0"));
 
 		CString strMsg;
 		strMsg.Format(_T("Right EdgeLine Vector Size is 0"));
@@ -6676,9 +6605,6 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 	rcRight.top = vecRightRndInfo[0].y;
 	rcRight.bottom = vecRightRndInfo[nRightSize - 1].y;
 	if (rcRight.bottom < nRightSize - 1) {
-
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcTopAll_BrightRoll>>에러 - vecRightRndInfo Right 엣지라인 데이터 사이즈 이상."));
 
 		CString strMsg;
 		strMsg.Format(_T("Right 엣지라인 데이터 사이즈 이상."));
@@ -6997,9 +6923,6 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 
 	if (bLocalRet < 0) {
 
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcBottomAll_BrightRoll>>에러 - vecRndInfo Edge found faile, ret = %d"), bLocalRet);
-
 		return -3;
 	}
 
@@ -7007,8 +6930,6 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 
 	int nLeftSize = (int)vecRndInfo.size();
 	if (nLeftSize <= 0) {
-		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<ProcBottomAll_BrightRoll>>에러 - vecRndInfo Left EdgeLine Vector Size is 0"));
 		return -4;
 	}
 

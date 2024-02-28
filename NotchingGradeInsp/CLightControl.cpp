@@ -65,7 +65,7 @@ int CLightControl::SetUnit(int no, const CString& ip, int mode/*TCP*/)
 			DWORD dwErrCode = ::GetLastError();
 			strError = ::FormatErrorMsg(dwErrCode);
 			//DEBUG_LOG.txt
-			AprData.SaveDebugLog_Format(_T("<<CLightSocket>>에러 - strError<%s>"), strError);
+			AprData.SaveDebugLog_Format(_T("Socket 에러	%s"), strError);
 
 			return (-1);
 		}
@@ -140,7 +140,7 @@ int CLightControl::SetUnit(int no, const CString& ip, int mode/*TCP*/)
 			break;
 		}
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("<<CLightSocket Connect Error>>에러 - strErMsg<%s>"), strErMsg);
+		AprData.SaveDebugLog_Format(_T("Socket Connect Error	%s"), strErMsg);
 
 		return (-1);
 	}

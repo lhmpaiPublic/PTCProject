@@ -661,7 +661,7 @@ int CSigProc::SigInRun()
 		m_SigInRun = (nRet == TRUE) ? TRUE : FALSE;
 
 		//디버그 로그 기록
-		AprData.SaveDebugLog_Format(_T("PLC Run SigIn Stat<%s>"), (nRet == TRUE)? "RUN" : "Not Run");
+		AprData.SaveDebugLog_Format(_T("PLC SigIn	%s"), (nRet == TRUE)? "RUN" : "Not Run");
 
 		//DIO Input Log
 		LOGDISPLAY_SPEC(7)(_T(">>> PLC Run SigIn Stat<<<  < %s>"), (nRet == TRUE)? "RUN" : "Not Run");
@@ -1094,7 +1094,7 @@ int CSigProc::SigOutEncoderZeroSet(int nMode)
 }
 int CSigProc::SigOutRecipeChangeAck(int nMode)
 {
-	AprData.SaveDebugLog_Format(_T("SigOutRecipeChangeAck : %d"), nMode); //pyjtest
+	AprData.SaveDebugLog_Format(_T("PLC Recipe Change Ack Mode : %d"), nMode); 
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1112,7 +1112,7 @@ int CSigProc::SigOutRecipeChangeAck(int nMode)
 }
 int CSigProc::SigOutLotStartAck(int nMode)
 {
-	AprData.SaveDebugLog_Format(_T("SigOutLotStartAck : %d"), nMode); //pyjtest
+	AprData.SaveDebugLog_Format(_T("PLC Lot Start Ack Mode : %d"), nMode);
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1130,7 +1130,7 @@ int CSigProc::SigOutLotStartAck(int nMode)
 }
 int CSigProc::SigOutLotEndAck(int nMode)
 {
-	AprData.SaveDebugLog_Format(_T("SigOutLotEndAck : %d"), nMode); //pyjtest
+	AprData.SaveDebugLog_Format(_T("PLC Lot End Ack Mode : %d"), nMode);
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1149,7 +1149,7 @@ int CSigProc::SigOutLotEndAck(int nMode)
 // 22.02.23 Ahn Add Start
 int CSigProc::SigOutTabZeroReset(int nMode)
 {
-	AprData.SaveDebugLog_Format(_T("SigOutTabZeroReset : %d"), nMode); //pyjtest
+	AprData.SaveDebugLog_Format(_T("PLC Tab Sero Reset Ack Mode : %d"), nMode);
 
 	int nRet = 0;
 	// 23.02.02 Ahn Add Start
@@ -1169,7 +1169,7 @@ int CSigProc::SigOutTabZeroReset(int nMode)
 
 int CSigProc::SigOutAlarmResetAck(int nMode)
 {
-	AprData.SaveDebugLog_Format(_T("SigOutAlarmResetAck : %d"), nMode); //pyjtest
+	AprData.SaveDebugLog_Format(_T("PLC Alarm Reset Ack Mode : %d"), nMode);
 
 	int nRet = 0;
 	int nAddress;
@@ -1186,7 +1186,7 @@ int CSigProc::SigOutAlarmResetAck(int nMode)
 
 int CSigProc::SigOutAlarmNgResetAck(int nMode)
 {
-	AprData.SaveDebugLog_Format(_T("SigOutAlarmNgResetAck : %d"), nMode); //pyjtest
+	AprData.SaveDebugLog_Format(_T("PLC Alarm Ng Reset Ack Mode : %d"), nMode);
 
 	int nRet = 0;
 	int nAddress;

@@ -102,7 +102,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				CImgSaveInfo* pSaveInfo = pQueuePtr->Pop();
 				if (pSaveInfo == NULL)
 				{
-					AprData.SaveDebugLog_Format(_T("CtrlThreadImgSave pSaveInfo NULL"));
 					break;
 				}
 
@@ -119,7 +118,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					else
 					{
 						LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
-						AprData.SaveDebugLog_Format(_T("CtrlThreadImgSave pImgPtr NULL"));
 					}
 
 					if (pSaveInfo)
@@ -132,9 +130,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 				if (pSaveInfo->m_strSavePath.GetLength() > 0)
 				{
-					LOGDISPLAY_SPEC(8)(_T("## CtrlThreadImgSave : %s"), pSaveInfo->m_strSavePath);
-
-//					DWORD dwTic = GetTickCount();
 
 					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 
@@ -160,6 +155,9 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 						}
 #endif //SPCPLUS_CREATE
 
+						AprData.SaveDebugLog_Format(_T("Image Save Path : %s"),
+							pSaveInfo->m_strSavePath);
+
 						bmp.SetJpegQuality(nJpgQuality);
 
 						bmp.SaveBitmap(pSaveInfo->m_strSavePath);
@@ -170,8 +168,6 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					else
 					{
 						LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
-						AprData.SaveDebugLog_Format(_T("CtrlThreadImgSave pImgPtr NULL"));
-
 					}
 
 				}

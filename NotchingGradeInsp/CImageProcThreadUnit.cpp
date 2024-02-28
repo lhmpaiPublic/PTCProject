@@ -99,7 +99,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 		// Debug Mode용 Data 처리 불요
 		if (pFrmInfo->m_bDummyData == TRUE)
 		{
-			AprData.SaveDebugLog_Format(_T("Debug Mode용 Data 처리 불요"));
 			//스래드 종료 이벤트 -> Result 스래드 이벤트를 보낸다.
 			pCtrl->SetEventProcEnd();
 			//ImageProc: Proc End  이벤트 발생
@@ -197,9 +196,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				{
 					// 결과 정보  m_pTabRsltInfo  //OK 설정
 					pFrameRsltInfo->m_pTabRsltInfo->m_nJudge = JUDGE_OK; // 강제 OK 처리	
-
-					AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [ Detected PET ] JUDGE_OK"));
-
 				}
 
 				//에러 ? 또는 Over Flow 가 아니면
@@ -261,7 +257,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							}
 
 
-							AprData.SaveDebugLog_Format(_T("<<CtrlImageProcThread>> TabLevel <%s> <BCD:%d> <TabNo:%d> - nLevelLeft: %d, nLevelRight: %d, nTabLevel: %d")
+							AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	TabLevel	%s	BCD ID	%d	TabNo	%d	nLevelLeft	%d	nLevelRight	%d	nTabLevel	%d")
 								, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
 								, pFrameRsltInfo->m_nTabId_CntBoard
 								, pFrameRsltInfo->nTabNo + 1
@@ -379,7 +375,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								CImageProcess::FindLevelBottom_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
 								nTabLevel = nBtmLevel;
 
-								AprData.SaveDebugLog_Format(_T("<<CtrlImageProcThread>> TabLevel <%s> <BCD:%d> <TabNo:%d> - nTabLevel: %d")
+								AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	%s	BCD ID	%d	TabNo	%d	nTabLevel	%d")
 									, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
 									, pFrameRsltInfo->m_nTabId_CntBoard
 									, pFrameRsltInfo->nTabNo + 1
@@ -398,7 +394,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							CImageProcess::FindTabLevel(pOrgImg, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 							nTabLevel = nBtmLevel;
 
-							AprData.SaveDebugLog_Format(_T("<<CtrlImageProcThread>> TabLevel <%s> <BCD:%d> <TabNo:%d> - nTabLevel: %d")
+							AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	%s	BCD	ID	%d	TabNo	%d	nTabLevel	%d")
 								, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
 								, pFrameRsltInfo->m_nTabId_CntBoard
 								, pFrameRsltInfo->nTabNo + 1
@@ -447,12 +443,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 					//NG 로그 출력한다.
 					//DEBUG_LOG.txt
-					AprData.SaveDebugLog_Format(_T("<<CtrlImageProcThread>>에러 - [Error NG] m_bErrorFlag = %d, m_bOverFlow = %d"),
-						pFrmInfo->m_bErrorFlag, pFrmInfo->m_bOverFlow);
+					AprData.SaveDebugLog_Format(_T("CtrlImageProcThread ERROR NG	m_bErrorFlag	%d	m_bOverFlow	%d"),
+						pFrmInfo->m_bErrorFlag
+						, pFrmInfo->m_bOverFlow);
 
 					if (pFrmInfo->m_bOverFlow == TRUE)
 					{
-						AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> [Overflow Error] System Stop!!"));
+						AprData.SaveDebugLog_Format(_T("Overflow Error	system Stop!!"));
 						if (AprData.m_System.m_bNonNgStop == TRUE)
 						{
 							AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
@@ -482,7 +479,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 					if (bIsBrightError == TRUE)
 					{
-						AprData.SaveDebugLog_Format(_T("<<CtrlImageProcThread>> <CheckBright> <%s> <BCD:%d> <TabNo:%d> - [Bright Error] Area (L:%d, T:%d, R:%d, B:%d), Min:%d, Max:%d, Now:%d")
+						AprData.SaveDebugLog_Format(_T("Cam Pos	%s	BCD ID	%d	TabNo	%d	[Bright Error] Area	L:%d	T:%d	R:%d	B:%d	Min:%d	Max:%d	Now:%d")
 							, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
 							, pFrameRsltInfo->m_nTabId_CntBoard
 							, pFrameRsltInfo->nTabNo + 1
@@ -736,9 +733,15 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 				// 처리 완료
 
-				AprData.SaveDebugLog_Format(_T("<CtrlImageProcThread> <%s> TabNo<%d> ProcEnd"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm", pFrmInfo->nTabNo+1);
+				AprData.SaveDebugLog_Format(_T("Cam Pos	%s	TabNo	%d	BCD ID	%d	ProcEnd"), 
+					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+					,pFrmInfo->nTabNo+1
+					, pFrmInfo->m_nTabId_CntBoard);
 
-				LOGDISPLAY_SPEC(8)("## Result Copy TabNo<%d> <%s> ===== ", pFrmInfo->nTabNo + 1, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm");
+				LOGDISPLAY_SPEC(8)(_T("Cam Pos	%s	TabNo	%d	BCD ID	%d	ProcEnd"),
+					(pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+					, pFrmInfo->nTabNo + 1
+					, pFrmInfo->m_nTabId_CntBoard);
 
 				//파일저장 프레임 결과 정보에 저장한다.
 				pFrameRsltInfo->Copy(pFrmInfo);

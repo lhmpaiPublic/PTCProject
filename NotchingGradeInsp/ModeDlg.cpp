@@ -551,7 +551,6 @@ void CModeDlg::OnBnClickedBtnExit()
 
 		LOGDISPLAY_SPEC(8)(_T("## SHUTDWON PROGRAM ============================="));
 
-		AprData.SaveDebugLog_Format(_T("<BUTTON CLICK> exit the application"));
 		AfxGetMainWnd()->PostMessageA(WM_CLOSE);
 	}
 }
@@ -747,7 +746,7 @@ void CModeDlg::OnBnClickedRadRun()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	
-	AprData.SaveDebugLog_Format(_T("<BUTTON CLICK> START"));
+	AprData.SaveDebugLog_Format(_T("BUTTON RUN START"));
 
 	//Button Click Start/Stop 시 Tab Id 초기화
 	AprData.m_NowLotData.m_bInspStartStop = TRUE;
@@ -793,7 +792,7 @@ void CModeDlg::OnBnClickedRadRun()
 void CModeDlg::OnBnClickedRadStop()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	AprData.SaveDebugLog_Format(_T("<BUTTON CLICK> STOP"));
+	AprData.SaveDebugLog_Format(_T("BUTTON RUN STOP"));
 
 	m_pDoc->SetInspState(enInspStop);
 

@@ -431,7 +431,7 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 
 int CNotchingGradeInspApp::DeviceClose(void)
 {
-	AprData.SaveDebugLog_Format(_T("DeviceClose... Start") );
+	AprData.SaveDebugLog_Format(_T("DeviceClose...") );
 
 	if (m_pImgProcCtrl != NULL) {
 		delete m_pImgProcCtrl;
@@ -468,8 +468,6 @@ int CNotchingGradeInspApp::DeviceClose(void)
 	}
 
 	CoUninitialize();
-
-	AprData.SaveDebugLog_Format(_T("DeviceClose... End"));
 
 	return (0);
 }

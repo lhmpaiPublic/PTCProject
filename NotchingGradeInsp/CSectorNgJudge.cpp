@@ -14,7 +14,7 @@ int CSectorNgJudge::ResetAll()
 //		iter = m_vecSector.erase(iter);
 //	}
 
-	AprData.SaveDebugLog_Format(_T("<CSectorNgJudge> 구간 정보 ResetAll"));
+	AprData.SaveDebugLog_Format(_T("CSectorNgJudge 구간 정보 ResetAll"));
 
 	return 0;
 }
@@ -25,8 +25,6 @@ int CSectorNgJudge::AddNgTab(CTabJudge tab, int nSectSize)
 	if ( (tab.nJudge == JUDGE_NG) && ( tab.nReason >= CTabRsltBase::en_Reason_FoilExpIn_Top))
 	{
 		m_vecSector.push_back(tab) ;
-
-//		AprData.SaveDebugLog_Format(_T("<CSectorNgJudge::AddNgTab> 구간 정보에 NG Tab 추가") );
 
 	}
 

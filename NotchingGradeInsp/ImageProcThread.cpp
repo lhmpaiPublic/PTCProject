@@ -208,7 +208,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	int nUseBCDIDBackup = 0;
 
 	//Last BCD ID 백업
-	int nLastBCDIdBackup = 0;
+	int nGrabCallBCDIdBackup = 0;
+
+	//Grab Call BCD ID 중복 또는 범위 밖의 ID 를 받을 경우
+	//일정 카운트 만큼 증기 시킨다.
+	UINT nBCDIDAddCount = 0;
 
 
 	//Image의 남은 픽셀 수 백업용
@@ -409,9 +413,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					{
 						// 강제 분할 
 						bErrorAll = TRUE;
-
-						AprData.SaveDebugLog_Format(_T(">>>>>> Miss Tab Vec [T/B:%d][F/V:%d] : Size=%d, QueueCount=%d, FrameCountTop=%d, FrameCountBtm=%d "), 
-							pFrmInfo_Top->m_nTabId_CntBoard, pFrmInfo_Top->nTabNo+1, nVecSize, pCntQueueInCtrl->GetSize(), pFrmInfo_Top->m_nFrameCount, pFrmInfo_Bottom->m_nFrameCount );
 					}
 					//nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo); // Btm Edge 인식 함수 변경 : 해당 함수 사용 시 동일 조건임에도 이상 동작 발생. 원인 미상
 					
@@ -564,21 +565,35 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							loop++;
 						}
 
-						if (nLastBCDIdBackup != AprData.m_NowLotData.m_nLastBCDId)
+						if ((pTabInfo->m_GrabCallBCDId < 0) || (pTabInfo->m_GrabCallBCDId >= 64) || (nGrabCallBCDIdBackup == pTabInfo->m_GrabCallBCDId))
+						{
+							nBCDIDAddCount = 3;
+						}
+						//증가 카운트가 0일 경우만 
+						//Grab Call BCD ID 사용한다.
+						//중복이 일어나고 일졍 : 3번 카운트는 
+						if(nBCDIDAddCount == 0)
 						{
 							//BCD ID를 Last BCD ID로 세팅
-							cntInfo.nTabID = AprData.m_NowLotData.m_nLastBCDId;
+							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId;
 						}
 						else
 						{
+							//이전 BCD ID를 증가 시켜서 사용한다.
 							nUseBCDIDBackup++;
 							if (nUseBCDIDBackup >= 64)
 								nUseBCDIDBackup = 0;
 							cntInfo.nTabID = nUseBCDIDBackup;
+
+							//Grab Call BCD ID 예외 상황이 발생했을 경우
+							//들어올 수 있는 횟수를 감소 시킨다.
+							nBCDIDAddCount--;
+							if (nBCDIDAddCount < 0)
+								nBCDIDAddCount = 0;
 						}
 
 
-						nLastBCDIdBackup = AprData.m_NowLotData.m_nLastBCDId;
+						nGrabCallBCDIdBackup = (int)pTabInfo->m_GrabCallBCDId;
 
 						//사용한 BCD ID  백업
 						nUseBCDIDBackup = cntInfo.nTabID;
@@ -624,8 +639,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							nErrorNo = 1;
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Tab 반지름 Error(nLeft:%d<%d or nRight:%d<%d)"),
-								pTabInfo->m_bErrorFlag, nErrorNo, nLeft, AprData.m_pRecipeInfo->TabCond.nRadiusW, nRight, AprData.m_pRecipeInfo->TabCond.nRadiusW);
+							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d	Tab nLeft	%d	Tab nRight	%d Radius	%d"),
+								pTabInfo->m_bErrorFlag, nErrorNo, nLeft, nRight, AprData.m_pRecipeInfo->TabCond.nRadiusW);
 
 						}
 
@@ -647,7 +662,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							AprData.m_NowLotData.m_bProcError = FALSE;
 							nErrorNo = 2;
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Inital 상태 or 첫 Tab"),
+							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo);
 
 						}
@@ -660,7 +675,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							nErrorNo = 3;
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: Tab 정보 없음"),
+							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo);
 
 						}
@@ -675,7 +690,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							nErrorNo = 4;
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: nLevel Error (nLevel:%d <= 0)"),
+							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLevel);
 
 						}
@@ -690,13 +705,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							nErrorNo = 5;
 
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> m_bErrorFlag = %d, nErrorNo = %d :: nLevel Error (nLevel:%d >= (nWidth:%d - 100 ))"),
+							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d	Width	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLevel, nWidth);
 
 						}
 						// 22.09.30 Ahn Add End
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgCuttingTab> <CTabInfo> nVecSize:%d/%d, ImageLength:%d, FrameCount:%d, TabStartPosInFrame:%d, TabLeft:%d, TabRight:%d, nLevel:%d, nBtmLevel:%d"),
+						AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab INFO	nVecSize:%d/%d	ImageLength:%d	FrameCount:%d	TabStartPosInFrame:%d	TabLeft:%d	TabRight:%d	nLevel:%d	nBtmLevel:%d"),
 							idxi, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel, nBtmLevel);
 
 
@@ -1017,8 +1032,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
-			AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> Invalid Handle") );
-
 			break;
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
@@ -1050,11 +1063,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 
 			if (pThis == NULL) {
-				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> pThis == NULL"));
 				break;
 			}
 			if (pThis->m_bKill == TRUE) {
-				AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> pThis->m_bKill == TRUE"));
 				break;
 			}
 
@@ -1138,7 +1149,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						LOGDISPLAY_SPEC(8)("## <<%s>>>CtrlThreadImgProc TabNo<%d>-TabId<%d> - ResultProcWait-Enter",
 							"Btm", pBtmInfo->nTabNo+1, pBtmInfo->m_nTabId_CntBoard, ProcEnd_WaitCountBottom);
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> ResultProc Enter"), pTopInfo->nTabNo+1);
+						AprData.SaveDebugLog_Format(_T("LotId	%s	TabNo	%d	TabId	%d	JUDGE : Top	%s	Bottom	%s")
+							, AprData.m_NowLotData.m_strLotNo
+							, pTopInfo->nTabNo + 1
+							, pTopInfo->m_nTabId_CntBoard
+							, (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK"
+							, (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK");
 
 
 						CString strMsg;
@@ -1361,17 +1377,24 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 										pSigProc->WriteAlarmCodeAndJudge(wAlarmCode, nId, nJudge, nNgCode);
 
-										//if( (nId >= 0) && (nId < 64) )
-										//{
-										//	AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[nId] = (nTopJudge == JUDGE_NG) ? 1 : 0;
-
-										//	AprData.FileCtrl_DuplicateNG(MODE_WRITE, nId, AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[nId]);
-										//}
+										AprData.SaveDebugLog_Format(_T("Send PLC1 ERROR INFO : TabNo	%d	BCD ID	%d	Alarm Code	%d"),
+											pTopInfo->nTabNo + 1
+											, nId
+											, wAlarmCode
+										);
 									}
 									else
 									{
+										int nId = pTopInfo->m_nTabId_CntBoard;
+
 										pSigProc->SigOutAlarmExist(TRUE);
 										pSigProc->WriteAlarmCode(wAlarmCode);
+
+										AprData.SaveDebugLog_Format(_T("Send PLC2 ERROR INFO : TabNo	%d	BCD ID	%d	Alarm Code	%d"),
+											pTopInfo->nTabNo + 1
+											, nId
+											, wAlarmCode
+										);
 									}
 
 								}
@@ -1387,10 +1410,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						}
 						// 결과 Queue에 보냄
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write NG Code To PLC"), pTopInfo->nTabNo+1);
-
-
-
 						// Counter 신호 출력
 						WORD wOutPut;
 						CString strMarking = _T("OFF");
@@ -1398,7 +1417,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							
 							int nMarkSel1 = 0;
 							int nMarkSel2 = 0;
-//							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <Marking Event> Enter"));
 
 							// 22.07.19 Ahn Modify Start
 							GetMarkingFlag(AprData.m_pRecipeInfo, nTopJudge, nBtmJudge, pTopInfo->m_pTabRsltInfo->m_wNgReason, pBtmInfo->m_pTabRsltInfo->m_wNgReason, nMarkSel1, nMarkSel2);
@@ -1406,8 +1424,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							CSigProc* pSigProc = theApp.m_pSigProc;
 							bMarkingActive = pSigProc->GetInkMarkActive();
-							//						bMarkingActive = TRUE; // PLC 강제 마킹 처리
-
+							
 							if ((AprData.m_System.m_bChkEnableMarker == FALSE) || (bMarkingActive == FALSE))
 							{
 								nMarkSel1 = 0;
@@ -1419,6 +1436,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							//마킹 정보를 세팅한다.
 							//input id 스래드에서 보낸다.
 							CCounterThread::MarkSendInfo_Push_back(pTopInfo->m_nTabId_CntBoard, wOutPut);
+
+							AprData.SaveDebugLog_Format(_T("Output Making TabNo	%d	BCD ID	%d	MarkingData	%d"),
+								pTopInfo->nTabNo + 1,
+								pTopInfo->m_nTabId_CntBoard, 
+								wOutPut								
+							);
 
 							CString strMsg;
 							strMsg.Format(_T("Output Make BCD ID[%d]_OutPutValue[0x%x]_TabNo[%d]"),
@@ -1468,18 +1491,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								int nSize = sizeof(_CELL_JUDGE) / sizeof(int);
 								pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 
-//								CString strMsg;
-//								strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudge.dwCellTriggerID, AprData.m_NowLotData.m_stCellJudge.dwCellJudge, AprData.m_NowLotData.m_stCellJudge.dwCellNgCode);
-//								AprData.SaveDebugLog(strMsg); //pyjtest
 
 							}
 
 
 						}
-
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write Judge To PLC"), pTopInfo->nTabNo+1);
-
-
 
 						{ // CSV 파일 작성
 							CString strCsvFileName;
@@ -1566,9 +1582,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 
 
-							strResult.TrimRight();
-							AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Write CSV(%d) [%s%s][%s]"),
-								pTopInfo->nTabNo+1, nRet, strFilePath, strCsvFileName, strResult );
+							AprData.SaveDebugLog_Format(_T("CSV Info : TabNo	%d	BCD ID	%d	%s	TabPitch	%d"),
+								pTopInfo->nTabNo + 1,
+								pTopInfo->m_nTabId_CntBoard
+								, (pTopInfo->m_pTabRsltInfo->m_bIsPET == TRUE) ? _T("PET") : _T("Foil")
+								, pTopInfo->m_dTabPitch
+							);
 						}
 
 
@@ -1623,8 +1642,16 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
 									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSize);
 									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 									pImgSaveQueueCtrl->PushBack(pSaveInfo);
+
+									AprData.SaveDebugLog_Format(_T("Image Save : TabNo	%d	BCD ID	%d	Path	%s	File Name	%s"),
+										pTopInfo->nTabNo + 1,
+										pTopInfo->m_nTabId_CntBoard
+										, pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath
+										, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile
+									);
 
 								}
 							}
@@ -1659,35 +1686,28 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 									pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
-									//										AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> <ImageSave> %s"), pSaveInfo->m_strSavePath);
+									AprData.SaveDebugLog_Format(_T("Image Save : TabNo	%d	BCD ID	%d	Path	%s	File Name	%s"),
+										pTopInfo->nTabNo + 1,
+										pTopInfo->m_nTabId_CntBoard
+										, pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath
+										, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile
+									);
 								}
-								else
-								{
-									AprData.SaveDebugLog_Format(_T("@@@@@@@@@@@@@@@@@<CtrlThreadImgProc> Image Save Info NULL "));
-								}
-
 							}
 						}
 #endif //SPCPLUS_CREATE
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- Save Image PushBack"), pTopInfo->nTabNo);
-
 
 						int tempTabNo = pTopInfo->nTabNo;
 
 						CImageProcessCtrl::GetResultPtr(CAM_POS_TOP)->PushBack((CFrameInfo*)pTopInfo);
 						CImageProcessCtrl::GetResultPtr(CAM_POS_BOTTOM)->PushBack((CFrameInfo*)pBtmInfo);
 
-						AprData.SaveDebugLog_Format(_T("<CtrlThreadImgProc> TabNo<%d> --- pRsltQueueCtrl->PushBack()"), tempTabNo+1);
-
-
 						AprData.m_NowLotData.m_ctLastAcqTime = CTime::GetCurrentTime();
 
 						if (bClearFlag == TRUE)
 						{
-
-							AprData.SaveDebugLog_Format(_T("------ NG_STOP Signal OFF ------"));
 							bJudgeNG = FALSE;
-							bClearFlag = FALSE;// 22.03.28 Ahn Add
+							bClearFlag = FALSE;
 						}
 
 						break;

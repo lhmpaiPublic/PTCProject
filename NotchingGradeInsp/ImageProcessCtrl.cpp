@@ -678,7 +678,7 @@ int CImageProcessCtrl::LightON()
 		for (nChanel = 0; nChanel < MAX_LIGHT_CHANEL; nChanel++) {
 			nLevel = AprData.m_pRecipeInfo->nLightLevel[nUnit][nChanel];
 			nRet = theApp.m_pLightCtrl->SetLevel(nUnit, nChanel, nLevel);
-			AprData.SaveDebugLog_Format(_T("[ Light%d ON ]... %s"), nChanel, (nRet < 0) ? _T("Error") : _T("OK"));
+			AprData.SaveDebugLog_Format(_T("Light	%d	ON	%s"), nChanel, (nRet < 0) ? _T("Error") : _T("OK"));
 		}
 	}
 
