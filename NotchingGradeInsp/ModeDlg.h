@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "ColorControl.h"
+#include "CUserLoginDlg.h"
 
 // CModeDlg 대화 상자
 

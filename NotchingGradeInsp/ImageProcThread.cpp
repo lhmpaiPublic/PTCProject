@@ -1539,6 +1539,22 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								}
 							}
 
+#if 1 // 240212
+							//							pSeqOutData->wFoilExpInTopCount
+							DWORD dwFoilExpInTopCount = 0;
+							DWORD dwFoilExpOutTopCount = 0;
+							DWORD dwFoilExpSurfaceTopCount = 0; //??
+
+							DWORD dwFoilExpInBottomCount = 0;
+							DWORD dwFoilExpOutBottomCount = 0;
+							DWORD dwFoilExpSurfaceBottomCount = 0; //??
+
+							dwFoilExpInTopCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInTopCount;
+							dwFoilExpOutTopCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutTopCount;
+
+							dwFoilExpInBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount;
+							dwFoilExpOutBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount;
+#endif
 							CString strTime;
 							CString strJudge = _T("OK");
 							CString strBtmJudge = _T("OK");
@@ -1552,12 +1568,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								strJudge = _T("NG");
 								strBtmJudge = _T("NG");
 							}
-							// LotID, /*Total Count*/, Cell_No, Time, Pos(Top,Bottom),Top Judge,Bottom Judge,Surface Exposure, DefR, DefTheta, Top DefectSize, BTM Def Size
-							//,  Top Surface max Size, Btm Surface Max Size, InkMarking, InkMarkingReason
-							// 23.01.06 Ahn Modify Start
-							//strResult.Format(_T("%s,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s\r\n")
-							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s,%s,%.2lf,%s,%.2lf,%d\r\n")
-								// 23.01.06 Ahn Modify End
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s,%s,%.2lf,%s,%.2lf,%d,%d,%d,%d,%d\r\n")
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
 								, pTopInfo->m_nTabId_CntBoard
@@ -1578,6 +1589,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								, (pTopInfo->m_bErrorTabWitch == TRUE) ? _T("X") : _T("OK")
 								, pTopInfo->m_dTabWidth
 								, pTopInfo->m_unCellLength
+								, dwFoilExpInTopCount
+								, dwFoilExpOutTopCount
+								, dwFoilExpInBottomCount
+								, dwFoilExpOutBottomCount
 							);
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 

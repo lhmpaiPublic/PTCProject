@@ -17,7 +17,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 한국어(대한민국) resources
+// Korean (Korea) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -1016,6 +1016,18 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,252,155,50,14
 END
 
+IDD_DLG_USER_LOGIN DIALOGEX 0, 0, 316, 48
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 9, "Arial", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,215,3,94,19
+    PUSHBUTTON      "CANCEL",IDCANCEL,215,22,94,19
+    COMBOBOX        IDC_CB_USERLIST,84,6,127,53,CBS_DROPDOWNLIST | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
+    CTEXT           "MODE",IDC_ST_USERMODE,12,6,67,12,SS_CENTERIMAGE | NOT WS_VISIBLE
+    CTEXT           "Password",IDC_ST_PASSWORD,15,16,58,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_ED_PASSWORD,77,15,127,14,ES_PASSWORD | ES_AUTOHSCROLL
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1338,6 +1350,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 169
     END
+
+    IDD_DLG_USER_LOGIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 46
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1592,6 +1612,17 @@ END
 IDD_DLG_RS232 AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_DLG_USER_LOGIN AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
 END
 
 
@@ -2141,7 +2172,7 @@ BEGIN
     IDS_CROP_IMAGE_VIEW     "크롭 이미지 윈도우"
 END
 
-#endif    // 한국어(대한민국) resources
+#endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -488,6 +488,19 @@ void CModeDlg::OnBnClickedRadHistoryMode()
 void CModeDlg::OnBnClickedRadCondMode()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+#if 1 // 240227 kjk 추가
+	CUserLoginDlg dlg;
+	dlg.DoModal();
+
+	if (dlg.bLogin == FALSE) {
+		OnBnClickedRadiInspMode();
+		Refresh();
+		return;
+	}
+
+#endif
+
 //KANG 22.01.07 Modify Start
 	//m_nViewMode = enCondMode;
 	if (m_pDoc != NULL) {
