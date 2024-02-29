@@ -141,8 +141,6 @@ void CGlobalData::SetFrameCounter( int nHeadNo, int nNo )
 
 int CGlobalData::SaveDebugLog( CString strMsg )
 {
-	::EnterCriticalSection( &m_csSaveLog ) ;
-	CWin32File file ;
 	// 22.07.27 Ahn Modify Start
 	//CString strFilePath = m_strLogPath;
 	CString strFilePath ;
@@ -176,9 +174,7 @@ int CGlobalData::SaveDebugLog( CString strMsg )
 		, sysTime.wHour
 	);
 
-	file.TextSave1Line( strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999 ) ;
-
-	::LeaveCriticalSection( &m_csSaveLog ) ;
+	CWin32File::TextSave1Line( strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999 ) ;
 
 	return 0 ;
 }
@@ -199,8 +195,6 @@ void CGlobalData::SaveDebugLog_Format(const char* format, ...)
 
 int CGlobalData::SaveErrorLog(CString strMsg)
 {
-	::EnterCriticalSection(&m_csSaveLog);
-	CWin32File file;
 	// 22.07.27 Ahn Modify Start
 	//CString strFilePath = m_strLogPath;
 	CString strFilePath;
@@ -229,18 +223,15 @@ int CGlobalData::SaveErrorLog(CString strMsg)
 	CString strFileName;
 	strFileName = _T("ERROR_LOG.txt") ;
 
+	CWin32File::TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
 
-	file.TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
-
-	::LeaveCriticalSection(&m_csSaveLog);
 
 	return 0;
 }
 
 int CGlobalData::SaveTactLog(CString strMsg)
 {
-	::EnterCriticalSection(&m_csSaveLog);
-	CWin32File file;
+	return 0;
 	// 22.07.27 Ahn Modify Start
 	//CString strFilePath = m_strLogPath;
 	CString strFilePath;
@@ -269,17 +260,14 @@ int CGlobalData::SaveTactLog(CString strMsg)
 	CString strFileName;
 	strFileName = _T("TactTime_LOG.txt");
 
-	file.TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
-
-	::LeaveCriticalSection(&m_csSaveLog);
+	CWin32File::TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
 
 	return 0;
 }
 
 int CGlobalData::SaveLotLog(CString strMsg)
 {
-	::EnterCriticalSection(&m_csSaveLog);
-	CWin32File file;
+	return 0;
 	// 22.07.27 Ahn Modify Start
 	//CString strFilePath = m_strLogPath;
 	CString strFilePath;
@@ -309,17 +297,15 @@ int CGlobalData::SaveLotLog(CString strMsg)
 	CString strFileName;
 	strFileName = _T("LOT_LOG.txt") ;
 
-	file.TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
+	CWin32File::TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
 
-	::LeaveCriticalSection(&m_csSaveLog);
 
 	return 0;
 }
 
 int CGlobalData::SaveFrameLog(CString strMsg, int nNo )
 {
-	::EnterCriticalSection(&m_csSaveLog);
-	CWin32File file;
+	return 0;
 	// 22.07.27 Ahn Modify Start
 	//CString strFilePath = m_strLogPath;
 	CString strFilePath;
@@ -350,17 +336,14 @@ int CGlobalData::SaveFrameLog(CString strMsg, int nNo )
 	strFileName.Format(_T("Frame_LOG_%02d.txt"), nNo );
 
 
-	file.TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
-
-	::LeaveCriticalSection(&m_csSaveLog);
+	CWin32File::TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
 
 	return 0;
 }
 
 int CGlobalData::SaveMemoryLog( CString strMsg )
 {
-	::EnterCriticalSection( &m_csSaveMemLog ) ;
-	CWin32File file ;
+	return 0;
 	// 22.07.27 Ahn Modify Start
 	//CString strFilePath = m_strLogPath;
 	CString strFilePath;
@@ -388,9 +371,8 @@ int CGlobalData::SaveMemoryLog( CString strMsg )
 
 	strSaveMsg = strTime + strMsg + _T("\r\n") ;
 
-	file.TextSave1Line( strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999 ) ;
+	CWin32File::TextSave1Line( strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999 ) ;
 
-	::LeaveCriticalSection( &m_csSaveMemLog ) ;
 
 	return 0 ;
 }

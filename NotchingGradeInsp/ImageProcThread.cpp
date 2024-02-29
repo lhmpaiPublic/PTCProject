@@ -1067,30 +1067,31 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
-			//Key Id String 로컬 객체 초기 세팅
-			CString strKeyIdString = _T("");
-			//지멘스 Key Id 읽은 데이터
-			int KeyIdSize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID);
-			strKeyIdString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[0], KeyIdSize);
 
-			//초기값 세팅 후 변화가 일어나는지 확인
-			if (CImageProcThread::gKeyIdString != strKeyIdString)
-			{
-				LOGDISPLAY_SPEC(2)("$$ PLC String KeyId Hex Data<%s>", strKeyIdString);
-				//변화된 값을 저장한다.
-				CImageProcThread::gKeyIdString = strKeyIdString;
-				//키 초기값 세팅
-				if ((bReciveKeyId == FALSE) && CImageProcThread::gKeyIdString != _T(""))
-				{
-					//Key Id를 받았는지 확인
-					bReciveKeyId = TRUE;
-				}
+			////Key Id String 로컬 객체 초기 세팅
+			//CString strKeyIdString = _T("");
+			////지멘스 Key Id 읽은 데이터
+			//int KeyIdSize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID);
+			//strKeyIdString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[0], KeyIdSize);
 
-				//지멘스 Dummy 읽은 데이터
-				int DummySize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy);
-				CString strDummyString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy[0], DummySize);
-				LOGDISPLAY_SPEC(2)("$$ PLC String Dummy Hex Data<%s>", strDummyString);
-			}
+			////초기값 세팅 후 변화가 일어나는지 확인
+			//if (CImageProcThread::gKeyIdString != strKeyIdString)
+			//{
+			//	LOGDISPLAY_SPEC(2)("$$ PLC String KeyId Hex Data<%s>", strKeyIdString);
+			//	//변화된 값을 저장한다.
+			//	CImageProcThread::gKeyIdString = strKeyIdString;
+			//	//키 초기값 세팅
+			//	if ((bReciveKeyId == FALSE) && CImageProcThread::gKeyIdString != _T(""))
+			//	{
+			//		//Key Id를 받았는지 확인
+			//		bReciveKeyId = TRUE;
+			//	}
+
+			//	//지멘스 Dummy 읽은 데이터
+			//	int DummySize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy);
+			//	CString strDummyString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy[0], DummySize);
+			//	LOGDISPLAY_SPEC(2)("$$ PLC String Dummy Hex Data<%s>", strDummyString);
+			//}
 
 
 			if (pThis == NULL) {

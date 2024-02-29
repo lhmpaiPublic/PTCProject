@@ -32,7 +32,6 @@ int CLogDisplayDlg::FolderFindCount = 0;
 
 CRITICAL_SECTION CLogDisplayDlg::m_csQueueLog;
 
-static CWin32File StaticFile;
 CString CLogDisplayDlg::StaticCurrentPath = LOGTEXTFILEFOLDER;
 
 CString CLogDisplayDlg::StaticDatPath = "D:\\DAT\\FOIL\\LOG\\BCDID";
@@ -123,7 +122,7 @@ void CLogDisplayDlg::LogDisplayText(CString FileName, const char* format, ...)
 		CWin32File::CreateDirectory(TextLogFolderName);
 	}
 
-	StaticFile.TextSave1Line(TextLogFolderName, FileName+(".txt"), strData, "at", FALSE, 999999999);
+	CWin32File::TextSave1Line(TextLogFolderName, FileName+(".txt"), strData, "at", FALSE, 999999999);
 }
 
 void CLogDisplayDlg::LogDisplayDatText(CString FileName, const char* format, ...)
@@ -157,7 +156,7 @@ void CLogDisplayDlg::LogDisplayDatText(CString FileName, const char* format, ...
 		CWin32File::CreateDirectory(StaticDatPath);
 	}
 
-	StaticFile.TextSave1Line(StaticDatPath, FileName + (".txt"), strData, "at", FALSE, 999999999);
+	CWin32File::TextSave1Line(StaticDatPath, FileName + (".txt"), strData, "at", FALSE, 999999999);
 }
 
 void CLogDisplayDlg::LogTabCounterText(CString FileName, const char* format, ...)
@@ -191,7 +190,7 @@ void CLogDisplayDlg::LogTabCounterText(CString FileName, const char* format, ...
 		CWin32File::CreateDirectory(StaticTabCounterPath);
 	}
 
-	StaticFile.TextSave1Line(StaticTabCounterPath, FileName + (".txt"), strData, "at", FALSE, 999999999);
+	CWin32File::TextSave1Line(StaticTabCounterPath, FileName + (".txt"), strData, "at", FALSE, 999999999);
 }
 
 void CLogDisplayDlg::LogDisplayMessageText(const char* data)
@@ -419,7 +418,6 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 		, LOGTEXTFILEFOLDER
 	);
 
-	CWin32File file;
 	UINT ret = 0;
 	CLogDisplayDlg::FolderFindCount = 0;
 	while (pMain)
@@ -459,7 +457,7 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 								, midStrName
 							);
 
-							file.TextSave1Line(FilePath + midStrFolder, FileName, tempStr, "at", FALSE, 999999999);
+							CWin32File::TextSave1Line(FilePath + midStrFolder, FileName, tempStr, "at", FALSE, 999999999);
 						}
 					}
 				}
@@ -480,7 +478,7 @@ UINT CLogDisplayDlg::ThreadProc(LPVOID param)
 
 						CString strlog;
 						strlog.Format("delete forder name : %s\r\n", delStr);
-						file.TextSave1Line(CurrentFilePath + CString("\\DeleteForderLog"), "DeleteForderlog.txt", strlog, "at", FALSE, 999999999);
+						CWin32File::TextSave1Line(CurrentFilePath + CString("\\DeleteForderLog"), "DeleteForderlog.txt", strlog, "at", FALSE, 999999999);
 
 					}
 					FolderFindCount = 0;

@@ -939,7 +939,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					}
 
 					//PLC 블럭 Read Time 체크(50 * 6  = 300ms 주기)
-					AprData.m_NowLotData.m_ReadCount--;
+					AprData.m_NowLotData.m_ReadCount = 1;
+					BOOL bPLCWrite = TRUE;
 					if (AprData.m_NowLotData.m_ReadCount <= 0)
 					{
 						short* pData = (short*)(&AprData.m_NowLotData.m_ReadDataSms);
@@ -952,9 +953,10 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 						{
 							AprData.m_NowLotData.m_ReadCount = 6;
 						}
+						bPLCWrite = FALSE;
 					}
 					//Read Time이 아닐 경우 Write 한다.
-					else
+					if(bPLCWrite)
 					{
 						short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
 						int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
@@ -963,15 +965,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 							AprData.SaveDebugLog(_T("[DATA SEND] Error")); //pyjtest
 						}
 					}
-
-//					else
-//					{
-//						CString strMsg;
-//						strMsg.Format(_T("[DATA SEND] OK Tab Count=%d"), AprData.m_NowLotData.m_nTabCount);
-//						AprData.SaveDebugLog(strMsg); //pyjtest
-//					}
-
-
 
 				}
 				else
