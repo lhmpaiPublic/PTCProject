@@ -612,7 +612,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
 								{
-									cntInfo.nTabID = pTabInfo->m_GrabCallBCDId;
+									cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId;
 								}
 								else
 								{
@@ -1498,6 +1498,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								wOutPut								
 							);
 
+							LOGDISPLAY_SPEC(11)(_T("Output Making TabNo	%d	BCD ID	%d	MarkingData	%d"),
+								pTopInfo->nTabNo + 1,
+								pTopInfo->m_nTabId_CntBoard,
+								wOutPut
+								);
+
 							CString strMsg;
 							strMsg.Format(_T("Output Make BCD ID[%d]_OutPutValue[0x%x]_TabNo[%d]"),
 								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1);
@@ -1801,7 +1807,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 						if (pTopInfo && pBtmInfo)
 						{
-							LOGDISPLAY_SPEC(8)("## === UNIT LOOPPING ERROR === Info Print Start ==  ");
 							CString strCsvFileName;
 							CString strFilePath;
 							strFilePath.Format(_T("%s\\"), AprData.m_strNowCsvPath);
@@ -1810,16 +1815,50 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							int nMarkSel1 = 0;
 							int nMarkSel2 = 0;
+							if ((AprData.m_System.m_bChkEnableMarker == TRUE) && (bMarkingActive == TRUE))
+							{
+								nMarkSel1 = 1;
+								nMarkSel2 = 1;
+							}
+							
 
 							WORD wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, JUDGE_NG, JUDGE_NG, nMarkSel1, nMarkSel2);
+
+							//마킹 정보를 세팅한다.
+							//input id 스래드에서 보낸다.
+							//CCounterThread::MarkSendInfo_Push_back(pTopInfo->m_nTabId_CntBoard, wOutPut);
+
+							AprData.SaveDebugLog_Format(_T("LOOPING Output Making TabNo	%d	BCD ID	%d	MarkingData	%d"),
+								pTopInfo->nTabNo + 1,
+								pTopInfo->m_nTabId_CntBoard,
+								wOutPut
+							);
+
+							LOGDISPLAY_SPEC(11)(_T("LOOPING Output Making TabNo	%d	BCD ID	%d	MarkingData	%d"),
+								pTopInfo->nTabNo + 1,
+								pTopInfo->m_nTabId_CntBoard,
+								wOutPut
+								);
+
+							if ((wOutPut & CAppDIO::eOut_MARK_SEL_01) || (wOutPut & CAppDIO::eOut_MARK_SEL_02))
+							{
+								pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
+								pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = TRUE;
+								AprData.m_NowLotData.m_nMarkingCount++; 
+							}
+							else
+							{
+								pTopInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
+								pBtmInfo->m_pTabRsltInfo->m_bMarkingFlag = FALSE;
+							}
 
 							CString strMarking = _T("△");
 							CString strMarkReason = _T("");
 
 							CString strTime;
-							CString strJudge = _T("OK");
-							CString strBtmJudge = _T("OK");
-							CString strTopJudge = _T("OK");
+							CString strJudge = _T("OV");
+							CString strBtmJudge = _T("OV");
+							CString strTopJudge = _T("OV");
 
 							int nSurfaceNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][RANK_NG] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_SURFACE][JUDGE_NG];
 							int nFoilExpNgCnt = pBtmInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][RANK_NG] + pTopInfo->m_pTabRsltInfo->m_nCount[TYPE_FOILEXP][JUDGE_NG]
