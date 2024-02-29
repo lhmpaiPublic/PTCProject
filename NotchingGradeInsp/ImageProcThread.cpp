@@ -618,7 +618,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
 						{
 							//다음에 사용할 BCD ID
-							nGrabCallBCDIdNext = pTabInfo->m_GrabCallBCDId;
+							nGrabCallBCDIdNext = (int)pTabInfo->m_GrabCallBCDId;
 							//다음 BCD ID를 만든다.
 							nGrabCallBCDIdNext++;
 							if (nGrabCallBCDIdNext >= 64)
