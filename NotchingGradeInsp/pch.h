@@ -65,8 +65,9 @@ static CString GlobalVersion = _T("Notching.Release.Version_2024.02.29.r02");
 //UI를 관리하기 위한 클래스
 #include "UiManager.h"
 
-//FrameInfo 이미지 저장 메모리 풀
-#include "FrameImagePtr.h"
+#include <string>
+#include <vector>
+using namespace std;
 
 #include "GlobalFunc.h"
 #include "LogDisplayDlg.h"

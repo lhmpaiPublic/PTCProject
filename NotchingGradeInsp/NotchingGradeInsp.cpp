@@ -200,9 +200,6 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		return FALSE;
 	}
 
-	//사용한 Image 메모리풀 초기화
-	FrameImagePtr::initMemoryPool();
-
 	// 22.06.29 Son Add Start
 	m_pDispErrorDlg = new CDispErrorDlg(m_pMainWnd);
 	m_pDispErrorDlg->Create(IDD_DLG_DISPERROR, m_pMainWnd);
@@ -291,9 +288,6 @@ int CNotchingGradeInspApp::ExitInstance()
 
 	//UI manager 객체 소멸
 	CUiManager::ExitUiManager();
-
-	//사용한 Image 메모리풀 해제
-	FrameImagePtr::ReleasePool();
 
 	return CWinAppEx::ExitInstance();
 }

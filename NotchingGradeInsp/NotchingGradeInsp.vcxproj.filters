@@ -564,12 +564,6 @@
     <ClInclude Include="PlcBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MemoryMgr\MemoryPool.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MemoryMgr\FrameImagePtr.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="UI\UiManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
