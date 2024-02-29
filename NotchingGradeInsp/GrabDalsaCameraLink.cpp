@@ -99,9 +99,9 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if ( pQueueCtrl != NULL )
 		{
 			//이미지 저장 버퍼 생성
-			FrameImagePtr* pImg = new FrameImagePtr();
-			memset(pImg->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
-			CopyMemory(pImg->m_pImagePtr, pData, sizeof(BYTE) * nWidth * nHeight);
+			BYTE* pImg = new BYTE[nWidth * nHeight + 1];
+			memset(pImg, 0x00, sizeof(BYTE) * nWidth * nHeight + 1);
+			CopyMemory(pImg, pData, sizeof(BYTE) * nWidth * nHeight);
 
 			//프레임 정보 객체 생성
 			CFrameInfo* pFrmInfo; // 22.01.11 Ahn Modify ( pInfo -> pFrmInfo )

@@ -99,8 +99,8 @@ public:
 
 //	int nWidth;
 	int nImageLength;
-	FrameImagePtr* pImgPtr;
-	FrameImagePtr* pImgBtmPtr;
+	BYTE* pImgPtr;
+	BYTE* pImgBtmPtr;
 };
 
 class CRegionInfo {

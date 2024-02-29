@@ -47,12 +47,12 @@ CFrameInfo::~CFrameInfo(void)
 }
 
 
-FrameImagePtr* CFrameInfo::GetImagePtr()
+BYTE* CFrameInfo::GetImagePtr()
 {
 	return m_pImagePtr;
 }
 
-void CFrameInfo::SetImgPtr(FrameImagePtr* pImgPtr )
+void CFrameInfo::SetImgPtr(BYTE* pImgPtr )
 {
 	m_pImagePtr = pImgPtr ;
 }

@@ -347,8 +347,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 				AprData.m_NowLotData.m_nFrameCount = pFrmInfo_Top->m_nFrameCount;
 
-				FrameImagePtr* pHeadPtr = pFrmInfo_Top->GetImagePtr();
-				FrameImagePtr* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
+				BYTE* pHeadPtr = pFrmInfo_Top->GetImagePtr();
+				BYTE* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
 
 
 				//처리시간 체크 객체 생성 및 시간 진행
@@ -370,7 +370,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 					//CImageProcess::en_FindFromLeft : 찾는 방향 왼쪽에서 오른쪽으로 찾음
 					//return nBndElectrode : 실제 이미지에서 휘도 중 시작할 점을 찾음 - 휘도 샘플링을 이용하여 위치를 찾음
-					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr->m_pImagePtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
+					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
 
 					// 22.05.09 Ahn Add End
 					//Tab 정보를 저장할 vector 임시 객체
@@ -385,7 +385,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//이미지 프로세싱을 위한 클래스 
 					//이미지 Tab 정보에서 Tab을 그룹으로 나누기
 					//PET Check TOP
-					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr->m_pImagePtr, pTailPtr->m_pImagePtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
+					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
 
 					//이미지를 합하여 Cell을 만들고 남은 픽셀 수
 					unNotUseCellLength = RsvTabInfo.nImageLength;
@@ -409,19 +409,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					
 					if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
 					{
-						CImageProcess::FindTabLevel(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
+						CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 						nBneElectrodeBtm = nBtmLevel;
 					}
 					else
 					{
-						nBneElectrodeBtm = CImageProcess::FindLevelBottom_Negative(pTailPtr->m_pImagePtr, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+						nBneElectrodeBtm = CImageProcess::FindLevelBottom_Negative(pTailPtr, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
 					}
 
 					// PET Check BOTTOM
 					CImageProcess::VEC_PET_INFO* pvstPetInfoBtm = new CImageProcess::VEC_PET_INFO;
 					pvstPetInfoBtm->clear();
 
-					BOOL bIsPET_Btm = CImageProcess::FindPetFilm(pTailPtr->m_pImagePtr, nWidth, nHeight, *AprData.m_pRecipeInfo, pvstPetInfoBtm, CAM_POS_BOTTOM);
+					BOOL bIsPET_Btm = CImageProcess::FindPetFilm(pTailPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, pvstPetInfoBtm, CAM_POS_BOTTOM);
 					pFrmInfo_Bottom->m_bIsPET = bIsPET_Btm;
 
 					//Tab Id Q Size 
@@ -1669,7 +1669,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize + 1];
 									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
-									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSize);
+									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
 									//퀄리티 정보를  세팅한다.
 									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, SPCImageQuality);
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
@@ -1683,7 +1683,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									BYTE* pImgSavePtr;
 									pImgSavePtr = new BYTE[nImgSize + 1];
 									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
-									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSize);
+									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
 									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
 
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
@@ -1901,7 +1901,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								BYTE* pImgSavePtrTop;
 								pImgSavePtrTop = new BYTE[nImgSizeTop + 1];
 								memset(pImgSavePtrTop, 0x00, sizeof(BYTE) * nImgSizeTop + 1);
-								memcpy(pImgSavePtrTop, pTopInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSizeTop);
+								memcpy(pImgSavePtrTop, pTopInfo->GetImagePtr(), sizeof(BYTE) * nImgSizeTop);
 								pSaveInfoTop->SetImgPtr(pImgSavePtrTop, pTopInfo->m_nWidth, pTopInfo->m_nHeight);
 								pSaveInfoTop->m_strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameTop);
 								pImgSaveQueueCtrl->PushBack(pSaveInfoTop);
@@ -1928,7 +1928,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								BYTE* pImgSavePtrBottom;
 								pImgSavePtrBottom = new BYTE[nImgSizeBottom + 1];
 								memset(pImgSavePtrBottom, 0x00, sizeof(BYTE) * nImgSizeBottom + 1);
-								memcpy(pImgSavePtrBottom, pBtmInfo->GetImagePtr()->m_pImagePtr, sizeof(BYTE) * nImgSizeBottom);
+								memcpy(pImgSavePtrBottom, pBtmInfo->GetImagePtr(), sizeof(BYTE) * nImgSizeBottom);
 								pSaveInfoBottom->SetImgPtr(pImgSavePtrBottom, pBtmInfo->m_nWidth, pBtmInfo->m_nHeight);
 								pSaveInfoBottom->m_strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameBottom);
 								pImgSaveQueueCtrl->PushBack(pSaveInfoBottom);

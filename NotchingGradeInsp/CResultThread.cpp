@@ -774,7 +774,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 #endif //SPCPLUS_CREATE
 
 					int nHeadNo = pRsltInfo->m_nHeadNo;
-					FrameImagePtr* pImgPtr = pRsltInfo->GetImagePtr();
+					BYTE* pImgPtr = pRsltInfo->GetImagePtr();
 					if (pImgPtr != NULL)
 					{
 #if defined( IMAGE_DRAW_NOTIFY_VERSION )
@@ -796,13 +796,13 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							CPoint cpSharpness;
 							cpSharpness.x = pRsltInfo->m_nTabLevel;
 							cpSharpness.y = pRsltInfo->m_nTabLeft / 2;
-							pRsltInfo->dSharpness = CImageProcess::GetIqSharpnessValue(pImgPtr->m_pImagePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
-							pRsltInfo->nBrightAverage = CImageProcess::GetBrightAverage(pImgPtr->m_pImagePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
+							pRsltInfo->dSharpness = CImageProcess::GetIqSharpnessValue(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
+							pRsltInfo->nBrightAverage = CImageProcess::GetBrightAverage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
 							// 23.02.24 Ahn Add End
 
 
 							// 22.05.04 Test
-							CImageProcess::ResizeImage(pImgPtr->m_pImagePtr, pResizePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nMagnif);
+							CImageProcess::ResizeImage(pImgPtr, pResizePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nMagnif);
 
 							int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
 
@@ -832,7 +832,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 
 							//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE	
-							SaveCropImage(pImgPtr->m_pImagePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue, insp);
+							SaveCropImage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue, insp);
 #else
 							SaveCropImage(pImgPtr->m_pImagePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, pRsltInfo, pCropImgQue, pDefectQueue);
 #endif //SPCPLUS_CREATE

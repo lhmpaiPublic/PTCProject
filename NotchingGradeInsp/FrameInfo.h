@@ -24,7 +24,7 @@ public:
 		en_BottomFrame = 1,
 	};
 protected :
-	FrameImagePtr	*m_pImagePtr ;
+	BYTE* m_pImagePtr ;
 	
 public :
 	BOOL	m_bErrorFlag ;	// Image 처리 Pass
@@ -41,8 +41,8 @@ public :
 	int		m_nTabRight;
 
 	double  m_dTopPosY;	// Frame의 시작 Pixel의 Y 좌표
-	FrameImagePtr* GetImagePtr();
-	void SetImgPtr(FrameImagePtr* pImgPtr);
+	BYTE* GetImagePtr();
+	void SetImgPtr(BYTE* pImgPtr);
 	int		nTabNo;				// 
 	int		m_nTabId_CntBoard;	// 카운터 보드에서 부여받은 Marking용 Tab ID
 	int		nTopPosYInFrame;

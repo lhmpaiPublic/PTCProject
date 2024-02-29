@@ -6478,16 +6478,16 @@ int CImageProcess::DivisionTab_byFixSize(const BYTE* pImgPtr, const BYTE* pImgBt
 		tabInfo.nImageLength = nFixSize;
 
 		//Top 이미지 데이터 저장 메모리 생성
-		tabInfo.pImgPtr = new FrameImagePtr();
-		memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
+		tabInfo.pImgPtr = new BYTE[nWidth * nFixSize + 1];
+		memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
 		//새로운 이미지를 Tab Info Image 에 copy
-		CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
+		CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
 
 		//Bottom 이미지 데이터 저장 메모리 생성
-		tabInfo.pImgBtmPtr = new FrameImagePtr();
-		memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
+		tabInfo.pImgBtmPtr = new BYTE[nWidth * nFixSize + 1];
+		memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * nWidth * nFixSize + 1);
 		//새로운 이미지를 Tab Info Image 에 copy
-		CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
+		CopyMemory(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * nFixSize);
 
 		//copy 하고 남은 이미지 위치 점
 		nLastSavePos += nFixSize ;
@@ -6669,9 +6669,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		//Tab Info를 담을 클래스 객체
 		CTabInfo tabInfo;
 		//남은 이전 Top(Tab이 있는 이미지 데이터)
-		BYTE *pTempPtr = pResvTabInfo->pImgPtr->m_pImagePtr;
+		BYTE *pTempPtr = pResvTabInfo->pImgPtr;
 		//남은 이전 Bottom(Tab이 없는 이미지 데이터)
-		BYTE *pTempBtmPtr = pResvTabInfo->pImgBtmPtr->m_pImagePtr;
+		BYTE *pTempBtmPtr = pResvTabInfo->pImgBtmPtr;
 
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -6772,11 +6772,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 			//tab Info의 Image 데이터 정보 메모리 생성
 			//Top : Tab 있는 Image
-			tabInfo.pImgPtr = new FrameImagePtr();
-			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
 			//Bottom : Tab이 없는 image
-			tabInfo.pImgBtmPtr = new FrameImagePtr();
-			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
 
 
 			//tab Info에 만들어지는 Grab에서 얻은 순서(count) 세팅
@@ -6790,10 +6790,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 			//생성된 tab Info Image 메모리에 Copy
 			//Top : Tab이 있는 이미지
-			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 
 			//Bottom : Tab 이 없는 Image
-			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			//마지막 점
 			nLastSavePos = 0 ; 
 
@@ -6815,12 +6815,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 			//tab Info의 Image 데이터 정보 메모리 생성
 			//Top : Tab 있는 Image
-			tabInfo.pImgPtr = new FrameImagePtr();
-			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
+			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
 
 			//Bottom : Tab이 없는 image
-			tabInfo.pImgBtmPtr = new FrameImagePtr();
-			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
+			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * nWidth * tabInfo.nImageLength + 1);
 			
 			//사용되는 Grab Image 번호
 			tabInfo.nFrameCount = pResvTabInfo->nFrameCount;
@@ -6833,14 +6833,14 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 			//생성된 tab Info Image 메모리에 Copy
 			//Top 에 이전 Top 이미지 복사
-			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr, pTempPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 
 			//Bottom에 이전 Bottom 이미지 복사
-			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr, pTempBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			//Top에 새로얻은 Image를 nSendLength 만큼 덧 붙인다.
-			CopyMemory(tabInfo.pImgPtr->m_pImagePtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgPtr+(nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
 			//Bottom에 새로얻은 Image를 nSendLength 만큼 덧 붙인다.
-			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 
 			//새로 들어온 이미지에서 잘라 붙인 크기 만큼의 위치
 			nLastSavePos = nSendLength;
@@ -6960,23 +6960,23 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 			//tab Info의 Image 데이터 정보 메모리 생성
 			//Top : Tab 있는 Image
-			tabInfo.pImgPtr = new FrameImagePtr();
-			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			tabInfo.pImgPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
 
 			//이전 남은 Image를 Tab Info 정보로 copy
-			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pResvTabInfo->pImgPtr->m_pImagePtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgPtr, pResvTabInfo->pImgPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			//새로운 Image 정보를 덧붙일 길이만큼 잘라 붙인다.
-			CopyMemory(tabInfo.pImgPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgPtr + (nWidth * pResvTabInfo->nImageLength), pImgPtr, sizeof(BYTE) * nWidth * nSendLength);
 
 			//tab Info의 Image 데이터 정보 메모리 생성
 			//Bottom : Tab 없는 Image
-			tabInfo.pImgBtmPtr = new FrameImagePtr();
-			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
+			tabInfo.pImgBtmPtr = new BYTE[nWidth * tabInfo.nImageLength + 1];
+			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* tabInfo.nImageLength + 1);
 
 			//이전 남은 Image를 Tab Info 정보로 copy
-			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pResvTabInfo->pImgBtmPtr->m_pImagePtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr, pResvTabInfo->pImgBtmPtr, sizeof(BYTE) * nWidth * pResvTabInfo->nImageLength);
 			//새로운 Image 정보를 덧붙일 길이만큼 잘라 붙인다.
-			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
+			CopyMemory(tabInfo.pImgBtmPtr + (nWidth * pResvTabInfo->nImageLength), pImgBtmPtr, sizeof(BYTE) * nWidth * nSendLength);
 
 			//새로 들어온 이미지에서 잘라 붙인 크기 만큼의 위치
 			//새로 얻은 이미지에서 Cell로만들고 남은 Image 좌표
@@ -7166,12 +7166,12 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 				//백업 Image 메모리를 생성한다.
 				//Top Image 데이터 
-				pResvTabInfo->pImgPtr = new FrameImagePtr();
-				memset(pResvTabInfo->pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
+				pResvTabInfo->pImgPtr = new BYTE[nWidth * nBackupSize + 1];
+				memset(pResvTabInfo->pImgPtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
 
 				//Bottom Image 데이터
-				pResvTabInfo->pImgBtmPtr = new FrameImagePtr();
-				memset(pResvTabInfo->pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
+				pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nBackupSize + 1];
+				memset(pResvTabInfo->pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* nBackupSize + 1);
 				//백업할 계산된 사이즈
 				pResvTabInfo->nImageLength = nBackupSize;
 
@@ -7182,9 +7182,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 				//Image backup 저장한다.(다음 Image 정보와 합하여 사용 됨)
 				// top 남은 이미지를 copy
-				CopyMemory(pResvTabInfo->pImgPtr->m_pImagePtr, pImgPtr + ( nWidth * nLastSavePos ) , sizeof(BYTE) * nWidth * nBackupSize);
+				CopyMemory(pResvTabInfo->pImgPtr, pImgPtr + ( nWidth * nLastSavePos ) , sizeof(BYTE) * nWidth * nBackupSize);
 				//bottom 남은 이미지를 copy
-				CopyMemory(pResvTabInfo->pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nBackupSize);
+				CopyMemory(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nBackupSize);
 
 				return 0;
 			}
@@ -7193,16 +7193,16 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			//새로 얻은 이미지 높이(y축 길이 : 진행 방향)보다 작거나 같으면 백업하지 않는다.
 			//Tab Info Cell Image 객체 생성
 			//Top Image 데이터 저장 메모리 생성
-			tabInfo.pImgPtr = new FrameImagePtr();
-			memset(tabInfo.pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* tabInfo.nImageLength* nWidth + 1);
+			tabInfo.pImgPtr = new BYTE[tabInfo.nImageLength * nWidth + 1];
+			memset(tabInfo.pImgPtr, 0x00, sizeof(BYTE)* tabInfo.nImageLength* nWidth + 1);
 			//Image 데이터 copy
-			CopyMemory(tabInfo.pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
+			CopyMemory(tabInfo.pImgPtr, pImgPtr + (nWidth * nLastSavePos), sizeof(BYTE) * nWidth * tabInfo.nImageLength);
 
 			//Bottom Image 데이터 저장 메모리 생성
-			tabInfo.pImgBtmPtr = new FrameImagePtr();
-			memset(tabInfo.pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE) * tabInfo.nImageLength * nWidth + 1);
+			tabInfo.pImgBtmPtr = new BYTE[tabInfo.nImageLength * nWidth + 1];
+			memset(tabInfo.pImgBtmPtr, 0x00, sizeof(BYTE) * tabInfo.nImageLength * nWidth + 1);
 			//Image 데이터 copy
-			CopyMemory(tabInfo.pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
+			CopyMemory(tabInfo.pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* tabInfo.nImageLength);
 
 			//grab Image 얻은 순서
 			tabInfo.nFrameCount = nFrameCount ;
@@ -7257,11 +7257,11 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	{
 		//백업 객체 의 Image 데이터 메모리 생성
 		//Top Image 데이터
-		pResvTabInfo->pImgPtr = new FrameImagePtr();
-		memset(pResvTabInfo->pImgPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
+		pResvTabInfo->pImgPtr = new BYTE[nWidth * nLeftSize + 1];
+		memset(pResvTabInfo->pImgPtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
 		//Bottom Imae 데이터
-		pResvTabInfo->pImgBtmPtr = new FrameImagePtr();
-		memset(pResvTabInfo->pImgBtmPtr->m_pImagePtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
+		pResvTabInfo->pImgBtmPtr = new BYTE[nWidth * nLeftSize + 1];
+		memset(pResvTabInfo->pImgBtmPtr, 0x00, sizeof(BYTE)* nWidth* nLeftSize + 1);
 		//사용하고 남은 Image 길이
 		pResvTabInfo->nImageLength = nLeftSize;
 
@@ -7271,9 +7271,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		pResvTabInfo->nTabStartPosInFrame = nLastSavePos ;
 
 		//Top Image 데이터 copy
-		CopyMemory(pResvTabInfo->pImgPtr->m_pImagePtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
+		CopyMemory(pResvTabInfo->pImgPtr, pImgPtr + (nWidth * nLastSavePos) , sizeof(BYTE) * nWidth * nLeftSize);
 		//Bottom Image 데이트 copy
-		CopyMemory(pResvTabInfo->pImgBtmPtr->m_pImagePtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
+		CopyMemory(pResvTabInfo->pImgBtmPtr, pImgBtmPtr + (nWidth * nLastSavePos), sizeof(BYTE)* nWidth* nLeftSize);
 
 	}
 
