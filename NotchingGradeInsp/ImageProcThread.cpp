@@ -209,12 +209,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 	//Grab Call Next BCD ID
 	int nGrabCallBCDIdNext = 0;
-	//Grab Call Before BCD ID
-	int nGrabCallBCDIdBefore = 0;
-	//Grab Call 2 Next BCD ID
-	int nGrabCallBCDIdNextNext = 0;
-	//Grab BCD ID Offset
-	int nGrabCallBCDIDOffset = 0;
 
 	//Grab Call BCD ID 중복 또는 범위 밖의 ID 를 받을 경우
 	//일정 카운트 만큼 증기 시킨다.
@@ -585,16 +579,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//유효한 범위를 7번이상 일 때 검사하여 옵셋을 확인 한다.
 							if (nBCDIDAddCount >= 7)
 							{
-								//다음 다음 BCD ID와 같다면  
-								if (nGrabCallBCDIdNextNext == pTabInfo->m_GrabCallBCDId)
-								{
-									nGrabCallBCDIDOffset = 1;
-								}
-								//이전 BCD ID와 같다면
-								if (nGrabCallBCDIdBefore == pTabInfo->m_GrabCallBCDId)
-								{
-									nGrabCallBCDIDOffset = 0;
-								}
+								
 							}
 							nBCDIDAddCount = 0;
 						}
@@ -604,7 +589,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if(nBCDIDAddCount >= 10)
 						{
 							//BCD ID를 Grab BCD ID 사용 + 구간 옵셋을 준다.
-							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + nGrabCallBCDIDOffset;
+							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId;
 						}
 						else
 						{
@@ -632,21 +617,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Grab Call BCD ID가 유효한 범위
 						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
 						{
-							//이전 사용한 BCD ID
-							nGrabCallBCDIdBefore = (int)pTabInfo->m_GrabCallBCDId;
-
 							//다음에 사용할 BCD ID
-							nGrabCallBCDIdNext = nGrabCallBCDIdBefore;
+							nGrabCallBCDIdNext = pTabInfo->m_GrabCallBCDId;
 							//다음 BCD ID를 만든다.
 							nGrabCallBCDIdNext++;
 							if (nGrabCallBCDIdNext >= 64)
 								nGrabCallBCDIdNext = 0;
-
-							//다음 다음에 사용할 BCD ID
-							nGrabCallBCDIdNextNext = nGrabCallBCDIdNext;
-							nGrabCallBCDIdNextNext++;
-							if (nGrabCallBCDIdNextNext >= 64)
-								nGrabCallBCDIdNextNext = 0;
 						}
 
 
