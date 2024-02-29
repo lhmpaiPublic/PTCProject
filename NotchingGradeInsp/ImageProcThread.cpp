@@ -205,10 +205,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 	//사용한 BCD ID  백업
 	//사용할 BCD ID가 들어오지 않았을 경우 사용
-	int nUseBCDIDBackup = 0;
+	int nUseBCDIDBackup = 64;
 
-	//Last BCD ID 백업
-	int nGrabCallBCDIdBackup = 0;
+	//Grab Call Next BCD ID
+	int nGrabCallBCDIdNext = 0;
+	//Grab Call Before BCD ID
+	int nGrabCallBCDIdBefore = 0;
+	//Grab Call 2 Next BCD ID
+	int nGrabCallBCDIdNextNext = 0;
+	//Grab BCD ID Offset
+	int nGrabCallBCDIDOffset = 0;
 
 	//Grab Call BCD ID 중복 또는 범위 밖의 ID 를 받을 경우
 	//일정 카운트 만큼 증기 시킨다.
@@ -565,35 +571,84 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							loop++;
 						}
 
-						if ((pTabInfo->m_GrabCallBCDId < 0) || (pTabInfo->m_GrabCallBCDId >= 64) || (nGrabCallBCDIdBackup == pTabInfo->m_GrabCallBCDId))
+						//남은 이미지 가 많아서 
+						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId))
 						{
-							nBCDIDAddCount = 3;
-						}
-						//증가 카운트가 0일 경우만 
-						//Grab Call BCD ID 사용한다.
-						//중복이 일어나고 일졍 : 3번 카운트는 
-						if(nBCDIDAddCount == 0)
-						{
-							//BCD ID를 Last BCD ID로 세팅
-							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId;
+							//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
+							//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
+							nBCDIDAddCount++;
+
 						}
 						else
 						{
-							//이전 BCD ID를 증가 시켜서 사용한다.
-							nUseBCDIDBackup++;
-							if (nUseBCDIDBackup >= 64)
-								nUseBCDIDBackup = 0;
-							cntInfo.nTabID = nUseBCDIDBackup;
-
-							//Grab Call BCD ID 예외 상황이 발생했을 경우
-							//들어올 수 있는 횟수를 감소 시킨다.
-							nBCDIDAddCount--;
-							if (nBCDIDAddCount < 0)
-								nBCDIDAddCount = 0;
+							//BCD ID 옵셋 선택하기
+							//유효한 범위를 7번이상 일 때 검사하여 옵셋을 확인 한다.
+							if (nBCDIDAddCount >= 7)
+							{
+								//다음 다음 BCD ID와 같다면  
+								if (nGrabCallBCDIdNextNext == pTabInfo->m_GrabCallBCDId)
+								{
+									nGrabCallBCDIDOffset = 1;
+								}
+								//이전 BCD ID와 같다면
+								if (nGrabCallBCDIdBefore == pTabInfo->m_GrabCallBCDId)
+								{
+									nGrabCallBCDIDOffset = 0;
+								}
+							}
+							nBCDIDAddCount = 0;
 						}
 
+						//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
+						//Grab Call BCD ID를 사용하고 아니면 계속 증가 시킨다.
+						if(nBCDIDAddCount >= 10)
+						{
+							//BCD ID를 Grab BCD ID 사용 + 구간 옵셋을 준다.
+							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + nGrabCallBCDIDOffset;
+						}
+						else
+						{
+							if (nUseBCDIDBackup >= 64)
+							{
+								if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+								{
+									cntInfo.nTabID = pTabInfo->m_GrabCallBCDId;
+								}
+								else
+								{
+									cntInfo.nTabID = unRealLastBCDID;
+								}
+							}
+							else
+							{
+								//이전 BCD ID를 증가 시켜서 사용한다.
+								nUseBCDIDBackup++;
+								if (nUseBCDIDBackup >= 64)
+									nUseBCDIDBackup = 0;
+								cntInfo.nTabID = nUseBCDIDBackup;
+							}
+						}
 
-						nGrabCallBCDIdBackup = (int)pTabInfo->m_GrabCallBCDId;
+						//Grab Call BCD ID가 유효한 범위
+						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+						{
+							//이전 사용한 BCD ID
+							nGrabCallBCDIdBefore = (int)pTabInfo->m_GrabCallBCDId;
+
+							//다음에 사용할 BCD ID
+							nGrabCallBCDIdNext = nGrabCallBCDIdBefore;
+							//다음 BCD ID를 만든다.
+							nGrabCallBCDIdNext++;
+							if (nGrabCallBCDIdNext >= 64)
+								nGrabCallBCDIdNext = 0;
+
+							//다음 다음에 사용할 BCD ID
+							nGrabCallBCDIdNextNext = nGrabCallBCDIdNext;
+							nGrabCallBCDIdNextNext++;
+							if (nGrabCallBCDIdNextNext >= 64)
+								nGrabCallBCDIdNextNext = 0;
+						}
+
 
 						//사용한 BCD ID  백업
 						nUseBCDIDBackup = cntInfo.nTabID;
