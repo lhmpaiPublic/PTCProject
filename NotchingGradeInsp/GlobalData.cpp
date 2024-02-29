@@ -181,6 +181,8 @@ int CGlobalData::SaveDebugLog( CString strMsg )
 
 void CGlobalData::SaveDebugLog_Format(const char* format, ...)
 {
+	return;
+
 	va_list arg;
 	int done;
 	char str[MAX_PATH] = { 0, };

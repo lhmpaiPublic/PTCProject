@@ -1566,16 +1566,23 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							//통합비전 BCD Id에 대한 Key 번호
 							//PLC에서 받은 데이터가 있는가 확인 후 세팅한다.
-							WORD nKeyId = -1;
-							if (bReciveKeyId)
+							static int beforeBCDID = 64;
+							int nKeyId = -1;
+							nKeyId = pTopInfo->m_nTabId_CntBoard - beforeBCDID;
+							if (nKeyId < 0)
 							{
-								//BCD ID 범위 확인
-								if (pTopInfo->m_nTabId_CntBoard >= 0 && pTopInfo->m_nTabId_CntBoard <= 63)
-								{
-									nKeyId = AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[pTopInfo->m_nTabId_CntBoard];
-									LOGDISPLAY_SPEC(2)("$$ PLC Key Id<%d> TabNo<%d> BCD Id<%d>", nKeyId, pTopInfo->nTabNo + 1, pTopInfo->m_nTabId_CntBoard);
-								}
+								nKeyId = nKeyId + 64;
 							}
+							beforeBCDID = pTopInfo->m_nTabId_CntBoard;
+							//if (bReciveKeyId)
+							//{
+							//	//BCD ID 범위 확인
+							//	if (pTopInfo->m_nTabId_CntBoard >= 0 && pTopInfo->m_nTabId_CntBoard <= 63)
+							//	{
+							//		nKeyId = AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[pTopInfo->m_nTabId_CntBoard];
+							//		LOGDISPLAY_SPEC(2)("$$ PLC Key Id<%d> TabNo<%d> BCD Id<%d>", nKeyId, pTopInfo->nTabNo + 1, pTopInfo->m_nTabId_CntBoard);
+							//	}
+							//}
 
 #if 1 // 240212
 							//							pSeqOutData->wFoilExpInTopCount
