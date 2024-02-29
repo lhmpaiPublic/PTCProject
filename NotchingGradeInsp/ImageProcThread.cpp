@@ -222,7 +222,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	UINT unNotUseCellLength = 0;
 
 //Encoder Counter 사용여부
-#ifdef USE_BCDCOUNTER
 	//Tab Counter log 변수들
 	//총 Encoder Count 수
 	UINT64 unTotalEncoderCount = 0;
@@ -254,7 +253,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		_T("CellLen_notUse	%d	")
 		_T("LastInputBCDID	%d")
 		;
-#endif //USE_BCDCOUNTER
 
 	while (1)
 	{
@@ -295,15 +293,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			if (AprData.m_NowLotData.m_nTabCount == 0)
 			{
 
-//Encoder Counter 사용여부
-#ifdef USE_BCDCOUNTER
 				//총 Encoder Count 수
 				unTotalEncoderCount = 0;
 				//총 Image Count 수
 				unTotalImageCount = 0;
 				//총 Image Count 수
 				unTotalCellLength = 0;
-#endif //USE_BCDCOUNTER
 
 				//Encoder Total Count
 				AprData.m_NowLotData.m_unGTotalEncoderCount = 0;
@@ -339,12 +334,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				int nFrmWIdth = pFrmInfo_Top->m_nWidth;
 				int nWidth = nFrmWIdth;
 
-//Encoder Counter 사용여부
-#ifdef USE_BCDCOUNTER
 				//총 Image Count 수 누적
 				unTotalImageCount += pFrmInfo_Top->m_nHeight;
-#endif //USE_BCDCOUNTER
-
 
 				//Dalsa Camera Callback 함수에서 넣은 이미지 데이터가 저장된 Bottom 객체를 가져온다.
 				CFrameInfo* pFrmInfo_Bottom = pQueueFrame_Bottom->Pop();
@@ -439,12 +430,9 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 					//Tab 정보 크기 만큼 루프 돌다.
 					for (int idxi = 0; idxi < nVecSize; idxi++)
 					{
-//Encoder Counter 사용여부
-#ifdef USE_BCDCOUNTER
 						
 						//실제 Tab Counter에 받은 마지막의 BCD ID
 						UINT unRealLastBCDID = AprData.m_NowLotData.m_nLastBCDId;
-#endif //USE_BCDCOUNTER
 
 						//지금 Cell의 크기
 						UINT unNowCellLength = 0;
@@ -630,19 +618,16 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						nUseBCDIDBackup = cntInfo.nTabID;
 
 
-						//Encoder Counter 사용여부
-#ifdef USE_BCDCOUNTER
-							//Encoder Counter 누적
+						//Encoder Counter 누적
 						unTotalEncoderCount += cntInfo.nEnCoderCount;
-#endif //USE_BCDCOUNTER
 
-							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@ USE Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ",  cntInfo.nTabID, cntInfo.nTabNo + 1, cntInfo.nTabIdTotalCount);
+						//Tab Id 정보 로그
+						LOGDISPLAY_SPEC(7)("@@ USE Tabid<%d>TabNo<%d> TotalCount<%d>@@@@ ", cntInfo.nTabID, cntInfo.nTabNo + 1, cntInfo.nTabIdTotalCount);
 
-						
+
 						//Tab Id 정보 로그
 						LOGDISPLAY_SPEC(7)("@@Tab Id Info@@@@  LotId<%s> Tab Id<%d> TabNo<%d><%d> TabTotalcnt<%d>",
-							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo+1, AprData.m_NowLotData.m_nTabCount+1, cntInfo.nTabIdTotalCount);
+							AprData.m_NowLotData.m_strLotNo, cntInfo.nTabID, cntInfo.nTabNo + 1, AprData.m_NowLotData.m_nTabCount + 1, cntInfo.nTabIdTotalCount);
 
 
 						//Tab 정보에서 Left 크기, Right 크기
@@ -904,8 +889,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							pInfo->m_nTabId_CntBoard,  pInfo->nTabNo+1, TabFind_TacTime
 							);
 
-//Encoder Counter 사용여부
-#ifdef USE_BCDCOUNTER
+
 						//Tab Counter에서 받은 마지막 BCD ID
 						int nLastInputBCDId = CCounterThread::GetInputReadId();
 
@@ -941,7 +925,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							pFrame->UpdateBCDIDData(cntInfo.nTabID, (int)unRealLastBCDID, (int)pTabInfo->m_GrabCallBCDId);
 						}
-#endif //USE_BCDCOUNTER
 
 						//스래드에 처리할 정보를 저장 TOP, BOTTOM
 						CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP)->push(pInfo);
