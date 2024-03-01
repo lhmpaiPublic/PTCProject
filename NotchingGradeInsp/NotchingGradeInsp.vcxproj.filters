@@ -255,19 +255,19 @@
     <ClInclude Include="Socket\TriggerSocket.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="AppDio\AppDIO.h">
+    <ClInclude Include="NotchingInspAppDio\AppDIO.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="AppDio\DIOTestDlg.h">
+    <ClInclude Include="NotchingInspAppDio\DIOTestDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Camera\CCameraSettingDlg.h">
+    <ClInclude Include="NotchingInspCamera\CCameraSettingDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Camera\CCameraViewDlg.h">
+    <ClInclude Include="NotchingInspCamera\CCameraViewDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Camera\CCameraWaveDlg.h">
+    <ClInclude Include="NotchingInspCamera\CCameraWaveDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SupportDlg\CDebugImageAcqDlg.h">
@@ -306,100 +306,100 @@
     <ClInclude Include="SupportDlg\CondDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Camera\GrabberCtrl.h">
+    <ClInclude Include="NotchingInspCamera\GrabberCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Camera\GrabDalsaCameraLink.h">
+    <ClInclude Include="NotchingInspCamera\GrabDalsaCameraLink.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CropDefect\CCropImageView.h">
+    <ClInclude Include="NotchingInspCropDefect\CCropImageView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CropDefect\CCropImageViewDlg.h">
+    <ClInclude Include="NotchingInspCropDefect\CCropImageViewDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CropDefect\CCropImgQueueCtrl.h">
+    <ClInclude Include="NotchingInspCropDefect\CCropImgQueueCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CropDefect\CDefectDataCtrl.h">
+    <ClInclude Include="NotchingInspCropDefect\CDefectDataCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CropDefect\CDefectInfo.h">
+    <ClInclude Include="NotchingInspCropDefect\CDefectInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CropDefect\CDefectMapDlg.h">
+    <ClInclude Include="NotchingInspCropDefect\CDefectMapDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="History\CHistoryLotCtrl.h">
+    <ClInclude Include="NotchingInspHistory\CHistoryLotCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="History\CHistoryLotDlg.h">
+    <ClInclude Include="NotchingInspHistory\CHistoryLotDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="History\CHistoryLotView.h">
+    <ClInclude Include="NotchingInspHistory\CHistoryLotView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\BitmapStd.h">
+    <ClInclude Include="SupportGeneral\BitmapStd.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\CAprHash.h">
+    <ClInclude Include="SupportGeneral\CAprHash.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\CExcelResultFileCtrl.h">
+    <ClInclude Include="SupportGeneral\CExcelResultFileCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\CMathFunc.h">
+    <ClInclude Include="SupportGeneral\CMathFunc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\CTacTimeDataCtrl.h">
+    <ClInclude Include="SupportGeneral\CTacTimeDataCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\CTactTImeGraphDlg.h">
+    <ClInclude Include="SupportGeneral\CTactTImeGraphDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\excel.h">
+    <ClInclude Include="SupportGeneral\excel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\ExcelConst.h">
+    <ClInclude Include="SupportGeneral\ExcelConst.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\ImgClipedBmp.h">
+    <ClInclude Include="SupportGeneral\ImgClipedBmp.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\KExcel.h">
+    <ClInclude Include="SupportGeneral\KExcel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\LanguageCode.h">
+    <ClInclude Include="SupportGeneral\LanguageCode.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\Light232.h">
+    <ClInclude Include="SupportGeneral\Light232.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\LightSocket.h">
+    <ClInclude Include="SupportGeneral\LightSocket.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\Ping.h">
+    <ClInclude Include="SupportGeneral\Ping.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\StdIoApi.h">
+    <ClInclude Include="SupportGeneral\StdIoApi.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\StdIoAXL.h">
+    <ClInclude Include="SupportGeneral\StdIoAXL.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\StdIoCCLink.h">
+    <ClInclude Include="SupportGeneral\StdIoCCLink.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\StdIoCtrl.h">
+    <ClInclude Include="SupportGeneral\StdIoCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\TimeAnalyzer.h">
+    <ClInclude Include="SupportGeneral\TimeAnalyzer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\Win32File.h">
+    <ClInclude Include="SupportGeneral\Win32File.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\WinTool.h">
+    <ClInclude Include="SupportGeneral\WinTool.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="View\BottomPanel.h">
@@ -462,28 +462,28 @@
     <ClInclude Include="SupportDelete\CDeleteSettingDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="QueueStorage\CCounterQueueCtrl.h">
+    <ClInclude Include="NotchingInspQueueStorage\CCounterQueueCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="QueueStorage\CImageSaveQueueCtrl.h">
+    <ClInclude Include="NotchingInspQueueStorage\CImageSaveQueueCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="QueueStorage\CThreadQueueCtrl.h">
+    <ClInclude Include="NotchingInspQueueStorage\CThreadQueueCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="QueueStorage\QueueCtrl.h">
+    <ClInclude Include="NotchingInspQueueStorage\QueueCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Support\CAlarmProcess.h">
+    <ClInclude Include="SupportGeneral\CAlarmProcess.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Plc\CSiemensPlc.h">
+    <ClInclude Include="NotchingInspPlc\CSiemensPlc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Plc\PlcBase.h">
+    <ClInclude Include="NotchingInspPlc\PlcBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Plc\SigProc.h">
+    <ClInclude Include="NotchingInspPlc\SigProc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SupportDlg\GraphDlg.h">
@@ -519,7 +519,7 @@
     <ClInclude Include="NotchingInspLight\CLightControl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Plc\PioCtrl.h">
+    <ClInclude Include="NotchingInspPlc\PioCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="NotchingInspSystemSetting\CInitSystemSetting.h">
@@ -719,19 +719,19 @@
     <ClCompile Include="Socket\TriggerSocket.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="AppDio\AppDIO.cpp">
+    <ClCompile Include="NotchingInspAppDio\AppDIO.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="AppDio\DIOTestDlg.cpp">
+    <ClCompile Include="NotchingInspAppDio\DIOTestDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Camera\CCameraSettingDlg.cpp">
+    <ClCompile Include="NotchingInspCamera\CCameraSettingDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Camera\CCameraViewDlg.cpp">
+    <ClCompile Include="NotchingInspCamera\CCameraViewDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Camera\CCameraWaveDlg.cpp">
+    <ClCompile Include="NotchingInspCamera\CCameraWaveDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SupportDlg\CDebugImageAcqDlg.cpp">
@@ -770,97 +770,97 @@
     <ClCompile Include="SupportDlg\CondDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Camera\GrabberCtrl.cpp">
+    <ClCompile Include="NotchingInspCamera\GrabberCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Camera\GrabDalsaCameraLink.cpp">
+    <ClCompile Include="NotchingInspCamera\GrabDalsaCameraLink.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CropDefect\CCropImageView.cpp">
+    <ClCompile Include="NotchingInspCropDefect\CCropImageView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CropDefect\CCropImageViewDlg.cpp">
+    <ClCompile Include="NotchingInspCropDefect\CCropImageViewDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CropDefect\CCropImgQueueCtrl.cpp">
+    <ClCompile Include="NotchingInspCropDefect\CCropImgQueueCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CropDefect\CDefectDataCtrl.cpp">
+    <ClCompile Include="NotchingInspCropDefect\CDefectDataCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CropDefect\CDefectInfo.cpp">
+    <ClCompile Include="NotchingInspCropDefect\CDefectInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CropDefect\CDefectMapDlg.cpp">
+    <ClCompile Include="NotchingInspCropDefect\CDefectMapDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="History\CHistoryLotCtrl.cpp">
+    <ClCompile Include="NotchingInspHistory\CHistoryLotCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="History\CHistoryLotDlg.cpp">
+    <ClCompile Include="NotchingInspHistory\CHistoryLotDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="History\CHistoryLotView.cpp">
+    <ClCompile Include="NotchingInspHistory\CHistoryLotView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\BitmapStd.cpp">
+    <ClCompile Include="SupportGeneral\BitmapStd.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\CAprHash.cpp">
+    <ClCompile Include="SupportGeneral\CAprHash.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\CExcelResultFileCtrl.cpp">
+    <ClCompile Include="SupportGeneral\CExcelResultFileCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\CMathFunc.cpp">
+    <ClCompile Include="SupportGeneral\CMathFunc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\CTacTimeDataCtrl.cpp">
+    <ClCompile Include="SupportGeneral\CTacTimeDataCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\CTactTImeGraphDlg.cpp">
+    <ClCompile Include="SupportGeneral\CTactTImeGraphDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\excel.cpp">
+    <ClCompile Include="SupportGeneral\excel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\ImgClipedBmp.cpp">
+    <ClCompile Include="SupportGeneral\ImgClipedBmp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\KExcel.cpp">
+    <ClCompile Include="SupportGeneral\KExcel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\LanguageCode.cpp">
+    <ClCompile Include="SupportGeneral\LanguageCode.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\Light232.cpp">
+    <ClCompile Include="SupportGeneral\Light232.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\LightSocket.cpp">
+    <ClCompile Include="SupportGeneral\LightSocket.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\Ping.cpp">
+    <ClCompile Include="SupportGeneral\Ping.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\StdIoApi.cpp">
+    <ClCompile Include="SupportGeneral\StdIoApi.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\StdIoAXL.cpp">
+    <ClCompile Include="SupportGeneral\StdIoAXL.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\StdIoCCLink.cpp">
+    <ClCompile Include="SupportGeneral\StdIoCCLink.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\StdIoCtrl.cpp">
+    <ClCompile Include="SupportGeneral\StdIoCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\TimeAnalyzer.cpp">
+    <ClCompile Include="SupportGeneral\TimeAnalyzer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\Win32File.cpp">
+    <ClCompile Include="SupportGeneral\Win32File.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\WinTool.cpp">
+    <ClCompile Include="SupportGeneral\WinTool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="View\BottomPanel.cpp">
@@ -923,28 +923,28 @@
     <ClCompile Include="SupportDelete\CDeleteSettingDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="QueueStorage\CCounterQueueCtrl.cpp">
+    <ClCompile Include="NotchingInspQueueStorage\CCounterQueueCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="QueueStorage\CImageSaveQueueCtrl.cpp">
+    <ClCompile Include="NotchingInspQueueStorage\CImageSaveQueueCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="QueueStorage\CThreadQueueCtrl.cpp">
+    <ClCompile Include="NotchingInspQueueStorage\CThreadQueueCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="QueueStorage\QueueCtrl.cpp">
+    <ClCompile Include="NotchingInspQueueStorage\QueueCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Support\CAlarmProcess.cpp">
+    <ClCompile Include="SupportGeneral\CAlarmProcess.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Plc\CSiemensPlc.cpp">
+    <ClCompile Include="NotchingInspPlc\CSiemensPlc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Plc\PlcBase.cpp">
+    <ClCompile Include="NotchingInspPlc\PlcBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Plc\SigProc.cpp">
+    <ClCompile Include="NotchingInspPlc\SigProc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SupportDlg\GraphDlg.cpp">
@@ -977,7 +977,7 @@
     <ClCompile Include="NotchingInspLight\CLightControl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Plc\PioCtrl.cpp">
+    <ClCompile Include="NotchingInspPlc\PioCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="NotchingInspSystemSetting\CInitSystemSetting.cpp">
@@ -1187,7 +1187,7 @@
     <None Include="SetValue\SetValueRes.aps">
       <Filter>SetValue</Filter>
     </None>
-    <None Include="Plc\PLCServer.tlb" />
+    <None Include="NotchingInspPlc\PLCServer.tlb" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Melsec\x64\MdFunc32.lib">

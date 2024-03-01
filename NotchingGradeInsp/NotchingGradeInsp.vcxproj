@@ -140,7 +140,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight;$(ProjectDir)NotchingInspDlg;$(ProjectDir)NotchingInspLog;$(ProjectDir)NotchingInspProc;$(ProjectDir)NotchingInspProcSupport</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)NotchingInspAppDio;$(ProjectDir)NotchingInspCamera;$(ProjectDir)SupportDlg;$(ProjectDir)NotchingInspCropDefect;$(ProjectDir)NotchingInspHistory;$(ProjectDir)SupportGeneral;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)NotchingInspQueueStorage;$(ProjectDir)NotchingInspPlc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight;$(ProjectDir)NotchingInspDlg;$(ProjectDir)NotchingInspLog;$(ProjectDir)NotchingInspProc;$(ProjectDir)NotchingInspProcSupport</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -155,7 +155,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight;$(ProjectDir)NotchingInspDlg;$(ProjectDir)NotchingInspLog;$(ProjectDir)NotchingInspProc;$(ProjectDir)NotchingInspProcSupport</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)NotchingInspAppDio;$(ProjectDir)NotchingInspCamera;$(ProjectDir)SupportDlg;$(ProjectDir)NotchingInspCropDefect;$(ProjectDir)NotchingInspHistory;$(ProjectDir)SupportGeneral;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)NotchingInspQueueStorage;$(ProjectDir)NotchingInspPlc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight;$(ProjectDir)NotchingInspDlg;$(ProjectDir)NotchingInspLog;$(ProjectDir)NotchingInspProc;$(ProjectDir)NotchingInspProcSupport</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -369,8 +369,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AppDio\AppDIO.h" />
-    <ClInclude Include="AppDio\DIOTestDlg.h" />
+    <ClInclude Include="NotchingInspAppDio\AppDIO.h" />
+    <ClInclude Include="NotchingInspAppDio\DIOTestDlg.h" />
     <ClInclude Include="AXL\AXA.h" />
     <ClInclude Include="AXL\AXC.h" />
     <ClInclude Include="AXL\AXD.h" />
@@ -379,11 +379,11 @@
     <ClInclude Include="AXL\AXHS.h" />
     <ClInclude Include="AXL\AXL.h" />
     <ClInclude Include="AXL\AXM.h" />
-    <ClInclude Include="Camera\CCameraSettingDlg.h" />
-    <ClInclude Include="Camera\CCameraViewDlg.h" />
-    <ClInclude Include="Camera\CCameraWaveDlg.h" />
-    <ClInclude Include="Camera\GrabberCtrl.h" />
-    <ClInclude Include="Camera\GrabDalsaCameraLink.h" />
+    <ClInclude Include="NotchingInspCamera\CCameraSettingDlg.h" />
+    <ClInclude Include="NotchingInspCamera\CCameraViewDlg.h" />
+    <ClInclude Include="NotchingInspCamera\CCameraWaveDlg.h" />
+    <ClInclude Include="NotchingInspCamera\GrabberCtrl.h" />
+    <ClInclude Include="NotchingInspCamera\GrabDalsaCameraLink.h" />
     <ClInclude Include="Contec\Caio.h" />
     <ClInclude Include="Contec\CCnt.h" />
     <ClInclude Include="Contec\CDio.h" />
@@ -405,16 +405,16 @@
     <ClInclude Include="Control\GridMemoryDC.hpp" />
     <ClInclude Include="Control\GridTitleTip.h" />
     <ClInclude Include="Control\ThumbnailCtrl.h" />
-    <ClInclude Include="CropDefect\CCropImageView.h" />
-    <ClInclude Include="CropDefect\CCropImageViewDlg.h" />
-    <ClInclude Include="CropDefect\CCropImgQueueCtrl.h" />
-    <ClInclude Include="CropDefect\CDefectDataCtrl.h" />
-    <ClInclude Include="CropDefect\CDefectInfo.h" />
-    <ClInclude Include="CropDefect\CDefectMapDlg.h" />
+    <ClInclude Include="NotchingInspCropDefect\CCropImageView.h" />
+    <ClInclude Include="NotchingInspCropDefect\CCropImageViewDlg.h" />
+    <ClInclude Include="NotchingInspCropDefect\CCropImgQueueCtrl.h" />
+    <ClInclude Include="NotchingInspCropDefect\CDefectDataCtrl.h" />
+    <ClInclude Include="NotchingInspCropDefect\CDefectInfo.h" />
+    <ClInclude Include="NotchingInspCropDefect\CDefectMapDlg.h" />
     <ClInclude Include="GSurpport\StrSuport.h" />
-    <ClInclude Include="History\CHistoryLotCtrl.h" />
-    <ClInclude Include="History\CHistoryLotDlg.h" />
-    <ClInclude Include="History\CHistoryLotView.h" />
+    <ClInclude Include="NotchingInspHistory\CHistoryLotCtrl.h" />
+    <ClInclude Include="NotchingInspHistory\CHistoryLotDlg.h" />
+    <ClInclude Include="NotchingInspHistory\CHistoryLotView.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ImgProcDll\ImgProcDll.h" />
     <ClInclude Include="LGIS\LGIS_Plc.h" />
@@ -452,14 +452,14 @@
     <ClInclude Include="NotchingInspSystemSetting\SystemSetting.h" />
     <ClInclude Include="NotchingInspSystemSetting\SystemSettingDlg.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Plc\CSiemensPlc.h" />
-    <ClInclude Include="Plc\PioCtrl.h" />
-    <ClInclude Include="Plc\PlcBase.h" />
-    <ClInclude Include="Plc\SigProc.h" />
-    <ClInclude Include="QueueStorage\CCounterQueueCtrl.h" />
-    <ClInclude Include="QueueStorage\CImageSaveQueueCtrl.h" />
-    <ClInclude Include="QueueStorage\CThreadQueueCtrl.h" />
-    <ClInclude Include="QueueStorage\QueueCtrl.h" />
+    <ClInclude Include="NotchingInspPlc\CSiemensPlc.h" />
+    <ClInclude Include="NotchingInspPlc\PioCtrl.h" />
+    <ClInclude Include="NotchingInspPlc\PlcBase.h" />
+    <ClInclude Include="NotchingInspPlc\SigProc.h" />
+    <ClInclude Include="NotchingInspQueueStorage\CCounterQueueCtrl.h" />
+    <ClInclude Include="NotchingInspQueueStorage\CImageSaveQueueCtrl.h" />
+    <ClInclude Include="NotchingInspQueueStorage\CThreadQueueCtrl.h" />
+    <ClInclude Include="NotchingInspQueueStorage\QueueCtrl.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SetValue\SetValue.h" />
     <ClInclude Include="SetValue\SetValueDlg.h" />
@@ -503,28 +503,28 @@
     <ClInclude Include="SupportDlg\CLightRS232Dlg.h" />
     <ClInclude Include="SupportDlg\CondDlg.h" />
     <ClInclude Include="SupportDlg\GraphDlg.h" />
-    <ClInclude Include="Support\BitmapStd.h" />
-    <ClInclude Include="Support\CAlarmProcess.h" />
-    <ClInclude Include="Support\CAprHash.h" />
-    <ClInclude Include="Support\CExcelResultFileCtrl.h" />
-    <ClInclude Include="Support\CMathFunc.h" />
-    <ClInclude Include="Support\CTacTimeDataCtrl.h" />
-    <ClInclude Include="Support\CTactTImeGraphDlg.h" />
-    <ClInclude Include="Support\excel.h" />
-    <ClInclude Include="Support\ExcelConst.h" />
-    <ClInclude Include="Support\ImgClipedBmp.h" />
-    <ClInclude Include="Support\KExcel.h" />
-    <ClInclude Include="Support\LanguageCode.h" />
-    <ClInclude Include="Support\Light232.h" />
-    <ClInclude Include="Support\LightSocket.h" />
-    <ClInclude Include="Support\Ping.h" />
-    <ClInclude Include="Support\StdIoApi.h" />
-    <ClInclude Include="Support\StdIoAXL.h" />
-    <ClInclude Include="Support\StdIoCCLink.h" />
-    <ClInclude Include="Support\StdIoCtrl.h" />
-    <ClInclude Include="Support\TimeAnalyzer.h" />
-    <ClInclude Include="Support\Win32File.h" />
-    <ClInclude Include="Support\WinTool.h" />
+    <ClInclude Include="SupportGeneral\BitmapStd.h" />
+    <ClInclude Include="SupportGeneral\CAlarmProcess.h" />
+    <ClInclude Include="SupportGeneral\CAprHash.h" />
+    <ClInclude Include="SupportGeneral\CExcelResultFileCtrl.h" />
+    <ClInclude Include="SupportGeneral\CMathFunc.h" />
+    <ClInclude Include="SupportGeneral\CTacTimeDataCtrl.h" />
+    <ClInclude Include="SupportGeneral\CTactTImeGraphDlg.h" />
+    <ClInclude Include="SupportGeneral\excel.h" />
+    <ClInclude Include="SupportGeneral\ExcelConst.h" />
+    <ClInclude Include="SupportGeneral\ImgClipedBmp.h" />
+    <ClInclude Include="SupportGeneral\KExcel.h" />
+    <ClInclude Include="SupportGeneral\LanguageCode.h" />
+    <ClInclude Include="SupportGeneral\Light232.h" />
+    <ClInclude Include="SupportGeneral\LightSocket.h" />
+    <ClInclude Include="SupportGeneral\Ping.h" />
+    <ClInclude Include="SupportGeneral\StdIoApi.h" />
+    <ClInclude Include="SupportGeneral\StdIoAXL.h" />
+    <ClInclude Include="SupportGeneral\StdIoCCLink.h" />
+    <ClInclude Include="SupportGeneral\StdIoCtrl.h" />
+    <ClInclude Include="SupportGeneral\TimeAnalyzer.h" />
+    <ClInclude Include="SupportGeneral\Win32File.h" />
+    <ClInclude Include="SupportGeneral\WinTool.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UI\UiManager.h" />
     <ClInclude Include="View\BottomPanel.h" />
@@ -546,13 +546,13 @@
     <ClInclude Include="View\ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AppDio\AppDIO.cpp" />
-    <ClCompile Include="AppDio\DIOTestDlg.cpp" />
-    <ClCompile Include="Camera\CCameraSettingDlg.cpp" />
-    <ClCompile Include="Camera\CCameraViewDlg.cpp" />
-    <ClCompile Include="Camera\CCameraWaveDlg.cpp" />
-    <ClCompile Include="Camera\GrabberCtrl.cpp" />
-    <ClCompile Include="Camera\GrabDalsaCameraLink.cpp" />
+    <ClCompile Include="NotchingInspAppDio\AppDIO.cpp" />
+    <ClCompile Include="NotchingInspAppDio\DIOTestDlg.cpp" />
+    <ClCompile Include="NotchingInspCamera\CCameraSettingDlg.cpp" />
+    <ClCompile Include="NotchingInspCamera\CCameraViewDlg.cpp" />
+    <ClCompile Include="NotchingInspCamera\CCameraWaveDlg.cpp" />
+    <ClCompile Include="NotchingInspCamera\GrabberCtrl.cpp" />
+    <ClCompile Include="NotchingInspCamera\GrabDalsaCameraLink.cpp" />
     <ClCompile Include="Control\CalendarCell.cpp" />
     <ClCompile Include="Control\CalendarCellItem.cpp" />
     <ClCompile Include="Control\CalenderCtrl.cpp" />
@@ -569,16 +569,16 @@
     <ClCompile Include="Control\GridInPlaceEdit.cpp" />
     <ClCompile Include="Control\GridTitleTip.cpp" />
     <ClCompile Include="Control\ThumbnailCtrl.cpp" />
-    <ClCompile Include="CropDefect\CCropImageView.cpp" />
-    <ClCompile Include="CropDefect\CCropImageViewDlg.cpp" />
-    <ClCompile Include="CropDefect\CCropImgQueueCtrl.cpp" />
-    <ClCompile Include="CropDefect\CDefectDataCtrl.cpp" />
-    <ClCompile Include="CropDefect\CDefectInfo.cpp" />
-    <ClCompile Include="CropDefect\CDefectMapDlg.cpp" />
+    <ClCompile Include="NotchingInspCropDefect\CCropImageView.cpp" />
+    <ClCompile Include="NotchingInspCropDefect\CCropImageViewDlg.cpp" />
+    <ClCompile Include="NotchingInspCropDefect\CCropImgQueueCtrl.cpp" />
+    <ClCompile Include="NotchingInspCropDefect\CDefectDataCtrl.cpp" />
+    <ClCompile Include="NotchingInspCropDefect\CDefectInfo.cpp" />
+    <ClCompile Include="NotchingInspCropDefect\CDefectMapDlg.cpp" />
     <ClCompile Include="GSurpport\StrSuport.cpp" />
-    <ClCompile Include="History\CHistoryLotCtrl.cpp" />
-    <ClCompile Include="History\CHistoryLotDlg.cpp" />
-    <ClCompile Include="History\CHistoryLotView.cpp" />
+    <ClCompile Include="NotchingInspHistory\CHistoryLotCtrl.cpp" />
+    <ClCompile Include="NotchingInspHistory\CHistoryLotDlg.cpp" />
+    <ClCompile Include="NotchingInspHistory\CHistoryLotView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Melsec\MelsecDataLink.cpp" />
     <ClCompile Include="NotchingGradeInsp.cpp" />
@@ -621,14 +621,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Plc\CSiemensPlc.cpp" />
-    <ClCompile Include="Plc\PioCtrl.cpp" />
-    <ClCompile Include="Plc\PlcBase.cpp" />
-    <ClCompile Include="Plc\SigProc.cpp" />
-    <ClCompile Include="QueueStorage\CCounterQueueCtrl.cpp" />
-    <ClCompile Include="QueueStorage\CImageSaveQueueCtrl.cpp" />
-    <ClCompile Include="QueueStorage\CThreadQueueCtrl.cpp" />
-    <ClCompile Include="QueueStorage\QueueCtrl.cpp" />
+    <ClCompile Include="NotchingInspPlc\CSiemensPlc.cpp" />
+    <ClCompile Include="NotchingInspPlc\PioCtrl.cpp" />
+    <ClCompile Include="NotchingInspPlc\PlcBase.cpp" />
+    <ClCompile Include="NotchingInspPlc\SigProc.cpp" />
+    <ClCompile Include="NotchingInspQueueStorage\CCounterQueueCtrl.cpp" />
+    <ClCompile Include="NotchingInspQueueStorage\CImageSaveQueueCtrl.cpp" />
+    <ClCompile Include="NotchingInspQueueStorage\CThreadQueueCtrl.cpp" />
+    <ClCompile Include="NotchingInspQueueStorage\QueueCtrl.cpp" />
     <ClCompile Include="SetValue\SetValue.cpp" />
     <ClCompile Include="SetValue\SetValueDlg.cpp" />
     <ClCompile Include="SetValue\SetValueEdit.cpp" />
@@ -668,27 +668,27 @@
     <ClCompile Include="SupportDlg\CLightRS232Dlg.cpp" />
     <ClCompile Include="SupportDlg\CondDlg.cpp" />
     <ClCompile Include="SupportDlg\GraphDlg.cpp" />
-    <ClCompile Include="Support\BitmapStd.cpp" />
-    <ClCompile Include="Support\CAlarmProcess.cpp" />
-    <ClCompile Include="Support\CAprHash.cpp" />
-    <ClCompile Include="Support\CExcelResultFileCtrl.cpp" />
-    <ClCompile Include="Support\CMathFunc.cpp" />
-    <ClCompile Include="Support\CTacTimeDataCtrl.cpp" />
-    <ClCompile Include="Support\CTactTImeGraphDlg.cpp" />
-    <ClCompile Include="Support\excel.cpp" />
-    <ClCompile Include="Support\ImgClipedBmp.cpp" />
-    <ClCompile Include="Support\KExcel.cpp" />
-    <ClCompile Include="Support\LanguageCode.cpp" />
-    <ClCompile Include="Support\Light232.cpp" />
-    <ClCompile Include="Support\LightSocket.cpp" />
-    <ClCompile Include="Support\Ping.cpp" />
-    <ClCompile Include="Support\StdIoApi.cpp" />
-    <ClCompile Include="Support\StdIoAXL.cpp" />
-    <ClCompile Include="Support\StdIoCCLink.cpp" />
-    <ClCompile Include="Support\StdIoCtrl.cpp" />
-    <ClCompile Include="Support\TimeAnalyzer.cpp" />
-    <ClCompile Include="Support\Win32File.cpp" />
-    <ClCompile Include="Support\WinTool.cpp" />
+    <ClCompile Include="SupportGeneral\BitmapStd.cpp" />
+    <ClCompile Include="SupportGeneral\CAlarmProcess.cpp" />
+    <ClCompile Include="SupportGeneral\CAprHash.cpp" />
+    <ClCompile Include="SupportGeneral\CExcelResultFileCtrl.cpp" />
+    <ClCompile Include="SupportGeneral\CMathFunc.cpp" />
+    <ClCompile Include="SupportGeneral\CTacTimeDataCtrl.cpp" />
+    <ClCompile Include="SupportGeneral\CTactTImeGraphDlg.cpp" />
+    <ClCompile Include="SupportGeneral\excel.cpp" />
+    <ClCompile Include="SupportGeneral\ImgClipedBmp.cpp" />
+    <ClCompile Include="SupportGeneral\KExcel.cpp" />
+    <ClCompile Include="SupportGeneral\LanguageCode.cpp" />
+    <ClCompile Include="SupportGeneral\Light232.cpp" />
+    <ClCompile Include="SupportGeneral\LightSocket.cpp" />
+    <ClCompile Include="SupportGeneral\Ping.cpp" />
+    <ClCompile Include="SupportGeneral\StdIoApi.cpp" />
+    <ClCompile Include="SupportGeneral\StdIoAXL.cpp" />
+    <ClCompile Include="SupportGeneral\StdIoCCLink.cpp" />
+    <ClCompile Include="SupportGeneral\StdIoCtrl.cpp" />
+    <ClCompile Include="SupportGeneral\TimeAnalyzer.cpp" />
+    <ClCompile Include="SupportGeneral\Win32File.cpp" />
+    <ClCompile Include="SupportGeneral\WinTool.cpp" />
     <ClCompile Include="UI\UiManager.cpp" />
     <ClCompile Include="View\BottomPanel.cpp" />
     <ClCompile Include="View\CHistogramDlg.cpp" />
@@ -760,7 +760,7 @@
     <Image Include="res\userimages.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Plc\PLCServer.tlb" />
+    <None Include="NotchingInspPlc\PLCServer.tlb" />
     <None Include="res\NotchingGradeInsp.rc2" />
     <None Include="SetValue\SetValueRes.aps" />
   </ItemGroup>
