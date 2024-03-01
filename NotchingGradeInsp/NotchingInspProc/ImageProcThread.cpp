@@ -553,22 +553,41 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							loop++;
 						}
 
-						//남은 이미지 가 많아서 
-						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId))
+						bool bNotUseCellLengthBig = false;
+						if (unNotUseCellLength >= 30 && unNotUseCellLength <= 1000)
 						{
-							//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
-							//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
-							nBCDIDAddCount++;
+							//남은 이미지 가 많아서 
+							if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId))
+							{
+								//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
+								//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
+								nBCDIDAddCount++;
 
+							}
+							else
+							{
+								nBCDIDAddCount = 0;
+							}
+							bNotUseCellLengthBig = false;
+						}
+						else if (unNotUseCellLength >= 3500 && unNotUseCellLength <= 4500)
+						{
+							//남은 이미지 가 많아서 
+							if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId))
+							{
+								//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
+								//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
+								nBCDIDAddCount++;
+
+							}
+							else
+							{
+								nBCDIDAddCount = 0;
+							}
+							bNotUseCellLengthBig = true;
 						}
 						else
 						{
-							//BCD ID 옵셋 선택하기
-							//유효한 범위를 7번이상 일 때 검사하여 옵셋을 확인 한다.
-							if (nBCDIDAddCount >= 7)
-							{
-								
-							}
 							nBCDIDAddCount = 0;
 						}
 
@@ -577,10 +596,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if(nBCDIDAddCount >= 10)
 						{
 							//BCD ID를 Grab BCD ID 사용 + 구간 옵셋을 준다.
-							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId;
+							cntInfo.nTabID = (bNotUseCellLengthBig == true) ? (int)pTabInfo->m_GrabCallBCDId -1 : (int)pTabInfo->m_GrabCallBCDId;
 						}
 						else
 						{
+							//BCD ID 초기값 세팅
 							if (nUseBCDIDBackup >= 64)
 							{
 								if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
@@ -599,6 +619,21 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								if (nUseBCDIDBackup >= 64)
 									nUseBCDIDBackup = 0;
 								cntInfo.nTabID = nUseBCDIDBackup;
+
+								//Last와 차가 너무 크면 예외 조치
+								if ((unRealLastBCDID >= 0) && (unRealLastBCDID < 64) && (pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+								{
+									//Last와 차를 구한다.
+									int nDiff = abs((int)pTabInfo->m_GrabCallBCDId - (int)unRealLastBCDID);
+									//차가 60보다 크다면 64에서 차를 구하고 아니면 그냥 사용한다.
+									int nDiffVal = (nDiff >= 60) ? 64 - nDiff : nDiff;
+
+									//실제 차가 2이상 날 경우 Last를 사용한다.
+									if (nDiffVal >= 3)
+									{
+										cntInfo.nTabID = unRealLastBCDID;
+									}
+								}
 							}
 						}
 
