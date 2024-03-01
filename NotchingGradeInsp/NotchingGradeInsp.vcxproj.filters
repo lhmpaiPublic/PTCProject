@@ -120,9 +120,6 @@
     <ClInclude Include="Control\GridTitleTip.h">
       <Filter>Control</Filter>
     </ClInclude>
-    <ClInclude Include="GlobalDef.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CImageProcess.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -138,9 +135,6 @@
     <ClInclude Include="FrameRsltInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GlobalData.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CResultThread.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -150,22 +144,13 @@
     <ClInclude Include="CTabRsltInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GraphDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="PioCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Melsec\MelsecDataLink.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CRecipeSettingDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Control\GraphCtrl.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CRecipeCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SetValue\SetValue.h">
@@ -182,9 +167,6 @@
     </ClInclude>
     <ClInclude Include="SetValue\SetValueRes.h">
       <Filter>SetValue</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemSettingDlg.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="AXL\AXA.h">
       <Filter>AXL</Filter>
@@ -219,9 +201,6 @@
     <ClInclude Include="Contec\CDio.h">
       <Filter>Contec</Filter>
     </ClInclude>
-    <ClInclude Include="CLightControl.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CCounterThread.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -229,15 +208,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CImageProcThreadUnit.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemSetting.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CRecipeTableCtrl.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CRecipeSelectDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Control\CalendarCell.h">
@@ -271,9 +241,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="LogDisplayDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GlobalFunc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SpcPlus\ISpcIf.h">
@@ -576,6 +543,39 @@
     <ClInclude Include="Plc\SigProc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SupportDlg\GraphDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspGlobal\GlobalData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspGlobal\GlobalDef.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspGlobal\GlobalFunc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspRecipe\CRecipeCtrl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspRecipe\CRecipeSelectDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspRecipe\CRecipeSettingDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspRecipe\CRecipeTableCtrl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspSystemSetting\SystemSetting.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspSystemSetting\SystemSettingDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspLight\CLightControl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -647,9 +647,6 @@
     <ClCompile Include="FrameRsltInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GlobalData.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CResultThread.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -659,22 +656,13 @@
     <ClCompile Include="CTabRsltInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GraphDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="PioCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Melsec\MelsecDataLink.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CRecipeSettingDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Control\GraphCtrl.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CRecipeCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SetValue\SetValue.cpp">
@@ -689,12 +677,6 @@
     <ClCompile Include="SetValue\SetValueFunc.cpp">
       <Filter>SetValue</Filter>
     </ClCompile>
-    <ClCompile Include="SystemSettingDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CLightControl.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CCounterThread.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -702,15 +684,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CImageProcThreadUnit.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemSetting.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CRecipeTableCtrl.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CRecipeSelectDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Control\CalendarCell.cpp">
@@ -738,9 +711,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="LogDisplayDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GlobalFunc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SpcPlus\SpcAlarmInData.cpp">
@@ -1032,6 +1002,36 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Plc\SigProc.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SupportDlg\GraphDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspGlobal\GlobalData.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspGlobal\GlobalFunc.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspRecipe\CRecipeCtrl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspRecipe\CRecipeSelectDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspRecipe\CRecipeSettingDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspRecipe\CRecipeTableCtrl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspSystemSetting\SystemSetting.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspSystemSetting\SystemSettingDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspLight\CLightControl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

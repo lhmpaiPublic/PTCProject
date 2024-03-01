@@ -140,7 +140,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -155,7 +155,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -390,7 +390,6 @@
     <ClInclude Include="CImageProcThreadUnit.h" />
     <ClInclude Include="CImageSaveThread.h" />
     <ClInclude Include="CJudgeResultCtrl.h" />
-    <ClInclude Include="CLightControl.h" />
     <ClInclude Include="Contec\Caio.h" />
     <ClInclude Include="Contec\CCnt.h" />
     <ClInclude Include="Contec\CDio.h" />
@@ -412,17 +411,12 @@
     <ClInclude Include="Control\GridMemoryDC.hpp" />
     <ClInclude Include="Control\GridTitleTip.h" />
     <ClInclude Include="Control\ThumbnailCtrl.h" />
-    <ClInclude Include="CRecipeCtrl.h" />
-    <ClInclude Include="CRecipeSelectDlg.h" />
-    <ClInclude Include="CRecipeSettingDlg.h" />
-    <ClInclude Include="CRecipeTableCtrl.h" />
     <ClInclude Include="CropDefect\CCropImageView.h" />
     <ClInclude Include="CropDefect\CCropImageViewDlg.h" />
     <ClInclude Include="CropDefect\CCropImgQueueCtrl.h" />
     <ClInclude Include="CropDefect\CDefectDataCtrl.h" />
     <ClInclude Include="CropDefect\CDefectInfo.h" />
     <ClInclude Include="CropDefect\CDefectMapDlg.h" />
-    <ClInclude Include="GlobalFunc.h" />
     <ClInclude Include="GSurpport\StrSuport.h" />
     <ClInclude Include="History\CHistoryLotCtrl.h" />
     <ClInclude Include="History\CHistoryLotDlg.h" />
@@ -434,9 +428,6 @@
     <ClInclude Include="FrameInfo.h" />
     <ClInclude Include="FrameRsltInfo.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="GlobalData.h" />
-    <ClInclude Include="GlobalDef.h" />
-    <ClInclude Include="GraphDlg.h" />
     <ClInclude Include="ImageProcessCtrl.h" />
     <ClInclude Include="ImageProcThread.h" />
     <ClInclude Include="ImgProcDll\ImgProcDll.h" />
@@ -450,6 +441,16 @@
     <ClInclude Include="NotchingGradeInsp.h" />
     <ClInclude Include="NotchingGradeInspDoc.h" />
     <ClInclude Include="NotchingGradeInspView.h" />
+    <ClInclude Include="NotchingInspGlobal\GlobalData.h" />
+    <ClInclude Include="NotchingInspGlobal\GlobalDef.h" />
+    <ClInclude Include="NotchingInspGlobal\GlobalFunc.h" />
+    <ClInclude Include="NotchingInspLight\CLightControl.h" />
+    <ClInclude Include="NotchingInspRecipe\CRecipeCtrl.h" />
+    <ClInclude Include="NotchingInspRecipe\CRecipeSelectDlg.h" />
+    <ClInclude Include="NotchingInspRecipe\CRecipeSettingDlg.h" />
+    <ClInclude Include="NotchingInspRecipe\CRecipeTableCtrl.h" />
+    <ClInclude Include="NotchingInspSystemSetting\SystemSetting.h" />
+    <ClInclude Include="NotchingInspSystemSetting\SystemSettingDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PioCtrl.h" />
     <ClInclude Include="Plc\CSiemensPlc.h" />
@@ -501,6 +502,7 @@
     <ClInclude Include="SupportDlg\CLightManualCtrlDlg.h" />
     <ClInclude Include="SupportDlg\CLightRS232Dlg.h" />
     <ClInclude Include="SupportDlg\CondDlg.h" />
+    <ClInclude Include="SupportDlg\GraphDlg.h" />
     <ClInclude Include="Support\BitmapStd.h" />
     <ClInclude Include="Support\CAlarmProcess.h" />
     <ClInclude Include="Support\CAprHash.h" />
@@ -523,8 +525,6 @@
     <ClInclude Include="Support\TimeAnalyzer.h" />
     <ClInclude Include="Support\Win32File.h" />
     <ClInclude Include="Support\WinTool.h" />
-    <ClInclude Include="SystemSetting.h" />
-    <ClInclude Include="SystemSettingDlg.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UI\UiManager.h" />
     <ClInclude Include="View\BottomPanel.h" />
@@ -559,7 +559,6 @@
     <ClCompile Include="CImageProcThreadUnit.cpp" />
     <ClCompile Include="CImageSaveThread.cpp" />
     <ClCompile Include="CJudgeResultCtrl.cpp" />
-    <ClCompile Include="CLightControl.cpp" />
     <ClCompile Include="Control\CalendarCell.cpp" />
     <ClCompile Include="Control\CalendarCellItem.cpp" />
     <ClCompile Include="Control\CalenderCtrl.cpp" />
@@ -576,10 +575,6 @@
     <ClCompile Include="Control\GridInPlaceEdit.cpp" />
     <ClCompile Include="Control\GridTitleTip.cpp" />
     <ClCompile Include="Control\ThumbnailCtrl.cpp" />
-    <ClCompile Include="CRecipeCtrl.cpp" />
-    <ClCompile Include="CRecipeSelectDlg.cpp" />
-    <ClCompile Include="CRecipeSettingDlg.cpp" />
-    <ClCompile Include="CRecipeTableCtrl.cpp" />
     <ClCompile Include="CResultFileManager.cpp" />
     <ClCompile Include="CResultThread.cpp" />
     <ClCompile Include="CropDefect\CCropImageView.cpp" />
@@ -592,9 +587,6 @@
     <ClCompile Include="CTabRsltInfo.cpp" />
     <ClCompile Include="FrameInfo.cpp" />
     <ClCompile Include="FrameRsltInfo.cpp" />
-    <ClCompile Include="GlobalData.cpp" />
-    <ClCompile Include="GlobalFunc.cpp" />
-    <ClCompile Include="GraphDlg.cpp" />
     <ClCompile Include="GSurpport\StrSuport.cpp" />
     <ClCompile Include="History\CHistoryLotCtrl.cpp" />
     <ClCompile Include="History\CHistoryLotDlg.cpp" />
@@ -610,6 +602,15 @@
     <ClCompile Include="NotchingGradeInsp.cpp" />
     <ClCompile Include="NotchingGradeInspDoc.cpp" />
     <ClCompile Include="NotchingGradeInspView.cpp" />
+    <ClCompile Include="NotchingInspGlobal\GlobalData.cpp" />
+    <ClCompile Include="NotchingInspGlobal\GlobalFunc.cpp" />
+    <ClCompile Include="NotchingInspLight\CLightControl.cpp" />
+    <ClCompile Include="NotchingInspRecipe\CRecipeCtrl.cpp" />
+    <ClCompile Include="NotchingInspRecipe\CRecipeSelectDlg.cpp" />
+    <ClCompile Include="NotchingInspRecipe\CRecipeSettingDlg.cpp" />
+    <ClCompile Include="NotchingInspRecipe\CRecipeTableCtrl.cpp" />
+    <ClCompile Include="NotchingInspSystemSetting\SystemSetting.cpp" />
+    <ClCompile Include="NotchingInspSystemSetting\SystemSettingDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|Win32'">Create</PrecompiledHeader>
@@ -666,6 +667,7 @@
     <ClCompile Include="SupportDlg\CLightManualCtrlDlg.cpp" />
     <ClCompile Include="SupportDlg\CLightRS232Dlg.cpp" />
     <ClCompile Include="SupportDlg\CondDlg.cpp" />
+    <ClCompile Include="SupportDlg\GraphDlg.cpp" />
     <ClCompile Include="Support\BitmapStd.cpp" />
     <ClCompile Include="Support\CAlarmProcess.cpp" />
     <ClCompile Include="Support\CAprHash.cpp" />
@@ -687,8 +689,6 @@
     <ClCompile Include="Support\TimeAnalyzer.cpp" />
     <ClCompile Include="Support\Win32File.cpp" />
     <ClCompile Include="Support\WinTool.cpp" />
-    <ClCompile Include="SystemSetting.cpp" />
-    <ClCompile Include="SystemSettingDlg.cpp" />
     <ClCompile Include="UI\UiManager.cpp" />
     <ClCompile Include="View\BottomPanel.cpp" />
     <ClCompile Include="View\CHistogramDlg.cpp" />
