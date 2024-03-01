@@ -179,10 +179,8 @@ void CCounterThread::RecivePacket(char* data, int len)
 							//DIO Input Log
 							LOGDISPLAY_SPEC(7)(_T("@@ ### 누락 BCD ID [%d] 누락 갯수<%d>"), nextTabIDbackup, omissCount);
 
-							//메모리 로그 기록
-							CString strMsg;
-							strMsg.Format(_T("Lose input BCD ID  [%d]"), nextTabIDbackup);
-							AprData.SaveMemoryLog(strMsg);
+							//디버그 로그 기록
+							AprData.SaveDebugLog_Format(_T("Lose input BCD ID  [%d]"), nextTabIDbackup);
 
 							//다음 id로 증가 및 유효 카운트 검사
 							nextTabIDbackup++;
@@ -657,10 +655,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 								nextTabID = 0;
 							}
 							
-							//메모리 로그 기록
-							CString strMsg = "";
-							strMsg.Format(_T("First BCD Id Use BCD Id<%d>"), wTempID);
-							AprData.SaveMemoryLog(strMsg);
+							//디버그 로그 기록
+							AprData.SaveDebugLog_Format(_T("First BCD Id Use BCD Id	%d"), wTempID);
 						}
 						//초기값 세팅 상태에서 만 검사한다.
 						else
@@ -686,10 +682,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										//DIO Input Log
 										LOGDISPLAY_SPEC(7)(_T("@@(%d)### 누락 BCD ID [%d] 누락 갯수<%d>"), ThreadLoopCount, nextTabIDbackup, omissCount);
 
-										//메모리 로그 기록
-										CString strMsg;
-										strMsg.Format(_T("Lose input BCD ID  [%d]"), nextTabIDbackup);
-										AprData.SaveMemoryLog(strMsg);
+										//디버그 로그 기록
+										AprData.SaveDebugLog_Format(_T("Lose input BCD ID	%d"), nextTabIDbackup);
 
 										nextTabIDbackupLog = nextTabIDbackup;
 										//다음 id로 증가 및 유효 카운트 검사
@@ -710,10 +704,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 										//DIO Input Log
 										LOGDISPLAY_SPEC(7)(_T("@@(%d)### Input ID 초기화 TabId[%d]- ResetQ - BeforId[%d]"), ThreadLoopCount, wTempID, wLastTabId);
 
-										//메모리 로그 기록
-										CString strMsg = "";
-										strMsg.Format(_T("Over All Vision BCD Id Initialize Before BCD Id<%d>=Init BCD Id<%d>"), wLastTabId, wTempID);
-										AprData.SaveMemoryLog(strMsg);
+										//디버그 로그 기록
+										AprData.SaveDebugLog_Format(_T("Over All Vision BCD Id Initialize Before BCD Id	%d	Init BCD Id	%d"), wLastTabId, wTempID);
 									}
 									//초기화가 아닌 경우
 									else
@@ -778,10 +770,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 #endif
 						int nCntQueSize = pCntQueInPtr->GetSize();
 
-						//메모리 로그 기록
-						CString strMsg;
-						strMsg.Format(_T("Input BCD ID[%d], BCD ID BuffSize<%d> Receive "), cntInfo.nTabID, nCntQueSize);
-						AprData.SaveMemoryLog(strMsg);
+						//디버그 로그 기록
+						AprData.SaveDebugLog_Format(_T("Input BCD ID	%d	BCD ID BuffSize	%d"), cntInfo.nTabID, nCntQueSize);
 
 						//DIO Input Log
 						LOGDISPLAY_SPEC(7)(_T("@@(%d)### Input ID Add TabId[%d],TotalCount[%d],Queue Count<%d>"), ThreadLoopCount, cntInfo.nTabID, cntInfo.nTabIdTotalCount, nCntQueSize);
@@ -789,10 +779,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 						if (nCntQueSize >= FRAME_ACQ_ERROR_CHK_CNT)
 						{
 							// 에러 처리 : BCD ID는 들어오는데 Frame이 없거나 Process 처리 문제로 BCD를 사용하지 못하고 쌓이는 경우 에러
-							CString strErrMsg;
-							strErrMsg.Format(_T("Frame Error : BCD Que Over[%d>=%d], Process End!!!!"), nCntQueSize, FRAME_ACQ_ERROR_CHK_CNT );
-							AprData.SaveErrorLog(strErrMsg);
-							AprData.SaveDebugLog_Format(strErrMsg);
+							AprData.SaveErrorLog_Format(_T("Frame Error : BCD Que Over[%d>=%d], Process End!!!!"), nCntQueSize, FRAME_ACQ_ERROR_CHK_CNT);
 
 							//카메라의 에러를 세팅한다.
 							//AprData.m_ErrStatus.SetError(CErrorStatus::en_CameraError, strErrMsg);

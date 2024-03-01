@@ -236,10 +236,8 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	m_pMainWnd->SetWindowText(NOTCHINGMAINFRM_NAME);
 
 	//실행 파일 버전 정보
-	CString ErrorLog;
-	ErrorLog.Format(_T("============================= START PROGRAM (%s) ============================="), GlobalVersion);
-	AprData.SaveErrorLog(ErrorLog);
-	AprData.SaveDebugLog_Format(ErrorLog);
+	AprData.SaveErrorLog_Format(_T("============================= START PROGRAM (%s) ============================="), GlobalVersion);
+	AprData.SaveDebugLog_Format(_T("============================= START PROGRAM (%s) ============================="), GlobalVersion);
 
 	LOGDISPLAY_SPEC(8)(_T("## START PROGRAM (%s) ============================="), GlobalVersion);
 

@@ -399,6 +399,8 @@ public :
 	void SaveDebugLog_Format(const char* format, ...);
 	
 	int SaveErrorLog(CString strMsg);
+	void SaveErrorLog_Format(const char* format, ...);
+
 	int SaveTactLog(CString strMsg);
 	int SaveMemoryLog( CString strMsg ) ;
 	int SaveLotLog(CString strMsg);

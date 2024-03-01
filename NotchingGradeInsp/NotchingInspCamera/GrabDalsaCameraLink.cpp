@@ -88,8 +88,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if ((pSigProc != NULL) && (pSigProc->GetConnectZone() == TRUE))
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(0)(_T("**Cam Error** CGrabDalsaCameraLink AcqCallback함수 PLC Connect Zone 상태 - 이미지 무시한다."));
-			AprData.SaveDebugLog_Format(_T("<AcqCallback> Connect Zone TURE") );
+			AprData.SaveDebugLog_Format(_T("AcqCallback Connect Zone TURE") );
 
 			return;
 		}
@@ -133,17 +132,6 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				CString strMsg = "";
 				strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);
-
-				//메모리 로그 기록
-				strMsg = "";
-				strMsg.Format(_T("FrameLog Head[%s], FrmNum[%d]"), (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "TOP":"BOTTOM", pFrmInfo->m_nFrameCount);
-				AprData.SaveMemoryLog(strMsg);
-
-				AprData.SaveDebugLog_Format(_T("Grab Pos[%s]	Width	%d	Height	%d	FrmCount	%d"),
-					(pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM",
-					pFrmInfo->m_nWidth,
-					pFrmInfo->m_nHeight,
-					pFrmInfo->m_nFrameCount);
 
 				//Image Capture 정보 출력 로그
 				LOGDISPLAY_SPEC(8)(_T("Grab Pos[%s]	Width	%d	Height	%d	FrmCount	%d"),

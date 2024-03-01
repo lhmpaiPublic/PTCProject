@@ -193,6 +193,20 @@ void CGlobalData::SaveDebugLog_Format(const char* format, ...)
 	}	
 }
 
+void CGlobalData::SaveErrorLog_Format(const char* format, ...)
+{
+	va_list arg;
+	int done;
+	char str[MAX_PATH] = { 0, };
+	va_start(arg, format);
+	done = vsprintf_s(str, format, arg);
+	va_end(arg);
+	if (done > 0)
+	{
+		SaveErrorLog(str);
+	}
+}
+
 int CGlobalData::SaveErrorLog(CString strMsg)
 {
 	// 22.07.27 Ahn Modify Start

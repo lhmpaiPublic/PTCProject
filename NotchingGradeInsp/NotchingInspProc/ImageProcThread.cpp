@@ -478,7 +478,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								dTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
 							}
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@Cell Length<%f> Tab Pitch<%f> RecipeTabPitch<%f>@@@@ ", dCellLength, dTabPitch, RecipeInfoTabPitch);
+							LOGDISPLAY_SPEC(7)("@@Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f@@@@ ", dCellLength, dTabPitch, RecipeInfoTabPitch);
+
+							//디버그 로그 기록
+							AprData.SaveDebugLog_Format("Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f", dCellLength, dTabPitch, RecipeInfoTabPitch);
 
 							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > dTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < dTabPitch))
 							{
@@ -494,10 +497,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								}
 								bErrorTabPitch = TRUE;
 
-								//메모리 로그 기록
-								strMsg = "";
-								strMsg.Format("Error == Tab Pitch Big or Small ========== === !!!  ");
-								AprData.SaveMemoryLog(strMsg);
 							}
 						}
 
@@ -690,7 +689,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							nErrorNo = 1;
 
-							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d	Tab nLeft	%d	Tab nRight	%d Radius	%d"),
+							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d	Tab nLeft	%d	Tab nRight	%d Radius	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLeft, nRight, AprData.m_pRecipeInfo->TabCond.nRadiusW);
 
 						}
@@ -713,7 +712,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							AprData.m_NowLotData.m_bProcError = FALSE;
 							nErrorNo = 2;
 
-							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d"),
+							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo);
 
 						}
@@ -726,7 +725,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							nErrorNo = 3;
 
-							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d"),
+							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo);
 
 						}
@@ -741,7 +740,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							nErrorNo = 4;
 
-							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d"),
+							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLevel);
 
 						}
@@ -756,7 +755,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 							nErrorNo = 5;
 
-							AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d	Width	%d"),
+							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d	Width	%d"),
 								pTabInfo->m_bErrorFlag, nErrorNo, nLevel, nWidth);
 
 						}
@@ -819,10 +818,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						pInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
 
-						//메모리 로그 기록(TOP)
-						strMsg = "";
-						strMsg.Format(_T("TOP Insp Image Info FrameNum<%d>, TabNo<%d>, BCD ID<%d>"), pInfo->m_nFrameCount, pInfo->nTabNo+1, pInfo->m_nTabId_CntBoard);
-						AprData.SaveMemoryLog(strMsg);
+						//디버그 로그 기록(TOP)
+						AprData.SaveDebugLog_Format(_T("TOP Insp Image Info FrameNum	%d	TabNo	%d	BCD ID	%d"), pInfo->m_nFrameCount, pInfo->nTabNo + 1, pInfo->m_nTabId_CntBoard);
 
 
 						//PET 가 인식 된 시점 부터 카운트 증가한다.
@@ -832,10 +829,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							nPETCount++;
 							bPETBCDIdSet = FALSE;
 
-							//메모리 로그 기록
-							CString strMsg = "";
-							strMsg.Format(_T("Error == PET Run Count<%d> ====== "), nPETCount);
-							AprData.SaveMemoryLog(strMsg);
+							//디버그 로그 기록
+							AprData.SaveDebugLog_Format(_T("PET Run Count	%d "), nPETCount);
 						}
 						//PET RUN 이 끝나는 시점이거나 처음부터 PET가 아니거나
 						else
@@ -843,8 +838,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							//PET RUN이 1번 이상이고 PET BCD Id 초기화 변수가 FALSE 이면 초기화를 세팅한다.
 							if ((nPETCount > 0) && (bPETBCDIdSet == FALSE))
 							{
-								//PET 시 Tab 카운트 출력
-								LOGDISPLAY_SPEC(7)("@@ PET Run Count<%d> @@@@ ", nPETCount);
+								//디버그 로그 기록
+								AprData.SaveDebugLog_Format("PET Run Count	%d	BCD ID Set", nPETCount);
 
 								//PET 초기화 카운트 초기화
 								nPETCount = 0;
@@ -904,10 +899,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						pBtmInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
 
-						//메모리 로그 기록(TOP)
-						strMsg = "";
-						strMsg.Format(_T("BOTTOM Insp Image Info FrameNum<%d>, TabNo<%d>, BCD ID<%d>"), pBtmInfo->m_nFrameCount, pBtmInfo->nTabNo+1, pBtmInfo->m_nTabId_CntBoard);
-						AprData.SaveMemoryLog(strMsg);
+						//디버그 로그 기록(TOP)
+						AprData.SaveDebugLog_Format(_T("BOTTOM Insp Image Info FrameNum	%d	TabNo	%d	BCD ID	%d"), pBtmInfo->m_nFrameCount, pBtmInfo->nTabNo + 1, pBtmInfo->m_nTabId_CntBoard);
 
 
 						// 22.12.09 Ahn Add Start
@@ -1207,14 +1200,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							, (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK");
 
 
-						CString strMsg;
-						strMsg.Format(_T("LotId<%s> TabNo<%d> TabId<%d> JUDGE : Top-<%s> Bottom-<%s>")
+						AprData.SaveDebugLog_Format(_T("LotId	%s	TabNo	%d	TabId	%d	JUDGE	Top<%s>	Bottom<%s>")
 							, AprData.m_NowLotData.m_strLotNo
-							,pTopInfo->nTabNo + 1
-							,pTopInfo->m_nTabId_CntBoard
-							,(pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK"
-							,(pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK");
-						AprData.SaveMemoryLog(strMsg);
+							, pTopInfo->nTabNo + 1
+							, pTopInfo->m_nTabId_CntBoard
+							, (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK"
+							, (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK");
 
 						//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -1499,10 +1490,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								wOutPut
 								);
 
-							CString strMsg;
-							strMsg.Format(_T("Output Make BCD ID[%d]_OutPutValue[0x%x]_TabNo[%d]"),
+							AprData.SaveDebugLog_Format(_T("Output Make BCD ID	%d	OutPutValue	0x%x	TabNo	%d"),
 								pTopInfo->m_nTabId_CntBoard, wOutPut, pTopInfo->nTabNo + 1);
-							AprData.SaveMemoryLog(strMsg);
 
 
 							if ((wOutPut & CAppDIO::eOut_MARK_SEL_01) || (wOutPut & CAppDIO::eOut_MARK_SEL_02))

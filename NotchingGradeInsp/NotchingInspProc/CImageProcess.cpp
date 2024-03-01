@@ -7772,7 +7772,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidt
 		delete[] pMeanPtr; 
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("ImageProcessTopSide_BrightRoll	ERROR SmoothVecRoundData Size	%d"),
+		AprData.SaveErrorLog_Format(_T("ImageProcessTopSide_BrightRoll	ERROR SmoothVecRoundData Size	%d"),
 			nLeftSize);
 
 		return -2; // 처리 불가.
@@ -7811,7 +7811,7 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidt
 		delete[] pMeanPtr; 
 
 		//DEBUG_LOG.txt
-		AprData.SaveDebugLog_Format(_T("ImageProcessTopSide_BrightRoll 에러	SmoothVecRoundData	nRightSize	%d"),
+		AprData.SaveErrorLog_Format(_T("ImageProcessTopSide_BrightRoll 에러	SmoothVecRoundData	nRightSize	%d"),
 			nRightSize);
 
 		return -3;

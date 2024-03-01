@@ -78,8 +78,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 		//ImageProc: 이미지 처리 스래드가 종료 이벤트가 발생했는가 체크
 		if (::WaitForSingleObject(pCtrl->m_hEventKillThread, 0) == WAIT_OBJECT_0)
 		{
-			//로그
-			AprData.SaveDebugLog_Format(_T("ImageProc: 이미지 처리 스래드가 종료 이벤트 "));
 			//스래드 종료 이벤트 -> Result 스래드 이벤트를 보낸다.
 			pCtrl->SetEventProcEnd();
 			break;
@@ -87,7 +85,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 		//ImageProc: Forc Stop 이 발생했는가 체크
 		if (::WaitForSingleObject(pCtrl->m_hEventForceStop, 0) == WAIT_OBJECT_0)
 		{
-			AprData.SaveDebugLog_Format(_T("Forc Stop 이 발생했는가 체크 "));
 			//스래드 종료 이벤트 -> Result 스래드 이벤트를 보낸다.
 			pCtrl->SetEventProcEnd();
 
@@ -115,7 +112,6 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 				// 이미지 처리 개시
 				if (pFrmInfo == NULL)
 				{
-					AprData.SaveDebugLog_Format(_T("pFrmInfo 객체가 NULL"));
 					//스래드 종료 이벤트 -> Result 스래드 이벤트를 보낸다.
 					pCtrl->SetEventProcEnd();
 
@@ -443,13 +439,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 					//NG 로그 출력한다.
 					//DEBUG_LOG.txt
-					AprData.SaveDebugLog_Format(_T("CtrlImageProcThread ERROR NG	m_bErrorFlag	%d	m_bOverFlow	%d"),
+					AprData.SaveErrorLog_Format(_T("CtrlImageProcThread ERROR NG	m_bErrorFlag	%d	m_bOverFlow	%d"),
 						pFrmInfo->m_bErrorFlag
 						, pFrmInfo->m_bOverFlow);
 
 					if (pFrmInfo->m_bOverFlow == TRUE)
 					{
-						AprData.SaveDebugLog_Format(_T("Overflow Error	system Stop!!"));
+						AprData.SaveErrorLog_Format(_T("Overflow Error	system Stop!!"));
 						if (AprData.m_System.m_bNonNgStop == TRUE)
 						{
 							AprData.m_ErrStatus.SetError(CErrorStatus::en_ProcessError, _T("Invalid Process. Force the system to stop."));
@@ -479,7 +475,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 
 					if (bIsBrightError == TRUE)
 					{
-						AprData.SaveDebugLog_Format(_T("Cam Pos	%s	BCD ID	%d	TabNo	%d	[Bright Error] Area	L:%d	T:%d	R:%d	B:%d	Min:%d	Max:%d	Now:%d")
+						AprData.SaveDebugLog_Format(_T("Cam Pos	%s	BCD ID	%d	TabNo	%d	Bright Error Area	L:%d	T:%d	R:%d	B:%d	Min:%d	Max:%d	Now:%d")
 							, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
 							, pFrameRsltInfo->m_nTabId_CntBoard
 							, pFrameRsltInfo->nTabNo + 1

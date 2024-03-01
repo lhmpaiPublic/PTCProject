@@ -123,7 +123,6 @@ int CThreadQueueCtrl::push( CFrameInfo *pFrmInfo )
 				//DEBUG_LOG.txt
 				CString strLog;
 				strLog.Format(_T("TabNo[%d]	ThreadUnitQueue OverFlow Q-Size	%d/%d"), pFrmInfo->nTabNo+1, totalQueueSize, nOverflowMax);
-				AprData.SaveDebugLog_Format(strLog);
 				AprData.SaveErrorLog(strLog);
 
 				LOGDISPLAY_SPEC(8)("## <<%s>>>CThreadQueueCtrl push TabNo<%d>-TabId<%d> - Qsize<%d>-Overflow",

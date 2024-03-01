@@ -9,13 +9,6 @@ int CSectorNgJudge::ResetAll()
 
 	m_vecSector.clear();
 
-//	VEC_TAB_JUDGE::iterator iter;
-//	for (iter = m_vecSector.begin(); iter != m_vecSector.end(); iter++) {
-//		iter = m_vecSector.erase(iter);
-//	}
-
-	AprData.SaveDebugLog_Format(_T("CSectorNgJudge 구간 정보 ResetAll"));
-
 	return 0;
 }
 
