@@ -75,12 +75,6 @@
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ModeDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="InspDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Control\ColorControl.h">
       <Filter>Control</Filter>
     </ClInclude>
@@ -119,33 +113,6 @@
     </ClInclude>
     <ClInclude Include="Control\GridTitleTip.h">
       <Filter>Control</Filter>
-    </ClInclude>
-    <ClInclude Include="CImageProcess.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageProcessCtrl.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageProcThread.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameInfo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameRsltInfo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CResultThread.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="InspInfoDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CTabRsltInfo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PioCtrl.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Melsec\MelsecDataLink.h">
       <Filter>헤더 파일</Filter>
@@ -201,15 +168,6 @@
     <ClInclude Include="Contec\CDio.h">
       <Filter>Contec</Filter>
     </ClInclude>
-    <ClInclude Include="CCounterThread.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CJudgeResultCtrl.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CImageProcThreadUnit.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Control\CalendarCell.h">
       <Filter>Control</Filter>
     </ClInclude>
@@ -222,26 +180,11 @@
     <ClInclude Include="Control\ThumbnailCtrl.h">
       <Filter>Control</Filter>
     </ClInclude>
-    <ClInclude Include="CResultFileManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CImageSaveThread.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="CSectorNgJudge.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ImgProcDll\ImgProcDll.h">
       <Filter>ImgProcDll</Filter>
     </ClInclude>
     <ClInclude Include="LGIS\LGIS_Plc.h">
       <Filter>LGIS</Filter>
-    </ClInclude>
-    <ClInclude Include="CInitSystemSetting.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LogDisplayDlg.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SpcPlus\ISpcIf.h">
       <Filter>헤더 파일</Filter>
@@ -576,6 +519,63 @@
     <ClInclude Include="NotchingInspLight\CLightControl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Plc\PioCtrl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspSystemSetting\CInitSystemSetting.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspDlg\InspDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspDlg\InspInfoDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspDlg\ModeDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspLog\LogDisplayDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProc\CCounterThread.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProc\CImageProcess.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProc\CImageProcThreadUnit.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProc\CImageSaveThread.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProc\CResultThread.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProc\FrameInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProc\FrameRsltInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProc\ImageProcThread.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProcSupport\CJudgeResultCtrl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProcSupport\CResultFileManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProcSupport\CSectorNgJudge.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProcSupport\CTabRsltInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspProcSupport\ImageProcessCtrl.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -591,12 +591,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ModeDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="InspDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Control\ColorControl.cpp">
@@ -632,33 +626,6 @@
     <ClCompile Include="Control\GridTitleTip.cpp">
       <Filter>Control</Filter>
     </ClCompile>
-    <ClCompile Include="CImageProcess.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageProcessCtrl.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageProcThread.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameRsltInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CResultThread.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="InspInfoDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CTabRsltInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PioCtrl.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Melsec\MelsecDataLink.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -677,15 +644,6 @@
     <ClCompile Include="SetValue\SetValueFunc.cpp">
       <Filter>SetValue</Filter>
     </ClCompile>
-    <ClCompile Include="CCounterThread.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CJudgeResultCtrl.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CImageProcThreadUnit.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Control\CalendarCell.cpp">
       <Filter>Control</Filter>
     </ClCompile>
@@ -697,21 +655,6 @@
     </ClCompile>
     <ClCompile Include="Control\ThumbnailCtrl.cpp">
       <Filter>Control</Filter>
-    </ClCompile>
-    <ClCompile Include="CResultFileManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CImageSaveThread.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CSectorNgJudge.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CInitSystemSetting.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="LogDisplayDlg.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SpcPlus\SpcAlarmInData.cpp">
       <Filter>소스 파일</Filter>
@@ -1032,6 +975,63 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="NotchingInspLight\CLightControl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Plc\PioCtrl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspSystemSetting\CInitSystemSetting.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspDlg\InspDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspDlg\InspInfoDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspDlg\ModeDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspLog\LogDisplayDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProc\CCounterThread.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProc\CImageProcess.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProc\CImageProcThreadUnit.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProc\CImageSaveThread.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProc\CResultThread.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProc\FrameInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProc\FrameRsltInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProc\ImageProcThread.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProcSupport\CJudgeResultCtrl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProcSupport\CResultFileManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProcSupport\CSectorNgJudge.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProcSupport\CTabRsltInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspProcSupport\ImageProcessCtrl.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -140,7 +140,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)MemoryMgr;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight;$(ProjectDir)NotchingInspDlg;$(ProjectDir)NotchingInspLog;$(ProjectDir)NotchingInspProc;$(ProjectDir)NotchingInspProcSupport</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -155,7 +155,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)LGIS;$(ProjectDir)UI;$(ProjectDir)GSurpport;$(ProjectDir)Socket;$(ProjectDir)AppDio;$(ProjectDir)Camera;$(ProjectDir)SupportDlg;$(ProjectDir)CropDefect;$(ProjectDir)History;$(ProjectDir)Support;$(ProjectDir)View;$(ProjectDir)SupportDelete;$(ProjectDir)QueueStorage;$(ProjectDir)Plc;$(ProjectDir)NotchingInspGlobal;$(ProjectDir)NotchingInspRecipe;$(ProjectDir)NotchingInspSystemSetting;$(ProjectDir)NotchingInspLight;$(ProjectDir)NotchingInspDlg;$(ProjectDir)NotchingInspLog;$(ProjectDir)NotchingInspProc;$(ProjectDir)NotchingInspProcSupport</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)LGIS\lib</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
@@ -384,12 +384,6 @@
     <ClInclude Include="Camera\CCameraWaveDlg.h" />
     <ClInclude Include="Camera\GrabberCtrl.h" />
     <ClInclude Include="Camera\GrabDalsaCameraLink.h" />
-    <ClInclude Include="CInitSystemSetting.h" />
-    <ClInclude Include="CCounterThread.h" />
-    <ClInclude Include="CImageProcess.h" />
-    <ClInclude Include="CImageProcThreadUnit.h" />
-    <ClInclude Include="CImageSaveThread.h" />
-    <ClInclude Include="CJudgeResultCtrl.h" />
     <ClInclude Include="Contec\Caio.h" />
     <ClInclude Include="Contec\CCnt.h" />
     <ClInclude Include="Contec\CDio.h" />
@@ -421,39 +415,45 @@
     <ClInclude Include="History\CHistoryLotCtrl.h" />
     <ClInclude Include="History\CHistoryLotDlg.h" />
     <ClInclude Include="History\CHistoryLotView.h" />
-    <ClInclude Include="CResultFileManager.h" />
-    <ClInclude Include="CResultThread.h" />
-    <ClInclude Include="CSectorNgJudge.h" />
-    <ClInclude Include="CTabRsltInfo.h" />
-    <ClInclude Include="FrameInfo.h" />
-    <ClInclude Include="FrameRsltInfo.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="ImageProcessCtrl.h" />
-    <ClInclude Include="ImageProcThread.h" />
     <ClInclude Include="ImgProcDll\ImgProcDll.h" />
-    <ClInclude Include="InspDlg.h" />
-    <ClInclude Include="InspInfoDlg.h" />
     <ClInclude Include="LGIS\LGIS_Plc.h" />
-    <ClInclude Include="LogDisplayDlg.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Melsec\MelsecDataLink.h" />
-    <ClInclude Include="ModeDlg.h" />
     <ClInclude Include="NotchingGradeInsp.h" />
     <ClInclude Include="NotchingGradeInspDoc.h" />
     <ClInclude Include="NotchingGradeInspView.h" />
+    <ClInclude Include="NotchingInspDlg\InspDlg.h" />
+    <ClInclude Include="NotchingInspDlg\InspInfoDlg.h" />
+    <ClInclude Include="NotchingInspDlg\ModeDlg.h" />
     <ClInclude Include="NotchingInspGlobal\GlobalData.h" />
     <ClInclude Include="NotchingInspGlobal\GlobalDef.h" />
     <ClInclude Include="NotchingInspGlobal\GlobalFunc.h" />
     <ClInclude Include="NotchingInspLight\CLightControl.h" />
+    <ClInclude Include="NotchingInspLog\LogDisplayDlg.h" />
+    <ClInclude Include="NotchingInspProcSupport\CJudgeResultCtrl.h" />
+    <ClInclude Include="NotchingInspProcSupport\CResultFileManager.h" />
+    <ClInclude Include="NotchingInspProcSupport\CSectorNgJudge.h" />
+    <ClInclude Include="NotchingInspProcSupport\CTabRsltInfo.h" />
+    <ClInclude Include="NotchingInspProcSupport\ImageProcessCtrl.h" />
+    <ClInclude Include="NotchingInspProc\CCounterThread.h" />
+    <ClInclude Include="NotchingInspProc\CImageProcess.h" />
+    <ClInclude Include="NotchingInspProc\CImageProcThreadUnit.h" />
+    <ClInclude Include="NotchingInspProc\CImageSaveThread.h" />
+    <ClInclude Include="NotchingInspProc\CResultThread.h" />
+    <ClInclude Include="NotchingInspProc\FrameInfo.h" />
+    <ClInclude Include="NotchingInspProc\FrameRsltInfo.h" />
+    <ClInclude Include="NotchingInspProc\ImageProcThread.h" />
     <ClInclude Include="NotchingInspRecipe\CRecipeCtrl.h" />
     <ClInclude Include="NotchingInspRecipe\CRecipeSelectDlg.h" />
     <ClInclude Include="NotchingInspRecipe\CRecipeSettingDlg.h" />
     <ClInclude Include="NotchingInspRecipe\CRecipeTableCtrl.h" />
+    <ClInclude Include="NotchingInspSystemSetting\CInitSystemSetting.h" />
     <ClInclude Include="NotchingInspSystemSetting\SystemSetting.h" />
     <ClInclude Include="NotchingInspSystemSetting\SystemSettingDlg.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PioCtrl.h" />
     <ClInclude Include="Plc\CSiemensPlc.h" />
+    <ClInclude Include="Plc\PioCtrl.h" />
     <ClInclude Include="Plc\PlcBase.h" />
     <ClInclude Include="Plc\SigProc.h" />
     <ClInclude Include="QueueStorage\CCounterQueueCtrl.h" />
@@ -553,12 +553,6 @@
     <ClCompile Include="Camera\CCameraWaveDlg.cpp" />
     <ClCompile Include="Camera\GrabberCtrl.cpp" />
     <ClCompile Include="Camera\GrabDalsaCameraLink.cpp" />
-    <ClCompile Include="CInitSystemSetting.cpp" />
-    <ClCompile Include="CCounterThread.cpp" />
-    <ClCompile Include="CImageProcess.cpp" />
-    <ClCompile Include="CImageProcThreadUnit.cpp" />
-    <ClCompile Include="CImageSaveThread.cpp" />
-    <ClCompile Include="CJudgeResultCtrl.cpp" />
     <ClCompile Include="Control\CalendarCell.cpp" />
     <ClCompile Include="Control\CalendarCellItem.cpp" />
     <ClCompile Include="Control\CalenderCtrl.cpp" />
@@ -575,40 +569,46 @@
     <ClCompile Include="Control\GridInPlaceEdit.cpp" />
     <ClCompile Include="Control\GridTitleTip.cpp" />
     <ClCompile Include="Control\ThumbnailCtrl.cpp" />
-    <ClCompile Include="CResultFileManager.cpp" />
-    <ClCompile Include="CResultThread.cpp" />
     <ClCompile Include="CropDefect\CCropImageView.cpp" />
     <ClCompile Include="CropDefect\CCropImageViewDlg.cpp" />
     <ClCompile Include="CropDefect\CCropImgQueueCtrl.cpp" />
     <ClCompile Include="CropDefect\CDefectDataCtrl.cpp" />
     <ClCompile Include="CropDefect\CDefectInfo.cpp" />
     <ClCompile Include="CropDefect\CDefectMapDlg.cpp" />
-    <ClCompile Include="CSectorNgJudge.cpp" />
-    <ClCompile Include="CTabRsltInfo.cpp" />
-    <ClCompile Include="FrameInfo.cpp" />
-    <ClCompile Include="FrameRsltInfo.cpp" />
     <ClCompile Include="GSurpport\StrSuport.cpp" />
     <ClCompile Include="History\CHistoryLotCtrl.cpp" />
     <ClCompile Include="History\CHistoryLotDlg.cpp" />
     <ClCompile Include="History\CHistoryLotView.cpp" />
-    <ClCompile Include="ImageProcessCtrl.cpp" />
-    <ClCompile Include="ImageProcThread.cpp" />
-    <ClCompile Include="InspDlg.cpp" />
-    <ClCompile Include="InspInfoDlg.cpp" />
-    <ClCompile Include="LogDisplayDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Melsec\MelsecDataLink.cpp" />
-    <ClCompile Include="ModeDlg.cpp" />
     <ClCompile Include="NotchingGradeInsp.cpp" />
     <ClCompile Include="NotchingGradeInspDoc.cpp" />
     <ClCompile Include="NotchingGradeInspView.cpp" />
+    <ClCompile Include="NotchingInspDlg\InspDlg.cpp" />
+    <ClCompile Include="NotchingInspDlg\InspInfoDlg.cpp" />
+    <ClCompile Include="NotchingInspDlg\ModeDlg.cpp" />
     <ClCompile Include="NotchingInspGlobal\GlobalData.cpp" />
     <ClCompile Include="NotchingInspGlobal\GlobalFunc.cpp" />
     <ClCompile Include="NotchingInspLight\CLightControl.cpp" />
+    <ClCompile Include="NotchingInspLog\LogDisplayDlg.cpp" />
+    <ClCompile Include="NotchingInspProcSupport\CJudgeResultCtrl.cpp" />
+    <ClCompile Include="NotchingInspProcSupport\CResultFileManager.cpp" />
+    <ClCompile Include="NotchingInspProcSupport\CSectorNgJudge.cpp" />
+    <ClCompile Include="NotchingInspProcSupport\CTabRsltInfo.cpp" />
+    <ClCompile Include="NotchingInspProcSupport\ImageProcessCtrl.cpp" />
+    <ClCompile Include="NotchingInspProc\CCounterThread.cpp" />
+    <ClCompile Include="NotchingInspProc\CImageProcess.cpp" />
+    <ClCompile Include="NotchingInspProc\CImageProcThreadUnit.cpp" />
+    <ClCompile Include="NotchingInspProc\CImageSaveThread.cpp" />
+    <ClCompile Include="NotchingInspProc\CResultThread.cpp" />
+    <ClCompile Include="NotchingInspProc\FrameInfo.cpp" />
+    <ClCompile Include="NotchingInspProc\FrameRsltInfo.cpp" />
+    <ClCompile Include="NotchingInspProc\ImageProcThread.cpp" />
     <ClCompile Include="NotchingInspRecipe\CRecipeCtrl.cpp" />
     <ClCompile Include="NotchingInspRecipe\CRecipeSelectDlg.cpp" />
     <ClCompile Include="NotchingInspRecipe\CRecipeSettingDlg.cpp" />
     <ClCompile Include="NotchingInspRecipe\CRecipeTableCtrl.cpp" />
+    <ClCompile Include="NotchingInspSystemSetting\CInitSystemSetting.cpp" />
     <ClCompile Include="NotchingInspSystemSetting\SystemSetting.cpp" />
     <ClCompile Include="NotchingInspSystemSetting\SystemSettingDlg.cpp" />
     <ClCompile Include="pch.cpp">
@@ -621,8 +621,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PioCtrl.cpp" />
     <ClCompile Include="Plc\CSiemensPlc.cpp" />
+    <ClCompile Include="Plc\PioCtrl.cpp" />
     <ClCompile Include="Plc\PlcBase.cpp" />
     <ClCompile Include="Plc\SigProc.cpp" />
     <ClCompile Include="QueueStorage\CCounterQueueCtrl.cpp" />
