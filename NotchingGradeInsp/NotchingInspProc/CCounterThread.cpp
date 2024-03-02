@@ -243,7 +243,7 @@ void CCounterThread::RecivePacket(char* data, int len)
 
 			AprData.m_NowLotData.m_unGTotalEncoderCount += nEncodeCnt;
 
-			LOGDISPLAY_SPEC(11)(_T("ID:	%d	Encode Count	%d	TabTotal<%d>TabNo<%d>"), nID, nEncodeCnt, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
+			LOGDISPLAY_SPEC(11)(_T("FT1	ID:	%d	Encode Count	%d	TabTotal<%d>TabNo<%d>"), nID, nEncodeCnt, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
 
 			m_pCntQueInPtr->PushBack(cntInfo);
 
@@ -540,7 +540,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							if (m_inputReadId.end() != itdelete)
 							{
 								//DIO Input Log
-								LOGDISPLAY_SPEC(11)(_T("send Marking Id TRUE inputid	%d	Data	%d"), 
+								LOGDISPLAY_SPEC(11)(_T("FT2	send Marking Id TRUE inputid	%d	Data	%d"), 
 									CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
 
 								//마킹 데이터 넣고
@@ -568,7 +568,7 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 							else if ((CCounterThread::m_MarkSendInfoData.size() - idx) >= 2)
 							{
 								//DIO Input Log
-								LOGDISPLAY_SPEC(11)(_T("send Marking Id FALSE inputid	%d	Data	%d"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
+								LOGDISPLAY_SPEC(11)(_T("FT2	send Marking Id FALSE inputid	%d	Data	%d"), CCounterThread::m_MarkSendInfoData[idx].TabId, CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
 
 								//마킹 데이터 넣고
 								dio.OutputWord(CCounterThread::m_MarkSendInfoData[idx].MarkingOutputData);
@@ -898,7 +898,7 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 			strError = FormatErrorMsg(dwErrCode);
 
 			//Tab Id 정보 로그
-			LOGDISPLAY_SPEC(11)("ERROR	:	%s ", strError);
+			LOGDISPLAY_SPEC(11)("FT3	Socket Create ERROR	:	%s ", strError);
 
 			return (-1);
 		}
@@ -910,6 +910,8 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 		{
 			CString strError;
 			strError = ::FormatErrorMsg(::GetLastError());
+
+			LOGDISPLAY_SPEC(11)("FT3	Socket Create ERROR	:	%s ", strError);
 			return (-1);
 		}
 		bRet = m_TriggerSocket->Connect(ip, port);
@@ -975,7 +977,7 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 			break;
 		}
 		//Tab Id 정보 로그
-		LOGDISPLAY_SPEC(11)("ERROR	Socket Connect :	%s ", strErMsg);
+		LOGDISPLAY_SPEC(11)("FT3	ERROR	Socket Connect :	%s ", strErMsg);
 
 		return (-1);
 	}

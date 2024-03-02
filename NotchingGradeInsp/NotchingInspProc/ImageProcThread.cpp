@@ -236,7 +236,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//총 Image Count 수
 	UINT64 unTotalCellLength = 0;
 
+	//이저 사용 BCD ID
+	int nBeforeUseBCDID = 0;
+
 	CString logStringEncoderCounter = 
+		_T("EN	")
 		_T("TabNo	%d	")
 		_T("LotID	%s	")
 		_T("LastBCDID	%d	")
@@ -251,8 +255,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		;
 
 	CString logStringGrabFrameInfo =
+		_T("GR	")
 		_T("TabNo	%d	")
 		_T("LotID	%s	")
+		_T("NowBCDID	%d	")
+		_T("DiffBeforeBCDID	%d	")
+		_T("CellLen_notUse	%d")
 		_T("FrameNo	%d	")
 		_T("FrameBCDID	%d	")
 		_T("FrameHeightTotal	%d	")
@@ -457,26 +465,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[idxi];
 
-						//Grab Frame Info를 가져온다..
-						CGrabFrameInfo* pGrabInfo = CGrabDalsaCameraLink::popGrabFrameInfo(pTabInfo->nFrameCount);
-						//Cell Length 누적
-						CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount += pTabInfo->nImageLength;
-						//Grab Frame Info 정보가 있을 경우
-						if (pGrabInfo)
-						{
-							//Grab Frame Info Log
-							LOGDISPLAY_SPEC(11)(
-								logStringGrabFrameInfo
-								, AprData.m_NowLotData.m_nTabCount + 1
-								, AprData.m_NowLotData.m_strLotNo
-								, pGrabInfo->m_nGrabFrmCount
-								, pGrabInfo->m_nGrabFrmBCDID
-								, pGrabInfo->m_nGrabFrmPixelCount
-								, CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount
-								);
-						}
-
-
 						//Tab Pitch 구하기
 						double dTabPitch = 0.0;
 						BOOL bErrorTabPitch = FALSE;
@@ -635,6 +623,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								{
 									cntInfo.nTabID = unRealLastBCDID;
 								}
+								//초기화 시 첫 세팅
+								nBeforeUseBCDID = cntInfo.nTabID;
 							}
 							else
 							{
@@ -672,10 +662,39 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								nGrabCallBCDIdNext = 0;
 						}
 
+						//Grab Frame Info를 가져온다..
+						CGrabFrameInfo* pGrabInfo = CGrabDalsaCameraLink::popGrabFrameInfo(pTabInfo->nFrameCount);
+						//Cell Length 누적
+						CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount += pTabInfo->nImageLength;
+						//Grab Frame Info 정보가 있을 경우
+						if (pGrabInfo)
+						{
+							int diff = cntInfo.nTabID - nBeforeUseBCDID;
+							if (diff < 0)
+							{
+								diff = 64 + diff;
+							}
+							//Grab Frame Info Log
+							LOGDISPLAY_SPEC(11)(
+								logStringGrabFrameInfo
+								, AprData.m_NowLotData.m_nTabCount + 1
+								, AprData.m_NowLotData.m_strLotNo
+								, cntInfo.nTabID
+								, diff
+								, unNotUseCellLength
+								, pGrabInfo->m_nGrabFrmCount
+								, pGrabInfo->m_nGrabFrmBCDID
+								, pGrabInfo->m_nGrabFrmPixelCount
+								, CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount
+								);
+						}
+
 
 						//사용한 BCD ID  백업
 						nUseBCDIDBackup = cntInfo.nTabID;
 
+						//이전 BCD ID를  저장한다.
+						nBeforeUseBCDID = cntInfo.nTabID;
 
 						//Encoder Counter 누적
 						unTotalEncoderCount += cntInfo.nEnCoderCount;
@@ -1078,6 +1097,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	BOOL bClearFlag = FALSE;
 	//Key Id를 받았는지 확인
 	BOOL bReciveKeyId = FALSE;
+
+	//통합비전 BCD Id에 대한 Key 번호
+	//PLC에서 받은 데이터가 있는가 확인 후 세팅한다.
+	static int beforeBCDID = 64;
 
 	UINT ret = 0;
 
@@ -1499,7 +1522,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								wOutPut								
 							);
 
-							LOGDISPLAY_SPEC(11)(_T("Output Making TabNo	%d	BCD ID	%d	MarkingData	%d"),
+							LOGDISPLAY_SPEC(11)(_T("FT4	Output Making TabNo	%d	BCD ID	%d	MarkingData	%d"),
 								pTopInfo->nTabNo + 1,
 								pTopInfo->m_nTabId_CntBoard,
 								wOutPut
@@ -1588,12 +1611,11 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							//통합비전 BCD Id에 대한 Key 번호
 							//PLC에서 받은 데이터가 있는가 확인 후 세팅한다.
-							static int beforeBCDID = 64;
 							int nKeyId = -1;
-							nKeyId = pTopInfo->m_nTabId_CntBoard - beforeBCDID;
-							if (nKeyId < 0)
+							nKeyId = abs(pTopInfo->m_nTabId_CntBoard - beforeBCDID);
+							if (nKeyId > 60)
 							{
-								nKeyId = nKeyId + 64;
+								nKeyId = 64 - nKeyId;
 							}
 							beforeBCDID = pTopInfo->m_nTabId_CntBoard;
 							//if (bReciveKeyId)
@@ -1840,7 +1862,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								wOutPut
 							);
 
-							LOGDISPLAY_SPEC(11)(_T("LOOPING Output Making TabNo	%d	BCD ID	%d	MarkingData	%d"),
+							LOGDISPLAY_SPEC(11)(_T("FT5	LOOPING Output Making TabNo	%d	BCD ID	%d	MarkingData	%d"),
 								pTopInfo->nTabNo + 1,
 								pTopInfo->m_nTabId_CntBoard,
 								wOutPut
