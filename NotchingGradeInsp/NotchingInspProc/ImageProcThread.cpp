@@ -217,6 +217,10 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//일정 카운트 만큼 증기 시킨다.
 	UINT nBCDIDAddCount = 0;
 
+	//사용할 ID와 Grab ID 차이가 날 경우 
+	//카운트 0을 막는다.
+	bool bBCDIDAddCounReset = true;
+
 
 	//Image의 남은 픽셀 수 백업용
 	//전에 남은 이미지 보다 작아 질 때
@@ -565,8 +569,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							loop++;
 						}
 
-						bool bNotUseCellLengthBig = false;
-						if (unNotUseCellLength >= 30 && unNotUseCellLength <= 1000)
+						//BCD ID 조정 구간
+						if (unNotUseCellLength >= 30 && unNotUseCellLength <= 2000)
 						{
 							//남은 이미지 가 많아서 
 							if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId))
@@ -578,29 +582,22 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							}
 							else
 							{
-								nBCDIDAddCount = 0;
+								//BCD ID가 Grab BCD ID와 차가 너무 크게 발생했을 경우 예외 처리
+								if (bBCDIDAddCounReset == true)
+								{
+									nBCDIDAddCount = 0;
+								}
+								bBCDIDAddCounReset = true;
 							}
-							bNotUseCellLengthBig = false;
-						}
-						else if (unNotUseCellLength >= 3500 && unNotUseCellLength <= 4500)
-						{
-							//남은 이미지 가 많아서 
-							if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId))
-							{
-								//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
-								//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
-								nBCDIDAddCount++;
-
-							}
-							else
-							{
-								nBCDIDAddCount = 0;
-							}
-							bNotUseCellLengthBig = true;
 						}
 						else
 						{
-							nBCDIDAddCount = 0;
+							//BCD ID가 Grab BCD ID와 차가 너무 크게 발생했을 경우 예외 처리
+							if (bBCDIDAddCounReset == true)
+							{
+								nBCDIDAddCount = 0;
+							}
+							bBCDIDAddCounReset = true;
 						}
 
 						//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
@@ -608,23 +605,38 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if(nBCDIDAddCount >= 10)
 						{
 							//BCD ID를 Grab BCD ID 사용 + 구간 옵셋을 준다.
-							cntInfo.nTabID = (bNotUseCellLengthBig == true) ? (int)pTabInfo->m_GrabCallBCDId -1 : (int)pTabInfo->m_GrabCallBCDId;
+							int tmpBCDID = (int)pTabInfo->m_GrabCallBCDId;
+
+							//조정할 BCD ID가 이전 ID와 같다면 예외 처리
+							if (nBeforeUseBCDID == tmpBCDID)
+							{
+								//이전 BCD ID를 증가 시켜서 사용한다.
+								nUseBCDIDBackup++;
+								if (nUseBCDIDBackup >= 64)
+									nUseBCDIDBackup = 0;
+								cntInfo.nTabID = nUseBCDIDBackup;
+							}
+							else
+							{
+								cntInfo.nTabID = tmpBCDID;
+							}
 						}
 						else
 						{
 							//BCD ID 초기값 세팅
 							if (nUseBCDIDBackup >= 64)
 							{
+								//Grab BCD ID가 범이 안에 있을  때 사용
 								if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
 								{
+									//Grab BCD ID 사용
 									cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId;
 								}
 								else
 								{
+									//Last BCD ID 사용
 									cntInfo.nTabID = unRealLastBCDID;
 								}
-								//초기화 시 첫 세팅
-								nBeforeUseBCDID = cntInfo.nTabID;
 							}
 							else
 							{
@@ -634,18 +646,21 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 									nUseBCDIDBackup = 0;
 								cntInfo.nTabID = nUseBCDIDBackup;
 
-								//Last와 차가 너무 크면 예외 조치
-								if ((unRealLastBCDID >= 0) && (unRealLastBCDID < 64) && (pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+								//brab BCD ID와 사용할 BCD ID 차를 구해서 너무 차이가 날 경우 예외 처리한다.
+								if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
 								{
 									//Last와 차를 구한다.
-									int nDiff = abs((int)pTabInfo->m_GrabCallBCDId - (int)unRealLastBCDID);
+									int nDiff = abs((int)pTabInfo->m_GrabCallBCDId - (int)nUseBCDIDBackup);
 									//차가 60보다 크다면 64에서 차를 구하고 아니면 그냥 사용한다.
 									int nDiffVal = (nDiff >= 60) ? 64 - nDiff : nDiff;
 
 									//실제 차가 2이상 날 경우 Last를 사용한다.
-									if (nDiffVal >= 3)
+									if (nDiffVal >= 2)
 									{
-										cntInfo.nTabID = unRealLastBCDID;
+										//카운트 리셋 잠시 막는다.
+										bBCDIDAddCounReset = false;
+										//Grab BCD ID 사용하도록 설정한다.
+										nBCDIDAddCount = 10;
 									}
 								}
 							}

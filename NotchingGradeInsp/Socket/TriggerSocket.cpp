@@ -84,6 +84,9 @@ void CTriggerSocket::OnConnect( int nErrorCode )
 	{
 		m_bConnected = TRUE ;
 		m_bDisConnected = FALSE ;
+
+		int flags = 1;
+		setsockopt(m_hSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags));
 	} 
 	else
 	{
