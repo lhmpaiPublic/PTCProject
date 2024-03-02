@@ -9,6 +9,17 @@
 
 CImageProcessCtrl* CGrabDalsaCameraLink::m_pImageProcessCtrl = NULL;
 
+//Grab Frame Info 동기화
+CRITICAL_SECTION CGrabDalsaCameraLink::m_csGrabFrameInfo;
+//Grab 이미지 취득 시 BCD ID 와 Frame 에 대한 얻은 픽셀의 수를 누적한다.
+std::vector<CGrabFrameInfo*> CGrabDalsaCameraLink::m_GrabFrameInfo;
+//Grab Height Pixel Total Count
+UINT64 CGrabDalsaCameraLink::m_GrabPixelHeightTotalCount = 0;
+//Cell Make Height Pixel Total Count
+UINT64 CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount = 0;
+
+typedef std::vector<CGrabFrameInfo*>::iterator GrabFrameInfo_iterator;
+
 //프레임 처리시간 객체를 세팅한다.
 #include "ImageProcThread.h"
 
@@ -116,6 +127,15 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				//지금의 Last BCD ID
 				pFrmInfo->m_GrabCallBCDId = AprData.m_NowLotData.m_nLastBCDId;
 
+				//Grab Frame Info를 저장한다.
+				CGrabFrameInfo* info = NULL;
+				info = new CGrabFrameInfo();
+				info->m_nGrabFrmBCDID = pFrmInfo->m_GrabCallBCDId;
+				info->m_nGrabFrmCount = nFrameCnt;
+				CGrabDalsaCameraLink::m_GrabPixelHeightTotalCount += nHeight;
+				info->m_nGrabFrmPixelCount = CGrabDalsaCameraLink::m_GrabPixelHeightTotalCount;
+				CGrabDalsaCameraLink::pushGrabFrameInfo(info);
+
 				pFrmInfo->SetImgPtr(pImg);
 				pFrmInfo->m_nHeight = nHeight;
 				pFrmInfo->m_nWidth = nWidth;
@@ -188,11 +208,16 @@ CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
 	m_nImgWidth = AprData.m_System.m_nCamViewWidth ; 
 	m_nImgHeight = AprData.m_System.m_nCamViewHeight ;
 
+	::InitializeCriticalSection(&m_csGrabFrameInfo);
+	//Grab Height Pixel Total Count
+	m_GrabPixelHeightTotalCount = 0;
+	//Cell Make Height Pixel Total Count
+	m_CellMakePixelHeightTotalCount = 0;
 }
 
 CGrabDalsaCameraLink::~CGrabDalsaCameraLink(void)
 {
-
+	::DeleteCriticalSection(&m_csGrabFrameInfo);
 }
 int CGrabDalsaCameraLink::Close()
 {
@@ -202,6 +227,48 @@ int CGrabDalsaCameraLink::Close()
 	}
 	FreeHandle();
 	return 0;
+}
+
+//Grab 정보 저장
+void CGrabDalsaCameraLink::pushGrabFrameInfo(CGrabFrameInfo* info)
+{
+	::EnterCriticalSection(&m_csGrabFrameInfo);
+	m_GrabFrameInfo.push_back(info);
+	::LeaveCriticalSection(&m_csGrabFrameInfo);
+}
+//Grab 정보 가져오기
+CGrabFrameInfo* CGrabDalsaCameraLink::popGrabFrameInfo(int nFrameCount)
+{
+	CGrabFrameInfo* info = NULL;
+	::EnterCriticalSection(&m_csGrabFrameInfo);
+	// 받은 input id data가 있으면
+	if (m_GrabFrameInfo.size())
+	{
+		//시작 점
+		GrabFrameInfo_iterator it = m_GrabFrameInfo.begin();
+		//end 까지 돌면서 true 인 지울 end 포인터를 백업한다.
+		while (it != m_GrabFrameInfo.end())
+		{
+			if ((*it)->m_nGrabFrmCount == nFrameCount)
+			{
+				info = (*it);
+				break;
+			}
+			else
+			{
+				delete (*it);
+				(*it) = NULL;
+			}
+			it++;
+		}
+
+		if (info != NULL)
+		{
+			m_GrabFrameInfo.erase(m_GrabFrameInfo.begin(), it);
+		}
+	}
+	::LeaveCriticalSection(&m_csGrabFrameInfo);
+	return info;
 }
 
 int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServerIdx )

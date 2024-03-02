@@ -16,6 +16,9 @@
 #include "SigProc.h"
 #include "NotchingGradeInsp.h" // 22.04.01 Ahn Add 
 
+//Grab 객체
+#include "GrabDalsaCameraLink.h"
+
 #include "CThreadQueueCtrl.h"
 #include "CImageProcThreadUnit.h"
 #include "AppDIO.h"
@@ -240,18 +243,20 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		_T("NowBCDID	%d	")
 		_T("GrabCallBCDID	%d	")
 		_T("GrabCallTime	%d	")
-		_T("globalEncoderTotal	%d	")
-		_T("globalImageTotal	%d	")
-		_T("Diff_globalEnImg	%d	")
 		_T("EncoderTotal	%d	")
 		_T("ImageTotal	%d	")
-		_T("Diff_EncoderImgCount	%d	")
-		_T("NowEncoderCount	%d	")
 		_T("NowCellLen	%d	")
 		_T("TotalCellLen	%d	")
-		_T("Diff_ImgUseTotal	%d	")
-		_T("CellLen_notUse	%d	")
-		_T("LastInputBCDID	%d")
+		_T("CellLen_notUse	%d")
+		;
+
+	CString logStringGrabFrameInfo =
+		_T("TabNo	%d	")
+		_T("LotID	%s	")
+		_T("FrameNo	%d	")
+		_T("FrameBCDID	%d	")
+		_T("FrameHeightTotal	%d	")
+		_T("CellHeightTotal	%d")
 		;
 
 	while (1)
@@ -451,6 +456,26 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//Tab  정보 접근 임시 포인터 변수
 						CTabInfo* pTabInfo = &vecTabInfo[idxi];
+
+						//Grab Frame Info를 가져온다..
+						CGrabFrameInfo* pGrabInfo = CGrabDalsaCameraLink::popGrabFrameInfo(pTabInfo->nFrameCount);
+						//Cell Length 누적
+						CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount += pTabInfo->nImageLength;
+						//Grab Frame Info 정보가 있을 경우
+						if (pGrabInfo)
+						{
+							//Grab Frame Info Log
+							LOGDISPLAY_SPEC(11)(
+								logStringGrabFrameInfo
+								, AprData.m_NowLotData.m_nTabCount + 1
+								, AprData.m_NowLotData.m_strLotNo
+								, pGrabInfo->m_nGrabFrmCount
+								, pGrabInfo->m_nGrabFrmBCDID
+								, pGrabInfo->m_nGrabFrmPixelCount
+								, CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount
+								);
+						}
+
 
 						//Tab Pitch 구하기
 						double dTabPitch = 0.0;
@@ -918,9 +943,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							);
 
 
-						//Tab Counter에서 받은 마지막 BCD ID
-						int nLastInputBCDId = CCounterThread::GetInputReadId();
-
 						//Tab Counter Log
 						//Total Cell 길이 (누적 Cell 크기)
 						unTotalCellLength += unNowCellLength;
@@ -932,18 +954,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							,cntInfo.nTabID
 							,pTabInfo->m_GrabCallBCDId
 							,pTabInfo->m_GrabCallTime
-							,AprData.m_NowLotData.m_unGTotalEncoderCount
-							,AprData.m_NowLotData.m_unGTotalImageCount
-							,(AprData.m_NowLotData.m_unGTotalEncoderCount - AprData.m_NowLotData.m_unGTotalImageCount)
 							,unTotalEncoderCount
 							,unTotalImageCount
-							,(unTotalEncoderCount - unTotalImageCount)
-							,(unTotalEncoderCount - unTotalEncoderCountBackup)
 							,unNowCellLength
 							,unTotalCellLength
-							,(unTotalImageCount - unTotalCellLength)
 							,unNotUseCellLength
-							,nLastInputBCDId
 						);
 
 						unTotalEncoderCountBackup = unTotalEncoderCount;

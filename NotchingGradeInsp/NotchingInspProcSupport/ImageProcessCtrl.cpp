@@ -282,7 +282,7 @@ int CImageProcessCtrl::Initialize(HWND hWnd, int nIndex )
 	if (m_pGrabCtrl[ nIndex ] == NULL) {
 		m_pGrabCtrl[nIndex] = new CGrabDalsaCameraLink(this);
 	}
-	
+
 	//이미지 인텍스
 	m_nImgProcIdx[nIndex] = nIndex;
 
