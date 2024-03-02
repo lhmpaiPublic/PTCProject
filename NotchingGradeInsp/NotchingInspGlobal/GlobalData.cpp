@@ -1164,14 +1164,8 @@ void CLotInfo::ClearAllCount()
 	//Image Total Count
 	m_unGTotalImageCount = 0;
 
-	//다음에 사용될 BCD ID
-	m_nUseBCDID = 64;
-
 	//BCD ID 증감 값
 	m_BCDIDVal = 0;
-
-	//제일 마지막 받은 BCD ID 
-	m_nLastBCDId = 0;
 
 	//Trigger Tab Id 초기화
 	m_bInitTabId = FALSE;
