@@ -249,15 +249,18 @@ CGrabFrameInfo* CGrabDalsaCameraLink::popGrabFrameInfo(int nFrameCount)
 		//end 까지 돌면서 true 인 지울 end 포인터를 백업한다.
 		while (it != m_GrabFrameInfo.end())
 		{
-			if ((*it)->m_nGrabFrmCount == nFrameCount)
+			if ((*it) != NULL)
 			{
-				info = (*it);
-				break;
-			}
-			else
-			{
-				delete (*it);
-				(*it) = NULL;
+				if ((*it)->m_nGrabFrmCount == nFrameCount)
+				{
+					info = (*it);
+					break;
+				}
+				else
+				{
+					delete (*it);
+					(*it) = NULL;
+				}
 			}
 			it++;
 		}
