@@ -217,11 +217,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//일정 카운트 만큼 증기 시킨다.
 	UINT nBCDIDAddCount = 0;
 
-	//사용할 ID와 Grab ID 차이가 날 경우 
-	//카운트 0을 막는다.
-	bool bBCDIDAddCounReset = true;
-
-
 	//Image의 남은 픽셀 수 백업용
 	//전에 남은 이미지 보다 작아 질 때
 	UINT unNotUseCellLengthBackup = 0;
@@ -574,7 +569,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 
 						//남은 이미지 가 많아서 
-						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId))
+						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId) && (unNotUseCellLength >= 4000))
 						{
 							//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
 							//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
@@ -583,18 +578,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						}
 						else
 						{
-							//BCD ID가 Grab BCD ID와 차가 너무 크게 발생했을 경우 예외 처리
-							if (bBCDIDAddCounReset == true)
-							{
-								nBCDIDAddCount = 0;
-							}
-							bBCDIDAddCounReset = true;
+							nBCDIDAddCount = 0;
 						}
 
 
 						//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
 						//Grab Call BCD ID를 사용하고 아니면 계속 증가 시킨다.
-						if(nBCDIDAddCount >= 8)
+						if(nBCDIDAddCount >= 3)
 						{
 							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
 							if (cntInfo.nTabID >= 64)
