@@ -40,28 +40,6 @@ public :
 	void SetRun(BOOL bRun) { m_bRunFlag = bRun; } ;
 };
 
-//Grab Call 정보
-class CGrabFrameInfo
-{
-public:
-	CGrabFrameInfo()
-	{
-		//Grab Frame Count
-		m_nGrabFrmCount = -1;
-		//Grab 시 제일 마지막에 받은 BCD ID
-		//이전 BCD ID와 같다면 -1
-		m_nGrabFrmBCDID = -1;
-		//Grab 시 총 Pixel 수
-		m_nGrabFrmPixelCount = 0;
-	}
-	//Grab Frame Count
-	int m_nGrabFrmCount;
-	//Grab 시 제일 마지막에 받은 BCD ID
-	//이전 BCD ID와 같다면 -1
-	int m_nGrabFrmBCDID;
-	//Grab 시 총 Pixel 수
-	UINT64 m_nGrabFrmPixelCount;
-};
 class CImageProcessCtrl;
 class CGrabDalsaCameraLink :public CGrabberCtrl
 {
@@ -96,21 +74,6 @@ private :
 	int				m_nImgHeight;
 	long			m_lStartFrameNo;
 
-	//Grab 시 정보
-public:
-	//Grab 이미지 취득 시 BCD ID 와 Frame 에 대한 얻은 픽셀의 수를 누적한다.
-	static std::vector<CGrabFrameInfo*> m_GrabFrameInfo;
-
-	//Grab Frame Info 동기화
-	static CRITICAL_SECTION m_csGrabFrameInfo;
-	//Grab 정보 저장
-	static void pushGrabFrameInfo(CGrabFrameInfo* info);
-	//Grab 정보 가져오기
-	static CGrabFrameInfo* popGrabFrameInfo(int nFrameCount);
-	//Grab Height Pixel Total Count
-	static UINT64 m_GrabPixelHeightTotalCount;
-	//Cell Make Height Pixel Total Count
-	static UINT64 m_CellMakePixelHeightTotalCount;
 public:
 	//TacTime 출력 변수
 	static LARGE_INTEGER stTime;
