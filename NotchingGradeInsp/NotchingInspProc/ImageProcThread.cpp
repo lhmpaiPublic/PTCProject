@@ -645,34 +645,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								nGrabCallBCDIdNext = 0;
 						}
 
-						//Grab Frame Info를 가져온다..
-						CGrabFrameInfo* pGrabInfo = CGrabDalsaCameraLink::popGrabFrameInfo(pTabInfo->nFrameCount);
-						//Cell Length 누적
-						CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount += pTabInfo->nImageLength;
-						//Grab Frame Info 정보가 있을 경우
-						if (pGrabInfo)
-						{
-							int diff = cntInfo.nTabID - nBeforeUseBCDID;
-							if (diff < 0)
-							{
-								diff = 64 + diff;
-							}
-							//Grab Frame Info Log
-							LOGDISPLAY_SPEC(11)(
-								logStringGrabFrameInfo
-								, AprData.m_NowLotData.m_nTabCount + 1
-								, AprData.m_NowLotData.m_strLotNo
-								, cntInfo.nTabID
-								, diff
-								, unNotUseCellLength
-								, pGrabInfo->m_nGrabFrmCount
-								, pGrabInfo->m_nGrabFrmBCDID
-								, pGrabInfo->m_nGrabFrmPixelCount
-								, CGrabDalsaCameraLink::m_CellMakePixelHeightTotalCount
-								);
-						}
-
-
 						//사용한 BCD ID  백업
 						nUseBCDIDBackup = cntInfo.nTabID;
 
