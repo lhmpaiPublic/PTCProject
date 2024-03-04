@@ -218,6 +218,22 @@ CGrabDalsaCameraLink::CGrabDalsaCameraLink(CImageProcessCtrl* pImageProcessCtrl)
 CGrabDalsaCameraLink::~CGrabDalsaCameraLink(void)
 {
 	::DeleteCriticalSection(&m_csGrabFrameInfo);
+
+	if (m_GrabFrameInfo.size())
+	{
+		GrabFrameInfo_iterator itdelete = m_GrabFrameInfo.begin();
+		//end 까지 돌면서
+		while (itdelete != m_GrabFrameInfo.end())
+		{
+			if ((*itdelete) != NULL)
+			{
+				delete (*itdelete);
+				(*itdelete) = NULL;
+			}
+			itdelete++;
+		}
+		m_GrabFrameInfo.clear();
+	}
 }
 int CGrabDalsaCameraLink::Close()
 {
