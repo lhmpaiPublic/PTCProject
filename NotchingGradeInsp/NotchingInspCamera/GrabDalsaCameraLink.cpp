@@ -246,6 +246,7 @@ CGrabFrameInfo* CGrabDalsaCameraLink::popGrabFrameInfo(int nFrameCount)
 	{
 		//시작 점
 		GrabFrameInfo_iterator it = m_GrabFrameInfo.begin();
+		GrabFrameInfo_iterator itdelete = m_GrabFrameInfo.end();
 		//end 까지 돌면서 true 인 지울 end 포인터를 백업한다.
 		while (it != m_GrabFrameInfo.end())
 		{
@@ -260,14 +261,15 @@ CGrabFrameInfo* CGrabDalsaCameraLink::popGrabFrameInfo(int nFrameCount)
 				{
 					delete (*it);
 					(*it) = NULL;
+					itdelete = it;
 				}
 			}
 			it++;
 		}
 
-		if (info != NULL)
+		if (itdelete != m_GrabFrameInfo.end())
 		{
-			m_GrabFrameInfo.erase(m_GrabFrameInfo.begin(), it);
+			m_GrabFrameInfo.erase(m_GrabFrameInfo.begin(), itdelete);
 		}
 	}
 	::LeaveCriticalSection(&m_csGrabFrameInfo);
