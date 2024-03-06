@@ -220,11 +220,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//남은 Cell 크기(남은 이미지 픽셀수
 	UINT unNotUseCellLength = 0;
 
-//Encoder Counter 사용여부
-	//Tab Counter log 변수들
-	//총 Encoder Count 수
-	UINT64 unTotalEncoderCount = 0;
-
 	//총 Image Count 수
 	UINT64 unTotalImageCount = 0;
 
@@ -239,7 +234,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		_T("NowBCDID	%d	")
 		_T("GrabCallBCDID	%d	")
 		_T("GrabCallTime	%d	")
-		_T("EncoderTotal	%d	")
 		_T("ImageTotal	%d	")
 		_T("NowCellLen	%d	")
 		_T("TotalCellLen	%d	")
@@ -301,17 +295,15 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 			if (AprData.m_NowLotData.m_nTabCount == 0)
 			{
 
-				//총 Encoder Count 수
-				unTotalEncoderCount = 0;
 				//총 Image Count 수
 				unTotalImageCount = 0;
 				//총 Image Count 수
 				unTotalCellLength = 0;
 
 				//Encoder Total Count
-				AprData.m_NowLotData.m_unGTotalEncoderCount = 0;
+				AprData.m_NowLotData.m_uEncoderCount = 0;
 				//Image Total Count
-				AprData.m_NowLotData.m_unGTotalImageCount = 0;
+				AprData.m_NowLotData.m_uImageTotalCount = 0;
 			}
 
 			//프레임 크기
@@ -535,11 +527,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//전에 사용한 BCD ID 사용
 						cntInfo.nTabID = AprData.m_NowLotData.m_nUseBCDID;
 						//Tab Total Count MAX
-						cntInfo.nTabIdTotalCount = 0;
+						cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
 						//TabNo Trigger 수신에서 가져온 값
-						cntInfo.nTabNo = 0;
+						cntInfo.nTabNo = AprData.m_NowLotData.m_nTabCount;
 						//Encoder Count 값
-						cntInfo.nEnCoderCount = 0;
+						cntInfo.nEnCoderCount = AprData.m_NowLotData.m_nTabCount;
 
 						//남은 이미지 픽셀 크기가 4000이상일 때 
 						//Tab Info에서 얻은 BCD ID와 이전 BCD ID + 1 증가한 값이 같다면
@@ -614,9 +606,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//사용한 BCD ID  백업
 						AprData.m_NowLotData.m_nUseBCDID = cntInfo.nTabID;
-
-						//Encoder Counter 누적
-						unTotalEncoderCount += cntInfo.nEnCoderCount;
 
 						//Tab 정보에서 Left 크기, Right 크기
 						int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
@@ -880,7 +869,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							,cntInfo.nTabID
 							,pTabInfo->m_GrabCallBCDId
 							,pTabInfo->m_GrabCallTime
-							,unTotalEncoderCount
 							,unTotalImageCount
 							,unNowCellLength
 							,unTotalCellLength

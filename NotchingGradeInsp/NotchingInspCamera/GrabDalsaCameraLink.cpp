@@ -126,7 +126,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				if (pFrmInfo->m_nHeadNo == CAM_POS_TOP)
 				{
 					//Image Total Count
-					AprData.m_NowLotData.m_unGTotalImageCount += pFrmInfo->m_nHeight;
+					AprData.m_NowLotData.m_uImageTotalCount += pFrmInfo->m_nHeight;
 				}
 
 				CString strMsg = "";

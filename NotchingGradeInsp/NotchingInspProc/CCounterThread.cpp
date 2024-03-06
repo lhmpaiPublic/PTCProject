@@ -221,7 +221,7 @@ void CCounterThread::RecivePacket(char* data, int len)
 			//Tab Total Count를 증가 시킨다.
 			AprData.m_NowLotData.m_nTabIdTotalCount++;
 
-			AprData.m_NowLotData.m_unGTotalEncoderCount += nEncodeCnt;
+			AprData.m_NowLotData.m_uEncoderCount = nEncodeCnt;
 
 			LOGDISPLAY_SPEC(11)(_T("FT1	ID:	%d	Encode Count	%d	TabTotal	%d	TabNo	%d"), nID, nEncodeCnt, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
 
@@ -792,7 +792,7 @@ BOOL CCounterThread::readTriggerBCDID()
 				//Tab Total Count를 증가 시킨다.
 				AprData.m_NowLotData.m_nTabIdTotalCount++;
 
-				AprData.m_NowLotData.m_unGTotalEncoderCount = 0;
+				AprData.m_NowLotData.m_uEncoderCount = 0;
 
 				LOGDISPLAY_SPEC(11)(_T("FT1	ID:	%d	TabTotal	%d	TabNo	%d"), wTempID, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
 

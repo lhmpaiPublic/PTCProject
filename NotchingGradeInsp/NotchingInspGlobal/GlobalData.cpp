@@ -1171,13 +1171,13 @@ void CLotInfo::ClearAllCount()
 	m_nTabIdTotalCount = 0;
 
 	//Encoder Total Count
-	m_unGTotalEncoderCount = 0;
+	m_uEncoderCount = 0;
 
 	//BCD ID input time
 	m_nBCDIDInputTime = GetTickCount();
 
 	//Image Total Count
-	m_unGTotalImageCount = 0;
+	m_uImageTotalCount = 0;
 
 	//Trigger Tab Id 초기화
 	m_bInitTabId = FALSE;

@@ -309,13 +309,13 @@ public:
 	int		m_nTabIdTotalCount;
 
 	//Encoder Total Count
-	UINT64 m_unGTotalEncoderCount;
+	UINT m_uEncoderCount;
 
 	//BCD ID input time
 	UINT64 m_nBCDIDInputTime;
 
 	//Image Total Count
-	UINT64 m_unGTotalImageCount;
+	UINT m_uImageTotalCount;
 
 	//Trigger Tab Id 초기화
 	BOOL m_bInitTabId;
