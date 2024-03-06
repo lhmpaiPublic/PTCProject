@@ -27,6 +27,7 @@ CHistoryLotDlg::CHistoryLotDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspVie
 
 	m_pHistoryList = NULL ;
 	m_pFontGrid = NULL; // 22.07.22 Ahn Add 
+
 }
 
 CHistoryLotDlg::~CHistoryLotDlg()
@@ -69,7 +70,7 @@ BOOL CHistoryLotDlg::OnInitDialog()
 	
 	MakeHitoryGrid();
 
-	GetDlgItem(IDC_EDIT_BCDID_DIFF)->SetWindowTextA(std::to_string(AprData.m_NowLotData.m_BCDIDVal).c_str());
+	GetDlgItem(IDC_EDIT_BCDID_DIFF)->SetWindowTextA(std::to_string(AprData.m_NowLotData.m_nUseBCDID).c_str());
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -260,8 +261,7 @@ void CHistoryLotDlg::RefreshAll()
 //마킹 BCD ID를 갱신한다.
 void CHistoryLotDlg::UpdateBCDID()
 {
-	AprData.m_NowLotData.m_BCDIDVal = 0;
-	GetDlgItem(IDC_EDIT_BCDID_DIFF)->SetWindowTextA(std::to_string(AprData.m_NowLotData.m_BCDIDVal).c_str());
+	GetDlgItem(IDC_EDIT_BCDID_DIFF)->SetWindowTextA(std::to_string(AprData.m_NowLotData.m_nUseBCDID).c_str());
 }
 
 //마킹 BCD ID를 출럭한다.
@@ -445,18 +445,16 @@ void CHistoryLotDlg::OnDeltaposSpinBcdidDiff(NMHDR* pNMHDR, LRESULT* pResult)
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (pNMUpDown->iDelta < 0)
 	{
-		AprData.m_NowLotData.m_BCDIDVal++;
 		AprData.m_NowLotData.m_nUseBCDID++;
 		if (AprData.m_NowLotData.m_nUseBCDID >= 64)
 			AprData.m_NowLotData.m_nUseBCDID = 0;
 	}
 	else
 	{
-		AprData.m_NowLotData.m_BCDIDVal--;
 		AprData.m_NowLotData.m_nUseBCDID--;
 		if (AprData.m_NowLotData.m_nUseBCDID < 0)
 			AprData.m_NowLotData.m_nUseBCDID = 63;
 	}
-	GetDlgItem(IDC_EDIT_BCDID_DIFF)->SetWindowTextA(std::to_string(AprData.m_NowLotData.m_BCDIDVal).c_str());
+	GetDlgItem(IDC_EDIT_BCDID_DIFF)->SetWindowTextA(std::to_string(AprData.m_NowLotData.m_nUseBCDID).c_str());
 	*pResult = 0;
 }

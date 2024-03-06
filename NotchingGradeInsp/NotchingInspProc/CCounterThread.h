@@ -46,8 +46,6 @@ protected:
 
 	CTriggerSocket* m_TriggerSocket;
 
-	CCounterQueueCtrl* m_pCntQueInPtr;
-
 	//마킹 input ID 읽었을 때
 	static std::vector<int> m_inputReadId;
 

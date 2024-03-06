@@ -86,6 +86,9 @@ protected :
 
 	//생성모드
 	int m_CreateMode;
+
+	//메인 프레임 객체
+	CMainFrame* m_pFrame;
 protected:
 	//이미지 분석처리를 위한 스래드 함수
 	static UINT CtrlThreadImgProc( LPVOID pParam ) ;

@@ -136,12 +136,9 @@ void CCounterThread::RecivePacket(char* data, int len)
 			nEncodeCnt = MAKELONG(MAKEWORD(szBuf[4], szBuf[5]), MAKEWORD(szBuf[6], szBuf[7]));
 
 			//누락된 input 아이디를 찾는다.
-						//초기값이 없다면 nextTabID 입력만
+			//초기값이 없다면 nextTabID 입력만
 			if (m_nextTabID == 255)
 			{
-				//초기화 한다.
-				m_pCntQueInPtr->ResetQueue();
-
 				//Tab Use Id 초기화 세팅
 				AprData.m_NowLotData.m_bInitTabId = TRUE;
 
@@ -186,9 +183,6 @@ void CCounterThread::RecivePacket(char* data, int len)
 						//Tab Id Queue도 초기화 한다.
 						if ((nID == 0) && (omissCount > 5))
 						{
-							//초기화 한다.
-							m_pCntQueInPtr->ResetQueue();
-
 							//Tab Use Id 초기화 세팅
 							AprData.m_NowLotData.m_bInitTabId = TRUE;
 							//DIO Input Log
@@ -199,7 +193,7 @@ void CCounterThread::RecivePacket(char* data, int len)
 						else
 						{
 							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("BCD ID 누락 카운트 추가 지금 카운트	%d	- 추가	%d	추가된 카운트	%d"), AprData.m_NowLotData.m_nTabIdTotalCount, omissCount, (AprData.m_NowLotData.m_nTabIdTotalCount + omissCount));
+							LOGDISPLAY_SPEC(7)(_T("BCD ID 누락 카운트 추가 지금 카운트	%d	- 추가	%d"), AprData.m_NowLotData.m_nTabIdTotalCount, omissCount);
 
 							AprData.m_NowLotData.m_nTabIdTotalCount += omissCount;
 						}
@@ -217,22 +211,14 @@ void CCounterThread::RecivePacket(char* data, int len)
 				}
 			}
 
-			//Tab Id 정보를 추가한다.
-			CCounterInfo cntInfo;
-			cntInfo.nTabID = nID;
-			cntInfo.nEnCoderCount = nEncodeCnt;
-
 			//제일 마지막 받은 BCD ID 
-			AprData.m_NowLotData.m_nLastBCDId = cntInfo.nTabID;
+			AprData.m_NowLotData.m_nLastBCDId = nID;
 
 			//BCD ID input time
 			AprData.m_NowLotData.m_nBCDIDInputTime = GetTickCount();
 
-			//Tab No(번호)
-			cntInfo.nTabNo = TabNo;
 			//Tab Total Count 
 			//Tab Total Count를 증가 시킨다.
-			cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
 			AprData.m_NowLotData.m_nTabIdTotalCount++;
 
 			AprData.m_NowLotData.m_unGTotalEncoderCount += nEncodeCnt;
@@ -240,8 +226,6 @@ void CCounterThread::RecivePacket(char* data, int len)
 			LOGDISPLAY_SPEC(11)(_T("FT1	ID:	%d	Encode Count	%d	TabTotal	%d	TabNo	%d"), nID, nEncodeCnt, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
 
 			AprData.SaveDebugLog_Format(_T("ID	%d, Encode Count	%d"), nID, nEncodeCnt);
-
-			m_pCntQueInPtr->PushBack(cntInfo);
 
 			//받은 id
 			::EnterCriticalSection(&m_csQueueReadId);
@@ -284,17 +268,11 @@ CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 	//테스트 타임 id 생성
 	m_markingTestTimeOut = GetTickCount();
 
-	//BCD ID 버퍼 객체
-	m_pCntQueInPtr = m_pParent->GetCounterQueInPtr();
-
 	//최종 읽은 값
 	m_wLastInfo = 0xFF;
 
 	//다음에 찾을 TabID - ID 누력 여부 확인용
 	m_nextTabID = 255;
-
-	//m_nTabIdTotalCount 를 백업 해둔다.
-	m_nTabIdTotalCount_backup = 0;
 
 	//DIO Trigger Bit 신호가 TRUE일 때 
 	//받은 값 백업 용
@@ -317,9 +295,6 @@ CCounterThread::~CCounterThread()
 void CCounterThread::Begin()
 {
 	m_bKill = FALSE;
-
-	//BCD iD 저장 큐 포인터 얻음
-	m_pCntQueInPtr = m_pParent->GetCounterQueInPtr();
 
 //Encoder Counter 사용여부
 #ifdef USE_BCDCOUNTER
@@ -403,8 +378,12 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 				break;
 			}
+
+//Tab Counter 사용 여부
+#ifndef USE_BCDCOUNTER
 			//트리거의 On 신호에 BCD ID를 읽기 위한 함수
 			pThis->readTriggerBCDID();
+#endif //USE_BCDCOUNTER
 
 			//마킹 처리를 위한 함수
 			pThis->MarkingProcess();
@@ -723,9 +702,6 @@ BOOL CCounterThread::readTriggerBCDID()
 				//초기값이 없다면 nextTabID 입력만
 				if (m_nextTabID == 255)
 				{
-					//초기화 한다.
-					m_pCntQueInPtr->ResetQueue();
-
 					//Tab Use Id 초기화 세팅
 					AprData.m_NowLotData.m_bInitTabId = TRUE;
 
@@ -776,9 +752,6 @@ BOOL CCounterThread::readTriggerBCDID()
 							//Tab Id Queue도 초기화 한다.
 							if ((wTempID == 0) && (omissCount > 5))
 							{
-								//초기화 한다.
-								m_pCntQueInPtr->ResetQueue();
-
 								//Tab Use Id 초기화 세팅
 								AprData.m_NowLotData.m_bInitTabId = TRUE;
 								//DIO Input Log
@@ -791,12 +764,10 @@ BOOL CCounterThread::readTriggerBCDID()
 							else
 							{
 								//DIO Input Log
-								LOGDISPLAY_SPEC(7)(_T("BCD ID 누락 카운트	%d	추가	%d	추가된 카운트	%d"), AprData.m_NowLotData.m_nTabIdTotalCount, omissCount, (AprData.m_NowLotData.m_nTabIdTotalCount + omissCount));
+								LOGDISPLAY_SPEC(7)(_T("BCD ID 누락 카운트 Total Count	%d	추가	%d"), AprData.m_NowLotData.m_nTabIdTotalCount, omissCount);
 
 								AprData.m_NowLotData.m_nTabIdTotalCount += omissCount;
 							}
-							//Tab id Count 백업
-							m_nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
 						}
 
 						LOGDISPLAY_SPEC(7)(_T("BCD ID 누락 before	%d	now	%d"), m_wLastTabId, wTempID);
@@ -811,26 +782,22 @@ BOOL CCounterThread::readTriggerBCDID()
 					}
 				}
 
-				CCounterInfo cntInfo;
-				//Tab Id 
-				cntInfo.nTabID = wTempID;
 				//제일 마지막 받은 BCD ID 
-				AprData.m_NowLotData.m_nLastBCDId = cntInfo.nTabID;
+				AprData.m_NowLotData.m_nLastBCDId = wTempID;
+
 				//BCD ID input time
 				AprData.m_NowLotData.m_nBCDIDInputTime = GetTickCount();
 
-				//Tab No(번호)
-				cntInfo.nTabNo = TabNo;
 				//Tab Total Count 
 				//Tab Total Count를 증가 시킨다.
 				AprData.m_NowLotData.m_nTabIdTotalCount++;
-				cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
 
-				//Tab Id 정보를 추가한다.
-				m_pCntQueInPtr->PushBack(cntInfo);
+				AprData.m_NowLotData.m_unGTotalEncoderCount = 0;
 
-				//Tab id Count 백업
-				m_nTabIdTotalCount_backup = AprData.m_NowLotData.m_nTabIdTotalCount;
+				LOGDISPLAY_SPEC(11)(_T("FT1	ID:	%d	TabTotal	%d	TabNo	%d"), wTempID, AprData.m_NowLotData.m_nTabIdTotalCount, TabNo);
+
+				AprData.SaveDebugLog_Format(_T("ID	%d	TabNo	%d"), wTempID, TabNo);
+
 
 				//받은 id
 				::EnterCriticalSection(&m_csQueueReadId);
@@ -845,19 +812,6 @@ BOOL CCounterThread::readTriggerBCDID()
 				m_wLastInfo = wTempID;
 				m_wLastTabId = wTempID;
 
-				int nCntQueSize = m_pCntQueInPtr->GetSize();
-
-				//디버그 로그 기록
-				AprData.SaveDebugLog_Format(_T("Input BCD ID	%d	BCD ID BuffSize	%d"), cntInfo.nTabID, nCntQueSize);
-
-				//DIO Input Log
-				LOGDISPLAY_SPEC(7)(_T("Input ID Add TabId	%d	TotalCount	%d	Queue Count	%d"), cntInfo.nTabID, cntInfo.nTabIdTotalCount, nCntQueSize);
-
-				if (nCntQueSize >= FRAME_ACQ_ERROR_CHK_CNT)
-				{
-					// 에러 처리 : BCD ID는 들어오는데 Frame이 없거나 Process 처리 문제로 BCD를 사용하지 못하고 쌓이는 경우 에러
-					AprData.SaveErrorLog_Format(_T("Frame Error : BCD Que Over	%d	%d	Process End!!!!"), nCntQueSize, FRAME_ACQ_ERROR_CHK_CNT);
-				}
 			}
 			b = TRUE;
 		}

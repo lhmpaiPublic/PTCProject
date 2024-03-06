@@ -286,8 +286,12 @@ public:
 
 // 22.07.06 Ahn Add Start
 
-class CLotInfo {
+class CLotInfo 
+{
 public:
+	CLotInfo();
+	~CLotInfo();
+
 	CString m_strLotNo;
 	CString m_strDate;
 	CString m_strRecipeName;
@@ -318,9 +322,6 @@ public:
 
 	//다음에 사용될 BCD ID
 	int m_nUseBCDID;
-
-	//BCD ID 증감 값
-	int m_BCDIDVal;
 
 	//제일 마지막 받은 BCD ID 
 	int m_nLastBCDId;
