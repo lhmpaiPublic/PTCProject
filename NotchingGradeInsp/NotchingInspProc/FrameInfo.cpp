@@ -27,6 +27,9 @@ CFrameInfo::CFrameInfo(void)
 	//Grab Image 얻은 시점의 BCD ID
 	m_GrabCallBCDId = 64;
 
+	//Grab Call : Encoder Count
+	m_GrabCallEncoderCount = 0;
+
 	//Grab Call 호출 타임(ms)
 	m_GrabCallTime = 0;
 

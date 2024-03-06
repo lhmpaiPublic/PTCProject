@@ -6653,9 +6653,10 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-			//Grab Call Time과 BCD ID를 기록한다.
+	//Grab Call Time과 BCD ID를 기록한다.
 	UINT64 nGrabCallTimebackup = pResvTabInfo->m_GrabCallTime;
-	UINT64 nGrabCallBCDIdbackup = pResvTabInfo->m_GrabCallBCDId;
+	int nGrabCallEncoderCountbackup = pResvTabInfo->m_GrabCallEncoderCount;
+	int nGrabCallBCDIdbackup = pResvTabInfo->m_GrabCallBCDId;
 
 
 	//Tab Info를 만들기 위한 case 
@@ -6785,8 +6786,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
 			//Grab Call Time과 BCD ID를 기록한다.
-			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
-			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+			tabInfo.m_GrabCallTime = nGrabCallTimebackup;
+			tabInfo.m_GrabCallEncoderCount = nGrabCallEncoderCountbackup;
+			tabInfo.m_GrabCallBCDId = nGrabCallBCDIdbackup;
 
 			//생성된 tab Info Image 메모리에 Copy
 			//Top : Tab이 있는 이미지
@@ -6827,8 +6829,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
 			//Grab Call Time과 BCD ID를 기록한다.
-			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
-			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+			tabInfo.m_GrabCallTime = nGrabCallTimebackup;
+			tabInfo.m_GrabCallEncoderCount = nGrabCallEncoderCountbackup;
+			tabInfo.m_GrabCallBCDId = nGrabCallBCDIdbackup;
 
 
 			//생성된 tab Info Image 메모리에 Copy
@@ -6861,8 +6864,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
 			//Grab Call Time과 BCD ID를 기록한다.
-			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
-			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+			tabInfo.m_GrabCallTime = nGrabCallTimebackup;
+			tabInfo.m_GrabCallEncoderCount = nGrabCallEncoderCountbackup;
+			tabInfo.m_GrabCallBCDId = nGrabCallBCDIdbackup;
 			
 			//새로 들어온 이미지를 사용해야 하는가를 설정
 			//새로운 이미지 Copy 해서 Cell 정보를 만든다.
@@ -6887,8 +6891,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
 			//Grab Call Time과 BCD ID를 기록한다.
-			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
-			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+			tabInfo.m_GrabCallTime = nGrabCallTimebackup;
+			tabInfo.m_GrabCallEncoderCount = nGrabCallEncoderCountbackup;
+			tabInfo.m_GrabCallBCDId = nGrabCallBCDIdbackup;
 			
 			//사용한 섹터 정보를 지운다.
 			vecSector.erase(vecSector.begin());
@@ -6914,8 +6919,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame;
 
 			//Grab Call Time과 BCD ID를 기록한다.
-			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
-			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+			tabInfo.m_GrabCallTime = nGrabCallTimebackup;
+			tabInfo.m_GrabCallEncoderCount = nGrabCallEncoderCountbackup;
+			tabInfo.m_GrabCallBCDId = nGrabCallBCDIdbackup;
 
 			//사용한 섹터 정보를 지운다.
 			vecSector.erase(vecSector.begin());
@@ -6987,8 +6993,9 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nTabStartPosInFrame = pResvTabInfo->nTabStartPosInFrame ;
 
 			//Grab Call Time과 BCD ID를 기록한다.
-			tabInfo.m_GrabCallTime = pResvTabInfo->m_GrabCallTime;
-			tabInfo.m_GrabCallBCDId = pResvTabInfo->m_GrabCallBCDId;
+			tabInfo.m_GrabCallTime = nGrabCallTimebackup;
+			tabInfo.m_GrabCallEncoderCount = nGrabCallEncoderCountbackup;
+			tabInfo.m_GrabCallBCDId = nGrabCallBCDIdbackup;
 
 		}
 
@@ -7211,6 +7218,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 
 			//Grab Call Time과 BCD ID를 기록한다.
 			tabInfo.m_GrabCallTime = nGrabCallTimebackup;
+			tabInfo.m_GrabCallEncoderCount = nGrabCallEncoderCountbackup;
 			tabInfo.m_GrabCallBCDId = nGrabCallBCDIdbackup;
 
 			//남은 이미지 점 다시 계산 for 문

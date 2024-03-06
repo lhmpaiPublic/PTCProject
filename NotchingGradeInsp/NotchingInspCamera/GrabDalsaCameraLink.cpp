@@ -111,10 +111,12 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 				//시스템 시간
 				UINT64 localGrabCallTime = GetTickCount();
 				pFrmInfo->m_GrabCallTime = localGrabCallTime - AprData.m_NowLotData.m_nBCDIDInputTime;
-				AprData.m_NowLotData.m_nBCDIDInputTime = localGrabCallTime;
 
 				//지금의 Last BCD ID
 				pFrmInfo->m_GrabCallBCDId = AprData.m_NowLotData.m_nLastBCDId;
+
+				//Grab Call : Encoder Count
+				pFrmInfo->m_GrabCallEncoderCount = AprData.m_NowLotData.m_uEncoderCount;
 
 				pFrmInfo->SetImgPtr(pImg);
 				pFrmInfo->m_nHeight = nHeight;

@@ -308,7 +308,7 @@ public:
 	//Trigger Tab Id Total Count
 	int		m_nTabIdTotalCount;
 
-	//Encoder Total Count
+	//Encoder Count
 	UINT m_uEncoderCount;
 
 	//BCD ID input time

@@ -92,7 +92,10 @@ public:
 	int	nTabStartPosInFrame ; // Frame에서 Tab의 시작위치 (거리계산용)
 
 	//Grab Image 얻은 시점의 BCD ID
-	UINT64 m_GrabCallBCDId;
+	int m_GrabCallBCDId;
+
+	//Grab Call : Encoder Count
+	int m_GrabCallEncoderCount;
 
 	//Grab Call 호출 타임(ms)
 	UINT64 m_GrabCallTime;

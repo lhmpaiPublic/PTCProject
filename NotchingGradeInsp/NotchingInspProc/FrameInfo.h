@@ -82,6 +82,9 @@ public :
 	//Grab Image 얻은 시점의 BCD ID
 	int m_GrabCallBCDId;
 
+	//Grab Call : Encoder Count
+	int m_GrabCallEncoderCount;
+
 	//Grab Call 호출 타임(ms)
 	UINT64 m_GrabCallTime;
 
