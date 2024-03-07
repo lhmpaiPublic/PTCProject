@@ -20,8 +20,8 @@ char* CSpcAlarmInData::MakeAlarmInDataText =
 "        \"EQP_INSP_ID\": \"%s\",\r\n"
 "        \"PROCESS_GROUP\": \"%s\",\r\n"
 "        \"PROCESS_NAME\": \"%s\",\r\n"
-"        \"LINE_NUMBER\": \"%s\",\r\n"
 "        \"MACHINE_NUMBER\": \"%s\",\r\n"
+"        \"LINE_NUMBER\": \"%s\",\r\n"
 "        \"LANE_NUMBER\": \"%s\",\r\n"
 "        \"VISION_TYPE\": \"%s\",\r\n"
 "        \"EQP_ID\": \"%s\",\r\n"
@@ -59,7 +59,7 @@ CSpcAlarmInData::CSpcAlarmInData(CSpcPlusManager* sMgr)
 	m_AlarmHost = "VISION";
 	m_AlarmLevel = "LIGHT";
 	m_AlarmCode = "9999";
-	m_AlarmName = "--알람";
+	m_AlarmName = "--ALARM";
 	m_AlarmAllResetFlag = "TRUE";
 	m_AlarmOutToDate = m_AlarmInfoDate;
 

@@ -1172,6 +1172,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						IqInfoTop->setIqScreenImageSizeX(CGlobalFunc::intToString(pTopInfo->m_nWidth));
 						//이미지 Y Size [pxl]
 						IqInfoTop->setIqScreenImageSizeY(CGlobalFunc::intToString(pTopInfo->m_nHeight));
+						//해당 Cell의 Image 직진도 Value(* BCD ID로 변경 하여 사용 중)
+						IqInfoTop->setIqCamAngleValue(CGlobalFunc::intToString(pTopInfo->m_nTabId_CntBoard));
 						//판정결과
 						CString IqTopJudge = (pTopInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
 						IqInfoTop->setImageJudge(IqTopJudge);
@@ -1187,6 +1189,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 						IqInfoBottom->setIqScreenImageSizeX(CGlobalFunc::intToString(pBtmInfo->m_nWidth));
 						//이미지 Y Size [pxl]
 						IqInfoBottom->setIqScreenImageSizeY(CGlobalFunc::intToString(pBtmInfo->m_nHeight));
+						//해당 Cell의 Image 직진도 Value(* BCD ID로 변경 하여 사용 중)
+						IqInfoBottom->setIqCamAngleValue(CGlobalFunc::intToString(pTopInfo->m_nTabId_CntBoard));
 						//판정결과
 						CString IqBottomJudge = (pBtmInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) ? "NG" : "OK";
 						IqInfoBottom->setImageJudge(IqBottomJudge);
