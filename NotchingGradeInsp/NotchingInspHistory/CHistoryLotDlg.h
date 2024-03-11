@@ -17,6 +17,7 @@ public:
 
 	virtual ~CHistoryLotDlg();
 
+	static CHistoryLotDlg* gsHistoryLotDlg;
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DLG_HISTORY_LOT };

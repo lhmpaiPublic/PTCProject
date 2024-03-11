@@ -18,9 +18,12 @@
 
 IMPLEMENT_DYNAMIC(CHistoryLotDlg, CDialogEx)
 
+CHistoryLotDlg* CHistoryLotDlg::gsHistoryLotDlg = NULL;
+
 CHistoryLotDlg::CHistoryLotDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView *pView )
 	: CDialogEx(IDD_DLG_HISTORY_LOT, pParent)
 {
+	gsHistoryLotDlg = this;
 	m_pParent = pParent;
 	m_pView = pView;
 	m_pDoc = NULL;
@@ -32,6 +35,8 @@ CHistoryLotDlg::CHistoryLotDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspVie
 
 CHistoryLotDlg::~CHistoryLotDlg()
 {
+	gsHistoryLotDlg = NULL;
+
 	if (m_pHistoryList != NULL) {
 		delete m_pHistoryList ;
 		m_pHistoryList = NULL;
