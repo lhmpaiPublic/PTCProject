@@ -543,7 +543,11 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
 						//Grab Call BCD ID를 사용하고 아니면 계속 증가 시킨다.
-						if(nBCDIDAddCount >= 3)
+#ifdef BCDID_TABPITCH93
+						if(nBCDIDAddCount >= 1)
+#else
+						if (nBCDIDAddCount >= 3)
+#endif //BCDID_TABPITCH93
 						{
 							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
 							if (cntInfo.nTabID >= 64)
