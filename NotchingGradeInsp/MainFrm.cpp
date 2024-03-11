@@ -685,13 +685,19 @@ void CMainFrame::ReflashAll()
 //마킹 BCD ID를 갱신한다.
 void CMainFrame::UpdateBCDID()
 {
-	CHistoryLotDlg::gsHistoryLotDlg->UpdateBCDID();
+	if (CHistoryLotDlg::gsHistoryLotDlg)
+	{
+		CHistoryLotDlg::gsHistoryLotDlg->UpdateBCDID();
+	}
 }
 
 //마킹 BCD ID를 출럭한다.
 void CMainFrame::UpdateBCDIDData(int nowBCDID, int lastBCDID, int grabBCDID)
 {
-	CHistoryLotDlg::gsHistoryLotDlg->UpdateBCDIDData(nowBCDID, lastBCDID, grabBCDID);
+	if (CHistoryLotDlg::gsHistoryLotDlg)
+	{
+		CHistoryLotDlg::gsHistoryLotDlg->UpdateBCDIDData(nowBCDID, lastBCDID, grabBCDID);
+	}
 }
 
 void CMainFrame::ResetAndRefreshAll()
