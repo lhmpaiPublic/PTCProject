@@ -823,9 +823,6 @@ BOOL CCounterThread::readTriggerBCDID()
 		//ConnectZone 세팅 상태 체크
 		AprData.m_NowLotData.m_bConnectZone = TRUE;
 
-		//Connect Zone 상태일 때 버퍼를 비운다.
-		m_pCntQueInPtr->ResetQueue();
-
 		//마킹 하기위한 값 제거
 		if (m_inputReadId.size())
 		{
