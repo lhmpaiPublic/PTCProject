@@ -521,13 +521,13 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						UINT nCompareNotUseCellLength = 4000;
 						//인도네시아 양극 93.3 4368 : Grab 4500
 						if (nRecipeInfoTabPitch <= 4400)
-							nCompareNotUseCellLength = 3500;
+							nCompareNotUseCellLength = 3700;
 						//인도네시아 음극 95.8 4485 : Grab 4600
 						else if (nRecipeInfoTabPitch <= 4500)
-							nCompareNotUseCellLength = 3700;
+							nCompareNotUseCellLength = 3800;
 						//중국 96.8 4532 : Grab 4800
 						else if (nRecipeInfoTabPitch <= 4600)
-							nCompareNotUseCellLength = 3800;
+							nCompareNotUseCellLength = 3900;
 						//미국 102.4 4794 : Grab 5000
 						else
 							nCompareNotUseCellLength = 4000;
@@ -551,13 +551,15 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
 						//Grab Call BCD ID를 사용하고 아니면 계속 증가 시킨다.
-						if (nBCDIDAddCount >= 2)
+						if (nBCDIDAddCount >= 3)
 						{
 							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
 							if (cntInfo.nTabID >= 64)
 							{
 								cntInfo.nTabID = 0;
 							}
+							LOGDISPLAY_SPEC(11)(_T("FT5	SETTING POS	NotUseCellLen	%d	Grab ID:	%d	Now ID	%d	TabNo	%d"), 
+								nCompareNotUseCellLength, pTabInfo->m_GrabCallBCDId, cntInfo.nTabID, cntInfo.nTabNo);
 						}
 						else
 						{

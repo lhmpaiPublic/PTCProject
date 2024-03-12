@@ -268,9 +268,6 @@ CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 	//테스트 타임 id 생성
 	m_markingTestTimeOut = GetTickCount();
 
-	//최종 읽은 값
-	m_wLastInfo = 0xFF;
-
 	//다음에 찾을 TabID - ID 누력 여부 확인용
 	m_nextTabID = 255;
 
@@ -413,7 +410,7 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 	m_TriggerSocket = new CTriggerSocket(ip, mode, this);
 
 	int	bRet;
-	int	errorcode = 0;
+
 	if (mode == CTriggerSocket::TCP_MODE)
 	{
 		if (m_TriggerSocket->Create() == 0) 
@@ -442,8 +439,14 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 		bRet = m_TriggerSocket->Connect(ip, port);
 	}
 
-	if (bRet != 0) 
+	if (bRet == 0) 
 	{
+		if (m_TriggerSocket != NULL)
+		{
+			delete m_TriggerSocket;
+			m_TriggerSocket = NULL;
+		}
+
 		DWORD dwErrorCode = GetLastError();
 		CString	strErMsg = _T("");
 		switch (dwErrorCode) {
@@ -809,7 +812,6 @@ BOOL CCounterThread::readTriggerBCDID()
 
 
 				//이전 id 갱신
-				m_wLastInfo = wTempID;
 				m_wLastTabId = wTempID;
 
 			}
