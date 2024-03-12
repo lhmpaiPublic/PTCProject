@@ -558,8 +558,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							{
 								cntInfo.nTabID = 0;
 							}
-							LOGDISPLAY_SPEC(11)(_T("FT5	SETTING POS	NotUseCellLen	%d	Grab ID:	%d	Now ID	%d	TabNo	%d"), 
-								nCompareNotUseCellLength, pTabInfo->m_GrabCallBCDId, cntInfo.nTabID, cntInfo.nTabNo);
+							LOGDISPLAY_SPEC(11)(_T("FT5	SETTING POS	NotUseCellLen	%d	%d	Grab ID:	%d	Now ID	%d	TabNo	%d"), 
+								unNotUseCellLength, nCompareNotUseCellLength, pTabInfo->m_GrabCallBCDId, cntInfo.nTabID, cntInfo.nTabNo);
 						}
 						else
 						{
