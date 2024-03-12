@@ -139,6 +139,10 @@ public:
 #define DIR_HOR 0
 #define DIR_VER 1
 
+#define DIR_LR 0
+#define DIR_RL 1
+
+
 #define EDGE_IMG_HEIGHT 128
 #define EDGE_IMG_WIDTH	128
 
@@ -502,6 +506,16 @@ public:
 	static BOOL SaveOriginImage(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CString strComment);
 
 	static BOOL CheckBright(const BYTE* pOrgImg, int nImageWidth, int nImageHeight, CRecipeInfo& RecipeInfo, _BRIGHT_INFO* stBrightInfo, int nCamPos);
+
+
+
+
+
+	static int GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum);
+	static int FindCoatingTabLevel_Projection(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel);
+	static int ImageProcessDetectBlob(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pTabRsltInfo, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int FindBtmLevel_Projection(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int* pnLevel);
+
 
 };
 

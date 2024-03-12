@@ -306,6 +306,7 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	, m_nEdCheckBrightOverCnt(0)
 
 
+	, m_bChkUseBlob(FALSE)
 {
 	m_bRcpSelMode = bRcpSelMode ;
 
@@ -467,8 +468,7 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_BRIGHT_OVER_CNT, m_nEdCheckBrightOverCnt);
 
 
-
-
+	DDX_Check(pDX, IDC_CHK_USE_BLOB, m_bChkUseBlob);
 }
 
 
@@ -563,6 +563,7 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_BRIGHT_RANGE_MIN, &CRecipeSettingDlg::OnSetfocusEdBrightRangeMin)
 	ON_EN_SETFOCUS(IDC_ED_BRIGHT_RANGE_MAX, &CRecipeSettingDlg::OnSetfocusEdBrightRangeMax)
 	ON_EN_SETFOCUS(IDC_ED_BRIGHT_OVER_CNT, &CRecipeSettingDlg::OnSetfocusEdBrightOverCnt)
+	ON_BN_CLICKED(IDC_CHK_USE_BLOB, &CRecipeSettingDlg::OnBnClickedChkUseBlob)
 END_MESSAGE_MAP()
 
 
@@ -627,6 +628,9 @@ BOOL CRecipeSettingDlg::OnInitDialog()
 	UpdateGrid_Marking();	// 22.07.19 Ahn Add 
 
 	ShowControl();
+
+	EnableControlUI(!m_pRecipeInfo->bUseInspBlob);
+
 
 	UpdateData(FALSE);
 
@@ -1142,7 +1146,7 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		m_nEdCheckBrightRangeMax = pRecipeInfo->nCheckBrightRangeMax[nCamPos];
 		m_nEdCheckBrightOverCnt = pRecipeInfo->nCheckBrightOverCnt;
 
-
+		m_bChkUseBlob = pRecipeInfo->bUseInspBlob;
 
 
 		for( int i=0; i<MAX_CAMERA_NO; i++ )
@@ -1226,6 +1230,9 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 
 		pRecipeInfo->bNgStop = m_bChkNgStop ;
 		pRecipeInfo->bDarkEmpMode = m_bChkDarkEmpMode ;
+
+		pRecipeInfo->bUseInspBlob = m_bChkUseBlob;
+
 
 		for( int i=0; i<MAX_CAMERA_NO; i++ )
 		{
@@ -1863,6 +1870,8 @@ void CRecipeSettingDlg::OnClickGridCtrlRecipeTable(NMHDR* pNMHDR, LRESULT* pResu
 	UpdateGrid();
 	UpdateGrid_Marking();
 
+
+	EnableControlUI(!m_pRecipeInfo->bUseInspBlob);
 
 	UpdateData(FALSE);
 }
@@ -3542,4 +3551,114 @@ void CRecipeSettingDlg::OnSetfocusEdBrightOverCnt()
 	strMsg.Format(_T("Range( %d ~ %d ea)"), nMin, nMax);
 	m_nEdCheckBrightOverCnt = SetValue(nValue, strMsg, nMax, nMin);
 	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::OnBnClickedChkUseBlob()
+{
+	UpdateData(TRUE);
+
+	DataControl(MODE_WRITE, m_pRecipeInfo);
+
+	EnableControlUI(!m_bChkUseBlob);
+
+	UpdateData(FALSE);
+}
+
+
+void CRecipeSettingDlg::EnableControlUI( BOOL bEnable )
+{
+	CWnd* pWnd;
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_TOP_COAT_HEIGHT_MM);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable==TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_BTM_COAT_HEIGHT_MM);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_CHK_ENABLE_V_GROOVE);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_V_GROOVE_HEIGHT);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_COAT_BRIGHT_HIGH);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_ROLL_BRIGHT);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+	
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_ROLL_BRIGHT_HIGH);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+		
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_DROSS_THRES_UPPER);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_DROSS_THRES_LOW);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_MIN_SIZE_DROSS);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_FOIL_THRES_UPPER);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_FOIL_OUT_NG_X_SIZE);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_FOIL_BOTH_NG_X_SIZE);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+		
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_FOIL_OUT_NG_X_SIZE_BTM);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+		
+	pWnd = (CWnd*)GetDlgItem(IDC_ED_FOIL_BOTH_NG_X_SIZE_BTM);
+	if (pWnd != nullptr)
+	{
+		pWnd->EnableWindow((bEnable == TRUE) ? SW_SHOW : SW_HIDE);
+	}
+		
+		
 }

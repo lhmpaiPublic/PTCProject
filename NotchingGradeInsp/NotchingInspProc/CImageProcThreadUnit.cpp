@@ -201,106 +201,181 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같다면 실행
 					if (pFrmInfo->m_nHeadNo == CAM_POS_TOP)
 					{
-
-						//Tab Left >0, Tab Right  < 0  이면 실행 Left이면 실행
-						if ((nTabLeft > 0) && (nTabRight < nHeight))
+						// Blob 방식 검사
+						if (AprData.m_pRecipeInfo->bUseInspBlob == TRUE)
 						{
+							CImageProcess::VEC_SECTOR vecSec;
+							vecSec.clear();
+							int nTabFindPos = (nWidth - 220);
+							CImageProcess::FindCoatingTabLevel_Projection(pOrgImg, nWidth, nHeight, nTabFindPos, AprData.m_pRecipeInfo, &vecSec, &nTabLevel);
 
+							CRect rcProcL;
+							CRect rcProcR;
 
-							/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-							// 기준 Edge 다시 찾음 - 자동 운전 중 전처리에서 못 찾는 경우 발생
-							CRect rcPrj;
-							int* pnPrjData;
-							pnPrjData = new int[nWidth];
-							memset(pnPrjData, 0x00, sizeof(int) * nWidth);
-
-							rcPrj.top = 0;
-							rcPrj.bottom = nTabLeft - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
-							rcPrj.left = 0;
-							rcPrj.right = nWidth;
-
-							int nCount = 0;
-							int nUpperBright = 0;
-
-							nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
-							BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
-							nUpperBright = nCount * ((AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + AprData.m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
-
-							int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
-
-
-
-							memset(pnPrjData, 0x00, sizeof(int) * nWidth);
-
-							rcPrj.top = nTabRight + AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
-							rcPrj.bottom = nHeight;
-							rcPrj.left = 0;
-							rcPrj.right = nWidth;
-
-							nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
-							nUpperBright = nCount * ((AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + AprData.m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
-
-							int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
-
-
-
-							nTabLevel = (nLevelLeft + nLevelRight) / 2;
-
-
-							if (pnPrjData != NULL)
+							if (vecSec.size() > 0)
 							{
-								delete[] pnPrjData;
-							}
+								AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	BLOB	%s	BCD ID	%d	TabNo	%d	vecSec Size	%d	nTabL	%d	nTabR	%d	nTabLevel	%d")
+									, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+									, pFrameRsltInfo->m_nTabId_CntBoard
+									, pFrameRsltInfo->nTabNo + 1
+									, vecSec.size()
+									, vecSec[0].nStartPos
+									, vecSec[0].nEndPos
+									, nTabLevel
+								);
 
-
-							AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	TabLevel	%s	BCD ID	%d	TabNo	%d	nLevelLeft	%d	nLevelRight	%d	nTabLevel	%d")
-								, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
-								, pFrameRsltInfo->m_nTabId_CntBoard
-								, pFrameRsltInfo->nTabNo + 1
-								, nLevelLeft
-								, nLevelRight
-								, nTabLevel
-							);
-							////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-							// 0 이면 양극, 1이면 음극
-							//양극이면
-							if (AprData.m_System.m_nMachineMode == ANODE_MODE)
-							{
-								//nTabLevel = pFrmInfo->m_nTabLevel;// 2023.10.17. pyj add
-
-								//Roll Bright Mode Top 이면 ImageProcessTopSide_BrightRoll 실행
-								if (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1)
+								int nCoatH = 0;
+								if (AprData.m_System.m_nMachineMode == ANODE_MODE) // 음극
 								{
-									//이미지 프로세서 Top Bright Roll 처리
-									nLocalRet = CImageProcess::ImageProcessTopSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
-
+									nCoatH = AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
 								}
-								//Roll Bright Mode Top 가 아니면 ImageProcessTopSide_Negative 실행
 								else
 								{
-									//이미지 프로세서 처리 Top Side Negative 처리
-									nLocalRet = CImageProcess::ImageProcessTopSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
+									nCoatH = AprData.m_pRecipeInfo->TabCond.nTabCeramicHeight;
+								}
+
+								rcProcL.left = nTabLevel - nCoatH - AprData.m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+								rcProcL.right = nTabLevel - nCoatH + AprData.m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+								rcProcL.top = 0;
+								rcProcL.bottom = vecSec[0].nStartPos - (AprData.m_pRecipeInfo->TabCond.nRadiusH * 2);
+								CImageProcess::CheckRect(&rcProcL, nWidth, nHeight);
+
+								CImageProcess::ImageProcessDetectBlob(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, rcProcL, pFrameRsltInfo->m_pTabRsltInfo, CAM_POS_TOP, FALSE);
+
+								AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	BLOB	%s	BCD ID	%d	TabNo	%d	rcProcL	(%d, %d, %d, %d)")
+									, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+									, pFrameRsltInfo->m_nTabId_CntBoard
+									, pFrameRsltInfo->nTabNo + 1
+									, rcProcL.left
+									, rcProcL.top
+									, rcProcL.right
+									, rcProcL.bottom
+								);
+
+								rcProcR.left = nTabLevel - nCoatH - AprData.m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+								rcProcR.right = nTabLevel - nCoatH + AprData.m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+								rcProcR.top = vecSec[0].nEndPos + (AprData.m_pRecipeInfo->TabCond.nRadiusH * 2);
+								rcProcR.bottom = nHeight;
+								CImageProcess::CheckRect(&rcProcR, nWidth, nHeight);
+
+								CImageProcess::ImageProcessDetectBlob(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, rcProcR, pFrameRsltInfo->m_pTabRsltInfo, CAM_POS_TOP, FALSE);
+
+								AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	BLOB	%s	BCD ID	%d	TabNo	%d	rcProcR	(%d, %d, %d, %d)")
+									, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+									, pFrameRsltInfo->m_nTabId_CntBoard
+									, pFrameRsltInfo->nTabNo + 1
+									, rcProcR.left
+									, rcProcR.top
+									, rcProcR.right
+									, rcProcR.bottom
+								);
+
+							}
+						}
+						// Edge 방식 검사
+						else
+						{
+							//Tab Left >0, Tab Right  < 0  이면 실행 Left이면 실행
+							if ((nTabLeft > 0) && (nTabRight < nHeight))
+							{
+								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+								// 기준 Edge 다시 찾음 - 자동 운전 중 전처리에서 못 찾는 경우 발생
+								CRect rcPrj;
+								int* pnPrjData;
+								pnPrjData = new int[nWidth];
+								memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+								rcPrj.top = 0;
+								rcPrj.bottom = nTabLeft - AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
+								rcPrj.left = 0;
+								rcPrj.right = nWidth;
+
+								int nCount = 0;
+								int nUpperBright = 0;
+
+								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+								BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+								nUpperBright = nCount * ((AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + AprData.m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
+
+								int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
+
+
+
+								memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+								rcPrj.top = nTabRight + AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
+								rcPrj.bottom = nHeight;
+								rcPrj.left = 0;
+								rcPrj.right = nWidth;
+
+								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+								nUpperBright = nCount * ((AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + AprData.m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
+
+								int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
+
+
+
+								nTabLevel = (nLevelLeft + nLevelRight) / 2;
+
+
+								if (pnPrjData != NULL)
+								{
+									delete[] pnPrjData;
+								}
+
+
+								AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	TabLevel	%s	BCD ID	%d	TabNo	%d	nLevelLeft	%d	nLevelRight	%d	nTabLevel	%d")
+									, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+									, pFrameRsltInfo->m_nTabId_CntBoard
+									, pFrameRsltInfo->nTabNo + 1
+									, nLevelLeft
+									, nLevelRight
+									, nTabLevel
+								);
+								////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+								// 0 이면 양극, 1이면 음극
+								//양극이면
+								if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+								{
+									//nTabLevel = pFrmInfo->m_nTabLevel;// 2023.10.17. pyj add
+
+									//Roll Bright Mode Top 이면 ImageProcessTopSide_BrightRoll 실행
+									if (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1)
+									{
+										//이미지 프로세서 Top Bright Roll 처리
+										nLocalRet = CImageProcess::ImageProcessTopSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
+
+									}
+									//Roll Bright Mode Top 가 아니면 ImageProcessTopSide_Negative 실행
+									else
+									{
+										//이미지 프로세서 처리 Top Side Negative 처리
+										nLocalRet = CImageProcess::ImageProcessTopSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
+
+									}
+									// 23.02.16 Ahn Modify End
+								}
+								//음극이면 ImageProcessTopSide_AreaDiff 실행
+								else
+								{
+									//nTabLevel = pFrmInfo->m_nTabLevel;// 2023.10.17. pyj add
+
+									// 이미지 프로세서 Top Side AreaDiff
+									nLocalRet = CImageProcess::ImageProcessTopSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
 
 								}
-								// 23.02.16 Ahn Modify End
+								// 22.05.30 Ahn Modify End
+
+								//이미지 프로세서 처리 시간을 가져온다.
+								//dFoilExpTact = ctAna.WhatTimeIsIt_Double();							
 							}
-							//음극이면 ImageProcessTopSide_AreaDiff 실행
-							else
-							{
-								//nTabLevel = pFrmInfo->m_nTabLevel;// 2023.10.17. pyj add
-
-								// 이미지 프로세서 Top Side AreaDiff
-								nLocalRet = CImageProcess::ImageProcessTopSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, nTabLeft, nTabRight, pFrameRsltInfo->m_pTabRsltInfo);
-
-							}
-							// 22.05.30 Ahn Modify End
-
-							//이미지 프로세서 처리 시간을 가져온다.
-							//dFoilExpTact = ctAna.WhatTimeIsIt_Double();							
 						}
+
+
+
 
 						//레시피 정보에 표면 끔이 아니면
 						//이미지 프로세서 ImageProcessDetectSurface 를 실행한다.
@@ -349,59 +424,90 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같지 않다면
 					else
 					{
-
-						//실행시간 체크 시작
-						//ctAna.StopWatchStart();
-
-						int nBtmLevel = 0;
-						//Machine Mode 가 양극이면
-						if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+						// Blob 방식 검사
+						if (AprData.m_pRecipeInfo->bUseInspBlob == TRUE)
 						{
-							//Tabcond Roll Bright Mode 가 Bottom 이면 ImageProcessBottomSide_BrightRoll 실행
-							if (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1)
-							{
-								nLocalRet = CImageProcess::ImageProcessBottomSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
+							CImageProcess::FindBtmLevel_Projection(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, &nTabLevel);
 
+							CRect rcProc;
+							rcProc.left = nTabLevel - AprData.m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM];
+							rcProc.right = nTabLevel + AprData.m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
+							rcProc.top = 0;
+							rcProc.bottom = nHeight;
+							CImageProcess::CheckRect(&rcProc, nWidth, nHeight);
+
+							CImageProcess::ImageProcessDetectBlob(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, rcProc, pFrameRsltInfo->m_pTabRsltInfo, CAM_POS_BOTTOM, FALSE);
+
+							AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	BLOB	%s	BCD ID	%d	TabNo	%d	nTabLevel	%d	rcProc	(%d, %d, %d, %d)")
+								, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+								, pFrameRsltInfo->m_nTabId_CntBoard
+								, pFrameRsltInfo->nTabNo + 1
+								, nTabLevel
+								, rcProc.left
+								, rcProc.top
+								, rcProc.right
+								, rcProc.bottom
+							);
+						}
+						// Edge 방식 검사
+						else
+						{
+							//실행시간 체크 시작
+							//ctAna.StopWatchStart();
+
+							int nBtmLevel = 0;
+							//Machine Mode 가 양극이면
+							if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+							{
+								//Tabcond Roll Bright Mode 가 Bottom 이면 ImageProcessBottomSide_BrightRoll 실행
+								if (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1)
+								{
+									nLocalRet = CImageProcess::ImageProcessBottomSide_BrightRoll(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
+
+								}
+								//Tabcond Roll Bright Mode 가 Top 이면 ImageProcessBottomSide_Negative 실행
+								else
+								{
+									/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+									// 기준 Edge 다시 찾음 - 자동 운전 중 전처리에서 못 찾는 경우 발생	
+									CImageProcess::FindLevelBottom_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+									nTabLevel = nBtmLevel;
+
+									AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	%s	BCD ID	%d	TabNo	%d	nTabLevel	%d")
+										, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
+										, pFrameRsltInfo->m_nTabId_CntBoard
+										, pFrameRsltInfo->nTabNo + 1
+										, nTabLevel
+									);
+
+									nLocalRet = CImageProcess::ImageProcessBottomSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
+
+								}
 							}
-							//Tabcond Roll Bright Mode 가 Top 이면 ImageProcessBottomSide_Negative 실행
+							//Machine Mode 가 음극이면 ImageProcessBottomSide_AreaDiff 실행
 							else
 							{
 								/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 								// 기준 Edge 다시 찾음 - 자동 운전 중 전처리에서 못 찾는 경우 발생	
-								CImageProcess::FindLevelBottom_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+								CImageProcess::FindTabLevel(pOrgImg, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
 								nTabLevel = nBtmLevel;
 
-								AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	%s	BCD ID	%d	TabNo	%d	nTabLevel	%d")
+								AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	%s	BCD	ID	%d	TabNo	%d	nTabLevel	%d")
 									, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
 									, pFrameRsltInfo->m_nTabId_CntBoard
 									, pFrameRsltInfo->nTabNo + 1
 									, nTabLevel
 								);
 
-								nLocalRet = CImageProcess::ImageProcessBottomSide_Negative(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
+
+
+								nLocalRet = CImageProcess::ImageProcessBottomSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
 
 							}
 						}
-						//Machine Mode 가 음극이면 ImageProcessBottomSide_AreaDiff 실행
-						else
-						{
-							/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-							// 기준 Edge 다시 찾음 - 자동 운전 중 전처리에서 못 찾는 경우 발생	
-							CImageProcess::FindTabLevel(pOrgImg, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
-							nTabLevel = nBtmLevel;
-
-							AprData.SaveDebugLog_Format(_T("CtrlImageProcThread	%s	BCD	ID	%d	TabNo	%d	nTabLevel	%d")
-								, (pFrmInfo->m_nHeadNo == CAM_POS_TOP) ? "Top" : "Btm"
-								, pFrameRsltInfo->m_nTabId_CntBoard
-								, pFrameRsltInfo->nTabNo + 1
-								, nTabLevel
-							);
 
 
 
-							nLocalRet = CImageProcess::ImageProcessBottomSide_AreaDiff(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, pFrameRsltInfo->m_pTabRsltInfo);
-
-						}
 
 						// 22.05.10 Ahn Add Start 
 						//Disable Surface 가 FALSE(아니면)

@@ -163,6 +163,7 @@ public:
 	int nCheckBrightOverCnt;
 
 
+	BOOL bUseInspBlob;
 
 
 	enum {

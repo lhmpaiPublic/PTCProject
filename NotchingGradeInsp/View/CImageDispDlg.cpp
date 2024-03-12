@@ -57,6 +57,7 @@ CImageDispDlg::CImageDispDlg(CWnd* pParent /*=nullptr*/)
 	m_rcDragPos = m_rcMask;
 	m_nDrawColorMode = 3;
 	m_bDispBoundary = FALSE;
+	m_bDispBlob = FALSE;
 
 	m_bMeasureFlag = FALSE;
 	m_nMeasureState = 0;
@@ -280,14 +281,15 @@ void CImageDispDlg::OnPaint()
 	DrawDefect(&mdc);
 
 	DrawMeasureLine(&mdc);
-	DrawArea(&mdc);
 
 	DrawSelectRect(&mdc);
 	DrawMask(&mdc);
 
 	DrawPetArea(&mdc);
-	
 	DrawBrightCheckArea(&mdc);
+
+	DrawBlobArea(&mdc, m_pParent->m_rcLineInspEdge);
+	DrawBlobArea(&mdc, m_pParent->m_rcInspArea);
 
 	dc.BitBlt(0, 0, rcWnd.Width(), rcWnd.Height(), &mdc, 0, 0, SRCCOPY);
 	mdc.SelectObject(pOldBm);
@@ -1079,6 +1081,11 @@ void CImageDispDlg::SetDrawBoundaryFlag(BOOL bFlag)
 	Invalidate(FALSE);
 }
 
+void CImageDispDlg::SetDrawBlobFlag(BOOL bFlag)
+{
+	m_bDispBlob = bFlag;
+	Invalidate(FALSE);
+}
 
 
 int CImageDispDlg::DrawSelectRect(CDC* pDC) // 선택 결함 영역 표시
@@ -1509,9 +1516,78 @@ void CImageDispDlg::DrawBrightCheckArea(CDC* pDC)
 
 
 
-void CImageDispDlg::DrawArea(CDC* pDC)
+void CImageDispDlg::DrawBlobArea(CDC* pDC, CRect* rcArea)
 {
+	if (m_bDispBlob == FALSE) return;
+
+	if ((rcArea[0].right - rcArea[0].left) <= 0
+		|| (rcArea[0].bottom - rcArea[0].top) <= 0)
+	{
+		return;
+	}
+
+
+	CBitmapStd* pBmpDest = m_pBmpDraw->GetBitmap();
+	if (pBmpDest == NULL) {
+		return;
+	}
+	int	nRet = 0;
+	CRect	rc;
+	int	nBitCount = pBmpDest->GetBitCount();
+
+	GetClientRect(&rc);
+
+	CPen	hpen, * hpenold = NULL;
+
+	int nMaxRect = 1;
+	if (m_pParent->m_bModeTop == TRUE)
+	{
+		nMaxRect = 2;
+	}
+
+
+	hpen.CreatePen(PS_SOLID, 1, RGB(64, 255, 64));
+
+	hpenold = pDC->SelectObject(&hpen);
+
+	CRect rcDefect;
+	for( int i=0; i< nMaxRect; i++ )
+	{
+		rcDefect.left = rcArea[i].left / m_nZoomOutH;
+		rcDefect.right = (rcArea[i].right + 1) / m_nZoomOutH;
+		rcDefect.top = rcArea[i].top / m_nZoomOutV;
+		rcDefect.bottom = (rcArea[i].bottom + 1) / m_nZoomOutV;
+		rcDefect.NormalizeRect();
+
+		if (rcDefect.IntersectRect(&rcDefect, &m_rcCur) == 0) {
+			//	return ;
+		}
+
+		int nExtSize = 0;
+		int nOffsetX = 0;
+		int nOffsetY = 0;
+		nOffsetX -= m_rcCur.left;
+		nOffsetY -= m_rcCur.top;
+		rcDefect.OffsetRect(nOffsetX, nOffsetY);
+		double rate = (double)m_nDrawRate / (double)m_nScopeRate;
+		rcDefect.left = (long)(rcDefect.left * rate) - nExtSize;
+		rcDefect.right = (long)(rcDefect.right * rate) + nExtSize;
+		rcDefect.top = (long)(rcDefect.top * rate) - nExtSize;
+		rcDefect.bottom = (long)(rcDefect.bottom * rate) + nExtSize;
+
+		pDC->MoveTo(rcDefect.left, rcDefect.top);
+		pDC->LineTo(rcDefect.right, rcDefect.top);
+		pDC->LineTo(rcDefect.right, rcDefect.bottom);
+		pDC->LineTo(rcDefect.left, rcDefect.bottom);
+		pDC->LineTo(rcDefect.left, rcDefect.top);
+	}
+
+	hpenold = pDC->SelectObject(&hpen);
+	hpen.DeleteObject();
 }
+
+
+
 void CImageDispDlg::DrawMeasureLine(CDC* pDC)
 {
 	if (m_bMeasureFlag == FALSE) return;
@@ -1613,6 +1689,7 @@ void CImageDispDlg::DrawMeasureLine(CDC* pDC)
 	pDC->SelectObject(hpenold);
 	hpen.DeleteObject();
 }
+
 
 void CImageDispDlg::SetDispDefect(BOOL bDispFlag) 
 { 

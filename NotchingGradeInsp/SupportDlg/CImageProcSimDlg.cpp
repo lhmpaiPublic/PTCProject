@@ -66,6 +66,7 @@ CImageProcSimDlg::CImageProcSimDlg(CWnd* pParent /*=nullptr*/)
 	m_strListFiles.RemoveAll() ;
 	m_nNowPos = NULL;
 	m_nSelImageNo = 0; // 22.01.17 Ahn Add 
+
 }
 
 CImageProcSimDlg::~CImageProcSimDlg()
@@ -818,7 +819,22 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 		nTabRight = vecSec[0].nEndPos;
 
 	}
-	else {
+	else
+	{
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		CRect rect;
 		int nPrjWidth = 2000;
 		// 22.09.20 Ahn Add Start
@@ -1944,7 +1960,6 @@ void CImageProcSimDlg::InspectionAuto()
 	pImgArr[4] = pStdPtr;
 	pImgArr[5] = pProcPtr;
 
-
 	int nWidth;
 	int nHeight;
 	CSize size = pBmpStd->GetImgSize();
@@ -1954,6 +1969,8 @@ void CImageProcSimDlg::InspectionAuto()
 
 	if (m_bModeTop == TRUE)
 	{
+		tabRsltInfo.m_nHeadNo = CAM_POS_TOP;
+
 		CSize tabPos;
 		if (GetTabHeadPos(&tabPos, &nLevel) < 0) return;
 
@@ -1965,91 +1982,189 @@ void CImageProcSimDlg::InspectionAuto()
 		CString strTact;
 		CTimeAnalyzer ctAna;
 
-
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 기준 Edge 다시 찾음 - 자동 운전 중 전처리에서 못 찾는 경우 발생
-		CRect rcPrj;
-		int* pnPrjData;
-		pnPrjData = new int[nWidth];
-		memset(pnPrjData, 0x00, sizeof(int) * nWidth);
-
-		rcPrj.top = 0;
-		rcPrj.bottom = tabPos.cx - m_pRecipeInfo->TabCond.nNegCoatHeight;
-		rcPrj.left = 0;
-		rcPrj.right = nWidth;
-
-		int nCount = 0;
-		int nUpperBright = 0;
-
-		nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
-		BOOL bUseDarkRoll = (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
-		nUpperBright = nCount * ((m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
-
-		int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
-
-
-
-		memset(pnPrjData, 0x00, sizeof(int) * nWidth);
-
-		rcPrj.top = tabPos.cy + m_pRecipeInfo->TabCond.nNegCoatHeight;
-		rcPrj.bottom = nHeight;
-		rcPrj.left = 0;
-		rcPrj.right = nWidth;
-
-		nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
-		nUpperBright = nCount * ((m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
-
-		int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
-
-
-
-		nLevel = (nLevelLeft + nLevelRight) / 2;
-
-
-		if (pnPrjData != NULL)
+		int nCoatH = 0;
+		if (AprData.m_System.m_nMachineMode == ANODE_MODE) // 음극
 		{
-			delete[] pnPrjData;
-		}
-
-
-
-
-		if (AprData.m_System.m_nMachineMode == ANODE_MODE)
-		{
-			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1)
-			{
-				CImageProcess::ImageProcessTopSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
-			}
-			else
-			{
-				CImageProcess::ImageProcessTopSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
-			}
+			nCoatH = m_pRecipeInfo->TabCond.nNegCoatHeight;
 		}
 		else
 		{
-			CImageProcess::ImageProcessTopSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
+			nCoatH = m_pRecipeInfo->TabCond.nTabCeramicHeight;
 		}
+
+
+
+
+		CImageProcess::VEC_SECTOR vecSec;
+		vecSec.clear();
+
+		if (m_pRecipeInfo->bUseInspBlob == TRUE)
+		{
+			int nTabFindPos = (nWidth - 220);
+
+			CImageProcess::FindCoatingTabLevel_Projection(pImgPtr, nWidth, nHeight, nTabFindPos, m_pRecipeInfo, &vecSec, &nLevel);
+
+			CRect rcProcL;
+			CRect rcProcR;
+
+			if (vecSec.size() > 0)
+			{
+				rcProcL.left = nLevel - nCoatH - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+				rcProcL.right = nLevel - nCoatH + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+				rcProcL.top = 0;
+				rcProcL.bottom = vecSec[0].nStartPos - m_pRecipeInfo->TabCond.nRadiusH;
+				CImageProcess::CheckRect(&rcProcL, nWidth, nHeight);
+
+				CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProcL, &tabRsltInfo, CAM_POS_TOP, FALSE);
+
+
+				rcProcR.left = nLevel - nCoatH - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+				rcProcR.right = nLevel - nCoatH + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+				rcProcR.top = vecSec[0].nEndPos + m_pRecipeInfo->TabCond.nRadiusH;
+				rcProcR.bottom = nHeight;
+				CImageProcess::CheckRect(&rcProcR, nWidth, nHeight);
+
+				CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProcR, &tabRsltInfo, CAM_POS_TOP, FALSE);
+			}
+
+			//Draw
+			// Tab Coating
+			m_rcLineInspEdge[0].left = nLevel;
+			m_rcLineInspEdge[0].top = rcProcL.bottom;
+			m_rcLineInspEdge[0].right = nLevel + 1;
+			m_rcLineInspEdge[0].bottom = rcProcR.top;
+
+			// Inspection Edge
+			m_rcLineInspEdge[1].left = nLevel - nCoatH;
+			m_rcLineInspEdge[1].top = 0;
+			m_rcLineInspEdge[1].right = nLevel - nCoatH + 1;
+			m_rcLineInspEdge[1].bottom = nHeight;
+
+			// Inspection Area
+			m_rcInspArea[0] = rcProcL;
+			m_rcInspArea[1] = rcProcR;
+		}
+		else
+		{
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 기준 Edge 다시 찾음 - 자동 운전 중 전처리에서 못 찾는 경우 발생
+			CRect rcPrj;
+			int* pnPrjData;
+			pnPrjData = new int[nWidth];
+			memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+			rcPrj.top = 0;
+			rcPrj.bottom = tabPos.cx - m_pRecipeInfo->TabCond.nNegCoatHeight;
+			rcPrj.left = 0;
+			rcPrj.right = nWidth;
+
+			int nCount = 0;
+			int nUpperBright = 0;
+
+			nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+			BOOL bUseDarkRoll = (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
+			nUpperBright = nCount * ((m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
+
+			int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
+
+
+
+			memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+			rcPrj.top = tabPos.cy + m_pRecipeInfo->TabCond.nNegCoatHeight;
+			rcPrj.bottom = nHeight;
+			rcPrj.left = 0;
+			rcPrj.right = nWidth;
+
+			nCount = CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+			nUpperBright = nCount * ((m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
+
+			int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
+
+
+
+			nLevel = (nLevelLeft + nLevelRight) / 2;
+
+
+			if (pnPrjData != NULL)
+			{
+				delete[] pnPrjData;
+			}
+
+
+
+
+			if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+			{
+				if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1)
+				{
+					CImageProcess::ImageProcessTopSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
+				}
+				else
+				{
+					CImageProcess::ImageProcessTopSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
+				}
+			}
+			else
+			{
+				CImageProcess::ImageProcessTopSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
+			}
+
+		}
+
+
 	}
 	else
 	{
-		if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+		tabRsltInfo.m_nHeadNo = CAM_POS_BOTTOM;
+
+		if (m_pRecipeInfo->bUseInspBlob == TRUE)
 		{
-			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) {
-				CImageProcess::FindLevelBottom_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromLeft);
-				CImageProcess::ImageProcessBottomSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
-			}
-			else
-			{
-				//CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nLevel, AprData.m_pRecipeInfo);
-				CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromRight);
-				CImageProcess::ImageProcessBottomSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
-			}
+			CImageProcess::FindBtmLevel_Projection(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel);
+
+			CRect rcProc;
+			rcProc.left = nLevel - m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM];
+			rcProc.right = nLevel + m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
+			rcProc.top = 0;
+			rcProc.bottom = nHeight;
+			CImageProcess::CheckRect(&rcProc, nWidth, nHeight);
+
+			CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProc, &tabRsltInfo, CAM_POS_BOTTOM, FALSE);
+
+			//Draw
+			// Inspection Edge
+			m_rcLineInspEdge[0].left = nLevel;
+			m_rcLineInspEdge[0].top = 0;
+			m_rcLineInspEdge[0].right = nLevel + 1;
+			m_rcLineInspEdge[0].bottom = nHeight;
+
+			m_rcInspArea[0] = rcProc;
+
 		}
 		else
 		{
-			GetLineLevel(&nLevel);
-			CImageProcess::ImageProcessBottomSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
+			if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+			{
+				if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) {
+					CImageProcess::FindLevelBottom_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromLeft);
+					CImageProcess::ImageProcessBottomSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
+				}
+				else
+				{
+					//CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nLevel, AprData.m_pRecipeInfo);
+					CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromRight);
+					CImageProcess::ImageProcessBottomSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
+				}
+			}
+			else
+			{
+				GetLineLevel(&nLevel);
+				CImageProcess::ImageProcessBottomSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
+			}
+
+
 		}
+
 
 	}
 
@@ -3160,7 +3275,20 @@ void CImageProcSimDlg::OnBnClickedBtnTest()
 	//////////////////////////////////////////////////////////////////////////
 
 	UpdateRecipeGrid();
-	DrawLine(); // 라인표출을 위해 실행 //240109
+
+	if (AprData.m_pRecipeInfo->bUseInspBlob == TRUE)
+	{
+		m_pImageDispDlg->SetDrawBoundaryFlag(FALSE);
+		m_pImageDispDlg->SetDrawBlobFlag(TRUE);
+
+	}
+	else
+	{
+		m_pImageDispDlg->SetDrawBlobFlag(FALSE);
+
+		DrawLine(); // 라인표출을 위해 실행 //240109
+	}
+
 	// 23.02.03 Ahn Modify Start
 	InspectionAuto(); // Foil 노출 검사.	
 
@@ -4975,6 +5103,8 @@ void CImageProcSimDlg::OnBnClickedBtnInspSpeter()
 	pImgArr[4] = pStdPtr;
 	pImgArr[5] = pProcPtr;
 
+	DWORD dwStart = GetTickCount();
+
 	int nWidth;
 	int nHeight;
 	CSize size = pBmpStd->GetImgSize();
@@ -5064,11 +5194,18 @@ void CImageProcSimDlg::OnBnClickedBtnInspSpeter()
 
 	CString strMsg;
 	strMsg.Format(_T("nLevel = %d"), nLevel);
-	AfxMessageBox(strMsg);
+//	AfxMessageBox(strMsg);
 
 	m_strProcTime = _T("Proc Time[msec], ");
 	m_strProcTime += strThresTime;
 	m_strProcTime += strLabelTime;
+
+
+	CString str;
+	str.Format(_T("%d ms"), GetTickCount() - dwStart);
+	AfxMessageBox(str);
+
+
 
 	UpdateData(FALSE);
 
@@ -5186,6 +5323,173 @@ void CImageProcSimDlg::OnBnClickedBtnCropSave()
 
 void CImageProcSimDlg::OnBnClickedBtnAttachImg()
 {
+	if (m_bLoadImage == FALSE)
+		return;
+
+
+//	//////////////////////////////////////////////////////////////////////////
+//// 검사 전 선택된 레시피 다시 로드 함
+//	int nSelNo = m_cmbRecipeSelect.GetCurSel();
+//	m_cmbRecipeSelect.SetCurSel(nSelNo);
+//
+//	CString strRcpName;
+//	m_cmbRecipeSelect.GetWindowText(strRcpName);
+//
+//	CRecipeCtrl rcpCtrl;
+//	if (m_pRecipeInfo != nullptr) {
+//		rcpCtrl.LoadRecipe(m_pRecipeInfo, strRcpName);
+//	}
+//	//////////////////////////////////////////////////////////////////////////
+//
+//	UpdateRecipeGrid();
+//
+//
+//	DWORD dwStart = GetTickCount();
+//
+//	CBitmapStd* pBmpStd;
+//	pBmpStd = m_pBmpStd[en_OrgImage];
+//	BYTE* pImgPtr = pBmpStd->GetImgPtr();
+//	BYTE* pRsltPtr = m_pBmpStd[en_ProcImage1]->GetImgPtr();
+//	int nWidth;
+//	int nHeight;
+//	CSize size = pBmpStd->GetImgSize();
+//	nWidth = size.cx;
+//	nHeight = size.cy;
+//
+//	int nLevel = -1;
+//	int nTabFindPos = 0;
+//
+//	CImageProcess::VEC_SECTOR vecSec;
+//	vecSec.clear();
+//
+//	CTabRsltInfo tabRsltInfo;
+//
+//	if (m_bModeTop == TRUE)
+//	{
+//		tabRsltInfo.m_nHeadNo = CAM_POS_TOP;
+//		nTabFindPos = (nWidth - 220);
+//
+//		CImageProcess::FindCoatingTabLevel_Projection(pImgPtr, nWidth, nHeight, nTabFindPos, m_pRecipeInfo, &vecSec, &nLevel);
+//
+//		CRect rcProcL;
+//		CRect rcProcR;
+//
+//		if (vecSec.size() > 0)
+//		{
+//			rcProcL.left = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+//			rcProcL.right = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+//			rcProcL.top = 0;
+//			rcProcL.bottom = vecSec[0].nStartPos - (m_pRecipeInfo->TabCond.nRadiusH * 2);
+//			CImageProcess::CheckRect(&rcProcL, nWidth, nHeight);
+//
+//			CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProcL, &tabRsltInfo, CAM_POS_TOP, FALSE);
+//
+//
+//			rcProcR.left = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+//			rcProcR.right = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+//			rcProcR.top = vecSec[0].nEndPos + (m_pRecipeInfo->TabCond.nRadiusH * 2);
+//			rcProcR.bottom = nHeight;
+//			CImageProcess::CheckRect(&rcProcR, nWidth, nHeight);
+//
+//			CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProcR, &tabRsltInfo, CAM_POS_TOP, FALSE);
+//		}
+//
+//		//Draw
+//		// Tab Coating
+//		m_rcLineInspEdge[0].left = nLevel;
+//		m_rcLineInspEdge[0].top = rcProcL.bottom;
+//		m_rcLineInspEdge[0].right = nLevel+1;
+//		m_rcLineInspEdge[0].bottom = rcProcR.top;
+//
+//		// Inspection Edge
+//		m_rcLineInspEdge[1].left = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight;
+//		m_rcLineInspEdge[1].top = 0;
+//		m_rcLineInspEdge[1].right = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight+1;
+//		m_rcLineInspEdge[1].bottom = nHeight;
+//
+//		// Inspection Area
+//		m_rcInspArea[0] = rcProcL;
+//		m_rcInspArea[1] = rcProcR;
+//	}
+//	else
+//	{
+//		tabRsltInfo.m_nHeadNo = CAM_POS_BOTTOM;
+//		CImageProcess::FindBtmLevel_Projection(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel);
+//
+//		CRect rcProc;
+//		rcProc.left = nLevel - m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM];
+//		rcProc.right = nLevel + m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
+//		rcProc.top = 0;
+//		rcProc.bottom = nHeight;
+//		CImageProcess::CheckRect(&rcProc, nWidth, nHeight);
+//
+//		CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProc, &tabRsltInfo, CAM_POS_BOTTOM, FALSE);
+//
+//		//Draw
+//		// Inspection Edge
+//		m_rcLineInspEdge[0].left = nLevel;
+//		m_rcLineInspEdge[0].top = 0;
+//		m_rcLineInspEdge[0].right = nLevel+1;
+//		m_rcLineInspEdge[0].bottom = nHeight;
+//
+//		m_rcInspArea[0] = rcProc;
+//	}
+//
+//
+//
+//	UpdateData(FALSE);
+//
+//	tabRsltInfo.SortingDefect(0);
+//
+//
+//	m_pVecBlockAll->clear();
+//	int nSize = (int)tabRsltInfo.m_vecDefInfo.size();
+//
+//	for (int i = 0; i < nSize; i++)
+//	{
+//		CBlockData data;
+//		data.nPixelCnt = (int)tabRsltInfo.m_vecDefInfo[i]->nSize;
+//		data.rcRect = tabRsltInfo.m_vecDefInfo[i]->rcPos;
+//		data.nType = tabRsltInfo.m_vecDefInfo[i]->nType;
+//		data.nBriAve = tabRsltInfo.m_vecDefInfo[i]->nAvgBright;
+//		data.nBriMax = tabRsltInfo.m_vecDefInfo[i]->nMaxBright;
+//		data.nBriMin = tabRsltInfo.m_vecDefInfo[i]->nMinBright;
+//		data.nOrgBriAve = tabRsltInfo.m_vecDefInfo[i]->nAveOrgBir;
+//		data.nOrgBriMax = tabRsltInfo.m_vecDefInfo[i]->nMaxOrgBir;
+//		data.nOrgBriMin = tabRsltInfo.m_vecDefInfo[i]->nMinOrgBir;
+//		data.dWidth = tabRsltInfo.m_vecDefInfo[i]->dSizeX;
+//		data.dHeight = tabRsltInfo.m_vecDefInfo[i]->dSizeY;
+//		data.dJudgeSize = tabRsltInfo.m_vecDefInfo[i]->dJudgeSize;
+//		data.dDistance = tabRsltInfo.m_vecDefInfo[i]->dDistance; // 22.04.15 Ahn Add
+//
+//		int nHeadNo = (m_bModeTop == TRUE) ? CAM_POS_TOP : CAM_POS_BOTTOM;
+//		data.nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nHeadNo], m_pRecipeInfo->dDefJudgeHeight, data.dJudgeSize, data.dHeight);
+//
+//		m_pVecBlockAll->push_back(data);
+//
+//	}
+//	UpdateGrid();
+//
+//
+//
+//
+//
+//
+//
+//
+//	Invalidate();
+//
+//
+//
+//	CString str;
+//	str.Format(_T("%d ms"), GetTickCount() - dwStart);
+////	AfxMessageBox(str);
+//
+//
+//	return;
+
+
+
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
 	//TCHAR szFilter[256] = _T("Image Files (*.bmp;*.JPG;*.JPEG)|*.bmp;*.JPG;*.JPEG|All Files (*.*)|*.*||");
@@ -7084,3 +7388,4 @@ void CImageProcSimDlg::OnBnClickedBtnResetCount()
 	pFrame->ResetResultViewDlg();
 
 }
+

@@ -674,36 +674,40 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						}
 
-						// 21.12.28 Ahn Add End
-						// 22.06.22 Ahn Add Start
 
-						//Tab부의 흑연 코팅높이 에러
-						if (nLevel <= 0)
+						// Blob 사용 시 nLevel을 못 찾아도 넘어감, 검사 프로세스에서 다시 찾음
+						if (AprData.m_pRecipeInfo->bUseInspBlob == FALSE)
 						{
-							pTabInfo->m_bErrorFlag = TRUE;
+							//Tab부의 흑연 코팅높이 에러
+							if (nLevel <= 0)
+							{
+								pTabInfo->m_bErrorFlag = TRUE;
 
-							nErrorNo = 4;
+								nErrorNo = 4;
 
-							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d"),
-								pTabInfo->m_bErrorFlag, nErrorNo, nLevel);
+								AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d"),
+									pTabInfo->m_bErrorFlag, nErrorNo, nLevel);
+
+							}
+							// 22.06.22 Ahn Add End
+
+							// 22.09.30 Ahn Add Start
+
+							//Tab부의 흑연 코팅높이 에러
+							if (nLevel >= (nWidth - 1))
+							{
+								pTabInfo->m_bErrorFlag = TRUE;
+
+								nErrorNo = 5;
+
+								AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d	Width	%d"),
+									pTabInfo->m_bErrorFlag, nErrorNo, nLevel, nWidth);
+
+							}
+							// 22.09.30 Ahn Add End
 
 						}
-						// 22.06.22 Ahn Add End
 
-						// 22.09.30 Ahn Add Start
-
-						//Tab부의 흑연 코팅높이 에러
-						if (nLevel >= (nWidth-1) )
-						{
-							pTabInfo->m_bErrorFlag = TRUE;
-
-							nErrorNo = 5;
-
-							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d	Width	%d"),
-								pTabInfo->m_bErrorFlag, nErrorNo, nLevel, nWidth);
-
-						}
-						// 22.09.30 Ahn Add End
 
 						AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab INFO	nVecSize:%d/%d	ImageLength:%d	FrameCount:%d	TabStartPosInFrame:%d	TabLeft:%d	TabRight:%d	nLevel:%d	nBtmLevel:%d"),
 							idxi, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel, nBtmLevel);

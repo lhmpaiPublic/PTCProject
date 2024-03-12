@@ -342,6 +342,11 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strKey.Format(_T("ENABLE_V_GROOVE"));
 			strData.Format(_T("%d"), pRcpInfo->bEnableVGroove);
 			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+			strKey = _T("USE_INSPECTION_BLOB");
+			strData.Format(_T("%d"), pRcpInfo->bUseInspBlob);
+			SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
 		}
 
 		{
@@ -756,6 +761,10 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 			strKey.Format(_T("ENABLE_V_GROOVE"));
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			pRcpInfo->bEnableVGroove = atoi(buff);
+
+			strKey = _T("USE_INSPECTION_BLOB");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			pRcpInfo->bUseInspBlob = atoi(buff);
 		}
 
 

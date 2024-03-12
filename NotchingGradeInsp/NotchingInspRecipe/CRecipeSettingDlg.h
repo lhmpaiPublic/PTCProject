@@ -185,6 +185,7 @@ public:
 
 	CString GetSelectName() { return m_strSelectRcpName; };
 
+	void EnableControlUI( BOOL bEnable );
 
 
 private :
@@ -351,6 +352,8 @@ public:
 	afx_msg void OnSetfocusEdBrightRangeMin();
 	afx_msg void OnSetfocusEdBrightRangeMax();
 	afx_msg void OnSetfocusEdBrightOverCnt();
+	BOOL m_bChkUseBlob;
+	afx_msg void OnBnClickedChkUseBlob();
 };
 
 
