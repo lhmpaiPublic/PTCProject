@@ -1982,6 +1982,19 @@ void CImageProcSimDlg::InspectionAuto()
 		CString strTact;
 		CTimeAnalyzer ctAna;
 
+		int nCoatH = 0;
+		if (AprData.m_System.m_nMachineMode == ANODE_MODE) // 음극
+		{
+			nCoatH = m_pRecipeInfo->TabCond.nNegCoatHeight;
+		}
+		else
+		{
+			nCoatH = m_pRecipeInfo->TabCond.nCeramicHeight;
+		}
+
+
+
+
 		CImageProcess::VEC_SECTOR vecSec;
 		vecSec.clear();
 
@@ -1996,8 +2009,8 @@ void CImageProcSimDlg::InspectionAuto()
 
 			if (vecSec.size() > 0)
 			{
-				rcProcL.left = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-				rcProcL.right = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+				rcProcL.left = nLevel - nCoatH - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+				rcProcL.right = nLevel - nCoatH + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 				rcProcL.top = 0;
 				rcProcL.bottom = vecSec[0].nStartPos - m_pRecipeInfo->TabCond.nRadiusH;
 				CImageProcess::CheckRect(&rcProcL, nWidth, nHeight);
@@ -2005,8 +2018,8 @@ void CImageProcSimDlg::InspectionAuto()
 				CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProcL, &tabRsltInfo, CAM_POS_TOP, FALSE);
 
 
-				rcProcR.left = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-				rcProcR.right = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+				rcProcR.left = nLevel - nCoatH - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+				rcProcR.right = nLevel - nCoatH + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 				rcProcR.top = vecSec[0].nEndPos + m_pRecipeInfo->TabCond.nRadiusH;
 				rcProcR.bottom = nHeight;
 				CImageProcess::CheckRect(&rcProcR, nWidth, nHeight);

@@ -224,8 +224,18 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									, nTabLevel
 								);
 
-								rcProcL.left = nTabLevel - AprData.m_pRecipeInfo->TabCond.nTabCeramicHeight - AprData.m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-								rcProcL.right = nTabLevel - AprData.m_pRecipeInfo->TabCond.nTabCeramicHeight + AprData.m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+								int nCoatH = 0;
+								if (AprData.m_System.m_nMachineMode == ANODE_MODE) // 음극
+								{
+									nCoatH = AprData.m_pRecipeInfo->TabCond.nNegCoatHeight;
+								}
+								else
+								{
+									nCoatH = AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
+								}
+
+								rcProcL.left = nTabLevel - nCoatH - AprData.m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+								rcProcL.right = nTabLevel - nCoatH + AprData.m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 								rcProcL.top = 0;
 								rcProcL.bottom = vecSec[0].nStartPos - (AprData.m_pRecipeInfo->TabCond.nRadiusH * 2);
 								CImageProcess::CheckRect(&rcProcL, nWidth, nHeight);
@@ -242,8 +252,8 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 									, rcProcL.bottom
 								);
 
-								rcProcR.left = nTabLevel - AprData.m_pRecipeInfo->TabCond.nTabCeramicHeight - AprData.m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-								rcProcR.right = nTabLevel - AprData.m_pRecipeInfo->TabCond.nTabCeramicHeight + AprData.m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+								rcProcR.left = nTabLevel - nCoatH - AprData.m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+								rcProcR.right = nTabLevel - nCoatH + AprData.m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 								rcProcR.top = vecSec[0].nEndPos + (AprData.m_pRecipeInfo->TabCond.nRadiusH * 2);
 								rcProcR.bottom = nHeight;
 								CImageProcess::CheckRect(&rcProcR, nWidth, nHeight);
