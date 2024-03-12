@@ -7116,7 +7116,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 		// 미결함 NG 발생 시 원본 이미지 저장
 		if (AprData.m_System.m_bNonNgSave == TRUE)
 		{
-			if (nLevel <= 0 || nLevel >= 2999 || tabInfo.m_bErrorFlag == TRUE)
+			if (nLevel <= 0 || nLevel >= 3999 || tabInfo.m_bErrorFlag == TRUE)
 			{
 				CBitmapStd bmp(nWidth, nHeight);
 				bmp.SetImage(nWidth, nHeight, pImgPtr);

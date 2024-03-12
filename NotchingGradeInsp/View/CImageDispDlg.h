@@ -64,12 +64,11 @@ private:
 	int GetPickBitmap(CImgClipedBmp& clipbmp);
 	int MakeDrawBitmap(void);
 	void DrawDefect(CDC* pDC);
-	void DrawArea(CDC* pDC, CRect* rcArea);
+	void DrawBlobArea(CDC* pDC, CRect* rcArea);
 	void DrawMask(CDC* pDC);
 	void DrawMeasureLine(CDC* pDC);
 	void DrawPetArea(CDC* pDC);
 	void DrawBrightCheckArea(CDC* pDC);
-	void DrawRefLine(CDC* pDC, CPoint* ptLine);
 
 	CPoint GetImagePoint(int x, int y);
 	int DrawSelectRect(CDC* pDC);
@@ -82,6 +81,7 @@ private:
 	CPoint	m_cpCircleCenterRight;
 
 	BOOL m_bDispBoundary;
+	BOOL m_bDispBlob;
 	void DrawBoundaryLine(CDC* pDC);
 	CImageProcess::VEC_ROUND_INFO m_VecLeftRound;
 	CImageProcess::VEC_ROUND_INFO m_VecRightRound;
@@ -116,6 +116,7 @@ public:
 	void SetSelDefectNo(int nSelDefNo);
 	void SetMeasureMode(BOOL bFlag);
 	CRect GetMaskRect();
+	void SetDrawBlobFlag(BOOL bFlag);
 
 
 public:

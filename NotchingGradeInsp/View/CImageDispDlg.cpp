@@ -57,6 +57,7 @@ CImageDispDlg::CImageDispDlg(CWnd* pParent /*=nullptr*/)
 	m_rcDragPos = m_rcMask;
 	m_nDrawColorMode = 3;
 	m_bDispBoundary = FALSE;
+	m_bDispBlob = FALSE;
 
 	m_bMeasureFlag = FALSE;
 	m_nMeasureState = 0;
@@ -287,10 +288,8 @@ void CImageDispDlg::OnPaint()
 	DrawPetArea(&mdc);
 	DrawBrightCheckArea(&mdc);
 
-	//DrawRefLine(&mdc, m_pParent->m_ptRefLine_TabCeramic);
-	//DrawRefLine(&mdc, m_pParent->m_ptRefLine_InspEdge);
-	DrawArea(&mdc, m_pParent->m_rcInspArea);
-
+	DrawBlobArea(&mdc, m_pParent->m_rcLineInspEdge);
+	DrawBlobArea(&mdc, m_pParent->m_rcInspArea);
 
 	dc.BitBlt(0, 0, rcWnd.Width(), rcWnd.Height(), &mdc, 0, 0, SRCCOPY);
 	mdc.SelectObject(pOldBm);
@@ -1082,6 +1081,11 @@ void CImageDispDlg::SetDrawBoundaryFlag(BOOL bFlag)
 	Invalidate(FALSE);
 }
 
+void CImageDispDlg::SetDrawBlobFlag(BOOL bFlag)
+{
+	m_bDispBlob = bFlag;
+	Invalidate(FALSE);
+}
 
 
 int CImageDispDlg::DrawSelectRect(CDC* pDC) // 선택 결함 영역 표시
@@ -1512,9 +1516,9 @@ void CImageDispDlg::DrawBrightCheckArea(CDC* pDC)
 
 
 
-void CImageDispDlg::DrawArea(CDC* pDC, CRect* rcArea)
+void CImageDispDlg::DrawBlobArea(CDC* pDC, CRect* rcArea)
 {
-	if (m_bDispBoundary == FALSE) return;
+	if (m_bDispBlob == FALSE) return;
 
 	if ((rcArea[0].right - rcArea[0].left) <= 0
 		|| (rcArea[0].bottom - rcArea[0].top) <= 0)
@@ -1682,66 +1686,6 @@ void CImageDispDlg::DrawMeasureLine(CDC* pDC)
 		//pDC->LineTo(nX, nY);
 		//// 21.10.21 Ahn Add End
 	}
-	pDC->SelectObject(hpenold);
-	hpen.DeleteObject();
-}
-
-
-void CImageDispDlg::DrawRefLine(CDC* pDC, CPoint* ptLine)
-{
-	if (m_bDispBoundary == FALSE) return;
-
-	if (pDC == NULL) {
-		return;
-	}
-
-	if (m_pBmpDraw == NULL) {
-		return;
-	}
-	CBitmapStd* pBmpDest = m_pBmpDraw->GetBitmap();
-	if (pBmpDest == NULL) {
-		return;
-	}
-	int	nRet = 0;
-	CRect	rc;
-	CPen	hpen, * hpenold = NULL;
-	int	nBitCount = pBmpDest->GetBitCount();
-	if (nBitCount == 24) {
-		pDC->SetROP2(R2_COPYPEN);
-		hpen.CreatePen(PS_SOLID, 3, RGB(0, 0, 0));
-	}
-	else {
-		pDC->SetROP2(R2_XORPEN);
-		hpen.CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
-	}
-	hpenold = pDC->SelectObject(&hpen);
-	GetClientRect(&rc);
-
-	CPoint cpLine[en_Reset_Point];
-	{
-		cpLine[en_First_Point].x = ptLine[en_First_Point].x / m_nZoomOutH;
-		cpLine[en_First_Point].y = ptLine[en_First_Point].y / m_nZoomOutV;
-		cpLine[en_Second_Point].x = ptLine[en_Second_Point].x / m_nZoomOutH;
-		cpLine[en_Second_Point].y = ptLine[en_Second_Point].y / m_nZoomOutV;
-
-		int nOffsetX = 0;
-		int nOffsetY = 0;
-		nOffsetX -= m_rcCur.left;
-		nOffsetY -= m_rcCur.top;
-		cpLine[en_First_Point].Offset(nOffsetX, nOffsetY);
-		cpLine[en_Second_Point].Offset(nOffsetX, nOffsetY);
-
-		double rate = (double)m_nDrawRate / (double)m_nScopeRate;
-		cpLine[en_First_Point].x = (long)(cpLine[en_First_Point].x * rate);
-		cpLine[en_First_Point].y = (long)(cpLine[en_First_Point].y * rate);
-		cpLine[en_Second_Point].x = (long)(cpLine[en_Second_Point].x * rate);
-		cpLine[en_Second_Point].y = (long)(cpLine[en_Second_Point].y * rate);
-
-		pDC->MoveTo(cpLine[en_First_Point].x, cpLine[en_First_Point].y);
-		pDC->LineTo(cpLine[en_Second_Point].x, cpLine[en_Second_Point].y);
-
-	}
-
 	pDC->SelectObject(hpenold);
 	hpen.DeleteObject();
 }
