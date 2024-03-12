@@ -108,6 +108,12 @@ public :
 	CImageProcess::_BRIGHT_INFO* m_pstBrightInfo;
 	CImageProcess::_BRIGHT_INFO* GetBrightInfo() { return m_pstBrightInfo; };
 
+
+	CPoint m_ptRefLine_TabCeramic[2];
+	CPoint m_ptRefLine_InspEdge[2];
+
+	CRect m_rcInspArea[2];
+
 //KANG 22.01.07 Add Start
 	void LoadImageFile(LPCTSTR lpszFileName);
 //KANG 22.01.07 Add End

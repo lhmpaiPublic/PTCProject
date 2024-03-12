@@ -670,6 +670,95 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 	return nCount;  // 22.06.24 Ahn Modify
 }
 
+
+
+int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum)
+{
+	ASSERT(pImage);
+	ASSERT(pProjection);
+	int x, y;
+	int nStartX = rectPrj.left;
+	int nEndX = rectPrj.right;
+	int nStartY = rectPrj.top;
+	int nEndY = rectPrj.bottom;
+
+	int nDestWidth = nEndX - nStartX;
+	int nDestHeight = nEndY - nStartY;
+
+	if (nEndY > nHeight)
+	{
+		nEndY = nHeight;
+	}
+	if (nEndX > nWidth)
+	{
+		nEndX = nWidth;
+	}
+	if (nStartY < 0)
+	{
+		nStartY = 0;
+	}
+	if (nStartX < 0)
+	{
+		nStartX = 0;
+	}
+
+	int nCount = 0;
+	nCount = ((nEndY - nStartY) / nSampling);
+	if (nCount <= 0)
+		nCount = 1;
+
+
+	BYTE* pLine;
+	if (nDir == DIR_LR)
+	{
+		memset(pProjection, 0x00, sizeof(int) * (nDestWidth));
+
+		for (x = nStartX; x<nEndX; x++)
+		{
+			for (y = nStartY; y < nEndY; y += nSampling)
+			{
+				pLine = (BYTE*)pImage + (nWidth * y);
+
+				pProjection[x - nStartX] += *(pLine + x);
+			}
+		}
+		if (bModeSum == FALSE)
+		{
+			for (x = nStartX; x < nEndX; x++)
+			{
+				pProjection[x - nStartX] = pProjection[x - nStartX] / nCount;
+			}
+		}
+	}
+	else
+	{
+		memset(pProjection, 0x00, sizeof(int) * (nDestWidth));
+
+		for (x = nEndX; x>nStartX ; x--)
+		{
+			for (y = nStartY; y < nEndY; y += nSampling)
+			{
+				pLine = (BYTE*)pImage + (nWidth * y);
+
+				pProjection[x - nStartX] += *(pLine + x);
+			}
+		}
+		if (bModeSum == FALSE)
+		{
+			for (x = nStartX; x < nEndX; x++)
+			{
+				pProjection[x - nStartX] = pProjection[x - nStartX] / nCount;
+			}
+		}
+	}
+
+
+	return nCount;  // 22.06.24 Ahn Modify
+}
+
+
+
+
 int CImageProcess::Threshold(const BYTE* pImgPtr, BYTE* pRsltPtr, int nWidth, int nHeight, int nMin, int nMax)
 {
 	ASSERT(pImgPtr);
@@ -776,10 +865,10 @@ int CImageProcess::Threshold(const BYTE* pImgPtr, CRegionInfo* pRoiInfo, int nWi
 
 	if (bModeDark == FALSE) {
 		// 22.07.07 Ahn Add Start
-		if (nThreshold <= THRESHOLD_MIN_VALUE) {
-			nThreshold = THRESHOLD_MIN_VALUE;
-			//return 1; 
-		}
+//		if (nThreshold <= THRESHOLD_MIN_VALUE) {
+//			nThreshold = THRESHOLD_MIN_VALUE;
+//			//return 1; 
+//		}
 		// 22.07.07 Ahn Add End
 
 		for (y = nStartY; y < nEndY; y++) {
@@ -7608,7 +7697,6 @@ int CImageProcess::ImageProcessDetectSurface(const BYTE* pImgPtr, int nWidth, in
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-	
 	BYTE* pThresPtr;
 	int nSizeAll = nWidth * nHeight;
 	pThresPtr = new BYTE [nSizeAll];
@@ -7631,7 +7719,10 @@ int CImageProcess::ImageProcessDetectSurface(const BYTE* pImgPtr, int nWidth, in
 	CImageProcess::SortingBlockInfo(&vecBlockSpetter);
 
 	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
-	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockSpetter, pRecipeInfo, pTabRsltInfo, nCamPos, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY );
+	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockSpetter, pRecipeInfo, pTabRsltInfo, nCamPos, 1000 /*MAX_SAVE_DEFECT_COUNT*/, nFrameStartPos, AprData.m_System.m_dResolY);
+//	AprData.SaveDebugLog_Format(_T("<CImageProcess> <ImageProcessDetectSurface> AddDefectInfoByBlockInfo : Finish"));
+
+
 
 
 	if (bSimMode == TRUE) {
@@ -10119,4 +10210,178 @@ BOOL CImageProcess::SaveOriginImage(const BYTE* pOrgImg, int nImageWidth, int nI
 	bmp.SaveBitmap(str);
 
 	return TRUE;
+}
+
+
+
+int CImageProcess::FindCoatingTabLevel_Projection(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel)
+{
+	ASSERT(pImgPtr);
+	ASSERT(pVecSector);
+	ASSERT(pnLevel);
+
+	int nRet = 0;
+	int nSampling = 10;
+	int nStartPos = nTabFindPos;
+	int nEndPos = nStartPos + (nSampling * 10);
+
+	if (nEndPos > nWidth)
+	{
+		nEndPos = nWidth;
+	}
+	int thMin = pRecipeInfo->TabCond.nTabMinBright;
+	int thMax = 255;
+
+	pVecSector->clear();
+	int nLocalRet = 0;
+	nLocalRet = CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, pVecSector);
+	if (nLocalRet <= 0)
+	{
+		return -1;
+	}
+	nLocalRet = CImageProcess::CombineTabSector(pVecSector, *pRecipeInfo);
+	if (nLocalRet < 0)
+	{
+		return -2;
+	}
+
+	int i = 0;
+	int nSize = (int)pVecSector->size();
+	int nTabWidth;
+	int nFindIdx = 0;
+
+	ST_SECTOR* pstSector = NULL;
+	for (i = 0; i < nSize; i++)
+	{
+		nTabWidth = (*pVecSector)[i].nEndPos - (*pVecSector)[i].nStartPos;
+		if (abs(nTabWidth - pRecipeInfo->TabCond.nTabWidth) < (pRecipeInfo->TabCond.nTabWidth / 3))
+		{
+			pstSector = &(*pVecSector)[i];
+			break;
+		}
+	}
+	if (pstSector == NULL)
+	{
+		if (nSize)
+		{
+			pstSector = &(*pVecSector)[0];
+		}
+		else
+		{
+			return -3;
+		}
+	}
+
+	CRect rcPrj;
+	int* pnPrjData;
+	pnPrjData = new int[nWidth];
+	memset(pnPrjData, 0x00, sizeof(int) * nWidth);
+
+	rcPrj.top = pstSector->nStartPos;
+	rcPrj.bottom = pstSector->nEndPos;
+	rcPrj.left = 0;
+	rcPrj.right = nWidth;
+
+	if (rcPrj.left >= rcPrj.right)
+	{
+		rcPrj.left = rcPrj.right - 1;
+	}
+
+	CImageProcess::GetProjectionX(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_LR, nSampling, FALSE );
+
+	int nBundary = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP], en_FindFromRight, FALSE);
+
+	*pnLevel = nBundary;
+
+	delete[] pnPrjData;
+
+
+
+	return nRet;
+}
+
+
+int CImageProcess::FindBtmLevel_Projection(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int* pnLevel)
+{
+	ASSERT(pImgPtr);
+	ASSERT(pnLevel);
+
+	int nRet = 0;
+	int nSampling = 10;
+
+	int nHalfWidth = nWidth / 2;
+	if (nHalfWidth <= 0)
+	{
+		nHalfWidth = 1;
+	}
+
+	CRect rcPrj;
+	int* pnPrjData;
+	pnPrjData = new int[nHalfWidth];
+	memset(pnPrjData, 0x00, sizeof(int) * nHalfWidth);
+
+	rcPrj.top = 0;
+	rcPrj.bottom = nHeight;
+	rcPrj.left = 0;
+	rcPrj.right = nHalfWidth;
+
+	if (rcPrj.left >= rcPrj.right)
+	{
+		rcPrj.left = rcPrj.right - 1;
+	}
+
+	CImageProcess::GetProjectionX(pImgPtr, pnPrjData, nHalfWidth, nHeight, rcPrj, DIR_LR, nSampling, FALSE);
+
+	int nBundary = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nHalfWidth, pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM], en_FindFromRight, FALSE);
+
+	*pnLevel = nBundary;
+
+	delete[] pnPrjData;
+
+
+
+	return nRet;
+}
+
+
+int CImageProcess::ImageProcessDetectBlob(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pTabRsltInfo, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+{
+	int nRet = 0;
+	ASSERT(pImgPtr);
+	ASSERT(pRecipeInfo);
+	ASSERT(pTabRsltInfo);
+
+	BYTE* pThresPtr;
+	int nSizeAll = nWidth * nHeight;
+	pThresPtr = new BYTE[nSizeAll];
+	int nThresMin = pRecipeInfo->nFoilExpThresLower[nCamPos];
+	CRegionInfo roiSpetter;
+
+	CheckRect(&rcArea, nWidth, nHeight);
+
+	roiSpetter.SetProcBit(en_Surface_Bit);
+	roiSpetter.SetRect(rcArea);
+	roiSpetter.SetRoiPtr(pThresPtr);
+
+	CImageProcess::_VEC_BLOCK vecBlockSpetter;
+	vecBlockSpetter.clear();
+
+	CImageProcess::Threshold(pImgPtr, &roiSpetter, nWidth, nHeight, nThresMin, TRUE);
+
+	CImageProcess::LoopLabeling(&roiSpetter, nWidth, nHeight, &vecBlockSpetter, CImageProcess::en_FoilExp_Bit, pRecipeInfo->nFoilExpInMinSize[nCamPos], AprData.m_System.m_dResolX[nCamPos], AprData.m_System.m_dResolY);
+
+	CImageProcess::SortingBlockInfo(&vecBlockSpetter);
+
+	int nFrameStartPos = (pTabRsltInfo->nFrameCount * AprData.m_System.m_nCamViewHeight) + pTabRsltInfo->nTabStartPosInFrame;
+	CImageProcess::AddDefectInfoByBlockInfo(&vecBlockSpetter, pRecipeInfo, pTabRsltInfo, nCamPos, MAX_SAVE_DEFECT_COUNT, nFrameStartPos, AprData.m_System.m_dResolY);
+
+
+	if (bSimMode == TRUE) {
+		CopyMemory(pImgPtrArr[nArrCnt], pThresPtr, sizeof(BYTE) * nSizeAll);
+	}
+
+	delete[] pThresPtr;
+	pThresPtr = NULL;
+
+	return 0;
 }

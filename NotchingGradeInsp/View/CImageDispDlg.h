@@ -64,11 +64,12 @@ private:
 	int GetPickBitmap(CImgClipedBmp& clipbmp);
 	int MakeDrawBitmap(void);
 	void DrawDefect(CDC* pDC);
-	void DrawArea(CDC* pDC);
+	void DrawArea(CDC* pDC, CRect* rcArea);
 	void DrawMask(CDC* pDC);
 	void DrawMeasureLine(CDC* pDC);
 	void DrawPetArea(CDC* pDC);
 	void DrawBrightCheckArea(CDC* pDC);
+	void DrawRefLine(CDC* pDC, CPoint* ptLine);
 
 	CPoint GetImagePoint(int x, int y);
 	int DrawSelectRect(CDC* pDC);
@@ -103,6 +104,7 @@ private:
 	CPoint	m_cpLinePos[ 2 ] ;
 	double	m_dMeasureLength;
 	int		m_nMeasurePixLen;
+
 
 
 public:
