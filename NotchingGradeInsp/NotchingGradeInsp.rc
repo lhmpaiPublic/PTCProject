@@ -109,8 +109,8 @@ CAPTION "Version Info"
 FONT 9, "Arial", 400, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,27,20,20
-    LTEXT           "NotchingGradeInsp\nVersion\tBinV2.0",IDC_STATIC,41,29,93,21,SS_NOPREFIX
-    LTEXT           "Creation : 2023 / 09 / 21",IDC_STATIC,40,48,99,8
+    LTEXT           "Version-2024.03.12.r2",IDC_STATIC,41,35,93,9,SS_NOPREFIX
+    LTEXT           "Creation : 2024-03-12-R2",IDC_STATIC,40,48,99,8
     DEFPUSHBUTTON   "OK",IDOK,113,7,41,14,WS_GROUP
     LTEXT           "PROTECH Corporation",IDC_STATIC,14,13,75,8
 END
