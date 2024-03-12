@@ -1546,7 +1546,7 @@ void CImageDispDlg::DrawBlobArea(CDC* pDC, CRect* rcArea)
 	}
 
 
-	hpen.CreatePen(PS_SOLID, 1, RGB(255, 64, 64));
+	hpen.CreatePen(PS_SOLID, 1, RGB(64, 255, 64));
 
 	hpenold = pDC->SelectObject(&hpen);
 

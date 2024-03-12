@@ -185,6 +185,7 @@ public:
 
 	CString GetSelectName() { return m_strSelectRcpName; };
 
+	void EnableControlUI( BOOL bEnable );
 
 
 private :

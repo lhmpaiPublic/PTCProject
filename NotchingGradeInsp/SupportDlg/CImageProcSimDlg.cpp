@@ -1989,7 +1989,7 @@ void CImageProcSimDlg::InspectionAuto()
 		}
 		else
 		{
-			nCoatH = m_pRecipeInfo->TabCond.nCeramicHeight;
+			nCoatH = m_pRecipeInfo->TabCond.nTabCeramicHeight;
 		}
 
 
@@ -2035,9 +2035,9 @@ void CImageProcSimDlg::InspectionAuto()
 			m_rcLineInspEdge[0].bottom = rcProcR.top;
 
 			// Inspection Edge
-			m_rcLineInspEdge[1].left = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight;
+			m_rcLineInspEdge[1].left = nLevel - nCoatH;
 			m_rcLineInspEdge[1].top = 0;
-			m_rcLineInspEdge[1].right = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight + 1;
+			m_rcLineInspEdge[1].right = nLevel - nCoatH + 1;
 			m_rcLineInspEdge[1].bottom = nHeight;
 
 			// Inspection Area

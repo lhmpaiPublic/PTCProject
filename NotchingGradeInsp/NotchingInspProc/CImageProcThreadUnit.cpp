@@ -231,7 +231,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								}
 								else
 								{
-									nCoatH = AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
+									nCoatH = AprData.m_pRecipeInfo->TabCond.nTabCeramicHeight;
 								}
 
 								rcProcL.left = nTabLevel - nCoatH - AprData.m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
