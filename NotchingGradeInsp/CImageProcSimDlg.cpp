@@ -818,7 +818,22 @@ int CImageProcSimDlg::GetTabHeadPos(CSize* pSize, int* pnLevel)
 		nTabRight = vecSec[0].nEndPos;
 
 	}
-	else {
+	else
+	{
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		CRect rect;
 		int nPrjWidth = 2000;
 		// 22.09.20 Ahn Add Start
@@ -1954,6 +1969,8 @@ void CImageProcSimDlg::InspectionAuto()
 
 	if (m_bModeTop == TRUE)
 	{
+		tabRsltInfo.m_nHeadNo = CAM_POS_TOP;
+
 		CSize tabPos;
 		if (GetTabHeadPos(&tabPos, &nLevel) < 0) return;
 
@@ -2032,6 +2049,8 @@ void CImageProcSimDlg::InspectionAuto()
 	}
 	else
 	{
+		tabRsltInfo.m_nHeadNo = CAM_POS_BOTTOM;
+
 		if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 		{
 			if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) {
@@ -5019,6 +5038,8 @@ void CImageProcSimDlg::OnBnClickedBtnInspSpeter()
 	pImgArr[4] = pStdPtr;
 	pImgArr[5] = pProcPtr;
 
+	DWORD dwStart = GetTickCount();
+
 	int nWidth;
 	int nHeight;
 	CSize size = pBmpStd->GetImgSize();
@@ -5108,11 +5129,18 @@ void CImageProcSimDlg::OnBnClickedBtnInspSpeter()
 
 	CString strMsg;
 	strMsg.Format(_T("nLevel = %d"), nLevel);
-	AfxMessageBox(strMsg);
+//	AfxMessageBox(strMsg);
 
 	m_strProcTime = _T("Proc Time[msec], ");
 	m_strProcTime += strThresTime;
 	m_strProcTime += strLabelTime;
+
+
+	CString str;
+	str.Format(_T("%d ms"), GetTickCount() - dwStart);
+	AfxMessageBox(str);
+
+
 
 	UpdateData(FALSE);
 
@@ -5230,6 +5258,153 @@ void CImageProcSimDlg::OnBnClickedBtnCropSave()
 
 void CImageProcSimDlg::OnBnClickedBtnAttachImg()
 {
+	if (m_bLoadImage == FALSE)
+		return;
+
+
+	//////////////////////////////////////////////////////////////////////////
+// 검사 전 선택된 레시피 다시 로드 함
+	int nSelNo = m_cmbRecipeSelect.GetCurSel();
+	m_cmbRecipeSelect.SetCurSel(nSelNo);
+
+	CString strRcpName;
+	m_cmbRecipeSelect.GetWindowText(strRcpName);
+
+	CRecipeCtrl rcpCtrl;
+	if (m_pRecipeInfo != nullptr) {
+		rcpCtrl.LoadRecipe(m_pRecipeInfo, strRcpName);
+	}
+	//////////////////////////////////////////////////////////////////////////
+
+	UpdateRecipeGrid();
+
+
+	DWORD dwStart = GetTickCount();
+
+	CBitmapStd* pBmpStd;
+	pBmpStd = m_pBmpStd[en_OrgImage];
+	BYTE* pImgPtr = pBmpStd->GetImgPtr();
+	BYTE* pRsltPtr = m_pBmpStd[en_ProcImage1]->GetImgPtr();
+	int nWidth;
+	int nHeight;
+	CSize size = pBmpStd->GetImgSize();
+	nWidth = size.cx;
+	nHeight = size.cy;
+
+	int nLevel = -1;
+	int nTabFindPos = 0;
+
+	CImageProcess::VEC_SECTOR vecSec;
+	vecSec.clear();
+
+	CTabRsltInfo tabRsltInfo;
+
+	if (m_bModeTop == TRUE)
+	{
+		tabRsltInfo.m_nHeadNo = CAM_POS_TOP;
+		nTabFindPos = (nWidth - 220);
+
+		CImageProcess::FindCoatingTabLevel_Projection(pImgPtr, nWidth, nHeight, nTabFindPos, m_pRecipeInfo, &vecSec, &nLevel);
+
+		CRect rcProcL;
+		CRect rcProcR;
+
+		if (vecSec.size() > 0)
+		{
+			rcProcL.left = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+			rcProcL.right = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+			rcProcL.top = 0;
+			rcProcL.bottom = vecSec[0].nStartPos - (m_pRecipeInfo->TabCond.nRadiusH * 2);
+			CImageProcess::CheckRect(&rcProcL, nWidth, nHeight);
+
+			CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProcL, &tabRsltInfo, CAM_POS_TOP, FALSE);
+
+
+			rcProcR.left = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+			rcProcR.right = nLevel - m_pRecipeInfo->TabCond.nTabCeramicHeight + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+			rcProcR.top = vecSec[0].nEndPos + (m_pRecipeInfo->TabCond.nRadiusH * 2);
+			rcProcR.bottom = nHeight;
+			CImageProcess::CheckRect(&rcProcR, nWidth, nHeight);
+
+			CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProcR, &tabRsltInfo, CAM_POS_TOP, FALSE);
+		}
+
+
+		m_rcInspArea[0] = rcProcL;
+		m_rcInspArea[1] = rcProcR;
+	}
+	else
+	{
+		tabRsltInfo.m_nHeadNo = CAM_POS_BOTTOM;
+		CImageProcess::FindBtmLevel_Projection(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel);
+
+		CRect rcProc;
+		rcProc.left = nLevel - m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
+		rcProc.right = nLevel + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM];
+		rcProc.top = 0;
+		rcProc.bottom = nHeight;
+		CImageProcess::CheckRect(&rcProc, nWidth, nHeight);
+
+		CImageProcess::ImageProcessDetectBlob(pImgPtr, nWidth, nHeight, m_pRecipeInfo, rcProc, &tabRsltInfo, CAM_POS_BOTTOM, FALSE);
+
+		m_rcInspArea[0] = rcProc;
+	}
+
+
+
+	UpdateData(FALSE);
+
+	tabRsltInfo.SortingDefect(0);
+
+
+	m_pVecBlockAll->clear();
+	int nSize = (int)tabRsltInfo.m_vecDefInfo.size();
+
+	for (int i = 0; i < nSize; i++)
+	{
+		CBlockData data;
+		data.nPixelCnt = (int)tabRsltInfo.m_vecDefInfo[i]->nSize;
+		data.rcRect = tabRsltInfo.m_vecDefInfo[i]->rcPos;
+		data.nType = tabRsltInfo.m_vecDefInfo[i]->nType;
+		data.nBriAve = tabRsltInfo.m_vecDefInfo[i]->nAvgBright;
+		data.nBriMax = tabRsltInfo.m_vecDefInfo[i]->nMaxBright;
+		data.nBriMin = tabRsltInfo.m_vecDefInfo[i]->nMinBright;
+		data.nOrgBriAve = tabRsltInfo.m_vecDefInfo[i]->nAveOrgBir;
+		data.nOrgBriMax = tabRsltInfo.m_vecDefInfo[i]->nMaxOrgBir;
+		data.nOrgBriMin = tabRsltInfo.m_vecDefInfo[i]->nMinOrgBir;
+		data.dWidth = tabRsltInfo.m_vecDefInfo[i]->dSizeX;
+		data.dHeight = tabRsltInfo.m_vecDefInfo[i]->dSizeY;
+		data.dJudgeSize = tabRsltInfo.m_vecDefInfo[i]->dJudgeSize;
+		data.dDistance = tabRsltInfo.m_vecDefInfo[i]->dDistance; // 22.04.15 Ahn Add
+
+		int nHeadNo = (m_bModeTop == TRUE) ? CAM_POS_TOP : CAM_POS_BOTTOM;
+		data.nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nHeadNo], m_pRecipeInfo->dDefJudgeHeight, data.dJudgeSize, data.dHeight);
+
+		m_pVecBlockAll->push_back(data);
+
+	}
+	UpdateGrid();
+
+
+
+
+
+
+
+
+	Invalidate();
+
+
+
+	CString str;
+	str.Format(_T("%d ms"), GetTickCount() - dwStart);
+//	AfxMessageBox(str);
+
+
+	return;
+
+
+
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 
 	//TCHAR szFilter[256] = _T("Image Files (*.bmp;*.JPG;*.JPEG)|*.bmp;*.JPG;*.JPEG|All Files (*.*)|*.*||");
@@ -7163,3 +7338,4 @@ void CImageProcSimDlg::OnBnClickedBtnResetCount()
 	pFrame->ResetResultViewDlg();
 
 }
+

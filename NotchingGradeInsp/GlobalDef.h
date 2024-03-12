@@ -142,7 +142,7 @@ enum {
 
 // Overflow 조건
 #define		OVERFLOW_OCCURED	4
-#define		MAX_BLOCK_PIXEL		32768
+#define		MAX_BLOCK_PIXEL		(2000 * 3000) //32768
 #define		MAX_DEFECT_COUNT	128
 
 #define		BUFFER_RANGE_COUNT		50 
