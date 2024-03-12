@@ -150,8 +150,11 @@ static int bforeTabLeft = 0;
 #define MIN_TABWIDTH 40.0
 #define MAX_TABWIDTH 50.0
 
-static double RecipeInfoTabPitch = 0;
-static double RecipeInfoTabWidth = 0;
+//레시피 텝 Pitch  설정 값 
+static double dRecipeInfoTabPitch = 0;
+static int nRecipeInfoTabPitch = 0;
+//레시피 텝 넗기 설정 값
+static double dRecipeInfoTabWidth = 0;
 
 //초기 실행 상태 확인 플래그
 static bool bNowExecFlag = true;
@@ -185,9 +188,12 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//스래드 대기 여부
 	BOOL bThreadWait = TRUE;
 
-	//레시피 텝 피치 정보를 세팅한다.
-	RecipeInfoTabPitch = (int)AprData.m_pRecipeInfo->TabCond.dTabPitch;
-	RecipeInfoTabWidth = (int)AprData.m_pRecipeInfo->TabCond.dTabWidth;
+	//레시피 텝 피치 정보(ms)
+	dRecipeInfoTabPitch = AprData.m_pRecipeInfo->TabCond.dTabPitch;
+	//레시피 텝 피치 정보(픽셀)
+	nRecipeInfoTabPitch = AprData.m_pRecipeInfo->TabCond.nTabPitch;
+	//레시피 텝 넓이 정보
+	dRecipeInfoTabWidth = AprData.m_pRecipeInfo->TabCond.dTabWidth;
 
 
 	//다음 사용할 Tab ID (BCD ID)
@@ -235,19 +241,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 		_T("NowCellLen	%d	")
 		_T("TotalCellLen	%d	")
 		_T("CellLen_notUse	%d")
-		;
-
-	CString logStringGrabFrameInfo =
-		_T("GR	")
-		_T("TabNo	%d	")
-		_T("LotID	%s	")
-		_T("NowBCDID	%d	")
-		_T("DiffBeforeBCDID	%d	")
-		_T("CellLen_notUse	%d")
-		_T("FrameNo	%d	")
-		_T("FrameBCDID	%d	")
-		_T("FrameHeightTotal	%d	")
-		_T("CellHeightTotal	%d")
 		;
 
 	//제일 마지막 받은 BCD ID 
@@ -460,20 +453,20 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 								dTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
 							}
 							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f@@@@ ", dCellLength, dTabPitch, RecipeInfoTabPitch);
+							LOGDISPLAY_SPEC(7)("@@Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f@@@@ ", dCellLength, dTabPitch, dRecipeInfoTabPitch);
 
 							//디버그 로그 기록
-							AprData.SaveDebugLog_Format("Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f", dCellLength, dTabPitch, RecipeInfoTabPitch);
+							AprData.SaveDebugLog_Format("Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f", dCellLength, dTabPitch, dRecipeInfoTabPitch);
 
-							if (((RecipeInfoTabPitch - MIN_TABPITCH ) > dTabPitch) || (( RecipeInfoTabPitch + MAX_TABPITCH ) < dTabPitch))
+							if (((dRecipeInfoTabPitch - MIN_TABPITCH ) > dTabPitch) || (( dRecipeInfoTabPitch + MAX_TABPITCH ) < dTabPitch))
 							{
 								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
 								//Tab Id 정보 로그
-								if (((RecipeInfoTabPitch - MIN_TABPITCH) > dTabPitch))
+								if (((dRecipeInfoTabPitch - MIN_TABPITCH) > dTabPitch))
 								{
 									LOGDISPLAY_SPEC(7)("@@Tab Pitch가  작다@@@@ ");
 								}
-								else if (((RecipeInfoTabPitch + MAX_TABPITCH) < dTabPitch))
+								else if (((dRecipeInfoTabPitch + MAX_TABPITCH) < dTabPitch))
 								{
 									LOGDISPLAY_SPEC(7)("@@Tab Pitch가  크다@@@@ ");
 								}
@@ -500,7 +493,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						dRrealTabWidth = nWidthLocal * dResolYLocal;
 
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@Tab Witch 픽셀<%d> - Recipe Width<%f>mm 실제 텝 넓이<%f>mm 분해능<%f>@@@@ ",  nWidthLocal, RecipeInfoTabWidth, dRrealTabWidth, AprData.m_System.m_dResolY1000P);
+						LOGDISPLAY_SPEC(7)("@@Tab Witch 픽셀<%d> - Recipe Width<%f>mm 실제 텝 넓이<%f>mm 분해능<%f>@@@@ ",  nWidthLocal, dRecipeInfoTabWidth, dRrealTabWidth, AprData.m_System.m_dResolY1000P);
 
 
 						//SPC 객체 소스에서 컴파일 여부 결정
@@ -524,10 +517,25 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						//Encoder Count 값
 						cntInfo.nEnCoderCount = (int)pTabInfo->m_GrabCallEncoderCount;
 
+						//레시피 텝 피치에 대한 BCD ID 조정 위치 값 세팅
+						UINT nCompareNotUseCellLength = 4000;
+						//인도네시아 양극 93.3 4368 : Grab 4500
+						if (nRecipeInfoTabPitch <= 4400)
+							nCompareNotUseCellLength = 3500;
+						//인도네시아 음극 95.8 4485 : Grab 4600
+						else if (nRecipeInfoTabPitch <= 4500)
+							nCompareNotUseCellLength = 3700;
+						//중국 96.8 4532 : Grab 4800
+						else if (nRecipeInfoTabPitch <= 4600)
+							nCompareNotUseCellLength = 3800;
+						//미국 102.4 4794 : Grab 5000
+						else
+							nCompareNotUseCellLength = 4000;
+
 						//남은 이미지 픽셀 크기가 4000이상일 때 
 						//Tab Info에서 얻은 BCD ID와 이전 BCD ID + 1 증가한 값이 같다면
 						//카운트를 증가 시킨다.
-						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId) && (unNotUseCellLength >= 4000))
+						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId) && (unNotUseCellLength >= nCompareNotUseCellLength))
 						{
 							//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
 							//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
@@ -543,11 +551,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 						//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
 						//Grab Call BCD ID를 사용하고 아니면 계속 증가 시킨다.
-#ifdef BCDID_TABPITCH93
-						if(nBCDIDAddCount >= 1)
-#else
-						if (nBCDIDAddCount >= 3)
-#endif //BCDID_TABPITCH93
+						if (nBCDIDAddCount >= 2)
 						{
 							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
 							if (cntInfo.nTabID >= 64)
