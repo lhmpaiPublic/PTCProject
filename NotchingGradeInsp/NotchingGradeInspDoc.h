@@ -16,12 +16,9 @@ protected: // serialization에서만 만들어집니다.
 protected:
 	int m_nViewMode;
 	int m_nInspState;
-//KANG 22.05.24 Add Start
 	int m_nHistoryDispMode;
-//KANG 22.05.24 Add End
 
 	CDefectDataCtrl* m_pDefDataCtrl;
-//	std::vector< CJuegeResultInfo > m_VecJudgeInfo;
 
 public:
 	int GetViewMode();
@@ -33,15 +30,11 @@ public:
 	int LoadHistory();
 	CDefectDataCtrl* GetErrorDataCtrl() { return m_pDefDataCtrl; };
 
-//KANG 22.05.24 Add Start
 	int GetHistoryDispMode();
 	void SetHistoryDispMode(int nMode);
-//KANG 22.05.24 Add End
 
-	// 22.06.09 Ahn Add Start
 	BOOL IsReqCounterReset();
 	VOID SetReqCounterReset(BOOL bFlag);
-	// 22.06.09 Ahn Add End
 
 private :
 	BOOL m_bReqCounterReset;

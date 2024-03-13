@@ -38,22 +38,14 @@ CNotchingGradeInspDoc::CNotchingGradeInspDoc() noexcept
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
 	m_nViewMode = enInspMode;
 	m_nInspState = enInspStop;
-//	m_pDefDataCtrl = NULL;
 	m_pDefDataCtrl = theApp.m_pImgProcCtrl->GetDefectDataCtrlPtr();
-//KANG 22.05.24 Add Start
 	m_nHistoryDispMode = enHistoryDisp_Calender;
-//KANG 22.05.24 Add End
-	// 22.06.09 Ahn Add Start
 	m_bReqCounterReset = FALSE;
-	// 22.06.09 Ahn Add End
 }
 
 CNotchingGradeInspDoc::~CNotchingGradeInspDoc()
 {
-	//if (m_pDefDataCtrl != NULL) {
-	//	delete m_pDefDataCtrl;
-	//	m_pDefDataCtrl = NULL;
-	//}
+
 }
 
 BOOL CNotchingGradeInspDoc::OnNewDocument()
@@ -63,8 +55,6 @@ BOOL CNotchingGradeInspDoc::OnNewDocument()
 
 	// TODO: 여기에 재초기화 코드를 추가합니다.
 	// SDI 문서는 이 문서를 다시 사용합니다.
-
-	//m_pDefDataCtrl = new CDefectDataCtrl();
 
 	return TRUE;
 }
@@ -191,10 +181,6 @@ int CNotchingGradeInspDoc::LoadHistory()
 	CString strLotNo;
 	strDate = _T("09\\30");
 	strLotNo = _T("AAAAAAAAA");
-	// 22.06.23 Ahn Delete Start
-	//int nRet = m_pDefDataCtrl->LoadErrorData(strDate, strLotNo);
-	//return nRet ;
-	// 22.06.23 Ahn Delete Start
 
 	return 0;
 }
@@ -208,16 +194,10 @@ void CNotchingGradeInspDoc::OnRecipeReload()
 	AprData.m_pRecipeInfo->m_strRecipeName;
 
 	rcpCtrl.LoadRecipe(AprData.m_pRecipeInfo, AprData.m_pRecipeInfo->m_strRecipeName);
-	//AprData.m_pRecipeInfo 
 }
 
-// 22.03.25 Ahn Add Start
 int CNotchingGradeInspDoc::RecipeChange(int nRecipeNo, CString strRecipeName)
 {
-	// Check Recipe Name/No
-	//AprData.m_NowLotData.m_nRecipeNo;
-	//AprData.m_NowLotData.m_strNextRecipeName;
-
 	int nRet = 0;
 	CRecipeCtrl rcpCtrl;
 
@@ -235,16 +215,12 @@ int CNotchingGradeInspDoc::RecipeChange(int nRecipeNo, CString strRecipeName)
 		strMsg.Format(_T("Recipe Change Error - RecipeName[ %s ]"), strRecipeName);
 		AprData.SaveErrorLog(strMsg);
 
-		// 22.10.13 Ahn Add Start
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_RecipeError, strMsg);
-		// 22.10.13 Ahn Add End
 	}
 
 	return nRet ;
 }
-// 22.03.25 Ahn Add End
 
-//KANG 22.05.24 Add Start
 int CNotchingGradeInspDoc::GetHistoryDispMode()
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -257,10 +233,8 @@ void CNotchingGradeInspDoc::SetHistoryDispMode(int nMode)
 	// TODO: 여기에 구현 코드 추가.
 	m_nHistoryDispMode = nMode;
 }
-//KANG 22.05.24 Add End
 
 
-// 22.06.09 Ahn Add Start
 BOOL CNotchingGradeInspDoc::IsReqCounterReset()
 {
 	return m_bReqCounterReset;
@@ -270,5 +244,4 @@ VOID CNotchingGradeInspDoc::SetReqCounterReset(BOOL bFlag)
 {
 	m_bReqCounterReset = bFlag ;
 }
-// 22.06.09 Ahn Add End
 
