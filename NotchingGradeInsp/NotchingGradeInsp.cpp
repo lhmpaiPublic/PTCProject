@@ -19,9 +19,9 @@
 #include "GlobalData.h"
 #include "CDebugSetDlg.h"
 #include "CStartDlg.h"
-#include "SigProc.h" // 22.04.01 Ahn Add
-#include "CDispErrorDlg.h"	// 22.06.29 Son Add
-#include "Win32File.h" // 22.11.25 Ahn Add
+#include "SigProc.h" 
+#include "CDispErrorDlg.h"	
+#include "Win32File.h" 
 #include "resource.h"
 #include "SpcCreateJSONFileThread.h"
 #include "SpcInfo.h"
@@ -46,7 +46,6 @@ END_MESSAGE_MAP()
 
 CNotchingGradeInspApp::CNotchingGradeInspApp() noexcept
 {
-	//AfxSetAllocStop(1192);
 	m_bHiColorIcons = TRUE;
 
 	m_nAppLook = 0;
@@ -200,11 +199,9 @@ BOOL CNotchingGradeInspApp::InitInstance()
 		return FALSE;
 	}
 
-	// 22.06.29 Son Add Start
 	m_pDispErrorDlg = new CDispErrorDlg(m_pMainWnd);
 	m_pDispErrorDlg->Create(IDD_DLG_DISPERROR, m_pMainWnd);
 	m_pDispErrorDlg->ShowWindow(SW_HIDE);
-	// 22.06.29 Son Add End
 
 	DeviceOpen();
 
@@ -224,9 +221,7 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-	//KANG 21.07.21 Add Start
 	CWinAppEx::CleanState();
-	//KANG 21.07.21 Add End
 
 	// 명령줄에 지정된 명령을 디스패치합니다.
 	// 응용 프로그램이 /RegServer, /Register, /Unregserver 또는 /Unregister로 시작된 경우 FALSE를 반환합니다.
@@ -246,9 +241,7 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
-	// 22.11.25 Ahn Add Start
 	LoadLastDefList();
-	// 22.11.25 Ahn Add End
 
 	return TRUE;
 }
@@ -259,7 +252,6 @@ int CNotchingGradeInspApp::ExitInstance()
 
 	DeviceClose();
 
-	// 22.06.29 Son Add Start
 	if (m_pDispErrorDlg != NULL) {
 		if (m_pDispErrorDlg->m_hWnd != nullptr) {
 			m_pDispErrorDlg->DestroyWindow();
@@ -267,7 +259,6 @@ int CNotchingGradeInspApp::ExitInstance()
 		delete m_pDispErrorDlg;
 		m_pDispErrorDlg = NULL;
 	}
-	// 22.06.29 Son Add End
 
 	AfxOleTerm(FALSE);
 
@@ -364,9 +355,7 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 	m_pImgProcCtrl = new CImageProcessCtrl();
 	m_pImgProcCtrl->Initialize(NULL, 0);
 	m_pImgProcCtrl->Initialize(NULL, 1);
-	// 22.12.01 Ahn Modify Start
 	m_pImgProcCtrl->SetFrameCount(AprData.m_NowLotData.m_nFrameCount);
-	// 22.12.01 Ahn Modify End
 
 
 	if (m_pPioCtrl != NULL) {
@@ -379,11 +368,7 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 		{
 			m_pPioCtrl = new CPioCtrl(CHN_NO_NETG1, 2, 1);
 		}
-
-		// 22.04.01 Ahn Add Start
 		m_pSigProc = new CSigProc();
-		// 22.04.01 Ahn Add End
-
 
 	}
 
@@ -394,13 +379,11 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 	}
 
 	BOOL bDebug = FALSE; // TEST
-	CString strMsg; // 22.10.17 Ahn Add Start
+	CString strMsg; 
 	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_DIO) == FALSE) {
 		if (m_pIoCtrl->Open(bDebug) == -1) {
-			// 22.10.17 Ahn Add Start
 			strMsg.Format(_T("I/O Board initialize failed."));
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_DioError, strMsg);
-			// 22.10.17 Ahn Add End
 			return (-1);
 		}
 	}
@@ -408,10 +391,8 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 	if (m_pLightCtrl == NULL) {
 		m_pLightCtrl = new CLightControl();
 		if (m_pLightCtrl->Open() < 0) {
-			// 22.10.17 Ahn Add Start
 			strMsg.Format(_T("Light control connect error."));
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_LampError, strMsg);
-			// 22.10.17 Ahn Add End
 		}
 
 		if (AprData.m_System.m_nRS232_Mode == 1);
@@ -430,12 +411,10 @@ int CNotchingGradeInspApp::DeviceClose(void)
 		m_pImgProcCtrl = NULL;
 	}
 
-	// 22.04.01 Ahn Add Start
 	if (m_pSigProc != NULL) {
 		delete m_pSigProc;
 		m_pSigProc = NULL;
 	}
-	// 22.04.01 Ahn Add End
 
 	if (m_pPioCtrl != NULL) {
 		delete m_pPioCtrl;
@@ -595,21 +574,6 @@ void CNotchingGradeInspApp::GetFileTimes(CString strPath, SYSTEMTIME* outCreate,
 	}
 }
 
-
-////KANG 22.01.07 Add Start
-//CResultView* CNotchingGradeInspApp::GetResultViewPrt()
-//{
-//	CMainFrame* pMain = (CMainFrame*)AfxGetMainWnd();
-//	if (pMain != NULL) {
-//		return pMain->GetResultViewPtr();
-//	}
-//	else {
-//		return NULL;
-//	}
-//}
-////KANG 22.01.07 Add End
-
-// 22.06.29 Son Add Start
 int CNotchingGradeInspApp::ErrOutput(LPCSTR ptstr, int nErrorType )
 {
 	CSingleLock lock(&m_csError, TRUE);
@@ -633,9 +597,7 @@ int CNotchingGradeInspApp::ErrOutput(LPCSTR ptstr, int nErrorType )
 	}
 	return 0;
 }
-// 22.06.29 Son Add End
 
-// 22.11.25 Ahn Add Start
 int CNotchingGradeInspApp::LoadLastDefList()
 {
 	CDefectDataCtrl *pDefCtrl = m_pImgProcCtrl->GetDefectDataCtrlPtr();
@@ -654,7 +616,6 @@ int CNotchingGradeInspApp::LoadLastDefList()
 
 	return nRet ;
 }
-// 22.11.25 Ahn Add End
 
 void CNotchingGradeInspApp::ProgramVersionInfo()
 {
