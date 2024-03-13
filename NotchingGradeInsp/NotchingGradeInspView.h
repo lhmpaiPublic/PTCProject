@@ -7,14 +7,13 @@
 #include "InspDlg.h"
 #include "HistoryDlg.h"
 #include "CondDlg.h"
-#include "CDefectMapDlg.h" // 22.11.09 Ahn Add 
+#include "CDefectMapDlg.h" 
 
-//class CCameraViewDlg;
-class CRecipeSettingDlg;// 22.07.21 Ahn Add
+class CRecipeSettingDlg;
 class CCameraWaveDlg;
 class CDebugImageAcqDlg;
-class CResultFileManager;// 22.04.21 Ahn Add
-class CDeleteResultFileThread; // 22.07.04 Ahn Add
+class CResultFileManager;
+class CDeleteResultFileThread;
 
 class CNotchingGradeInspView : public CView
 {
@@ -35,36 +34,21 @@ public:
 protected:
 	bool logControlKeyDown;
 	CInspDlg*		m_pInspDlg;
-	// 22.11.09 Ahn Add Start
 	CDefectMapDlg* m_pDefMapDlg;
-	// 22.11.09 Ahn Add End
 
 	CHistoryDlg*	m_pHistoryDlg;
-	// 22.07.21 Ahn Modify Start
-	//CCondDlg*		m_pCondDlg;
 	CRecipeSettingDlg* m_pCondDlg;
-	// 22.07.21 Ahn Modify End
-
-	//// 22.04.21 Ahn Add Start
-	//CResultFileManager* m_pFileManager;
-	//// 22.04.21 Ahn Add End
 
 // 작업입니다.
 public:
 	int ChangeViewMode(int nMode);
 	int OnRefresh();
-//KANG 22.01.07 Add Start
+
 	CInspDlg* GetInspDlgPtr() { return m_pInspDlg; };
 	CHistoryDlg* GetHistoryDlgPtr() { return m_pHistoryDlg; };
-	// 22.07.21 Ahn Modify Start
-	//CCondDlg* GetCondDlgPtr() { return m_pCondDlg; };
 	CRecipeSettingDlg* GetCondDlgPtr() { return m_pCondDlg; };
-	// 22.07.21 Ahn Modify End
-//KANG 22.01.07 Add End
 
-	// 22.11.15 Ahn Add Start
 	void SetMapDlgSize(CRect rcMapSize);
-	// 22.11.15 Ahn Add End
 
 // 재정의입니다.
 public:
@@ -83,9 +67,6 @@ public:
 
 protected:
 
-	//int SaveStatusInfo();
-
-	// 22.03.23 Ahn Add Start
 	UINT_PTR m_TID_IO;
 	BOOL Set_I0Timer();
 	BOOL Kill_IoTimer();
@@ -124,32 +105,22 @@ protected:
 	BOOL m_bConnectZoneFlag;
 	BOOL m_bAlarmNgAck;
 
-
-
-	// 22.07.04 Ahn Add Start
 	CDeleteResultFileThread* m_pDeleteThread;
-	// 22.07.04 Ahn Add End
-	// 22.11.09 Ahn Add Start
+
 	BOOL m_bDispMap;
-	// 22.11.09 Ahn Add End
 // 생성된 메시지 맵 함수
 protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-//KANG 22.01.07 Delete Start
-//	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-//KANG 22.01.07 Delete End
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDestroy();
-//	afx_msg void OnCameraSetting();
 	afx_msg void OnCameraView();
 
 private :
-//	CCameraViewDlg* m_pCamViewDlg;
 	CCameraWaveDlg* m_pCamWaveDlg;
 
 	int		m_nCamErrorResetCnt ;
@@ -172,16 +143,10 @@ private :
 
 	int InspectionStart();
 	int InspectionEnd();
-	// 22.07.06 Ahn Add Start
 	int CameraGrabStart();
 	int CameraGrabStop();
-	// 22.07.06 Ahn Add End
-	// 22.05.19 Ahn Add Start
 	int GrabberResetReqest();
-	// 22.05.19 Ahn Add End
-	// 22.07.26 Ahn Add Start
 	int CheckLotEndProcess();
-	// 22.07.26 Ahn Add End
 
 	int CheckLotEndProcess2(); //조건 없이 Lot End Check
 	int CheckTabZeroReset();
@@ -199,17 +164,10 @@ private :
 private:
 	static CCriticalSection	m_csMelsecThread;
 	CWinThread* m_pThread;
-
-
-
-// 22.06.27 Ahn Add Start
 public :
 	BOOL m_bDebugLotStartReq ;
 	BOOL m_bDebugLotEndReq ;
 	BOOL m_bDebug_counterResetReq;
-// 22.06.27 Ahn Add End
-
-
 
 public:
 	BOOL IsInspReady();
@@ -219,14 +177,10 @@ public:
 	void SetLotChangeReq(BOOL bMode);
 	void ChangeStatus(int nStatus);
 
-	// 22.12.01 Ahn Add Start
 	void ReDrawMap( BOOL bModeRect, CRect rcRange );
 	int m_nRedrawCnt ;
-	// 22.12.01 Ahn Add End
 
-	// 23.02.09 Ahn Add Start
 	void SwitchDisplay(BOOL bMode);
-	// 23.02.09 Ahn Add End
 
 	afx_msg void OnCameraWave();
 	afx_msg void OnDebugImageAcqStart();
