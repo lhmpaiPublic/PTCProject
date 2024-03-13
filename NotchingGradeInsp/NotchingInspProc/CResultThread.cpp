@@ -8,7 +8,6 @@
 #include "BitmapStd.h"
 #include "CImageProcess.h"
 #include "CCropImgQueueCtrl.h"
-//#include "CDefectInfo.h" // 22.06.23 Ahn Add Start
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -41,7 +40,6 @@ void CResultThread::Begin()
 {
 	m_bKill = FALSE;
 
-	//	m_DisphWnd = NULL;
 	if (m_pThread == NULL) {
 
 		//이벤트 객체 생성
@@ -101,33 +99,16 @@ void CResultThread::DrawDefectRect(CDC* pDC, CRect rcDef, COLORREF color)
 	myBrush.DeleteObject();
 }
 
-// 22.02.25 Ahn Add Start
 void CResultThread::DrawString(CDC* pDC, int x, int y, COLORREF color, CString strLine)
 {
 	if (pDC == NULL) {
 		return;
 	}
 
-//	CRect	rc;
-//	CBrush	myBrush, * poldBrush;
-//	myBrush.CreateSolidBrush(color);
-//	poldBrush = pDC->SelectObject(&myBrush);
-	//CPen pen, * pOldPen;
-	//pen.CreatePen(PS_SOLID, 2, color);
-	
-	//pOldPen = pDC->SelectObject(&pen);
 	pDC->SetBkMode(TRANSPARENT);
 	pDC->SetTextColor(color);
 	pDC->TextOut(x, y, strLine);
-
-	//pDC->SelectObject(pOldPen);
-	//pen.DeleteObject();
-
-//	pDC->SelectObject(poldBrush);
-//	myBrush.DeleteObject();
 }
-// 22.02.25 Ahn Add End
-
 
 void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPtr, int nWidth, int nHeight, int nMagnif)
 {
@@ -174,7 +155,6 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 	double dRateX = (double)rect.Width() / (double)(nWidth * nMagnif);
 	double dRateY = (double)rect.Height() / (double)(nHeight * nMagnif);
 
-	//pbmpstd->drawText()
 	int x, y;
 	CString strLine;
 	COLORREF color;
@@ -199,12 +179,7 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 
 	int nDefCount = pTabRsltInfo->GetSize();
 
-	// 22.05.11 Ahn Delete Start
-	//if (nDefCount > MAX_DISP_DEF_COUNT) nDefCount = MAX_DISP_DEF_COUNT;
-	// 22.05.11 Ahn Delete End
-	// 22.05.11 Ahn Add Start
 	int nDispCnt = 0;
-	// 22.05.11 Ahn Add End
 	int nLastPosY = y + yPitch ;
 	for (int i = 0; i < nDefCount; i++) {
 		COLORREF col;
@@ -237,9 +212,7 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 	}
 
 	y = 300;
-	// 22.06.24 Ahn Modify Start
 	for (int i = 0, nIdx = 0; i < nDefCount; i++) {
-	// 22.06.24 Ahn Modify End
 		COLORREF col;
 
 		CDefectInfo* pDefInfo;
@@ -278,76 +251,108 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 	delete pbmpstd;
 }
 
-// 23.02.03 Ahn Add Start
-
-
 void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWidth, int nHeight, int nMagnif)
 {
 	ASSERT(pDC);
 	ASSERT(pRsltInfo);
+	//Cell 의 검사 정보 객체 얻기
 	CTabRsltInfo* pTabRsltInfo = pRsltInfo->m_pTabRsltInfo;;
 	ASSERT(pTabRsltInfo);
 
-	CRect rect;
+	//이미지 영역 정보
 	CRect rcImg;
+	//이미지 출력을 위한 윈도우 클라이언트 영역 정보
 	CRect rcClient;
 
+	//윈도우 클라이언트 영역 정보 세팅
 	rcClient.left = 0;
 	rcClient.right = nWidth;
 	rcClient.top = 0;
 	rcClient.bottom = nHeight;
 
+	//이미지 영역 정보 세팅
 	rcImg.left = 0;
 	rcImg.right = nWidth;
 	rcImg.top = 0;
 	rcImg.bottom = nHeight;
 
+	//이미지 넓이의 축소 율 값 계산
 	double dRateX = (double)nWidth / (double)(nWidth * nMagnif);
+	//이미지 높이 축소 율 값 계산
 	double dRateY = (double)nHeight / (double)(nHeight * nMagnif);
 
 	int x, y;
 	CString strLine;
 	COLORREF color;
+	//NG 일경우 컬러 값을 red, 테스트 출력 
 	if (pRsltInfo->m_pTabRsltInfo->m_nJudge == JUDGE_NG) {
 		color = RGB(255, 0, 0);
 		strLine = _T("JUDGE : NG");
 	}
+	//아닐 경우 green, 텍스트 출력
 	else {
 		color = RGB(0, 255, 0);
 		strLine = _T("JUDGE : OK");
 	}
 
+	//윈도우에 이미지 출력 Tab이 있는 경우 x 값
 	if (pRsltInfo->m_nHeadNo == CAM_POS_TOP) {
 		x = 20;
 	}
+	//윈도우에 이미지 출력 Tab이 없는 경우 x 값
 	else {
 		x = 150;
 	}
+
+	//윈도우 이미지 출력 y값
 	y = 20;
+	//다음 라인에 테스트를 쓸 위치 Pitch 값
 	int yPitch = 30;
 
+	//이미지에 한 라인으로 text를 쓴다.
 	DrawString(pDC, x, y, color, strLine);
 
+	//defect 정보 갯수를 가져온다.
 	int nDefCount = pTabRsltInfo->GetSize();
-	int nDispCnt = 0;
-	int nLastPosY = y + yPitch;
-	for (int i = 0; i < nDefCount; i++) {
-		COLORREF col;
 
+	//defect 순번 
+	int nDispCnt = 0;
+
+	//defect 텍스트를 쓸 다음 위치 정보
+	int nLastPosY = y + yPitch;
+
+	//defect 정보 갯수만큼 루프를 돈다.
+	//defect 위치에 텍스트출력, 사각형 그리기 위한 소스
+	for (int i = 0; i < nDefCount; i++) 
+	{
+		//컬러 정보 객체
+		COLORREF col;
+		//defect 정보를 받을 객체
 		CDefectInfo* pDefInfo;
+		//defect 정보를 1개 가져온다.
 		pDefInfo = pTabRsltInfo->m_vecDefInfo[i];
+		//defect 정보가 NULL 이거나 출력 갯수가 MAX_DISP_DEF_COUNT 개 이상이면 빠져나간다.
 		if ((pDefInfo == nullptr) || (nDispCnt >= MAX_DISP_DEF_COUNT)) break;
+
+		//defect 정보가 surface 일 경우 출력하지 않는다.
 		if (pDefInfo->nType == TYPE_SURFACE) continue;
 
+		//defect 정보가 NG 일경우 컬러 색
 		if (pDefInfo->nRank == JUDGE_NG) {
 			col = RGB(230, 50, 50);
 		}
+		//아닐 경우 컬러 색
 		else {
 			col = RGB(50, 230, 50);
 		}
+		//출력 텍스트를 만든다.
 		strLine.Format(_T("Size_F %d:%.1lf x %.1lf um"), nDispCnt + 1, pDefInfo->dJudgeSize, pDefInfo->dSizeY );
+
+		//텍스트를 출력한다.
+		//pDC x, y : 카운트 * 텍스트 pitch, col : 색, strLine : 텍스트 내용
 		DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine);
 
+		//defect 위치 값에 축소율 곱하여 위치를 잡는다.
 		CRect defRect;
 		defRect.top = (int)(pDefInfo->rcPos.top * dRateY);
 		defRect.bottom = (int)(pDefInfo->rcPos.bottom * dRateY);
@@ -355,36 +360,49 @@ void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWid
 		defRect.right = (int)(pDefInfo->rcPos.right * dRateX);
 
 		int nInfate = 5;
+		//CRect 중심에서 옆으로 이동하여 팽창합니다
 		defRect.InflateRect(nInfate, nInfate, nInfate, nInfate);
 
+		//사각형 주위에 테두리를 그립니다
+		//defect 위치에 사각형 그리기
 		DrawDefectRect(pDC, defRect, col);
+		//다음 defect 카운트
 		nDispCnt++;
 
 	}
-
+	//defect 정보 갯수만큼 루프를 돈다.
+	//defect 위치에 텍스트출력, 사각형 그리기 위한 소스
 	y = 300;
-	for (int i = 0, nIdx = 0; i < nDefCount; i++) {
+	for (int i = 0, nIdx = 0; i < nDefCount; i++) 
+	{
+		//컬러 값
 		COLORREF col;
-
+		//defect 정보 객체
 		CDefectInfo* pDefInfo;
+		//defect 정보 얻기
 		pDefInfo = pTabRsltInfo->m_vecDefInfo[i];
-		if ((pDefInfo == nullptr) || ((nIdx + nDispCnt) >= 10)) break;
-		if (pDefInfo->nType != TYPE_SURFACE) continue;
 
+		//defect 정보가 NULL 이거나 이전 갯 수의 10를 넘기지 않는다.
+		if ((pDefInfo == nullptr) || ((nIdx + nDispCnt) >= 10)) break;
+		//defect 정보가 surface 이면 출력하지 않는다.
+		if (pDefInfo->nType != TYPE_SURFACE) continue;
+		//NG : 컬러 값
 		if (pDefInfo->nRank == JUDGE_NG) {
 			col = RGB(230, 50, 50);
 		}
+		//그외 컬러 값
 		else {
 			col = RGB(50, 230, 50);
 		}
 
 		// Spetter 결함 사이즈 표시
+		//텍스트 출력 : MAX_DISP_DEF_COUNT 갯수 보다 작을 때 만 출력함
 		if (nIdx < MAX_DISP_DEF_COUNT) {
 			strLine.Format(_T("Size_S %d:%.1lf x %.1lf um"), (nIdx + nDispCnt), pDefInfo->dJudgeSize, pDefInfo->dSizeY);
 			DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine);
 		}
 		nIdx++;
-
+		//defect  영역 정보 계산 : 축소율 곱한다.
 		CRect defRect;
 		defRect.top = (int)(pDefInfo->rcPos.top * dRateY);
 		defRect.bottom = (int)(pDefInfo->rcPos.bottom * dRateY);
@@ -392,8 +410,10 @@ void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWid
 		defRect.right = (int)(pDefInfo->rcPos.right * dRateX);
 
 		int nInfate = 5;
+		//CRect 중심에서 옆으로 이동하여 팽창합니다
 		defRect.InflateRect(nInfate, nInfate, nInfate, nInfate);
-
+		//사각형 주위에 테두리를 그립니다
+		//defect 위치에 사각형 그리기
 		DrawDefectRect(pDC, defRect, col);
 	}
 }
@@ -419,11 +439,8 @@ void CResultThread::SaveResultImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* 
 	HBITMAP		hBmpSave, hBmpSaveOld;
 	BITMAPINFO* pBmpInfoSave;
 
-	// 23.02.08 Ahn Add Start
 	CBitmapStd::ImageReverse(pImgPtr, nWidth, nHeight);
-	// 23.02.08 Ahn Add End
 
-//	bmpTemp.ImageRevers();
 	CSize size;
 	size.cx = nWidth * nMagnif;
 	size.cy = nHeight * nMagnif;
@@ -449,23 +466,18 @@ void CResultThread::SaveResultImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* 
 
 	CopyMemory(pbyteBmpBits, pbyteTmpMemDC, (nWidth * nHeight) * 3);
 
-	// 23.02.09 Ahn Add Start
 	//메인 이미지 출력 잠시 제거
 	CRect rcClient;
 	CRect rcImg( 0, 0, nWidth, nHeight) ;
 	pWnd->GetClientRect(rcClient);
 	bmpAll->DrawImageFunction(pDC, &rcClient, &rcImg, SRCCOPY, FALSE);
-	// 23.02.09 Ahn Add End
 
-	// 됶뺳
 	::SelectObject(cdcSave.m_hDC, hBmpSaveOld);
 	::DeleteObject(pDC->m_hDC);
 	::DeleteObject(cdcSave);
 	::DeleteObject(hBmpSave);
 }
-// 23.02.03 Ahn Add End
  
-// 22.02.25 Ahn Add Start
 void CResultThread::CaptureImage(HWND HWnd, CString strPath)
 {
 	ASSERT(HWnd);
@@ -509,8 +521,6 @@ void CResultThread::CaptureImage(HWND HWnd, CString strPath)
 
 	bmp.SaveBitmap(strPath);
 }
-// 22.02.25 Ahn Add End 
-
 
 #endif
 
@@ -529,12 +539,6 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 	CTabRsltInfo* pTabInfo = pFrmInfo->m_pTabRsltInfo;
 	int nDefCount = pTabInfo->GetDefectCount();
 	CDefectInfo* pDefInfo;
-	//CString strMidPath;
-	////strFilePath.Format( _T("%s\\CROP\\"), pTabInfo->m_chCropPath ) ;
-	//strMidPath.Format(_T("%04d%02d\\%02d\\%02d\\%s")
-	//	, pTabInfo->sysTime.wYear, pTabInfo->sysTime.wMonth
-	//	, pTabInfo->sysTime.wDay, pTabInfo->sysTime.wHour, AprData.m_NowLotData.m_strLotNo);
-
 	CString strTime;
 	strTime.Format(_T("%04d%02d%02d_%02d%02d%02d%03d")
 		, pTabInfo->sysTime.wYear, pTabInfo->sysTime.wMonth, pTabInfo->sysTime.wDay
@@ -544,10 +548,8 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 	strPos.Format(_T("%s"), (pTabInfo->m_nHeadNo == 0) ? _T("TAB") : _T("BTM"));
 	CString strDefType;
 
-	// 22.12.15 Ahn Add Start
 	CString strTabJudge;
 	strTabJudge = (pTabInfo->m_nJudge == JUDGE_NG) ? _T("NG") : _T("OK");
-	// 22.12.15 Ahn Add End
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE			
@@ -567,7 +569,6 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 		if (pDefInfo != NULL)
 		{
 
-			// 22.11.28 Ahn Modify End
 			CRect rcCrop;
 			CPoint cpNgPos = pTabInfo->GetDefectCenterPos(i);
 			int nSizeX = (int)pDefInfo->nSizeX;
@@ -575,12 +576,7 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 			int nSizeL = 128;
 			CString strJudge;
 
-			// 23.02.08 Ahn Modify Start
-			//// 22.11.21 Ahn Modify Start - JUDGE_GRAY
-			//strJudge = (pDefInfo->nRank == 0) ? _T("OK") : _T("NG");
-			//// 22.11.21 Ahn Modify End
 			strJudge = (pDefInfo->nRank == JUDGE_NG) ? _T("NG") : (pDefInfo->nRank == JUDGE_OK) ? _T("OK") : _T("GRAY");
-			// 23.02.08 Ahn Modify Start
 
 			rcCrop.left = cpNgPos.x - 128;
 			rcCrop.right = cpNgPos.x + 128;
@@ -637,9 +633,10 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 
 				//추가한다.
 				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
-
+				//SPC+ CROP 이미지 출력 경로
 				strSpcCropFilePath = InspInData->ImageFilePath(strSpcCropFilePath) + CString("\\");
 
+				//SPC+ 활성화 한 상태에서 만 출력한다.
 				if (CSpcInfo::Inst()->getSPCStartFlag())
 				{
 					CImageProcess::SaveCropImage(pImgPtr, nWidth, nHeight, rcCrop, strSpcCropFilePath, strSpcCropFileName);
@@ -649,28 +646,29 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 
 #endif //SPCPLUS_CREATE
 
-			//기존 CROP IMAGE
+			//CROP IMAGE 파일 명 생성
 			CString strFileName;
 			strFileName.Format(_T("%s_%s_%s_%s_%d_%s_%s_%s_%d_%s.jpg")
-				// 22.12.15 Ahn Add End
 				, INSPECTION_TYPE
 				, strTime
 				, AprData.m_System.m_strMachineID
 				, AprData.m_NowLotData.m_strLotNo
 				, pTabInfo->m_nTabNo + 1
 				, strPos
-				, strTabJudge // 22.12.15 Ahn Add 
+				, strTabJudge 
 				, strJudge
 				, i
 				, strDefType
 			);
 
+			//CROP 이미지 출력 경로 생성
 			CString strFilePath;
 			strFilePath.Format(_T("%s\\%s\\%s\\%s\\CROP\\"), AprData.m_strImagePath, strJudge, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
 
+			//크롭 이미지를 저장한다.
+			//크롭이미지는 퀄리티 100으로 저장
 			CImageProcess::SaveCropImage(pImgPtr, nWidth, nHeight, rcCrop, strFilePath, strFileName);
 
-			// 22.06.10 Ahn Add Star
 			if (pQueueCtrl != NULL)
 			{
 				CCropImgData data;
@@ -679,32 +677,19 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 				data.m_strDispName.Format(_T("%s_%d_%d"), strPos, pTabInfo->m_nTabNo + 1, i + 1);
 				pQueueCtrl->PushBack(data);
 			}
-			// 22.06.10 Ahn Add End
-			pDefInfo->nDefNo = i; // 22.07.07 Ahn Add
-			//strcpy_s(pDefInfo->szImgFileName, strFileName.GetBuffer(0));
+			pDefInfo->nDefNo = i; 
 
-			// 22.05.27 Ahn Modify Start
-			//::_tcsnccpy_s(pDefInfo->szImgFileName, _countof(pDefInfo->szImgFileName), strFileName.GetBuffer(0), _TRUNCATE);
-			//strFileName.ReleaseBuffer();
 			CString strFullPath;
 			strFullPath.Format(_T("%s%s"), strFilePath, strFileName);
 			::_tcsnccpy_s(pDefInfo->szImgFileName, _countof(pDefInfo->szImgFileName), strFullPath.GetBuffer(0), _TRUNCATE);
 			::_tcsnccpy_s(pDefInfo->szRecipeName, _countof(pDefInfo->szRecipeName), AprData.m_NowLotData.m_strRecipeName.GetBuffer(0), _TRUNCATE);
-			// 22.05.27 Ahn Modify End
 
 			pDefInfo->bImageFlag = TRUE;
-			// 22.09.15 Ahn Add Start
 			pDefInfo->bMarking = pTabInfo->m_bMarkingFlag;
-			// 22.09.15 Ahn Add End
 
-			// 22.06.23 Ahn Add Start
 			CDefectInfo* pDefRsltInfo = new CDefectInfo;
-			// 22.08.10 Ahn Modify Start
-			//pDefRsltInfo = pDefInfo;
 			*pDefRsltInfo = *pDefInfo;
-			// 22.08.10 Ahn Modify End
 			pDefectQueue->PushBack(pDefRsltInfo);
-			// 22.06.23 Ahn Add End
 
 		}
 		else
@@ -713,7 +698,6 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 		}
 	}
 }
-// 22.05.25 Ahn Add End
 
 #define RESULTTHREAD_TIMEOUT 10
 UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
@@ -782,7 +766,7 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 #else
 #if defined( IMAGE_DRAW_DIRECT_VERSION )
 
-						if (hWnd != NULL) // 22.04.01 Ahn Add 
+						if (hWnd != NULL) 
 						{
 							BYTE* pResizePtr;
 							int nMagnif = 5; //8;
@@ -792,41 +776,28 @@ UINT CResultThread::CtrlThreadResultProc(LPVOID pParam)
 							pResizePtr = new BYTE[nReSize + 1];
 							memset(pResizePtr, 0x00, sizeof(BYTE) * nReSize + 1);
 
-							// 23.02.24 Ahn Add Start
 							CPoint cpSharpness;
 							cpSharpness.x = pRsltInfo->m_nTabLevel;
 							cpSharpness.y = pRsltInfo->m_nTabLeft / 2;
 							pRsltInfo->dSharpness = CImageProcess::GetIqSharpnessValue(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
 							pRsltInfo->nBrightAverage = CImageProcess::GetBrightAverage(pImgPtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, cpSharpness);
-							// 23.02.24 Ahn Add End
 
-
-							// 22.05.04 Test
 							CImageProcess::ResizeImage(pImgPtr, pResizePtr, pRsltInfo->m_nWidth, pRsltInfo->m_nHeight, nMagnif);
 
 							int nOverflowMax = AprData.m_System.m_nOverflowCountMax;
 
-							// 22.12.19 Ahn Delete Start - Overlay Image
 							CBitmapStd bmpStd;
 							if (nSize > nOverflowMax)
 							{
 								if ((pRsltInfo->nTabNo % (nOverflowMax - 1)) == 0)
 								{
-									// 23.02.06 Ahn Modify Start
-									// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
 									SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
-									// 23.02.06 Ahn Modify End
-
 
 								}
 							}
 							else
 							{
-								// 23.02.06 Ahn Modify Start
-								// DrawImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif);
 								SaveResultImage(hWnd, pRsltInfo, pResizePtr, nReWidth, nReHeight, nMagnif, &bmpStd);
-								// 23.02.06 Ahn Modify End
-
 
 							}
 

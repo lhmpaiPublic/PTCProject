@@ -3082,25 +3082,34 @@ int CImageProcess::SaveCropImage(const BYTE* pImgPtr,int nWidth, int nHeight, CR
 	int nEndX = rcCrop.right;
 	int nEndY = rcCrop.bottom;
 
+	//크롭 이미지 저장 메모리 포인터
 	BYTE* pCropPtr;
+	//CROP 이미지 크기의 BITMAP 생성
 	CBitmapStd bmp( rcCrop.Width(), rcCrop.Height());
+	//BITMAP 메모리 포인터를 받는다.
 	pCropPtr = bmp.GetImgPtr();
 
+	//CROP 넚이
 	int nCropW = rcCrop.Width();
+	//넚이 위치 카운터
 	int cx = 0;
+	//높이 위치 카운터
 	int cy = 0 ;
-	//for (int y = nStartY, cy = 0; y < nEndY; y++, cy++) {
-	for (int y = ( nEndY - 1 ), cy = 0; y > nStartY; y--, cy++) {
+	//원본 이미지에서 CROP 영역의 이미지 정보를 가져온다
+	for (int y = ( nEndY - 1 ), cy = 0; y > nStartY; y--, cy++) 
+	{
 		BYTE* pLinePtr = (BYTE *)pImgPtr + (nWidth * y);
 		BYTE* pCropLinePtr = pCropPtr +(nCropW * cy);
 		for (int x = nStartX, cx = 0 ; x < nEndX; x++, cx++ ) {
 			*(pCropLinePtr + cx) = *(pLinePtr + x) ;
 		}
 	}
-
+	//CROP 저장 위치 정보 및 파일명
 	CString strFileFullPath;
 	strFileFullPath.Format(_T("%s%s"), strFilePath, strFileName);
+	//저장 시 퀄리티를 100
 	bmp.SetJpegQuality(100);
+	//경로와 이미지 파일명으로 저장한다.
 	bmp.SaveBitmap(strFileFullPath);
 	
 	return 0;;
