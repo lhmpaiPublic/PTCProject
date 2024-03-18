@@ -276,6 +276,7 @@ CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 
 	m_pParent = pParent;
 	m_MarkSendInfoData.clear();
+	//카운터보드 소켓 객체
 	m_TriggerSocket = NULL;
 
 	//========= 마킹 정보를 보내기 위한 변수 초기화==============
@@ -404,6 +405,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 #ifndef USE_BCDCOUNTER
 			//트리거의 On 신호에 BCD ID를 읽기 위한 함수
 			pThis->readTriggerBCDID();
+#else
+			pThis->isConnectTrigger();
 #endif //USE_BCDCOUNTER
 
 			//마킹 처리를 위한 함수
@@ -423,6 +426,16 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 	return 0;
 }
 
+void CCounterThread::isConnectTrigger()
+{
+	if (m_TriggerSocket != NULL)
+	{
+		if (m_TriggerSocket->m_bDisConnected == TRUE)
+		{
+			AfxGetApp()->GetMainWnd()->MessageBox("CountBord Socket Disconnection !! ");
+		}
+	}
+}
 
 int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 {
@@ -474,6 +487,9 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 				m_TriggerSocket = NULL;
 			}
 
+			//Socket 접속 에러 값
+			b = (-1);
+
 			DWORD dwErrorCode = GetLastError();
 			CString	strErMsg = _T("");
 			switch (dwErrorCode) {
@@ -510,6 +526,7 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 			case	WSAEISCONN:
 				strErMsg.Format(_T("소켓은 이미 연결되어 있습니다."));
 				b = (0);
+				break;
 			case	WSAEMFILE:
 				strErMsg.Format(_T("유효한 파일 디스크립터가 아닙니다."));
 				break;
@@ -527,6 +544,7 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 				break;
 			case	WSAEWOULDBLOCK:
 				b = (0);
+				break;
 			default:
 				strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
 				break;
@@ -534,8 +552,7 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 			//Tab Id 정보 로그
 			LOGDISPLAY_SPEC(11)("FT3	ERROR	Socket Connect :	%s ", strErMsg);
 
-			b = (-1);
-
+			//루프 빠져나가기
 			break;
 		}
 	}

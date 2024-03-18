@@ -40,25 +40,31 @@ protected:
 	int		m_nThreadId;
 	CWinThread* m_pThread;				//!< 긚깒긞긤(CWinThread *)x1
 	BOOL	m_bFreeRunn;
-// 22.04.06 Ahn Add Start
 	BOOL	m_bRunFlag;
-// 22.04.06 Ahn Add End
 
 	CTriggerSocket* m_TriggerSocket;
 
 	//마킹 input ID 읽었을 때
 	static std::vector<int> m_inputReadId;
-
+	//마킹 input ID 동기화 객체
 	static CRITICAL_SECTION m_csQueueReadId;
 public :	
+	//Trigger, Marking 스래드 함수
 	static UINT CtrlThreadCounter(LPVOID pParam);
 
+	//input ID를 가져온다.
 	static int GetInputReadId();
 
+	//카운터 보드 Socket 생성 및 접속 함수
 	int ConnectTrigger(const CString& ip, int port, int mode = CTriggerSocket::TCP_MODE);
+	//카운터 보드 소켓 통신 끊김 확인 함수
+	void isConnectTrigger();
 
+	//카운터 보드 socket Recive 호출 데이터 수신 함수
+	//생성된 socket 클래스에서 데이터가 수신되면 호출된다
 	virtual void RecivePacket(char* data, int len);
 
+	//Trigger 시그널 테스트 함수
 	static int GetTabId_FromSignal(WORD wInPutSignal);
 
 	// 동기화 이벤트 객체
@@ -77,6 +83,7 @@ public :
 	bool m_bMarkingDataSend;
 	//마킹 보내는 중 20 sec 후 신호 제거
 
+	//마킹 루프 Bit 확인 객체
 	BOOL m_bOutputBitStatus;
 
 	//테스트 타임 id 생성
