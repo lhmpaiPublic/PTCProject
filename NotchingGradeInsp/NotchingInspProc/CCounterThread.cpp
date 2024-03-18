@@ -25,6 +25,9 @@ typedef std::vector<int>::iterator inputReadId_iterator;
 //DIO 객체
 CAppDIO m_dio;
 
+//카운터 보드에서 들어오는 값이 연속해서 이상이 있을 때
+static int nCountBordErrorCount = 0;
+
 void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, bool bSendComplate)
 {
 	if ((TabId >= 0) && (TabId < 64))
@@ -150,8 +153,19 @@ void CCounterThread::RecivePacket(char* data, int len)
 			}
 			else
 			{
+				//CountBrod 이상 체크 카운트 증가
+				if (m_nextTabID != nID || nEncodeCnt < 100)
+				{
+					nCountBordErrorCount++;
+				}
+				//아니면
+				else
+				{
+					nCountBordErrorCount = 0;
+				}
+
 				//다음 들어올 ID와 받은 ID가 다르다면
-							//누락 로그 출력한다.
+				//누락 로그 출력한다.
 				if (m_nextTabID != nID)
 				{
 					//얻은 Tab Id 범위 확인용
@@ -233,11 +247,21 @@ void CCounterThread::RecivePacket(char* data, int len)
 			::LeaveCriticalSection(&m_csQueueReadId);
 
 			//이전 받은 BCD iD
-			m_nextTabID = 0;
 			m_wLastTabId = nID;
 
 			//마킹정보 들어오는 카운트 수
 			CCounterThread::deepSwitchOff = 0;
+
+			//카운트 보드 인터락 : 
+			//ID가 다음 들어올 ID와 다른 경우  및 Counter 100 이하가 5번 이상 
+			//인터락 발생한다.
+			if (nCountBordErrorCount >= 5)
+			{
+				nCountBordErrorCount = 0;
+				CString strMessage;
+				strMessage.Format(_T("CountBord BCD ID, EnCoder Count Error Rocking"), nCountBordErrorCount);
+				AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
+			}
 
 		}
 	}

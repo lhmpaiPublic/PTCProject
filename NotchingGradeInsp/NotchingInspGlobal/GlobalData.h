@@ -32,6 +32,7 @@ public :
 		en_ProcessError		= 0x000011,
 		en_MissTabID		= 0x000012,
 		en_BrightError		= 0x000013,
+		en_CountBordError	= 0x000014,
 
 		en_DiskCapacityAlarm	= 0x100001,
 		en_DiskCapacityWarning  = 0x100002,
@@ -48,6 +49,8 @@ public :
 //		case	en_ProcessError:
 		case	en_LampError:			//조명 에러 발생 시 READY OFF
 		case	en_DiskCapacityAlarm:
+		//CountBord Error
+		case	en_CountBordError:
 			m_bInitialReq = TRUE;
 			break;
 
