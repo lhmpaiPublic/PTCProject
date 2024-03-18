@@ -409,107 +409,119 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 	}
 	m_TriggerSocket = new CTriggerSocket(ip, mode, this);
 
-	int	bRet;
-
-	if (mode == CTriggerSocket::TCP_MODE)
+	BOOL b = 0;
+	while (1)
 	{
-		if (m_TriggerSocket->Create() == 0) 
-		{
-			CString strError;
-			DWORD dwErrCode = ::GetLastError();
-			strError = FormatErrorMsg(dwErrCode);
+		int	bRet;
 
+		if (mode == CTriggerSocket::TCP_MODE)
+		{
+			if (m_TriggerSocket->Create() == 0)
+			{
+				CString strError;
+				DWORD dwErrCode = ::GetLastError();
+				strError = FormatErrorMsg(dwErrCode);
+
+				//Tab Id 정보 로그
+				LOGDISPLAY_SPEC(11)("FT3	Socket Create ERROR	:	%s ", strError);
+
+				b = (-1);
+			}
+			bRet = m_TriggerSocket->Connect(ip, port);
+		}
+		else
+		{
+			if (m_TriggerSocket->Create(port, SOCK_DGRAM, FD_READ) == 0)
+			{
+				CString strError;
+				strError = ::FormatErrorMsg(::GetLastError());
+
+				LOGDISPLAY_SPEC(11)("FT3	Socket Create ERROR	:	%s ", strError);
+				b = (-1);
+			}
+			bRet = m_TriggerSocket->Connect(ip, port);
+		}
+
+		if (bRet == 0)
+		{
+			if (m_TriggerSocket != NULL)
+			{
+				delete m_TriggerSocket;
+				m_TriggerSocket = NULL;
+			}
+
+			DWORD dwErrorCode = GetLastError();
+			CString	strErMsg = _T("");
+			switch (dwErrorCode) {
+			case	WSANOTINITIALISED:
+				strErMsg.Format(_T("이 API를 사용하기 전에 AfxSocketInit 호출이 성공적인 완료가 필요합니다."));
+				break;
+			case	WSAENETDOWN:
+				strErMsg.Format(_T("Windows 소켓 구현이 네트워크 서브 시스템의 이상을 검출했습니다."));
+				break;
+			case	WSAEADDRINUSE:
+				strErMsg.Format(_T("지정한 주소는 사용중입니다."));
+				break;
+			case	WSAEINPROGRESS:
+				strErMsg.Format(_T("실행중인 Windows 소켓 작업이 차단되어 있습니다."));
+				break;
+			case	WSAEADDRNOTAVAIL:
+				strErMsg.Format(_T("지정된 주소는 로컬 컴퓨터에서 사용할 수 없습니다."));
+				break;
+			case	WSAEAFNOSUPPORT:
+				strErMsg.Format(_T("지정한 주소 제품군이 소켓에서 지원하지 않습니다."));
+				break;
+			case	WSAECONNREFUSED:
+				strErMsg.Format(_T("연결을 시도했으나 거부되었습니다."));
+				break;
+			case	WSAEDESTADDRREQ:
+				strErMsg.Format(_T("목적지 주소가 필요합니다."));
+				break;
+			case	WSAEFAULT:
+				strErMsg.Format(_T("인수 SockAddr_in가 잘못되었습니다."));
+				break;
+			case	WSAEINVAL:
+				strErMsg.Format(_T("호스트 주소가 잘못되었습니다."));
+				break;
+			case	WSAEISCONN:
+				strErMsg.Format(_T("소켓은 이미 연결되어 있습니다."));
+				b = (0);
+			case	WSAEMFILE:
+				strErMsg.Format(_T("유효한 파일 디스크립터가 아닙니다."));
+				break;
+			case	WSAENETUNREACH:
+				strErMsg.Format(_T("현재 호스트에서 네트워크에 연결할 수 없습니다."));
+				break;
+			case	WSAENOBUFS:
+				strErMsg.Format(_T("사용가능한 버퍼 공간이 없습니다. 소켓을 연결할 수 없습니다."));
+				break;
+			case	WSAENOTSOCK:
+				strErMsg.Format(_T("디스크립터가 소켓이 아닙니다."));
+				break;
+			case	WSAETIMEDOUT:
+				strErMsg.Format(_T("연결을 시도했지만 시간에 연결할 수 없습니다."));
+				break;
+			case	WSAEWOULDBLOCK:
+				b = (0);
+			default:
+				strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
+				break;
+			}
 			//Tab Id 정보 로그
-			LOGDISPLAY_SPEC(11)("FT3	Socket Create ERROR	:	%s ", strError);
+			LOGDISPLAY_SPEC(11)("FT3	ERROR	Socket Connect :	%s ", strErMsg);
 
-			return (-1);
+			b = (-1);
+
+			break;
 		}
-		bRet = m_TriggerSocket->Connect(ip, port);
 	}
-	else 
+	if (b == -1)
 	{
-		if (m_TriggerSocket->Create(port, SOCK_DGRAM, FD_READ) == 0) 
-		{
-			CString strError;
-			strError = ::FormatErrorMsg(::GetLastError());
-
-			LOGDISPLAY_SPEC(11)("FT3	Socket Create ERROR	:	%s ", strError);
-			return (-1);
-		}
-		bRet = m_TriggerSocket->Connect(ip, port);
+		AfxGetApp()->GetMainWnd()->MessageBox("CountBord Socket Error Program exit");
+		AfxGetApp()->GetMainWnd()->PostMessage(WM_QUIT);
 	}
 
-	if (bRet == 0) 
-	{
-		if (m_TriggerSocket != NULL)
-		{
-			delete m_TriggerSocket;
-			m_TriggerSocket = NULL;
-		}
-
-		DWORD dwErrorCode = GetLastError();
-		CString	strErMsg = _T("");
-		switch (dwErrorCode) {
-		case	WSANOTINITIALISED:
-			strErMsg.Format(_T("이 API를 사용하기 전에 AfxSocketInit 호출이 성공적인 완료가 필요합니다."));
-			break;
-		case	WSAENETDOWN:
-			strErMsg.Format(_T("Windows 소켓 구현이 네트워크 서브 시스템의 이상을 검출했습니다."));
-			break;
-		case	WSAEADDRINUSE:
-			strErMsg.Format(_T("지정한 주소는 사용중입니다."));
-			break;
-		case	WSAEINPROGRESS:
-			strErMsg.Format(_T("실행중인 Windows 소켓 작업이 차단되어 있습니다."));
-			break;
-		case	WSAEADDRNOTAVAIL:
-			strErMsg.Format(_T("지정된 주소는 로컬 컴퓨터에서 사용할 수 없습니다."));
-			break;
-		case	WSAEAFNOSUPPORT:
-			strErMsg.Format(_T("지정한 주소 제품군이 소켓에서 지원하지 않습니다."));
-			break;
-		case	WSAECONNREFUSED:
-			strErMsg.Format(_T("연결을 시도했으나 거부되었습니다."));
-			break;
-		case	WSAEDESTADDRREQ:
-			strErMsg.Format(_T("목적지 주소가 필요합니다."));
-			break;
-		case	WSAEFAULT:
-			strErMsg.Format(_T("인수 SockAddr_in가 잘못되었습니다."));
-			break;
-		case	WSAEINVAL:
-			strErMsg.Format(_T("호스트 주소가 잘못되었습니다."));
-			break;
-		case	WSAEISCONN:
-			strErMsg.Format(_T("소켓은 이미 연결되어 있습니다."));
-			return(0); //break ;
-		case	WSAEMFILE:
-			strErMsg.Format(_T("유효한 파일 디스크립터가 아닙니다."));
-			break;
-		case	WSAENETUNREACH:
-			strErMsg.Format(_T("현재 호스트에서 네트워크에 연결할 수 없습니다."));
-			break;
-		case	WSAENOBUFS:
-			strErMsg.Format(_T("사용가능한 버퍼 공간이 없습니다. 소켓을 연결할 수 없습니다."));
-			break;
-		case	WSAENOTSOCK:
-			strErMsg.Format(_T("디스크립터가 소켓이 아닙니다."));
-			break;
-		case	WSAETIMEDOUT:
-			strErMsg.Format(_T("연결을 시도했지만 시간에 연결할 수 없습니다."));
-			break;
-		case	WSAEWOULDBLOCK:
-			return (0);
-		default:
-			strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
-			break;
-		}
-		//Tab Id 정보 로그
-		LOGDISPLAY_SPEC(11)("FT3	ERROR	Socket Connect :	%s ", strErMsg);
-
-		return (-1);
-	}
-	return 0;
+	return b;
 }
 
 //마킹처리를 위한 함수

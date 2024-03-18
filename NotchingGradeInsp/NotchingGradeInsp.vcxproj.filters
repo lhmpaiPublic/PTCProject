@@ -297,12 +297,6 @@
     <ClInclude Include="SupportDlg\CJoinImageDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SupportDlg\CLightManualCtrlDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SupportDlg\CLightRS232Dlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="SupportDlg\CondDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -370,12 +364,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SupportGeneral\LanguageCode.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SupportGeneral\Light232.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SupportGeneral\LightSocket.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SupportGeneral\Ping.h">
@@ -576,6 +564,18 @@
     <ClInclude Include="NotchingInspProcSupport\ImageProcessCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="NotchingInspLight\CLightRS232Dlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspLight\Light232.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspLight\LightSocket.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspLight\CLightManualCtrlDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -761,12 +761,6 @@
     <ClCompile Include="SupportDlg\CJoinImageDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SupportDlg\CLightManualCtrlDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SupportDlg\CLightRS232Dlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SupportDlg\CondDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -831,12 +825,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SupportGeneral\LanguageCode.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SupportGeneral\Light232.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SupportGeneral\LightSocket.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SupportGeneral\Ping.cpp">
@@ -1032,6 +1020,18 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="NotchingInspProcSupport\ImageProcessCtrl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspLight\CLightRS232Dlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspLight\Light232.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspLight\LightSocket.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspLight\CLightManualCtrlDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

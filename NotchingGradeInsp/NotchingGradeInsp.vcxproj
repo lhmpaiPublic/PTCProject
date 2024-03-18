@@ -430,6 +430,10 @@
     <ClInclude Include="NotchingInspGlobal\GlobalDef.h" />
     <ClInclude Include="NotchingInspGlobal\GlobalFunc.h" />
     <ClInclude Include="NotchingInspLight\CLightControl.h" />
+    <ClInclude Include="NotchingInspLight\CLightManualCtrlDlg.h" />
+    <ClInclude Include="NotchingInspLight\CLightRS232Dlg.h" />
+    <ClInclude Include="NotchingInspLight\Light232.h" />
+    <ClInclude Include="NotchingInspLight\LightSocket.h" />
     <ClInclude Include="NotchingInspLog\LogDisplayDlg.h" />
     <ClInclude Include="NotchingInspProcSupport\CJudgeResultCtrl.h" />
     <ClInclude Include="NotchingInspProcSupport\CResultFileManager.h" />
@@ -499,8 +503,6 @@
     <ClInclude Include="SupportDlg\CImageProcSimDlg.h" />
     <ClInclude Include="SupportDlg\CIoMonitorDlg.h" />
     <ClInclude Include="SupportDlg\CJoinImageDlg.h" />
-    <ClInclude Include="SupportDlg\CLightManualCtrlDlg.h" />
-    <ClInclude Include="SupportDlg\CLightRS232Dlg.h" />
     <ClInclude Include="SupportDlg\CondDlg.h" />
     <ClInclude Include="SupportDlg\GraphDlg.h" />
     <ClInclude Include="SupportGeneral\BitmapStd.h" />
@@ -515,8 +517,6 @@
     <ClInclude Include="SupportGeneral\ImgClipedBmp.h" />
     <ClInclude Include="SupportGeneral\KExcel.h" />
     <ClInclude Include="SupportGeneral\LanguageCode.h" />
-    <ClInclude Include="SupportGeneral\Light232.h" />
-    <ClInclude Include="SupportGeneral\LightSocket.h" />
     <ClInclude Include="SupportGeneral\Ping.h" />
     <ClInclude Include="SupportGeneral\StdIoApi.h" />
     <ClInclude Include="SupportGeneral\StdIoAXL.h" />
@@ -590,6 +590,10 @@
     <ClCompile Include="NotchingInspGlobal\GlobalData.cpp" />
     <ClCompile Include="NotchingInspGlobal\GlobalFunc.cpp" />
     <ClCompile Include="NotchingInspLight\CLightControl.cpp" />
+    <ClCompile Include="NotchingInspLight\CLightManualCtrlDlg.cpp" />
+    <ClCompile Include="NotchingInspLight\CLightRS232Dlg.cpp" />
+    <ClCompile Include="NotchingInspLight\Light232.cpp" />
+    <ClCompile Include="NotchingInspLight\LightSocket.cpp" />
     <ClCompile Include="NotchingInspLog\LogDisplayDlg.cpp" />
     <ClCompile Include="NotchingInspProcSupport\CJudgeResultCtrl.cpp" />
     <ClCompile Include="NotchingInspProcSupport\CResultFileManager.cpp" />
@@ -664,8 +668,6 @@
     <ClCompile Include="SupportDlg\CImageProcSimDlg.cpp" />
     <ClCompile Include="SupportDlg\CIoMonitorDlg.cpp" />
     <ClCompile Include="SupportDlg\CJoinImageDlg.cpp" />
-    <ClCompile Include="SupportDlg\CLightManualCtrlDlg.cpp" />
-    <ClCompile Include="SupportDlg\CLightRS232Dlg.cpp" />
     <ClCompile Include="SupportDlg\CondDlg.cpp" />
     <ClCompile Include="SupportDlg\GraphDlg.cpp" />
     <ClCompile Include="SupportGeneral\BitmapStd.cpp" />
@@ -679,8 +681,6 @@
     <ClCompile Include="SupportGeneral\ImgClipedBmp.cpp" />
     <ClCompile Include="SupportGeneral\KExcel.cpp" />
     <ClCompile Include="SupportGeneral\LanguageCode.cpp" />
-    <ClCompile Include="SupportGeneral\Light232.cpp" />
-    <ClCompile Include="SupportGeneral\LightSocket.cpp" />
     <ClCompile Include="SupportGeneral\Ping.cpp" />
     <ClCompile Include="SupportGeneral\StdIoApi.cpp" />
     <ClCompile Include="SupportGeneral\StdIoAXL.cpp" />
