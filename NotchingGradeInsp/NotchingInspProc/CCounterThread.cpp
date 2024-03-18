@@ -485,11 +485,6 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 
 		if (bRet == 0)
 		{
-			if (m_TriggerSocket != NULL)
-			{
-				delete m_TriggerSocket;
-				m_TriggerSocket = NULL;
-			}
 
 			//Socket 접속 에러 값
 			b = (-1);
@@ -529,7 +524,6 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 				break;
 			case	WSAEISCONN:
 				strErMsg.Format(_T("소켓은 이미 연결되어 있습니다."));
-				b = (0);
 				break;
 			case	WSAEMFILE:
 				strErMsg.Format(_T("유효한 파일 디스크립터가 아닙니다."));
@@ -547,7 +541,6 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 				strErMsg.Format(_T("연결을 시도했지만 시간에 연결할 수 없습니다."));
 				break;
 			case	WSAEWOULDBLOCK:
-				b = (0);
 				break;
 			default:
 				strErMsg.Format(_T("소켓 오류：%lu"), (DWORD)dwErrorCode);
@@ -562,6 +555,11 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 	}
 	if (b == -1)
 	{
+		if (m_TriggerSocket != NULL)
+		{
+			delete m_TriggerSocket;
+			m_TriggerSocket = NULL;
+		}
 		AfxGetApp()->GetMainWnd()->MessageBox("CountBord Socket Error Program exit");
 		AfxGetApp()->GetMainWnd()->PostMessage(WM_QUIT);
 	}
