@@ -259,7 +259,7 @@ void CCounterThread::RecivePacket(char* data, int len)
 			{
 				nCountBordErrorCount = 0;
 				CString strMessage;
-				strMessage.Format(_T("CountBord BCD ID, EnCoder Count Error Rocking"), nCountBordErrorCount);
+				strMessage.Format(_T("CountBord BCD ID, EnCoder Count Error Rocking"));
 				AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
 			}
 
@@ -432,6 +432,10 @@ void CCounterThread::isConnectTrigger()
 	{
 		if (m_TriggerSocket->m_bDisConnected == TRUE)
 		{
+			CString strMessage;
+			strMessage.Format(_T("CountBord Socket Disconnection Rocking"));
+			AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
+
 			AfxGetApp()->GetMainWnd()->MessageBox("CountBord Socket Disconnection !! ");
 		}
 	}
