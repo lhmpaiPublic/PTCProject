@@ -19,6 +19,7 @@ class CTriggerSocketCall
 {
 public:
 	virtual void RecivePacket(char* data, int len) {}
+	virtual void OnConnectSocket(BOOL bConnected) {}
 };
 
 class CTriggerSocket : public CAsyncSocket

@@ -73,6 +73,8 @@ void CTriggerSocket::OnClose( int nErrorCode )
 	m_bConnected = FALSE ;
 	m_bDisConnected = TRUE ;
 
+	m_pTriggerSocketCall->OnConnectSocket(FALSE);
+
 	CAsyncSocket::OnClose( nErrorCode ) ;
 	Close() ;
 }
@@ -87,11 +89,15 @@ void CTriggerSocket::OnConnect( int nErrorCode )
 
 		int flags = 1;
 		setsockopt(m_hSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&flags, sizeof(flags));
+
+		m_pTriggerSocketCall->OnConnectSocket(TRUE);
 	} 
 	else
 	{
 		m_bConnected = FALSE ;
 		m_bDisConnected = TRUE ;
+
+		m_pTriggerSocketCall->OnConnectSocket(FALSE);
 	}
 
 	CAsyncSocket::OnConnect( nErrorCode ) ;
@@ -108,6 +114,7 @@ void CTriggerSocket::OnReceive(int nErrorCode)
 	{
 		m_bConnected = FALSE;
 		m_bDisConnected = TRUE;
+		m_pTriggerSocketCall->OnConnectSocket(FALSE);
 	}
 
 	int nRet = Receive(&m_btRecv[0], TCP_MAX_DATA);
@@ -146,6 +153,7 @@ void CTriggerSocket::OnSend( int nErrorCode )
 	{
 		m_bConnected = FALSE ;
 		m_bDisConnected = TRUE ;
+		m_pTriggerSocketCall->OnConnectSocket(FALSE);
 	}
 
 	SendRetry() ;

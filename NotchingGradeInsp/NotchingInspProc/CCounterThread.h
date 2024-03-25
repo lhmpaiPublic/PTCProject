@@ -48,6 +48,9 @@ protected:
 	static std::vector<int> m_inputReadId;
 	//마킹 input ID 동기화 객체
 	static CRITICAL_SECTION m_csQueueReadId;
+
+	//CountBord Connect 상태 변수
+	BOOL m_bCountBordConnection;
 public :	
 	//Trigger, Marking 스래드 함수
 	static UINT CtrlThreadCounter(LPVOID pParam);
@@ -63,6 +66,13 @@ public :
 	//카운터 보드 socket Recive 호출 데이터 수신 함수
 	//생성된 socket 클래스에서 데이터가 수신되면 호출된다
 	virtual void RecivePacket(char* data, int len);
+
+	//카운터 보드 socket OnConnect 시 호출 함수
+	virtual void OnConnectSocket(BOOL bConnected);
+
+	//CountBord Connect 상태
+	BOOL isCountBordConnection() { return m_bCountBordConnection; }
+
 
 	//Trigger 시그널 테스트 함수
 	static int GetTabId_FromSignal(WORD wInPutSignal);
