@@ -453,7 +453,7 @@ int CCounterThread::ConnectTrigger(const CString& ip, int port, int mode)
 		delete m_TriggerSocket;
 		m_TriggerSocket = NULL;
 	}
-	m_TriggerSocket = new CTriggerSocket(ip, mode, this);
+	m_TriggerSocket = new CTriggerSocket(ip, port, mode, this);
 
 	BOOL b = 0;
 	int	bRet;

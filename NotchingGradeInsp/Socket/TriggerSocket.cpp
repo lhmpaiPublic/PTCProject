@@ -18,47 +18,40 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+char CTriggerSocket::m_btRecv[CTriggerSocket::TCP_MAX_DATA] = { 0, };
 
-
-CTriggerSocket::CTriggerSocket( LPCTSTR lpszIpAddress, int protocol, CTriggerSocketCall* pTriggerSocketCall)
+CTriggerSocket::CTriggerSocket( LPCTSTR lpszIpAddress, int port, int protocol, CTriggerSocketCall* pTriggerSocketCall)
 {
 	m_pTriggerSocketCall = pTriggerSocketCall;
 	m_strIpAddress = lpszIpAddress ;
+	//PORT 
+	m_Port = port;
 	m_Protocol = protocol ;
 	m_bConnected = FALSE ;
-	m_bDisConnected = FALSE ;
+	m_bDisConnected = TRUE ;
 
-	m_strClientIpAddress = _T( "" ) ;
-	m_strClientComputerName = _T( "" ) ;
 	m_pSendBuffer = NULL ;
 	m_SendBuffCnt = 0 ;
 	m_SendCnt = 0 ;
-	m_RecvCnt = 0 ;
-	m_SendFlag = FALSE ;
-	m_btRecv = NULL ;
 
-	::InitializeCriticalSection( &csFunc ) ;
+	::InitializeCriticalSection(&m_csSendPacket);
 
-	if ( m_btRecv == NULL ) 
-	{
-		m_btRecv = new char[ TCP_MAX_DATA ] ;
-	}
 }
 
 
 CTriggerSocket::~CTriggerSocket()
 {
-	if ( m_btRecv != NULL ) {
-		delete [] m_btRecv ;
-		m_btRecv = NULL ;
-	}
-
 	m_bConnected = FALSE ;
 	m_bDisConnected = TRUE ;
 
+	m_pSendBuffer = NULL;
+	m_SendBuffCnt = 0;
+	m_SendCnt = 0;
+
 	m_pTriggerSocketCall = NULL;
 
-	::DeleteCriticalSection( &csFunc ) ;
+	::DeleteCriticalSection(&m_csSendPacket);
+
 }
 
 
@@ -98,6 +91,8 @@ void CTriggerSocket::OnConnect( int nErrorCode )
 		m_bDisConnected = TRUE ;
 
 		m_pTriggerSocketCall->OnConnectSocket(FALSE);
+
+		Close();
 	}
 
 	CAsyncSocket::OnConnect( nErrorCode ) ;
@@ -106,36 +101,37 @@ void CTriggerSocket::OnConnect( int nErrorCode )
 
 void CTriggerSocket::OnReceive(int nErrorCode)
 {
-	if (nErrorCode == 0)
-	{
-		//
-	}
-	else
-	{
-		m_bConnected = FALSE;
-		m_bDisConnected = TRUE;
-		m_pTriggerSocketCall->OnConnectSocket(FALSE);
-	}
-
+	memset(m_btRecv, 0, TCP_MAX_DATA);
 	int nRet = Receive(&m_btRecv[0], TCP_MAX_DATA);
-	if (nRet < 0)
+	if (nRet == SOCKET_ERROR)
 	{
 		BOOL bNoError = FALSE;
 		DWORD dwErrorCode = GetLastError();
-		CString strErMsg, strError;
-		bNoError = SetError(dwErrorCode, &strErMsg);
-
-
-		if (bNoError != TRUE)
+		if (GetLastError() != WSAEWOULDBLOCK)
 		{
-			m_RecvCnt = 0;
-			return;
+			m_bConnected = FALSE;
+			m_bDisConnected = TRUE;
+
+			m_pTriggerSocketCall->OnConnectSocket(FALSE);
+
+			Close();
 		}
-		return;
 	}
 	else
 	{
-		m_pTriggerSocketCall->RecivePacket(m_btRecv, nRet);
+		if (nRet == 0)
+		{
+			m_bConnected = FALSE;
+			m_bDisConnected = TRUE;
+
+			m_pTriggerSocketCall->OnConnectSocket(FALSE);
+
+			Close();
+		}
+		else
+		{
+			m_pTriggerSocketCall->RecivePacket(m_btRecv, nRet);
+		}
 	}
 
 	CAsyncSocket::OnReceive(nErrorCode);
@@ -147,18 +143,85 @@ void CTriggerSocket::OnSend( int nErrorCode )
 {
 	if ( nErrorCode == 0 ) 
 	{
-		//
+		
 	} 
 	else 
 	{
 		m_bConnected = FALSE ;
 		m_bDisConnected = TRUE ;
 		m_pTriggerSocketCall->OnConnectSocket(FALSE);
-	}
 
-	SendRetry() ;
+		Close();
+	}
+	::EnterCriticalSection(&m_csSendPacket);
+	SendRetry();
+	::LeaveCriticalSection(&m_csSendPacket);
 
 	CAsyncSocket::OnSend( nErrorCode ) ;
+}
+
+int CTriggerSocket::PacketSend(char* pBuff, int length)
+{
+	int ret = 0;
+
+	if (m_Protocol == TCP_MODE) 
+	{
+		if (m_bConnected != TRUE)
+		{
+			return (-2);
+		}
+	}
+
+	::EnterCriticalSection(&m_csSendPacket);
+
+	//남은 데이터 길이를 계산한다.
+	int nLen = m_SendBuffCnt - m_SendCnt;
+
+	//남은 데이터 시작 점
+	DWORD dwBeforeSendPos = m_SendCnt;
+
+	//이전 보낸 버퍼
+	BYTE* ptrBeforeSendBuffer = m_pSendBuffer;
+	
+	//생성할 버퍼 크기
+	//이전 보낸 데이터 중에서 못 보낸 데이터 크기 + 지금 보낼 데이터 크기
+	m_SendBuffCnt = nLen + length;
+
+	//버퍼 생성 초기화
+	m_pSendBuffer = NULL;
+	m_pSendBuffer = new BYTE[m_SendBuffCnt + 1];
+	memset(m_pSendBuffer, 0x00, sizeof(BYTE) * (m_SendBuffCnt + 1));
+
+	//보낸 데이터 0
+	m_SendCnt = 0;
+
+	BYTE* ptr = m_pSendBuffer;
+
+	//이전에 보낸 데이터가 있다면
+	if (ptrBeforeSendBuffer != NULL)
+	{
+		//보내고 남은 데이터가 있다면
+		if (nLen > 0)
+		{
+			//이전 데이터를 쓴다.
+			for (int c = 0; c < nLen; c++)
+			{
+				*ptr++ = ptrBeforeSendBuffer[dwBeforeSendPos + c];
+			}
+		}
+		delete ptrBeforeSendBuffer;
+		ptrBeforeSendBuffer = NULL;
+	}
+
+	//지금 전송할 데이터 추가
+	for (int c = 0; c < length; c++) 
+	{
+		*ptr++ = pBuff[c];
+	}
+
+	SendRetry();
+	::LeaveCriticalSection(&m_csSendPacket);
+	return (ret);
 }
 
 int CTriggerSocket::SetError( DWORD code, CString *msg )
@@ -209,7 +272,8 @@ int CTriggerSocket::SetError( DWORD code, CString *msg )
 		strErMsg.Format( _T("소켓 에러 : %lu"), ( DWORD)dwErrorCode ) ;
 		break ;
 	}
-	if ( msg != NULL ) {
+	if ( msg != NULL ) 
+	{
 		*msg = strErMsg ;
 	}
 	return ( nRet ) ;
@@ -218,32 +282,27 @@ int CTriggerSocket::SetError( DWORD code, CString *msg )
 
 int CTriggerSocket::SendRetry( void )
 {
-	BYTE* pBuff = ( BYTE*)m_pSendBuffer ;
-	int nRet = 0 ;
-	int nLen = m_SendBuffCnt - m_SendCnt ;
-	DWORD dwSize = m_SendBuffCnt ;
-	while ( nLen > 0 ) 
+	BYTE* pBuff = (BYTE*)m_pSendBuffer;
+	int nRet = 0;
+	int nLen = m_SendBuffCnt - m_SendCnt;
+	DWORD dwSize = m_SendBuffCnt;
+	while (nLen > 0) 
 	{
-		nRet = this->Send( pBuff + ( dwSize - nLen ), nLen, 0 ) ;
-		if ( nRet < 0 ) 
+		nRet = Send(pBuff + (dwSize - nLen), nLen, 0);
+		if (nRet < 0) 
 		{
-			int nError = GetLastError() ;
-			if ( nError == WSAEWOULDBLOCK ) {
-				return ( 0 ) ;
-			} else {
-				return ( -1 ) ;
+			int nError = GetLastError();
+			if (nError == WSAEWOULDBLOCK) 
+			{
+				return (0);
+			}
+			else 
+			{
+				return (-1);
 			}
 		}
-		nLen -= nRet ;
-		m_SendCnt += nRet ;
+		nLen -= nRet;
+		m_SendCnt += nRet;
 	}
-	m_SendFlag = FALSE ;
-	return ( 0 ) ;
-}
-
-
-int CTriggerSocket::ClearBuffer( void )
-{
-	m_RecvCnt = 0 ;
-	return ( 0 ) ;
+	return (0);
 }
