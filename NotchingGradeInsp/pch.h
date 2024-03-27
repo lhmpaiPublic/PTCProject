@@ -63,6 +63,8 @@ static CString GlobalVersion = _T("Notching.Release.Version_2024.03.26.r01");
 
 //Glabal Surpport 클래스
 #include "StrSuport.h"
+//다이얼로그 클래스 Sub Class
+#include "SubDialogEx.h"
 //UI를 관리하기 위한 클래스
 #include "UiManager.h"
 

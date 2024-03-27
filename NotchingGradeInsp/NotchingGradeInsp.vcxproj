@@ -526,6 +526,7 @@
     <ClInclude Include="SupportGeneral\Win32File.h" />
     <ClInclude Include="SupportGeneral\WinTool.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UI\SubDialogEx.h" />
     <ClInclude Include="UI\UiManager.h" />
     <ClInclude Include="View\BottomPanel.h" />
     <ClInclude Include="View\CHistogramDlg.h" />
@@ -689,6 +690,7 @@
     <ClCompile Include="SupportGeneral\TimeAnalyzer.cpp" />
     <ClCompile Include="SupportGeneral\Win32File.cpp" />
     <ClCompile Include="SupportGeneral\WinTool.cpp" />
+    <ClCompile Include="UI\SubDialogEx.cpp" />
     <ClCompile Include="UI\UiManager.cpp" />
     <ClCompile Include="View\BottomPanel.cpp" />
     <ClCompile Include="View\CHistogramDlg.cpp" />

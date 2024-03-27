@@ -576,6 +576,9 @@
     <ClInclude Include="NotchingInspLight\CLightManualCtrlDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="UI\SubDialogEx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -1032,6 +1035,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="NotchingInspLight\CLightManualCtrlDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\SubDialogEx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
