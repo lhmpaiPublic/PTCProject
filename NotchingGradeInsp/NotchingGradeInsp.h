@@ -65,26 +65,11 @@ public :
 
 	CDispErrorDlg* m_pDispErrorDlg;
 
-	static int GetFileVersion(CString& strVersion);
-	static CString& GetAppBuildInfo(void);	
-
-	/**
-	Get File Time Info
-	@param        strPath          File Path
-	@param        outCreate        Create Time
-	@param        outAccess        Access Time
-	@param        outWrite         Write Time
-	@return
-	*/
-	static void GetFileTimes(CString strPath, SYSTEMTIME* outCreate, SYSTEMTIME* outAccess, SYSTEMTIME* outWrite);
-
-
 	int ErrOutput(LPCTSTR ptstr, int nErrorType );
 	int DispCapacityAlarm(int nMode);
 	CCriticalSection m_csError;
 	int LoadLastDefList();
 
-	void ProgramVersionInfo();
 };
 
 extern CNotchingGradeInspApp theApp;

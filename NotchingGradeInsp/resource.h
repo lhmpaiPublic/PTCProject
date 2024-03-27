@@ -523,7 +523,6 @@
 #define IDC_EDIT_RECIPE_NAME            1166
 #define IDC_BTN_LOAD                    1167
 #define IDC_LIST_LOG                    1168
-#define IDC_BTN_PROGRAMINFO             1168
 #define IDC_EDIT_RECIPE_MEMO            1169
 #define IDC_LIST_CHECK_DEBUG            1172
 #define IDC_ST_MESSAGE                  1173

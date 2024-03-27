@@ -99,46 +99,6 @@ END_MESSAGE_MAP()
 // CInspInfoDlg 메시지 처리기
 
 void CInspInfoDlg::DisplayLanguage()
-
-/* {
-	CWnd* pWnd;
-	pWnd = (CWnd*)GetDlgItem(IDC_ST_INSP_INFO);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowText(_LANG(_T("검사 정보"), _T("Information")));
-	}
-
-	pWnd = (CWnd*)GetDlgItem(IDC_BTN_USER_CHANGE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowText(_LANG(_T("사용자 변경"), _T("User Change")));
-	}
-
-	pWnd = (CWnd*)GetDlgItem(IDC_ST_INSP_COUNT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowText(_LANG(_T("작업수량"), _T("Count")));
-	}
-
-	pWnd = (CWnd*)GetDlgItem(IDC_ST_TOTAL_COUNT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowText(_LANG(_T("총 수량"), _T("Total")));
-	}
-
-	pWnd = (CWnd*)GetDlgItem(IDC_ST_OK_COUNT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowText(_LANG(_T("OK 수량"), _T("OK Count")));
-	}
-
-	pWnd = (CWnd*)GetDlgItem(IDC_ST_NG_COUNT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowText(_LANG(_T("NG 수량"), _T("NG Count")));
-	}
-
-	pWnd = (CWnd*)GetDlgItem(IDC_ST_YIELD);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowText(_LANG(_T("수    율"), _T("YIELD Count")));
-	}
-	
-}
-*/
 {
 	CWnd* pWnd;
 	CString strDispName;
@@ -160,10 +120,6 @@ BOOL CInspInfoDlg::OnInitDialog()
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 
-	// 22.12.13 Ahn Modify Start
-	//m_stMemo.SetTextColor(RGB(64, 64, 64));
-	//m_stMemo.SetBackgroundColor(RGB(255, 255, 255));
-	//m_stMemo.SetWindowText(_T("Memo\n1\n2"));
 	m_stNumYield.SetTextColor(RGB(64, 64, 64));
 	m_stNumYield.SetBackgroundColor(RGB(192, 192, 192));
 	m_stNumYield.SetWindowText(_T("0.0 %%"));
@@ -191,15 +147,8 @@ BOOL CInspInfoDlg::OnInitDialog()
 
 	DisplayLanguage(); // 22.09.01 Ahn Add 
 
-// 22.05.25 Son Add Start
 	m_strUserMode.SetFont(&AprData.m_font);
-	// 22.09.15 Ahn Modify Start
-	//if (AprData.UserMode == UserModeDefine::enMaker) {
-	//	m_strUserMode.SetTextColor(RGB(255, 64, 64));
-	//}
-	//else {
-	//	m_strUserMode.SetTextColor(RGB(64, 64, 64));
-	//}
+
 	switch (AprData.UserMode) {
 	case	UserModeDefine::enOperator :
 		m_strUserMode.SetTextColor(RGB(64, 64, 64));
@@ -212,7 +161,6 @@ BOOL CInspInfoDlg::OnInitDialog()
 		break;
 	}
 
-	// 22.09.15 Ahn Modify End
 	m_strUserMode.SetBackgroundColor(RGB(192, 255, 192));
 	m_strUserMode.SetWindowText(UserModeDefine::szName[AprData.UserMode]);
 
@@ -222,7 +170,6 @@ BOOL CInspInfoDlg::OnInitDialog()
 		pWndChild->SetFont(&AprData.m_font);
 		pWndChild = pWndChild->GetNextWindow();
 	}
-// 22.05.25 Son Add End
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -256,7 +203,6 @@ void CInspInfoDlg::ReflashAll()
 	m_stNumOK.SetWindowText(strOkCnt);
 	m_stNumNG.SetWindowText(strNgCnt);
 
-	// 22.12.13 Ahn Add Start
 	double dYield = 0.0;
 	if (nTabCount > 0) {
 		dYield = ((double)nOKCount / (double)nTabCount) * 100.0;
@@ -265,39 +211,23 @@ void CInspInfoDlg::ReflashAll()
 		}
 	}
 	CString strYield ;
-	// 23.02.08 Ahn Modify Start
-	//strYield.Format(_T("%.1lf %%"), dYield);
+
 	strYield.Format(_T("%.2lf %%"), dYield);
-	// 23.02.08 Ahn Modify End
 	m_stNumYield.SetWindowTextA(strYield);
-	// 22.12.13 Ahn Modify End
 
 	m_stLotID.SetWindowText(AprData.m_NowLotData.m_strLotNo);
-	//m_strEdRecipeName = AprData.m_NowLotData.m_strRecipeName;
-	// 22.08.05 Ahn Modify Start
-	//GetDlgItem(IDC_ED_RECIPE_NAME)->SetWindowTextA(AprData.m_NowLotData.m_strRecipeName);
-	//GetDlgItem(IDC_ED_NEXT_RECIPE_NAME)->SetWindowTextA(AprData.m_NowLotData.m_strNextRecipeName);
 	m_strEdRecipeName.GetBufferSetLength(AprData.m_NowLotData.m_strRecipeName.GetLength() + 1);
 	strcpy_s((LPSTR)(LPCTSTR)m_strEdRecipeName, m_strEdRecipeName.GetLength(), (LPCTSTR)AprData.m_NowLotData.m_strRecipeName);
 	m_strNextRecipeName.GetBufferSetLength(AprData.m_NowLotData.m_strNextRecipeName.GetLength() + 1);
 	strcpy_s((LPSTR)(LPCTSTR)m_strNextRecipeName, m_strNextRecipeName.GetLength(), (LPCTSTR)AprData.m_NowLotData.m_strNextRecipeName);
-	// 22.08.05 Ahn Modify End
 	UpdateData(FALSE);
 }
 
-// 22.05.25 Son Add Start
 void CInspInfoDlg::OnBnClickedBtnUserChange()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CUserChangeDlg dlg;
 	dlg.DoModal();
-	// 22.09.15 Ahn Modify Start
-	//if (AprData.UserMode == UserModeDefine::enMaker) {
-	//	m_strUserMode.SetTextColor(RGB(255, 64, 64));
-	//}
-	//else {
-	//	m_strUserMode.SetTextColor(RGB(64, 64, 64));
-	//}
 	switch (AprData.UserMode) {
 	case	UserModeDefine::enOperator:
 		m_strUserMode.SetTextColor(RGB(64, 64, 64));
@@ -309,13 +239,11 @@ void CInspInfoDlg::OnBnClickedBtnUserChange()
 		m_strUserMode.SetTextColor(RGB(255, 64, 64));
 		break;
 	}
-	// 22.09.15 Ahn Modify End
 
 	m_strUserMode.SetWindowText(UserModeDefine::szName[AprData.UserMode]);
 
 	m_pView->OnRefresh();
 }
-// 22.05.25 Son Add End
 
 void CInspInfoDlg::OnClose()
 {
@@ -337,9 +265,8 @@ void CInspInfoDlg::OnBnClickedBtnRecipeSelect()
 	strRecipeName = dlg.m_strRecipeName;
 	if ( strRecipeName.GetLength() > 0 ) {
 		m_strNextRecipeName = strRecipeName;
-		UpdateData(FALSE); // 22.12.08 Ahn Add
+		UpdateData(FALSE);
 	}
-	//AprData.m_NowLotData.m_strRecipeName = m_strEdRecipeName ;
 	AprData.m_NowLotData.m_strNextRecipeName = m_strNextRecipeName;
 	// Recipe Name Save 
 	AprData.FileCtrl_LotInfo(CGlobalData::en_mode_RecipeSelect);

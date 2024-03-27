@@ -7,7 +7,7 @@
 class CNotchingGradeInspDoc;
 class CNotchingGradeInspView;
 class CImageDispDlg;
-class CInspDlg : public CDialogEx
+class CInspDlg : public CSubDialogEx
 {
 	DECLARE_DYNAMIC(CInspDlg)
 
@@ -20,11 +20,6 @@ protected:
 	CNotchingGradeInspDoc* m_pDoc;
 	CNotchingGradeInspView* m_pView;
 	int m_nIspState;
-	// 22.06.13 Ahn Delete End
-	//CMFCButton m_rdInspRun;
-	//CMFCButton m_rdInspStop;
-	//CMFCButton m_rdInspPause;
-	// 22.06.13 Ahn Delete End
 
 	CImageDispDlg* m_pImgTabDlg;
 	CImageDispDlg* m_pImgBtmDlg;
@@ -46,26 +41,8 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	// 22.06.13 Ahn Delete Start
-	//afx_msg void OnBnClickedRdRun();
-	//afx_msg void OnBnClickedRdStop();
-	//afx_msg void OnBnClickedRdPause();
-	//afx_msg void OnBnClickedBtnLotChange();
-	// 22.06.13 Ahn Delete End
-
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-
-	// 22.06.13 Ahn Delete Start
-	//void ChangeStatus(int nState);
-	// 22.06.13 Ahn Delete End
 
 	CString m_strDebugStatus;
 	afx_msg void OnDestroy();
-
-	// 22.07.06 Ahn Delete Start - 미사용
-	//// 22.06.13 Ahn Add Start
-	//void InspRun();
-	//void InspStop();
-	//// 22.06.13 Ahn Add End
-	// 22.07.06 Ahn Delete End
 };

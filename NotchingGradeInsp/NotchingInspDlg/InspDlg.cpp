@@ -18,13 +18,13 @@
 #include "MainFrm.h"	// 22.07.22 Ahn Add
 // CInspDlg 대화 상자
 
-IMPLEMENT_DYNAMIC(CInspDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CInspDlg, CSubDialogEx)
 
 #define T_ID_RENEWAL	100 
 
 
 CInspDlg::CInspDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=nullptr*/)
-	: CDialogEx(IDD_DLG_INSP, pParent)
+	: CSubDialogEx(IDD_DLG_INSP, pParent)
 {
 	m_pParent = pParent;
 	m_pView = pView;
@@ -61,10 +61,8 @@ void CInspDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CInspDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CInspDlg, CSubDialogEx)
 	ON_WM_SIZE()
-	//ON_BN_CLICKED(IDC_BTN_LOT_CHANGE, &CInspDlg::OnBnClickedBtnLotChange)
-	// 22.06.13 Ahn Delete End
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
 END_MESSAGE_MAP()
@@ -74,31 +72,6 @@ BOOL CInspDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
-
-	// 22.06.13 Ahn Delete Start
-	//ChangeStatus(m_pDoc->GetInspState());
-
-	//m_rdInspRun.m_nFlatStyle = CMFCButton::BUTTONSTYLE_SEMIFLAT;
-	//m_rdInspRun.SetImage(IDB_INSP_RUN);
-	//m_rdInspRun.m_bTransparent = FALSE;
-	//m_rdInspRun.SetMouseCursorHand();
-	//m_rdInspRun.m_bTopImage = TRUE;
-	//m_rdInspRun.SetTooltip(_T("검사 시작"));
-
-	//m_rdInspStop.m_nFlatStyle = CMFCButton::BUTTONSTYLE_SEMIFLAT;
-	//m_rdInspStop.SetImage(IDB_INSP_STOP);
-	//m_rdInspStop.m_bTransparent = FALSE;
-	//m_rdInspStop.SetMouseCursorHand();
-	//m_rdInspStop.m_bTopImage = TRUE;
-	//m_rdInspStop.SetTooltip(_T("검사 종료"));
-
-	//m_rdInspPause.m_nFlatStyle = CMFCButton::BUTTONSTYLE_SEMIFLAT;
-	//m_rdInspPause.SetImage(IDB_INSP_PAUSE);
-	//m_rdInspPause.m_bTransparent = FALSE;
-	//m_rdInspPause.SetMouseCursorHand();
-	//m_rdInspPause.m_bTopImage = TRUE;
-	//m_rdInspPause.SetTooltip(_T("검사 멈춤"));
-	// 22.06.13 Ahn Delete End
 
 	UpdateData(FALSE);
 
@@ -258,15 +231,3 @@ void CInspDlg::OnDestroy()
 
 	KillRenewalTimer();
 }
-
-
-// 22.06.13 Ahn Delete Start
-//void CInspDlg::OnBnClickedBtnLotChange()
-//{
-//	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-//	if (m_pDoc->GetInspState() == enInspRun) {
-//		m_pView->SetLotChangeReq(TRUE);
-//	}
-//
-//}
-// 22.06.13 Ahn Delete End

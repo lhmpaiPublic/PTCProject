@@ -61,15 +61,15 @@ public :
 
 		}
 
-		// 22.06.29 Son Add Start
 		theApp.ErrOutput(strErrMsg, nErrorType );
-		// 22.06.29 Son Add End
 	};
-	BOOL IsHeavyError() {
+	BOOL IsHeavyError() 
+	{
 		return m_bInitialReq ;
 	};
 
-	void ErrorClear() {
+	void ErrorClear() 
+	{
 		m_bErrorFlag = FALSE ;
 		m_nErrorType = 0 ;
 		m_strErrorMsg = _T("") ;

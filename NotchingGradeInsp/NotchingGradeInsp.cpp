@@ -169,16 +169,29 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	theApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
 		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
 
-	{
-		GdiplusStartupInput gdiplusStartupInput;
-		GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, 0);
+	//COM 관련 객체 사용을 하기 위해서 사용한다.
+	CoInitialize(NULL);
+
+	//GdiplusStartup 함수에 필요한 인수 블록을 보유합니다.
+	GdiplusStartupInput gdiplusStartupInput;
+	//Windows GDI+를 초기화합니다
+	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, 0);
+
+	//검사 프로그램 초기 시스템 세팅 및 설정 클래스
+	//시스템 세팅
+	//디버그 및 각 장비관련 연결 세팅
+	//시작 여부
+	CStartDlg dlg;
+	if (dlg.DoModal() == IDCANCEL) {
+		// 종료
+		return FALSE;
 	}
 
 	//로그창을 이용한 출력 기능 모듈을 생성한다.
 	CLogDisplayDlg::CreateLogDisplayDlg();
 
 
-//SPC 객체 소스에서 컴파일 여부 결정
+	//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//전역 객체 생성
 	objSpcInfo = new CSpcInfo();
@@ -187,22 +200,17 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	//SPC+ JSON파일 생성을 위한 스래드 모듈을 생성한다.
 	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
 #endif //SPCPLUS_CREATE
+
+
 	//UI manager 객체 생성
 	CUiManager::CreateUiManager();
 
-	//CDebugSetDlg DebugSet;
-	//if (DebugSet.DoModal() == IDOK) {
-	//}
-	CStartDlg dlg;
-	if (dlg.DoModal() == IDCANCEL) {
-		// 종료
-		return FALSE;
-	}
-
+	//검사기 에러 상태 출력 및 PLC 인터락
 	m_pDispErrorDlg = new CDispErrorDlg(m_pMainWnd);
 	m_pDispErrorDlg->Create(IDD_DLG_DISPERROR, m_pMainWnd);
 	m_pDispErrorDlg->ShowWindow(SW_HIDE);
 
+	//디바이스 관련 클래스 생성
 	DeviceOpen();
 
 	// 애플리케이션의 문서 템플릿을 등록합니다.  문서 템플릿은
@@ -241,6 +249,7 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
+	//실행 시 Lot에 불량 검사 내용을 로딩하여 출력한다.
 	LoadLastDefList();
 
 	return TRUE;
@@ -262,8 +271,6 @@ int CNotchingGradeInspApp::ExitInstance()
 
 	AfxOleTerm(FALSE);
 
-	GdiplusShutdown(m_gdiplusToken);
-
 	//생성된 로그창 기능 모듈을 소멸한다.
 	CLogDisplayDlg::ExitLogDisplayDlg();
 
@@ -277,6 +284,12 @@ int CNotchingGradeInspApp::ExitInstance()
 
 	//UI manager 객체 소멸
 	CUiManager::ExitUiManager();
+
+	//Windows GDI+에서 사용하는 리소스를 정리합니다
+	GdiplusShutdown(m_gdiplusToken);
+
+	//COM 객체 사용이 끝났을 때 
+	CoUninitialize();
 
 	return CWinAppEx::ExitInstance();
 }
@@ -350,15 +363,14 @@ void CNotchingGradeInspApp::SaveCustomState()
 
 int CNotchingGradeInspApp::DeviceOpen(void)
 {
-	CoInitialize(NULL);
-
 	m_pImgProcCtrl = new CImageProcessCtrl();
 	m_pImgProcCtrl->Initialize(NULL, 0);
 	m_pImgProcCtrl->Initialize(NULL, 1);
 	m_pImgProcCtrl->SetFrameCount(AprData.m_NowLotData.m_nFrameCount);
 
 
-	if (m_pPioCtrl != NULL) {
+	if (m_pPioCtrl != NULL) 
+	{
 		delete m_pPioCtrl;
 		m_pPioCtrl = NULL;
 	}
@@ -374,23 +386,28 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 
 	CStdIoCtrl::eIOTYPE ioType = CStdIoCtrl::eIO_AXL;
 	m_pIoCtrl = CStdIoCtrl::GetInstance(ioType, 2, 0, 0, 0);
-	if (m_pIoCtrl == NULL) {
+	if (m_pIoCtrl == NULL) 
+	{
 		return (-1);
 	}
 
 	BOOL bDebug = FALSE; // TEST
 	CString strMsg; 
-	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_DIO) == FALSE) {
-		if (m_pIoCtrl->Open(bDebug) == -1) {
+	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_DIO) == FALSE) 
+	{
+		if (m_pIoCtrl->Open(bDebug) == -1) 
+		{
 			strMsg.Format(_T("I/O Board initialize failed."));
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_DioError, strMsg);
 			return (-1);
 		}
 	}
 
-	if (m_pLightCtrl == NULL) {
+	if (m_pLightCtrl == NULL) 
+	{
 		m_pLightCtrl = new CLightControl();
-		if (m_pLightCtrl->Open() < 0) {
+		if (m_pLightCtrl->Open() < 0) 
+		{
 			strMsg.Format(_T("Light control connect error."));
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_LampError, strMsg);
 		}
@@ -438,141 +455,9 @@ int CNotchingGradeInspApp::DeviceClose(void)
 		m_pLightCtrl = NULL;
 	}
 
-	CoUninitialize();
-
 	return (0);
 }
 
-
-int CNotchingGradeInspApp::GetFileVersion(CString& strVersion)
-{
-	int vMj, vMn, vRv, vBd;
-	char	fname[1000];
-	::GetModuleFileName(theApp.m_hInstance, fname, 1000);
-
-	VS_FIXEDFILEINFO vsf;
-	DWORD dwHandle;
-	DWORD cchver = GetFileVersionInfoSize(fname, &dwHandle);
-	if (cchver == 0)
-		return -1;
-	char* pver = new char[cchver];
-	BOOL bret = GetFileVersionInfo(fname, dwHandle, cchver, pver);
-	if (!bret)
-		return -1;
-	UINT uLen;
-	void* pbuf;
-	bret = VerQueryValue(pver, _T("\\"), &pbuf, &uLen);
-	if (!bret)
-		return -1; 
-	memcpy(&vsf, pbuf, sizeof(VS_FIXEDFILEINFO));
-	delete[] pver;
-	vMj = HIWORD(vsf.dwFileVersionMS);
-	vMn = LOWORD(vsf.dwFileVersionMS);
-	vRv = HIWORD(vsf.dwFileVersionLS);
-	vBd = LOWORD(vsf.dwFileVersionLS);
-
-	SYSTEMTIME timeCreate{};
-	SYSTEMTIME timeAccess{};
-	SYSTEMTIME timeWrite{};
-
-	GetFileTimes(fname, &timeCreate, &timeAccess, &timeWrite);
-	strVersion.Format(_T("버전정보 : %d-%d-%d-%d 만든 날짜 : %d.%d.%d %d:%d:%d"), vMj, vMn, vRv, vBd, timeCreate.wYear, timeCreate.wMonth, timeCreate.wDay, timeCreate.wHour, timeCreate.wMinute, timeCreate.wSecond);
-
-	return 0;
-}
-
-
-CString& CNotchingGradeInspApp::GetAppBuildInfo(void)
-{
-	TCHAR	szAppName[MAX_PATH];
-	::GetModuleFileName(NULL, szAppName, MAX_PATH);
-
-	CFileStatus	FileStatus;
-	CFile::GetStatus(szAppName, FileStatus);	
-
-	static CString strBuildInfo;
-	strBuildInfo = FileStatus.m_mtime.Format(_T("%y/%m/%d %H:%M:%S"));	
-
-#if defined(_DEBUG)
-	strBuildInfo += _T(" [Debug]");
-#else
-	strBuildInfo += _T(" [Release]");
-#endif	// _DEBUG
-
-	return strBuildInfo;
-}
-
-/**
-Get File Time Info
-@param        strPath          File Path
-@param        outCreate        Create Time
-@param        outAccess        Access Time
-@param        outWrite         Write Time
-@return
-*/
-void CNotchingGradeInspApp::GetFileTimes(CString strPath, SYSTEMTIME* outCreate, SYSTEMTIME* outAccess, SYSTEMTIME* outWrite)
-{
-	if (strPath.IsEmpty())
-		return;
-
-	HANDLE hFile = NULL;
-	try
-	{
-		// 파일을 엽니다. (파일 핸들을 연다고 표현함)
-		hFile = CreateFile(strPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		if (hFile != INVALID_HANDLE_VALUE)
-		{
-			FILETIME timeCreate;
-			FILETIME timeAccess;
-			FILETIME timeWrite;
-
-			// 여기서 생성 시간, 접근 시간, 쓰기 시간을 받아옵니다.
-			BOOL bRet = GetFileTime(hFile, &timeCreate, &timeAccess, &timeWrite);
-			if (bRet == FALSE)
-				return;
-
-			SYSTEMTIME stimeCreate;
-			SYSTEMTIME stimeAccess;
-			SYSTEMTIME stimeWrite;
-
-			if (outCreate != nullptr)
-			{
-				// 받아온 생성 시간을 시스템 시간으로 변환 (이때 시간은 UTC 시간으로 반환)
-				bRet = FileTimeToSystemTime(&timeCreate, &stimeCreate);
-				if (bRet)
-					// UTC 시간을 Local 시간으로 변환
-					SystemTimeToTzSpecificLocalTime(NULL, &stimeCreate, outCreate);
-			}
-			if (outAccess != nullptr)
-			{
-				// 받아온 접근 시간을 시스템 시간으로 변환 (이때 시간은 UTC 시간으로 반환)
-				bRet = FileTimeToSystemTime(&timeAccess, &stimeAccess);
-				if (bRet)
-					// UTC 시간을 Local 시간으로 변환
-					SystemTimeToTzSpecificLocalTime(NULL, &stimeAccess, outAccess);
-			}
-			if (outWrite != nullptr)
-			{
-				// 받아온 쓰기 시간을 시스템 시간으로 변환 (이때 시간은 UTC 시간으로 반환)
-				bRet = FileTimeToSystemTime(&timeWrite, &stimeWrite);
-				if (bRet)
-					// UTC 시간을 Local 시간으로 변환
-					SystemTimeToTzSpecificLocalTime(NULL, &stimeWrite, outWrite);
-			}
-		}
-		// 파일을 닫습니다. (핸들을 닫는다고 표현함)
-		CloseHandle(hFile);
-	}
-	catch (CException& e)
-	{
-		TCHAR szException[1024] = { 0, };
-		e.GetErrorMessage(szException, 1024);
-		TRACE(szException);
-
-		CloseHandle(hFile);
-		hFile = NULL;
-	}
-}
 
 int CNotchingGradeInspApp::ErrOutput(LPCSTR ptstr, int nErrorType )
 {
@@ -590,7 +475,8 @@ int CNotchingGradeInspApp::ErrOutput(LPCSTR ptstr, int nErrorType )
 		break;
 	}
 
-	if (m_pDispErrorDlg != NULL) {
+	if (m_pDispErrorDlg != NULL) 
+	{
 		if (m_pDispErrorDlg->AddMessage(str) == FALSE) {
 			return -1;
 		}
@@ -615,10 +501,4 @@ int CNotchingGradeInspApp::LoadLastDefList()
 	}
 
 	return nRet ;
-}
-
-void CNotchingGradeInspApp::ProgramVersionInfo()
-{
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
 }

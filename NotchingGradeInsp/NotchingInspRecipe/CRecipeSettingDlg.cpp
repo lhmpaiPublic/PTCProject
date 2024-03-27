@@ -35,7 +35,6 @@ static CString UiText1[][3] =
 	{_T("레시피 번호"), _T("Recipe No."), _T("Recipe编号")},
 	{_T("등록"), _T("Regist"), _T("登录")},
 	{_T("삭제"), _T("Delete"), _T("删除")},
-	{_T("프로그램정보"), _T("Program Info"), _T("程序信息")},
 	{_T("가져오기"), _T("Load"), _T("导入")},
 	{_T("기타 설정"), _T("Other Setting"), _T("其他设置")},
 	{_T("IMAGE 저장 간격"), _T("IMAGE Save Interval"), _T("图片保存间隔")},
@@ -105,7 +104,6 @@ enum UiText1Name
 	ST_RECIPE_NO,
 	BTN_REGIST,
 	BTN_DELETE,
-	BTN_PROGRAMINFO,
 	BTN_LOAD,
 	ST_OTHER_SETTING,
 	STATIC_IMAGESAVEINTERVAL,
@@ -175,7 +173,6 @@ static int UiText1NameText[] =
 	IDC_ST_RECIPE_NO,
 	IDC_BTN_REGIST,
 	IDC_BTN_DELETE,
-	IDC_BTN_PROGRAMINFO,
 	IDC_BTN_LOAD,
 	IDC_ST_OTHER_SETTING,
 	IDC_STATIC_IMAGESAVEINTERVAL,
@@ -536,7 +533,6 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_FOILEXP_GRAY_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdFoilexpGraySize)
 	ON_EN_SETFOCUS(IDC_ED_SURFACE_GRAY_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdSurfaceGraySize)
 	ON_EN_SETFOCUS(IDC_ED_TAB_MIN_BRIGHT, &CRecipeSettingDlg::OnEnSetfocusEdTabMinBright)
-	ON_BN_CLICKED(IDC_BTN_PROGRAMINFO, &CRecipeSettingDlg::OnBnClickedBtnPrograminfo)
 
 	ON_EN_SETFOCUS(IDC_ED_NG_X_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdNgXSize)
 	ON_EN_SETFOCUS(IDC_ED_FOIL_OUT_NG_X_SIZE, &CRecipeSettingDlg::OnEnSetfocusEdFoilOutNgXSize)
@@ -2939,238 +2935,7 @@ void CRecipeSettingDlg::DisplayLanguage()
 		}
 	}
 }
-/* {
-	CWnd* pWnd;
-	CString strText;
 
-	pWnd = GetDlgItem(IDC_ST_GROUP_RCP_SET);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("레시피 설정"), _T("Recipe Setting")));
-	}
-	pWnd = GetDlgItem(IDC_ST_RECIPE_NAME);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("레시피명"), _T("Recipe Name")));
-	}
-	pWnd = GetDlgItem(IDC_ST_RECIPE_NAME2);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("메모"), _T("Memo")));
-	}
-	pWnd = GetDlgItem(IDC_ST_RECIPE_NO);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("레시피 번호"), _T("Recipe No.")));
-	}
-	pWnd = GetDlgItem(IDC_BTN_REGIST);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("등록"), _T("Regist")));
-	}
-	pWnd = GetDlgItem(IDC_BTN_DELETE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("삭제"), _T("Delete")));
-	}
-	pWnd = GetDlgItem(IDC_BTN_PROGRAMINFO);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("프로그램정보"), _T("Program Info")));
-	}
-	pWnd = GetDlgItem(IDC_BTN_LOAD);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("가져오기"), _T("Load")));
-	}
-	pWnd = GetDlgItem(IDC_ST_OTHER_SETTING);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("기타 설정"), _T("Other Setting")));
-	}
-		pWnd = GetDlgItem(IDC_STATIC_IMAGESAVEINTERVAL);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("IMAGE 저장 간격"), _T("IMAGE Save Interval")));
-	}
-	pWnd = GetDlgItem(IDC_CHK_SAVE_ONLY_NG_TAB);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("NG만 저장"), _T("Save only NG Image")));
-	}
-	//pWnd = GetDlgItem(IDC_CHK_DISABLE_PROC_DIFF);
-	//if (pWnd != nullptr) {
-	//	pWnd->SetWindowTextA(_LANG(_T("비교처리 미사용"), _T("Diable Diff")));
-	//}
-	pWnd = GetDlgItem(IDC_ST_GROUP_TAB_INFO);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("Tab 정보"), _T("Tab Setting")));
-	}
-	pWnd = GetDlgItem(IDC_ST_INPUT_MM);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("입력단위[mm]"), _T("Input[pix]")));
-	}
-	pWnd = GetDlgItem(IDC_ST_INPUT_PIX);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("단위[Pix]"), _T("Unit[Pix]")));
-	}
-	pWnd = GetDlgItem(IDC_GROUP_CATHODE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("음극"), _T("CATHODE")));
-	}
-	pWnd = GetDlgItem(IDC_ST_COAT_HEIGHT);
-	if (pWnd != nullptr) {
-	    pWnd->SetWindowTextA(_LANG(_T("탭 코팅 높이"), _T("Tab coat Height")));
-	}
-	pWnd = GetDlgItem(IDC_STATIC_GROOVE_HEIGHT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("V홈 높이"), _T("V Hight")));
-	}
-	pWnd = GetDlgItem(IDC_ST_TAB_WIDTH);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("탭폭"), _T("Tab Width")));
-	}
-	pWnd = GetDlgItem(IDC_ST_TAB_PITCH);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("탭 피치"), _T("Tab Pitch")));
-	}
-	pWnd = GetDlgItem(IDC_ST_ROUND_RADIUS);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("라운드 반지름"), _T("Round radius")));
-	}
-	pWnd = GetDlgItem(IDC_GROUP_ANODE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("양극"), _T("Anode")));
-	}
-	pWnd = GetDlgItem(IDC_ST_TOP_COAT_HEIGHT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("Tab코팅높이"), _T("Tab shoulder coat size")));
-	}
-	pWnd = GetDlgItem(IDC_ST_BTM_COAT_HEIGHT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("Bottom코팅높이"), _T("Bottom coat size")));
-	}
-	pWnd = GetDlgItem(IDC_ST_TAB_COAT_HEIGHT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("Tab코팅높이"), _T("Tab coat size")));
-	}
-	pWnd = GetDlgItem(IDC_ST_EDGE_DETECT_COND);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("엣지 검출 조건"), _T("Edge Detect Condition")));
-	}
-	pWnd = GetDlgItem(IDC_ST_COAT_BRIGHT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("코팅부 휘도(Min/Max)"), _T("Coat Bright(Min/Max)")));
-	}
-	pWnd = GetDlgItem(IDC_ST_ROLL_BRIGHT);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("롤부 휘도(Min/Max)"), _T("Roll Bright(Min/Max)")));
-	}
-	pWnd = GetDlgItem(IDC_ST_LIGHT_SETTING);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("조명설정"), _T("Light Setting")));
-	}
-	pWnd = GetDlgItem(IDC_ST_MARKING_SETTING);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("마킹설정"), _T("Marking Setting")));
-	}
-	pWnd = GetDlgItem(IDC_ST_DETECT_INFO);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("검출력 설정"), _T("Detect Info")));
-	}
-	pWnd = GetDlgItem(IDC_ST_THRES_ORG);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("검출레벨(원화상)"), _T("Threshold(Org)")));
-	}
-	pWnd = GetDlgItem(IDC_ST_THRES_LOWER);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("검출레벨(하한)"), _T("Threshold(Lower)")));
-	}
-	pWnd = GetDlgItem(IDC_ST_INSP_WIDTH);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("검사범위[mm]"), _T("Insp Range[mm]")));
-	}
-	pWnd = GetDlgItem(IDC_ST_DET_MIN_SIZE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("최소검출 사이즈[Pix]"), _T("Min Size[Pix]")));
-	}
-	//pWnd = GetDlgItem(IDC_ST_MASK_OFFSET);
-	//if (pWnd != nullptr) {
-	//	pWnd->SetWindowTextA(_LANG(_T("마스크오프셋"), _T("Mask offset")));
-	//}
-	pWnd = GetDlgItem(IDC_ST_GROUP_SPETTER);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("전극표면 검출 설정"), _T("Surface Defect Setting")));
-	}
-	pWnd = GetDlgItem(IDC_CHK_DISABLE_SPTTER);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("표면검사 미사용"), _T("Disable surface detection")));
-	}
-	pWnd = GetDlgItem(IDC_ST_THRES_SURFACE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("스레스홀드"), _T("Threshold")));
-	}
-	pWnd = GetDlgItem(IDC_ST_MASK_SURFACE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("마스크오프셋[Pix]"), _T("Mask Offset[Pix]")));
-	}
-	pWnd = GetDlgItem(IDC_ST_MIN_SIZE_SURFACE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("최소검출 사이즈[Pix]"), _T("Min size[Pix]")));
-	}
-	pWnd = GetDlgItem(IDC_CHK_ENABLE_DEF_LINK);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("결함 링크 사용"), _T("Enable Defect Link")));
-	}
-	pWnd = GetDlgItem(IDC_ST_LINK_RANGE_X);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("연결거리 X[Pix]"), _T("Distance X[Pix]")));
-	}
-	pWnd = GetDlgItem(IDC_ST_LINK_RANGE_Y);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("연결거리 Y[Pix]"), _T("Disatance Y[Pix]")));
-	}
-	pWnd = GetDlgItem(IDC_ST_MAGNIFICATION);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("검출배율"), _T("Magnification")));
-	}
-	pWnd = GetDlgItem(IDC_ST_GROUP_JUDGE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("결함 판정"), _T("Defect Judgement")));
-	}
-// 	pWnd = GetDlgItem(IDC_ST_HORIZON);
-// 	if (pWnd != nullptr) {
-// 		pWnd->SetWindowTextA(_LANG(_T("가로(화면기준)"), _T("Horizon")));
-// 	}
-	pWnd = GetDlgItem(IDC_ST_SURFACE_NG_SIZE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("표면결함 NG 사이즈"), _T("Surface NG Size")));
-	}
-	pWnd = GetDlgItem(IDC_ST_NG_ALARM_SETTING);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("NG 알람 설정"), _T("NG Alarm")));
-	}
-	pWnd = GetDlgItem(IDC_ST_CONTINUE_ALRAM);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("연속결함 알람"), _T("Continuous detect alarm")));
-	}
-	pWnd = GetDlgItem(IDC_ST_SECTION_ALARM);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("구간결함 알람"), _T("Section detect alarm")));
-	}
-	pWnd = GetDlgItem(IDC_ST_FOIL_DEF_REMOVE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("Foil exp 결함 제거"), _T("Foil_Exp_In Defect Remove")));
-	}
-	pWnd = GetDlgItem(IDC_ST_FOIL_DEF_REMOVE_DISTANCE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("결함 제거 거리[um]"), _T("Remove distance[um]")));
-	}
-	pWnd = GetDlgItem(IDC_ST_FOIL_DEF_REMOVE_SIZE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowTextA(_LANG(_T("제거 결함 크기[um]"), _T("Remove size[um]")));
-	}
-	// 22.11.21 Ahn Modify Start - JUDGE_GRAY
-	pWnd = GetDlgItem(IDC_ST_GRAY_SIZE);
-	if (pWnd != nullptr) {
-		pWnd->SetWindowText(_LANG(_T("결함 그레이 판정"), _T("Defect Judgement Gray")));
-	}
-	// 22.11.21 Ahn Modify End
-
-}
-*/
-// 22.09.05 Ahn Add End
-
-// 22.09.19 Ahn Add Start
 void CRecipeSettingDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
@@ -3180,7 +2945,6 @@ void CRecipeSettingDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 		DisplayLanguage();
 	}
 }
-// 22.09.19 Ahn Add End
 
 
 void CRecipeSettingDlg::OnEnSetfocusEdFoilexpGraySize()
@@ -3213,7 +2977,6 @@ void CRecipeSettingDlg::OnEnSetfocusEdSurfaceGraySize()
 }
 
 
-// 23.02.14 Ahn Add Start
 void CRecipeSettingDlg::OnEnSetfocusEdTabMinBright()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -3228,37 +2991,12 @@ void CRecipeSettingDlg::OnEnSetfocusEdTabMinBright()
 	UpdateData(FALSE);
 
 }
-// 23.02.14 Ahn Add End
-
-
-//void CRecipeSettingDlg::OnBnClickedRadDarkRoll()
-//{
-//	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-//	UpdateData(TRUE);
-//
-//}
-//
-//
-//void CRecipeSettingDlg::OnBnClickedRadBrightRoll()
-//{
-//	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-//	UpdateData(TRUE);
-//
-//}
-
 
 void CRecipeSettingDlg::OnBnClickedBtnSystemList()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	CInitSystemSetting InitSystemSetting(this);
 	InitSystemSetting.DoModal();
-}
-
-
-void CRecipeSettingDlg::OnBnClickedBtnPrograminfo()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	theApp.ProgramVersionInfo();
 }
 
 

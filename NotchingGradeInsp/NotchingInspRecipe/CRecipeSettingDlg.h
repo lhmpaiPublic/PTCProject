@@ -22,9 +22,6 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
-	//CGridCtrl m_GridCtrlTabInfo;
-	//CGridCtrl m_GridCtrlInspCond;
-
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
@@ -73,12 +70,8 @@ private:
 	int m_nTopCoatPixH;
 	int m_nBtmCoatPixH;
 	int m_nTabCoatPixH;
-	// 22.01.11 Ahn Modify Strat
-	//int m_nThresFoilUpper;
-	//int m_nThresDrossUpper;
 	int m_nThresFoilOrigin;
 	int m_nThresDrossOrigin;
-	// 22.01.11 Ahn Modify End
 	int m_nThresFoilLower;
 	int m_nThresDrossLower;
 
@@ -157,7 +150,6 @@ public:
 		en_RcpName_MaxCols,
 	};
 
-	// 22.07.15 Ahn Add Start
 	enum {
 		en_MarkingTitle = 0,
 		en_MarkingUse = 1,
@@ -172,7 +164,6 @@ public:
 
 	int MakeGridCtrl_Marking();
 	int UpdateGrid_Marking();
-	// 22.07.15 Ahn Add End
 	int MakeGridCtrl();
 	int UpdateGrid();
 	int MakeGridCtrl_RecipeTable();
@@ -195,16 +186,9 @@ private :
 
 	void ShowControl();
 
-	// 22.09.05 Ahn Add Start
 	void DisplayLanguage();
-	// 22.09.05 Ahn Add End
 
 public:
-	// 22.07.15 Ahn Delete Start
-	//afx_msg void OnBnClickedRadMaxDiff();
-	//afx_msg void OnBnClickedRadSetBright();
-	// 22.07.15 Ahn Delete End
-	//int m_nRadEdgeDetectMode;
 	int m_nBmpSaveInterval;
 	afx_msg void OnEnSetfocusEdBmpSaveInterval();
 	int m_nLastSelTabInfo;
@@ -248,20 +232,16 @@ public:
 	afx_msg void OnBnClickedChkSaveDefInTab();
 	afx_msg void OnEnSetfocusEdSaveDefSize();
 
-	// 22.01.05 Ahn Add Start
 	double	m_dEdNegTabCoatHeight;
 	int		m_nEdNegTabCoatHeightPix;
 	double	m_dEdNegVGrooveHeight;
 	int		m_nEdNegVGrooveHeightPix;
 	afx_msg void OnEnSetfocusEdNegaTabCoatHeight();
 	afx_msg void OnEnSetfocusEdVGrooveHeight();
-	// 22.01.05 Ahn Add Start
 	double m_dEdIgnoreDistance;
 	afx_msg void OnEnSetfocusEdIgnoreDistance();
-	// 22.03.07 Ahn Add Start
 	double m_dEdIgnoreSize;
 	afx_msg void OnEnSetfocusEdIgnoreSize();
-	// 22.03.07 Ahn Add End
 	int m_nEdThresSurface;
 	afx_msg void OnEnSetfocusEdThresSurface();
 	afx_msg void OnEnSetfocusEdSptMask();
@@ -278,11 +258,9 @@ public:
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnPaint();
 	afx_msg void OnBnClickedBtnSystemSet();
-	// 22.08.09 Ahn Add Start
 	int m_nContinuousNgAlarmCnt;
 	int m_nAlarmCnt;
 	int m_nSectorCnt;
-	// 22.08.09 Ahn Add End
 	afx_msg void OnEnSetfocusEdContinuousAlarm();
 	afx_msg void OnEnSetfocusEdAlarmCount();
 	afx_msg void OnEnSetfocusEdSectorCount();
@@ -293,14 +271,10 @@ public:
 	double m_dEdSurfaceGraySize;
 	afx_msg void OnEnSetfocusEdFoilexpGraySize();
 	afx_msg void OnEnSetfocusEdSurfaceGraySize();
-	// 22.11.21 Ahn Add End
 	int m_nTabMinBright;
 	afx_msg void OnEnSetfocusEdTabMinBright();
 	int m_nRollBrightMode;
-	//afx_msg void OnBnClickedRadDarkRoll();
-	//afx_msg void OnBnClickedRadBrightRoll();
 	afx_msg void OnBnClickedBtnSystemList();
-	afx_msg void OnBnClickedBtnPrograminfo();
 	CString m_strRecipeMemo;
 
 
