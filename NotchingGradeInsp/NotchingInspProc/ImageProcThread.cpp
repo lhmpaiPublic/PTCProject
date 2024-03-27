@@ -518,19 +518,19 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						cntInfo.nEnCoderCount = (int)pTabInfo->m_GrabCallEncoderCount;
 
 						//레시피 텝 피치에 대한 BCD ID 조정 위치 값 세팅
-						UINT nCompareNotUseCellLength = 4000;
+						UINT nCompareNotUseCellLength = 3900;
 						//인도네시아 양극 93.3 4368 : Grab 4500
 						if (nRecipeInfoTabPitch <= 4400)
-							nCompareNotUseCellLength = 3700;
-						//인도네시아 음극 95.8 4485 : Grab 4600
+							nCompareNotUseCellLength = 3800;
+						//인도네시아 음극 95.8 4485 : Grab 4650
 						else if (nRecipeInfoTabPitch <= 4500)
 							nCompareNotUseCellLength = 3800;
-						//중국 96.8 4532 : Grab 4800
+						//중국 96.8 4532 : Grab 4700
 						else if (nRecipeInfoTabPitch <= 4600)
 							nCompareNotUseCellLength = 3900;
 						//미국 102.4 4794 : Grab 5000
 						else
-							nCompareNotUseCellLength = 4000;
+							nCompareNotUseCellLength = 3900;
 
 						//남은 이미지 픽셀 크기가 4000이상일 때 
 						//Tab Info에서 얻은 BCD ID와 이전 BCD ID + 1 증가한 값이 같다면
