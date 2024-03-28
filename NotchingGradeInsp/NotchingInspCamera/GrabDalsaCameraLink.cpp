@@ -84,8 +84,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 
 #ifdef USE_PLCCONNECTZONE
 
-		CSigProc* pSigProc = theApp.m_pSigProc;
-		if ((pSigProc != NULL) && (pSigProc->GetConnectZone() == TRUE))
+		if ((theApp.m_pSigProc != NULL) && (theApp.m_pSigProc->GetConnectZone() == TRUE))
 		{
 			//Log Camera Setting
 			AprData.SaveDebugLog_Format(_T("AcqCallback Connect Zone TURE") );

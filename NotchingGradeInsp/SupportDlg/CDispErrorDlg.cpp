@@ -257,9 +257,8 @@ void CDispErrorDlg::OnBnClickedOk()
 	AprData.m_ErrStatus.ErrorClear();
 	m_ListMsg.RemoveAll();
 
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	pSigProc->SigOutDiskCapacityAlarm(FALSE);
-	pSigProc->SigOutDiskCapacityWarning(FALSE);
+	theApp.m_pSigProc->SigOutDiskCapacityAlarm(FALSE);
+	theApp.m_pSigProc->SigOutDiskCapacityWarning(FALSE);
 
 	// 23.01.03 Ahn Add Start
 	m_bReset = TRUE;
@@ -283,10 +282,10 @@ void CDispErrorDlg::OnClose()
 
 int CDispErrorDlg::IsAlarmReset()
 {
-	CSigProc* pSigProc = theApp.m_pSigProc;
 	int nRet = 0;
-	if (pSigProc != nullptr) {
-		nRet = pSigProc->SigInAlarmReset();
+	if (theApp.m_pSigProc != nullptr) 
+	{
+		nRet = theApp.m_pSigProc->SigInAlarmReset();
 	}
 
 	return nRet;

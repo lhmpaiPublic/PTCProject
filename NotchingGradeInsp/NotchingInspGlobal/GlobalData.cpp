@@ -505,10 +505,10 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	//::GetLocalTime(&sysTime);
 
 	//PLC 작동 오프젝트 객체을 얻는다.
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	if (bSigInMode == TRUE) {
+	if (bSigInMode == TRUE) 
+	{
 		//PLC 
-		pSigProc->SigOutLotStartAck(TRUE);
+		theApp.m_pSigProc->SigOutLotStartAck(TRUE);
 		::GetLocalTime(&sysTime);
 		m_NowLotData.m_LotStartTime = sysTime;
 	}
@@ -539,7 +539,7 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	else 
 	{
 		//PLC Lot 번호 가져오기
-		pSigProc->ReadBlockAllData(&m_SeqDataIN); // 22.04.01 Ahn Modify
+		theApp.m_pSigProc->ReadBlockAllData(&m_SeqDataIN); // 22.04.01 Ahn Modify
 		AprData.m_NowLotData.m_strLotNo = AprData.m_SeqDataIN.strCell_ID ;
 
 //SPC 객체 소스에서 컴파일 여부 결정

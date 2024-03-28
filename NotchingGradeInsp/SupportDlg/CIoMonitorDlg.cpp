@@ -297,20 +297,19 @@ int CIoMonitorDlg::RefreshAll()
 {
 	int nRet = 0;
 
-	CSigProc* pSigProc = theApp.m_pSigProc;
 	memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_IN);
 	memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_OUT);
-	pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
-	pSigProc->ReadAllPort_BitOut(m_bSigBitOut);
-	pSigProc->ReadBlockAllData(&m_localSeqDataIn);
+	theApp.m_pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
+	theApp.m_pSigProc->ReadAllPort_BitOut(m_bSigBitOut);
+	theApp.m_pSigProc->ReadBlockAllData(&m_localSeqDataIn);
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
 	{
-		pSigProc->ReadBlockWriteDataAll_Melsec(&m_localSeqDataOut);
+		theApp.m_pSigProc->ReadBlockWriteDataAll_Melsec(&m_localSeqDataOut);
 	}
 	else
 	{
-		pSigProc->ReadBlockWriteDataAll_Siemens(&m_localSeqDataOutSms);
+		theApp.m_pSigProc->ReadBlockWriteDataAll_Siemens(&m_localSeqDataOutSms);
 	}
 
  	UpdateGridCtrl();
@@ -351,8 +350,7 @@ void CIoMonitorDlg::OnBnClickedOk()
 void CIoMonitorDlg::OnBnClickedBtnDataLoad()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CSigProc* pSigProc = theApp.m_pSigProc;;
-	pSigProc->ReadBlockAllData(&m_SeqData);
+	theApp.m_pSigProc->ReadBlockAllData(&m_SeqData);
 
 	m_strLotID = m_SeqData.strCell_ID ;
 	m_strRecipeName = m_SeqData.strRecipeName;
@@ -731,8 +729,6 @@ void CIoMonitorDlg::UpdateGridCtrl()
 
 CString CIoMonitorDlg::GetInBitName(int nRow)
 {
-	CSigProc* pSigProc = theApp.m_pSigProc;
-
 	CString strRet;
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
@@ -748,9 +744,7 @@ CString CIoMonitorDlg::GetInBitName(int nRow)
 		case	CSigProc::enSmsBitIn_Run:
 			strRet = _T("Run");
 			break;
-			//	case	CSigProc::enSmsBitIn_EncoderReset:		//사용 안함
-			//		strRet = _T("Encoder Zero Set");
-			//		break;
+
 		case	CSigProc::enSmsBitIn_TabZeroReset:
 			strRet = _T("Tab Zero Set");
 			break;
@@ -801,9 +795,7 @@ CString CIoMonitorDlg::GetInBitName(int nRow)
 		case	CSigProc::enBitIn_Run:
 			strRet = _T("Run");
 			break;
-			//	case	CSigProc::enBitIn_EncoderReset:		//사용 안함
-			//		strRet = _T("Encoder Zero Set");
-			//		break;
+
 		case	CSigProc::enBitIn_TabZeroReset:
 			strRet = _T("Tab Zero Set");
 			break;
@@ -844,8 +836,6 @@ CString CIoMonitorDlg::GetInBitName(int nRow)
 
 CString CIoMonitorDlg::GetOutBitName(int nRow)
 {
-	CSigProc* pSigProc = theApp.m_pSigProc;
-
 	CString strRet;
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
@@ -858,9 +848,7 @@ CString CIoMonitorDlg::GetOutBitName(int nRow)
 		case	CSigProc::enSmsBitOut_Ready:
 			strRet = _T("Ready");
 			break;
-			//	case	CSigProc::enSmsBitOut_EncoderSet:		//사용 안함
-			//		strRet = _T("Encoder Zero Set");
-			//		break;
+
 		case	CSigProc::enSmsBitOut_RecipeChangeAck:
 			strRet = _T("Recipe Change Ack");
 			break;
@@ -876,12 +864,6 @@ CString CIoMonitorDlg::GetOutBitName(int nRow)
 		case	CSigProc::enSmsBitOut_AlarmResetAck:
 			strRet = _T("Alarm Reset Ack");
 			break;
-			//	case	CSigProc::enSmsBitOut_DiskSpaceWarning:		//사용 안함
-			//		strRet = _T("");
-			//		break;
-			//	case	CSigProc::enSmsBitOut_DiskSpaceAlarm:		//사용 안함
-			//		strRet = _T("");
-			//		break;
 
 		default:
 			strRet = _T("");
@@ -906,18 +888,11 @@ CString CIoMonitorDlg::GetOutBitName(int nRow)
 		case	CSigProc::enBitOut_Ready:
 			strRet = _T("Ready");
 			break;
-			//	case	CSigProc::enBitOut_EncoderSet:		//사용 안함
-			//		strRet = _T("Encoder Zero Set");
-			//		break;
+
 		case	CSigProc::enBitOut_TabZeroReset:
 			strRet = _T("Tab Zero Set Ack");
 			break;
-			//	case	CSigProc::enBitOut_DiskSpaceWarning:		//사용 안함
-			//		strRet = _T("");
-			//		break;
-			//	case	CSigProc::enBitOut_DiskSpaceAlarm:		//사용 안함
-			//		strRet = _T("");
-			//		break;
+
 		case	CSigProc::enBitOut_RecipeChangeAck:
 			strRet = _T("Recipe Change Ack");
 			break;
@@ -1531,15 +1506,13 @@ CString CIoMonitorDlg::GetInWordData(int nRow)
 {
 	CString strRet;
 
-	CSigProc* pSigProc = theApp.m_pSigProc;
-
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringReadData_Siemens(nRow));
+		strRet.Format(_T("%d"), (int)theApp.m_pSigProc->GetMonitoringReadData_Siemens(nRow));
 	}
 	else
 	{
-		strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringReadData_Melsec(nRow * 2));
+		strRet.Format(_T("%d"), (int)theApp.m_pSigProc->GetMonitoringReadData_Melsec(nRow * 2));
 	}
 
 	return strRet;
@@ -1548,22 +1521,19 @@ CString CIoMonitorDlg::GetOutWordData(int nRow)
 {
 	CString strRet;
 
-	CSigProc* pSigProc = theApp.m_pSigProc;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringWriteData_Siemens(nRow));
+		strRet.Format(_T("%d"), (int)theApp.m_pSigProc->GetMonitoringWriteData_Siemens(nRow));
 	}
 	else
 	{
-		strRet.Format(_T("%d"), (int)pSigProc->GetMonitoringWriteData_Melsec(nRow * 2));
+		strRet.Format(_T("%d"), (int)theApp.m_pSigProc->GetMonitoringWriteData_Melsec(nRow * 2));
 	}
 
 
 	return strRet;
 }
-// 22.08.16 Ahn Add End
 
-// 22.10.05 Ahn Add Start
 void CIoMonitorDlg::OnBnClickedBtnDummyError()
 {
 	CString strError;
@@ -1574,7 +1544,7 @@ void CIoMonitorDlg::OnBnClickedBtnDummyError()
 
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if (MessageBox(_T("Dummy NG 발생시 장비가 정지 할 수 있습니다. 정말 NG를 발생시키 시겠습니까?"), _T("Dummy NG"), MB_OKCANCEL) == IDOK) {
-		// 22.10.05 Ahn Add Start
+
 		WORD wAlarmCode = 0x0000 ;
 		wAlarmCode |= CSigProc::en_Alarm_SectorNg;
 
@@ -1585,17 +1555,8 @@ void CIoMonitorDlg::OnBnClickedBtnDummyError()
 		CSigProc* pSigProc = theApp.m_pSigProc;	
 		pSigProc->WriteAlarmCode(wAlarmCode);
 		pSigProc->SigOutAlarmExist(TRUE);
-
-//   		Sleep(200);
-//  		pSigProc->WriteAlarmCode(0x0000);
-// 		pSigProc->SigOutAlarmExist(FALSE);
-
-
-// 22.10.05 Ahn Add End
 	}
 }
-// 22.10.05 Ahn Add End
-
 
 void CIoMonitorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
@@ -1609,16 +1570,13 @@ void CIoMonitorDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 }
 void CIoMonitorDlg::OnBnClickedBtnDummyErrorClear()
 {
-	CSigProc* pSigProc = theApp.m_pSigProc;
-
-	pSigProc->WriteAlarmCode(0x0000);
-	pSigProc->SigOutAlarmExist(FALSE);
+	theApp.m_pSigProc->WriteAlarmCode(0x0000);
+	theApp.m_pSigProc->SigOutAlarmExist(FALSE);
 }
 
 
 void CIoMonitorDlg::OnMouseDblClickGridBitOut(NMHDR* pNMHDR, LRESULT* pResult)
 {
-	CSigProc* pSigProc = theApp.m_pSigProc;
 	CGridCtrl* pGridCtrl = &m_GridBitOut;
 
 	if (pGridCtrl != NULL)
@@ -1647,7 +1605,7 @@ void CIoMonitorDlg::OnMouseDblClickGridBitOut(NMHDR* pNMHDR, LRESULT* pResult)
 			str.Format(_T("[ Send Data ]\r\n\r\n  * Address:	%s\r\n  * data:		%d		"), GetOutBitAddress(nRow), bSignalOut);
 			if (AfxMessageBox(str, MB_YESNO | MB_ICONQUESTION) == IDYES)
 			{
-				if (pSigProc->SignalBitOut(nBitPos, (int)bSignalOut) < 0)
+				if (theApp.m_pSigProc->SignalBitOut(nBitPos, (int)bSignalOut) < 0)
 				{
 					AfxMessageBox(_T("Failed to send data."), MB_ICONERROR);
 					return;

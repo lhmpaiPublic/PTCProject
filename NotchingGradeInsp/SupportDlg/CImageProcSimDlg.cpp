@@ -7104,10 +7104,7 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	CSize tabPos;
 	int nLevel;
 
-	// 23.02.24 Ahn Mod Start
-	//CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromLeft);
 	CImageProcess::FindLevelBottom_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromLeft);
-	// 23.02.24 Ahn Mod End
 
 	// Edge Find 
 	if (nLevel < 0) {
@@ -7118,37 +7115,26 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 
 	int nOffset = 50;
 
-	// 22.01.05 Ahn Add Start
 	int nLeftOffset;
 	int nMeanLeftOffest;
 	int nMeanRightOffset;
 	int nTabRoundOffsetR;
 
-	// 22.05.30 Ahn Modify Start
-	//nLeftOffset = (int)((double)m_pRecipeInfo->TabCond.nNegVGrooveHeight );
-	// 23.02.24 Ahn Modify Start
-	//nLeftOffset = m_pRecipeInfo->TabCond.nNegVGrooveHeight + m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
 	nLeftOffset = m_pRecipeInfo->TabCond.nNegVGrooveHeight + m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
-	// 23.02.24 Ahn Modify End
-	// 22.05.30 Ahn Modify End
+
 	nMeanLeftOffest = m_pRecipeInfo->TabCond.nNegCoatHeight;
 	nMeanRightOffset = 50;
 	nTabRoundOffsetR = m_pRecipeInfo->TabCond.nNegCoatHeight;
 
 
 	CRect rcAll;
-	// 22.01.05 Ahn Modify Start
-	//rcAll.left = rcRight.left = rcLeft.left = nLevel - m_pRecipeInfo->TabCond.nCeramicHeight;
 	rcAll.left = nLevel - nLeftOffset;
-	// 22.01.05 Ahn Modify End
+
 	rcAll.right = nLevel + (int)(m_pRecipeInfo->TabCond.nRadiusW);
 	rcAll.top = 0;
 	rcAll.bottom = nHeight;
 
-	// 23.01.20 Ahn Add Start
-	//rcRight.right = rcLeft.right = nLevel + 100;
 	int nOutRange = m_pRecipeInfo->TabCond.nNegCoatHeight;
-	// 23.01.20 Ahn Add ENd
 
 	// Test
 
@@ -7166,17 +7152,10 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	int nOffsetY = 0;
 
 	int nMeanSize = MEAN_SIZE_HOR;
-	// 22.01.06 Ahn Add Start
 	int nHeadBndry;
 	nHeadBndry = nLevel + nTabRoundOffsetR;
-	// 22.01.06 Ahn Add End
-	// 22.05.30 Ahn Modify Start
-	//rcRightRnd.right = rcLeftRnd.right = rcAll.right = nHeadBndry;
-	// 23.02.24 Ahn Modify Start
-	//int nInspRangeRight = nLevel + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
+
 	int nInspRangeRight = nLevel + m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM];
-	// 23.02.24 Ahn Modify End
-	// 22.05.30 Ahn Modify End
 
 	int nMaskRight = nHeadBndry - 30;
 
@@ -7199,7 +7178,6 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	memset(pProcPtr, 0x0f, sizeof(BYTE) * nWidth * nHeight);
 	CImageProcess::ImageMean_Part(pImgPtr, pProcPtr, nWidth, nHeight, rcAll, 3, 3, CImageProcess::en_FillAll);
 
-	// 22.05.30 Ahn Add Start 
 	CImageProcess::GetMaxImage(pMeanPtr, pStdPtr, pProcPtr, nWidth, nHeight, rcAll);
 
 	double dMeanProc = cta.WhatTimeIsIt_Double();
@@ -7214,12 +7192,9 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 
 	CRect rcTemp;
 	rcTemp = rcAll;
-	// 23.02.24 Ahn Modify Start
-	//int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP];
-	//int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP]; // 22.05.30 Ahn Add
+
 	int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
 	int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM];
-	// 23.02.24 Ahn Modify End
 
 	int  bLocalRet = 0;
 
@@ -7262,51 +7237,33 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	roiInfo.SetRoiPtr(pThresPtr);
 	roiInfo.SetProcBit(CImageProcess::en_FoilExp_Bit);
 
-
-	// 23.02.24 Ahn Modify Start
-	//int nDrossThLower = m_pRecipeInfo->nDrossThresLower[CAM_POS_TOP];
-	//int nFoilExpThLower = m_pRecipeInfo->nFoilExpThresLower[CAM_POS_TOP];
-	//int nStartX = m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-	//int nEndX = m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_TOP];
 	int nDrossThLower = m_pRecipeInfo->nDrossThresLower[CAM_POS_BOTTOM];
 	int nFoilExpThLower = m_pRecipeInfo->nFoilExpThresLower[CAM_POS_BOTTOM];
 	int nStartX = m_pRecipeInfo->nFoilExpInspWidth[CAM_POS_BOTTOM];
 	int nEndX = m_pRecipeInfo->nFoilOutInspWidth[CAM_POS_BOTTOM];
-	// 23.02.24 Ahn Modify End
 
 	pPreFltPtr = pProcPtr;
 
-	// 21.10.22 Ahn Add End
-
-	// 23.02.24 Ahn Modify Start
-	//BYTE btThreshold = (BYTE)m_pRecipeInfo->nFoilExpThresOrigin[CAM_POS_TOP];
-	//CImageProcess::DiffProcImage(pPreFltPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, m_pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, m_pRecipeInfo->bDarkEmpMode);
 	BYTE btThreshold = (BYTE)m_pRecipeInfo->nFoilExpThresOrigin[CAM_POS_BOTTOM];
 	CImageProcess::DiffProcImage(pPreFltPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, m_pRecipeInfo->dMagnification[CAM_POS_BOTTOM], btThreshold, m_pRecipeInfo->bDarkEmpMode);
-	// 23.02.24 Ahn Modify End
 
 	m_pImageDispDlg->SetBoundary(&vecRndInfo, NULL);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	// Inspect
-	{
-		roiInfo.SetRect(rcAll);
-		CImageProcess::Threshold_RoundMask_Negative(pDiffPtr, &roiInfo, &vecRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, nMaskRight, FALSE);
-	}
-	// 22.01.19 Ahn Add End
+	roiInfo.SetRect(rcAll);
+	CImageProcess::Threshold_RoundMask_Negative(pDiffPtr, &roiInfo, &vecRndInfo, nWidth, nHeight, nStartX, nEndX, nFoilExpThLower, nMaskRight, FALSE);
+
 	CImageProcess::_VEC_BLOCK vecBlockFoilExp;
 	vecBlockFoilExp.clear();
 
 
-	if (m_pRecipeInfo->bDisableProcDiff == FALSE) {
+	if (m_pRecipeInfo->bDisableProcDiff == FALSE) 
+	{
 		CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiInfo.GetFifoPtr());
 	}
 
-	// 23.02.24 Ahn Modify Start
-	//CImageProcess::LoopLabeling(&roiInfo, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 	CImageProcess::LoopLabeling(&roiInfo, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
-	// 23.02.24 Ahn Modify End
-	//	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilOutMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 
 	m_pImageDispDlg->SetBoundary(&vecRndInfo, NULL);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
@@ -7326,39 +7283,23 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	pVecBlockPtr = &vecBlockFoilExp;
 	//}
 	int nDefSize = (int)pVecBlockPtr->size();
-	for (int i = 0; i < nDefSize; i++) {
+	for (int i = 0; i < nDefSize; i++) 
+	{
 		pData = &(*pVecBlockPtr)[i];
 
-		//CImageProcess::CheckDistanceToEdgeLine(pData, &vecRndInfo, m_pRecipeInfo->dIgnoreDistance, AprData.m_System.m_dResolX[CAM_POS_BOTTOM]);
-
-		//if (pData->bDeleteFlag == TRUE) continue;
-		//if (AprData.m_System.m_nMachineMode == ANODE_MODE) 
-		{
-			CImageProcess::CalcSizeToEdgeLine(pData, &vecRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
-			CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
-		}
+		CImageProcess::CalcSizeToEdgeLine(pData, &vecRndInfo, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], CAM_POS_BOTTOM);
+		CImageProcess::CalcDefectMaxSize(pThresPtr, nWidth, nHeight, pData->nType, pData, AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 	}
 
-	// 23.02.24 Ahn Modify Start
-//if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_TOP] == TRUE) {
-//	CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_TOP);
-//	//		CImageProcess::BlockLink(&vecBlockDross, m_pRecipeInfo, TYPE_FOILEXP_OUT, CAM_POS_TOP);
-//}
 	if (m_pRecipeInfo->bEnableDefectLink[CAM_POS_BOTTOM] == TRUE) {
 		CImageProcess::BlockLink(&vecBlockFoilExp, m_pRecipeInfo, TYPE_FOILEXP, CAM_POS_BOTTOM);
 	}
-	// 23.02.24 Ahn Modify End
 
 	double dCalcSize = cta.WhatTimeIsIt_Double();
 	CString strCalcSize;
 	strCalcSize.Format(_T("CalcSize[%.2lf]"), dCalcSize);
 
-	// 23.02.24 Ahn Modify Start
-	//AddDefectInfo(&vecBlockFoilExp, NULL, CAM_POS_TOP);
 	AddDefectInfo(&vecBlockFoilExp, NULL, CAM_POS_BOTTOM);
-	// 23.02.24 Ahn Modify End
-
-	//SaveResultFile(m_pVecBlockAll);
 
 	UpdateGrid();
 
@@ -7374,21 +7315,13 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	// 
 	return nRet;
 }
-// 23.02.15 Ahn Add End
 
 void CImageProcSimDlg::OnBnClickedBtnResetCount()
 {
-	CSigProc* pSigProc = theApp.m_pSigProc;
-
 	AprData.LotEndProcess();
-
-// 	theApp.m_pImgProcCtrl->TabCountReset();
 
 	AprData.m_NowLotData.ClearAllCount();
 	AprData.FileCtrl_LotInfo(CGlobalData::en_mode_LotEnd);
-
-// 	CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)pView->GetDocument;
-// 	pDoc->SetReqCounterReset(TRUE);
 
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	pFrame->ResetAndRefreshAll();

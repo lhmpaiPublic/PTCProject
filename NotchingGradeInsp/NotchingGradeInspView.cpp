@@ -408,31 +408,27 @@ int CNotchingGradeInspView::OnRefresh()
 
 void CNotchingGradeInspView::SigInitialize()
 {
-	CSigProc *pSigProc = theApp.m_pSigProc ;
-
-	pSigProc->SigOutEncoderZeroSet(FALSE);
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->SigOutLotEndAck(FALSE);
-	pSigProc->SigOutLotStartAck(FALSE);
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->WriteAlarmCode(0x0000);
+	theApp.m_pSigProc->SigOutEncoderZeroSet(FALSE);
+	theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+	theApp.m_pSigProc->SigOutLotEndAck(FALSE);
+	theApp.m_pSigProc->SigOutLotStartAck(FALSE);
+	theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+	theApp.m_pSigProc->WriteAlarmCode(0x0000);
 }
 
 void CNotchingGradeInspView::ResetSignal()
 {
-	CSigProc* pSigProc = theApp.m_pSigProc;
-
 	KillSignalCheckTimer();
 	KillAlivePulseTimer();
 	KillLongTermTimer();
 
-	pSigProc->SigOutReady(FALSE);
-	pSigProc->SigOutEncoderZeroSet(FALSE);
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->SigOutLotEndAck(FALSE);
-	pSigProc->SigOutLotStartAck(FALSE);
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->SigOutAlivePulse(FALSE);
+	theApp.m_pSigProc->SigOutReady(FALSE);
+	theApp.m_pSigProc->SigOutEncoderZeroSet(FALSE);
+	theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+	theApp.m_pSigProc->SigOutLotEndAck(FALSE);
+	theApp.m_pSigProc->SigOutLotStartAck(FALSE);
+	theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+	theApp.m_pSigProc->SigOutAlivePulse(FALSE);
 }
 
 
@@ -442,8 +438,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 	if (nIDEvent == m_TID_IO_Check)
 	{
-		CSigProc* pSigProc = theApp.m_pSigProc;
-
 		//////////////////////////////////////////////////////////////////////////
 		//  Lot Start, Lot End, Tab Count Reset 감시 ]
 		CheckLotEndProcess2();
@@ -496,11 +490,11 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 		case	en_Initialize:
 
-			pSigProc->SigOutEncoderZeroSet(FALSE);
-			pSigProc->SigOutLotEndAck(FALSE);
-			pSigProc->SigOutLotStartAck(FALSE);
-			pSigProc->SigOutRecipeChangeAck(FALSE);
-			pSigProc->WriteAlarmCode(0x0000);
+			theApp.m_pSigProc->SigOutEncoderZeroSet(FALSE);
+			theApp.m_pSigProc->SigOutLotEndAck(FALSE);
+			theApp.m_pSigProc->SigOutLotStartAck(FALSE);
+			theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+			theApp.m_pSigProc->WriteAlarmCode(0x0000);
 			m_nStatus = en_InspStop;
 			AprData.m_NowLotData.m_bProcError = TRUE;
 			AprData.m_NowLotData.m_ReadCount = 6;
@@ -516,7 +510,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			if (IsInspReady() == TRUE )
 			{
 				m_nStatus = en_WaitReady;
-				pSigProc->SigOutReady(TRUE);
+				theApp.m_pSigProc->SigOutReady(TRUE);
 			}
 			else
 			{
@@ -563,7 +557,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				}
 			}
 
-			if (pSigProc->SigInReady() == TRUE)
+			if (theApp.m_pSigProc->SigInReady() == TRUE)
 			{
 				m_nStatus = en_Ready;
 				if (m_pDeleteThread != nullptr)
@@ -583,7 +577,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			{
 				m_nStatus = en_PrepareRun;
 			}
-			else if (pSigProc->SigInRun() == TRUE)
+			else if (theApp.m_pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
 			}
@@ -627,7 +621,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				CString strOldRecipeName;
 				strOldLotID.Format(_T("%s"), AprData.m_SeqDataIN.strCell_ID);
 				strOldRecipeName.Format(_T("%s"), AprData.m_SeqDataIN.strRecipeName);
-				pSigProc->ReadBlockAllData(&AprData.m_SeqDataIN);
+				theApp.m_pSigProc->ReadBlockAllData(&AprData.m_SeqDataIN);
 				CString strNewLotID;
 				strNewLotID = AprData.m_SeqDataIN.strCell_ID;
 				strNewLotID.TrimRight();
@@ -684,7 +678,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == FALSE)
 			{
-				if (pSigProc->SigInRun() == FALSE)
+				if (theApp.m_pSigProc->SigInRun() == FALSE)
 				{
 					// POC에서 Run 신호가 OFF된 경우.
 					// 검사 정지 처리
@@ -775,7 +769,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 					short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
 					int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
-					if (pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
+					if (theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
 					{
 						AprData.SaveDebugLog(_T("[DATA SEND] Error")); //pyjtest
 					}
@@ -787,7 +781,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					{
 						short* pData = (short*)(&AprData.m_NowLotData.m_ReadDataSms);
 						int nSize = sizeof(_SEQ_In_DATA_SMS) / sizeof(WORD);
-						if (pSigProc->ReadPLC_Block_device(0, pData, nSize) != 0)
+						if (theApp.m_pSigProc->ReadPLC_Block_device(0, pData, nSize) != 0)
 						{
 							AprData.SaveDebugLog(_T("[DATA Read] Error"));
 						}
@@ -802,7 +796,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					{
 						short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
 						int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
-						if (pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
+						if (theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
 						{
 							AprData.SaveDebugLog(_T("[DATA SEND] Error")); //pyjtest
 						}
@@ -813,7 +807,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				{
 					int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataOut);
 					int nSize = sizeof(_SEQ_OUT_DATA) / sizeof(int);
-					pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+					theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 				}
 
 			}
@@ -866,18 +860,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		AprData.SpcPluusStatus("1");
 	}
 #endif //SPCPLUS_CREATE
-
-	//////////////////////////////////////////////////////////////////////////
-	// [ Alive ]
-//	if (nIDEvent == m_TID_Alive_Pulse)
-//	{
-//		KillAlivePulseTimer();
-//		CSigProc* pSigProc = theApp.m_pSigProc;
-//		pSigProc->SigOutAlivePulse(TRUE);
-//		SetAlivePulseTimer();
-//
-//	}
-
 
 	if (m_TID_Long_Term == nIDEvent)
 	{
@@ -1124,14 +1106,13 @@ BOOL CNotchingGradeInspView::SetInspReady(BOOL bStatus)
 {
 	m_bReady = bStatus;
 
-	CSigProc *pSigProc = theApp.m_pSigProc ;
-	pSigProc->WriteBlockAllData(bStatus);	
+	theApp.m_pSigProc->WriteBlockAllData(bStatus);
 
 	m_pDefMapDlg->RequestCloseImgDispDlg();
 
 	m_pDefMapDlg->EnableWindow(!bStatus);
 
-	pSigProc->SigOutReady(bStatus);
+	theApp.m_pSigProc->SigOutReady(bStatus);
 
 	return m_bReady;
 }
@@ -1218,11 +1199,10 @@ void CNotchingGradeInspView::OnDebugControl()
 int CNotchingGradeInspView::CheckLotEndProcess()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	if ((pSigProc->SigInLotEnd() == TRUE) && (pSigProc->SigOutLotEndAck(-1) == FALSE))
+	if ((theApp.m_pSigProc->SigInLotEnd() == TRUE) && (theApp.m_pSigProc->SigOutLotEndAck(-1) == FALSE))
 	{
-		pSigProc->SigOutLotEndAck(TRUE);
+		theApp.m_pSigProc->SigOutLotEndAck(TRUE);
 
 		CameraGrabStop();
 
@@ -1238,15 +1218,15 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 
 			int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd); 
 			int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
-			pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+			theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 		}
 
 		Sleep(100); 
 
-		if (pSigProc->SigInTabZeroReset() == TRUE)
+		if (theApp.m_pSigProc->SigInTabZeroReset() == TRUE)
 		{
 			AprData.SaveLotLog(_T("Tab Zero Reset 신호 ON"));
-			pSigProc->SigOutTabZeroReset(TRUE);
+			theApp.m_pSigProc->SigOutTabZeroReset(TRUE);
 
 			theApp.m_pImgProcCtrl->TabCountReset();
 			AprData.SaveLotLog(_T("Tab No And Queue Reset"));
@@ -1256,12 +1236,12 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 
 			CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 			pDoc->SetReqCounterReset(TRUE);
-			pSigProc->SigOutEncoderZeroSet(FALSE);
+			theApp.m_pSigProc->SigOutEncoderZeroSet(FALSE);
 		}
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		pFrame->ResetAndRefreshAll();
 
-		pSigProc->SigOutLotEndAck(FALSE);
+		theApp.m_pSigProc->SigOutLotEndAck(FALSE);
 
 	}
 	return nRet;
@@ -1270,9 +1250,8 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInLotEnd() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInLotEnd() == 1) ? TRUE : FALSE;
 
 	if ( (bSigIn == TRUE) && (m_bLotEndFlag == FALSE) )
 	{
@@ -1280,7 +1259,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 ON"));
 
-		pSigProc->SigOutLotEndAck(TRUE);
+		theApp.m_pSigProc->SigOutLotEndAck(TRUE);
 //		CameraGrabStop();
 		AprData.LotEndProcess();
 
@@ -1291,7 +1270,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 
 		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd); // 22.07.13 Ahn Modify m_SeqDataLot -> LotEnd
 		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
-		pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+		theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		pFrame->ResetAndRefreshAll();
@@ -1301,7 +1280,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		m_bLotEndFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 OFF"));
 
-		pSigProc->SigOutLotEndAck(FALSE);
+		theApp.m_pSigProc->SigOutLotEndAck(FALSE);
 	}
 
 
@@ -1313,16 +1292,15 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 int CNotchingGradeInspView::CheckTabZeroReset()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInTabZeroReset() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInTabZeroReset() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bTabCountResetFlag == FALSE) )
 	{
 		m_bTabCountResetFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckTabZeroReset ON"));
 
 		AprData.SaveLotLog(_T("Tab Zero Reset 신호 ON"));
-		pSigProc->SigOutTabZeroReset(TRUE);
+		theApp.m_pSigProc->SigOutTabZeroReset(TRUE);
 
 		theApp.m_pImgProcCtrl->TabCountReset();
 		AprData.SaveLotLog(_T("!! Tab No And Queue Reset !!"));
@@ -1347,7 +1325,7 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 		m_bTabCountResetFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckTabZeroReset OFF"));
 
-		pSigProc->SigOutTabZeroReset(FALSE);
+		theApp.m_pSigProc->SigOutTabZeroReset(FALSE);
 
 	}
 
@@ -1358,9 +1336,8 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 int CNotchingGradeInspView::CheckLotStartProcess()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bLotStartSigIn = (pSigProc->SigInLotStart()==1) ? TRUE : FALSE;
+	BOOL bLotStartSigIn = (theApp.m_pSigProc->SigInLotStart()==1) ? TRUE : FALSE;
 	if ((bLotStartSigIn == TRUE) && (m_bLotStartFlag == FALSE))
 	{
 		m_bLotStartFlag = TRUE;
@@ -1377,7 +1354,7 @@ int CNotchingGradeInspView::CheckLotStartProcess()
 		m_bLotStartFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckLotStartProcess OFF"));
 
-		pSigProc->SigOutLotStartAck(FALSE);
+		theApp.m_pSigProc->SigOutLotStartAck(FALSE);
 	}
 
 	return nRet;
@@ -1387,15 +1364,14 @@ int CNotchingGradeInspView::CheckLotStartProcess()
 int CNotchingGradeInspView::CheckAlarmReset()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInAlarmReset() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInAlarmReset() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bAlarmResetFlag == FALSE))
 	{
 		m_bAlarmResetFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckAlarmReset ON"));
 
-		pSigProc->SigOutAlarmResetAck(TRUE);
+		theApp.m_pSigProc->SigOutAlarmResetAck(TRUE);
 
 	}
 	if ((bSigIn == FALSE) && (m_bAlarmResetFlag == TRUE))
@@ -1403,7 +1379,7 @@ int CNotchingGradeInspView::CheckAlarmReset()
 		m_bAlarmResetFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckAlarmReset OFF"));
 
-		pSigProc->SigOutAlarmResetAck(FALSE);
+		theApp.m_pSigProc->SigOutAlarmResetAck(FALSE);
 
 	}
 
@@ -1413,16 +1389,15 @@ int CNotchingGradeInspView::CheckAlarmReset()
 int CNotchingGradeInspView::CheckAlarmNgAck()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInAlarmNgAck() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInAlarmNgAck() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bAlarmNgAck == FALSE))
 	{
 		m_bAlarmNgAck = TRUE;
 		AprData.SaveDebugLog(_T("CheckAlarmNgAck ON"));
 
 		memset(&AprData.m_NowLotData.m_stAlarmCodeAndCellJudgeSms, 0x0000, sizeof(_ALARM_CODE_CELL_JUDGE_SMS));
-		pSigProc->WriteAlarmCodeAndJudge(0x0000, 0, 0, 0);
+		theApp.m_pSigProc->WriteAlarmCodeAndJudge(0x0000, 0, 0, 0);
 
 	}
 	if ((bSigIn == FALSE) && (m_bAlarmNgAck == TRUE))
@@ -1438,9 +1413,8 @@ int CNotchingGradeInspView::CheckAlarmNgAck()
 int CNotchingGradeInspView::CheckRecipeChange()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInRecipeChange() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInRecipeChange() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bRecipeChagneFlag == FALSE))
 	{
 		m_bRecipeChagneFlag = TRUE;
@@ -1452,7 +1426,7 @@ int CNotchingGradeInspView::CheckRecipeChange()
 		CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 		if (pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName) >= 0)
 		{
-			pSigProc->SigOutRecipeChangeAck(TRUE);
+			theApp.m_pSigProc->SigOutRecipeChangeAck(TRUE);
 		}
 
 	}
@@ -1461,7 +1435,7 @@ int CNotchingGradeInspView::CheckRecipeChange()
 		m_bRecipeChagneFlag = FALSE;
 		AprData.SaveDebugLog(_T("RecipeChange OFF"));
 
-		pSigProc->SigOutRecipeChangeAck(FALSE);
+		theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
 
 	}
 
@@ -1472,22 +1446,21 @@ int CNotchingGradeInspView::CheckRecipeChange()
 int CNotchingGradeInspView::CheckInkMarkActive()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInInkMarkActive() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInInkMarkActive() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bInkMarkActiveFlag == FALSE))
 	{
 		m_bInkMarkActiveFlag = TRUE;
 		AprData.SaveDebugLog(_T("Ink Marking Active ON"));
 
-		pSigProc->SetInkMarkAcktive(TRUE);
+		theApp.m_pSigProc->SetInkMarkAcktive(TRUE);
 	}
 	if ((bSigIn == FALSE) && (m_bInkMarkActiveFlag == TRUE))
 	{
 		m_bInkMarkActiveFlag = FALSE;
 		AprData.SaveDebugLog(_T("Ink Marking Active OFF"));
 
-		pSigProc->SetInkMarkAcktive(FALSE);
+		theApp.m_pSigProc->SetInkMarkAcktive(FALSE);
 	}
 
 	return nRet;
@@ -1497,22 +1470,21 @@ int CNotchingGradeInspView::CheckInkMarkActive()
 int CNotchingGradeInspView::CheckConnectZone()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInConnectZone() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInConnectZone() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bConnectZoneFlag == FALSE))
 	{
 		m_bConnectZoneFlag = TRUE;
 		AprData.SaveDebugLog(_T("Connect Zone ON"));
 
-		pSigProc->SetConnectZone(TRUE);
+		theApp.m_pSigProc->SetConnectZone(TRUE);
 	}
 	if ((bSigIn == FALSE) && (m_bConnectZoneFlag == TRUE))
 	{
 		m_bConnectZoneFlag = FALSE;
 		AprData.SaveDebugLog(_T("Connect Zone OFF"));
 
-		pSigProc->SetConnectZone(FALSE);
+		theApp.m_pSigProc->SetConnectZone(FALSE);
 	}
 
 	return nRet;
@@ -1589,7 +1561,6 @@ void CNotchingGradeInspView::StartThreadAliveSiginal()
 UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
 {
 	CNotchingGradeInspView* pThis = (CNotchingGradeInspView*)lpParm;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
 	UINT ret = 0;
 	while (true)
@@ -1602,8 +1573,7 @@ UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
-			//pSigProc->SigOutAlivePulse(TRUE);
-			pSigProc->SigOutAlivePulseReady(TRUE, pThis->IsInspReady());
+			theApp.m_pSigProc->SigOutAlivePulseReady(TRUE, pThis->IsInspReady());
 		}
 		else
 		{

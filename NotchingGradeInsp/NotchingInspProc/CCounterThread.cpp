@@ -720,8 +720,7 @@ BOOL CCounterThread::readTriggerBCDID()
 	BOOL b = FALSE;
 #ifdef USE_PLCCONNECTZONE
 
-	CSigProc* pSigProc = theApp.m_pSigProc;
-	if (pSigProc != NULL && (pSigProc->GetConnectZone() == FALSE))
+	if (theApp.m_pSigProc != NULL && (theApp.m_pSigProc->GetConnectZone() == FALSE))
 	{
 
 #endif //USE_PLCCONNECTZONE

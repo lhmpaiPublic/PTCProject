@@ -608,9 +608,9 @@ void CModeDlg::Refresh()
 	}
 	if (theApp.m_pImgProcCtrl != NULL) {
 		// 22.07.25 Ahn Modify Start
-		if (m_pView->IsInspReady() == TRUE) {
-			CSigProc* pSigProc = theApp.m_pSigProc;
-			bRunFlag = pSigProc->SigInRun();
+		if (m_pView->IsInspReady() == TRUE)
+		{
+			bRunFlag = theApp.m_pSigProc->SigInRun();
 		}
 		// 22.07.25 Ahn Modify End
 	}

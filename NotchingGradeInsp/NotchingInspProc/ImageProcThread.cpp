@@ -1347,8 +1347,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									//============================================================================================================
 #endif //SPCPLUS_CREATE
 
-									bClearFlag = TRUE;; // 22.03.03 Ahn Add 
-									CSigProc* pSigProc = theApp.m_pSigProc;
+									bClearFlag = TRUE;
 
 									if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 									{
@@ -1356,7 +1355,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 										int nJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
 										int nNgCode = 1; // 임시, 정의되지 않음
 
-										pSigProc->WriteAlarmCodeAndJudge(wAlarmCode, nId, nJudge, nNgCode);
+										theApp.m_pSigProc->WriteAlarmCodeAndJudge(wAlarmCode, nId, nJudge, nNgCode);
 
 										AprData.SaveDebugLog_Format(_T("Send PLC1 ERROR INFO : TabNo	%d	BCD ID	%d	Alarm Code	%d"),
 											pTopInfo->nTabNo + 1
@@ -1368,8 +1367,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									{
 										int nId = pTopInfo->m_nTabId_CntBoard;
 
-										pSigProc->SigOutAlarmExist(TRUE);
-										pSigProc->WriteAlarmCode(wAlarmCode);
+										theApp.m_pSigProc->SigOutAlarmExist(TRUE);
+										theApp.m_pSigProc->WriteAlarmCode(wAlarmCode);
 
 										AprData.SaveDebugLog_Format(_T("Send PLC2 ERROR INFO : TabNo	%d	BCD ID	%d	Alarm Code	%d"),
 											pTopInfo->nTabNo + 1
@@ -1403,8 +1402,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							GetMarkingFlag(AprData.m_pRecipeInfo, nTopJudge, nBtmJudge, pTopInfo->m_pTabRsltInfo->m_wNgReason, pBtmInfo->m_pTabRsltInfo->m_wNgReason, nMarkSel1, nMarkSel2);
 							// 22.07.19 Ahn Modify End
 
-							CSigProc* pSigProc = theApp.m_pSigProc;
-							bMarkingActive = pSigProc->GetInkMarkActive();
+							bMarkingActive = theApp.m_pSigProc->GetInkMarkActive();
 							
 							if ((AprData.m_System.m_bChkEnableMarker == FALSE) || (bMarkingActive == FALSE))
 							{
@@ -1474,7 +1472,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
 								int* pData = (int*)(&AprData.m_NowLotData.m_stCellJudge);
 								int nSize = sizeof(_CELL_JUDGE) / sizeof(int);
-								pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+								theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 
 
 							}
