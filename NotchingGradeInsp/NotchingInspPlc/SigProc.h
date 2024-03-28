@@ -1,16 +1,14 @@
 ﻿#pragma once
 
 #include "PioCtrl.h"
-#include "GlobalData.h" // 22.08.18 Ahn Add 
-// 22.07.25 Ahn Modify Start
+#include "GlobalData.h" 
 #define	MAX_ADR_BIT_IN	( 32 )
 #define	MAX_ADR_BIT_OUT	( 32 )
-// 22.07.25 Ahn Modify End
 
 
 class CSequenceData ;
 
-class CSigProc
+class CSigProc : public CPlcImp
 {
 public:
 	//////////////////////////////////////////////////////////////////////////
@@ -29,7 +27,7 @@ public:
 
 		enBitIn_Dummy9			= 0x00000101,	// B63C8	
 		enBitIn_InkMarkingActive= 0x00000102,	// B63C9
-		enBitIn_ConnectZone		= 0x00000104,	// B63CA  // 22.01.12 Ahn 연결구간 비검사구간. 
+		enBitIn_ConnectZone		= 0x00000104,	// B63CA 
 		enBitIn_Dummy12			= 0x00000108,	// B63CB
 		enBitIn_Dummy13			= 0x00000110,	// B63CC
 		enBitIn_Dummy14			= 0x00000120,	// B63CD
@@ -166,33 +164,8 @@ public:
 		en_Alarm_Spatter_Top		= 0x0200,
 		en_Alarm_Spatter_Btm		= 0x0400,
 	};
-	//Wxxx.0 연속 불량 알람
-	//Wxxx.1 심각 불량 알람
-	//Wxxx.2 구간 불량 알람
-	//Wxxx.3 Dross Top - 불량 알람
-	//Wxxx.4 Dross Bot - 불량 알람
-	//Wxxx.5 Foil exposure Top - 불량 알람
-	//Wxxx.6 Foil exposure Bot - 불량 알람
-	//Wxxx.7 Spatter Top - 불량 알람
-	//Wxxx.8 Spatter Bot - 불량 알람
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// 23.03.02 Ahn Add Start
 	//////////////////////////////////////////////////////////////////////////
 	// [ Siemens Address Start ]
 	enum {
@@ -329,19 +302,11 @@ public:
 
 	};
 	// Siemens Word Address End
-	// 23.03.02 Ahn Add End
 
 private:
-	//int m_sIOBitIN[MAX_ADR_BIT_IN];
-	//int m_sIOBitOUT[MAX_ADR_BIT_OUT];
 
-	//int m_nMaxBitIN ;
-	//int m_nMaxBitOUT ;
-
-	// 22.07.29 Ahn Add Start
 	BYTE	m_btSigBItIN[MAX_USE_PORT];
 	BYTE	m_btSigBItOut[MAX_USE_PORT];
-	// 22.07.29 Ahn Add End
 
 	short	m_sSmsSigBItIN[MAX_SMS_IO_IN];
 	short	m_sSmsSigBItOut[MAX_SMS_IO_OUT];
@@ -379,9 +344,7 @@ public:
 	int ReadPLC_device(int address, short* data);
 	int WritePLC_Block_device(int address, short* pData, int nNumOfData);
 	int ReadPLC_Block_device(int address, short* pData, int nNumOfData);
-	// 22.07.06 Ahn Add Start
 	int WritePLC_Block_device(int address, int* pData, int nNumOfData);
-	// 22.07.06 Ahn Add End
 	int ReadPLC_Block_deviceR(int address, short* pData, int nNumOfData);
 	int WaitSignal(int iIntegration, BOOL mode, int timeout = 1000, BOOL bCheckAutoSignal = FALSE, BOOL bErrorProcess = TRUE, BOOL	bExtSt = FALSE);
 
@@ -440,32 +403,24 @@ public :
 	int SigOutAlarmExist(int nMode);
 	int SigOutAlarmNgResetAck(int nMode);
 
-	BOOL SigOutDataReset(); //240221 kjk 
+	BOOL SigOutDataReset(); 
 
 	// Word
 	int ReadBlockAllData(CSequenceData *pSeqData);
 	int WriteBlockAllData(int nMode);
-	//int ReadBlockWriteData(_SEQ_OUT_DATA* pSeqOutData); // 23.03.03 Ahn Delete 
-//	int ReadBlockWriteDataAll(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
 
 	int ReadBlockAllData_Melsec(CSequenceData* pSeqData);
 	int WriteBlockAllData_Melsec(int nMode);
-	//int ReadBlockWriteData_Melsec(_SEQ_OUT_DATA* pSeqOutData); // 23.03.03 Ahn Delete 
 	int ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
 
 	int ReadBlockAllData_Siemens(CSequenceData* pSeqData);
 	int WriteBlockAllData_Siemens(int nMode);
-	//int ReadBlockWriteData_Siemens(_SEQ_OUT_DATA* pSeqOutData); // 23.03.03 Ahn Delete 
 	int ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAll);
-	// 23.03.03 Ahn Add End
 
-
-	// 22.05.26 Ahn Add Start
 	void EnableWorkSet(BOOL bMode);
-	// 22.05.26 Ahn Add Start
 
 protected:
-	CPioCtrl* m_pPioCtrl;			// 괿?굈맕뚥긆긳긙긃긏긣귉궻?귽깛?걁긓깛긹귺몧뭫궴궻괿?괻뾭걂(CAprPioCtrl *)x1
+	CPioCtrl* m_pPioCtrl;
 	BOOL	m_bDebugIO;
 };
 

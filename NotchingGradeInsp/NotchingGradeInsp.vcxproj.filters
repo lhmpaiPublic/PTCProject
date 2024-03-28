@@ -579,6 +579,9 @@
     <ClInclude Include="UI\SubDialogEx.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="NotchingInspPlc\PlcImp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -1038,6 +1041,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UI\SubDialogEx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspPlc\PlcImp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

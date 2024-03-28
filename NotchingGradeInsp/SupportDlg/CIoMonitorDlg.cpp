@@ -305,11 +305,11 @@ int CIoMonitorDlg::RefreshAll()
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
 	{
-		theApp.m_pSigProc->ReadBlockWriteDataAll_Melsec(&m_localSeqDataOut);
+		((CSigProc*)theApp.m_pSigProc)->ReadBlockWriteDataAll_Melsec(&m_localSeqDataOut);
 	}
 	else
 	{
-		theApp.m_pSigProc->ReadBlockWriteDataAll_Siemens(&m_localSeqDataOutSms);
+		((CSigProc*)theApp.m_pSigProc)->ReadBlockWriteDataAll_Siemens(&m_localSeqDataOutSms);
 	}
 
  	UpdateGridCtrl();
@@ -1508,11 +1508,11 @@ CString CIoMonitorDlg::GetInWordData(int nRow)
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		strRet.Format(_T("%d"), (int)theApp.m_pSigProc->GetMonitoringReadData_Siemens(nRow));
+		strRet.Format(_T("%d"), (int)((CSigProc*)theApp.m_pSigProc)->GetMonitoringReadData_Siemens(nRow));
 	}
 	else
 	{
-		strRet.Format(_T("%d"), (int)theApp.m_pSigProc->GetMonitoringReadData_Melsec(nRow * 2));
+		strRet.Format(_T("%d"), (int)((CSigProc*)theApp.m_pSigProc)->GetMonitoringReadData_Melsec(nRow * 2));
 	}
 
 	return strRet;
@@ -1523,11 +1523,11 @@ CString CIoMonitorDlg::GetOutWordData(int nRow)
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		strRet.Format(_T("%d"), (int)theApp.m_pSigProc->GetMonitoringWriteData_Siemens(nRow));
+		strRet.Format(_T("%d"), (int)((CSigProc*)theApp.m_pSigProc)->GetMonitoringWriteData_Siemens(nRow));
 	}
 	else
 	{
-		strRet.Format(_T("%d"), (int)theApp.m_pSigProc->GetMonitoringWriteData_Melsec(nRow * 2));
+		strRet.Format(_T("%d"), (int)((CSigProc*)theApp.m_pSigProc)->GetMonitoringWriteData_Melsec(nRow * 2));
 	}
 
 
@@ -1552,9 +1552,8 @@ void CIoMonitorDlg::OnBnClickedBtnDummyError()
 		strMessage.Format(_T("Dummy 구간 NG Alarm 발생. Dummy NG 발생"));
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_SectorNg, strMessage);
 
-		CSigProc* pSigProc = theApp.m_pSigProc;	
-		pSigProc->WriteAlarmCode(wAlarmCode);
-		pSigProc->SigOutAlarmExist(TRUE);
+		theApp.m_pSigProc->WriteAlarmCode(wAlarmCode);
+		theApp.m_pSigProc->SigOutAlarmExist(TRUE);
 	}
 }
 

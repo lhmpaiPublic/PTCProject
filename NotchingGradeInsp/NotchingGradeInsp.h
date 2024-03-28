@@ -58,7 +58,9 @@ public :
 	CImageProcessCtrl *m_pImgProcCtrl ;
 
 	CPioCtrl* m_pPioCtrl;
-	CSigProc* m_pSigProc; 
+
+	CPlcImp* m_pSigProc; 
+
 	CStdIoCtrl* m_pIoCtrl;
 	CImageProcSimDlg * m_pImageSimDlg ;
 	CLightControl* m_pLightCtrl;

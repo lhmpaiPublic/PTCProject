@@ -17,11 +17,6 @@ CSigProc::CSigProc()
 		m_pPioCtrl = theApp.m_pPioCtrl;
 	}
 
-	//m_nMaxBitIN = 0;
-	//m_nMaxBitOUT = 0;
-	//memset(m_sIOBitIN, 0x00, sizeof(m_sIOBitIN));
-	//memset(m_sIOBitOUT, 0x00, sizeof(m_sIOBitOUT) );
-
 	m_bSmsAlive = FALSE;
 
 	//컨넥트 존 설정 변수 초기화
@@ -39,9 +34,7 @@ int CSigProc::GetPortBit(int nIntegration, int* piPort, BYTE* pByte)
 	ASSERT(pByte != NULL);
 
 	int	nRet = 0;
-	// 23.03.02 Ahn Modify Start
-	//*piPort = (int)((nIntegration >> 8) & 0xff);
-	//*pByte = (BYTE)(nIntegration & 0xff);
+
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
 	{
 		*piPort = (int)((nIntegration >> 8) & 0xff);
@@ -52,7 +45,6 @@ int CSigProc::GetPortBit(int nIntegration, int* piPort, BYTE* pByte)
 		*piPort = nIntegration;
 		*pByte = (BYTE)(0x01);
 	}
-	// 23.03.02 Ahn Modify End
 
 	return (nRet);
 }
@@ -79,17 +71,11 @@ int CSigProc::SignalPortCheck(int iInput, BOOL bExtSt /*= FALSE*/, BOOL bLocal /
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-//		AprData.SaveDebugLog(_T("SignalPortCheck start")); //pyjtest
 
 		short data = 0;
 		int nSize = sizeof(short) / sizeof(short);
 		if (ReadPLC_Block_device(iPort + AprData.m_System.m_nBitIn, &data, nSize) != -1)
 		{
-// 			CString strMsg;
-// 			strMsg.Format(_T("SignalPortCheck Addr:%d, nSize:%d, data:%d"), iPort + AprData.m_System.m_nBitIn, nSize, data  );
-// 			AprData.SaveDebugLog(strMsg); //pyjtest
-
-
 			if(data == 1)
 			{
 				return (1);
@@ -129,18 +115,6 @@ int CSigProc::SignalBitOut(int nIntegration, int nMode, BOOL bLocal /*= FALSE*/)
 		//에러로그
 		return (-1);
 	}
-
-
-// 	int	nRet = pPioCtrl->Out_Port_Bit(iPort, cByte, nMode);
-// 	if (nRet < 0) {
-// 		//에러로그
-// 		return (-1);
-// 	}
-
-
-// 	CString strMsg;
-// 	strMsg.Format(_T("%d, %d, %d"), nIntegration, iPort, cByte);
-// 	AprData.SaveDebugLog(strMsg); //pyjtest
 
 	int	nRet = 0;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
@@ -226,25 +200,11 @@ int CSigProc::ReadPLC_device(int address, short* data)
 	return (0);
 }
 
-// 22.03.23 Ahn Add Start
 int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 {
 	ASSERT(pSigBitIn);
 	int nRet = 0;
 	if (m_pPioCtrl == NULL) return -1;
-
-// 	m_pPioCtrl->ReadAllPort_BitIn( m_btSigBItIN, MAX_USE_PORT );
-// 	int nBitPos = 0 ;
-// 	for (int port = 0; port < MAX_USE_PORT; port++) {
-// 		for (int bit = 0; bit < MAX_PORT_BIT; bit++) {
-// 			if (m_btSigBItIN[port] & (0x01 << bit)) {
-// 				nBitPos = (port * MAX_PORT_BIT) + bit;
-// 				pSigBitIn[nBitPos] = TRUE;
-// 			}
-// 		}
-// 	}
-
-
 
 	//로그출력 값
 	CString bitVal = "";
@@ -254,9 +214,6 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 		m_pPioCtrl->ReadAllPort_BitIn( (BYTE*)m_sSmsSigBItIN, MAX_SMS_IO_IN);
 		for (int i = 0; i < MAX_SMS_IO_IN; i++)
 		{
-// 			CString strMsg;
-// 			strMsg.Format(_T("m_sSmsSigBItIN[%d] = %d"), i, m_sSmsSigBItIN[i]);
-// 			AprData.SaveDebugLog(strMsg); //pyjtest
 
 			if (m_sSmsSigBItIN[i] == 0x01)
 			{
@@ -297,28 +254,11 @@ int CSigProc::ReadAllPort_BitOut( BOOL* pSigBitOut )
 	int nRet = 0;
 	if (m_pPioCtrl == NULL) return -1;
 
-// 	m_pPioCtrl->ReadAllPort_BitOut( m_btSigBItOut, MAX_USE_PORT);
-// 	int nBitPos = 0;
-// 	for (int port = 0; port < MAX_USE_PORT; port++) {
-// 		for (int bit = 0; bit < MAX_PORT_BIT; bit++) {
-// 			if (m_btSigBItOut[port] & (0x01 << bit)) {
-// 				nBitPos = (port * MAX_PORT_BIT) + bit;
-// 				pSigBitOut[nBitPos] = TRUE;
-// 			}
-// 		}
-// 	}
-
-
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-//		memset(m_sSmsSigBItOut, 0x00, sizeof(short) * MAX_SMS_IO_OUT);
 		m_pPioCtrl->ReadAllPort_BitOut((BYTE*)m_sSmsSigBItOut, MAX_SMS_IO_OUT);
 		for (int i = 0; i < MAX_SMS_IO_OUT; i++)
 		{
-// 			CString strMsg;
-// 			strMsg.Format(_T("m_sSmsSigBItOut[%d] = %d"), i, m_sSmsSigBItOut[i]);
-// 			AprData.SaveDebugLog(strMsg); //pyjtest
-
 			if (m_sSmsSigBItOut[i] == 0x01)
 			{
 				pSigBitOut[i] = TRUE;
@@ -345,9 +285,7 @@ int CSigProc::ReadAllPort_BitOut( BOOL* pSigBitOut )
 
 	return nRet;
 }
-// 22.03.23 Ahn Add End
 
-// 22.03.24 Ahn Add Start
 int CSigProc::SetAlarmCode(WORD wAlarmCode)
 {
 	m_pPioCtrl->SetAlarmCode(wAlarmCode);
@@ -359,11 +297,8 @@ WORD CSigProc::GetAlarmCode()
 	return m_pPioCtrl->GetAlarmCode();
 }
 
-// 22.03.28 Ahn Add Start
 int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 {
-//	int address = GetWordAddress(enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
-
 	int nNumOfData = 1;
 
 	if (m_pPioCtrl == NULL) {
@@ -412,11 +347,9 @@ int CSigProc::WriteAlarmCode(WORD nAlarmCode)
 }
 
 
-
+// NG Alarm과 Cell Trigger ID, Judge, NG Code를 블럭으로 한번에 보냄
 int CSigProc::WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode)
-{	// NG Alarm과 Cell Trigger ID, Judge, NG Code를 블럭으로 한번에 보냄
-
-//	int address = GetWordAddress(enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
+{	
 
 	if (m_pPioCtrl == NULL) {
 		//에러로그
@@ -454,13 +387,7 @@ int CSigProc::WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int n
 	}
 	else
 	{
-//		int address = GetWordAddress(enWordWrite_AlarmCode_Buffer1, MODE_WRITE);
-//		int nNumOfData = 1;
-//
-//		if (m_pPioCtrl->WritePLC_Block_device(address, (short*)&nAlarmCode, nNumOfData) < 0) {
-//			//에러로그
-//			return (-1);
-//		}
+
 	}
 	return 0;
 }
@@ -483,7 +410,6 @@ int CSigProc::WritePLC_Block_device(int address, short* pData, int nNumOfData)
 	return (0);
 }
 
-// 22.07.06 Ahn Add Start
 int CSigProc::WritePLC_Block_device(int address, int* pData, int nNumOfData)
 {
 	if (m_pPioCtrl == NULL) {
@@ -496,8 +422,6 @@ int CSigProc::WritePLC_Block_device(int address, int* pData, int nNumOfData)
 	}
 	return (0);
 }
-// 22.07.06 Ahn Add End
-
 
 int CSigProc::ReadPLC_Block_device(int address, short* pData, int nNumOfData)
 {
@@ -945,8 +869,6 @@ int CSigProc::SigInConnectZone()
 // [ PLC SIGNAL OUTPUT ]
 int CSigProc::SigOutAlivePulse(int nInMode)
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_Alive;
 
 	int nMode = 0;
 	int nAddress;
@@ -967,7 +889,6 @@ int CSigProc::SigOutAlivePulse(int nInMode)
 	else {
 		nAddress = enBitOut_Alive;
 
-		// 23.02.02 Ahn Add End
 		int nLocalRet = SignalBitOut(nAddress, -1);
 		if (nInMode == FALSE) {
 			nMode = FALSE;
@@ -984,18 +905,11 @@ int CSigProc::SigOutAlivePulse(int nInMode)
 
 	int nRet = SignalBitOut(nAddress, nMode);
 
-//	CString strMsg;
-//	strMsg.Format(_T("Alive Signal %s"), (nMode==TRUE) ? _T("ON") : _T("OFF") );
-//	AprData.SaveDebugLog(strMsg); //pyjtest
-
-
 	return nRet;
 }
 
 int CSigProc::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 {
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_Alive;
 	int nRet = 0;
 	int nMode = 0;
 	int nAddress;
@@ -1026,7 +940,6 @@ int CSigProc::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 	{
 		nAddress = enBitOut_Alive;
 
-		// 23.02.02 Ahn Add End
 		int nLocalRet = SignalBitOut(nAddress, -1);
 		if (nInMode == FALSE)
 		{
@@ -1047,12 +960,6 @@ int CSigProc::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 		nRet = SignalBitOut(nAddress, nMode);
 	}
 
-
-	//	CString strMsg;
-	//	strMsg.Format(_T("Alive Signal %s"), (nMode==TRUE) ? _T("ON") : _T("OFF") );
-	//	AprData.SaveDebugLog(strMsg); //pyjtest
-
-
 	return nRet;
 }
 
@@ -1060,8 +967,7 @@ int CSigProc::SigOutReady(int nMode)
 {
 
 	int nRet = 0;
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_Ready;
+
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		nAddress = enSmsBitOut_Ready;
@@ -1069,7 +975,7 @@ int CSigProc::SigOutReady(int nMode)
 	else {
 		nAddress = enBitOut_Ready;
 	}
-	// 23.02.02 Ahn Add End
+
 	nRet = SignalBitOut(nAddress, nMode);
 
 	return nRet;
@@ -1078,8 +984,6 @@ int CSigProc::SigOutEncoderZeroSet(int nMode)
 {
 	int nRet = 0;
 
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_EncoderSet ;
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		nAddress = enSmsBitOut_EncoderSet;
@@ -1087,7 +991,7 @@ int CSigProc::SigOutEncoderZeroSet(int nMode)
 	else {
 		nAddress = enBitOut_EncoderSet;
 	}
-	// 23.02.02 Ahn Add End
+
 	nRet = SignalBitOut(nAddress, nMode);
 
 	return nRet;
@@ -1097,8 +1001,7 @@ int CSigProc::SigOutRecipeChangeAck(int nMode)
 	AprData.SaveDebugLog_Format(_T("PLC Recipe Change Ack Mode : %d"), nMode); 
 
 	int nRet = 0;
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_RecipeChangeAck;
+
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		nAddress = enSmsBitOut_RecipeChangeAck;
@@ -1106,7 +1009,7 @@ int CSigProc::SigOutRecipeChangeAck(int nMode)
 	else {
 		nAddress = enBitOut_RecipeChangeAck;
 	}
-	// 23.02.02 Ahn Add End
+
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
 }
@@ -1115,8 +1018,7 @@ int CSigProc::SigOutLotStartAck(int nMode)
 	AprData.SaveDebugLog_Format(_T("PLC Lot Start Ack Mode : %d"), nMode);
 
 	int nRet = 0;
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_LotStartReqAck;
+
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		nAddress = enSmsBitOut_LotStartReqAck;
@@ -1124,7 +1026,7 @@ int CSigProc::SigOutLotStartAck(int nMode)
 	else {
 		nAddress = enBitOut_LotStartReqAck;
 	}
-	// 23.02.02 Ahn Add End
+
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
 }
@@ -1133,8 +1035,7 @@ int CSigProc::SigOutLotEndAck(int nMode)
 	AprData.SaveDebugLog_Format(_T("PLC Lot End Ack Mode : %d"), nMode);
 
 	int nRet = 0;
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_LotEndReqAck;
+
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		nAddress = enSmsBitOut_LotEndReqAck;
@@ -1142,18 +1043,17 @@ int CSigProc::SigOutLotEndAck(int nMode)
 	else {
 		nAddress = enBitOut_LotEndReqAck;
 	}
-	// 23.02.02 Ahn Add End
+
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
 }
-// 22.02.23 Ahn Add Start
+
 int CSigProc::SigOutTabZeroReset(int nMode)
 {
 	AprData.SaveDebugLog_Format(_T("PLC Tab Sero Reset Ack Mode : %d"), nMode);
 
 	int nRet = 0;
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_TabZeroReset;
+
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		// 240221 kjk. dataReset to PLC
@@ -1163,11 +1063,10 @@ int CSigProc::SigOutTabZeroReset(int nMode)
 	else {
 		nAddress = enBitOut_TabZeroReset;
 	}
-	// 23.02.02 Ahn Add End
+
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
 }
-// 22.02.23 Ahn Add End
 
 int CSigProc::SigOutAlarmResetAck(int nMode)
 {
@@ -1265,12 +1164,9 @@ BOOL CSigProc::SigOutDataReset()
 }
 
 
-	// 22.08.05 Ahn Add Start
 int CSigProc::SigOutDiskCapacityAlarm(int nMode)
 {
 	int nRet = 0;
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_DiskSpaceAlarm;
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		nAddress = enSmsBitOut_DiskSpaceAlarm;
@@ -1278,7 +1174,7 @@ int CSigProc::SigOutDiskCapacityAlarm(int nMode)
 	else {
 		nAddress = enBitOut_DiskSpaceAlarm;
 	}
-	// 23.02.02 Ahn Add End
+
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
 }
@@ -1286,8 +1182,7 @@ int CSigProc::SigOutDiskCapacityAlarm(int nMode)
 int CSigProc::SigOutDiskCapacityWarning(int nMode)
 {
 	int nRet = 0;
-	// 23.02.02 Ahn Add Start
-	//int nAddress = enBitOut_DiskSpaceWarning;
+
 	int nAddress;
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens) {
 		nAddress = enSmsBitOut_DiskSpaceWarning;
@@ -1295,12 +1190,10 @@ int CSigProc::SigOutDiskCapacityWarning(int nMode)
 	else {
 		nAddress = enBitOut_DiskSpaceWarning;
 	}
-	// 23.02.02 Ahn Add End
+
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
 }
-// 22.08.05 Ahn Add End
-
 
 
 int CSigProc::SigOutAlarmExist(int nMode)
@@ -1341,11 +1234,9 @@ int CSigProc::SigOutAlarmExist(int nMode)
 }
 
 
-
-// 22.08.04 Ahn Add Start
 int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 {
-// 22.08.04 Ahn Add End
+
 	ASSERT(pSeqData);
 	// RecipeInfo
 	WORD btData[enWordReadMaxSize];
@@ -1501,7 +1392,6 @@ int CSigProc::ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 
 
 	WORD btTemp;
-	// 23.03.03 Ahn Modify Start - Delete "- nAddress"
 	btTemp = btData[enWordWrite_DataReportV1_Ea];
 	pSeqOutData->dwDataReportV1 = (DWORD)btTemp;
 
@@ -1519,10 +1409,6 @@ int CSigProc::ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 
 	btTemp = btData[enWordWrite_Continue_Alarm_Cnt];
 	pSeqOutData->dwDataReportV6 = (DWORD)btTemp;
-
-
-
-
 
 	btTemp = btData[enWordWrite_FoilExpInTop_Alarm_Cnt];
 	pSeqOutData->dwFoilExpInTopCount = (DWORD)btTemp;
@@ -1578,21 +1464,16 @@ int CSigProc::ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 	return 0;
 
 }
-// 22.08.19 Ahn Add End
 
 
-// 22.12.12 Ahn Add Start - Judge Report
 int CSigProc::ReportJudge(int nID, int nJudge, int nCode)
 {
-	// 23.03.03 Ahn Modify Start
-	//int address = en_WordWrite_Cell_Trigger_ID;
 	int address = GetWordAddress(en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
-	// 23.03.03 Ahn Modify Start
-	//short* pData = new short[nNumOfData] ;
+
 	short pData[6];
 	int nNumOfData = 6;
 	memset(pData, 0x00, sizeof(short) * nNumOfData);
-	// 23.03.03 Ahn Modify Start
+
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
 		pData[1] = (short)nID;
 		pData[3] = (short)nJudge;
@@ -1604,8 +1485,6 @@ int CSigProc::ReportJudge(int nID, int nJudge, int nCode)
 		pData[1] = (short)nJudge;
 		pData[2] = (short)nCode;
 	}
-	// 23.03.03 Ahn Modify End
-
 
 	if (m_pPioCtrl == NULL) {
 		//에러로그
@@ -1617,9 +1496,7 @@ int CSigProc::ReportJudge(int nID, int nJudge, int nCode)
 	}
 	return (0);
 }
-// 22.12.12 Ahn Add End
 
-// 22.08.19 Ahn Add Start
 int CSigProc::ReadBlockAllData(CSequenceData* pSeqData)
 {
 	int nRet = 0; 
@@ -1642,21 +1519,6 @@ int CSigProc::WriteBlockAllData(int nMode)
 	}
 	return nRet;
 }
-
-//int CSigProc::ReadBlockWriteDataAll(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
-//{
-//	int nRet = 0;
-//	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec)
-//	{
-//		nRet = ReadBlockWriteDataAll_Melsec( pSeqOutDataAll);
-//	}
-//	else
-//	{
-//		nRet = ReadBlockWriteDataAll_Siemens(pSeqOutDataAll);
-//
-//	}
-//	return nRet;
-//}
 
 int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 {
@@ -1686,17 +1548,7 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	int nMax = enSmsWordRead_RecipeName_Len;
 	WORD* pwData;
 	pwData = &btData[enSmsWordRead_RecipeName];
-// 	for (i = 0; i < nMax; i += 2) {
-// 		btTemp = (BYTE)(*pwData & 0xff);
-// 		strBuffer += _T(" ");
-// 		strBuffer.SetAt(i, (char)btTemp);
-// 		if ((i + 1) < nMax) {
-// 			btTemp = (BYTE)((*pwData >> 8) & 0xff);
-// 			strBuffer += _T(" ");
-// 			strBuffer.SetAt((i + 1), (char)btTemp);
-// 		}
-// 		pwData++;
-// 	}
+
 
 	for (i = 0, Cnt = 0; i < nMax; i++, Cnt+=2 )
 	{
@@ -1723,19 +1575,6 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 
 	nMax = enSmsWordRead_CELL_ID_Len;
 	pwData = &btData[enSmsWordRead_CELL_ID];
-
-// 	for (i = 0; i < nMax; i += 2) {
-// 		btTemp = (BYTE)(*pwData & 0xff);
-// 		strBuffer += _T(" ");
-// 		strBuffer.SetAt(i, (char)btTemp);
-// 		if ((i + 1) < nMax)
-// 		{
-// 			btTemp = (BYTE)((*pwData >> 8) & 0xff);
-// 			strBuffer += _T(" ");
-// 			strBuffer.SetAt((i + 1), (char)btTemp);
-// 		}
-// 		pwData++;
-// 	}
 
 	for (i = 0, Cnt = 0; i < nMax; i++, Cnt += 2)
 	{
@@ -1944,10 +1783,7 @@ int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAl
 
 	return 0;
 }
-// 22.08.19 Ahn Add End
 
-
-// 23.03.03 Ahn Add Start
 int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 {
 	int nRetAdd = nAddress;
@@ -2174,4 +2010,3 @@ int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 
 	return nRetAdd;
 }
-// 23.03.03 Ahn Add End

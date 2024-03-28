@@ -435,6 +435,7 @@
     <ClInclude Include="NotchingInspLight\Light232.h" />
     <ClInclude Include="NotchingInspLight\LightSocket.h" />
     <ClInclude Include="NotchingInspLog\LogDisplayDlg.h" />
+    <ClInclude Include="NotchingInspPlc\PlcImp.h" />
     <ClInclude Include="NotchingInspProcSupport\CJudgeResultCtrl.h" />
     <ClInclude Include="NotchingInspProcSupport\CResultFileManager.h" />
     <ClInclude Include="NotchingInspProcSupport\CSectorNgJudge.h" />
@@ -596,6 +597,7 @@
     <ClCompile Include="NotchingInspLight\Light232.cpp" />
     <ClCompile Include="NotchingInspLight\LightSocket.cpp" />
     <ClCompile Include="NotchingInspLog\LogDisplayDlg.cpp" />
+    <ClCompile Include="NotchingInspPlc\PlcImp.cpp" />
     <ClCompile Include="NotchingInspProcSupport\CJudgeResultCtrl.cpp" />
     <ClCompile Include="NotchingInspProcSupport\CResultFileManager.cpp" />
     <ClCompile Include="NotchingInspProcSupport\CSectorNgJudge.cpp" />
