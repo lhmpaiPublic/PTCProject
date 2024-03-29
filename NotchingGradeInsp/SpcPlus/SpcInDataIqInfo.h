@@ -101,6 +101,9 @@ public:
 	//INSP 이미지 파일명을 넘긴다.
 	CString ImagIqFileName();
 
+
+	//Image 판정결과	
+	CString getImageJudge() { return m_ImageJudge; }
 };
 
 

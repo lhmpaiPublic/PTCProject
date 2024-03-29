@@ -634,7 +634,7 @@ void CResultThread::SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, 
 				//추가한다.
 				insp->addSpcInDataDefectInfo(SpcInDataDefectInfo);
 				//SPC+ CROP 이미지 출력 경로
-				strSpcCropFilePath = InspInData->ImageFilePath(strSpcCropFilePath) + CString("\\");
+				strSpcCropFilePath = InspInData->ImageFilePath(strSpcCropFilePath, FALSE) + CString("\\");
 
 				//SPC+ 활성화 한 상태에서 만 출력한다.
 				if (CSpcInfo::Inst()->getSPCStartFlag())

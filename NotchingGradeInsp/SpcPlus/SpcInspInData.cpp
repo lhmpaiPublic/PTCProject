@@ -222,10 +222,11 @@ CString CSpcInspInData::JsonFileName(CString& JsonFileName)
 }
 
 //INSP 이미지 저장경로를 넘긴다.
-CString CSpcInspInData::ImageFilePath(CString& ImageFilePath)
+CString CSpcInspInData::ImageFilePath(CString& ImageFilePath, BOOL JudgeTypeOk)
 {
+
 	ImageFilePath = SPCINFO->getInspOkImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
-	if (m_CellFinalJudge == "NG")
+	if (JudgeTypeOk == FALSE)
 	{
 		ImageFilePath = SPCINFO->getInspNgImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 	}

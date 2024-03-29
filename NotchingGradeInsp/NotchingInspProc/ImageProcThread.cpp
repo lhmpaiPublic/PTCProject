@@ -1600,23 +1600,27 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 #ifdef SPCPLUS_CREATE
 						//SPC+ IMAGE Save===================================================================================================
 						CString strSPCFilePath = "";
-						InspInData->ImageFilePath(strSPCFilePath);
 						int SPCImageQuality = CGlobalFunc::StringToint(SPCINFO->getIqJpgQuality());
 						for (int i = 0; i < MAX_CAMERA_NO; i++)
 						{
 							CFrameRsltInfo* pFrmRsltInfo;
 
 							CString SPCImageFileName = "";
+	
+
 							if (i == CAM_POS_TOP)
 							{
 								pFrmRsltInfo = pTopInfo;
 								SPCImageFileName = IqImageFileNameTop;
 
+								InspInData->ImageFilePath(strSPCFilePath, IqInfoTop->getImageJudge() == "OK");
 							}
 							else
 							{
 								pFrmRsltInfo = pBtmInfo;
 								SPCImageFileName = IqImageFileNameBottom;
+
+								InspInData->ImageFilePath(strSPCFilePath, IqInfoBottom->getImageJudge() == "OK");
 							}
 
 							int nImgSize = pFrmRsltInfo->m_nWidth * pFrmRsltInfo->m_nHeight;
