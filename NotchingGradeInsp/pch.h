@@ -57,6 +57,9 @@ using namespace Gdiplus;
 //BCD Counter 컴파일 여부
 //#define USE_BCDCOUNTER
 
+//PLC data type new
+//#define NEW_PLCTYPE
+
 //글로벌 버전 정보 로컬 세팅
 //Notching.Release.Version_년(4).월(2).일(2).(배포 횟수 : r01 ~ r99)
 static CString GlobalVersion = _T("Notching.Release.Version_2024.03.27.r01");
@@ -68,12 +71,11 @@ static CString GlobalVersion = _T("Notching.Release.Version_2024.03.27.r01");
 //UI를 관리하기 위한 클래스
 #include "UiManager.h"
 
+
 //Simens
 #include "LGIS\LGIS_Plc.h"
 //PLC Imp 클래스
 #include "PlcImp.h"
-//PLC IO Base
-#include "PlcIoBase.h"
 
 #include <string>
 #include <vector>

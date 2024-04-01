@@ -595,9 +595,12 @@ void CModeDlg::Refresh()
 	BOOL bGrabber = TRUE;
 	BOOL bRunFlag = FALSE;
 
-	if (theApp.m_pPioCtrl != NULL) {
+	if (theApp.m_pPioCtrl != NULL) 
+	{
 		bPlc = theApp.m_pPioCtrl->IsOpened();
 	}
+
+
 	if (theApp.m_pIoCtrl != NULL) {
 		bIo = theApp.m_pIoCtrl->IsOpened();
 	}

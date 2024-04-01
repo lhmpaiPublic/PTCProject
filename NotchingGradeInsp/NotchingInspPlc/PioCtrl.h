@@ -19,7 +19,7 @@ typedef struct {
 	BOOL CheckPortFlag[MAX_PORT];
 	BYTE InputData[MAX_PORT];
 
-	short InputDataSms[MAX_SMS_IO_IN];
+	short InputDataSms[MAX_SMS_BITIO_IN];
 
 	BOOL EndFlag;	// 스레드 정지
 	BOOL BusyFlag;	// 스레드 작업중

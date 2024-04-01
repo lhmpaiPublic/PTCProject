@@ -308,8 +308,8 @@ private:
 	BYTE	m_btSigBItIN[MAX_USE_PORT];
 	BYTE	m_btSigBItOut[MAX_USE_PORT];
 
-	short	m_sSmsSigBItIN[MAX_SMS_IO_IN];
-	short	m_sSmsSigBItOut[MAX_SMS_IO_OUT];
+	short	m_sSmsSigBItIN[MAX_SMS_BITIO_IN];
+	short	m_sSmsSigBItOut[MAX_SMS_BITIO_OUT];
 
 	BOOL	m_bSmsAlive;
 	BOOL	m_bSigInkMarkAcrive;

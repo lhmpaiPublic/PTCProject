@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "SiemensPlcIo.h"
+#include "GlobalData.h"
 #include "LogDisplayDlg.h"
 
 
@@ -10,7 +11,8 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	, m_pReceiveMsgWnd(pReceiveMsgWnd)
 	, m_pLGIS_Plc(NULL)
 {
-	if (OpenPio() == 0)
+
+	if (OpenPlcIo() == 0)
 	{
 
 		//이벤트 객체 생성
@@ -23,7 +25,7 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 
 CSiemensPlcIo::~CSiemensPlcIo()
 {
-	ClosePio();
+	ClosePlcIo();
 }
 
 //스래드 함수
@@ -55,8 +57,32 @@ UINT CSiemensPlcIo::SiemensPlc_ThreadProc(LPVOID param)
 	AfxEndThread(0);
 	return 0;
 }
+
 //스래드에서 호출하는 함수
 void CSiemensPlcIo::SiemensPlcProc()
+{
+	//Read 영역 읽기
+	static const int ReadSize = MAX_SMS_BITIO_IN + MAX_SMS_WORDIO_IN;
+	short	ReadData[ReadSize];
+	ReadDataReg(AprData.m_System.m_nBitIn, ReadData, ReadSize);
+
+	ReadPlcDataParser(ReadData, ReadSize);
+
+	//Write 영역 쓰기
+	static const int WriteSize = MAX_SMS_BITIO_OUT + MAX_SMS_WORDIO_IN;
+	short	WriteData[WriteSize];
+	WritePlcDataMake(WriteData, WriteSize);
+
+	WriteDataReg(AprData.m_System.m_nBitOut, WriteData, WriteSize);
+}
+
+//PLC read Data Parser 함수
+void CSiemensPlcIo::ReadPlcDataParser(short* data, int len)
+{
+
+}
+//PLC write Data Make 함수
+void CSiemensPlcIo::WritePlcDataMake(short data[], int len)
 {
 
 }
@@ -187,7 +213,7 @@ int CSiemensPlcIo::GetErrorNo()
 	return CONNECTION_ERROR;
 }
 
-int CSiemensPlcIo::OpenPio(void)
+int CSiemensPlcIo::OpenPlcIo(void)
 {
 	int ret = 0;
 
@@ -195,7 +221,7 @@ int CSiemensPlcIo::OpenPio(void)
 	
 	if (!m_pLGIS_Plc->CheckConnection())
 	{
-		ClosePio();
+		ClosePlcIo();
 		//로그출력
 		LOGDISPLAY_SPECTXT(0)("PLC Siemens Open failed");
 		ret = -1;
@@ -204,7 +230,7 @@ int CSiemensPlcIo::OpenPio(void)
 	return ret;
 }
 
-void CSiemensPlcIo::ClosePio(void)
+void CSiemensPlcIo::ClosePlcIo(void)
 {
 	if (m_pLGIS_Plc)
 	{

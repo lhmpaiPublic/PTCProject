@@ -345,7 +345,7 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 	int	i;
 	PIOTHREAD_DATAIF* data;
 	BYTE buff[MAX_PORT];
-	short nBuffSms[MAX_SMS_IO_IN];
+	short nBuffSms[MAX_SMS_BITIO_IN];
 	CPioCtrl* ctrl;
 
 	ctrl = (CPioCtrl*)Param;
@@ -358,7 +358,7 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 		buff[i] = 0x00;
 	}
 
-	for (i = 0; i < MAX_SMS_IO_IN; i++)
+	for (i = 0; i < MAX_SMS_BITIO_IN; i++)
 	{
 		data->InputDataSms[i] = 0;
 		nBuffSms[i] = 0;
@@ -393,7 +393,7 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 				//			DWORD dwStart = GetTickCount();
 
 
-				if (ctrl->ReadPLC_Block_device(AprData.m_System.m_nBitIn, (short*)nBuffSms, MAX_SMS_IO_IN) != -1)
+				if (ctrl->ReadPLC_Block_device(AprData.m_System.m_nBitIn, (short*)nBuffSms, MAX_SMS_BITIO_IN) != -1)
 				{
 					CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
 					memcpy(data->InputDataSms, nBuffSms, sizeof(data->InputDataSms));

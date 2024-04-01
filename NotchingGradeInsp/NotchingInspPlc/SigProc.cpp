@@ -13,7 +13,8 @@ CSigProc::CSigProc()
 
 	m_SigInRun = FALSE;
 
-	if (theApp.m_pPioCtrl != NULL) {
+	if (theApp.m_pPioCtrl != NULL) 
+	{
 		m_pPioCtrl = theApp.m_pPioCtrl;
 	}
 
@@ -211,8 +212,8 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		m_pPioCtrl->ReadAllPort_BitIn( (BYTE*)m_sSmsSigBItIN, MAX_SMS_IO_IN);
-		for (int i = 0; i < MAX_SMS_IO_IN; i++)
+		m_pPioCtrl->ReadAllPort_BitIn( (BYTE*)m_sSmsSigBItIN, MAX_SMS_BITIO_IN);
+		for (int i = 0; i < MAX_SMS_BITIO_IN; i++)
 		{
 
 			if (m_sSmsSigBItIN[i] == 0x01)
@@ -256,8 +257,8 @@ int CSigProc::ReadAllPort_BitOut( BOOL* pSigBitOut )
 
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
-		m_pPioCtrl->ReadAllPort_BitOut((BYTE*)m_sSmsSigBItOut, MAX_SMS_IO_OUT);
-		for (int i = 0; i < MAX_SMS_IO_OUT; i++)
+		m_pPioCtrl->ReadAllPort_BitOut((BYTE*)m_sSmsSigBItOut, MAX_SMS_BITIO_OUT);
+		for (int i = 0; i < MAX_SMS_BITIO_OUT; i++)
 		{
 			if (m_sSmsSigBItOut[i] == 0x01)
 			{

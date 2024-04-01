@@ -6,7 +6,7 @@
 #pragma comment(lib, "LGIS.lib")
 #endif
 
-class CSiemensPlcIo : public CPlcIoBase
+class CSiemensPlcIo : public CPlcImp
 {
 public:
 	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort);
@@ -39,6 +39,11 @@ public:
 	//스래드에서 호출하는 함수
 	void SiemensPlcProc();
 
+	//PLC read Data Parser 함수
+	void ReadPlcDataParser(short* data, int len);
+	//PLC write Data Make 함수
+	void WritePlcDataMake(short data[], int len);
+
 	// 동기화 이벤트 객체
 	HANDLE getEvent_SiemensPlc() { return pEvent_SiemensPlc; }
 	void setEvent_SiemensPlc() { SetEvent(pEvent_SiemensPlc); }
@@ -58,8 +63,8 @@ private:
 	CLGIS_Plc* m_pLGIS_Plc;
 
 	// connection network
-	int OpenPio(void);
+	int OpenPlcIo(void);
 	// disconnection network
-	void ClosePio(void);
+	void ClosePlcIo(void);
 };
 

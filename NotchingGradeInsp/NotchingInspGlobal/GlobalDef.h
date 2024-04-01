@@ -218,5 +218,10 @@ enum {
 #define	MAX_PORT_BIT 8 
 // 22.07.29 Ahn Add End
 
-#define MAX_SMS_IO_IN	20
-#define MAX_SMS_IO_OUT	20
+//Seimens Bit 영역 갯수
+#define MAX_SMS_BITIO_IN	20
+#define MAX_SMS_BITIO_OUT	20
+
+//Seimens Word 영역 갯수
+#define MAX_SMS_WORDIO_IN	160
+#define MAX_SMS_WORDIO_OUT	160

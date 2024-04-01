@@ -26,6 +26,9 @@
 #include "SpcCreateJSONFileThread.h"
 #include "SpcInfo.h"
 
+//PLC New
+#include "SiemensPlcIo.h"
+
 #pragma comment( lib, "version.lib")
 
 #ifdef _DEBUG
@@ -66,7 +69,11 @@ CNotchingGradeInspApp::CNotchingGradeInspApp() noexcept
 	// InitInstance에 모든 중요한 초기화 작업을 배치합니다.
 
 	m_pImgProcCtrl = NULL;
+
 	m_pPioCtrl = NULL;
+
+	m_pSigProc = NULL;
+
 	m_pImageSimDlg = NULL;
 	m_pLightCtrl = NULL;
 }
@@ -369,6 +376,7 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 	m_pImgProcCtrl->SetFrameCount(AprData.m_NowLotData.m_nFrameCount);
 
 
+#ifndef NEW_PLCTYPE
 	if (m_pPioCtrl != NULL) 
 	{
 		delete m_pPioCtrl;
@@ -383,6 +391,11 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 		m_pSigProc = new CSigProc();
 
 	}
+#else
+	CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
+	int nPort = AprData.m_System.m_nPLCPort;
+	m_pSigProc = new CSiemensPlcIo(strIPAddress, 500, NULL, nPort);
+#endif //NEW_PLCTYPE
 
 	CStdIoCtrl::eIOTYPE ioType = CStdIoCtrl::eIO_AXL;
 	m_pIoCtrl = CStdIoCtrl::GetInstance(ioType, 2, 0, 0, 0);
@@ -433,7 +446,8 @@ int CNotchingGradeInspApp::DeviceClose(void)
 		m_pSigProc = NULL;
 	}
 
-	if (m_pPioCtrl != NULL) {
+	if (m_pPioCtrl != NULL)
+	{
 		delete m_pPioCtrl;
 		m_pPioCtrl = NULL;
 	}

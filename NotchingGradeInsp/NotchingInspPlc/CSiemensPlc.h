@@ -68,8 +68,8 @@ public:
 
 private:
 	// connection network
-	int OpenPio(void);
+	virtual int OpenPio(void);
 	// disconnection network
-	int ClosePio(void);
+	virtual int ClosePio(void);
 };
 
