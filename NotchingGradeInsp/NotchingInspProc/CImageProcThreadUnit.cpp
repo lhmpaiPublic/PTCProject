@@ -873,6 +873,15 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 IMPLEMENT_DYNCREATE(CImageProcThreadUnit, CWinThread)
 CImageProcThreadUnit::CImageProcThreadUnit( CFrameInfo *pFrmInfo )
 {
+
+	m_hEventProcStart = NULL;
+	m_hEventRun = NULL;
+	m_hEventProcEnd = NULL;
+	m_hEventKillThread = NULL;
+	m_hEventForceStop = NULL;
+	m_hEventKilled = NULL;
+	m_hSendResult = NULL;
+
 	m_pFrmRsltInfo = new CFrameRsltInfo;
 
 	if (m_pFrmRsltInfo)
@@ -939,15 +948,43 @@ CImageProcThreadUnit::~CImageProcThreadUnit()
 	}
 
 	//이벤트 객체 종료
-	::CloseHandle(m_hEventProcStart);
-	::CloseHandle(m_hEventRun);
+	if (m_hEventProcStart)
+	{
+		::CloseHandle(m_hEventProcStart);
+		m_hEventProcStart = NULL;
+	}
+	if (m_hEventRun)
+	{
+		::CloseHandle(m_hEventRun);
+		m_hEventRun = NULL;
+	}
 	//ImageProc: 이미지 처리 Proc End  이벤트 객체 종료
-	::CloseHandle(m_hEventProcEnd);
-	::CloseHandle(m_hEventForceStop);
+	if (m_hEventProcEnd)
+	{
+		::CloseHandle(m_hEventProcEnd);
+		m_hEventProcEnd = NULL;
+	}
+	if (m_hEventForceStop)
+	{
+		::CloseHandle(m_hEventForceStop);
+		m_hEventForceStop = NULL;
+	}
 	//ImageProc: 스드래종료 이벤트 객체 종료
-	::CloseHandle(m_hEventKillThread);
-	::CloseHandle(m_hEventKilled);
-	::CloseHandle(m_hSendResult);
+	if (m_hEventKillThread)
+	{
+		::CloseHandle(m_hEventKillThread);
+		m_hEventKillThread = NULL;
+	}
+	if (m_hEventKilled)
+	{
+		::CloseHandle(m_hEventKilled);
+		m_hEventKilled = NULL;
+	}
+	if (m_hSendResult)
+	{
+		::CloseHandle(m_hSendResult);
+		m_hSendResult = NULL;
+	}
 }
 
 

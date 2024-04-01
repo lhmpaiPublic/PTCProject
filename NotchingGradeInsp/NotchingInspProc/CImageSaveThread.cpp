@@ -10,6 +10,8 @@ CImageSaveThread::CImageSaveThread( int nCamNo, CImageProcessCtrl* pParent)
 {
 	m_nCameraNo = nCamNo;
 	m_pParent = pParent;
+	m_pThread = NULL;
+	pEvent_ImageSaveThread = NULL;
 }
 CImageSaveThread::~CImageSaveThread(void)
 {
@@ -46,6 +48,13 @@ void CImageSaveThread::Kill(void)
 		setEvent_ImageSaveThread();
 		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
 		m_pThread->m_hThread = NULL;
+		m_pThread = NULL;
+	}
+
+	if (pEvent_ImageSaveThread)
+	{
+		CloseHandle(pEvent_ImageSaveThread);
+		pEvent_ImageSaveThread = NULL;
 	}
 }
 

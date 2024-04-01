@@ -185,6 +185,13 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		setEvent_NotchingGradeInspView();
 		CGlobalFunc::ThreadExit(&pThread->m_hThread, 5000);
 		pThread->m_hThread = NULL;
+		pThread = NULL;
+	}
+
+	if (pEvent_NotchingGradeInspView)
+	{
+		CloseHandle(pEvent_NotchingGradeInspView);
+		pEvent_NotchingGradeInspView = NULL;
 	}
 }
 

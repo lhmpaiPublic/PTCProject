@@ -356,6 +356,13 @@ void CCounterThread::Kill(void)
 		setEvent_CounterThread();
 		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
 		m_pThread->m_hThread = NULL;
+		m_pThread = NULL;
+	}
+
+	if (pEvent_CounterThread)
+	{
+		CloseHandle(pEvent_CounterThread);
+		pEvent_CounterThread = NULL;
 	}
 }
 

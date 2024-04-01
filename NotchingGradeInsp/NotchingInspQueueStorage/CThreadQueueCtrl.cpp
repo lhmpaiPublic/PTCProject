@@ -21,6 +21,8 @@ CThreadQueueCtrl::CThreadQueueCtrl(CImageProcessCtrl* pParent)
 
 	//스래드 객체 초기화
 	m_pWatchThread = NULL;
+
+	pEvent_ThreadQueueCtrl = NULL;
 	//동기화 객체 초기화
 	::InitializeCriticalSection(&m_csWatchQueue);
 	//감시 스래드 생성
@@ -37,6 +39,12 @@ CThreadQueueCtrl::~CThreadQueueCtrl()
 		SetEvent(pEvent_ThreadQueueCtrl);
 		CGlobalFunc::ThreadExit(&m_pWatchThread->m_hThread, 5000);
 		m_pWatchThread->m_hThread = NULL;
+	}
+
+	if (pEvent_ThreadQueueCtrl)
+	{
+		CloseHandle(pEvent_ThreadQueueCtrl);
+		pEvent_ThreadQueueCtrl = NULL;
 	}
 	//동기화 객체 제거
 	::DeleteCriticalSection(&m_csWatchQueue);

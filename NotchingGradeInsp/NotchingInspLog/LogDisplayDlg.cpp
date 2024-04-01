@@ -245,6 +245,8 @@ CLogDisplayDlg::CLogDisplayDlg(CWnd* pParent /*=nullptr*/)
 	, m_ComboSpecialLogNameStr(_T(""))
 {
 	::InitializeCriticalSection(&m_csQueueLog);
+
+	pEvent_LogDisplayDlg = NULL;
 }
 
 CLogDisplayDlg::~CLogDisplayDlg()
@@ -503,6 +505,13 @@ void CLogDisplayDlg::ExitThread()
 		setEvent_LogDisplayDlg();
 		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
 		m_pThread->m_hThread = NULL;
+		m_pThread = NULL;
+	}
+
+	if (pEvent_LogDisplayDlg)
+	{
+		CloseHandle(pEvent_LogDisplayDlg);
+		pEvent_LogDisplayDlg = NULL;
 	}
 }
 

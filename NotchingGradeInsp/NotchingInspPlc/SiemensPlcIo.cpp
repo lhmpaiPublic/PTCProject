@@ -11,10 +11,12 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	, m_pReceiveMsgWnd(pReceiveMsgWnd)
 	, m_pLGIS_Plc(NULL)
 {
-
+	m_pThread_SiemensPlc = NULL;
+	pEvent_SiemensPlc = NULL;
 	if (OpenPlcIo() == 0)
 	{
-
+		//슬레이브 아이디 
+		SetSlaveId(AprData.m_System.m_nSlaveID);
 		//이벤트 객체 생성
 		pEvent_SiemensPlc = CreateEvent(NULL, FALSE, FALSE, NULL);
 		//스래드 생성
@@ -26,6 +28,19 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 CSiemensPlcIo::~CSiemensPlcIo()
 {
 	ClosePlcIo();
+	if (m_pThread_SiemensPlc)
+	{
+		setEvent_SiemensPlc();
+		CGlobalFunc::ThreadExit(&m_pThread_SiemensPlc->m_hThread, 5000);
+		m_pThread_SiemensPlc->m_hThread = NULL;
+		m_pThread_SiemensPlc = NULL;
+	}
+
+	if (pEvent_SiemensPlc)
+	{
+		CloseHandle(pEvent_SiemensPlc);
+		pEvent_SiemensPlc = NULL;
+	}
 }
 
 //스래드 함수
@@ -61,19 +76,26 @@ UINT CSiemensPlcIo::SiemensPlc_ThreadProc(LPVOID param)
 //스래드에서 호출하는 함수
 void CSiemensPlcIo::SiemensPlcProc()
 {
-	//Read 영역 읽기
-	static const int ReadSize = MAX_SMS_BITIO_IN + MAX_SMS_WORDIO_IN;
-	short	ReadData[ReadSize];
-	ReadDataReg(AprData.m_System.m_nBitIn, ReadData, ReadSize);
+	if (IsOpened())
+	{
+		//Read 영역 읽기
+		static const int ReadSize = MAX_SMS_BITIO_IN + MAX_SMS_WORDIO_IN;
+		short	ReadData[ReadSize];
+		ReadDataReg(AprData.m_System.m_nBitIn, ReadData, ReadSize);
 
-	ReadPlcDataParser(ReadData, ReadSize);
+		ReadPlcDataParser(ReadData, ReadSize);
 
-	//Write 영역 쓰기
-	static const int WriteSize = MAX_SMS_BITIO_OUT + MAX_SMS_WORDIO_IN;
-	short	WriteData[WriteSize];
-	WritePlcDataMake(WriteData, WriteSize);
+		//Write 영역 쓰기
+		static const int WriteSize = MAX_SMS_BITIO_OUT + MAX_SMS_WORDIO_IN;
+		short	WriteData[WriteSize];
+		WritePlcDataMake(WriteData, WriteSize);
 
-	WriteDataReg(AprData.m_System.m_nBitOut, WriteData, WriteSize);
+		WriteDataReg(AprData.m_System.m_nBitOut, WriteData, WriteSize);
+	}
+	else
+	{
+
+	}
 }
 
 //PLC read Data Parser 함수

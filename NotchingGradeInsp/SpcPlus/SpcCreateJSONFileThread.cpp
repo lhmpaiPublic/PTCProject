@@ -28,7 +28,7 @@ CSpcCreateJSONFileThread* CSpcCreateJSONFileThread::gInst()
 //멤버 객체 생성 및 초기화, 초기화함수 호출등
 CSpcCreateJSONFileThread::CSpcCreateJSONFileThread()
 {
-	
+	pEvent_SpcCreateJSONFileThread = NULL;
 }
 
 //소멸자
@@ -164,6 +164,12 @@ void CSpcCreateJSONFileThread::ExitThread()
 		setEvent_SpcCreateJSONFileThread();
 		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
 		m_pThread->m_hThread = NULL;
+	}
+
+	if (pEvent_SpcCreateJSONFileThread)
+	{
+		CloseHandle(pEvent_SpcCreateJSONFileThread);
+		pEvent_SpcCreateJSONFileThread = NULL;
 	}
 	::DeleteCriticalSection(&m_csQueue);
 }

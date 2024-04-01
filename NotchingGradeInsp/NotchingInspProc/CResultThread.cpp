@@ -23,6 +23,7 @@ CResultThread::CResultThread(CImageProcessCtrl* pParent, int nHeadNo)
 {
 	m_pParent = pParent;
 	m_pThread = NULL;
+	pEvent_ResultThread = NULL;
 
 #if defined( IMAGE_DRAW_DIRECT_VERSION )
 	for (int i = 0; i < GRABBER_COUNT; i++) {
@@ -66,6 +67,13 @@ void CResultThread::Kill(void)
 		setEvent_ResultThread();
 		CGlobalFunc::ThreadExit(&m_pThread->m_hThread, 5000);
 		m_pThread->m_hThread = NULL;
+		m_pThread = NULL;
+	}
+
+	if (pEvent_ResultThread)
+	{
+		CloseHandle(pEvent_ResultThread);
+		pEvent_ResultThread = NULL;
 	}
 
 }

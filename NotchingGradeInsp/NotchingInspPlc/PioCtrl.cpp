@@ -78,6 +78,7 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		= PioDataIF.CheckPortFlag[3] = TRUE;
 
 	m_pThread = NULL;
+	pEvent_PioCtrl = NULL;
 
 }
 
@@ -197,6 +198,11 @@ void CPioCtrl::PioTheadStop()
 		m_pThread->m_hThread = NULL;
 	}
 
+	if (pEvent_PioCtrl)
+	{
+		CloseHandle(pEvent_PioCtrl);
+		pEvent_PioCtrl = NULL;
+	}
 
 	return;
 
