@@ -2187,7 +2187,7 @@ void CImageProcSimDlg::InspectionAuto()
 		data.dDistance = tabRsltInfo.m_vecDefInfo[i]->dDistance; // 22.04.15 Ahn Add
 
 		int nHeadNo = (m_bModeTop == TRUE) ? CAM_POS_TOP : CAM_POS_BOTTOM;
-		data.nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nHeadNo], m_pRecipeInfo->dDefJudgeHeight, data.dJudgeSize, data.dHeight);
+		data.nDefJudge = CTabRsltInfo::GetDefJudge(m_pRecipeInfo->dFoilExpInNgSize[nHeadNo], m_pRecipeInfo->dDefectYSize[tabRsltInfo.m_nHeadNo], data.dJudgeSize, data.dHeight);
 
 		m_pVecBlockAll->push_back(data);
 
@@ -2730,9 +2730,18 @@ void CImageProcSimDlg::DrawLine_Bottom()
 	}
 	else
 	{
+<<<<<<< HEAD
 		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
 		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 //		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
+=======
+		//int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+		//int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
+
+		int nThresBnd = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM];
+		int nThresMax = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+
+>>>>>>> 5b04852242b928ee079120c9aee85716f2d7151a
 		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
 	}
 
@@ -4121,13 +4130,13 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 
 			if (rcLeftRnd.PtInRect(ptCenter) == TRUE)
 			{
-				CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
-//				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
+				//CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
 			else if (rcRightRnd.PtInRect(ptCenter) == TRUE)
 			{
-				CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
-//				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
+				//CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 
 			}
 			else
@@ -4279,9 +4288,13 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	}
 	else
 	{
-		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
-		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
+		//int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+		//int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
+
+		int nThresBnd = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM];
+		int nThresMax = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
+
+		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
 	}
 
 
@@ -6554,13 +6567,13 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 
 			if (rcLeftRnd.PtInRect(ptCenter) == TRUE)
 			{
-				CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
-//				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
+				//CImageProcess::CalcRoundDef_Size_LeftFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcLeftRnd, pData, &vecLeftRndInfo, CImageProcess::en_FindLeft, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcLeftRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
 			else if (rcRightRnd.PtInRect(ptCenter) == TRUE)
 			{
-				CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
-//				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
+				//CImageProcess::CalcRoundDef_Size_RightFoilExp(pThresPtr, nWidth, nHeight, pData->nType, rcRightRnd, pData, &vecRightRndInfo, CImageProcess::en_FindRight, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, nMode);
+				CImageProcess::CalcDefectMaxSize_Round(pThresPtr, nWidth, nHeight, pData->nType, pData, rcRightRnd, AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY, CImageProcess::en_FindLeft);
 			}
 			else
 			{
