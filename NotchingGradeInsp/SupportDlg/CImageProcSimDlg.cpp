@@ -2730,18 +2730,11 @@ void CImageProcSimDlg::DrawLine_Bottom()
 	}
 	else
 	{
-<<<<<<< HEAD
+
 		int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
 		int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 //		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, pRsltPtr, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
-=======
-		//int nThresBnd = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-		//int nThresMax = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM]; // 22.05.30 Ahn Add
 
-		int nThresBnd = m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM];
-		int nThresMax = m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
-
->>>>>>> 5b04852242b928ee079120c9aee85716f2d7151a
 		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLevel, CImageProcess::en_FindLeft);
 	}
 

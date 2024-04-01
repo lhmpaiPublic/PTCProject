@@ -6153,7 +6153,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 	//===========================================================================================================
 #endif //SPCPLUS_CREATE
 
-
+	int nMaxRank = JUDGE_OK;
 	int nCount = 0; 
 	for (int i = 0; i < nSize; i++)
 	{
@@ -6369,12 +6369,18 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 			// 22.11.21 Ahn Modify End
 		}
 
+		if (nMaxRank < pDefInfo->nRank)
+		{
+			nMaxRank = pDefInfo->nRank;
+			pTabRsltInfo->m_nJudge = nMaxRank;
+		}
+
+
+
 		if (pDefInfo->nRank == JUDGE_OK)
 		{
 			pDefInfo->bDeleteFlag = TRUE;
 		}
-
-
 
 		if ( pDefInfo->bDeleteFlag == FALSE)
 		{
