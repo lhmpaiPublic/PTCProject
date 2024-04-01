@@ -585,6 +585,12 @@
     <ClInclude Include="NotchingInspPlc\PlcDataCtrl.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="NotchingInspPlc\SiemensPlcIo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NotchingInspPlc\PlcIoBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -1050,6 +1056,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="NotchingInspPlc\PlcDataCtrl.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspPlc\SiemensPlcIo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NotchingInspPlc\PlcIoBase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
