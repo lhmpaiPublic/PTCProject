@@ -9,7 +9,7 @@
 class CSiemensPlcIo : public CPlcIoBase
 {
 public:
-	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort = 4000, int nOffsetIn = 0, int nOffsetOut = 100, int nWordIn = 20, int nWordOut = 120);
+	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort);
 	~CSiemensPlcIo();
 
 public:
@@ -33,7 +33,22 @@ public:
 	// get error no
 	int GetErrorNo();
 
+	//스래드 함수
+	static UINT SiemensPlc_ThreadProc(LPVOID param);
+
+	//스래드에서 호출하는 함수
+	void SiemensPlcProc();
+
+	// 동기화 이벤트 객체
+	HANDLE getEvent_SiemensPlc() { return pEvent_SiemensPlc; }
+	void setEvent_SiemensPlc() { SetEvent(pEvent_SiemensPlc); }
+
 private:
+	//스래드 생성 인스턴스 객체
+	CWinThread* m_pThread_SiemensPlc;
+	//동기화 이벤트 객체
+	HANDLE pEvent_SiemensPlc;
+
 	CString m_strIPAddress;
 	int m_nPort;
 	CWnd* m_pReceiveMsgWnd;
@@ -45,6 +60,6 @@ private:
 	// connection network
 	int OpenPio(void);
 	// disconnection network
-	int ClosePio(void);
+	void ClosePio(void);
 };
 

@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "PlcDataCtrl.h"
+#include "SiemensPlcIo.h"
 
 
 CPlcDataCtrl::CPlcDataCtrl()

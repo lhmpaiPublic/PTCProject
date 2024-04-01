@@ -3,20 +3,62 @@
 #include "LogDisplayDlg.h"
 
 
-CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort /*= 4000*/, int nOffsetIn/*= 0*/, int nOffsetOut/*= 100*/, int nWordIn/*=20*/, int nWordOut/*=120*/)
+CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort)
 	: m_strIPAddress(strIPAddress)
 	, m_nPort(nPort)
 	, m_nReConnetTimeOut(nReConnetTimeOut)
 	, m_pReceiveMsgWnd(pReceiveMsgWnd)
 	, m_pLGIS_Plc(NULL)
 {
-	OpenPio();
+	if (OpenPio() == 0)
+	{
+
+		//이벤트 객체 생성
+		pEvent_SiemensPlc = CreateEvent(NULL, FALSE, FALSE, NULL);
+		//스래드 생성
+		m_pThread_SiemensPlc = AfxBeginThread(SiemensPlc_ThreadProc, this);
+	}
 }
 
 
 CSiemensPlcIo::~CSiemensPlcIo()
 {
 	ClosePio();
+}
+
+//스래드 함수
+#define SIEMENSPLC_TIMEOUT 100
+UINT CSiemensPlcIo::SiemensPlc_ThreadProc(LPVOID param)
+{
+	CSiemensPlcIo* pMain = (CSiemensPlcIo*)param;
+
+	int ret = WAIT_OBJECT_0;
+	while (pMain)
+	{
+		//타임 주기 이벤트
+		ret = WaitForSingleObject(pMain->getEvent_SiemensPlc(), SIEMENSPLC_TIMEOUT);
+
+		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
+		{
+			break;
+		}
+		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
+		{
+			pMain->SiemensPlcProc();
+		}
+		else
+		{
+			break;
+		}
+
+	}
+	AfxEndThread(0);
+	return 0;
+}
+//스래드에서 호출하는 함수
+void CSiemensPlcIo::SiemensPlcProc()
+{
+
 }
 
 void CSiemensPlcIo::SetSlaveId(int nId)
@@ -147,7 +189,8 @@ int CSiemensPlcIo::GetErrorNo()
 
 int CSiemensPlcIo::OpenPio(void)
 {
-	ClosePio();
+	int ret = 0;
+
 	m_pLGIS_Plc = new CLGIS_Plc(m_strIPAddress, m_nPort, m_nReConnetTimeOut, m_pReceiveMsgWnd );
 	
 	if (!m_pLGIS_Plc->CheckConnection())
@@ -155,19 +198,17 @@ int CSiemensPlcIo::OpenPio(void)
 		ClosePio();
 		//로그출력
 		LOGDISPLAY_SPECTXT(0)("PLC Siemens Open failed");
+		ret = -1;
 	}
 
-	return 0;
+	return ret;
 }
 
-int CSiemensPlcIo::ClosePio(void)
+void CSiemensPlcIo::ClosePio(void)
 {
 	if (m_pLGIS_Plc)
 	{
-//		m_pLGIS_Plc->Close();
 		delete m_pLGIS_Plc;
 		m_pLGIS_Plc = NULL;
 	}
-
-	return 0;
 }
