@@ -2491,15 +2491,11 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 				// 22.11.07 Ahn Modify End
 					BYTE btLevel = *(pLinePtr + x);
 					// 22.05.30 Ahn Modify Start
-					if (btLevel < nThresMax) {
-						// 23.01.06 Ahn Modify Start
-						//bNotFound = FALSE;
-						//nLastPosX = pnRsltArr[y] = x;
-						bNotFound = TRUE;
-						// 23.01.06 Ahn Modify Start
-						break;
-					}
-					else 
+					//if (btLevel < nThresMax) {
+					//	bNotFound = TRUE;
+					//	break;
+					//}
+					//else 
 					{
 						if (btLevel < nThresMin) {
 							nCnt++;
@@ -2535,15 +2531,12 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 				for (x = nXEnd - 1; x >= nXStart; x--) {
 					BYTE btLevel = *(pLinePtr + x);
 					// 22.05.30 Ahn Modify Start
-					if (btLevel < nThresMax) {
-						// 23.01.06 Ahn Modify Start
-						//bNotFound = FALSE;
-						//nLastPosX = pnRsltArr[y] = x;
-						bNotFound = TRUE;
-						// 23.01.06 Ahn Modify End
-						break;
-					}
-					else {
+					//if (btLevel < nThresMax) {
+					//	bNotFound = TRUE;
+					//	break;
+					//}
+					//else
+					{
 						if (btLevel < nThresMin) {
 							nCnt++;
 							if (nCnt > 2) {
@@ -2581,12 +2574,13 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 				for (x = nXStart; x < nXEnd; x++) {
 					BYTE btLevel = *(pLinePtr + x);
 					// 22.05.30 Ahn Modify Start
-					if (btLevel < nThresMax) {
-						bNotFound = FALSE;
-						pnRsltArr[y] = x ;
-						break;
-					}
-					else {
+					//if (btLevel < nThresMax) {
+					//	bNotFound = FALSE;
+					//	pnRsltArr[y] = x ;
+					//	break;
+					//}
+					//else
+					{
 						if (btLevel < nThresMin) {
 							nLastPosX = pnRsltArr[y] = x;
 							bNotFound = FALSE;
@@ -2611,10 +2605,11 @@ int CImageProcess::EdgeDetectByRndInfo_Negative(BYTE* pImgPtr, BYTE* pProcImg, C
 				for (x = nXEnd - 1; x >= nXStart; x--) {
 					BYTE btLevel = *(pLinePtr + x);
 					// 22.05.30 Ahn Modify Start
-					if (btLevel < nThresMax) {
-						break;
-					}
-					else {
+					//if (btLevel < nThresMax) {
+					//	break;
+					//}
+					//else
+					{
 						if (btLevel < nThresMin) {
 							nLastPosX = pnRsltArr[y] = x;
 							bNotFound = FALSE;
@@ -4991,6 +4986,7 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	int nLevelLeft = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
 
 
+
 	//이전 프로젝션 데이터 초기화
 	memset(pnPrjData, 0x00, sizeof(int) * nWidth);
 	//프로젝션 높이 : 섹터의 끝점에서부터 검사하여
@@ -5010,6 +5006,7 @@ int CImageProcess::FindTab_Negative(const BYTE* pImgPtr, int nWidth, int nHeight
 	//세라믹 코팅 부 휘도와 Roll 휘도 평균 값을 오른쪽에서 부터 검사 해서 크면 된다.
 	//이유는 롤의 아래 부분을 검사하는 부분이고, 롤이 아닌 부분을 만나면 바로 그 점이 세라믹 부분이다.
 	int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, en_FindFromRight, bUseDarkRoll);
+
 
 
 	//롤의 윗부분과 아랫부분의 평균 점이 세라믹 경계선이 된다.
@@ -6156,7 +6153,7 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 	//===========================================================================================================
 #endif //SPCPLUS_CREATE
 
-
+	int nMaxRank = JUDGE_OK;
 	int nCount = 0; 
 	for (int i = 0; i < nSize; i++)
 	{
@@ -6372,12 +6369,18 @@ int CImageProcess::AddDefectInfoByBlockInfo(CImageProcess::_VEC_BLOCK* pBlockInf
 			// 22.11.21 Ahn Modify End
 		}
 
+		if (nMaxRank < pDefInfo->nRank)
+		{
+			nMaxRank = pDefInfo->nRank;
+			pTabRsltInfo->m_nJudge = nMaxRank;
+		}
+
+
+
 		if (pDefInfo->nRank == JUDGE_OK)
 		{
 			pDefInfo->bDeleteFlag = TRUE;
 		}
-
-
 
 		if ( pDefInfo->bDeleteFlag == FALSE)
 		{

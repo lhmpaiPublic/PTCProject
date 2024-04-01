@@ -35,8 +35,8 @@ static CString UiText2[][3] =
 static CString UiText3[][3] =
 {
 	{_T("검사 장비 설정"), _T("Equipment type Setting"), _T("检查模式")},
-	{_T("양극 검사"), _T("Anode inspection"), _T("阳极模式")},
-	{_T("음극 검사"), _T("Cathode inspection"), _T("阴极模式")},
+	{_T("양극 검사"), _T("Cathode inspection"), _T("阳极模式")},
+	{_T("음극 검사"), _T("Anode inspection"), _T("阴极模式")},
 	{_T("카메라 파라메터"), _T("Camera parameter"), _T("相机参数设定")},
 	{_T("공통 설정"), _T("Common parameter"), _T("通用设置")},
 	{_T("분해능 Y"), _T("Resolution Y"), _T("Y分解能")},
