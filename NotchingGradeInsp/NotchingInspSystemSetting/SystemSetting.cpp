@@ -212,6 +212,10 @@ int CSystemSetting::FileCtrl(int nMode)
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			m_bNonNgStop = atoi(buff);
 			
+			strKey = _T("COUNTERBOARD_ERRCOUNT");
+			::GetPrivateProfileString(strSection, strKey, "5", buff, 256, strFileName);
+			m_nCounterBoard_ErrCount = atoi(buff);
+
 			strSection = _T("SPCPLUS_INFO");
 			strKey = _T("NON_EXEC_SPCPLUS");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
@@ -434,7 +438,11 @@ int CSystemSetting::FileCtrl(int nMode)
 			strKey = _T("NON_NG_STOP");
 			strData.Format(_T("%d"), m_bNonNgStop);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-						
+
+			strKey = _T("COUNTERBOARD_ERRCOUNT");
+			strData.Format(_T("%d"), m_nCounterBoard_ErrCount);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
 			strSection = _T("SPCPLUS_INFO");
 			strKey = _T("NON_EXEC_SPCPLUS");
 			//SPC+ 출력여브 체크박스 이벤트 값을 SystemSetting 파일에 저장한다.

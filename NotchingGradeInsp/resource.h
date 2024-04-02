@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++에서 생성한 포함 파일입니다.
-// NotchingGradeInsp.rc에서 사용되고 있습니다.
+// Microsoft Visual C++ generated include file.
+// Used by NotchingGradeInsp.rc
 //
 #define IDCANCEL2                       3
 #define IDOK2                           3
@@ -369,6 +369,7 @@
 #define IDC_ED_MISS_TAB_ID_MAX          1051
 #define IDC_EDIT_GAIN_CAM_NO_01         1052
 #define IDC_ED_BRIGHT_AREA_L            1052
+#define IDC_ED_ERRCOUNT_CNTBOARD        1052
 #define IDC_ED_BRIGHT_AREA_T            1053
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_00 1054
 #define IDC_ED_BRIGHT_AREA_R            1054
@@ -652,6 +653,8 @@
 #define IDC_ST_GROUP_TAB_INFO           1279
 #define IDC_ST_MISS_TAB_ID_MAX          1279
 #define IDC_ST_INPUT_MM                 1280
+#define IDC_ST_MISS_TAB_ID_MAX2         1280
+#define IDC_ST_ERRCOUNT_CNTBOARD        1280
 #define IDC_ST_INPUT_PIX                1281
 #define IDC_ST_TAB_WIDTH                1282
 #define IDC_ST_TAB_PITCH                1283

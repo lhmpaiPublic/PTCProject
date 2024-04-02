@@ -257,11 +257,11 @@ void CCounterThread::RecivePacket(char* data, int len)
 			//카운트 보드 인터락 : 
 			//ID가 다음 들어올 ID와 다른 경우  및 Counter 100 이하가 5번 이상 
 			//인터락 발생한다.
-			if (nCountBordErrorCount >= 5)
+			if (nCountBordErrorCount >= AprData.m_System.m_nCounterBoard_ErrCount) 
 			{
 				nCountBordErrorCount = 0;
 				CString strMessage;
-				strMessage.Format(_T("CountBord BCD ID, EnCoder Count Error Rocking"));
+				strMessage.Format(_T("CounterBoard BCD ID, EnCoder Count Error Locking"));
 				AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
 			}
 
@@ -442,7 +442,7 @@ void CCounterThread::isConnectTrigger()
 	if (m_TriggerSocket != NULL && m_bCountBordConnection == FALSE)
 	{
 		CString strMessage;
-		strMessage.Format(_T("CountBord Socket Disconnection Locking"));
+		strMessage.Format(_T("CounterBoard Socket Disconnection Locking"));
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
 
 		m_bCountBordConnection = 2;

@@ -93,5 +93,7 @@ public:
 	CString m_strRS232_COMPORT_TOP;
 	CString m_strRS232_COMPORT_BOTTOM;
 #endif
+
+	int m_nCounterBoard_ErrCount;
 };
 

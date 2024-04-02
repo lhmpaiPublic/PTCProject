@@ -193,6 +193,7 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHK_ENABLE_NON_NG_STOP, m_bChkEnableNonNgStop);
 	DDX_Text(pDX, IDC_ED_MISS_TAB_ID_MAX, m_nEdMissTabIdMax);
 	DDX_Check(pDX, IDC_CHK_DISABLE_SPCPLUS, m_bChkDisableSpcPlus);
+	DDX_Text(pDX, IDC_ED_ERRCOUNT_CNTBOARD, m_nErrcount_CntBoard);
 }
 
 
@@ -236,6 +237,7 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 //	ON_WM_SETFOCUS()
 ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabIdMax)
 ON_BN_CLICKED(IDC_CHK_DISABLE_SPCPLUS, &CSystemSettingDlg::OnBnClickedChkDisableSpcplus)
+ON_EN_SETFOCUS(IDC_ED_ERRCOUNT_CNTBOARD, &CSystemSettingDlg::OnEnSetfocusEdErrcountCntboard)
 END_MESSAGE_MAP()
 
 
@@ -899,6 +901,7 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_SysSetting.m_strMachineID = m_EdMachineID;
 		m_SysSetting.m_nResultSavePeriod = m_nEdSavePeriod;
 		m_SysSetting.m_nDiskCapacity = m_nDiskCapacityAlarm;
+		m_SysSetting.m_nCounterBoard_ErrCount = m_nErrcount_CntBoard; 
 
 		switch (m_nLanguage) {
 		case	0 : 
@@ -952,6 +955,8 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_EdMachineID = m_SysSetting.m_strMachineID ;
 		m_nEdSavePeriod = m_SysSetting.m_nResultSavePeriod ;
 		m_nDiskCapacityAlarm = m_SysSetting.m_nDiskCapacity ;
+		m_nErrcount_CntBoard = m_SysSetting.m_nCounterBoard_ErrCount; 
+
 		if (m_SysSetting.m_strLangCode.Compare(LANGUAGE_CODE_KOR) == 0) {
 			m_nLanguage = 0 ;
 		}
@@ -1490,4 +1495,20 @@ void CSystemSettingDlg::OnBnClickedChkDisableSpcplus()
 
 	DataControl(MODE_WRITE);
 #endif //SPCPLUS_CREATE
+}
+
+void CSystemSettingDlg::OnEnSetfocusEdErrcountCntboard()
+{
+	// TODO: Add your control notification handler code here
+	m_EdDummy.SetFocus();
+
+	CSetValue setValue(this);
+	CString strMsg;
+
+	int nMax = 99;
+	int nMin = 5;
+	setValue.SetValue(strMsg, m_nErrcount_CntBoard, nMax, nMin);
+	DataControl(MODE_WRITE);
+
+	UpdateData(FALSE);
 }

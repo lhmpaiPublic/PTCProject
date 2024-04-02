@@ -95,6 +95,7 @@ public:
 	afx_msg void OnEnClickChkMarkingAllTab(); // 22.01.11 Ahn Add
 	int m_nJpgSaveQulaity;
 	int m_nEdOverflowCountMax;
+	int m_nErrcount_CntBoard;
 	afx_msg void OnEnSetfocusEdJpegSaveQuality();
 	afx_msg void OnBnClickedChkFirstTabDonotProc();
 	BOOL m_bChkFirstTabDoNotProc;
@@ -171,4 +172,5 @@ public:
 	afx_msg void OnBnClickedChkDisableSpcplus();
 	//SPC+ 출력여부 플래그
 	BOOL m_bChkDisableSpcPlus;
+	afx_msg void OnEnSetfocusEdErrcountCntboard();
 };
