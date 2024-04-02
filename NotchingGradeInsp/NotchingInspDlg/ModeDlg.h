@@ -10,12 +10,13 @@
 
 #define T_CHECK_DEVICE 8858 //240108
 
+//카운터 보드 네트워크 에러 메시지 정의
+#define WM_COUNTBORDERROR WM_USER + 1 
+
 class CNotchingGradeInspDoc;
 class CNotchingGradeInspView;
 class CIoMonitorDlg;
-// 22.12.12 Ahn Add Start
 class CTactTimeGraphDlg;
-// 22.12.12 Ahn Add End
 class CModeDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CModeDlg)
@@ -36,32 +37,22 @@ protected:
 	CBmpStatic				m_cLogo;
 	CBmpButton				m_cBtnExit;
 	CMFCButton				m_cbtnLog;
-	// 22.06.30 Ahn Add Start
 	CColorStatic			m_stCameraState;
 	CColorStatic			m_stPlcState;
 	CColorStatic			m_stIoState;
 	CColorStatic			m_stLightState;
 	CColorStatic			m_stDiskSpace;
 	CFont					m_FontDiskCapa;
-	// 22.06.30 Ahn Add End
 
-	// 22.07.01 Ahn Add Start
 	BOOL m_bPlcLastFlag;
 	BOOL m_bIoLastFlag;
 	BOOL m_bLampLastFlag;
 	BOOL m_bCamLastFlag;
-	// 22.07.01 Ahn Add End
-	// 22.07.07 Ahn Add Start
 	BOOL m_bRunLastFlag;
-	// 22.07.07 Ahn Add End
 
-	// 22.08.03 Ahn Add Start
 	CIoMonitorDlg* m_pIoMonitDlg;
-	// 22.08.03 Ahn Add End
 
-	// 22.12.12 Ahn Add start
 	CTactTimeGraphDlg* m_pTactGraph;
-	// 22.12.12 Ahn Add End
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
@@ -82,26 +73,31 @@ public:
 	afx_msg void OnBnClickedBtnLog();
 	afx_msg void OnBnClickedBtnExit();
 	afx_msg void OnCancel();
-	void Refresh();										// 22.05.25 Son Add
-	virtual BOOL PreTranslateMessage(MSG* pMsg);		//KANG 22.05.24 Add
+	void Refresh();										
+	virtual BOOL PreTranslateMessage(MSG* pMsg);	
 	afx_msg void OnBnClickedBtnDirectory();
 	CMFCButton m_radInspRun;
 	CMFCButton m_radInspStop;
 	afx_msg void OnBnClickedRadRun();
 	afx_msg void OnBnClickedRadStop();
 
+	//카운터 보드 네트워크 에러 메시지 함수
+	afx_msg LRESULT OnCountBordError(WPARAM wParam, LPARAM lParam);
+
 public :
+	//시작/정지 버튼 상태 변경
 	void ChangeState(int nStatus);
 	void EnableChild(BOOL bRunMode );
+
+	//카운터보드에서 Stop 클릭 상태를 알기 위해서 정의 됨
+	BOOL GetStopCheckFALSE();
 
 	void DisplayLanguage();
 	afx_msg void OnBnClickedBtnTactTime();
 	afx_msg void OnBnClickedChkSwitchDisp();
 	BOOL m_bDispSwitch;
 
-	// 23.02.16 Ahn Add Start
 	void EnableControl(BOOL bModeRun);
-	// 23.02.16 Ahn Add End
 
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 
@@ -113,4 +109,5 @@ public :
 	afx_msg BOOL CheckDevice();
 #endif
 
+	virtual BOOL DestroyWindow();
 };

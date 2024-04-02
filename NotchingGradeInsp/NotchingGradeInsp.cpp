@@ -177,6 +177,17 @@ BOOL CNotchingGradeInspApp::InitInstance()
 	//Windows GDI+를 초기화합니다
 	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, 0);
 
+	//SPC 객체 소스에서 컴파일 여부 결정
+#ifdef SPCPLUS_CREATE
+	//전역 객체 생성
+	objSpcInfo = new CSpcInfo();
+	//SPC+ 출력 여부 플래그 세팅 - SPC+ SpcInfo = 정보파일에 
+	objSpcInfo->setSPCStartFlag(!AprData.m_System.m_bDisableSpcPlus);
+	//SPC+ JSON파일 생성을 위한 스래드 모듈을 생성한다.
+	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
+#endif //SPCPLUS_CREATE
+
+
 	//검사 프로그램 초기 시스템 세팅 및 설정 클래스
 	//시스템 세팅
 	//디버그 및 각 장비관련 연결 세팅
@@ -189,18 +200,6 @@ BOOL CNotchingGradeInspApp::InitInstance()
 
 	//로그창을 이용한 출력 기능 모듈을 생성한다.
 	CLogDisplayDlg::CreateLogDisplayDlg();
-
-
-	//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE
-	//전역 객체 생성
-	objSpcInfo = new CSpcInfo();
-	//SPC+ 출력 여부 플래그 세팅 - SPC+ SpcInfo = 정보파일에 
-	objSpcInfo->setSPCStartFlag(!AprData.m_System.m_bDisableSpcPlus);
-	//SPC+ JSON파일 생성을 위한 스래드 모듈을 생성한다.
-	CSpcCreateJSONFileThread::CreateSpcCreateJSONFileThread();
-#endif //SPCPLUS_CREATE
-
 
 	//UI manager 객체 생성
 	CUiManager::CreateUiManager();
