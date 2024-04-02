@@ -7,18 +7,18 @@ class CPlcImp
 #ifdef NEW_PLCTYPE
 	//In Data
 	//Bit Data In
-	WORD m_BitIn_Alive;
-	WORD m_BitIn_Ready;
-	WORD m_BitIn_Run;
-	WORD m_BitIn_EncoderReset;
-	WORD m_BitIn_TabZeroReset;
-	WORD m_BitIn_InkMarkingActive;
-	WORD m_BitIn_ConnectZone;
-	WORD m_BitIn_RecipeChange;
-	WORD m_BitIn_LotStartReq;
-	WORD m_BitIn_LotEndReq;
-	WORD m_BitIn_AlarmResetReq;
-	WORD m_BitIn_AlarmNgAck;
+	BOOL m_BitIn_Alive;
+	BOOL m_BitIn_Ready;
+	BOOL m_BitIn_Run;
+	BOOL m_BitIn_EncoderReset;
+	BOOL m_BitIn_TabZeroReset;
+	BOOL m_BitIn_InkMarkingActive;
+	BOOL m_BitIn_ConnectZone;
+	BOOL m_BitIn_RecipeChange;
+	BOOL m_BitIn_LotStartReq;
+	BOOL m_BitIn_LotEndReq;
+	BOOL m_BitIn_AlarmResetReq;
+	BOOL m_BitIn_AlarmNgAck;
 
 	WORD m_WordIn_RecipeNo;
 	WORD m_WordIn_RecipeName;
@@ -139,41 +139,41 @@ public:
 #ifdef NEW_PLCTYPE
 	//In Data
 	//Bit Data In
-	WORD getBitIn_Alive() { return m_BitIn_Alive; }
-	void setBitIn_Alive(WORD BitIn_Alive) { m_BitIn_Alive = BitIn_Alive; }
+	BOOL getBitIn_Alive() { return m_BitIn_Alive; }
+	void setBitIn_Alive(BOOL BitIn_Alive) { m_BitIn_Alive = BitIn_Alive; }
 
-	WORD getBitIn_Ready() { return m_BitIn_Ready; }
-	void setBitIn_Ready(WORD BitIn_Ready) { m_BitIn_Ready = BitIn_Ready; }
+	BOOL getBitIn_Ready() { return m_BitIn_Ready; }
+	void setBitIn_Ready(BOOL BitIn_Ready) { m_BitIn_Ready = BitIn_Ready; }
 
-	WORD getBitIn_Run() { return m_BitIn_Run; }
-	void setBitIn_Run(WORD BitIn_Run) { m_BitIn_Run = BitIn_Run; }
+	BOOL getBitIn_Run() { return m_BitIn_Run; }
+	void setBitIn_Run(BOOL BitIn_Run) { m_BitIn_Run = BitIn_Run; }
 
-	WORD getBitIn_EncoderReset() { return m_BitIn_EncoderReset; }
-	void setBitIn_EncoderReset(WORD BitIn_EncoderReset) { m_BitIn_EncoderReset = BitIn_EncoderReset; }
+	BOOL getBitIn_EncoderReset() { return m_BitIn_EncoderReset; }
+	void setBitIn_EncoderReset(BOOL BitIn_EncoderReset) { m_BitIn_EncoderReset = BitIn_EncoderReset; }
 
-	WORD getBitIn_TabZeroReset() { return m_BitIn_TabZeroReset; }
-	void setBitIn_TabZeroReset(WORD BitIn_TabZeroReset) { m_BitIn_TabZeroReset = BitIn_TabZeroReset; }
+	BOOL getBitIn_TabZeroReset() { return m_BitIn_TabZeroReset; }
+	void setBitIn_TabZeroReset(BOOL BitIn_TabZeroReset) { m_BitIn_TabZeroReset = BitIn_TabZeroReset; }
 
-	WORD getBitIn_InkMarkingActive() { return m_BitIn_InkMarkingActive; }
-	void setBitIn_InkMarkingActive(WORD BitIn_InkMarkingActive) { m_BitIn_InkMarkingActive = BitIn_InkMarkingActive; }
+	BOOL getBitIn_InkMarkingActive() { return m_BitIn_InkMarkingActive; }
+	void setBitIn_InkMarkingActive(BOOL BitIn_InkMarkingActive) { m_BitIn_InkMarkingActive = BitIn_InkMarkingActive; }
 
-	WORD getBitIn_ConnectZone() { return m_BitIn_ConnectZone; }
-	void setBitIn_ConnectZone(WORD BitIn_ConnectZone) { m_BitIn_ConnectZone = BitIn_ConnectZone; }
+	BOOL getBitIn_ConnectZone() { return m_BitIn_ConnectZone; }
+	void setBitIn_ConnectZone(BOOL BitIn_ConnectZone) { m_BitIn_ConnectZone = BitIn_ConnectZone; }
 
-	WORD getBitIn_RecipeChange() { return m_BitIn_RecipeChange; }
-	void setBitIn_RecipeChange(WORD BitIn_RecipeChange) { m_BitIn_RecipeChange = BitIn_RecipeChange; }
+	BOOL getBitIn_RecipeChange() { return m_BitIn_RecipeChange; }
+	void setBitIn_RecipeChange(BOOL BitIn_RecipeChange) { m_BitIn_RecipeChange = BitIn_RecipeChange; }
 
-	WORD getBitIn_LotStartReq() { return m_BitIn_LotStartReq; }
-	void setBitIn_LotStartReq(WORD BitIn_LotStartReq) { m_BitIn_LotStartReq = BitIn_LotStartReq; }
+	BOOL getBitIn_LotStartReq() { return m_BitIn_LotStartReq; }
+	void setBitIn_LotStartReq(BOOL BitIn_LotStartReq) { m_BitIn_LotStartReq = BitIn_LotStartReq; }
 
-	WORD getBitIn_LotEndReq() { return m_BitIn_LotEndReq; }
-	void setBitIn_LotEndReq(WORD BitIn_LotEndReq) { m_BitIn_LotEndReq = BitIn_LotEndReq; }
+	BOOL getBitIn_LotEndReq() { return m_BitIn_LotEndReq; }
+	void setBitIn_LotEndReq(BOOL BitIn_LotEndReq) { m_BitIn_LotEndReq = BitIn_LotEndReq; }
 
-	WORD getBitIn_AlarmResetReq() { return m_BitIn_AlarmResetReq; }
-	void setBitIn_AlarmResetReq(WORD BitIn_AlarmResetReq) { m_BitIn_AlarmResetReq = BitIn_AlarmResetReq; }
+	BOOL getBitIn_AlarmResetReq() { return m_BitIn_AlarmResetReq; }
+	void setBitIn_AlarmResetReq(BOOL BitIn_AlarmResetReq) { m_BitIn_AlarmResetReq = BitIn_AlarmResetReq; }
 
-	WORD getBitIn_AlarmNgAck() { return m_BitIn_AlarmNgAck; }
-	void setBitIn_AlarmNgAck(WORD BitIn_AlarmNgAck) { m_BitIn_AlarmNgAck = BitIn_AlarmNgAck; }
+	BOOL getBitIn_AlarmNgAck() { return m_BitIn_AlarmNgAck; }
+	void setBitIn_AlarmNgAck(BOOL BitIn_AlarmNgAck) { m_BitIn_AlarmNgAck = BitIn_AlarmNgAck; }
 
 	WORD getWordIn_RecipeNo() { return m_WordIn_RecipeNo; }
 	void setWordIn_RecipeNo(WORD WordIn_RecipeNo) { m_WordIn_RecipeNo = WordIn_RecipeNo; }

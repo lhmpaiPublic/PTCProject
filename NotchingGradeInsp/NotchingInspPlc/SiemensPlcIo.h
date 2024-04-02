@@ -6,12 +6,25 @@
 #pragma comment(lib, "LGIS.lib")
 #endif
 
+#define SIENENS_READBITDATA (MAX_SMS_BITIO_IN)
+#define SIENENS_READWORDDATA (MAX_SMS_WORDIO_IN)
+
+#define SIENENS_WRITEBITDATA (MAX_SMS_BITIO_OUT)
+#define SIENENS_WRITEWORDDATA (MAX_SMS_WORDIO_IN)
+
 class CSiemensPlcIo : public CPlcImp
 {
 public:
 	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort);
 	~CSiemensPlcIo();
 
+	//PLC 읽기 Data
+	short m_ReadBitData[SIENENS_READBITDATA];
+	short m_ReadWordData[SIENENS_READWORDDATA];
+
+	//PLC 쓰기 Data
+	short m_WriteBitData[SIENENS_WRITEBITDATA];
+	short m_WriteWordData[SIENENS_WRITEWORDDATA];
 public:
 	// write data
 	int WriteDataReg(int offset, short data[], int num);
@@ -40,9 +53,12 @@ public:
 	void SiemensPlcProc();
 
 	//PLC read Data Parser 함수
-	void ReadPlcDataParser(short* data, int len);
+	void ReadPlcBitDataParser(short* data);
+	void ReadPlcWordDataParser(short* data);
+
+
 	//PLC write Data Make 함수
-	void WritePlcDataMake(short data[], int len);
+	void WritePlcDataMake();
 
 	// 동기화 이벤트 객체
 	HANDLE getEvent_SiemensPlc() { return pEvent_SiemensPlc; }

@@ -4,6 +4,141 @@
 #include "LogDisplayDlg.h"
 
 
+// [ Siemens Address Start ]
+enum SmsBitIn
+{
+	enSmsBitIn_Alive = 0,
+	enSmsBitIn_Ready = 1,
+	enSmsBitIn_Run = 2,
+	enSmsBitIn_EncoderReset = 3,
+	enSmsBitIn_TabZeroReset = 4,
+	enSmsBitIn_InkMarkingActive = 5,
+	enSmsBitIn_ConnectZone = 6,
+	enSmsBitIn_RecipeChange = 7,
+	enSmsBitIn_LotStartReq = 8,
+	enSmsBitIn_LotEndReq = 9,
+	enSmsBitIn_AlarmResetReq = 10,
+	enSmsBitIn_AlarmNgAck = 11
+};
+enum SmsBitOut
+{
+	enSmsBitOut_Alive = 0,	// 
+	enSmsBitOut_Ready = 1,	// 
+	enSmsBitOut_EncoderSet = 2,	// 
+	enSmsBitOut_RecipeChangeAck = 3,	// 
+	enSmsBitOut_LotStartReqAck = 4,	// 
+	enSmsBitOut_LotEndReqAck = 5,	// 
+	enSmsBitOut_TabZeroReset = 6,	// 
+	enSmsBitOut_AlarmResetAck = 7,	// 
+	enSmsBitOut_AlarmNgResetAck = 8,	// 
+
+	enSmsBitOut_DiskSpaceWarning = 9,	// Address Map에 없음
+	enSmsBitOut_DiskSpaceAlarm = 10,	// Address Map에 없음
+};
+// Siemens Address End
+// Siemens Word Address Start
+enum SmsWordRead
+{
+	enSmsWordRead_RecipeNo = 0, 
+	enSmsWordRead_RecipeName = 1, 
+	enSmsWordRead_CELL_ID = 5, 
+	enSmsWordRead_FoilExpInTopTarget = 20, 
+	enSmsWordRead_FoilExpInBtmTarget = 21, 
+	enSmsWordRead_FoilExpOutTopTarget = 22, 
+	enSmsWordRead_FoilExpOutBtmTarget = 23, 
+	enSmsWordRead_FoilExpBothTopTarget = 24, 
+	enSmsWordRead_FoilExpBothBtmTarget = 25, 
+	enSmsWordRead_SpeterTopTarget = 26, 
+	enSmsWordRead_SpeterBtmTarget = 27, 
+
+	enSmsWordRead_PrmContinuousCnt = 30, 
+	enSmsWordRead_PrmSectorNgTabCnt = 31, 
+	enSmsWordRead_PrmSectorBaseCnt = 32, 
+
+	enSmsWordReadMaxSize = 33,
+};
+
+enum SmsWordWrite
+{
+	enSmsWordWrite_DataReportV1_Ea = 0, 
+	enSmsWordWrite_DataReportV2_OK = 1, 
+	enSmsWordWrite_DataReportV3_NG = 2, 
+	enSmsWordWrite_DataReportV4_OkRate = 3, 
+	enSmsWordWrite_DataReportV5_NgRate = 4, 
+	enSmsWordWrite_DataReportV6_RunRate = 5, 
+	enSmsWordWrite_Continue_Alarm_Cnt = 6, 
+	enSmsWordWrite_Heavy_Alarm_Cnt = 7, 
+
+
+	enSmsWordWrite_FoilExpInTop_Alarm_Cnt = 8, 
+	enSmsWordWrite_FoilExpInBtm_Alarm_Cnt = 9, 
+	enSmsWordWrite_FoilExpOutTop_Alarm_Cnt = 10, 
+	enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt = 11, 
+	enSmsWordWrite_FoilExpBothTop_Alarm_Cnt = 12, 
+	enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt = 13, 
+	enSmsWordWrite_SpeterTop_Alarm_Cnt = 14, 
+	enSmsWordWrite_SpeterBtm_Alarm_Cnt = 15, 
+
+	enSmsWordWrite_Top_Defect_Count_Real = 16, 
+	enSmsWordWrite_Btm_Defect_Count_Real = 17, 
+	enSmsWordWrite_Top_Defect_Count_LotEnd = 18, 
+	enSmsWordWrite_Btm_Defect_Count_LotEnd = 19, 
+
+
+
+	enSmsWordWrite_FoilExpInTopTarget = 20, 
+	enSmsWordWrite_FoilExpInBtmTarget = 21, 
+	enSmsWordWrite_FoilExpOutTopTarget = 22, 
+	enSmsWordWrite_FoilExpOutBtmTarget = 23, 
+	enSmsWordWrite_FoilExpBothTopTarget = 24, 
+	enSmsWordWrite_FoilExpBothBtmTarget = 25, 
+	enSmsWordWrite_SpeterTopTarget = 26, 
+	enSmsWordWrite_SpeterBtmTarget = 27, 
+
+	enSmsWordWrite_PrmContinuousCnt = 28, 
+	enSmsWordWrite_PrmSectorNgTabCnt = 29, 
+	enSmsWordWrite_PrmSectorBaseCnt = 30, 
+
+
+
+	enSmsWordWrite_AlarmExist = 40, 
+	enSmsWordWrite_AlarmCode_Buffer1 = 41, 
+	enSmsWordWrite_AlarmCode_Buffer2 = 42, 
+	enSmsWordWrite_AlarmCode_Buffer3 = 43,
+	enSmsWordWrite_AlarmCode_Buffer4 = 44, 
+	enSmsWordWrite_AlarmCode_Buffer5 = 45,
+	enSmsWordWrite_AlarmCode_Buffer6 = 46, 
+	enSmsWordWrite_AlarmCode_Buffer7 = 47, 
+	enSmsWordWrite_AlarmCode_Buffer8 = 48, 
+	enSmsWordWrite_AlarmCode_Buffer9 = 49,
+	enSmsWordWrite_AlarmCode_Buffer10 = 50, 
+	enSmsWordWrite_AlarmCode_Buffer11 = 51, 
+	enSmsWordWrite_AlarmCode_Buffer12 = 52, 
+	enSmsWordWrite_AlarmCode_Buffer13 = 53, 
+	enSmsWordWrite_AlarmCode_Buffer14 = 54, 
+	enSmsWordWrite_AlarmCode_Buffer15 = 55, 
+	enSmsWordWrite_AlarmCode_Buffer16 = 56, 
+	enSmsWordWrite_AlarmCode_Buffer17 = 57,
+	enSmsWordWrite_AlarmCode_Buffer18 = 58, 
+	enSmsWordWrite_AlarmCode_Buffer19 = 59, 
+	enSmsWordWrite_AlarmCode_Buffer20 = 60, 
+	enSmsWordWrite_AlarmCode_Buffer21 = 61, 
+	enSmsWordWrite_AlarmCode_Buffer22 = 62, 
+	enSmsWordWrite_AlarmCode_Buffer23 = 63,
+	enSmsWordWrite_AlarmCode_Buffer24 = 64,
+
+
+	en_SmsWordWrite_Cell_Trigger_ID = 80,
+	en_SmsWordWrite_Judge = 81,
+	en_SmsWordWrite_NG_Code = 82,
+
+
+	enSmsWordWrite_DuplicateNG_Cell_ID = 85,
+
+	enSmsWordWriteMaxSize = 149,
+
+};
+
 CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort)
 	: m_strIPAddress(strIPAddress)
 	, m_nPort(nPort)
@@ -79,18 +214,17 @@ void CSiemensPlcIo::SiemensPlcProc()
 	if (IsOpened())
 	{
 		//Read 영역 읽기
-		static const int ReadSize = MAX_SMS_BITIO_IN + MAX_SMS_WORDIO_IN;
-		short	ReadData[ReadSize];
-		ReadDataReg(AprData.m_System.m_nBitIn, ReadData, ReadSize);
+		short	ReadBitData[SIENENS_READBITDATA];
+		//읽기 영역 읽기
+		ReadDataReg(AprData.m_System.m_nBitIn, ReadBitData, SIENENS_READBITDATA);
 
-		ReadPlcDataParser(ReadData, ReadSize);
+		//읽은 Bit 데이터 파싱
+		ReadPlcBitDataParser(ReadBitData);
 
-		//Write 영역 쓰기
-		static const int WriteSize = MAX_SMS_BITIO_OUT + MAX_SMS_WORDIO_IN;
-		short	WriteData[WriteSize];
-		WritePlcDataMake(WriteData, WriteSize);
-
-		WriteDataReg(AprData.m_System.m_nBitOut, WriteData, WriteSize);
+		//쓰기 데이터 만들기
+		WritePlcDataMake();
+		//쓰기
+		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteBitData, SIENENS_WRITEBITDATA);
 	}
 	else
 	{
@@ -99,12 +233,35 @@ void CSiemensPlcIo::SiemensPlcProc()
 }
 
 //PLC read Data Parser 함수
-void CSiemensPlcIo::ReadPlcDataParser(short* data, int len)
+void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
+{
+#ifdef NEW_PLCTYPE
+	if (m_ReadBitData[enSmsBitIn_Alive] ^ data[enSmsBitIn_Alive]) setBitIn_Alive(data[enSmsBitIn_Alive] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_Ready] ^ data[enSmsBitIn_Ready]) setBitIn_Ready(data[enSmsBitIn_Ready] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_Run] ^ data[enSmsBitIn_Run]) setBitIn_Run(data[enSmsBitIn_Run] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_EncoderReset] ^ data[enSmsBitIn_EncoderReset]) setBitIn_EncoderReset(data[enSmsBitIn_EncoderReset] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_TabZeroReset] ^ data[enSmsBitIn_TabZeroReset]) setBitIn_TabZeroReset(data[enSmsBitIn_TabZeroReset] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_InkMarkingActive] ^ data[enSmsBitIn_InkMarkingActive]) setBitIn_InkMarkingActive(data[enSmsBitIn_InkMarkingActive] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_ConnectZone] ^ data[enSmsBitIn_ConnectZone]) setBitIn_ConnectZone(data[enSmsBitIn_ConnectZone] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_RecipeChange] ^ data[enSmsBitIn_RecipeChange]) setBitIn_RecipeChange(data[enSmsBitIn_RecipeChange] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_LotStartReq] ^ data[enSmsBitIn_LotStartReq]) setBitIn_LotStartReq(data[enSmsBitIn_LotStartReq] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_LotEndReq] ^ data[enSmsBitIn_LotEndReq]) setBitIn_LotEndReq(data[enSmsBitIn_LotEndReq] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_AlarmResetReq] ^ data[enSmsBitIn_AlarmResetReq]) setBitIn_AlarmResetReq(data[enSmsBitIn_AlarmResetReq] & 0x1);
+	if (m_ReadBitData[enSmsBitIn_AlarmNgAck] ^ data[enSmsBitIn_AlarmNgAck]) setBitIn_AlarmNgAck(data[enSmsBitIn_AlarmNgAck] & 0x1);
+#endif //NEW_PLCTYPE
+
+	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBITDATA);
+}
+
+void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 {
 
+
+	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBITDATA);
 }
+
 //PLC write Data Make 함수
-void CSiemensPlcIo::WritePlcDataMake(short data[], int len)
+void CSiemensPlcIo::WritePlcDataMake()
 {
 
 }
