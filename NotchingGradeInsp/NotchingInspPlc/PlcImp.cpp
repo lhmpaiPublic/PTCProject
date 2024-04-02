@@ -20,8 +20,8 @@ CPlcImp::CPlcImp()
 	m_BitIn_AlarmNgAck = 0;
 
 	m_WordIn_RecipeNo = 0;
-	m_WordIn_RecipeName = 0;
-	m_WordIn_CELL_ID = 0;
+	m_WordIn_RecipeName = _T("");
+	m_WordIn_CELL_ID = _T("");
 
 	m_WordIn_FoilExpInTopTarget = 0;
 	m_WordIn_FoilExpInBtmTarget = 0;

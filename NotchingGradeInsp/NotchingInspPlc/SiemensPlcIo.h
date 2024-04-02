@@ -6,8 +6,14 @@
 #pragma comment(lib, "LGIS.lib")
 #endif
 
+//지멘스 BITE 영역 읽기 갯수
 #define SIENENS_READBITDATA (MAX_SMS_BITIO_IN)
-#define SIENENS_READWORDDATA (MAX_SMS_WORDIO_IN)
+//지멘스 WORD 영역 읽기 갯수
+#define SIENENS_READWORDDATA 33 //(MAX_SMS_WORDIO_IN)
+//지멘스 Recipe Name  갯수
+#define SIEMENS_READRECIPENAME 4
+//지멘스 CELL ID 갯수
+#define SIEMENS_READCELLID 10
 
 #define SIENENS_WRITEBITDATA (MAX_SMS_BITIO_OUT)
 #define SIENENS_WRITEWORDDATA (MAX_SMS_WORDIO_IN)
@@ -55,6 +61,10 @@ public:
 	//PLC read Data Parser 함수
 	void ReadPlcBitDataParser(short* data);
 	void ReadPlcWordDataParser(short* data);
+	//레시피 명을 만든다.
+	CString MakeRecipeName(short* data);
+	//CELL ID를 만든다.
+	CString MakeCellId(short* data);
 
 
 	//PLC write Data Make 함수

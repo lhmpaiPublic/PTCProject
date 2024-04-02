@@ -21,8 +21,8 @@ class CPlcImp
 	BOOL m_BitIn_AlarmNgAck;
 
 	WORD m_WordIn_RecipeNo;
-	WORD m_WordIn_RecipeName;
-	WORD m_WordIn_CELL_ID;
+	CString m_WordIn_RecipeName;
+	CString m_WordIn_CELL_ID;
 
 	WORD m_WordIn_FoilExpInTopTarget;
 	WORD m_WordIn_FoilExpInBtmTarget;
@@ -178,11 +178,11 @@ public:
 	WORD getWordIn_RecipeNo() { return m_WordIn_RecipeNo; }
 	void setWordIn_RecipeNo(WORD WordIn_RecipeNo) { m_WordIn_RecipeNo = WordIn_RecipeNo; }
 
-	WORD getWordIn_RecipeName() { return m_WordIn_RecipeName; }
-	void setWordIn_RecipeName(WORD WordIn_RecipeName) { m_WordIn_RecipeName = WordIn_RecipeName; }
+	CString getWordIn_RecipeName() { return m_WordIn_RecipeName; }
+	void setWordIn_RecipeName(CString WordIn_RecipeName) { m_WordIn_RecipeName = WordIn_RecipeName; }
 
-	WORD getWordIn_CELL_ID() { return m_WordIn_CELL_ID; }
-	void setWordIn_CELL_ID(WORD WordIn_CELL_ID) { m_WordIn_CELL_ID = WordIn_CELL_ID; }
+	CString getWordIn_CELL_ID() { return m_WordIn_CELL_ID; }
+	void setWordIn_CELL_ID(CString WordIn_CELL_ID) { m_WordIn_CELL_ID = WordIn_CELL_ID; }
 
 	WORD getWordIn_FoilExpInTopTarget() { return m_WordIn_FoilExpInTopTarget; }
 	void setWordIn_FoilExpInTopTarget(WORD WordIn_FoilExpInTopTarget) { m_WordIn_FoilExpInTopTarget = WordIn_FoilExpInTopTarget; }

@@ -213,22 +213,30 @@ void CSiemensPlcIo::SiemensPlcProc()
 {
 	if (IsOpened())
 	{
-		//Read 영역 읽기
+		//Read bit 영역 읽기
 		short	ReadBitData[SIENENS_READBITDATA];
-		//읽기 영역 읽기
+		//bit 읽기 영역 읽기
 		ReadDataReg(AprData.m_System.m_nBitIn, ReadBitData, SIENENS_READBITDATA);
-
 		//읽은 Bit 데이터 파싱
-		ReadPlcBitDataParser(ReadBitData);
+		if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
+		{
+			ReadPlcBitDataParser(ReadBitData);
+		}
+
+		//Read word 영역 읽기
+		short	ReadWordData[SIENENS_READWORDDATA];
+		//word 읽기 영역 읽기
+		ReadDataReg(AprData.m_System.m_nWordIn, ReadWordData, SIENENS_READWORDDATA);
+		//읽은 Word 데이터 파싱
+		if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
+		{
+			ReadPlcWordDataParser(ReadWordData);
+		}
 
 		//쓰기 데이터 만들기
 		WritePlcDataMake();
 		//쓰기
 		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteBitData, SIENENS_WRITEBITDATA);
-	}
-	else
-	{
-
 	}
 }
 
@@ -253,11 +261,82 @@ void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBITDATA);
 }
 
+CString CSiemensPlcIo::MakeRecipeName(short* data)
+{
+	int i;
+	int Cnt = 0;
+	CString strBuffer;
+	int nMax = SIEMENS_READRECIPENAME;
+
+	for (i = 0, Cnt = 0; i < nMax; i++, Cnt += 2)
+	{
+		BYTE btTemp = (BYTE)(*data & 0xff);
+		strBuffer += _T(" ");
+		strBuffer.SetAt(Cnt, (char)btTemp);
+
+		btTemp = (BYTE)((*data >> 8) & 0xff);
+		strBuffer += _T(" ");
+		strBuffer.SetAt((Cnt + 1), (char)btTemp);
+
+		data++;
+	}
+	strBuffer.TrimRight();
+	strBuffer.TrimLeft();
+
+	return strBuffer;
+}
+
+//CELL ID를 만든다.
+CString CSiemensPlcIo::MakeCellId(short* data)
+{
+	int i;
+	int Cnt = 0;
+	CString strBuffer;
+	int nMax = SIEMENS_READCELLID;
+
+	for (i = 0, Cnt = 0; i < nMax; i++, Cnt += 2)
+	{
+		BYTE btTemp = (BYTE)(*data & 0xff);
+		strBuffer += _T(" ");
+		strBuffer.SetAt(Cnt, (char)btTemp);
+
+		btTemp = (BYTE)((*data >> 8) & 0xff);
+		strBuffer += _T(" ");
+		strBuffer.SetAt((Cnt + 1), (char)btTemp);
+
+		data++;
+	}
+
+	strBuffer.TrimRight();
+	strBuffer.TrimLeft();
+	return strBuffer;
+}
+
 void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 {
+#ifdef NEW_PLCTYPE
+	if (m_ReadWordData[enSmsWordRead_RecipeNo] ^ data[enSmsWordRead_RecipeNo]) setWordIn_RecipeNo(data[enSmsWordRead_RecipeNo] & 0xffff);
+	if ((m_ReadWordData[enSmsWordRead_RecipeName] ^ data[enSmsWordRead_RecipeName]) |
+		(m_ReadWordData[enSmsWordRead_RecipeName + 1] ^ data[enSmsWordRead_RecipeName + 1]) |
+		(m_ReadWordData[enSmsWordRead_RecipeName + 2] ^ data[enSmsWordRead_RecipeName + 2]) |
+		(m_ReadWordData[enSmsWordRead_RecipeName + 3] ^ data[enSmsWordRead_RecipeName + 3]))
+		setWordIn_RecipeName(MakeRecipeName(&data[enSmsWordRead_RecipeName]));
 
+	if ((m_ReadWordData[enSmsWordRead_CELL_ID] ^ data[enSmsWordRead_CELL_ID]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 1] ^ data[enSmsWordRead_CELL_ID + 1]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 2] ^ data[enSmsWordRead_CELL_ID + 2]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 3] ^ data[enSmsWordRead_CELL_ID + 3]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 4] ^ data[enSmsWordRead_CELL_ID + 4]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 5] ^ data[enSmsWordRead_CELL_ID + 5]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 6] ^ data[enSmsWordRead_CELL_ID + 6]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 7] ^ data[enSmsWordRead_CELL_ID + 7]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 8] ^ data[enSmsWordRead_CELL_ID + 8]) |
+		(m_ReadWordData[enSmsWordRead_CELL_ID + 9] ^ data[enSmsWordRead_CELL_ID + 9]))
+		setWordIn_CELL_ID(MakeCellId(&data[enSmsWordRead_CELL_ID]));
 
-	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBITDATA);
+#endif //NEW_PLCTYPE
+
+	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORDDATA);
 }
 
 //PLC write Data Make 함수
