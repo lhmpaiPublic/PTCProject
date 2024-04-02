@@ -90,9 +90,16 @@ public:
 	afx_msg void OnBnClickedRadRun();
 	afx_msg void OnBnClickedRadStop();
 
+	//카운터 보드 네트워크 에러 메시지 함수
+	afx_msg LRESULT OnCountBordError(WPARAM wParam, LPARAM lParam);
+
 public :
+	//시작/정지 버튼 상태 변경
 	void ChangeState(int nStatus);
 	void EnableChild(BOOL bRunMode );
+
+	//카운터보드에서 Stop 클릭 상태를 알기 위해서 정의 됨
+	BOOL GetStopCheckFALSE();
 
 	void DisplayLanguage();
 	afx_msg void OnBnClickedBtnTactTime();
@@ -113,4 +120,5 @@ public :
 	afx_msg BOOL CheckDevice();
 #endif
 
+	virtual BOOL DestroyWindow();
 };

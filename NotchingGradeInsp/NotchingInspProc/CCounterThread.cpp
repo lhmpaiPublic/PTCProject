@@ -8,6 +8,8 @@
 #include "WinTool.h"
 #include "TriggerSocket.h"
 
+#include "ModeDlg.h"
+
 std::vector<MarkSendInfo> CCounterThread::m_MarkSendInfoData;
 typedef std::vector<MarkSendInfo>::iterator MarkSendInfoData_iterator;
 
@@ -450,6 +452,15 @@ void CCounterThread::isConnectTrigger()
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
 
 		m_bCountBordConnection = 2;
+
+		delete m_TriggerSocket;
+		m_TriggerSocket = NULL;
+	}
+
+	if (UIMGR->getModeDlg() && UIMGR->getModeDlg()->m_hWnd && UIMGR->getModeDlg()->GetStopCheckFALSE() && m_bCountBordConnection == 2)
+	{
+		//컨넥션이 끊어 졌을 때 Stop 클릭하도록 메시지를 보낸다.
+		UIMGR->getModeDlg()->PostMessage(WM_COUNTBORDERROR);
 	}
 }
 

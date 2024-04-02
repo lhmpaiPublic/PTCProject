@@ -12,6 +12,7 @@
 
 class CNotchingGradeInspView;
 class CMainFrame;
+class CModeDlg;
 class CUiManager
 {
 	//자신의 전역 객체 생성
@@ -20,6 +21,7 @@ class CUiManager
 	//class 인스턴스 객체
 	CNotchingGradeInspView* m_pNotchingGradeInspView;
 	CMainFrame* m_pMainFrame;
+	CModeDlg* m_pModeDlg;
 public:
 	CUiManager();
 	virtual ~CUiManager() ;
@@ -39,15 +41,18 @@ public:
 	//class 인스턴스 객체
 	CNotchingGradeInspView* getNotchingGradeInspView() { return m_pNotchingGradeInspView; }
 	CMainFrame* getMainFrame() { return m_pMainFrame; }
+	CModeDlg* getModeDlg() { return m_pModeDlg; }
 
 	//set
 	//class 인스턴스 객체
 	void setNotchingGradeInspView(CNotchingGradeInspView* pNotchingGradeInspView) { m_pNotchingGradeInspView = pNotchingGradeInspView; }
 	void setMainFrame(CMainFrame* pMainFrame) { m_pMainFrame = pMainFrame; }
+	void setModeDlg(CModeDlg* pModeDlg) { m_pModeDlg = pModeDlg; }
 
 	//del
 	void delNotchingGradeInspView() { m_pNotchingGradeInspView = NULL; }
 	void delMainFrame() { m_pMainFrame = NULL; }
+	void delModeDlg() { m_pModeDlg = NULL; }
 
 };
 

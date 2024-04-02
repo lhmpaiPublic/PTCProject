@@ -92,6 +92,9 @@ CModeDlg::CModeDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=
 	: CDialogEx(IDD_DLG_MODE, pParent)
 	, m_bDispSwitch(FALSE)
 {
+	//생성 시 인스턴스 객체 세팅
+	UIMGR->setModeDlg(this);
+
 	m_pParent = pParent;
 	m_pView = pView;
 	m_pDoc = NULL;
@@ -174,10 +177,19 @@ BEGIN_MESSAGE_MAP(CModeDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_RAD_STOP, &CModeDlg::OnBnClickedRadStop)
 	ON_BN_CLICKED(IDC_BTN_TACT_TIME, &CModeDlg::OnBnClickedBtnTactTime)
 	ON_BN_CLICKED(IDC_CHK_SWITCH_DISP, &CModeDlg::OnBnClickedChkSwitchDisp)
+	ON_MESSAGE(WM_COUNTBORDERROR, OnCountBordError)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
+//USER MESSAGE
+//카운터 보드 네트워크 에러 처리
+LRESULT CModeDlg::OnCountBordError(WPARAM wParam, LPARAM lParam)
+{
+	OnBnClickedRadStop();
+	ChangeState(enInspStop);
 
+	return 0;
+}
 // CModeDlg 메시지 처리기
 
 void CModeDlg::OnSize(UINT nType, int cx, int cy)
@@ -1018,6 +1030,11 @@ void CModeDlg::OnTimer(UINT_PTR nIDEvent)
 	CDialogEx::OnTimer(nIDEvent);
 }
 
+BOOL CModeDlg::GetStopCheckFALSE()
+{
+	return (((CButton*)GetDlgItem(IDC_RAD_STOP))->GetCheck() == FALSE);
+}
+
 BOOL CModeDlg::CheckDevice()
 {
 	OutputDebugString("[CModeDlg] CheckDevice Start \n");
@@ -1036,4 +1053,12 @@ BOOL CModeDlg::CheckDevice()
 	}
 
 	return FALSE;
+}
+
+
+BOOL CModeDlg::DestroyWindow()
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+
+	return CDialogEx::DestroyWindow();
 }
