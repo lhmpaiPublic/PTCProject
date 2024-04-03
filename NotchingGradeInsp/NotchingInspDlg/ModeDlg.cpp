@@ -468,10 +468,10 @@ void CModeDlg::OnBnClickedBtnExit()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if( MessageBox( _T("Do you want to exit the application?"), _T("NotchingGradeInsp"), MB_ICONQUESTION | MB_YESNO) == IDYES )
 	{
-		AprData.SaveErrorLog(_T("============================= SHUTDWON PROGRAM ============================="));
-		AprData.SaveDebugLog_Format(_T("============================= SHUTDWON PROGRAM ============================="));
+		AprData.SaveErrorLog(_T("============================= SHUTDOWN PROGRAM ============================="));
+		AprData.SaveDebugLog_Format(_T("============================= SHUTDOWN PROGRAM ============================="));
 
-		LOGDISPLAY_SPEC(8)(_T("## SHUTDWON PROGRAM ============================="));
+		LOGDISPLAY_SPEC(8)(_T("## SHUTDOWN PROGRAM ============================="));
 
 		AfxGetMainWnd()->PostMessageA(WM_CLOSE);
 	}
