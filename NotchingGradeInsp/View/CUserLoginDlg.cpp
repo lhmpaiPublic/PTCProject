@@ -16,7 +16,7 @@ CUserLoginDlg::CUserLoginDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DLG_USER_LOGIN, pParent)
 {
 	bLogin = FALSE;
-
+	
 	LoadPassword();
 }
 
@@ -94,4 +94,13 @@ void CUserLoginDlg::LoadPassword()
 			strPassword[i].Format(_T("%s"), buff);
 		}
 	}
+}
+
+BOOL CUserLoginDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	GetDlgItem(IDC_ED_PASSWORD)->SetFocus();
+
+	return 0;
 }

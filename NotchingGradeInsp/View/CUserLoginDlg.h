@@ -32,4 +32,6 @@ public:
 	void LoadPassword();
 
 	CString strPassword[UserModeDefine::enMax];
+
+	virtual BOOL OnInitDialog();
 };
