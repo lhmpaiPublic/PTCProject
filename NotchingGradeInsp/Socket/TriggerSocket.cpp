@@ -69,7 +69,6 @@ void CTriggerSocket::OnClose( int nErrorCode )
 	m_pTriggerSocketCall->OnConnectSocket(FALSE);
 
 	CAsyncSocket::OnClose( nErrorCode ) ;
-	Close() ;
 }
 
 
@@ -92,7 +91,6 @@ void CTriggerSocket::OnConnect( int nErrorCode )
 
 		m_pTriggerSocketCall->OnConnectSocket(FALSE);
 
-		Close();
 	}
 
 	CAsyncSocket::OnConnect( nErrorCode ) ;
@@ -113,8 +111,6 @@ void CTriggerSocket::OnReceive(int nErrorCode)
 			m_bDisConnected = TRUE;
 
 			m_pTriggerSocketCall->OnConnectSocket(FALSE);
-
-			Close();
 		}
 	}
 	else
@@ -125,8 +121,6 @@ void CTriggerSocket::OnReceive(int nErrorCode)
 			m_bDisConnected = TRUE;
 
 			m_pTriggerSocketCall->OnConnectSocket(FALSE);
-
-			Close();
 		}
 		else
 		{
@@ -150,8 +144,6 @@ void CTriggerSocket::OnSend( int nErrorCode )
 		m_bConnected = FALSE ;
 		m_bDisConnected = TRUE ;
 		m_pTriggerSocketCall->OnConnectSocket(FALSE);
-
-		Close();
 	}
 	::EnterCriticalSection(&m_csSendPacket);
 	SendRetry();
