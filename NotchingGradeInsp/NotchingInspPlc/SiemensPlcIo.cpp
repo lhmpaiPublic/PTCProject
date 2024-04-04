@@ -22,18 +22,18 @@ enum SmsBitIn
 };
 enum SmsBitOut
 {
-	enSmsBitOut_Alive = 0,	// 
-	enSmsBitOut_Ready = 1,	// 
-	enSmsBitOut_EncoderSet = 2,	// 
-	enSmsBitOut_RecipeChangeAck = 3,	// 
-	enSmsBitOut_LotStartReqAck = 4,	// 
-	enSmsBitOut_LotEndReqAck = 5,	// 
-	enSmsBitOut_TabZeroReset = 6,	// 
-	enSmsBitOut_AlarmResetAck = 7,	// 
-	enSmsBitOut_AlarmNgResetAck = 8,	// 
+	enSmsBitOut_Alive = 0,
+	enSmsBitOut_Ready = 1,
+	enSmsBitOut_EncoderSet = 2,
+	enSmsBitOut_RecipeChangeAck = 3,
+	enSmsBitOut_LotStartReqAck = 4,
+	enSmsBitOut_LotEndReqAck = 5,
+	enSmsBitOut_TabZeroReset = 6,
+	enSmsBitOut_AlarmResetAck = 7,
+	enSmsBitOut_AlarmNgResetAck = 8,
 
-	enSmsBitOut_DiskSpaceWarning = 9,	// Address Map에 없음
-	enSmsBitOut_DiskSpaceAlarm = 10,	// Address Map에 없음
+	enSmsBitOut_DiskSpaceWarning = 9,
+	enSmsBitOut_DiskSpaceAlarm = 10,
 };
 // Siemens Address End
 // Siemens Word Address Start
@@ -54,8 +54,6 @@ enum SmsWordRead
 	enSmsWordRead_PrmContinuousCnt = 30, 
 	enSmsWordRead_PrmSectorNgTabCnt = 31, 
 	enSmsWordRead_PrmSectorBaseCnt = 32, 
-
-	enSmsWordReadMaxSize = 33,
 };
 
 enum SmsWordWrite
@@ -66,10 +64,9 @@ enum SmsWordWrite
 	enSmsWordWrite_DataReportV4_OkRate = 3, 
 	enSmsWordWrite_DataReportV5_NgRate = 4, 
 	enSmsWordWrite_DataReportV6_RunRate = 5, 
+
 	enSmsWordWrite_Continue_Alarm_Cnt = 6, 
 	enSmsWordWrite_Heavy_Alarm_Cnt = 7, 
-
-
 	enSmsWordWrite_FoilExpInTop_Alarm_Cnt = 8, 
 	enSmsWordWrite_FoilExpInBtm_Alarm_Cnt = 9, 
 	enSmsWordWrite_FoilExpOutTop_Alarm_Cnt = 10, 
@@ -84,8 +81,6 @@ enum SmsWordWrite
 	enSmsWordWrite_Top_Defect_Count_LotEnd = 18, 
 	enSmsWordWrite_Btm_Defect_Count_LotEnd = 19, 
 
-
-
 	enSmsWordWrite_FoilExpInTopTarget = 20, 
 	enSmsWordWrite_FoilExpInBtmTarget = 21, 
 	enSmsWordWrite_FoilExpOutTopTarget = 22, 
@@ -98,8 +93,6 @@ enum SmsWordWrite
 	enSmsWordWrite_PrmContinuousCnt = 28, 
 	enSmsWordWrite_PrmSectorNgTabCnt = 29, 
 	enSmsWordWrite_PrmSectorBaseCnt = 30, 
-
-
 
 	enSmsWordWrite_AlarmExist = 40, 
 	enSmsWordWrite_AlarmCode_Buffer1 = 41, 
@@ -127,11 +120,9 @@ enum SmsWordWrite
 	enSmsWordWrite_AlarmCode_Buffer23 = 63,
 	enSmsWordWrite_AlarmCode_Buffer24 = 64,
 
-
 	en_SmsWordWrite_Cell_Trigger_ID = 80,
 	en_SmsWordWrite_Judge = 81,
 	en_SmsWordWrite_NG_Code = 82,
-
 
 	enSmsWordWrite_DuplicateNG_Cell_ID = 85,
 
@@ -148,6 +139,13 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 {
 	m_pThread_SiemensPlc = NULL;
 	pEvent_SiemensPlc = NULL;
+	//Read Data 버퍼 초기화
+	memset(m_ReadBitData, 0, sizeof(short) * SIENENS_READBIT);
+	memset(m_ReadWordData, 0, sizeof(short) * SIENENS_READWORD_MAX);
+
+	//Write Data 버퍼 초기화
+	memset(m_WriteData, 0, sizeof(short) * SIENENS_WRITEBITWORD_MAX);
+
 	if (OpenPlcIo() == 0)
 	{
 		//슬레이브 아이디 
@@ -214,9 +212,9 @@ void CSiemensPlcIo::SiemensPlcProc()
 	if (IsOpened())
 	{
 		//Read bit 영역 읽기
-		short	ReadBitData[SIENENS_READBITDATA];
+		short	ReadBitData[SIENENS_READBIT];
 		//bit 읽기 영역 읽기
-		ReadDataReg(AprData.m_System.m_nBitIn, ReadBitData, SIENENS_READBITDATA);
+		ReadDataReg(AprData.m_System.m_nBitIn, ReadBitData, SIENENS_READBIT);
 		//읽은 Bit 데이터 파싱
 		if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
 		{
@@ -224,9 +222,9 @@ void CSiemensPlcIo::SiemensPlcProc()
 		}
 
 		//Read word 영역 읽기
-		short	ReadWordData[SIENENS_READWORDDATA];
+		short	ReadWordData[SIENENS_READWORD_MAX];
 		//word 읽기 영역 읽기
-		ReadDataReg(AprData.m_System.m_nWordIn, ReadWordData, SIENENS_READWORDDATA);
+		ReadDataReg(AprData.m_System.m_nWordIn, ReadWordData, SIENENS_READWORD_MAX);
 		//읽은 Word 데이터 파싱
 		if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
 		{
@@ -236,7 +234,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		//쓰기 데이터 만들기
 		WritePlcDataMake();
 		//쓰기
-		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteBitData, SIENENS_WRITEBITDATA);
+		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteData, SIENENS_WRITEBITWORD_MAX);
 	}
 }
 
@@ -258,7 +256,7 @@ void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 	if (m_ReadBitData[enSmsBitIn_AlarmNgAck] ^ data[enSmsBitIn_AlarmNgAck]) setBitIn_AlarmNgAck(data[enSmsBitIn_AlarmNgAck] & 0x1);
 #endif //NEW_PLCTYPE
 
-	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBITDATA);
+	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBIT);
 }
 
 CString CSiemensPlcIo::MakeRecipeName(short* data)
@@ -333,16 +331,155 @@ void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 		(m_ReadWordData[enSmsWordRead_CELL_ID + 8] ^ data[enSmsWordRead_CELL_ID + 8]) |
 		(m_ReadWordData[enSmsWordRead_CELL_ID + 9] ^ data[enSmsWordRead_CELL_ID + 9]))
 		setWordIn_CELL_ID(MakeCellId(&data[enSmsWordRead_CELL_ID]));
+	if (m_ReadWordData[enSmsWordRead_FoilExpInTopTarget] ^ data[enSmsWordRead_FoilExpInTopTarget]) setWordIn_FoilExpInTopTarget(data[enSmsWordRead_FoilExpInTopTarget] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_FoilExpInBtmTarget] ^ data[enSmsWordRead_FoilExpInBtmTarget]) setWordIn_FoilExpInBtmTarget(data[enSmsWordRead_FoilExpInBtmTarget] & 0xffff);
+
+	if (m_ReadWordData[enSmsWordRead_FoilExpOutTopTarget] ^ data[enSmsWordRead_FoilExpOutTopTarget]) setWordIn_FoilExpOutTopTarget(data[enSmsWordRead_FoilExpOutTopTarget] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_FoilExpOutBtmTarget] ^ data[enSmsWordRead_FoilExpOutBtmTarget]) setWordIn_FoilExpOutBtmTarget(data[enSmsWordRead_FoilExpOutBtmTarget] & 0xffff);
+
+	if (m_ReadWordData[enSmsWordRead_FoilExpBothTopTarget] ^ data[enSmsWordRead_FoilExpBothTopTarget]) setWordIn_FoilExpBothTopTarget(data[enSmsWordRead_FoilExpBothTopTarget] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_FoilExpBothBtmTarget] ^ data[enSmsWordRead_FoilExpBothBtmTarget]) setWordIn_FoilExpBothBtmTarget(data[enSmsWordRead_FoilExpBothBtmTarget] & 0xffff);
+
+	if (m_ReadWordData[enSmsWordRead_SpeterTopTarget] ^ data[enSmsWordRead_SpeterTopTarget]) setWordIn_SpeterTopTarget(data[enSmsWordRead_SpeterTopTarget] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_SpeterBtmTarget] ^ data[enSmsWordRead_SpeterBtmTarget]) setWordIn_SpeterBtmTarget(data[enSmsWordRead_SpeterBtmTarget] & 0xffff);
+
+	if (m_ReadWordData[enSmsWordRead_PrmContinuousCnt] ^ data[enSmsWordRead_PrmContinuousCnt]) setWordIn_PrmContinuousCnt(data[enSmsWordRead_PrmContinuousCnt] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_PrmSectorNgTabCnt] ^ data[enSmsWordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enSmsWordRead_PrmSectorNgTabCnt] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_PrmSectorBaseCnt] ^ data[enSmsWordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enSmsWordRead_PrmSectorBaseCnt] & 0xffff);
 
 #endif //NEW_PLCTYPE
 
-	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORDDATA);
+	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORD_MAX);
 }
 
 //PLC write Data Make 함수
-void CSiemensPlcIo::WritePlcDataMake()
+int CSiemensPlcIo::WritePlcDataMake()
 {
+	//Write Data Block Num
+	int ret = 0;
+#ifdef NEW_PLCTYPE
+	if (isBitOut_Alive())
+	{ret = enSmsBitOut_Alive; m_WriteData[ret] = getBitOut_Alive(); }
 
+	if (isBitOut_Ready())
+	{ret = enSmsBitOut_Ready; m_WriteData[ret] = getBitOut_Ready(); }
+
+	if (isBitOut_EncoderSet())
+	{ret = enSmsBitOut_EncoderSet; m_WriteData[ret] = getBitOut_EncoderSet(); }
+
+	if (isBitOut_RecipeChangeAck())
+	{ret = enSmsBitOut_RecipeChangeAck; m_WriteData[ret] = getBitOut_RecipeChangeAck(); }
+
+	if (isBitOut_LotStartReqAck())
+	{ret = enSmsBitOut_LotStartReqAck; m_WriteData[ret] = getBitOut_LotStartReqAck(); }
+
+	if (isBitOut_LotEndReqAck())
+	{ret = enSmsBitOut_LotEndReqAck; m_WriteData[ret] = getBitOut_LotEndReqAck(); }
+
+	if (isBitOut_TabZeroReset())
+	{ret = enSmsBitOut_TabZeroReset; m_WriteData[ret] = getBitOut_TabZeroReset(); }
+
+	if (isBitOut_AlarmResetAck())
+	{ret = enSmsBitOut_AlarmResetAck; m_WriteData[ret] = getBitOut_AlarmResetAck(); }
+
+	if (isBitOut_AlarmNgResetAck())
+	{ret = enSmsBitOut_AlarmNgResetAck; m_WriteData[ret] = getBitOut_AlarmNgResetAck(); }
+
+	if (isBitOut_DiskSpaceWarning())
+	{ret = enSmsBitOut_DiskSpaceWarning; m_WriteData[ret] = getBitOut_DiskSpaceWarning(); }
+
+	if (isBitOut_DiskSpaceAlarm())
+	{ret = enSmsBitOut_DiskSpaceAlarm; m_WriteData[ret] = getBitOut_DiskSpaceAlarm(); }
+
+	if (isWordOut_DataReportV1_Ea())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV1_Ea;  m_WriteData[ret] = getWordOut_DataReportV1_Ea(); }
+
+	if (isWordOut_DataReportV2_OK())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV2_OK; m_WriteData[ret] = getWordOut_DataReportV2_OK(); }
+
+	if (isWordOut_DataReportV3_NG())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV3_NG; m_WriteData[ret] = getWordOut_DataReportV3_NG(); }
+
+	if (isWordOut_DataReportV4_OkRate())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV4_OkRate; m_WriteData[ret] = getWordOut_DataReportV4_OkRate(); }
+
+	if (isWordOut_DataReportV5_NgRate())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV5_NgRate; m_WriteData[ret] = getWordOut_DataReportV5_NgRate(); }
+
+	if (isWordOut_DataReportV6_RunRate())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV6_RunRate; m_WriteData[ret] = getWordOut_DataReportV6_RunRate(); }
+
+	if (isWordOut_Heavy_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Heavy_Alarm_Cnt; m_WriteData[ret] = getWordOut_Heavy_Alarm_Cnt(); }
+
+	if (isWordOut_FoilExpInTop_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpInTop_Alarm_Cnt;m_WriteData[ret] = getWordOut_FoilExpInTop_Alarm_Cnt();  }
+
+	if (isWordOut_FoilExpInBtm_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpInBtm_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpInBtm_Alarm_Cnt(); }
+
+	if (isWordOut_FoilExpOutTop_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpOutTop_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpOutTop_Alarm_Cnt(); }
+
+	if (isWordOut_FoilExpOutBtm_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpOutBtm_Alarm_Cnt(); }
+
+	if (isWordOut_FoilExpBothTop_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpBothTop_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpBothTop_Alarm_Cnt(); }
+
+	if (isWordOut_FoilExpBothBtm_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpBothBtm_Alarm_Cnt(); }
+
+	if (isWordOut_SpeterTop_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_SpeterTop_Alarm_Cnt; m_WriteData[ret] = getWordOut_SpeterTop_Alarm_Cnt(); }
+
+	if (isWordOut_SpeterBtm_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_SpeterBtm_Alarm_Cnt; m_WriteData[ret] = getWordOut_SpeterBtm_Alarm_Cnt(); }
+
+	if (isWordOut_Top_Defect_Count_Real())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Top_Defect_Count_Real; m_WriteData[ret] = getWordOut_Top_Defect_Count_Real(); }
+
+	if (isWordOut_Btm_Defect_Count_Real())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Btm_Defect_Count_Real; m_WriteData[ret] = getWordOut_Btm_Defect_Count_Real(); }
+
+	if (isWordOut_Top_Defect_Count_LotEnd())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Top_Defect_Count_LotEnd; m_WriteData[ret] = getWordOut_Top_Defect_Count_LotEnd(); }
+
+	if (isWordOut_Btm_Defect_Count_LotEnd())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Btm_Defect_Count_LotEnd; m_WriteData[ret] = getWordOut_Btm_Defect_Count_LotEnd(); }
+
+	if (isWordOut_FoilExpInTopTarget())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpInTopTarget; m_WriteData[ret] = getWordOut_FoilExpInTopTarget(); }
+
+	if (isWordOut_FoilExpInBtmTarget())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpInBtmTarget; m_WriteData[ret] = getWordOut_FoilExpInBtmTarget(); }
+
+	if (isWordOut_FoilExpOutTopTarget())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpOutTopTarget; m_WriteData[ret] = getWordOut_FoilExpOutTopTarget(); }
+
+	if (isWordOut_FoilExpOutBtmTarget())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpOutBtmTarget; m_WriteData[ret] = getWordOut_FoilExpOutBtmTarget(); }
+
+	if (isWordOut_FoilExpBothTopTarget())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpBothTopTarget; m_WriteData[ret] = getWordOut_FoilExpBothTopTarget(); }
+
+	if (isWordOut_FoilExpBothBtmTarget())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpBothBtmTarget; m_WriteData[ret] = getWordOut_FoilExpBothBtmTarget(); }
+
+	if (isWordOut_SpeterTopTarget())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_SpeterTopTarget; m_WriteData[ret] = getWordOut_SpeterTopTarget(); }
+
+	if (isWordOut_SpeterBtmTarget())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_SpeterBtmTarget; m_WriteData[ret] = getWordOut_SpeterBtmTarget(); }
+
+	if (isWordOut_PrmContinuousCnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_PrmContinuousCnt; m_WriteData[ret] = getWordOut_PrmContinuousCnt(); }
+
+#endif //NEW_PLCTYPE
+
+	//버퍼 block 위치에 + 1 = 크기(size)
+	//쓰기 영역에 쓸 데이터 크기
+	return ret+1;
 }
 
 void CSiemensPlcIo::SetSlaveId(int nId)

@@ -6,17 +6,46 @@
 #pragma comment(lib, "LGIS.lib")
 #endif
 
-//지멘스 BITE 영역 읽기 갯수
-#define SIENENS_READBITDATA (MAX_SMS_BITIO_IN)
+//지멘스 BIT 영역 읽기 갯수
+#define SIENENS_READBIT (MAX_SMS_BITIO_IN)
 //지멘스 WORD 영역 읽기 갯수
-#define SIENENS_READWORDDATA 33 //(MAX_SMS_WORDIO_IN)
-//지멘스 Recipe Name  갯수
+#define SIENENS_READWORD_MAX 33 //(MAX_SMS_WORDIO_IN)
+
+//지멘스 Recipe Name 읽기 갯수
 #define SIEMENS_READRECIPENAME 4
-//지멘스 CELL ID 갯수
+//지멘스 CELL ID 읽기 갯수
 #define SIEMENS_READCELLID 10
 
-#define SIENENS_WRITEBITDATA (MAX_SMS_BITIO_OUT)
-#define SIENENS_WRITEWORDDATA (MAX_SMS_WORDIO_IN)
+//지멘스 BIT 영역 쓰기 갯수
+#define SIENENS_WRITEBIT (MAX_SMS_BITIO_OUT)
+//지멘스 WORD 영역 쓰기 갯수
+#define SIENENS_WRITEWORD_MAX 149 //(MAX_SMS_WORDIO_OUT)
+//지멘스 쓰기 BIT + WORD
+#define SIENENS_WRITEBITWORD_MAX (SIENENS_WRITEBIT+SIENENS_WRITEWORD_MAX) //(MAX_SMS_WORDIO_OUT)
+
+//지멘스 WORD 영역 - 검사 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_INSP 6 
+//지멘스 WORD 영역 - Alarm 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_ALARM 10
+//지멘스 WORD 영역 - Defect 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_DEFECT 4
+//지멘스 WORD 영역 - Target 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_TARGET 8
+//지멘스 WORD 영역 - Frm Cnt 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_FRMCNT 3
+//지멘스 WORD 영역 - Empty 1 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_EMPTY1 10
+//지멘스 WORD 영역 - Alarm Code 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_ALARMCODE 25
+//지멘스 WORD 영역 - Empty 2 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_EMPTY2 15
+//지멘스 WORD 영역 - 검사 추가  정보 쓰기 갯수
+#define SIENENS_WRITEWORD_INSPADD 3
+//지멘스 WORD 영역 - Empty 3 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_EMPTY3 2
+//지멘스 WORD 영역 - DuplicateNG Cell ID 정보 쓰기 갯수
+#define SIENENS_WRITEWORD_DuplicateNGCellID 64
+
 
 class CSiemensPlcIo : public CPlcImp
 {
@@ -25,12 +54,11 @@ public:
 	~CSiemensPlcIo();
 
 	//PLC 읽기 Data
-	short m_ReadBitData[SIENENS_READBITDATA];
-	short m_ReadWordData[SIENENS_READWORDDATA];
+	short m_ReadBitData[SIENENS_READBIT];
+	short m_ReadWordData[SIENENS_WRITEWORD_MAX];
 
 	//PLC 쓰기 Data
-	short m_WriteBitData[SIENENS_WRITEBITDATA];
-	short m_WriteWordData[SIENENS_WRITEWORDDATA];
+	short m_WriteData[SIENENS_WRITEBITWORD_MAX];
 public:
 	// write data
 	int WriteDataReg(int offset, short data[], int num);
@@ -68,7 +96,7 @@ public:
 
 
 	//PLC write Data Make 함수
-	void WritePlcDataMake();
+	int WritePlcDataMake();
 
 	// 동기화 이벤트 객체
 	HANDLE getEvent_SiemensPlc() { return pEvent_SiemensPlc; }
