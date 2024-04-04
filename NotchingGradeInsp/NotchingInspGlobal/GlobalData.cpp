@@ -31,9 +31,7 @@ CGlobalData::CGlobalData(void)
 	::InitializeCriticalSection( &m_csTt4 );
 
 	ResetAllCounter() ;
-	// 22.07.06 Ahn Add Start
 	m_NowLotData.ClearAllCount();
-	// 22.07.06 Ahn Add End
 
 	m_nSleep = 1;
 
@@ -41,44 +39,31 @@ CGlobalData::CGlobalData(void)
 	::GetCurrentDirectory(_MAX_DIR, chBuff);
 
 	m_strDataPath.Format( _T("%s\\Data"), chBuff);
-	// 22.06.30 Ahn Add Start
 	m_strResultPath = _T("D:\\DAT\\FOIL");
-	// 22.06.30 Ahn Add End
 
-	// 22.07.27 Ahn Modify Start
-	// m_strLogPath.Format(_T("%s\\Data\\LOG"), chBuff);
 	m_strLogPath.Format(_T("%s\\LOG"), m_strResultPath);
-	// 22.07.27 Ahn Modify End
  
-	// 22.05.17 Ahn Modify Start
 	m_strImagePath.Format(_T("%s\\IMG\\INSP"), m_strResultPath);
 	m_strFeederPath.Format( _T("%s\\FEEDER"), m_strResultPath); // Default Path ;
-	// 22.05.17 Ahn Modify End
 
 	m_strRecipeLogPath = _T("D:\\DAT\\FOIL\\RECIPE_LOG"); // 22.06.08 Ahn Add 
 
 	m_pRecipeInfo = NULL;
 	m_bItPassMode = FALSE;
 
-	// 22.07.04 Ahn Add Start
 	m_dDiskTotal = 0.0 ;
 	m_dDiskFree = 0.0;
 	m_dDiskPercent = 0.0;
 	CWin32File::GetDiskSpace(m_strResultPath, &m_dDiskTotal, &m_dDiskFree, &m_dDiskPercent);
-	// 22.07.04 Ahn Add End
 
-// 22.05.25 Son Add Start
 #if !defined(_DEBUG)
 	UserMode = UserModeDefine::enOperator;
 #else
 	UserMode = UserModeDefine::enMaker; // 22.09.15 Ahn Modify
 #endif
 	m_font.CreateFontA(15, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("Arial"));
-// 22.05.25 Son Add End
 
-	// 22.06.08 Ahn Add Start
 	m_System.FileCtrl(MODE_READ);
-	// 22.06.08 Ahn Add End
 
 	CString strPath;
 	CString strFileName;
@@ -98,7 +83,6 @@ CGlobalData::CGlobalData(void)
 
 	m_nMissTabIdNow = 0;
 
-	//FileCtrl_DuplicateNG(MODE_READ);
 }
 
 CGlobalData::~CGlobalData(void)
@@ -141,10 +125,7 @@ void CGlobalData::SetFrameCounter( int nHeadNo, int nNo )
 
 int CGlobalData::SaveDebugLog( CString strMsg )
 {
-	// 22.07.27 Ahn Modify Start
-	//CString strFilePath = m_strLogPath;
 	CString strFilePath ;
-	// 22.07.27 Ahn Modify End
 	CString strTime ;
 	CString strSaveMsg ;
 
@@ -161,9 +142,7 @@ int CGlobalData::SaveDebugLog( CString strMsg )
 		, sysTime.wMilliseconds
 		) ;
 
-	// 22.07.27 Ahn Modify Start
 	strFilePath.Format( _T("%s\\%04d%02d\\%02d"), m_strLogPath, sysTime.wYear, sysTime.wMonth, sysTime.wDay ) ;
-	// 22.07.27 Ahn Modify End
 	strSaveMsg = strTime + strMsg + _T("\r\n") ;
 
 	CString strFileName = "";
@@ -209,10 +188,7 @@ void CGlobalData::SaveErrorLog_Format(const char* format, ...)
 
 int CGlobalData::SaveErrorLog(CString strMsg)
 {
-	// 22.07.27 Ahn Modify Start
-	//CString strFilePath = m_strLogPath;
 	CString strFilePath;
-	// 22.07.27 Ahn Modify End
 	CString strTime;
 	CString strSaveMsg;
 
@@ -229,9 +205,7 @@ int CGlobalData::SaveErrorLog(CString strMsg)
 		, sysTime.wMilliseconds
 	);
 
-	// 22.07.27 Ahn Modify Start
 	strFilePath.Format(_T("%s\\%04d%02d\\%02d"), m_strLogPath, sysTime.wYear, sysTime.wMonth, sysTime.wDay);
-	// 22.07.27 Ahn Modify End
 	strSaveMsg = strTime + strMsg + _T("\r\n");
 
 	CString strFileName;
@@ -241,154 +215,6 @@ int CGlobalData::SaveErrorLog(CString strMsg)
 
 
 	return 0;
-}
-
-int CGlobalData::SaveTactLog(CString strMsg)
-{
-	return 0;
-	// 22.07.27 Ahn Modify Start
-	//CString strFilePath = m_strLogPath;
-	CString strFilePath;
-	// 22.07.27 Ahn Modify End
-	CString strTime;
-	CString strSaveMsg;
-
-	SYSTEMTIME	sysTime;
-	::GetLocalTime(&sysTime);
-
-	strTime.Format("%04d/%02d/%02d ,%02d:%02d:%02d.%03d, "
-		, sysTime.wYear
-		, sysTime.wMonth
-		, sysTime.wDay
-		, sysTime.wHour
-		, sysTime.wMinute
-		, sysTime.wSecond
-		, sysTime.wMilliseconds
-	);
-
-	// 22.07.27 Ahn Modify Start
-	strFilePath.Format(_T("%s\\%04d%02d\\%02d"), m_strLogPath, sysTime.wYear, sysTime.wMonth, sysTime.wDay);
-	// 22.07.27 Ahn Modify End
-	strSaveMsg = strTime + strMsg + _T("\r\n");
-
-	CString strFileName;
-	strFileName = _T("TactTime_LOG.txt");
-
-	CWin32File::TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
-
-	return 0;
-}
-
-int CGlobalData::SaveLotLog(CString strMsg)
-{
-	return 0;
-	// 22.07.27 Ahn Modify Start
-	//CString strFilePath = m_strLogPath;
-	CString strFilePath;
-	// 22.07.27 Ahn Modify End
-	CString strTime;
-	CString strSaveMsg;
-
-	SYSTEMTIME	sysTime;
-	::GetLocalTime(&sysTime);
-
-	strTime.Format(_T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d, ")
-		, sysTime.wYear
-		, sysTime.wMonth
-		, sysTime.wDay
-		, sysTime.wHour
-		, sysTime.wMinute
-		, sysTime.wSecond
-		, sysTime.wMilliseconds
-	);
-
-	// 22.07.27 Ahn Modify Start
-	strFilePath.Format(_T("%s\\%04d%02d\\%02d"), m_strLogPath, sysTime.wYear, sysTime.wMonth, sysTime.wDay);
-	// 22.07.27 Ahn Modify End
-
-	strSaveMsg = strTime + strMsg + _T("\r\n");
-
-	CString strFileName;
-	strFileName = _T("LOT_LOG.txt") ;
-
-	CWin32File::TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
-
-
-	return 0;
-}
-
-int CGlobalData::SaveFrameLog(CString strMsg, int nNo )
-{
-	return 0;
-	// 22.07.27 Ahn Modify Start
-	//CString strFilePath = m_strLogPath;
-	CString strFilePath;
-	// 22.07.27 Ahn Modify End
-	CString strTime;
-	CString strSaveMsg;
-
-	SYSTEMTIME	sysTime;
-	::GetLocalTime(&sysTime);
-
-	strTime.Format(_T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d, ")
-		, sysTime.wYear
-		, sysTime.wMonth
-		, sysTime.wDay
-		, sysTime.wHour
-		, sysTime.wMinute
-		, sysTime.wSecond
-		, sysTime.wMilliseconds
-	);
-
-	// 22.07.27 Ahn Modify Start
-	strFilePath.Format(_T("%s\\%04d%02d\\%02d"), m_strLogPath, sysTime.wYear, sysTime.wMonth, sysTime.wDay);
-	// 22.07.27 Ahn Modify End
-
-	strSaveMsg = strTime + strMsg + _T("\r\n");
-
-	CString strFileName;
-	strFileName.Format(_T("Frame_LOG_%02d.txt"), nNo );
-
-
-	CWin32File::TextSave1Line(strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999);
-
-	return 0;
-}
-
-int CGlobalData::SaveMemoryLog( CString strMsg )
-{
-	return 0;
-	// 22.07.27 Ahn Modify Start
-	//CString strFilePath = m_strLogPath;
-	CString strFilePath;
-	// 22.07.27 Ahn Modify End
-	CString strFileName = _T("MemoryLog.txt") ;
-	CString strTime ;
-	CString strSaveMsg ;
-
-	SYSTEMTIME	sysTime ;
-	::GetLocalTime( &sysTime ) ;
-
-	strTime.Format( _T("%04d/%02d/%02d ,%02d:%02d:%02d.%03d, ")
-		, sysTime.wYear
-		, sysTime.wMonth
-		, sysTime.wDay
-		, sysTime.wHour
-		, sysTime.wMinute
-		, sysTime.wSecond
-		, sysTime.wMilliseconds
-		) ;
-
-	// 22.07.27 Ahn Modify Start
-	strFilePath.Format(_T("%s\\%04d%02d\\%02d"), m_strLogPath, sysTime.wYear, sysTime.wMonth, sysTime.wDay);
-	// 22.07.27 Ahn Modify End
-
-	strSaveMsg = strTime + strMsg + _T("\r\n") ;
-
-	CWin32File::TextSave1Line( strFilePath, strFileName, strSaveMsg, "at", FALSE, 999999999 ) ;
-
-
-	return 0 ;
 }
 
 void CGlobalData::SetTactTime_1( double dTime ) 
@@ -463,7 +289,6 @@ int CGlobalData::LoadRecipeInfo()
 	return nRet;
 }
 
-// 22.06.24 Ahn Add Start
 int CGlobalData::LotInfoSave()
 {
 	
@@ -480,29 +305,19 @@ int CGlobalData::LotInfoSave()
 	strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCountNG);
 	::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 	strKey = _T("OK_COUNT");
-	// 22.05.27 Ahn Modify Start
-	//strData.Format(_T("%d"),( AprData.m_NowLotData.m_nTabCountOK ) );
 	strData.Format(_T("%d"), (AprData.m_NowLotData.m_nTabCount - AprData.m_NowLotData.m_nTabCountNG));
-	// 22.05.27 Ahn Modify End
 	::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 	AprData.m_NowLotData.m_nLastTotalCnt = AprData.m_NowLotData.m_nTabCount;
-	// 22.11.30 Ahn Add Start
 	strKey = _T("FRAME_COUNT");
 	strData.Format(_T("%d"), AprData.m_NowLotData.m_nFrameCount);
 	::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-	// 22.11.30 Ahn Add End
 
 	return 0;
 }
-// 22.06.24 Ahn Add End
 
 int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 {
-	//m_NowLotData.m_strLotNo = _T("");
-
 	SYSTEMTIME	sysTime;
-	// 22.07.13 Ahn Modify Start
-	//::GetLocalTime(&sysTime);
 
 	//PLC 작동 오프젝트 객체을 얻는다.
 	if (bSigInMode == TRUE) 
@@ -516,8 +331,6 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	{
 		sysTime = m_NowLotData.m_LotStartTime;
 	}
-	// 22.07.01 Ahn Add Modify End
-	// 22.07.13 Ahn Modify Start
 
 	CString strTime;
 	strTime.Format(_T("%d\\%02d\\%02d"), sysTime.wYear, sysTime.wMonth, sysTime.wDay);
@@ -562,9 +375,7 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 		strRecipeName.TrimLeft();
 		strRecipeName.TrimRight();
 
-		CString strMsg; 
-		strMsg.Format(_T("READ_ROLL_DATA ROLL_ID[%s], RecipeName[%s]"), AprData.m_SeqDataIN.strCell_ID, strRecipeName );
-		AprData.SaveLotLog(strMsg);
+		AprData.SaveDebugLog_Format(_T("READ_ROLL_DATA ROLL_ID[%s], RecipeName[%s]"), AprData.m_SeqDataIN.strCell_ID, strRecipeName);
 	}
 
 	CString strYYYYMM;
@@ -577,11 +388,7 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 
 	AprData.m_strNowDatePath.Format(_T("%s\\%s\\%s"), strYYYYMM, strDD, strHH);
 
-	// D:/DAT/FOIL/INSP/OK Or NG/YYYYMM/DDHH/LOTID/....
-	// 22.07.13 Ahn Modify Start
-	//strSavePath.Format("%s\\NG\\%s\\%s\\%s\\%s", AprData.m_strImagePath, strYYYYMM, strDD, strHH, AprData.m_NowLotData.m_strLotNo);
 	strSavePath.Format(_T("%s\\NG\\%s\\%s"), AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
-	// 22.07.13 Ahn Modify End
 	AprData.m_strNowNgPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
 	strSavePath.Format(_T("%s\\CROP"), AprData.m_strNowNgPath );
@@ -589,83 +396,57 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 
 	strSavePath.Format(_T("%s\\Overlay"), AprData.m_strNowNgPath );
 	CWin32File::CreateDirectory(strSavePath);
-	// 22.07.13 Ahn Modify Start
-	//strSavePath.Format("%s\\OK\\%s\\%s\\%s\\%s", AprData.m_strImagePath, strYYYYMM, strDD, strHH, AprData.m_NowLotData.m_strLotNo);
 	strSavePath.Format(_T("%s\\OK\\%s\\%s"), AprData.m_strImagePath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
-	// 22.07.13 Ahn Modify End
 	AprData.m_strNowOkPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
 	strSavePath.Format(_T("%s\\%s\\%s"), AprData.m_strFeederPath, strYYYYMM, strDD);
 	AprData.m_strNowCsvPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
-	// 23.02.07 Ahn Add Start
 	strSavePath.Format(_T("%s\\CROP"), AprData.m_strNowOkPath);
 	CWin32File::CreateDirectory(strSavePath);
 
 	strSavePath.Format(_T("%s\\Overlay"), AprData.m_strNowOkPath);
 	CWin32File::CreateDirectory(strSavePath);
-	// 23.02.07 Ahn Add End
 
-	//22.06.28 Ahn Modify End
-	// 22.07.13 Ahn Modify Start
-	//strSavePath.Format(_T("%s\\BINARY\\%s\\%s\\%s\\%s"), AprData.m_strResultPath, strYYYYMM, strDD, strHH, AprData.m_NowLotData.m_strLotNo);
 	strSavePath.Format(_T("%s\\BINARY\\%s\\%s"), AprData.m_strResultPath, AprData.m_strNowDatePath, AprData.m_NowLotData.m_strLotNo);
-	// 22.07.13 Ahn Modify End
 	AprData.m_strNowBinPath = strSavePath;
 	CWin32File::CreateDirectory(strSavePath);
-	// 22.05.17 Ahn Modify End
 
-	// 22.07.07 Ahn Add Start
 	if (bSigInMode == TRUE)
 	{
-		// 22.05.25 Son Add Start
 		strSavePath.Format(_T("%s\\%s.bin"), AprData.m_strNowBinPath, AprData.m_NowLotData.m_strLotNo);
 		CreateIndexFile(strSavePath);
-		// 22.05.25 Son Add End
 	}
-	// 22.07.07 Ahn Add End
 
 	CString strLine;
 	strLine.Format(_T("LOT ID,Cell No,Cell ID,Key ID,Time,Judge,Tab,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason,PET Stat,Pitch Stat,Tab Pitch Size,Width Stat,Tab Width Size,Cell Length, FoilExpTap_In, FoilExpTap_Out, FoilExpBtm_In, FoilExpBtm_Out,\r\n"));
 
 	CString strFileName;
 	strFileName.Format( _T("%s.csv"), AprData.m_NowLotData.m_strLotNo ) ;
-	// 파일 존재하면 기록하지 않아도 됨.
-	//22.06.28 Ahn Modify Start
-	//CWin32File::TextSave1Line(AprData.m_strNowCsvPath, strFileName, strLine, _T("at"), FALSE);
+
 	CString strCsvFileName;
 	strCsvFileName.Format(_T("%s\\%s"), AprData.m_strNowCsvPath, strFileName);
 	if (CWin32File::ExistFile(strCsvFileName) == FALSE) {
 		CWin32File::TextSave1Line(AprData.m_strNowCsvPath, strFileName, strLine, _T("at"), FALSE);
 	}
 
-	CString strMsg;
-	
-	// 22.08.09 Ahn Add Start
 	m_NowLotData.m_nContinueCount = 0; 
 	m_NowLotData.m_secNgJudge.ResetAll();
-	// 22.08.09 Ahn Add End
 	
-	// 22.08.10 Ahn Add Start
 	m_nCoutinuouCount = (int)m_SeqDataIN.wContinousCount ;
 	m_nSectorNgCount = (int)m_SeqDataIN.wSectorNgCount ;
 	m_nSectorBaseCount = (int)m_SeqDataIN.wSectorBaseCount ;
-	// 22.08.10 Ahn Add End
 
 	if (bSigInMode == TRUE)
 	{
-		// 22.08.11 Ahn Move Start
-		FileCtrl_LotInfo(en_mode_LotStart); // 22.06.24 Ahn Add
-		// 22.08.11 Ahn Move End
+		FileCtrl_LotInfo(en_mode_LotStart); 
 
-		strMsg.Format(_T("Lot start Process : ID[ %s ], Time[%s]"), m_NowLotData.m_strLotNo, strhhmmss);
-		SaveLotLog(strMsg);
+		SaveDebugLog_Format(_T("Lot start Process : ID[ %s ], Time[%s]"), m_NowLotData.m_strLotNo, strhhmmss);
 	}
 
 	return 0;
 }
 
-// 22.06.27 Ahn Add Start
 int CGlobalData::AddHistoryLot(CHistoryLotCtrl::_LOT_INFO& lotInfo)
 {
 	int nRet = 0;
@@ -673,13 +454,11 @@ int CGlobalData::AddHistoryLot(CHistoryLotCtrl::_LOT_INFO& lotInfo)
 
 	return nRet;
 }
-// 22.06.27 Ahn Add End
 
 int CGlobalData::LotEndProcess()
 {
 	// 결함수 집계 및 보고.
 
-	//// 22.06.27 Ahn Add Start
 	CHistoryLotCtrl::_LOT_INFO LotInfo;
 	::_tcsnccpy_s(LotInfo.chLotNo, _countof(LotInfo.chLotNo), AprData.m_NowLotData.m_strLotNo.GetBuffer(0), _TRUNCATE);
 	::_tcsnccpy_s(LotInfo.chRecipeName, _countof(LotInfo.chRecipeName), AprData.m_NowLotData.m_strRecipeName.GetBuffer(0), _TRUNCATE);
@@ -693,66 +472,12 @@ int CGlobalData::LotEndProcess()
 	LotInfo.nMarkingCount = AprData.m_NowLotData.m_nMarkingCount;
 
 	AddHistoryLot( LotInfo );
-	//// 22.06.27 Ahn Add End
 
-	CString strMsg;
-	strMsg.Format(_T("Lot End Process : ID[ %s ]"), m_NowLotData.m_strLotNo );
-	SaveLotLog(strMsg);
+	SaveDebugLog_Format(_T("Lot End Process : ID[ %s ]"), m_NowLotData.m_strLotNo);
 
 	return 0;
 }
 
-
-//// Lot 정보를 Lot Change 시점에 저장함.
-//int CGlobalData::SaveLotInfo( int nMode, BOOL bSignalMode )
-//{
-//	CString strSaveFile;
-//	CString strFileName;
-//	strFileName.Format(_T("LOT_INFO.ini"));
-//
-//	CString strSection;
-//	CString strKey;
-//	CString strData;
-//
-//	strSection = _T("LOT_INFO");
-//	switch (nMode) {
-//	case	en_Mode_Start :
-//		strKey = _T("LOT_NO");
-//		strData.Format("%s", AprData.m_NowLotData.m_strLotNo);
-//		::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-//
-//		strKey = _T("RECIPE_NAME");
-//		strData.Format("%s", AprData.m_NowLotData.m_strRecipeName);
-//		::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-//
-//		strKey = _T("MEMO_1");
-//		strData.Format("%s", AprData.m_NowLotData.m_strMemo1);
-//		::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-//
-//		strKey = _T("MEMO_2");
-//		strData.Format("%s", AprData.m_NowLotData.m_strMemo2);
-//		::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-//		break;
-//	case	en_Mode_Run :
-//	case	en_Mode_End:
-//		strKey = _T("JUDGE_TAB_TOTAL_COUNT");
-//		strData.Format("%d", AprData.m_NowLotData.m_nTabCount);
-//		::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-//
-//		strKey = _T("JUDGE_TAB_OK_COUNT");
-//		strData.Format("%d", (AprData.m_NowLotData.m_nTabCount - AprData.m_NowLotData.m_nTabCountNG));
-//		::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-//
-//		strKey = _T("JUDGE_TAB_NG_COUNT");
-//		strData.Format("%d", AprData.m_NowLotData.m_nTabCountNG);
-//		::WritePrivateProfileString(strSection, strKey, strData, strFileName);
-//		break;
-//	default :
-//		break;
-//	}
-//
-//	return 0;
-//}
 
 int CGlobalData::FileCtrl_LotInfo(int nMode)
 {
@@ -777,11 +502,9 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strKey = _T("RECIPE_NAME");
 		::GetPrivateProfileString(strSection, strKey, "Default", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_strRecipeName.Format(_T("%s"), buff);
-		// 22.08.05 Ahn Add Start
 		strKey = _T("NEXT_RECIPE_NAME");
 		::GetPrivateProfileString(strSection, strKey, "NotSelected", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_strNextRecipeName.Format(_T("%s"), buff);
-		// 22.08.05 Ahn Add End
 		strKey = _T("TOTAL_COUNT");
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_nTabCount = atoi(buff);	
@@ -797,13 +520,10 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_nTabCountOK = atoi(buff);
 
-		// 22.11.30 Ahn Add Start
 		strKey = _T("FRAME_COUNT");
 		::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_nFrameCount = atoi(buff) ;
-		// 22.11.30 Ahn Add End
 
-		// 22.07.27 Ahn Modify Start
 		{
 			strSection = _T("LOT_START_TIME");
 			strKey = _T("LOT_START_YEAR");
@@ -836,8 +556,7 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 				AprData.m_NowLotData.m_LotStartTime = sysTime ;
 			}
 		}
-		// 22.07.27 Ahn Modify End
-		// 22.07.27 Ahn Modify Start
+
 		strSection = _T("LAST_DELETE_COMPLET_DATE");
 		strKey = _T("LAST_DELETE_COMPLET_YEAR");
 		::GetPrivateProfileString(strSection, strKey, "2022", buff, 256, strSaveFile);
@@ -858,7 +577,6 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strKey = _T("LAST_DELETE_COMPLET_MINUTE");
 		::GetPrivateProfileString(strSection, strKey, "1", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_LastDeleteCompletTime.wMinute = (WORD)atoi(buff);
-		// 22.07.27 Ahn Modify End
 
 		break;
 	case	en_mode_LotStart : // Lot Change 시점
@@ -883,11 +601,9 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCountOK);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
-		// 22.11.30 Ahn Add Start
 		strKey = _T("FRAME_COUNT");
 		strData.Format( _T("%d"), AprData.m_NowLotData.m_nFrameCount);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
-		// 22.11.30 Ahn Add End
 
 		strSection = _T("LOT_START_TIME");
 
@@ -930,25 +646,18 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strData.Format(_T("%d"), AprData.m_NowLotData.m_nTabCountOK);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
-		// 22.11.30 Ahn Add Start
 		strKey = _T("FRAME_COUNT");
 		strData.Format(_T("%d"), AprData.m_NowLotData.m_nFrameCount);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
-		// 22.11.30 Ahn Add End
 
 		break;
 	case en_mode_LotEnd :
 		{
 		// 보고 및 파일 삭제
-		// 22.07.26 Ahn Modify Start
-		//	CWin32File file;
-		//	file.DeleteFile(strSaveFile);
 		strSection = _T("LOT_INFO");
-		// 22.07.28 Ahn Add Start
 		strKey = _T("LOT_NO");
 		strData.Format("");
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
-		// 22.07.28 Ahn Add Start
 
 		strKey = _T("TOTAL_COUNT");
 		strData.Format(_T("%d"), 0);
@@ -962,20 +671,16 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strData.Format(_T("%d"), 0);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 
-		// 22.11.30 Ahn Add Start
 		strKey = _T("FRAME_COUNT");
 		strData.Format(_T("0"));
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
-		// 22.11.30 Ahn Add End
 
 		break;
 		
-		// 22.07.26 Ahn Modify End
 		}
 		break;
 	case	en_mode_Write_LastDelTime :
 		strSection = _T("LAST_DELETE_COMPLET_DATE");
-		// 22.07.26 Ahn Modify Start
 		strKey = _T("LAST_DELETE_COMPLET_YEAR");
 		strData.Format(_T("%d"), AprData.m_NowLotData.m_LastDeleteCompletTime.wYear);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
@@ -995,13 +700,11 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strKey = _T("LAST_DELETE_COMPLET_MINUTE");
 		strData.Format(_T("%d"), AprData.m_NowLotData.m_LastDeleteCompletTime.wMinute);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
-		// 22.07.26 Ahn Modify End
 		break;
 
-	// 22.07.27 Ahn Add Start
 	case	en_mode_Read_LastDelTime :
 		strSection = _T("LAST_DELETE_COMPLET_DATE");
-		// 22.07.26 Ahn Modify Start
+
 		strKey = _T("LAST_DELETE_COMPLET_YEAR");
 		::GetPrivateProfileString(strSection, strKey, "2022", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_LastDeleteCompletTime.wYear = atoi(buff) ;
@@ -1014,9 +717,7 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		::GetPrivateProfileString(strSection, strKey, "1", buff, 256, strSaveFile);
 		AprData.m_NowLotData.m_LastDeleteCompletTime.wDay = atoi(buff) ;
 		break;
-	// 22.07.27 Ahn Add End
 
-	// 22.08.04 Ahn Add Start
 	case	en_mode_RecipeSelect :
 		strSection = _T("LOT_INFO");
 		strKey = _T("RECIPE_NAME");
@@ -1027,13 +728,11 @@ int CGlobalData::FileCtrl_LotInfo(int nMode)
 		strData.Format(_T("%s"), AprData.m_NowLotData.m_strNextRecipeName);
 		::WritePrivateProfileString(strSection, strKey, strData, strSaveFile);
 		break;
-	// 22.08.04 Ahn Add End
 	}
 	return 0;
 
 }
 
-// 22.05.25 Son Add Start
 CString CGlobalData::GetIndexFileName(CString strLotId)
 {
 	CString strFullName = _T("");
@@ -1056,7 +755,6 @@ CString CGlobalData::GetIndexFileName(CString strLotId)
 	return(strFullName);
 }
 
-// 22.11.25 Ahn Add Start
 CString CGlobalData::GetBinaryFileName(CString strLotId)
 {
 	CString strRet = _T("");
@@ -1085,7 +783,6 @@ CString CGlobalData::GetBinaryFileName(CString strLotId)
 				CHAR	szChar[256];
 				e.GetErrorMessage(szChar, 255);
 				strMsg.Format(_T("에러 - %s"), szChar);
-				//MessageBox(strMsg);
 				cf.Close();
 				return _T("") ;
 			}
@@ -1099,7 +796,6 @@ CString CGlobalData::GetBinaryFileName(CString strLotId)
 
 	return strRet ;
 }
-// 22.11.25 Ahn Add End
 
 
 int CGlobalData::CreateIndexFile(CString strBinFileName)
@@ -1108,11 +804,9 @@ int CGlobalData::CreateIndexFile(CString strBinFileName)
 
 	strIndexFileName = GetIndexFileName(AprData.m_NowLotData.m_strLotNo);
 
-	// 22.07.04 Ahn Add Start
 	if (CWin32File::ExistFile(strIndexFileName) == TRUE) {
 		::DeleteFile(strIndexFileName);
 	}
-	// 22.07.04 Ahn Add End
 
 	CStdioFile cf;
 
@@ -1128,7 +822,6 @@ int CGlobalData::CreateIndexFile(CString strBinFileName)
 
 	return 0;
 }
-// 22.05.25 Son Add End
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
@@ -1225,7 +918,6 @@ int CGlobalData::FileCtrl_DuplicateNG(int nMode, int nID, int nJudge )
 		{
 			strKey.Format(_T("CELL_ID_%02d"), i);
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strSaveFile);
-			//AprData.m_NowLotData.m_SeqDataOutSms.wDuplicateNG_Cell_ID[i] = atoi(buff);
 		}
 
 		break;

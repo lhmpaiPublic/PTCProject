@@ -4,12 +4,9 @@
 #include "SystemSetting.h"
 #include "CDebugSet.h"
 #include <queue>
-#include "CHistoryLotCtrl.h" // 22.06.27 Ahn Add 
-#include "NotchingGradeInsp.h"	// 22.06.29 Son Add
-//#define SAVE_DEBUG_LOG
-//#define SAVE_DEBUG_LOG_PRJDATA 
-//#define SAVE_MEMORY_LOG
-#include "CSectorNgJudge.h" // 22.08.09 Ahn Add
+#include "CHistoryLotCtrl.h" 
+#include "NotchingGradeInsp.h"
+#include "CSectorNgJudge.h" 
 
 class CErrorStatus {
 public :
@@ -37,7 +34,6 @@ public :
 		en_DiskCapacityAlarm	= 0x100001,
 		en_DiskCapacityWarning  = 0x100002,
 
-	//	en_MaxErrorType,
 	};
 	void SetError(int nErrorType, CString strErrMsg) {
 		m_nErrorType = nErrorType;
@@ -99,7 +95,7 @@ public :
 	DWORD wSectorBaseCount;
 
 };
-// 22.07.06 Ahn Add Start
+
 typedef struct stSeqDataOut {
 public:
 	DWORD dwDataReportV1;				// 검사 수량
@@ -151,7 +147,7 @@ public:
 
 
 } _SEQ_OUT_DATA;
-// 22.08.19 Ahn Add Start
+
 typedef struct stSeqDataOutAll {
 public:
 	_SEQ_OUT_DATA m_SeqOutData;
@@ -162,7 +158,7 @@ public:
 	DWORD dwAlarmCode;
 
 } _SEQ_OUT_DATA_ALL ;
-// 22.08.19 Ahn Add Start
+
 typedef struct stSeqDataOutLotEnd {
 public:
 	DWORD dwTopNgLotEndCount;			// Lot End시 Top NG Count 
@@ -287,8 +283,6 @@ public:
 
 
 
-// 22.07.06 Ahn Add Start
-
 class CLotInfo 
 {
 public:
@@ -335,14 +329,11 @@ public:
 	//Start/Stop 버튼을 클릭했을 경우 설정됨
 	BOOL m_bInspStartStop;
 
-	// 22.06.29 Ahn Add Start
 	int		m_nTopNG;
 	int		m_nBottomNG;
 	int		m_nMarkingCount;
-	// 22.06.29 Ahn Add End
-	// 22.11.30 Ahn Add Start
+
 	int		m_nFrameCount;
-	// 22.11.30 Ahn Add End
 
 	SYSTEMTIME m_LotStartTime;
 	SYSTEMTIME m_LotEndTime;
@@ -364,11 +355,8 @@ public:
 	int m_ReadCount;
 
 
-	// 22.07.11 Ahn Add Start
 	SYSTEMTIME m_LastDeleteCompletTime;
-	// 22.07.11 Ahn Add End
 
-	// 22.08.09 Ahn Add 
 	CSectorNgJudge	m_secNgJudge;
 	int				m_nContinueCount;
 	// 22.08.09 Ahn Add End
@@ -379,10 +367,7 @@ public:
 class CRecipeInfo;
 class CSystemSetting;
 class CLogDisplayDlg;
-
-// 22.06.27 Ahn Add Start
 class CHistoryLotCtrl;
-// 22.06.27 Ahn Add End
 
 class CGlobalData
 {
@@ -405,27 +390,13 @@ public :
 	int SaveErrorLog(CString strMsg);
 	void SaveErrorLog_Format(const char* format, ...);
 
-	int SaveTactLog(CString strMsg);
-	int SaveMemoryLog( CString strMsg ) ;
-	int SaveLotLog(CString strMsg);
-	// 22.02.16 Ahn Modify Start
-	//int SaveFrameLog(CString strMsg);
-	int SaveFrameLog(CString strMsg, int nNo);
-	// 22.02.16 Ahn Modify End
-
-	// 22.05.25 Son Add Start
 	CString GetIndexFileName(CString strLotId);
 	int CreateIndexFile(CString strBinFileName);
-	// 22.05.25 Son Add End
-	// 22.11.25 Ahn Add Start
 	CString GetBinaryFileName(CString strLotId);
-	// 22.11.25 Ahn Add End
 
 	int LoadRecipeInfo();
 	int LotStartProcess( BOOL bSigInMode = FALSE, int nDebugMode = 0 );
-	// 22.06.24 Ahn Add Start
 	int LotInfoSave();
-	// 22.06.24 Ahn Add End
 	int LotEndProcess();
 
 	enum {
@@ -434,8 +405,6 @@ public :
 		en_Mode_End,
 		en_Mode_Max,
 	};
-
-//	int SaveLotInfo( int nMode, BOOL bSignalFlag );
 
 	enum {
 		en_mode_Initial = 0,
@@ -468,9 +437,6 @@ public :
 	double m_dTact_2 ;
 	double m_dTact_3 ;
 	double m_dTact_4 ;
-	// 22.03.24 Ahn Delete Start
-	//BOOL	m_bLotStartReq;
-	// 22.03.24 Ahn Delete End
 
 	CRITICAL_SECTION m_csSaveLog ;
 	CRITICAL_SECTION m_csSaveMemLog ;
@@ -489,16 +455,9 @@ public :
 	CString m_strImagePath;
 	CString m_strDataPath;
 	CString m_strFeederPath;
-	// 22.06.08 Ahn Add Start
 	CString m_strRecipeLogPath; 
-	// 22.06.08 Ahn Add End
-	// 22.06.30 Ahn Add Start
 	CString m_strResultPath;
-	// 22.06.30 Ahn Add End
 
-	// 22.05.17 Ahn Modify Start
-	//CString m_strNowResultPath;
-	//CString m_strNowDatePath ;
 	CString m_strNowNgPath;
 	CString m_strNowOkPath;
 	CString m_strNowCsvPath;
@@ -514,25 +473,17 @@ public :
 	CLotInfo m_beforeLotInfo;
 	CLotInfo m_currentLotInfo;
 
-	// 22.06.27 Ahn Add Start
 	CHistoryLotCtrl *m_pHistoryLotCtrl; 
 	int AddHistoryLot( CHistoryLotCtrl::_LOT_INFO &lotInfo ) ;
-	//AddLotFileList
-	// 22.06.27 Ahn Add End
 
-// 22.05.25 Son Add Start
 	UserModeDefine::eMode UserMode;
 	CFont	m_font;
-// 22.05.25 Son Add End
 	int		m_nNowLightLevel[MAX_LIGHT_UNIT][MAX_CAMERA_NO];
 
-	// 22.07.04 Ahn Add Start
 	double m_dDiskTotal;
 	double m_dDiskFree;
 	double m_dDiskPercent;
-	// 22.07.04 Ahn Add End
 
-	// 22.08.10 Ahn Add Start
 	int		m_nCoutinuouCount;
 	int		m_nSectorNgCount;
 	int		m_nSectorBaseCount;

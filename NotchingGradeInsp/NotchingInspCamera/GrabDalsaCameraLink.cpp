@@ -130,12 +130,10 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 					AprData.m_NowLotData.m_uImageTotalCount += pFrmInfo->m_nHeight;
 				}
 
-				CString strMsg = "";
-				strMsg.Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
-				AprData.SaveFrameLog(strMsg, pFrmInfo->m_nHeadNo);
+				AprData.SaveDebugLog_Format(_T("FrameLog Head[%d], Width[%d], Height[%d], FrmCount[%d]"), pFrmInfo->m_nHeadNo, pFrmInfo->m_nWidth, pFrmInfo->m_nHeight, pFrmInfo->m_nFrameCount);
 
 				//Image Capture 정보 출력 로그
-				LOGDISPLAY_SPEC(8)(_T("Grab Pos[%s]	Width	%d	Height	%d	FrmCount	%d"),
+				LOGDISPLAY_SPEC(11)(_T("Grab Image Pos[%s]	Width	%d	Height	%d	FrmCount	%d"),
 					(pFrmInfo->m_nHeadNo == 0) ? "TOP" : "BOTTOM", 
 					pFrmInfo->m_nWidth, 
 					pFrmInfo->m_nHeight, 

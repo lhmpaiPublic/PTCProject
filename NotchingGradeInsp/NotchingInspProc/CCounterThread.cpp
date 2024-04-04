@@ -31,6 +31,12 @@ CAppDIO m_dio;
 //카운터 보드에서 들어오는 값이 연속해서 이상이 있을 때
 static int nCountBordErrorCount = 0;
 
+//다음에 찾을 TabID - ID 누력 여부 확인용
+WORD CCounterThread::m_nextTabID = 255;
+
+//최종 읽은 값
+WORD CCounterThread::m_wLastInfo = 0xFF;
+
 void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, bool bSendComplate)
 {
 	if ((TabId >= 0) && (TabId < 64))
@@ -109,9 +115,6 @@ void CCounterThread::RecivePacket(char* data, int len)
 
 	char szBuf[1024];
 
-	int nID = 0;
-	int nEncodeCnt = 0;
-
 	int nStx = -1;
 	int nEtx = -1;
 	for (int i = 0; i < len; i++)
@@ -138,8 +141,8 @@ void CCounterThread::RecivePacket(char* data, int len)
 					n++;
 				}
 			}
-			nID = MAKEWORD(szBuf[2], szBuf[3]);
-			nEncodeCnt = MAKELONG(MAKEWORD(szBuf[4], szBuf[5]), MAKEWORD(szBuf[6], szBuf[7]));
+			int nID = MAKEWORD(szBuf[2], szBuf[3]);
+			int nEncodeCnt = MAKELONG(MAKEWORD(szBuf[4], szBuf[5]), MAKEWORD(szBuf[6], szBuf[7]));
 
 			//누락된 input 아이디를 찾는다.
 			//초기값이 없다면 nextTabID 입력만
@@ -147,12 +150,6 @@ void CCounterThread::RecivePacket(char* data, int len)
 			{
 				//Tab Use Id 초기화 세팅
 				AprData.m_NowLotData.m_bInitTabId = TRUE;
-
-				m_nextTabID = nID + 1;
-				if (m_nextTabID >= 64)
-				{
-					m_nextTabID = 0;
-				}
 			}
 			else
 			{
@@ -184,9 +181,6 @@ void CCounterThread::RecivePacket(char* data, int len)
 							//누락된 카운트를 올린다.
 							omissCount++;
 
-							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("누락 BCD ID	%d	누락 갯수	%d"), nextTabIDbackup, omissCount);
-
 							//디버그 로그 기록
 							AprData.SaveDebugLog_Format(_T("Lose BCD ID	%d"), nextTabIDbackup);
 
@@ -203,29 +197,27 @@ void CCounterThread::RecivePacket(char* data, int len)
 							//Tab Use Id 초기화 세팅
 							AprData.m_NowLotData.m_bInitTabId = TRUE;
 							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("BCD ID 초기화 TabId	%d	ResetQ - Befor Id	%d"), nID, m_wLastTabId);
+							LOGDISPLAY_SPEC(11)(_T("BCD ID 초기화 TabId	%d	ResetQ - Befor Id	%d"), nID, m_wLastTabId);
 
 						}
 						//초기화가 아닌 경우
 						else
 						{
-							//DIO Input Log
-							LOGDISPLAY_SPEC(7)(_T("BCD ID 누락 카운트 추가 지금 카운트	%d	- 추가	%d"), AprData.m_NowLotData.m_nTabIdTotalCount, omissCount);
-
 							AprData.m_NowLotData.m_nTabIdTotalCount += omissCount;
 						}
 
 					}
 
-					LOGDISPLAY_SPEC(7)(_T("BCD ID 누락 before	%d	now	%d"), m_wLastTabId, nID);
+					LOGDISPLAY_SPEC(11)(_T("BCD ID 누락 before	%d	now	%d"), m_wLastTabId, nID);
 				}
-				//다음에 받을 ID를 세팅한다.
-				m_nextTabID = nID + 1;
-				//64 이상이면 0으로 
-				if (m_nextTabID >= 64)
-				{
-					m_nextTabID = 0;
-				}
+			}
+
+			//다음에 받을 ID를 세팅한다.
+			m_nextTabID = nID + 1;
+			//64 이상이면 0으로 
+			if (m_nextTabID >= 64)
+			{
+				m_nextTabID = 0;
 			}
 
 			//제일 마지막 받은 BCD ID 
@@ -316,6 +308,9 @@ CCounterThread::CCounterThread(CImageProcessCtrl* pParent)
 }
 CCounterThread::~CCounterThread()
 {
+	//스래드 루프 빠져나가는 함수
+	m_bKill = TRUE;
+
 	if (m_TriggerSocket)
 	{
 		delete m_TriggerSocket;
@@ -446,6 +441,8 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 
 void CCounterThread::isConnectTrigger()
 {
+	//카운터 보드 소캣 생성 후 
+	//네트워크 이상 시 소켓 제거 및 인터락 
 	if (m_TriggerSocket != NULL && m_bCountBordConnection == FALSE)
 	{
 		CString strMessage;
@@ -459,6 +456,8 @@ void CCounterThread::isConnectTrigger()
 		m_TriggerSocket = NULL;
 	}
 
+	//카운터 보드 네트워크 이상 시 
+	//CModeDlg Stop 메시지 처리
 	if (UIMGR->getModeDlg() && UIMGR->getModeDlg()->m_hWnd && UIMGR->getModeDlg()->GetStopCheckFALSE() && m_bCountBordConnection == 2)
 	{
 		//컨넥션이 끊어 졌을 때 Stop 클릭하도록 메시지를 보낸다.

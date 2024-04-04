@@ -60,6 +60,7 @@ public :
 
 	//카운터 보드 Socket 생성 및 접속 함수
 	int ConnectTrigger(const CString& ip, int port, int mode = CTriggerSocket::TCP_MODE);
+
 	//카운터 보드 소켓 통신 끊김 확인 함수
 	void isConnectTrigger();
 
@@ -105,14 +106,14 @@ public :
 
 	//========== 트리커 BCD ID read =========================
 	//최종 읽은 값
-	WORD m_wLastInfo;
+	static WORD m_wLastInfo;
 
 #if DIO_BOARD_NO // 0이 아니면
 	WORD m_wLastInfo_Output;
 #endif
 
 	//다음에 찾을 TabID - ID 누력 여부 확인용
-	WORD m_nextTabID;
+	static WORD m_nextTabID;
 
 	//m_nTabIdTotalCount 를 백업 해둔다.
 	int m_nTabIdTotalCount_backup;

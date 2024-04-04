@@ -647,9 +647,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				int nRecipeNo = 0;
 				CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 				pDoc->RecipeChange(nRecipeNo, strNextRcp);
-				CString strLog;
-				strLog.Format(_T("5.Recipe Change : RcipeNo[%d], RecipeName[%s]"), nRecipeNo, AprData.m_SeqDataIN.strRecipeName);
-				AprData.SaveLotLog(strLog);
+
+				AprData.SaveDebugLog_Format(_T("5.Recipe Change : RcipeNo[%d], RecipeName[%s]"), nRecipeNo, AprData.m_SeqDataIN.strRecipeName);
 			}
 
 
@@ -1232,11 +1231,11 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 
 		if (theApp.m_pSigProc->SigInTabZeroReset() == TRUE)
 		{
-			AprData.SaveLotLog(_T("Tab Zero Reset 신호 ON"));
+			AprData.SaveDebugLog(_T("Tab Zero Reset 신호 ON"));
 			theApp.m_pSigProc->SigOutTabZeroReset(TRUE);
 
 			theApp.m_pImgProcCtrl->TabCountReset();
-			AprData.SaveLotLog(_T("Tab No And Queue Reset"));
+			AprData.SaveDebugLog(_T("Tab No And Queue Reset"));
 
 			AprData.m_NowLotData.ClearAllCount();
 			AprData.FileCtrl_LotInfo(CGlobalData::en_mode_LotEnd);
@@ -1306,11 +1305,11 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 		m_bTabCountResetFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckTabZeroReset ON"));
 
-		AprData.SaveLotLog(_T("Tab Zero Reset 신호 ON"));
+		AprData.SaveDebugLog(_T("Tab Zero Reset 신호 ON"));
 		theApp.m_pSigProc->SigOutTabZeroReset(TRUE);
 
 		theApp.m_pImgProcCtrl->TabCountReset();
-		AprData.SaveLotLog(_T("!! Tab No And Queue Reset !!"));
+		AprData.SaveDebugLog(_T("!! Tab No And Queue Reset !!"));
 
 		AprData.m_NowLotData.ClearAllCount();
 
@@ -1349,7 +1348,7 @@ int CNotchingGradeInspView::CheckLotStartProcess()
 	{
 		m_bLotStartFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckLotStartProcess ON"));
-		AprData.SaveLotLog(_T("1.Lot Start Signal ON "));
+		AprData.SaveDebugLog(_T("1.Lot Start Signal ON "));
 
 		if (AprData.LotStartProcess(bLotStartSigIn) < 0)
 		{
