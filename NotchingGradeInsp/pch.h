@@ -64,6 +64,7 @@ using namespace Gdiplus;
 //Notching.Release.Version_년(4).월(2).일(2).(배포 횟수 : r01 ~ r99)
 static CString GlobalVersion = _T("Notching.Release.Version_2024.04.05.r01");
 
+
 //Glabal Surpport 클래스
 #include "StrSuport.h"
 //다이얼로그 클래스 Sub Class
