@@ -71,7 +71,6 @@ static CString GlobalVersion = _T("Notching.Release.Version_2024.04.03.r01");
 //UI를 관리하기 위한 클래스
 #include "UiManager.h"
 
-
 //Simens
 #include "LGIS\LGIS_Plc.h"
 //PLC Imp 클래스

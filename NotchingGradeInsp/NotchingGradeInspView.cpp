@@ -625,9 +625,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				}
 
 				CString strOldLotID;
-				CString strOldRecipeName;
 				strOldLotID.Format(_T("%s"), AprData.m_SeqDataIN.strCell_ID);
-				strOldRecipeName.Format(_T("%s"), AprData.m_SeqDataIN.strRecipeName);
 				theApp.m_pSigProc->ReadBlockAllData(&AprData.m_SeqDataIN);
 				CString strNewLotID;
 				strNewLotID = AprData.m_SeqDataIN.strCell_ID;

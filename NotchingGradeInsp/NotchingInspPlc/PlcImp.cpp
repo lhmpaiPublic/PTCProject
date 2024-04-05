@@ -3,7 +3,6 @@
 
 CPlcImp::CPlcImp()
 {
-#ifdef NEW_PLCTYPE
 	//In Data
 	//Bit Data In
 	m_BitIn_Alive = 0;
@@ -105,7 +104,6 @@ CPlcImp::CPlcImp()
 		m_WordOut_DuplicateNG_Cell_ID[i] = 0;
 	}
 
-#endif //NEW_PLCTYPE
 
 }
 

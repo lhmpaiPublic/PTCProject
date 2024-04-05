@@ -41,7 +41,7 @@ static CString StaticTabCounterPath = "D:\\DAT\\FOIL\\LOG\\TABCOUNTER";
 CString strLogNameList =
 "0 Init_FromExecute_Error_0 0,"
 "1 TabID_ImageCount_TabCount_1 0,"
-"2 PLC_2 0,"
+"2 PLC_2 1,"
 "3 SPCPlus_3 0,"
 "4 TACTIME_4 0,"
 "5 Proc_5 0,"

@@ -299,6 +299,8 @@ int CIoMonitorDlg::RefreshAll()
 
 	memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_IN);
 	memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_OUT);
+
+#ifndef NEW_PLCTYPE
 	theApp.m_pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
 	theApp.m_pSigProc->ReadAllPort_BitOut(m_bSigBitOut);
 	theApp.m_pSigProc->ReadBlockAllData(&m_localSeqDataIn);
@@ -311,6 +313,10 @@ int CIoMonitorDlg::RefreshAll()
 	{
 		((CSigProc*)theApp.m_pSigProc)->ReadBlockWriteDataAll_Siemens(&m_localSeqDataOutSms);
 	}
+#else
+	theApp.m_pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
+	theApp.m_pSigProc->ReadAllPort_BitOut(m_bSigBitOut);
+#endif //NEW_PLCTYPE
 
  	UpdateGridCtrl();
 

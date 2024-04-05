@@ -1,10 +1,8 @@
 ﻿#pragma once
 
 class CSequenceData;
-
 class CPlcImp
 {
-#ifdef NEW_PLCTYPE
 	//In Data
 	//Bit Data In
 	BOOL m_BitIn_Alive;
@@ -158,14 +156,12 @@ class CPlcImp
 
 	BOOL m_bWordOut_DuplicateNG_Cell_ID;
 
-#endif //NEW_PLCTYPE
 
 
 public:
 	CPlcImp();
 	virtual ~CPlcImp();
 
-#ifdef NEW_PLCTYPE
 	//In Data
 	//Bit Data In
 	BOOL getBitIn_Alive() { return m_BitIn_Alive; }
@@ -421,8 +417,8 @@ public:
 	void setWordOut_AlarmExist(WORD WordOut_AlarmExist) { m_WordOut_AlarmExist = WordOut_AlarmExist;  m_bWordOut_AlarmExist = true; }
 	BOOL isWordOut_AlarmExist() { return m_bWordOut_AlarmExist; }
 
-	WORD getWordOut_AlarmCode_Buffer1(int num) { m_bWordOut_AlarmCode_Buffer = false; return m_WordOut_AlarmCode_Buffer[num]; }
-	void setWordOut_AlarmCode_Buffer1(int num, WORD WordOut_AlarmCode_Buffer) { m_WordOut_AlarmCode_Buffer[num] = WordOut_AlarmCode_Buffer;  m_bWordOut_AlarmCode_Buffer = true; }
+	WORD getWordOut_AlarmCode_Buffer(int num) { m_bWordOut_AlarmCode_Buffer = false; return m_WordOut_AlarmCode_Buffer[num]; }
+	void setWordOut_AlarmCode_Buffer(int num, WORD WordOut_AlarmCode_Buffer) { m_WordOut_AlarmCode_Buffer[num] = WordOut_AlarmCode_Buffer;  m_bWordOut_AlarmCode_Buffer = true; }
 	BOOL isWordOut_AlarmCode_Buffer() { return m_bWordOut_AlarmCode_Buffer; }
 
 
@@ -442,7 +438,6 @@ public:
 	void setWordOut_DuplicateNG_Cell_ID(int num, WORD WordOut_DuplicateNG_Cell_ID) { m_WordOut_DuplicateNG_Cell_ID[num] = WordOut_DuplicateNG_Cell_ID;  m_bWordOut_DuplicateNG_Cell_ID = true; }
 	BOOL isWordOut_DuplicateNG_Cell_ID() { return m_bWordOut_DuplicateNG_Cell_ID; }
 
-#endif //NEW_PLCTYPE
 
 	//Out
 	virtual int SigOutEncoderZeroSet(int nMode) { return 0; }
@@ -456,7 +451,9 @@ public:
 	virtual int SigOutAlarmResetAck(int nMode) { return 0; }
 	virtual int WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode) { return 0; }
 	virtual void SetInkMarkAcktive(BOOL bUse) {}
+	virtual BOOL GetInkMarkActive() { return 0; }
 	virtual void SetConnectZone(BOOL bUse) {}
+	virtual BOOL GetConnectZone() { return 0; }
 	virtual int SigOutAlivePulseReady(int nInMode, BOOL bIsReady) { return 0; }
 	virtual int SigOutAlarmExist(int nMode) { return 0; }
 	virtual void EnableWorkSet(BOOL bMode) {}
@@ -476,8 +473,6 @@ public:
 	virtual int SigInRecipeChange() { return 0; }
 	virtual int SigInInkMarkActive() { return 0; }
 	virtual int SigInConnectZone() { return 0; }
-	virtual BOOL GetConnectZone() { return TRUE; }
-	virtual BOOL GetInkMarkActive() { return TRUE; }
 
 	//임시
 	virtual int ReadBlockAllData(CSequenceData* pSeqData) { return 0; }

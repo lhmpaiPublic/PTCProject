@@ -95,34 +95,11 @@ enum SmsWordWrite
 	enSmsWordWrite_PrmSectorBaseCnt = 30, 
 
 	enSmsWordWrite_AlarmExist = 40, 
-	enSmsWordWrite_AlarmCode_Buffer1 = 41, 
-	enSmsWordWrite_AlarmCode_Buffer2 = 42, 
-	enSmsWordWrite_AlarmCode_Buffer3 = 43,
-	enSmsWordWrite_AlarmCode_Buffer4 = 44, 
-	enSmsWordWrite_AlarmCode_Buffer5 = 45,
-	enSmsWordWrite_AlarmCode_Buffer6 = 46, 
-	enSmsWordWrite_AlarmCode_Buffer7 = 47, 
-	enSmsWordWrite_AlarmCode_Buffer8 = 48, 
-	enSmsWordWrite_AlarmCode_Buffer9 = 49,
-	enSmsWordWrite_AlarmCode_Buffer10 = 50, 
-	enSmsWordWrite_AlarmCode_Buffer11 = 51, 
-	enSmsWordWrite_AlarmCode_Buffer12 = 52, 
-	enSmsWordWrite_AlarmCode_Buffer13 = 53, 
-	enSmsWordWrite_AlarmCode_Buffer14 = 54, 
-	enSmsWordWrite_AlarmCode_Buffer15 = 55, 
-	enSmsWordWrite_AlarmCode_Buffer16 = 56, 
-	enSmsWordWrite_AlarmCode_Buffer17 = 57,
-	enSmsWordWrite_AlarmCode_Buffer18 = 58, 
-	enSmsWordWrite_AlarmCode_Buffer19 = 59, 
-	enSmsWordWrite_AlarmCode_Buffer20 = 60, 
-	enSmsWordWrite_AlarmCode_Buffer21 = 61, 
-	enSmsWordWrite_AlarmCode_Buffer22 = 62, 
-	enSmsWordWrite_AlarmCode_Buffer23 = 63,
-	enSmsWordWrite_AlarmCode_Buffer24 = 64,
+	enSmsWordWrite_AlarmCode_Buffer = 41, 
 
-	en_SmsWordWrite_Cell_Trigger_ID = 80,
-	en_SmsWordWrite_Judge = 81,
-	en_SmsWordWrite_NG_Code = 82,
+	enSmsWordWrite_Cell_Trigger_ID = 80,
+	enSmsWordWrite_Judge = 81,
+	enSmsWordWrite_NG_Code = 82,
 
 	enSmsWordWrite_DuplicateNG_Cell_ID = 85,
 
@@ -137,6 +114,15 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	, m_pReceiveMsgWnd(pReceiveMsgWnd)
 	, m_pLGIS_Plc(NULL)
 {
+	//Alive 값 연산 변수
+	m_bSmsAlive = FALSE;
+
+	//마킹 설정 값 변수
+	m_bSigInkMarkAcrive = FALSE;
+
+	//ConnectZone 설정 플래그
+	m_bSigInConnectZone = FALSE;
+
 	m_pThread_SiemensPlc = NULL;
 	pEvent_SiemensPlc = NULL;
 	//Read Data 버퍼 초기화
@@ -146,15 +132,8 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	//Write Data 버퍼 초기화
 	memset(m_WriteData, 0, sizeof(short) * SIENENS_WRITEBITWORD_MAX);
 
-	if (OpenPlcIo() == 0)
-	{
-		//슬레이브 아이디 
-		SetSlaveId(AprData.m_System.m_nSlaveID);
-		//이벤트 객체 생성
-		pEvent_SiemensPlc = CreateEvent(NULL, FALSE, FALSE, NULL);
-		//스래드 생성
-		m_pThread_SiemensPlc = AfxBeginThread(SiemensPlc_ThreadProc, this);
-	}
+	//지멘스 Plc 연결 및 데이터 처리 스래드 객체 생성
+	OpenPlcIo();
 }
 
 
@@ -232,9 +211,11 @@ void CSiemensPlcIo::SiemensPlcProc()
 		}
 
 		//쓰기 데이터 만들기
-		WritePlcDataMake();
+		//ret : 쓰기 영역에 어디까지 데이터가 바뀌었는가 값 
+		//m_WriteData에 쓰여진 데이터에서 바뀐 영역까지 만 쓰기 : Bit 영역에서 한번에 연속 되는 부분까지 
+		int ret = WritePlcDataMake();
 		//쓰기
-		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteData, SIENENS_WRITEBITWORD_MAX);
+		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteData, ret);
 	}
 }
 
@@ -475,6 +456,44 @@ int CSiemensPlcIo::WritePlcDataMake()
 	if (isWordOut_PrmContinuousCnt())
 	{ret = SIENENS_WRITEBIT + enSmsWordWrite_PrmContinuousCnt; m_WriteData[ret] = getWordOut_PrmContinuousCnt(); }
 
+	if (isWordOut_PrmSectorNgTabCnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_PrmSectorNgTabCnt; m_WriteData[ret] = getWordOut_PrmSectorNgTabCnt(); }
+
+	if (isWordOut_PrmSectorBaseCnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_PrmSectorBaseCnt; m_WriteData[ret] = getWordOut_PrmSectorBaseCnt(); }
+
+	if (isWordOut_AlarmExist())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmExist; m_WriteData[ret] = getWordOut_AlarmExist(); }
+
+	if (isWordOut_AlarmCode_Buffer())
+	{
+		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer;
+		for (int i = 0; i < SIENENS_WRITEWORD_ALARMCODE; i++)
+		{
+			ret += i;
+			m_WriteData[ret] = getWordOut_AlarmCode_Buffer(ret);
+		}
+	}
+
+	if (isWordOut_Cell_Trigger_ID())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Cell_Trigger_ID; m_WriteData[ret] = getWordOut_Cell_Trigger_ID(); }
+
+	if (isWordOut_Judge())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Judge; m_WriteData[ret] = getWordOut_Judge(); }
+
+	if (isWordOut_NG_Code())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_NG_Code; m_WriteData[ret] = getWordOut_Judge(); }
+
+	if (isWordOut_DuplicateNG_Cell_ID())
+	{
+		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID;
+		for (int i = 0; i < SIENENS_WRITEWORD_DuplicateNGCellID; i++)
+		{
+			ret += i;
+			m_WriteData[ret] = getWordOut_DuplicateNG_Cell_ID(ret);
+		}
+	}
+
 #endif //NEW_PLCTYPE
 
 	//버퍼 block 위치에 + 1 = 크기(size)
@@ -613,13 +632,27 @@ int CSiemensPlcIo::OpenPlcIo(void)
 	int ret = 0;
 
 	m_pLGIS_Plc = new CLGIS_Plc(m_strIPAddress, m_nPort, m_nReConnetTimeOut, m_pReceiveMsgWnd );
-	
+	//로그출력
+	LOGDISPLAY_SPEC(2)("PLC Info	Address : %s	Port : %d", m_strIPAddress, m_nPort);
+
 	if (!m_pLGIS_Plc->CheckConnection())
 	{
 		ClosePlcIo();
 		//로그출력
-		LOGDISPLAY_SPECTXT(0)("PLC Siemens Open failed");
+		LOGDISPLAY_SPEC(2)("PLC Siemens Open failed");
 		ret = -1;
+	}
+	else
+	{
+		//로그출력
+		LOGDISPLAY_SPEC(2)("PLC Siemens Open success Slave Id : %s", AprData.m_System.m_nSlaveID);
+
+		//슬레이브 아이디 
+		SetSlaveId(AprData.m_System.m_nSlaveID);
+		//이벤트 객체 생성
+		pEvent_SiemensPlc = CreateEvent(NULL, FALSE, FALSE, NULL);
+		//스래드 생성
+		m_pThread_SiemensPlc = AfxBeginThread(SiemensPlc_ThreadProc, this);
 	}
 
 	return ret;
@@ -633,3 +666,195 @@ void CSiemensPlcIo::ClosePlcIo(void)
 		m_pLGIS_Plc = NULL;
 	}
 }
+
+//Out
+int CSiemensPlcIo::SigOutEncoderZeroSet(int nMode)
+{ 
+	setBitOut_EncoderSet(nMode);
+	return 0;
+}
+int CSiemensPlcIo::SigOutRecipeChangeAck(int nMode)
+{
+	setBitOut_RecipeChangeAck(nMode);
+	return 0; 
+}
+int CSiemensPlcIo::SigOutLotEndAck(int nMode)
+{
+	setBitOut_LotEndReqAck(nMode);
+	return 0; 
+}
+int CSiemensPlcIo::SigOutLotStartAck(int nMode)
+{ 
+	setBitOut_LotStartReqAck(nMode);
+	return 0; 
+}
+int CSiemensPlcIo::WriteAlarmCode(WORD nAlarmCode)
+{ 
+	setWordOut_AlarmExist(nAlarmCode);
+	return 0;
+}
+int CSiemensPlcIo::SigOutReady(int nMode)
+{ 
+	setBitOut_Ready(nMode);
+	return 0;
+}
+int CSiemensPlcIo::SigOutAlivePulse(int nInMode)
+{ 
+	m_bSmsAlive ^= 0x1;
+	setBitOut_Alive(m_bSmsAlive);
+	return 0;
+}
+int CSiemensPlcIo::SigOutTabZeroReset(int nMode)
+{ 
+	setBitOut_TabZeroReset(nMode);
+	return 0; 
+}
+int CSiemensPlcIo::SigOutAlarmResetAck(int nMode)
+{ 
+	setBitOut_AlarmResetAck(nMode);
+	return 0; 
+}
+int CSiemensPlcIo::WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode)
+{
+	//하나라도 알람 비트가 있으면 TRUE
+	BOOL bAlarmExist = FALSE;
+	for (int i = 1; i < SIENENS_WRITEWORD_ALARMCODE; i++) // Array 0번 = Alarm Exist, Array 1번 부터 Alarm code
+	{
+		int num = i - 1;
+		WORD BufferCode = (nAlarmCode >> num) & 0x1;
+		bAlarmExist |= BufferCode;
+		setWordOut_AlarmCode_Buffer(num, BufferCode); // Alarm Code
+	}
+	setWordOut_AlarmExist(bAlarmExist);
+	setWordOut_Cell_Trigger_ID(nID & 0xffff);
+	setWordOut_Judge(nJudge & 0xffff);
+	setWordOut_NG_Code(nNgCode & 0xffff);
+	return 0; 
+}
+void CSiemensPlcIo::SetInkMarkAcktive(BOOL bUse)
+{
+	m_bSigInkMarkAcrive = bUse;
+}
+void CSiemensPlcIo::SetConnectZone(BOOL bUse)
+{
+	m_bSigInConnectZone = bUse;
+}
+int CSiemensPlcIo::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
+{
+	m_bSmsAlive ^= 0x1;
+	setBitOut_Alive(m_bSmsAlive);
+	setBitOut_Ready(bIsReady);
+	return 0; 
+}
+int CSiemensPlcIo::SigOutAlarmExist(int nMode)
+{
+	return 0; 
+}
+void CSiemensPlcIo::EnableWorkSet(BOOL bMode)
+{
+}
+int CSiemensPlcIo::SigOutDiskCapacityAlarm(int nMode)
+{ 
+	setBitOut_DiskSpaceAlarm(nMode);
+	return 0; 
+}
+int CSiemensPlcIo::SigOutDiskCapacityWarning(int nMode)
+{ 
+	setBitOut_DiskSpaceWarning(nMode);
+	return 0;
+}
+
+int CSiemensPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
+{
+	return 0;
+}
+
+
+//In
+int CSiemensPlcIo::SigInReady()
+{ 
+	return getBitIn_Alive();
+}
+int CSiemensPlcIo::SigInRun()
+{
+	return getBitIn_Run();
+}
+int CSiemensPlcIo::SigInLotEnd()
+{ 
+	return getBitIn_LotEndReq();
+}
+int CSiemensPlcIo::SigInTabZeroReset()
+{ 
+	return getBitIn_TabZeroReset();
+}
+int CSiemensPlcIo::SigInLotStart()
+{
+	return getBitIn_LotStartReq();
+}
+int CSiemensPlcIo::SigInAlarmReset()
+{ 
+	return getBitIn_AlarmResetReq();
+}
+int CSiemensPlcIo::SigInAlarmNgAck()
+{
+	return getBitIn_AlarmNgAck();
+}
+int CSiemensPlcIo::SigInRecipeChange()
+{
+	return getBitIn_RecipeChange();
+}
+int CSiemensPlcIo::SigInInkMarkActive()
+{ 
+	return getBitIn_InkMarkingActive();
+}
+int CSiemensPlcIo::SigInConnectZone()
+{
+	return getBitIn_ConnectZone();
+}
+
+//임시
+int CSiemensPlcIo::ReadBlockAllData(CSequenceData* pSeqData)
+{ 
+	return 0;
+}
+int CSiemensPlcIo::WritePLC_Block_device(int address, short* pData, int nNumOfData)
+{ 
+	return 0; 
+}
+int CSiemensPlcIo::WritePLC_Block_device(int address, int* pData, int nNumOfData)
+{ 
+	return 0; 
+}
+int CSiemensPlcIo::ReadPLC_Block_device(int address, short* pData, int nNumOfData)
+{ 
+	return 0;
+}
+int CSiemensPlcIo::WriteBlockAllData(int nMode)
+{
+	return 0;
+}
+int CSiemensPlcIo::ReadAllPort_BitIn(BOOL* pSigBitIn)
+{ 
+	for (int i = 0; i < MAX_SMS_BITIO_IN; i++)
+	{
+
+		if (m_ReadBitData[i] == 0x01)
+		{
+			pSigBitIn[i] = TRUE;
+		}
+	}
+	return 0; 
+}
+int CSiemensPlcIo::ReadAllPort_BitOut(BOOL* pSigBitOut)
+{ 
+	for (int i = 0; i < MAX_SMS_BITIO_OUT; i++)
+	{
+		if (m_WriteData[i] == 0x01)
+		{
+			pSigBitOut[i] = TRUE;
+		}
+
+	}
+	return 0; 
+}
+

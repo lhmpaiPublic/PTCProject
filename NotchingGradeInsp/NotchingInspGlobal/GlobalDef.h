@@ -1,10 +1,5 @@
 ﻿#pragma once
 
-//#if defined( POSITIVE_VRESION )
-//#elif defined( NEGATIVE_VERSION )
-//#else
-//#endif
-
 #include "LanguageCode.h"
 
 enum {
@@ -29,77 +24,56 @@ enum {
 	enMaxInspMode,
 };
 
-// 22.12.14 Ahn Add Start
 enum {
 	en_defPosEdge = 0,
 	en_defPosRound = 1,
 	en_defPosSurface = 2,
 	en_defPosMax = 3,
 };
-// 22.12.14 Ahn Add End
 
-//KANG 22.05.24 Add Start
 enum {
 	enHistoryDisp_Calender = 0,
 	enHistoryDisp_Thumbnail = 1,
 	enHistoryDisp_List = 2,
 	enMaxHistoryDisp,
 };
-//KANG 22.05.24 Add End
 
-// 22.05.25 Son Add Start
 namespace UserModeDefine {
 	typedef enum {
 		enOperator = 0	,
 		enEngineer		,
-		enMaker			,	// 22.09.15 Ahn Add 
+		enMaker			,	
 		enMax			,
 	} eMode;
 
-	// 22.09.15 Ahn Add Start
 	static const CString szName[enMax] = { _T("OPERATOR_MODE"),_T("ENGINEER_MODE"), _T("MAKER_MODE") }; 
-	// 22.09.15 Ahn Add End
 };
-// 22.05.25 Son Add End
 
-// 23.02.02 Ahn Add Start
 enum {
 	en_Plc_Melsec = 0,
 	en_Plc_Siemens = 1,
 };
-// 23.02.02 Ahn Add End
 
-// 22.06.26 Ahn Add Start
 #define		MAX_CROP_IMAGE_QUEUE_SIZE	540
 #define		MAX_SAVE_LOT_INFO_SIZE	30 
-// 22.06.26 Ahn Add End
 
 #define		SAVE_TAB_LOG
 #define		SAVE_TAB_DIV_LOG
 
-// 22.11.07 Ahn Test Start 5 -> 20 
-#define		MAX_DISP_DEF_COUNT			30	// 22.02.25 Ahn Modify 100 -> 5 
-#define		MAX_SAVE_DEFECT_COUNT		30	// 22.05.24 Ahn Add 
-// 22.11.07 Ahn Test Start
+#define		MAX_DISP_DEF_COUNT			30	
+#define		MAX_SAVE_DEFECT_COUNT		30	
 #define		INSPECTION_TYPE				_T("FOIL-EXP")
 
 
 // 장비 고유 설정
-// 22.03.25 Ahn Add Start
 #define		MIN_FRAME_SIZE		1000
 #define		MAX_FRAME_SIZE		16384
-// 22.03.25 Ahn Add End
 
-// 22.05.18 Ahn Add Start
 #define		IMAGE_PROC_SKIP_COUNT		5
 #define		IMAGE_DISPLAY_SKIP_COUNT	5
 #define		FRAME_ACQ_ERROR_CHK_CNT		5	
-// 22.05.18 Ahn Add End
 
-// 23.02.10 Ahn Add Start
-//#define		MAX_THREAD_QUEUE_SIZE 4
 #define		MAX_THREAD_QUEUE_SIZE	5
-// 23.02.10 Ahn Add End
 
 #define		CAMERA_TDI_MODE
 #define		RESOLUTION_X		6.0
@@ -110,12 +84,8 @@ enum {
 #define		MEAN_SIZE_HOR		100
 #define		MEAN_SIZE_HOR_NEGATIVE	50
 
-// 22.09.15 Ahn Modify Start
-//#define		ANODE_MODE			0 // 음극 
-//#define		CATHODE_MODE		1 // 양극
 #define		CATHODE_MODE		0 // 음극
 #define		ANODE_MODE			1 // 양극 
-// 22.09.15 Ahn Modify End
 
 #define		TEST_LOG
 
@@ -123,9 +93,7 @@ enum {
 #define		MODE_WRITE			1
 
 #define		GRABBER_COUNT		2		// Grabber Board 수	
-// 22.07.08 Son Add Start
 #define		IMAGE_SAVE_THREAD	4
-// 22.07.08 Son Add End
 
 #define		CAM_POS_TOP			0
 #define		CAM_POS_BOTTOM		1
@@ -213,10 +181,8 @@ enum {
 #define		THRESHOLD_MIN_VALUE		100
 
 
-// 22.07.29 Ahn Add Start
 #define	MAX_USE_PORT 4 
 #define	MAX_PORT_BIT 8 
-// 22.07.29 Ahn Add End
 
 //Seimens Bit 영역 갯수
 #define MAX_SMS_BITIO_IN	20
