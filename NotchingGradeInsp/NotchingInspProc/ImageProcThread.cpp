@@ -620,6 +620,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						{
 							// 22.05.03 Ahn Modify End
 							pTabInfo->m_bErrorFlag = TRUE;
+							pTabInfo->m_bNoTab = TRUE;
+
 
 							CString strError = "NONE";
 							if (nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW)
@@ -642,6 +644,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if ((AprData.m_NowLotData.m_bProcError == TRUE) && (AprData.m_System.m_bFirstTabDoNotProc == TRUE))
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
+							pTabInfo->m_bNoTab = TRUE;
 
 							CString strError = "NONE";
 							if (AprData.m_NowLotData.m_bProcError == TRUE)
@@ -666,6 +669,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						if (bErrorAll == TRUE)
 						{
 							pTabInfo->m_bErrorFlag = TRUE;
+							pTabInfo->m_bNoTab = TRUE;
 
 							nErrorNo = 3;
 
@@ -762,6 +766,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
 
 						pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
+						pInfo->m_bNoTab = pTabInfo->m_bNoTab;
 						pInfo->m_nBndElectrode = nBndElectrode;
 
 						pInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
@@ -842,6 +847,7 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 						pBtmInfo->m_nTabId_CntBoard = cntInfo.nTabID;
 
 						pBtmInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
+						pBtmInfo->m_bNoTab = pTabInfo->m_bNoTab;
 
 						//Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
 						pBtmInfo->m_nBndElectrode = nBneElectrodeBtm;// 22.05.11 Ahn Add 
@@ -1410,7 +1416,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								nMarkSel2 = 0;
 							}
 
-							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
+							wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, pTopInfo->m_bNoTab, nTopJudge, nBtmJudge, nMarkSel1, nMarkSel2);
 
 							//마킹 정보를 세팅한다.
 							//input id 스래드에서 보낸다.
@@ -1508,6 +1514,16 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							else {
 								strMarking.Format(_T("Χ"));
 							}
+
+							// No TAB - Marking Skip
+							if (AprData.m_System.m_bNoTabMarkingSkip == TRUE)
+							{
+								if(pTopInfo->m_pTabRsltInfo->m_bNoTab == TRUE )
+								{
+									strMarking.Format(_T("NO_TAB"));
+								}
+							}
+
 
 							//통합비전 BCD Id에 대한 Key 번호
 							//PLC에서 받은 데이터가 있는가 확인 후 세팅한다.
@@ -1754,7 +1770,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							}
 							
 
-							WORD wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, JUDGE_NG, JUDGE_NG, nMarkSel1, nMarkSel2);
+							WORD wOutPut = CImageProcThread::GetCounterSignal(pTopInfo->m_nTabId_CntBoard, FALSE, JUDGE_NG, JUDGE_NG, nMarkSel1, nMarkSel2);
 
 							//마킹 정보를 세팅한다.
 							//input id 스래드에서 보낸다.
@@ -1951,22 +1967,28 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 	return 0;
 }
 
-WORD CImageProcThread::GetCounterSignal(int nTabId, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2)
+WORD CImageProcThread::GetCounterSignal(int nTabId, BOOL bNoTab, int nJudge1, int nJudge2, int nMarkSel1, int nMarkSel2)
 {
 	WORD wOutput = 0x00;
 
-	// 22.01.11 Ahn Add Start
+	// No TAB - Marking Skip
+	if (AprData.m_System.m_bNoTabMarkingSkip == TRUE)
+	{
+		if (bNoTab == TRUE)
+		{
+			nJudge1 = JUDGE_OK;
+			nJudge2 = JUDGE_OK;
+		}
+	}
+
 	// 마킹 테스트용 모든 탭 마킹 신호 출력.
 	if (AprData.m_System.m_bMarkingAllTab == TRUE)
 	{
 		nJudge1 = JUDGE_NG;
 		nJudge2 = JUDGE_NG;
-		// 22.08.11 Ahn Add Start
 		nMarkSel1 = 1;
 		nMarkSel2 = 0;
-		// 22.08.11 Ahn Add Start
 	}
-	// 22.01.11 Ahn Add End
 
 	if ( ( nJudge1 == JUDGE_NG )  || ( nJudge2 == JUDGE_NG ) )
 	{

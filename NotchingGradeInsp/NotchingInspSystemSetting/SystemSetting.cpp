@@ -177,7 +177,7 @@ int CSystemSetting::FileCtrl(int nMode)
 
 			strKey = _T("ENABLE_NG_STOP");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
-			m_bEnableNgStop = atoi(buff);			;
+			m_bEnableNgStop = atoi(buff);
 
 			strKey = _T("JPEG_SAVE_QUALITY");
 			::GetPrivateProfileString(strSection, strKey, "90", buff, 256, strFileName);
@@ -221,6 +221,11 @@ int CSystemSetting::FileCtrl(int nMode)
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 			//SPC+ 출력여부 플래그를 SystemSetting 파일에서 읽어서 가져온다.
 			m_bDisableSpcPlus = atoi(buff);
+
+
+			strKey = _T("NO_TAB_NO_MARKING");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+			m_bNoTabMarkingSkip = atoi(buff);
 
 		}
 		// 23.02.17 Son Add Start
@@ -447,6 +452,10 @@ int CSystemSetting::FileCtrl(int nMode)
 			strKey = _T("NON_EXEC_SPCPLUS");
 			//SPC+ 출력여브 체크박스 이벤트 값을 SystemSetting 파일에 저장한다.
 			strData.Format(_T("%d"), m_bDisableSpcPlus);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("NO_TAB_NO_MARKING");
+			strData.Format(_T("%d"), m_bNoTabMarkingSkip);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 		}
 		// 23.02.17 Son Add Start

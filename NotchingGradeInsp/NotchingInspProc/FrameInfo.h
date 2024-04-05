@@ -88,6 +88,9 @@ public :
 	//Grab Call 호출 타임(ms)
 	UINT64 m_GrabCallTime;
 
+	BOOL	m_bNoTab;	// No Tab 처리
+
+
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	//SPC+ INSP 객체 포인터

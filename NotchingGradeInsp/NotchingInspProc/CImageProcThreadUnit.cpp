@@ -570,6 +570,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						strNgType = "OVERFLOW";
 					}
 
+					pFrameRsltInfo->m_pTabRsltInfo->m_bNoTab = pFrmInfo->m_bNoTab;
 
 				}
 

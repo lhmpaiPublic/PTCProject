@@ -141,6 +141,7 @@ CSystemSettingDlg::CSystemSettingDlg(CWnd* pParent /*=nullptr*/, BOOL bMode /*=T
 	, m_EdWordIn_16(_T(""))
 	, m_EdWordOut_16(_T(""))
 	// 23.03.03 Son Add End
+	, m_bChkUseNoTabMarkingSkip(FALSE)
 {
 	m_SysSetting = AprData.m_System;
 
@@ -194,6 +195,7 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_MISS_TAB_ID_MAX, m_nEdMissTabIdMax);
 	DDX_Check(pDX, IDC_CHK_DISABLE_SPCPLUS, m_bChkDisableSpcPlus);
 	DDX_Text(pDX, IDC_ED_ERRCOUNT_CNTBOARD, m_nErrcount_CntBoard);
+	DDX_Check(pDX, IDC_CHK_USE_NO_TAB_MARKING_SKIP, m_bChkUseNoTabMarkingSkip);
 }
 
 
@@ -238,6 +240,7 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabIdMax)
 ON_BN_CLICKED(IDC_CHK_DISABLE_SPCPLUS, &CSystemSettingDlg::OnBnClickedChkDisableSpcplus)
 ON_EN_SETFOCUS(IDC_ED_ERRCOUNT_CNTBOARD, &CSystemSettingDlg::OnEnSetfocusEdErrcountCntboard)
+ON_BN_CLICKED(IDC_CHK_USE_NO_TAB_MARKING_SKIP, &CSystemSettingDlg::OnBnClickedChkUseNoTabMarkingSkip)
 END_MESSAGE_MAP()
 
 
@@ -902,6 +905,8 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_SysSetting.m_nResultSavePeriod = m_nEdSavePeriod;
 		m_SysSetting.m_nDiskCapacity = m_nDiskCapacityAlarm;
 		m_SysSetting.m_nCounterBoard_ErrCount = m_nErrcount_CntBoard; 
+		m_SysSetting.m_bNoTabMarkingSkip = m_bChkUseNoTabMarkingSkip;
+
 
 		switch (m_nLanguage) {
 		case	0 : 
@@ -956,6 +961,9 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_nEdSavePeriod = m_SysSetting.m_nResultSavePeriod ;
 		m_nDiskCapacityAlarm = m_SysSetting.m_nDiskCapacity ;
 		m_nErrcount_CntBoard = m_SysSetting.m_nCounterBoard_ErrCount; 
+		m_bChkUseNoTabMarkingSkip = m_SysSetting.m_bNoTabMarkingSkip;
+
+
 
 		if (m_SysSetting.m_strLangCode.Compare(LANGUAGE_CODE_KOR) == 0) {
 			m_nLanguage = 0 ;
@@ -1511,4 +1519,11 @@ void CSystemSettingDlg::OnEnSetfocusEdErrcountCntboard()
 	DataControl(MODE_WRITE);
 
 	UpdateData(FALSE);
+}
+
+
+void CSystemSettingDlg::OnBnClickedChkUseNoTabMarkingSkip()
+{
+	UpdateData(TRUE);
+	DataControl(MODE_WRITE);
 }

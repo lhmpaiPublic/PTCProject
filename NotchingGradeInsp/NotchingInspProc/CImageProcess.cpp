@@ -6573,6 +6573,7 @@ int CImageProcess::DivisionTab_byFixSize(const BYTE* pImgPtr, const BYTE* pImgBt
 		CTabInfo tabInfo;
 		//Sector 정보가 없으므로 에러 (즉 Tab Widtch가 없는 남은 이미지로 )
 		tabInfo.m_bErrorFlag = TRUE;
+		tabInfo.m_bNoTab = TRUE;
 		//PET 여부 설정 세팅
 		tabInfo.m_bIsPET = bIsPET;
 		//이미지 길이는 레시피 세팅된 Tab Pitch 값이다.
@@ -6871,6 +6872,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nImageLength = pResvTabInfo->nImageLength;
 			//tab 정보가 잘못 되었음 설정
 			tabInfo.m_bErrorFlag = TRUE;
+			tabInfo.m_bNoTab = TRUE;
 
 			//tab Info의 Image 데이터 정보 메모리 생성
 			//Top : Tab 있는 Image
@@ -6915,6 +6917,7 @@ int CImageProcess::DivisionTab_FromImageToTabInfo(const BYTE* pImgPtr, const BYT
 			tabInfo.nImageLength = pResvTabInfo->nImageLength + nSendLength ;
 			//tab Info에 에러 세팅
 			tabInfo.m_bErrorFlag = TRUE;
+			tabInfo.m_bNoTab = TRUE;
 
 			//tab Info의 Image 데이터 정보 메모리 생성
 			//Top : Tab 있는 Image
