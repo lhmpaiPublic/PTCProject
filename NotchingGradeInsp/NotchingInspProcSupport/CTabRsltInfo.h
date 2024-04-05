@@ -27,6 +27,9 @@ public:
 	BOOL m_bMarkingFlag;
 
 	BOOL m_bIsPET;
+
+	BOOL m_bNoTab;
+
 	// 22.07.08 Ahn Add Start
 	enum {
 		// 22.07.25 Ahn Modify Start

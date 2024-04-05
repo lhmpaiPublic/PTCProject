@@ -173,4 +173,6 @@ public:
 	//SPC+ 출력여부 플래그
 	BOOL m_bChkDisableSpcPlus;
 	afx_msg void OnEnSetfocusEdErrcountCntboard();
+	BOOL m_bChkUseNoTabMarkingSkip;
+	afx_msg void OnBnClickedChkUseNoTabMarkingSkip();
 };

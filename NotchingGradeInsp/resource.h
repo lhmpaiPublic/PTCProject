@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by NotchingGradeInsp.rc
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// NotchingGradeInsp.rc에서 사용되고 있습니다.
 //
 #define IDCANCEL2                       3
 #define IDOK2                           3
@@ -537,6 +537,7 @@
 #define IDC_ED_SAVE_DEF_SIZE            1181
 #define IDC_CHK_FIRST_TAB_DONOT_PROC    1182
 #define IDC_CHK_ENABLE_NG_STOP          1183
+#define IDC_CHK_USE_NO_TAB_MARKING_SKIP 1184
 #define IDC_STATIC_GROOVE_HEIGHT        1185
 #define IDC_ED_NEGA_TAB_COAT_HEIGHT     1186
 #define IDC_ED_NEGA_TAB_COAT_HEIGHT_PIX 1187

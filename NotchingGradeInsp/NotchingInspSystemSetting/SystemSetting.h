@@ -95,5 +95,7 @@ public:
 #endif
 
 	int m_nCounterBoard_ErrCount;
+
+	BOOL m_bNoTabMarkingSkip;
 };
 

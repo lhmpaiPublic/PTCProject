@@ -74,7 +74,7 @@ public:
 
 class CTabInfo {
 public:
-	CTabInfo() { nFrameCount = 0; nTabLeft = 0; nTabRight = 0; nLeft = 0; nRight = 0; nTabNo = 0; nTabNoInFrame = 0; nCenter = 0; nImageLength = 0; nTabStartPosInFrame = 0; nTabWidth = 0; m_bErrorFlag = FALSE;  m_GrabCallBCDId = 64;  m_GrabCallTime = 0;  pImgPtr = NULL; pImgBtmPtr = NULL; };
+	CTabInfo() { nFrameCount = 0; nTabLeft = 0; nTabRight = 0; nLeft = 0; nRight = 0; nTabNo = 0; nTabNoInFrame = 0; nCenter = 0; nImageLength = 0; nTabStartPosInFrame = 0; nTabWidth = 0; m_bErrorFlag = FALSE;  m_GrabCallBCDId = 64;  m_GrabCallTime = 0;  pImgPtr = NULL; pImgBtmPtr = NULL; m_bNoTab = FALSE; };
 	void ResetData() { nFrameCount = 0; nTabLeft = 0; nTabRight = 0; nLeft = 0; nRight = 0; nTabNo = 0; nTabNoInFrame = 0; nCenter = 0; nImageLength = 0; nTabStartPosInFrame = 0; nTabWidth = 0; m_GrabCallBCDId = 64;  m_GrabCallTime = 0; pImgPtr = NULL; pImgBtmPtr = NULL; };
 	int nFrameCount;	//
 	int nTabNoInFrame;	// 
@@ -87,6 +87,7 @@ public:
 	int nTabWidth;
 	BOOL m_bErrorFlag;
 	BOOL m_bIsPET;		// PET 인식
+	BOOL m_bNoTab;
 
 	//QWORD qwHeadStPos;	// 검사 시작 Frame 을 기준으로 Tab Head의 Pixel 위치
 	int	nTabStartPosInFrame ; // Frame에서 Tab의 시작위치 (거리계산용)
