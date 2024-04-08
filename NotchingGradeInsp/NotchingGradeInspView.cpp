@@ -727,6 +727,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorBaseCnt = (DWORD)AprData.m_nSectorBaseCount; //AprData.m_pRecipeInfo->nSectorCount;
 
 
+#ifndef NEW_PLCTYPE
 				int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
 
 				if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
@@ -780,7 +781,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 					//PLC 블럭 Read Time 체크(50 * 6  = 300ms 주기)
 					AprData.m_NowLotData.m_ReadCount = 1;
-					BOOL bPLCWrite = TRUE;
 					if (AprData.m_NowLotData.m_ReadCount <= 0)
 					{
 						short* pData = (short*)(&AprData.m_NowLotData.m_ReadDataSms);
@@ -793,19 +793,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 						{
 							AprData.m_NowLotData.m_ReadCount = 6;
 						}
-						bPLCWrite = FALSE;
 					}
-					//Read Time이 아닐 경우 Write 한다.
-					if(bPLCWrite)
-					{
-						short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
-						int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
-						if (theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
-						{
-							AprData.SaveDebugLog(_T("[DATA SEND] Error")); //pyjtest
-						}
-					}
-
 				}
 				else
 				{
@@ -813,6 +801,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					int nSize = sizeof(_SEQ_OUT_DATA) / sizeof(int);
 					theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 				}
+#else
+				theApp.m_pSigProc->WriteBlockData(&AprData);
+#endif //NEW_PLCTYPE
 
 			}
 
@@ -1272,7 +1263,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 
 		int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
 
-		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd); // 22.07.13 Ahn Modify m_SeqDataLot -> LotEnd
+		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd);
 		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
 		theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 

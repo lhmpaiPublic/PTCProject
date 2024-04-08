@@ -385,8 +385,19 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 		if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == FALSE)
 		{
 			m_pPioCtrl = new CPioCtrl(CHN_NO_NETG1, 2, 1);
+			if (m_pPioCtrl)
+			{
+				//Log
+				LOGDISPLAY_SPEC(11)(_T("PioCtrl 생성"));
+			}
 		}
 		m_pSigProc = new CSigProc();
+
+		if (m_pSigProc)
+		{
+			//Log
+			LOGDISPLAY_SPEC(11)(_T("PioCtrl 생성"));
+		}
 
 	}
 #else

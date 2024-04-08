@@ -1211,6 +1211,10 @@ int CSigProc::SigOutAlarmExist(int nMode)
 	return nRet;
 }
 
+int CSigProc::WriteBlockData(void* pGlobalData)
+{
+	return 0;
+}
 
 int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 {

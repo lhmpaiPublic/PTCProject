@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 class CSequenceData;
+struct stSeqDataOut;
 class CPlcImp
 {
 public:
@@ -44,6 +45,7 @@ public:
 
 	//임시
 	virtual int ReadBlockAllData(CSequenceData* pSeqData) = 0;
+	virtual int WriteBlockData(void* pGlobalData) = 0;
 	virtual int WritePLC_Block_device(int address, short* pData, int nNumOfData) = 0;
 	virtual int WritePLC_Block_device(int address, int* pData, int nNumOfData) = 0;
 	virtual int ReadPLC_Block_device(int address, short* pData, int nNumOfData) = 0;

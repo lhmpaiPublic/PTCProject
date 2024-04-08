@@ -117,12 +117,6 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	//Alive 값 연산 변수
 	m_bSmsAlive = FALSE;
 
-	//마킹 설정 값 변수
-	m_bSigInkMarkAcrive = FALSE;
-
-	//ConnectZone 설정 플래그
-	m_bSigInConnectZone = FALSE;
-
 	m_pThread_SiemensPlc = NULL;
 	pEvent_SiemensPlc = NULL;
 	//Read Data 버퍼 초기화
@@ -222,7 +216,6 @@ void CSiemensPlcIo::SiemensPlcProc()
 //PLC read Data Parser 함수
 void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 {
-#ifdef NEW_PLCTYPE
 	if (m_ReadBitData[enSmsBitIn_Alive] ^ data[enSmsBitIn_Alive]) setBitIn_Alive(data[enSmsBitIn_Alive] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_Ready] ^ data[enSmsBitIn_Ready]) setBitIn_Ready(data[enSmsBitIn_Ready] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_Run] ^ data[enSmsBitIn_Run]) setBitIn_Run(data[enSmsBitIn_Run] & 0x1);
@@ -235,7 +228,6 @@ void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 	if (m_ReadBitData[enSmsBitIn_LotEndReq] ^ data[enSmsBitIn_LotEndReq]) setBitIn_LotEndReq(data[enSmsBitIn_LotEndReq] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_AlarmResetReq] ^ data[enSmsBitIn_AlarmResetReq]) setBitIn_AlarmResetReq(data[enSmsBitIn_AlarmResetReq] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_AlarmNgAck] ^ data[enSmsBitIn_AlarmNgAck]) setBitIn_AlarmNgAck(data[enSmsBitIn_AlarmNgAck] & 0x1);
-#endif //NEW_PLCTYPE
 
 	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBIT);
 }
@@ -293,8 +285,7 @@ CString CSiemensPlcIo::MakeCellId(short* data)
 
 void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 {
-#ifdef NEW_PLCTYPE
-	if (m_ReadWordData[enSmsWordRead_RecipeNo] ^ data[enSmsWordRead_RecipeNo]) setWordIn_RecipeNo(data[enSmsWordRead_RecipeNo] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_RecipeNo] ^ data[enSmsWordRead_RecipeNo]) setWordIn_RecipeNo(data[enSmsWordRead_RecipeNo]);
 	if ((m_ReadWordData[enSmsWordRead_RecipeName] ^ data[enSmsWordRead_RecipeName]) |
 		(m_ReadWordData[enSmsWordRead_RecipeName + 1] ^ data[enSmsWordRead_RecipeName + 1]) |
 		(m_ReadWordData[enSmsWordRead_RecipeName + 2] ^ data[enSmsWordRead_RecipeName + 2]) |
@@ -312,23 +303,21 @@ void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 		(m_ReadWordData[enSmsWordRead_CELL_ID + 8] ^ data[enSmsWordRead_CELL_ID + 8]) |
 		(m_ReadWordData[enSmsWordRead_CELL_ID + 9] ^ data[enSmsWordRead_CELL_ID + 9]))
 		setWordIn_CELL_ID(MakeCellId(&data[enSmsWordRead_CELL_ID]));
-	if (m_ReadWordData[enSmsWordRead_FoilExpInTopTarget] ^ data[enSmsWordRead_FoilExpInTopTarget]) setWordIn_FoilExpInTopTarget(data[enSmsWordRead_FoilExpInTopTarget] & 0xffff);
-	if (m_ReadWordData[enSmsWordRead_FoilExpInBtmTarget] ^ data[enSmsWordRead_FoilExpInBtmTarget]) setWordIn_FoilExpInBtmTarget(data[enSmsWordRead_FoilExpInBtmTarget] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_FoilExpInTopTarget] ^ data[enSmsWordRead_FoilExpInTopTarget]) setWordIn_FoilExpInTopTarget(data[enSmsWordRead_FoilExpInTopTarget]);
+	if (m_ReadWordData[enSmsWordRead_FoilExpInBtmTarget] ^ data[enSmsWordRead_FoilExpInBtmTarget]) setWordIn_FoilExpInBtmTarget(data[enSmsWordRead_FoilExpInBtmTarget]);
 
-	if (m_ReadWordData[enSmsWordRead_FoilExpOutTopTarget] ^ data[enSmsWordRead_FoilExpOutTopTarget]) setWordIn_FoilExpOutTopTarget(data[enSmsWordRead_FoilExpOutTopTarget] & 0xffff);
-	if (m_ReadWordData[enSmsWordRead_FoilExpOutBtmTarget] ^ data[enSmsWordRead_FoilExpOutBtmTarget]) setWordIn_FoilExpOutBtmTarget(data[enSmsWordRead_FoilExpOutBtmTarget] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_FoilExpOutTopTarget] ^ data[enSmsWordRead_FoilExpOutTopTarget]) setWordIn_FoilExpOutTopTarget(data[enSmsWordRead_FoilExpOutTopTarget]);
+	if (m_ReadWordData[enSmsWordRead_FoilExpOutBtmTarget] ^ data[enSmsWordRead_FoilExpOutBtmTarget]) setWordIn_FoilExpOutBtmTarget(data[enSmsWordRead_FoilExpOutBtmTarget]);
 
-	if (m_ReadWordData[enSmsWordRead_FoilExpBothTopTarget] ^ data[enSmsWordRead_FoilExpBothTopTarget]) setWordIn_FoilExpBothTopTarget(data[enSmsWordRead_FoilExpBothTopTarget] & 0xffff);
-	if (m_ReadWordData[enSmsWordRead_FoilExpBothBtmTarget] ^ data[enSmsWordRead_FoilExpBothBtmTarget]) setWordIn_FoilExpBothBtmTarget(data[enSmsWordRead_FoilExpBothBtmTarget] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_FoilExpBothTopTarget] ^ data[enSmsWordRead_FoilExpBothTopTarget]) setWordIn_FoilExpBothTopTarget(data[enSmsWordRead_FoilExpBothTopTarget]);
+	if (m_ReadWordData[enSmsWordRead_FoilExpBothBtmTarget] ^ data[enSmsWordRead_FoilExpBothBtmTarget]) setWordIn_FoilExpBothBtmTarget(data[enSmsWordRead_FoilExpBothBtmTarget]);
 
-	if (m_ReadWordData[enSmsWordRead_SpeterTopTarget] ^ data[enSmsWordRead_SpeterTopTarget]) setWordIn_SpeterTopTarget(data[enSmsWordRead_SpeterTopTarget] & 0xffff);
-	if (m_ReadWordData[enSmsWordRead_SpeterBtmTarget] ^ data[enSmsWordRead_SpeterBtmTarget]) setWordIn_SpeterBtmTarget(data[enSmsWordRead_SpeterBtmTarget] & 0xffff);
+	if (m_ReadWordData[enSmsWordRead_SpeterTopTarget] ^ data[enSmsWordRead_SpeterTopTarget]) setWordIn_SpeterTopTarget(data[enSmsWordRead_SpeterTopTarget]);
+	if (m_ReadWordData[enSmsWordRead_SpeterBtmTarget] ^ data[enSmsWordRead_SpeterBtmTarget]) setWordIn_SpeterBtmTarget(data[enSmsWordRead_SpeterBtmTarget]);
 
-	if (m_ReadWordData[enSmsWordRead_PrmContinuousCnt] ^ data[enSmsWordRead_PrmContinuousCnt]) setWordIn_PrmContinuousCnt(data[enSmsWordRead_PrmContinuousCnt] & 0xffff);
-	if (m_ReadWordData[enSmsWordRead_PrmSectorNgTabCnt] ^ data[enSmsWordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enSmsWordRead_PrmSectorNgTabCnt] & 0xffff);
-	if (m_ReadWordData[enSmsWordRead_PrmSectorBaseCnt] ^ data[enSmsWordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enSmsWordRead_PrmSectorBaseCnt] & 0xffff);
-
-#endif //NEW_PLCTYPE
+	if (m_ReadWordData[enSmsWordRead_PrmContinuousCnt] ^ data[enSmsWordRead_PrmContinuousCnt]) setWordIn_PrmContinuousCnt(data[enSmsWordRead_PrmContinuousCnt]);
+	if (m_ReadWordData[enSmsWordRead_PrmSectorNgTabCnt] ^ data[enSmsWordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enSmsWordRead_PrmSectorNgTabCnt]);
+	if (m_ReadWordData[enSmsWordRead_PrmSectorBaseCnt] ^ data[enSmsWordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enSmsWordRead_PrmSectorBaseCnt]);
 
 	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORD_MAX);
 }
@@ -338,7 +327,6 @@ int CSiemensPlcIo::WritePlcDataMake()
 {
 	//Write Data Block Num
 	int ret = 0;
-#ifdef NEW_PLCTYPE
 	if (isBitOut_Alive())
 	{ret = enSmsBitOut_Alive; m_WriteData[ret] = getBitOut_Alive(); }
 
@@ -389,6 +377,9 @@ int CSiemensPlcIo::WritePlcDataMake()
 
 	if (isWordOut_DataReportV6_RunRate())
 	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV6_RunRate; m_WriteData[ret] = getWordOut_DataReportV6_RunRate(); }
+
+	if (isWordOut_Continue_Alarm_Cnt())
+	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Continue_Alarm_Cnt; m_WriteData[ret] = getWordOut_Continue_Alarm_Cnt(); }
 
 	if (isWordOut_Heavy_Alarm_Cnt())
 	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Heavy_Alarm_Cnt; m_WriteData[ret] = getWordOut_Heavy_Alarm_Cnt(); }
@@ -493,8 +484,6 @@ int CSiemensPlcIo::WritePlcDataMake()
 			m_WriteData[ret] = getWordOut_DuplicateNG_Cell_ID(ret);
 		}
 	}
-
-#endif //NEW_PLCTYPE
 
 	//버퍼 block 위치에 + 1 = 크기(size)
 	//쓰기 영역에 쓸 데이터 크기
@@ -690,7 +679,16 @@ int CSiemensPlcIo::SigOutLotStartAck(int nMode)
 }
 int CSiemensPlcIo::WriteAlarmCode(WORD nAlarmCode)
 { 
-	setWordOut_AlarmExist(nAlarmCode);
+	//하나라도 알람 비트가 있으면 TRUE
+	BOOL bAlarmExist = FALSE;
+	for (int i = 1; i < SIENENS_WRITEWORD_ALARMCODE; i++) // Array 0번 = Alarm Exist, Array 1번 부터 Alarm code
+	{
+		int num = i - 1;
+		WORD BufferCode = (nAlarmCode >> num) & 0x1;
+		bAlarmExist |= BufferCode;
+		setWordOut_AlarmCode_Buffer(num, BufferCode); // Alarm Code
+	}
+	setWordOut_AlarmExist(bAlarmExist);
 	return 0;
 }
 int CSiemensPlcIo::SigOutReady(int nMode)
@@ -726,18 +724,19 @@ int CSiemensPlcIo::WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, 
 		setWordOut_AlarmCode_Buffer(num, BufferCode); // Alarm Code
 	}
 	setWordOut_AlarmExist(bAlarmExist);
-	setWordOut_Cell_Trigger_ID(nID & 0xffff);
-	setWordOut_Judge(nJudge & 0xffff);
-	setWordOut_NG_Code(nNgCode & 0xffff);
+	setWordOut_Cell_Trigger_ID(nID);
+	setWordOut_Judge(nJudge);
+	setWordOut_NG_Code(nNgCode);
 	return 0; 
 }
-void CSiemensPlcIo::SetInkMarkAcktive(BOOL bUse)
+//마킹 설정 값 변수
+BOOL CSiemensPlcIo::GetInkMarkActive()
 {
-	m_bSigInkMarkAcrive = bUse;
+	return getBitIn_InkMarkingActive();
 }
-void CSiemensPlcIo::SetConnectZone(BOOL bUse)
+BOOL CSiemensPlcIo::GetConnectZone()
 {
-	m_bSigInConnectZone = bUse;
+	return getBitIn_ConnectZone();
 }
 int CSiemensPlcIo::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 {
@@ -748,6 +747,7 @@ int CSiemensPlcIo::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 }
 int CSiemensPlcIo::SigOutAlarmExist(int nMode)
 {
+	setWordOut_AlarmExist(nMode);
 	return 0; 
 }
 void CSiemensPlcIo::EnableWorkSet(BOOL bMode)
@@ -815,8 +815,82 @@ int CSiemensPlcIo::SigInConnectZone()
 //임시
 int CSiemensPlcIo::ReadBlockAllData(CSequenceData* pSeqData)
 { 
+	pSeqData->wRecipeNo = getWordIn_RecipeNo();
+	pSeqData->strRecipeName = getWordIn_RecipeName();
+	pSeqData->strCell_ID = getWordIn_CELL_ID();
+
+	pSeqData->wFoilExpInTopTarget = getWordIn_FoilExpInTopTarget();
+	pSeqData->wFoilExpInBottomTarget = getWordIn_FoilExpInBtmTarget();
+	pSeqData->wFoilExpOutTopTarget = getWordIn_FoilExpOutTopTarget();
+	pSeqData->wFoilExpOutBottomTarget = getWordIn_FoilExpOutBtmTarget();
+	pSeqData->wFoilExpBothTopTarget = getWordIn_FoilExpBothTopTarget();
+	pSeqData->wFoilExpBothBottomTarget = getWordIn_FoilExpBothBtmTarget();
+	pSeqData->wSpeterTopTarget = getWordIn_SpeterTopTarget();
+	pSeqData->wSpeterBottomTarget = getWordIn_SpeterBtmTarget();
+
+	pSeqData->wAlarmExistAck = getWordOut_AlarmExist(false);
+
+	pSeqData->wContinousCount = getWordIn_PrmContinuousCnt();
+	pSeqData->wSectorNgCount = getWordIn_PrmSectorNgTabCnt();
+	pSeqData->wSectorBaseCount = getWordIn_PrmSectorBaseCnt();
+
 	return 0;
 }
+
+int CSiemensPlcIo::WriteBlockData(void* pGlobalData)
+{
+	CGlobalData* pGData = (CGlobalData*)pGlobalData;
+	// 검사 수량
+	setWordOut_DataReportV1_Ea((WORD)pGData->m_NowLotData.m_SeqDataOut.dwDataReportV1);
+	// OK 수량
+	setWordOut_DataReportV2_OK((WORD)pGData->m_NowLotData.m_SeqDataOut.dwDataReportV2);
+	// NG 수량
+	setWordOut_DataReportV3_NG((WORD)pGData->m_NowLotData.m_SeqDataOut.dwDataReportV3);
+	// 양품률
+	setWordOut_DataReportV4_OkRate((WORD)pGData->m_NowLotData.m_SeqDataOut.dwDataReportV4);
+	// 불량률
+	setWordOut_DataReportV5_NgRate((WORD)pGData->m_NowLotData.m_SeqDataOut.dwDataReportV5);
+	// 가동률
+	setWordOut_DataReportV6_RunRate((WORD)pGData->m_NowLotData.m_SeqDataOut.dwDataReportV6);
+
+	// 연속 알람 발생 수량
+	setWordOut_Continue_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwContinueAlarmCount);
+	// 구간 알람 발생 수량
+	setWordOut_Heavy_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwSectorAlarmCount);
+	setWordOut_FoilExpInTop_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpInTopCount);
+	setWordOut_FoilExpInBtm_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount);
+	setWordOut_FoilExpOutTop_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpOutTopCount);
+	setWordOut_FoilExpOutBtm_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount);
+	setWordOut_FoilExpBothTop_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpBothTopCount);
+	setWordOut_FoilExpBothBtm_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomCount);
+	setWordOut_SpeterTop_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwSpeterTopCount);
+	setWordOut_SpeterBtm_Alarm_Cnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwSpeterBottomCount);
+
+	// 실시간 Tob NG Count
+	setWordOut_Top_Defect_Count_Real((WORD)pGData->m_NowLotData.m_SeqDataOut.dwTopNgRealTimeCount);
+	// 실시간 Bottom NG Count
+	setWordOut_Btm_Defect_Count_Real((WORD)pGData->m_NowLotData.m_SeqDataOut.dwBottomNgRealTimeCount);
+	// Lot End 시
+	setWordOut_Top_Defect_Count_LotEnd((WORD)pGData->m_NowLotData.m_SeqDataOut.dwTopNgLotEndCount);
+	// Lot End 시
+	setWordOut_Btm_Defect_Count_LotEnd((WORD)pGData->m_NowLotData.m_SeqDataOut.dwBottomNgLotEndCount);
+
+	setWordOut_FoilExpInTopTarget((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpInTopTarget);
+	setWordOut_FoilExpInBtmTarget((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpInBottomTarget);
+	setWordOut_FoilExpOutTopTarget((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpOutTopTarget);
+	setWordOut_FoilExpOutBtmTarget((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomTarget);
+	setWordOut_FoilExpBothTopTarget((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpBothTopTarget);
+	setWordOut_FoilExpBothBtmTarget((WORD)pGData->m_NowLotData.m_SeqDataOut.dwFoilExpBothBottomTarget);
+	setWordOut_SpeterTopTarget((WORD)pGData->m_NowLotData.m_SeqDataOut.dwSpeterTopTarget);
+	setWordOut_SpeterBtmTarget((WORD)pGData->m_NowLotData.m_SeqDataOut.dwSpeterBottomTarget);
+
+	setWordOut_PrmContinuousCnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwPrmContinuousCnt);
+	setWordOut_PrmSectorNgTabCnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwPrmSectorNgTabCnt);
+	setWordOut_PrmSectorBaseCnt((WORD)pGData->m_NowLotData.m_SeqDataOut.dwPrmSectorBaseCnt);
+
+	return 0;
+}
+
 int CSiemensPlcIo::WritePLC_Block_device(int address, short* pData, int nNumOfData)
 { 
 	return 0; 

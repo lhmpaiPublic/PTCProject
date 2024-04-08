@@ -138,14 +138,10 @@ private:
 	virtual int WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode);
 
 	//마킹 설정 값 변수
-	BOOL m_bSigInkMarkAcrive;
-	virtual void SetInkMarkAcktive(BOOL bUse);
-	virtual BOOL GetInkMarkActive() { return m_bSigInkMarkAcrive; }
+	virtual BOOL GetInkMarkActive();
 
 	//ConnectZone 설정 플래그
-	BOOL m_bSigInConnectZone;
-	virtual void SetConnectZone(BOOL bUse);
-	virtual BOOL GetConnectZone() { return m_bSigInConnectZone; }
+	virtual BOOL GetConnectZone();
 
 	virtual int SigOutAlivePulseReady(int nInMode, BOOL bIsReady);
 
@@ -175,6 +171,7 @@ private:
 
 	//임시
 	virtual int ReadBlockAllData(CSequenceData* pSeqData);
+	virtual int WriteBlockData(void* pGlobalData);
 	virtual int WritePLC_Block_device(int address, short* pData, int nNumOfData);
 	virtual int WritePLC_Block_device(int address, int* pData, int nNumOfData);
 	virtual int ReadPLC_Block_device(int address, short* pData, int nNumOfData);

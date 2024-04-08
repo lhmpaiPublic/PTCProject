@@ -409,6 +409,8 @@ public :
 	virtual int ReadBlockAllData(CSequenceData *pSeqData);
 	virtual int WriteBlockAllData(int nMode);
 
+	virtual int WriteBlockData(void* pGlobalData);
+
 	virtual int ReadBlockAllData_Melsec(CSequenceData* pSeqData);
 	virtual int WriteBlockAllData_Melsec(int nMode);
 	virtual int ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);

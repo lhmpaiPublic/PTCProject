@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 class CSequenceData;
-class CDataPlcImp
+class CDataPlcImp : public CPlcImp
 {
 	//In Data
 	//Bit Data In
@@ -413,7 +413,7 @@ public:
 	void setWordOut_PrmSectorBaseCnt(WORD WordOut_PrmSectorBaseCnt) { m_WordOut_PrmSectorBaseCnt = WordOut_PrmSectorBaseCnt;  m_bWordOut_PrmSectorBaseCnt = true; }
 	BOOL isWordOut_PrmSectorBaseCnt() { return m_bWordOut_PrmSectorBaseCnt; }
 
-	WORD getWordOut_AlarmExist() { m_bWordOut_AlarmExist = false; return m_WordOut_AlarmExist; }
+	WORD getWordOut_AlarmExist(bool bInit = true) { if (bInit) { m_bWordOut_AlarmExist = false; } return m_WordOut_AlarmExist; }
 	void setWordOut_AlarmExist(WORD WordOut_AlarmExist) { m_WordOut_AlarmExist = WordOut_AlarmExist;  m_bWordOut_AlarmExist = true; }
 	BOOL isWordOut_AlarmExist() { return m_bWordOut_AlarmExist; }
 
@@ -437,6 +437,9 @@ public:
 	WORD getWordOut_DuplicateNG_Cell_ID(int num) { m_bWordOut_DuplicateNG_Cell_ID = false; return m_WordOut_DuplicateNG_Cell_ID[num]; }
 	void setWordOut_DuplicateNG_Cell_ID(int num, WORD WordOut_DuplicateNG_Cell_ID) { m_WordOut_DuplicateNG_Cell_ID[num] = WordOut_DuplicateNG_Cell_ID;  m_bWordOut_DuplicateNG_Cell_ID = true; }
 	BOOL isWordOut_DuplicateNG_Cell_ID() { return m_bWordOut_DuplicateNG_Cell_ID; }
+
+	virtual void SetInkMarkAcktive(BOOL bUse){}
+	virtual void SetConnectZone(BOOL bUse) {}
 
 };
 
