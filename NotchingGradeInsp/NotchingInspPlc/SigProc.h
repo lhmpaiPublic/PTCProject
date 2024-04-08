@@ -373,51 +373,51 @@ public:
 
 public :
 	// Signal In
-	int SigInAlivePulse();
-	int SigInReady();
-	int SigInRun();
-	int SigInEncoderZeroReset();
-	int SigInTabZeroReset();
-	int SigInRecipeChange();
-	int SigInLotStart();
-	int SigInLotEnd();
-	int SigInAlarmReset();
-	int SigInInkMarkActive();
-	int SigInConnectZone();
-	int SigInAlarmNgAck();
+	virtual int SigInAlivePulse();
+	virtual int SigInReady();
+	virtual int SigInRun();
+	virtual int SigInEncoderZeroReset();
+	virtual int SigInTabZeroReset();
+	virtual int SigInRecipeChange();
+	virtual int SigInLotStart();
+	virtual int SigInLotEnd();
+	virtual int SigInAlarmReset();
+	virtual int SigInInkMarkActive();
+	virtual int SigInConnectZone();
+	virtual int SigInAlarmNgAck();
 
 
 
 	// Signal Out
-	int SigOutAlivePulse(int nMode);
-	int SigOutAlivePulseReady(int nInMode, BOOL bIsReady);
-	int SigOutReady(int nMode);
-	int SigOutEncoderZeroSet(int nMde);
-	int SigOutRecipeChangeAck(int nMode);
-	int SigOutLotStartAck(int nMode);
-	int SigOutLotEndAck(int nMode);
-	int SigOutTabZeroReset(int nMode);
-	int SigOutAlarmResetAck(int nMode);
-	int SigOutDiskCapacityAlarm(int nMode);
-	int SigOutDiskCapacityWarning(int nMode);
-	int SigOutAlarmExist(int nMode);
-	int SigOutAlarmNgResetAck(int nMode);
+	virtual int SigOutAlivePulse(int nMode);
+	virtual int SigOutAlivePulseReady(int nInMode, BOOL bIsReady);
+	virtual int SigOutReady(int nMode);
+	virtual int SigOutEncoderZeroSet(int nMde);
+	virtual int SigOutRecipeChangeAck(int nMode);
+	virtual int SigOutLotStartAck(int nMode);
+	virtual int SigOutLotEndAck(int nMode);
+	virtual int SigOutTabZeroReset(int nMode);
+	virtual int SigOutAlarmResetAck(int nMode);
+	virtual int SigOutDiskCapacityAlarm(int nMode);
+	virtual int SigOutDiskCapacityWarning(int nMode);
+	virtual int SigOutAlarmExist(int nMode);
+	virtual int SigOutAlarmNgResetAck(int nMode);
 
 	BOOL SigOutDataReset(); 
 
 	// Word
-	int ReadBlockAllData(CSequenceData *pSeqData);
-	int WriteBlockAllData(int nMode);
+	virtual int ReadBlockAllData(CSequenceData *pSeqData);
+	virtual int WriteBlockAllData(int nMode);
 
-	int ReadBlockAllData_Melsec(CSequenceData* pSeqData);
-	int WriteBlockAllData_Melsec(int nMode);
-	int ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
+	virtual int ReadBlockAllData_Melsec(CSequenceData* pSeqData);
+	virtual int WriteBlockAllData_Melsec(int nMode);
+	virtual int ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
 
-	int ReadBlockAllData_Siemens(CSequenceData* pSeqData);
-	int WriteBlockAllData_Siemens(int nMode);
-	int ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAll);
+	virtual int ReadBlockAllData_Siemens(CSequenceData* pSeqData);
+	virtual int WriteBlockAllData_Siemens(int nMode);
+	virtual int ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAll);
 
-	void EnableWorkSet(BOOL bMode);
+	virtual void EnableWorkSet(BOOL bMode);
 
 protected:
 	CPioCtrl* m_pPioCtrl;

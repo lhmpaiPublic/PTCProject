@@ -1375,6 +1375,9 @@ int CNotchingGradeInspView::CheckAlarmReset()
 		m_bAlarmResetFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckAlarmReset ON"));
 
+		//Log
+		LOGDISPLAY_SPEC(11)(_T("CheckAlarmReset ON"));
+
 		theApp.m_pSigProc->SigOutAlarmResetAck(TRUE);
 
 	}
@@ -1383,9 +1386,15 @@ int CNotchingGradeInspView::CheckAlarmReset()
 		m_bAlarmResetFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckAlarmReset OFF"));
 
+		//Log
+		LOGDISPLAY_SPEC(11)(_T("CheckAlarmReset OFF"));
+
 		theApp.m_pSigProc->SigOutAlarmResetAck(FALSE);
 
 	}
+
+	//Log
+	LOGDISPLAY_SPEC(11)(_T("CheckAlarmReset "));
 
 	return nRet;
 }

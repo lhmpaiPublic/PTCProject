@@ -435,6 +435,7 @@
     <ClInclude Include="NotchingInspLight\Light232.h" />
     <ClInclude Include="NotchingInspLight\LightSocket.h" />
     <ClInclude Include="NotchingInspLog\LogDisplayDlg.h" />
+    <ClInclude Include="NotchingInspPlc\DataPlcImp.h" />
     <ClInclude Include="NotchingInspPlc\PlcImp.h" />
     <ClInclude Include="NotchingInspPlc\SiemensPlcIo.h" />
     <ClInclude Include="NotchingInspProcSupport\CJudgeResultCtrl.h" />
@@ -598,6 +599,7 @@
     <ClCompile Include="NotchingInspLight\Light232.cpp" />
     <ClCompile Include="NotchingInspLight\LightSocket.cpp" />
     <ClCompile Include="NotchingInspLog\LogDisplayDlg.cpp" />
+    <ClCompile Include="NotchingInspPlc\DataPlcImp.cpp" />
     <ClCompile Include="NotchingInspPlc\PlcImp.cpp" />
     <ClCompile Include="NotchingInspPlc\SiemensPlcIo.cpp" />
     <ClCompile Include="NotchingInspProcSupport\CJudgeResultCtrl.cpp" />

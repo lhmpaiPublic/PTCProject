@@ -76,6 +76,7 @@ static CString GlobalVersion = _T("Notching.Release.Version_2024.04.05.r01");
 #include "LGIS\LGIS_Plc.h"
 //PLC Imp 클래스
 #include "PlcImp.h"
+#include "DataPlcImp.h"
 
 #include <string>
 #include <vector>

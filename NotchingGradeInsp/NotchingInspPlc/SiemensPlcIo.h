@@ -47,7 +47,7 @@
 #define SIENENS_WRITEWORD_DuplicateNGCellID 64
 
 
-class CSiemensPlcIo : public CPlcImp
+class CSiemensPlcIo : public CDataPlcImp
 {
 public:
 	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort);

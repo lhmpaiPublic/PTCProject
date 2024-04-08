@@ -1107,29 +1107,6 @@ int CSigProc::SigOutAlarmNgResetAck(int nMode)
 // LOT End 시 PLC 에 데이터 초기화 값 전달.
 BOOL CSigProc::SigOutDataReset()
 {
-	/*
-	    Data Report V1[검사수량](ea)
-		Data Report V2[OK 수량](ea)
-		Data Report V3[NG 수량](ea)
-		Data Report V4[양품률](%)
-		Data Report V5[불량률](%)
-		Data Report V6[가동률](%)
-		연속 알람 발생 수량
-		구간 알람 발생 수량
-		Foil Exposure In Top - 불량알람 수량
-		Foil Exposure In Bot - 불량알람 수량
-		Foil Exposure Out Top - 불량알람 수량
-		Foil Exposure Out Bot - 불량알람 수량
-		Foil Exposure Both Top - 불량알람 수량
-		Foil Exposure Both Bot - 불량알람 수량
-		Spatter Top - 불량알람 수량   // 없다 
-		Spatter Bot - 불량알람 수량   // 없다
-		실시간 NG Tab 수 Top   
-		실시간 NG Tab 수 Bottom
-		Lot End 시점 NG Tab 수 Top
-		Lot End 시점 NG Tab 수 Bottom
-		*/
-
 	int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
 
 	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV1 = 0;
