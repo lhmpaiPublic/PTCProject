@@ -54,6 +54,9 @@ enum SmsWordRead
 	enSmsWordRead_PrmContinuousCnt = 30, 
 	enSmsWordRead_PrmSectorNgTabCnt = 31, 
 	enSmsWordRead_PrmSectorBaseCnt = 32, 
+
+	//Cell Key
+	enSmsWordRead_CellKey = 210,
 };
 
 enum SmsWordWrite
@@ -150,7 +153,7 @@ CSiemensPlcIo::~CSiemensPlcIo()
 }
 
 //스래드 함수
-#define SIEMENSPLC_TIMEOUT 100
+#define SIEMENSPLC_TIMEOUT 500
 UINT CSiemensPlcIo::SiemensPlc_ThreadProc(LPVOID param)
 {
 	CSiemensPlcIo* pMain = (CSiemensPlcIo*)param;
@@ -184,20 +187,26 @@ void CSiemensPlcIo::SiemensPlcProc()
 {
 	if (IsOpened())
 	{
+		//bit Word 전체 버퍼
+		short	ReadBitWordData[SIENENS_READBITWORD_MAX];
+		memset(ReadBitWordData, 0, SIENENS_READBITWORD_MAX);
+
 		//Read bit 영역 읽기
 		short	ReadBitData[SIENENS_READBIT];
+		//Read word 영역 읽기
+		short	ReadWordData[SIENENS_READWORD_MAX];
 		//bit 읽기 영역 읽기
-		ReadDataReg(AprData.m_System.m_nBitIn, ReadBitData, SIENENS_READBIT);
+		ReadDataReg(AprData.m_System.m_nBitIn, ReadBitWordData, SIENENS_READBITWORD_MAX);
+
 		//읽은 Bit 데이터 파싱
+		memcpy(ReadBitData, &ReadBitWordData[0], sizeof(short) * SIENENS_READBIT);
 		if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
 		{
 			ReadPlcBitDataParser(ReadBitData);
 		}
 
-		//Read word 영역 읽기
-		short	ReadWordData[SIENENS_READWORD_MAX];
 		//word 읽기 영역 읽기
-		ReadDataReg(AprData.m_System.m_nWordIn, ReadWordData, SIENENS_READWORD_MAX);
+		memcpy(ReadWordData, &ReadBitWordData[SIENENS_READBIT], sizeof(short) * SIENENS_READWORD_MAX);
 		//읽은 Word 데이터 파싱
 		if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
 		{
@@ -318,6 +327,12 @@ void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 	if (m_ReadWordData[enSmsWordRead_PrmContinuousCnt] ^ data[enSmsWordRead_PrmContinuousCnt]) setWordIn_PrmContinuousCnt(data[enSmsWordRead_PrmContinuousCnt]);
 	if (m_ReadWordData[enSmsWordRead_PrmSectorNgTabCnt] ^ data[enSmsWordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enSmsWordRead_PrmSectorNgTabCnt]);
 	if (m_ReadWordData[enSmsWordRead_PrmSectorBaseCnt] ^ data[enSmsWordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enSmsWordRead_PrmSectorBaseCnt]);
+
+	for (int i = 0; i < COUNT_CELLKEY; i++)
+	{
+		int idx = enSmsWordRead_CellKey + i;
+		if (m_ReadWordData[idx] ^ data[idx]) setWordIn_CellKey(i, data[idx]);
+	}
 
 	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORD_MAX);
 }
@@ -459,10 +474,10 @@ int CSiemensPlcIo::WritePlcDataMake()
 	if (isWordOut_AlarmCode_Buffer())
 	{
 		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer;
-		for (int i = 0; i < SIENENS_WRITEWORD_ALARMCODE; i++)
+		for (int i = 0; i < COUNT_ALRAMBUFF; i++)
 		{
 			ret += i;
-			m_WriteData[ret] = getWordOut_AlarmCode_Buffer(ret);
+			m_WriteData[ret] = getWordOut_AlarmCode_Buffer(i);
 		}
 	}
 
@@ -478,10 +493,10 @@ int CSiemensPlcIo::WritePlcDataMake()
 	if (isWordOut_DuplicateNG_Cell_ID())
 	{
 		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID;
-		for (int i = 0; i < SIENENS_WRITEWORD_DuplicateNGCellID; i++)
+		for (int i = 0; i < COUNT_DUPLICATENGCELLID; i++)
 		{
 			ret += i;
-			m_WriteData[ret] = getWordOut_DuplicateNG_Cell_ID(ret);
+			m_WriteData[ret] = getWordOut_DuplicateNG_Cell_ID(i);
 		}
 	}
 
@@ -681,12 +696,11 @@ int CSiemensPlcIo::WriteAlarmCode(WORD nAlarmCode)
 { 
 	//하나라도 알람 비트가 있으면 TRUE
 	BOOL bAlarmExist = FALSE;
-	for (int i = 1; i < SIENENS_WRITEWORD_ALARMCODE; i++) // Array 0번 = Alarm Exist, Array 1번 부터 Alarm code
+	for (int i = 0; i < COUNT_ALRAMBUFF; i++)
 	{
-		int num = i - 1;
-		WORD BufferCode = (nAlarmCode >> num) & 0x1;
+		WORD BufferCode = (nAlarmCode >> i) & 0x1;
 		bAlarmExist |= BufferCode;
-		setWordOut_AlarmCode_Buffer(num, BufferCode); // Alarm Code
+		setWordOut_AlarmCode_Buffer(i, BufferCode); // Alarm Code
 	}
 	setWordOut_AlarmExist(bAlarmExist);
 	return 0;
@@ -716,12 +730,11 @@ int CSiemensPlcIo::WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, 
 {
 	//하나라도 알람 비트가 있으면 TRUE
 	BOOL bAlarmExist = FALSE;
-	for (int i = 1; i < SIENENS_WRITEWORD_ALARMCODE; i++) // Array 0번 = Alarm Exist, Array 1번 부터 Alarm code
+	for (int i = 1; i < COUNT_ALRAMBUFF; i++)
 	{
-		int num = i - 1;
-		WORD BufferCode = (nAlarmCode >> num) & 0x1;
+		WORD BufferCode = (nAlarmCode >> i) & 0x1;
 		bAlarmExist |= BufferCode;
-		setWordOut_AlarmCode_Buffer(num, BufferCode); // Alarm Code
+		setWordOut_AlarmCode_Buffer(i, BufferCode); // Alarm Code
 	}
 	setWordOut_AlarmExist(bAlarmExist);
 	setWordOut_Cell_Trigger_ID(nID);

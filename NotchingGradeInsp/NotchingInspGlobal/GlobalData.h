@@ -351,9 +351,6 @@ public:
 
 	//지멘스 Read 블럭으로
 	_SEQ_In_DATA_SMS m_ReadDataSms;
-	//Read Count : 50초 주기로 읽기
-	int m_ReadCount;
-
 
 	SYSTEMTIME m_LastDeleteCompletTime;
 

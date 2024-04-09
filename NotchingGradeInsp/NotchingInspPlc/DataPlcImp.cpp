@@ -50,6 +50,12 @@ CDataPlcImp::CDataPlcImp()
 	m_BitOut_DiskSpaceWarning = 0;
 	m_BitOut_DiskSpaceAlarm = 0;
 
+	//Word Data In Cell Key
+	for (int i = 0; i < COUNT_CELLKEY; i++)
+	{
+		m_WordIn_CellKey[i] = 0;
+	}
+
 	//Word Data Out
 	m_WordOut_DataReportV1_Ea = 0;
 	m_WordOut_DataReportV2_OK = 0;
@@ -90,7 +96,7 @@ CDataPlcImp::CDataPlcImp()
 
 	m_WordOut_AlarmExist = 0;
 
-	for (int i = 0; i < 24; i++)
+	for (int i = 0; i < COUNT_ALRAMBUFF; i++)
 	{
 		m_WordOut_AlarmCode_Buffer[i] = 0;
 	}
@@ -99,7 +105,7 @@ CDataPlcImp::CDataPlcImp()
 	m_WordOut_Judge = 0;
 	m_WordOut_NG_Code = 0;
 
-	for (int i = 0; i < 24; i++)
+	for (int i = 0; i < COUNT_DUPLICATENGCELLID; i++)
 	{
 		m_WordOut_DuplicateNG_Cell_ID[i] = 0;
 	}

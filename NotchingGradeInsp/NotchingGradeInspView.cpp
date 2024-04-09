@@ -504,7 +504,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			theApp.m_pSigProc->WriteAlarmCode(0x0000);
 			m_nStatus = en_InspStop;
 			AprData.m_NowLotData.m_bProcError = TRUE;
-			AprData.m_NowLotData.m_ReadCount = 6;
 
 			break;
 
@@ -771,28 +770,20 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					AprData.m_NowLotData.m_SeqDataOutSms.wPrmSectorBaseCnt = (WORD)AprData.m_nSectorBaseCount;
 
 
-
+					//PLC 블럭 Write
 					short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
 					int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
 					if (theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
 					{
 						AprData.SaveDebugLog(_T("[DATA SEND] Error")); //pyjtest
 					}
-
-					//PLC 블럭 Read Time 체크(50 * 6  = 300ms 주기)
-					AprData.m_NowLotData.m_ReadCount = 1;
-					if (AprData.m_NowLotData.m_ReadCount <= 0)
+					Sleep(1);
+					//PLC 블럭 Read
+					pData = (short*)(&AprData.m_NowLotData.m_ReadDataSms);
+					nSize = sizeof(_SEQ_In_DATA_SMS) / sizeof(WORD);
+					if (theApp.m_pSigProc->ReadPLC_Block_device(0, pData, nSize) != 0)
 					{
-						short* pData = (short*)(&AprData.m_NowLotData.m_ReadDataSms);
-						int nSize = sizeof(_SEQ_In_DATA_SMS) / sizeof(WORD);
-						if (theApp.m_pSigProc->ReadPLC_Block_device(0, pData, nSize) != 0)
-						{
-							AprData.SaveDebugLog(_T("[DATA Read] Error"));
-						}
-						else
-						{
-							AprData.m_NowLotData.m_ReadCount = 6;
-						}
+						AprData.SaveDebugLog(_T("[DATA Read] Error"));
 					}
 				}
 				else

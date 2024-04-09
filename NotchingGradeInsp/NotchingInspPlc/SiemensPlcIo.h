@@ -8,8 +8,17 @@
 
 //지멘스 BIT 영역 읽기 갯수
 #define SIENENS_READBIT (MAX_SMS_BITIO_IN)
+
+//지멘스 WORD 영역 읽기 추가 - Cell Key 시작점
+#define SIENENS_CELLKEY_START 210
+//지멘스 WORD 영역 읽기 Cell Key 갯수
+#define SIENENS_CELLKEY_COUNT 64
+
 //지멘스 WORD 영역 읽기 갯수
-#define SIENENS_READWORD_MAX 33 //(MAX_SMS_WORDIO_IN)
+#define SIENENS_READWORD_MAX 274 //(MAX_SMS_WORDIO_IN)
+
+//지멘스 쓰기 BIT + WORD
+#define SIENENS_READBITWORD_MAX (SIENENS_READBIT+SIENENS_READWORD_MAX) //(MAX_SMS_WORDIO_OUT)
 
 //지멘스 Recipe Name 읽기 갯수
 #define SIEMENS_READRECIPENAME 4
@@ -20,31 +29,9 @@
 #define SIENENS_WRITEBIT (MAX_SMS_BITIO_OUT)
 //지멘스 WORD 영역 쓰기 갯수
 #define SIENENS_WRITEWORD_MAX 149 //(MAX_SMS_WORDIO_OUT)
+
 //지멘스 쓰기 BIT + WORD
 #define SIENENS_WRITEBITWORD_MAX (SIENENS_WRITEBIT+SIENENS_WRITEWORD_MAX) //(MAX_SMS_WORDIO_OUT)
-
-//지멘스 WORD 영역 - 검사 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_INSP 6 
-//지멘스 WORD 영역 - Alarm 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_ALARM 10
-//지멘스 WORD 영역 - Defect 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_DEFECT 4
-//지멘스 WORD 영역 - Target 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_TARGET 8
-//지멘스 WORD 영역 - Frm Cnt 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_FRMCNT 3
-//지멘스 WORD 영역 - Empty 1 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_EMPTY1 10
-//지멘스 WORD 영역 - Alarm Code 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_ALARMCODE 25
-//지멘스 WORD 영역 - Empty 2 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_EMPTY2 15
-//지멘스 WORD 영역 - 검사 추가  정보 쓰기 갯수
-#define SIENENS_WRITEWORD_INSPADD 3
-//지멘스 WORD 영역 - Empty 3 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_EMPTY3 2
-//지멘스 WORD 영역 - DuplicateNG Cell ID 정보 쓰기 갯수
-#define SIENENS_WRITEWORD_DuplicateNGCellID 64
 
 
 class CSiemensPlcIo : public CDataPlcImp
@@ -55,7 +42,7 @@ public:
 
 	//PLC 읽기 Data
 	short m_ReadBitData[SIENENS_READBIT];
-	short m_ReadWordData[SIENENS_WRITEWORD_MAX];
+	short m_ReadWordData[SIENENS_READWORD_MAX];
 
 	//PLC 쓰기 Data
 	short m_WriteData[SIENENS_WRITEBITWORD_MAX];

@@ -1,5 +1,13 @@
 ﻿#pragma once
 
+//In Data 
+//Cell Key 갯수
+#define COUNT_CELLKEY 64
+//Alram Code Buff 갯수
+#define COUNT_ALRAMBUFF 24
+//Duplicate NG Cell ID 갯수
+#define COUNT_DUPLICATENGCELLID 64
+
 class CSequenceData;
 class CDataPlcImp : public CPlcImp
 {
@@ -35,6 +43,9 @@ class CDataPlcImp : public CPlcImp
 	WORD m_WordIn_PrmContinuousCnt;
 	WORD m_WordIn_PrmSectorNgTabCnt;
 	WORD m_WordIn_PrmSectorBaseCnt;
+
+	//Word Data In Cell Key
+	WORD m_WordIn_CellKey[COUNT_CELLKEY];
 
 	//Bit Data Out
 	BOOL m_BitOut_Alive;
@@ -88,13 +99,13 @@ class CDataPlcImp : public CPlcImp
 	WORD m_WordOut_PrmSectorBaseCnt;
 
 	WORD m_WordOut_AlarmExist;
-	WORD m_WordOut_AlarmCode_Buffer[24];
+	WORD m_WordOut_AlarmCode_Buffer[COUNT_ALRAMBUFF];
 
 	WORD m_WordOut_Cell_Trigger_ID;
 	WORD m_WordOut_Judge;
 	WORD m_WordOut_NG_Code;
 
-	WORD m_WordOut_DuplicateNG_Cell_ID[64];
+	WORD m_WordOut_DuplicateNG_Cell_ID[COUNT_DUPLICATENGCELLID];
 
 	//Bit Data Out
 	BOOL m_bBitOut_Alive;
@@ -241,6 +252,9 @@ public:
 
 	WORD getWordIn_PrmSectorBaseCnt() { return m_WordIn_PrmSectorBaseCnt; }
 	void setWordIn_PrmSectorBaseCnt(WORD WordIn_PrmSectorBaseCnt) { m_WordIn_PrmSectorBaseCnt = WordIn_PrmSectorBaseCnt; }
+
+	WORD getWordIn_CellKey(int num) { return m_WordIn_CellKey[num]; }
+	void setWordIn_CellKey(int num, WORD WordIn_CellKey) { m_WordIn_CellKey[num] = WordIn_CellKey; }
 
 
 	//Bit Data Out
