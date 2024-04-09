@@ -572,6 +572,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					delete m_pDeleteThread;
 					m_pDeleteThread = nullptr;
 				}
+				//로그출력
+				LOGDISPLAY_SPECTXT(11)("PLC SigInReady");
 			}
 
 			break;
@@ -586,6 +588,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			else if (theApp.m_pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
+				//로그출력
+				LOGDISPLAY_SPECTXT(11)("PLC SigInRun");
 			}
 
 			break;

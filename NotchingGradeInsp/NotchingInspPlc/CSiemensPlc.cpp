@@ -183,7 +183,12 @@ int CSiemensPlc::OpenPio(void)
 	{
 		ClosePio();
 		//로그출력
-		LOGDISPLAY_SPECTXT(0)("PLC Siemens Open failed");
+		LOGDISPLAY_SPECTXT(11)("PLC Siemens Open failed");
+	}
+	else
+	{
+		//로그출력
+		LOGDISPLAY_SPECTXT(11)("PLC Siemens Open success");
 	}
 
 	return 0;

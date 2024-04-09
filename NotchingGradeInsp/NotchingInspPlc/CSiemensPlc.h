@@ -1,12 +1,5 @@
 ﻿#pragma once
 #include "PlcBase.h"
-#include "..\LGIS\LGIS_Plc.h"
-
-#ifdef _DEBUG
-#pragma comment(lib, "LGISD.lib")
-#else
-#pragma comment(lib, "LGIS.lib")
-#endif
 
 class CSiemensPlc : public CPlcBase
 {

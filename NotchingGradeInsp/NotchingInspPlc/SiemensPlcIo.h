@@ -1,11 +1,5 @@
 ﻿#pragma once
 
-#ifdef _DEBUG
-#pragma comment(lib, "LGISD.lib")
-#else
-#pragma comment(lib, "LGIS.lib")
-#endif
-
 //지멘스 BIT 영역 읽기 갯수
 #define SIENENS_READBIT (MAX_SMS_BITIO_IN)
 
