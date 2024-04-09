@@ -589,9 +589,10 @@ int CSigProc::SigInRun()
 		AprData.SaveDebugLog_Format(_T("PLC SigIn	%s"), (nRet == TRUE)? "RUN" : "Not Run");
 
 		//DIO Input Log
-		LOGDISPLAY_SPEC(7)(_T(">>> PLC Run SigIn Stat<<<  < %s>"), (nRet == TRUE)? "RUN" : "Not Run");
+		LOGDISPLAY_SPEC(11)(_T(">>> PLC Run SigIn Stat<<<  < %s>"), (nRet == TRUE)? "RUN" : "Not Run");
 
 	}
+
 	return nRet;
 }
 

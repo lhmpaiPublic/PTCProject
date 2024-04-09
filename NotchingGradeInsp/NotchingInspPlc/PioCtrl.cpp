@@ -8,6 +8,8 @@ CCriticalSection CPioCtrl::m_csPioThread;
 CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 {
 	pAprPio = NULL;
+	m_pThread = NULL;
+	pEvent_PioCtrl = NULL;
 
 	WORD wMaxPort = MAX_PORT;
 	WORD wMyStNo = LIO_STATION_NO; //MAIN_STATION_NO; (MAIN_STATION_NO 사용 시 HEX 기준 Address 20개 밀림)
@@ -52,21 +54,27 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		break;
 	}
 
-	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
+	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) 
+	{
 		//로그 항상출력
-		LOGDISPLAY_SPECTXT(0)("Pio Ctrl : Melsec 생성");
+		LOGDISPLAY_SPECTXT(11)("Pio Ctrl : Melsec 생성");
 
 		pAprPio = (CPlcBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
 	}
-	else {
+	else 
+	{
 		//로그 항상출력
-		LOGDISPLAY_SPECTXT(0)("Pio Ctrl : Siemens 생성");
+		LOGDISPLAY_SPECTXT(11)("Pio Ctrl : Siemens 생성 진입");
 
 		CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 		int nPort = AprData.m_System.m_nPLCPort;
 		pAprPio = (CPlcBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);
 		//pAprPio = (CPlcBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort );
-
+		if (pAprPio == NULL)
+		{
+			//로그 항상출력
+			LOGDISPLAY_SPECTXT(11)("Pio Ctrl : Siemens NULL ");
+		}
 		PioTheadRun();
 	}
 
@@ -76,9 +84,6 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 		= PioDataIF.CheckPortFlag[1]
 		= PioDataIF.CheckPortFlag[2]
 		= PioDataIF.CheckPortFlag[3] = TRUE;
-
-	m_pThread = NULL;
-	pEvent_PioCtrl = NULL;
 
 }
 
@@ -189,7 +194,6 @@ void CPioCtrl::PioTheadRun()
 
 void CPioCtrl::PioTheadStop()
 {
-
 	// source file
 	if (m_pThread)
 	{
@@ -346,7 +350,7 @@ bool CPioCtrl::PioPortProcess(int port, BYTE data, int stus)
 
 //스래드 타임아웃 시간
 #define PIOCTRL_THREADTIMEOUT 100
-UINT ThreadProc_InPortCheck(LPVOID Param)
+UINT CPioCtrl::ThreadProc_InPortCheck(LPVOID Param)
 {
 	int	i;
 	PIOTHREAD_DATAIF* data;
@@ -377,20 +381,23 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 		ret = WaitForSingleObject(ctrl->getEvent_PioCtrl(), PIOCTRL_THREADTIMEOUT);
 		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
 		{
+			//PLC Thread
+			LOGDISPLAY_SPEC(11)(_T("WAIT_FAILED === "));
 			break;
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
 			if (ctrl->pAprPio == NULL)
 			{
-
+				//PLC Thread
+				LOGDISPLAY_SPEC(11)(_T("pAprPio NULL"));
 				break;
 			}
 
 			if (data->EndFlag == TRUE)
 			{
 				//PLC Thread
-				LOGDISPLAY_SPEC(0)(_T("PLC Run EndFlag TRUE(종료)"));
+				LOGDISPLAY_SPEC(11)(_T("PLC Run EndFlag TRUE(종료)"));
 				break;
 			}
 
@@ -398,26 +405,13 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 			{
 				//			DWORD dwStart = GetTickCount();
 
-
 				if (ctrl->ReadPLC_Block_device(AprData.m_System.m_nBitIn, (short*)nBuffSms, MAX_SMS_BITIO_IN) != -1)
 				{
 					CSingleLock	cs(&CPioCtrl::m_csPioThread, TRUE);
 					memcpy(data->InputDataSms, nBuffSms, sizeof(data->InputDataSms));
 
 				}
-
-
-
-				// 			DWORD dwEnd = GetTickCount() - dwStart;
-				// 
-				// 			CString strMsg;
-				// 			strMsg.Format(_T("[ThreadProc_InPortCheck] ReadPLC_Block_device = %d ms, PLC Alive = %d"), dwEnd, data->InputDataSms[0]);
-				// 			AprData.SaveDebugLog(strMsg); //pyjtest
-
-
-
-
-
+		
 			}
 			else
 			{
@@ -449,7 +443,6 @@ UINT ThreadProc_InPortCheck(LPVOID Param)
 	AfxEndThread(0);
 	data->BusyFlag = FALSE;
 	data->EndFlag = FALSE;
-
 	return (0);
 
 }
@@ -614,7 +607,6 @@ int CPioCtrl::ReadPLC_Block_device(int address, short* pData, int nNumOfData)
 		return (-1);
 	}
 	int	nRet = 0;
-
 	if (pAprPio->ReadDataReg(address, pData, nNumOfData) != 0) {
 		//에러로그
 		return (-1);

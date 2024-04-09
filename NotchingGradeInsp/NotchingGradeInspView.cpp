@@ -575,6 +575,11 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				//로그출력
 				LOGDISPLAY_SPECTXT(11)("PLC SigInReady");
 			}
+			else
+			{
+				//로그출력
+				LOGDISPLAY_SPECTXT(11)("PLC Not SigInReady");
+			}
 
 			break;
 
@@ -1378,9 +1383,6 @@ int CNotchingGradeInspView::CheckAlarmReset()
 		theApp.m_pSigProc->SigOutAlarmResetAck(FALSE);
 
 	}
-
-	//Log
-	LOGDISPLAY_SPEC(11)(_T("CheckAlarmReset "));
 
 	return nRet;
 }

@@ -786,7 +786,7 @@ int CSiemensPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
 //In
 int CSiemensPlcIo::SigInReady()
 { 
-	return getBitIn_Alive();
+	return getBitIn_Ready();
 }
 int CSiemensPlcIo::SigInRun()
 {

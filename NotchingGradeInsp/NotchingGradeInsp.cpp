@@ -396,7 +396,7 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 		if (m_pSigProc)
 		{
 			//Log
-			LOGDISPLAY_SPEC(11)(_T("PioCtrl 생성"));
+			LOGDISPLAY_SPEC(11)(_T("SigProc 생성"));
 		}
 
 	}

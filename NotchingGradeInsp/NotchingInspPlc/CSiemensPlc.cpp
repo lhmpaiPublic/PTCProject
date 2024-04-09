@@ -113,7 +113,7 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 				strMsg.Format(_T("Siemens Read Error"));
 				AprData.SaveErrorLog(strMsg);
 //				AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
-
+				LOGDISPLAY_SPEC(11)(_T("Siemens Read Error"));
 			}
 		}
 		else
@@ -121,6 +121,7 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 			strMsg.Format(_T("Siemens Open Error"));
 			AprData.SaveErrorLog(strMsg);
 			AprData.m_ErrStatus.SetError(CErrorStatus::en_MelsecError, strMsg);
+			LOGDISPLAY_SPEC(11)(_T("Siemens Read Error"));
 
 		}
 
@@ -131,10 +132,11 @@ int CSiemensPlc::ReadDataReg(int offset, short data[], int num)
 
 BOOL CSiemensPlc::IsOpened()
 {
+	BOOL b = false;
 	if (m_pLGIS_Plc)
-		return m_pLGIS_Plc->CheckConnection();
+		b = m_pLGIS_Plc->CheckConnection();
 
-	return false;
+	return b;
 }
 
 CString CSiemensPlc::GetErrorMsg()
