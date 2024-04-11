@@ -144,19 +144,12 @@ private :
 
 	CFont*		m_pFontGrid;
 	
-	// 23.02.03 Ahn Delete Start
-	//WORD	m_wInWordData[CSigProc::enWordReadMaxSize];
-	//WORD	m_wOutWordData[CSigProc::enWordWroteMaxSize];
-	// 23.02.03 Ahn Delete End
-
 	CSequenceData m_localSeqDataIn;
-	// 22.08.19 Ahn Add Start
-	//_SEQ_OUT_DATA m_localSeqDataOut;
 	_SEQ_OUT_DATA_ALL m_localSeqDataOut;
-	// 22.08.19 Ahn Add End
 
+#ifndef NEW_PLCTYPE
 	_SEQ_OUT_DATA_ALL_SMS m_localSeqDataOutSms;
-
+#endif //NEW_PLCTYPE
 
 #if defined(_DEBUG)
 	void DebugLedChange();

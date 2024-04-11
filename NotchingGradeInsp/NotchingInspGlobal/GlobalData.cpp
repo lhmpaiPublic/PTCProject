@@ -888,10 +888,11 @@ void CLotInfo::ClearAllCount()
 	m_nBottomNG = 0 ;
 	m_nMarkingCount = 0 ;
 	memset(&m_SeqDataOut, 0x0000, sizeof(_SEQ_OUT_DATA));
+	
+#ifndef NEW_PLCTYPE
 	memset(&m_SeqDataLotEnd, 0x0000, sizeof(_SEQ_OUT_DATA_LOT_END));
-
 	memset(&m_SeqDataOutSms, 0x0000, sizeof(_SEQ_OUT_DATA_SMS));
-	memset(&m_SeqDataLotEndSms, 0x0000, sizeof(_SEQ_OUT_DATA_LOT_END_SMS));
+#endif //NEW_PLCTYPE
 
 }
 

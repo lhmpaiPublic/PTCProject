@@ -43,13 +43,22 @@ public:
 	virtual int SigInInkMarkActive() = 0;
 	virtual int SigInConnectZone() = 0;
 
-	//임시
-	virtual int ReadBlockAllData(CSequenceData* pSeqData) = 0;
+#ifdef NEW_PLCTYPE
+	//통합비전 Cell Key Id를 가져온다.
+	virtual int GetCellKey(int num) = 0;
+
+	//Lot End 처리 함수
+	virtual void SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt) = 0;
+
 	virtual int WriteBlockData(void* pGlobalData) = 0;
+#else
 	virtual int WritePLC_Block_device(int address, short* pData, int nNumOfData) = 0;
 	virtual int WritePLC_Block_device(int address, int* pData, int nNumOfData) = 0;
 	virtual int ReadPLC_Block_device(int address, short* pData, int nNumOfData) = 0;
-	virtual int WriteBlockAllData(int nMode) = 0;
+#endif //NEW_PLCTYPE	
+
+	virtual int ReadBlockAllData(CSequenceData* pSeqData) = 0;
+	
 	virtual int ReadAllPort_BitIn(BOOL* pSigBitIn) = 0;
 	virtual int ReadAllPort_BitOut(BOOL* pSigBitOut) = 0;
 

@@ -115,14 +115,6 @@ private:
 	virtual int SigOutAlivePulse(int nInMode);
 	virtual int SigOutTabZeroReset(int nMode);
 	virtual int SigOutAlarmResetAck(int nMode);
-	//지멘스만 쓴다.
-	virtual int WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode);
-
-	//마킹 설정 값 변수
-	virtual BOOL GetInkMarkActive();
-
-	//ConnectZone 설정 플래그
-	virtual BOOL GetConnectZone();
 
 	virtual int SigOutAlivePulseReady(int nInMode, BOOL bIsReady);
 
@@ -137,6 +129,8 @@ private:
 	//멜섹만 쓴다.
 	virtual int SignalBitOut(int nIntegration, int nMode, BOOL bLocal = FALSE);
 
+	//Lot End 처리 함수
+	virtual void SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt);
 
 	//In
 	virtual int SigInReady();
@@ -150,13 +144,21 @@ private:
 	virtual int SigInInkMarkActive();
 	virtual int SigInConnectZone();
 
-	//임시
+	//지멘스만 쓴다.
+	virtual int WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode);
+
+	//통합비전 Cell Key Id를 가져온다.
+	virtual int GetCellKey(int num);
+
+	//마킹 설정 값 변수
+	virtual BOOL GetInkMarkActive();
+
+	//ConnectZone 설정 플래그
+	virtual BOOL GetConnectZone();
+
 	virtual int ReadBlockAllData(CSequenceData* pSeqData);
 	virtual int WriteBlockData(void* pGlobalData);
-	virtual int WritePLC_Block_device(int address, short* pData, int nNumOfData);
-	virtual int WritePLC_Block_device(int address, int* pData, int nNumOfData);
-	virtual int ReadPLC_Block_device(int address, short* pData, int nNumOfData);
-	virtual int WriteBlockAllData(int nMode);
+
 	virtual int ReadAllPort_BitIn(BOOL* pSigBitIn);
 	virtual int ReadAllPort_BitOut(BOOL* pSigBitOut);
 

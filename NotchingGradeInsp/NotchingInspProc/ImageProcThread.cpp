@@ -333,580 +333,570 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 				BYTE* pHeadPtr = pFrmInfo_Top->GetImagePtr();
 				BYTE* pTailPtr = pFrmInfo_Bottom->GetImagePtr();
 
-
-				//처리시간 체크 객체 생성 및 시간 진행
-//				CTimeAnalyzer ctAna;
-//				ctAna.Clear();
-//				ctAna.StopWatchStart();
-
-
-
 				DWORD dwTic = 0;
 
 				// Tab으로 잘라 보냄
 				// Projection 사용 
+				int nBndElectrode = 0;
+				int nBneElectrodeBtm = 0;
+
+
+				//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
+				//CImageProcess::en_FindFromLeft : 찾는 방향 왼쪽에서 오른쪽으로 찾음
+				//return nBndElectrode : 실제 이미지에서 휘도 중 시작할 점을 찾음 - 휘도 샘플링을 이용하여 위치를 찾음
+				nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
+
+				// 22.05.09 Ahn Add End
+				//Tab 정보를 저장할 vector 임시 객체
+				CImageProcess::_VEC_TAB_INFO vecTabInfo;
+				int nLevel = 0;
+				int nBtmLevel = 0;
+
+				//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
+				//휘도로 찾은 위치에 레시피 설정 높이를 더하여 Tab Find Pos 잡는다.
+				int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
+
+				//이미지 프로세싱을 위한 클래스 
+				//이미지 Tab 정보에서 Tab을 그룹으로 나누기
+				//PET Check TOP
+				int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
+
+				//이미지를 합하여 Cell을 만들고 남은 픽셀 수
+				unNotUseCellLength = RsvTabInfo.nImageLength;
+
+				//Grab Call Time과 BCD ID, Encoder Count를 백업한다.
+				RsvTabInfo.m_GrabCallBCDId = pFrmInfo_Top->m_GrabCallBCDId;
+				RsvTabInfo.m_GrabCallEncoderCount = pFrmInfo_Top->m_GrabCallEncoderCount;
+				RsvTabInfo.m_GrabCallTime = pFrmInfo_Top->m_GrabCallTime;
+
+
+				//Tab 정보 크기, Tab 정보가 없다면 에러처리
+				int nVecSize = (int)vecTabInfo.size();
+
+
+				BOOL bErrorAll = FALSE;
+				if (nVecSize <= 0)
 				{
-					int nBndElectrode = 0;
-					int nBneElectrodeBtm = 0;
+					// 강제 분할 
+					bErrorAll = TRUE;
+				}
+				//nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo); // Btm Edge 인식 함수 변경 : 해당 함수 사용 시 동일 조건임에도 이상 동작 발생. 원인 미상
 
+				if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
+				{
+					CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
+					nBneElectrodeBtm = nBtmLevel;
+				}
+				else
+				{
+					nBneElectrodeBtm = CImageProcess::FindLevelBottom_Negative(pTailPtr, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+				}
 
-					//양극일 경우 Top 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
-					//CImageProcess::en_FindFromLeft : 찾는 방향 왼쪽에서 오른쪽으로 찾음
-					//return nBndElectrode : 실제 이미지에서 휘도 중 시작할 점을 찾음 - 휘도 샘플링을 이용하여 위치를 찾음
-					nBndElectrode = CImageProcess::GetBoundaryOfElectorde(pHeadPtr, nWidth, nHeight, AprData.m_pRecipeInfo, CImageProcess::en_FindFromLeft);
+				// PET Check BOTTOM
+				CImageProcess::VEC_PET_INFO* pvstPetInfoBtm = new CImageProcess::VEC_PET_INFO;
+				pvstPetInfoBtm->clear();
 
-					// 22.05.09 Ahn Add End
-					//Tab 정보를 저장할 vector 임시 객체
-					CImageProcess::_VEC_TAB_INFO vecTabInfo;
-					int nLevel = 0;
-					int nBtmLevel = 0;
+				BOOL bIsPET_Btm = CImageProcess::FindPetFilm(pTailPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, pvstPetInfoBtm, CAM_POS_BOTTOM);
+				pFrmInfo_Bottom->m_bIsPET = bIsPET_Btm;
 
-					//Tab 위치 : 양극일 경우 nBndElectrode 값에 레시피 Tab Condition 카메라 높이
-					//휘도로 찾은 위치에 레시피 설정 높이를 더하여 Tab Find Pos 잡는다.
-					int nTabFindPos = nBndElectrode + AprData.m_pRecipeInfo->TabCond.nCeramicHeight;
+				//Tab 정보 크기 만큼 루프 돌다.
+				for (int idxi = 0; idxi < nVecSize; idxi++)
+				{
 
-					//이미지 프로세싱을 위한 클래스 
-					//이미지 Tab 정보에서 Tab을 그룹으로 나누기
-					//PET Check TOP
-					int nLocalRet = CImageProcess::DivisionTab_FromImageToTabInfo(pHeadPtr, pTailPtr, nWidth, nHeight, nTabFindPos, &nLevel, *AprData.m_pRecipeInfo, &RsvTabInfo, &vecTabInfo, nFrameCountL);
+					//실제 Tab Counter에 받은 마지막의 BCD ID
+					UINT unRealLastBCDID = AprData.m_NowLotData.m_nLastBCDId;
 
-					//이미지를 합하여 Cell을 만들고 남은 픽셀 수
-					unNotUseCellLength = RsvTabInfo.nImageLength;
+					//지금 Cell의 크기
+					UINT unNowCellLength = 0;
 
-					//Grab Call Time과 BCD ID, Encoder Count를 백업한다.
-					RsvTabInfo.m_GrabCallBCDId = pFrmInfo_Top->m_GrabCallBCDId;
-					RsvTabInfo.m_GrabCallEncoderCount = pFrmInfo_Top->m_GrabCallEncoderCount;
-					RsvTabInfo.m_GrabCallTime = pFrmInfo_Top->m_GrabCallTime;
-
-
-					//Tab 정보 크기, Tab 정보가 없다면 에러처리
-					int nVecSize = (int)vecTabInfo.size();
-
-
-					BOOL bErrorAll = FALSE;
-					if (nVecSize <= 0)
+					//Last Backup
+					if ((AprData.m_NowLotData.m_nLastBCDId) >= 0 && (AprData.m_NowLotData.m_nLastBCDId < 64))
 					{
-						// 강제 분할 
-						bErrorAll = TRUE;
-					}
-					//nBneElectrodeBtm = CImageProcess::GetBoundaryOfElectordeBottom(pTailPtr->m_pImagePtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo); // Btm Edge 인식 함수 변경 : 해당 함수 사용 시 동일 조건임에도 이상 동작 발생. 원인 미상
-					
-					if (AprData.m_System.m_nMachineMode == CATHODE_MODE)
-					{
-						CImageProcess::FindTabLevel(pTailPtr, nWidth, nHeight, &nBtmLevel, AprData.m_pRecipeInfo->TabCond, AprData.m_pRecipeInfo->TabCond.nEdgeFindMode[CAM_POS_BOTTOM], CImageProcess::en_FindRight);
-						nBneElectrodeBtm = nBtmLevel;
-					}
-					else
-					{
-						nBneElectrodeBtm = CImageProcess::FindLevelBottom_Negative(pTailPtr, nWidth, nHeight, AprData.m_pRecipeInfo, &nBtmLevel, CImageProcess::en_FindFromRight);
+						LastBCDIDBackup = AprData.m_NowLotData.m_nLastBCDId;
 					}
 
-					// PET Check BOTTOM
-					CImageProcess::VEC_PET_INFO* pvstPetInfoBtm = new CImageProcess::VEC_PET_INFO;
-					pvstPetInfoBtm->clear();
+					//Tab  정보 접근 임시 포인터 변수
+					CTabInfo* pTabInfo = &vecTabInfo[idxi];
 
-					BOOL bIsPET_Btm = CImageProcess::FindPetFilm(pTailPtr, nWidth, nHeight, *AprData.m_pRecipeInfo, pvstPetInfoBtm, CAM_POS_BOTTOM);
-					pFrmInfo_Bottom->m_bIsPET = bIsPET_Btm;
+					//Tab Pitch 구하기
+					double dTabPitch = 0.0;
+					BOOL bErrorTabPitch = FALSE;
+					//셀 크기 구하기
+					double dCellLength = 0.0;
 
-					//Tab 정보 크기 만큼 루프 돌다.
-					for (int idxi = 0; idxi < nVecSize; idxi++)
+					//실제 텝의 넓이 구하기
+					double dRrealTabWidth = 0.0;
+					BOOL bErrorTabWidth = FALSE;
+
+					//텝 피치 측정
+					if ((bforeImageLengtch > 0) && (bforeTabLeft > 0))
 					{
-						
-						//실제 Tab Counter에 받은 마지막의 BCD ID
-						UINT unRealLastBCDID = AprData.m_NowLotData.m_nLastBCDId;
+						//min 72 max 112 범위의 피치를 벗어날 경우 
 
-						//지금 Cell의 크기
-						UINT unNowCellLength = 0;
-
-						//Last Backup
-						if ((AprData.m_NowLotData.m_nLastBCDId) >= 0 && (AprData.m_NowLotData.m_nLastBCDId < 64))
+						//1.0 은 0으로 판단에 문제로 입력된 값
+						if (AprData.m_System.m_dResolY1000P > 1.0)
 						{
-							LastBCDIDBackup = AprData.m_NowLotData.m_nLastBCDId;
+							dTabPitch = CImageProcThread::TabPitchCalculate(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft, AprData.m_System.m_dResolY1000P);
+							dCellLength = pTabInfo->nImageLength * (AprData.m_System.m_dResolY1000P / 1000.0);
 						}
-
-						//Tab  정보 접근 임시 포인터 변수
-						CTabInfo* pTabInfo = &vecTabInfo[idxi];
-
-						//Tab Pitch 구하기
-						double dTabPitch = 0.0;
-						BOOL bErrorTabPitch = FALSE;
-						//셀 크기 구하기
-						double dCellLength = 0.0;
-
-						//실제 텝의 넓이 구하기
-						double dRrealTabWidth = 0.0;
-						BOOL bErrorTabWidth = FALSE;
-
-						//텝 피치 측정
-						if((bforeImageLengtch > 0) && (bforeTabLeft > 0))
+						else
 						{
-							//min 72 max 112 범위의 피치를 벗어날 경우 
-
-							//1.0 은 0으로 판단에 문제로 입력된 값
-							if (AprData.m_System.m_dResolY1000P > 1.0)
-							{
-								dTabPitch = CImageProcThread::TabPitchCalculate(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft, AprData.m_System.m_dResolY1000P);
-								dCellLength = pTabInfo->nImageLength * (AprData.m_System.m_dResolY1000P/1000.0);
-							}
-							else
-							{
-								dTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
-							}
-							//Tab Id 정보 로그
-							LOGDISPLAY_SPEC(7)("@@Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f@@@@ ", dCellLength, dTabPitch, dRecipeInfoTabPitch);
-
-							//디버그 로그 기록
-							AprData.SaveDebugLog_Format("Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f", dCellLength, dTabPitch, dRecipeInfoTabPitch);
-
-							if (((dRecipeInfoTabPitch - MIN_TABPITCH ) > dTabPitch) || (( dRecipeInfoTabPitch + MAX_TABPITCH ) < dTabPitch))
-							{
-								//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
-								//Tab Id 정보 로그
-								if (((dRecipeInfoTabPitch - MIN_TABPITCH) > dTabPitch))
-								{
-									LOGDISPLAY_SPEC(7)("@@Tab Pitch가  작다@@@@ ");
-								}
-								else if (((dRecipeInfoTabPitch + MAX_TABPITCH) < dTabPitch))
-								{
-									LOGDISPLAY_SPEC(7)("@@Tab Pitch가  크다@@@@ ");
-								}
-								bErrorTabPitch = TRUE;
-
-							}
+							dTabPitch = TabPitch(bforeImageLengtch, bforeTabLeft, pTabInfo->nTabLeft);
 						}
-
-						//Cell의 Pitch를 구하기 위해서 cell 길아와 Tab의 길이를 백업한다.
-						//지금 텝의 길이를 저장한다.
-						bforeImageLengtch = pTabInfo->nImageLength;
-						//지금 텝 왼쪽 길이를 저장한다.
-						bforeTabLeft = pTabInfo->nTabLeft;
-
-						//지금 셀의 크기
-						unNowCellLength = pTabInfo->nImageLength;
-
-						//지금 텝의 넓이를 구한다.
-						//분해능 / 1000.0
-						double dResolYLocal = (AprData.m_System.m_dResolY1000P / 1000);
-						//지금 텝의 길이
-						int nWidthLocal = abs(pTabInfo->nTabRight - pTabInfo->nTabLeft);
-						//실제 텝의 길이 44.0 
-						dRrealTabWidth = nWidthLocal * dResolYLocal;
-
 						//Tab Id 정보 로그
-						LOGDISPLAY_SPEC(7)("@@Tab Witch 픽셀<%d> - Recipe Width<%f>mm 실제 텝 넓이<%f>mm 분해능<%f>@@@@ ",  nWidthLocal, dRecipeInfoTabWidth, dRrealTabWidth, AprData.m_System.m_dResolY1000P);
+						LOGDISPLAY_SPEC(7)("@@Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f@@@@ ", dCellLength, dTabPitch, dRecipeInfoTabPitch);
+
+						//디버그 로그 기록
+						AprData.SaveDebugLog_Format("Cell Length	%f	Tab Pitch	%f	RecipeTabPitch	%f", dCellLength, dTabPitch, dRecipeInfoTabPitch);
+
+						if (((dRecipeInfoTabPitch - MIN_TABPITCH) > dTabPitch) || ((dRecipeInfoTabPitch + MAX_TABPITCH) < dTabPitch))
+						{
+							//Trigger 에서 받아온 Tab Id 세팅하도록 한다.
+							//Tab Id 정보 로그
+							if (((dRecipeInfoTabPitch - MIN_TABPITCH) > dTabPitch))
+							{
+								LOGDISPLAY_SPEC(7)("@@Tab Pitch가  작다@@@@ ");
+							}
+							else if (((dRecipeInfoTabPitch + MAX_TABPITCH) < dTabPitch))
+							{
+								LOGDISPLAY_SPEC(7)("@@Tab Pitch가  크다@@@@ ");
+							}
+							bErrorTabPitch = TRUE;
+
+						}
+					}
+
+					//Cell의 Pitch를 구하기 위해서 cell 길아와 Tab의 길이를 백업한다.
+					//지금 텝의 길이를 저장한다.
+					bforeImageLengtch = pTabInfo->nImageLength;
+					//지금 텝 왼쪽 길이를 저장한다.
+					bforeTabLeft = pTabInfo->nTabLeft;
+
+					//지금 셀의 크기
+					unNowCellLength = pTabInfo->nImageLength;
+
+					//지금 텝의 넓이를 구한다.
+					//분해능 / 1000.0
+					double dResolYLocal = (AprData.m_System.m_dResolY1000P / 1000);
+					//지금 텝의 길이
+					int nWidthLocal = abs(pTabInfo->nTabRight - pTabInfo->nTabLeft);
+					//실제 텝의 길이 44.0 
+					dRrealTabWidth = nWidthLocal * dResolYLocal;
+
+					//Tab Id 정보 로그
+					LOGDISPLAY_SPEC(7)("@@Tab Witch 픽셀<%d> - Recipe Width<%f>mm 실제 텝 넓이<%f>mm 분해능<%f>@@@@ ", nWidthLocal, dRecipeInfoTabWidth, dRrealTabWidth, AprData.m_System.m_dResolY1000P);
 
 
-						//SPC 객체 소스에서 컴파일 여부 결정
+					//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPC+ INSP===================================================================================================
 					//SPC+ INSP 객체 생성
-						CSpcInspManager* insp = new CSpcInspManager();
+					CSpcInspManager* insp = new CSpcInspManager();
 
-						//============================================================================================================
+					//============================================================================================================
 #endif //SPCPLUS_CREATE
 
-						
+
 						//컨테이너 정보 : 검사기 Tab 번호, Tab ID 받을 임시 객체
-						CCounterInfo cntInfo;
-						//전에 사용한 BCD ID 사용
+					CCounterInfo cntInfo;
+					//전에 사용한 BCD ID 사용
+					cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
+					//Tab Total Count MAX
+					cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
+					//TabNo Trigger 수신에서 가져온 값
+					cntInfo.nTabNo = AprData.m_NowLotData.m_nTabCount;
+					//Encoder Count 값
+					cntInfo.nEnCoderCount = (int)pTabInfo->m_GrabCallEncoderCount;
+
+					//레시피 텝 피치에 대한 BCD ID 조정 위치 값 세팅
+					UINT nCompareNotUseCellLength = 3900;
+					//인도네시아 양극 93.3 4368 : Grab 4500
+					if (nRecipeInfoTabPitch <= 4400)
+						nCompareNotUseCellLength = 3800;
+					//인도네시아 음극 95.8 4485 : Grab 4650
+					else if (nRecipeInfoTabPitch <= 4500)
+						nCompareNotUseCellLength = 3800;
+					//중국 96.8 4532 : Grab 4700
+					else if (nRecipeInfoTabPitch <= 4600)
+						nCompareNotUseCellLength = 3900;
+					//미국 102.4 4794 : Grab 5000
+					else
+						nCompareNotUseCellLength = 3900;
+
+					//남은 이미지 픽셀 크기가 4000이상일 때 
+					//Tab Info에서 얻은 BCD ID와 이전 BCD ID + 1 증가한 값이 같다면
+					//카운트를 증가 시킨다.
+					if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId) && (unNotUseCellLength >= nCompareNotUseCellLength))
+					{
+						//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
+						//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
+						nBCDIDAddCount++;
+
+					}
+					else
+					{
+						//카운트 초기화
+						nBCDIDAddCount = 0;
+					}
+
+
+					//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
+					//Grab Call BCD ID를 사용하고 아니면 계속 증가 시킨다.
+					if (nBCDIDAddCount >= 3)
+					{
 						cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
-						//Tab Total Count MAX
-						cntInfo.nTabIdTotalCount = AprData.m_NowLotData.m_nTabIdTotalCount;
-						//TabNo Trigger 수신에서 가져온 값
-						cntInfo.nTabNo = AprData.m_NowLotData.m_nTabCount;
-						//Encoder Count 값
-						cntInfo.nEnCoderCount = (int)pTabInfo->m_GrabCallEncoderCount;
-
-						//레시피 텝 피치에 대한 BCD ID 조정 위치 값 세팅
-						UINT nCompareNotUseCellLength = 3900;
-						//인도네시아 양극 93.3 4368 : Grab 4500
-						if (nRecipeInfoTabPitch <= 4400)
-							nCompareNotUseCellLength = 3800;
-						//인도네시아 음극 95.8 4485 : Grab 4650
-						else if (nRecipeInfoTabPitch <= 4500)
-							nCompareNotUseCellLength = 3800;
-						//중국 96.8 4532 : Grab 4700
-						else if (nRecipeInfoTabPitch <= 4600)
-							nCompareNotUseCellLength = 3900;
-						//미국 102.4 4794 : Grab 5000
-						else
-							nCompareNotUseCellLength = 3900;
-
-						//남은 이미지 픽셀 크기가 4000이상일 때 
-						//Tab Info에서 얻은 BCD ID와 이전 BCD ID + 1 증가한 값이 같다면
-						//카운트를 증가 시킨다.
-						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId) && (unNotUseCellLength >= nCompareNotUseCellLength))
+						if (cntInfo.nTabID >= 64)
 						{
-							//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
-							//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
-							nBCDIDAddCount++;
-
+							cntInfo.nTabID = 0;
 						}
-						else
+						LOGDISPLAY_SPEC(11)(_T("FT5	SETTING POS	NotUseCellLen	%d	%d	Grab ID:	%d	Now ID	%d	TabNo	%d"),
+							unNotUseCellLength, nCompareNotUseCellLength, pTabInfo->m_GrabCallBCDId, cntInfo.nTabID, cntInfo.nTabNo);
+					}
+					else
+					{
+						//BCD ID 초기값 세팅
+						if (AprData.m_NowLotData.m_nUseBCDID >= 64)
 						{
-							//카운트 초기화
-							nBCDIDAddCount = 0;
-						}
-
-
-						//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
-						//Grab Call BCD ID를 사용하고 아니면 계속 증가 시킨다.
-						if (nBCDIDAddCount >= 3)
-						{
-							cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
-							if (cntInfo.nTabID >= 64)
+							//Grab BCD ID가 범이 안에 있을  때 사용
+							if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
 							{
-								cntInfo.nTabID = 0;
-							}
-							LOGDISPLAY_SPEC(11)(_T("FT5	SETTING POS	NotUseCellLen	%d	%d	Grab ID:	%d	Now ID	%d	TabNo	%d"), 
-								unNotUseCellLength, nCompareNotUseCellLength, pTabInfo->m_GrabCallBCDId, cntInfo.nTabID, cntInfo.nTabNo);
-						}
-						else
-						{
-							//BCD ID 초기값 세팅
-							if (AprData.m_NowLotData.m_nUseBCDID >= 64)
-							{
-								//Grab BCD ID가 범이 안에 있을  때 사용
-								if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+								//Grab BCD ID 사용
+								cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
+								if (cntInfo.nTabID >= 64)
 								{
-									//Grab BCD ID 사용
-									cntInfo.nTabID = (int)pTabInfo->m_GrabCallBCDId + 1;
-									if (cntInfo.nTabID >= 64)
-									{
-										cntInfo.nTabID = 0;
-									}
-								}
-								else
-								{
-									//Last BCD ID 사용
-									cntInfo.nTabID = unRealLastBCDID;
+									cntInfo.nTabID = 0;
 								}
 							}
 							else
 							{
-								//이전 BCD ID를 증가 시켜서 사용한다.
-								AprData.m_NowLotData.m_nUseBCDID++;
-								if (AprData.m_NowLotData.m_nUseBCDID >= 64)
-									AprData.m_NowLotData.m_nUseBCDID = 0;
-								cntInfo.nTabID = AprData.m_NowLotData.m_nUseBCDID;
-
+								//Last BCD ID 사용
+								cntInfo.nTabID = unRealLastBCDID;
 							}
 						}
-
-						//Grab Call BCD ID가 유효한 범위
-						//이전 Grab BCD ID를 증가 시켜서 다음에 들어올 BCD ID를 만든다.
-						if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+						else
 						{
-							//다음에 사용할 BCD ID
-							nGrabCallBCDIdNext = (int)pTabInfo->m_GrabCallBCDId;
-							//다음 BCD ID를 만든다.
-							nGrabCallBCDIdNext++;
-							if (nGrabCallBCDIdNext >= 64)
-								nGrabCallBCDIdNext = 0;
+							//이전 BCD ID를 증가 시켜서 사용한다.
+							AprData.m_NowLotData.m_nUseBCDID++;
+							if (AprData.m_NowLotData.m_nUseBCDID >= 64)
+								AprData.m_NowLotData.m_nUseBCDID = 0;
+							cntInfo.nTabID = AprData.m_NowLotData.m_nUseBCDID;
+
 						}
+					}
 
-						//사용한 BCD ID  백업
-						AprData.m_NowLotData.m_nUseBCDID = cntInfo.nTabID;
+					//Grab Call BCD ID가 유효한 범위
+					//이전 Grab BCD ID를 증가 시켜서 다음에 들어올 BCD ID를 만든다.
+					if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64))
+					{
+						//다음에 사용할 BCD ID
+						nGrabCallBCDIdNext = (int)pTabInfo->m_GrabCallBCDId;
+						//다음 BCD ID를 만든다.
+						nGrabCallBCDIdNext++;
+						if (nGrabCallBCDIdNext >= 64)
+							nGrabCallBCDIdNext = 0;
+					}
 
-						//Tab 정보에서 Left 크기, Right 크기
-						int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
-						int nRight = pTabInfo->nRight - pTabInfo->nTabRight;
+					//사용한 BCD ID  백업
+					AprData.m_NowLotData.m_nUseBCDID = cntInfo.nTabID;
 
-						// 22.05.03 Ahn Modify Start
-						int nErrorNo = 0;
-						//if ((nLeft < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2)) || (nRight < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2))) {
-						//레시피 텝컨디션 영역(Tab 라운드 가로 방향 Pixel수 ) 검사
-						if ((nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW) || (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW))
+					//Tab 정보에서 Left 크기, Right 크기
+					int nLeft = pTabInfo->nTabLeft - pTabInfo->nLeft;
+					int nRight = pTabInfo->nRight - pTabInfo->nTabRight;
+
+					// 22.05.03 Ahn Modify Start
+					int nErrorNo = 0;
+					//if ((nLeft < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2)) || (nRight < (AprData.m_pRecipeInfo->TabCond.nRadiusW * 2))) {
+					//레시피 텝컨디션 영역(Tab 라운드 가로 방향 Pixel수 ) 검사
+					if ((nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW) || (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW))
+					{
+						// 22.05.03 Ahn Modify End
+						pTabInfo->m_bErrorFlag = TRUE;
+						pTabInfo->m_bNoTab = TRUE;
+
+
+						CString strError = "NONE";
+						if (nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW)
 						{
-							// 22.05.03 Ahn Modify End
-							pTabInfo->m_bErrorFlag = TRUE;
-							pTabInfo->m_bNoTab = TRUE;
-
-
-							CString strError = "NONE";
-							if (nLeft < AprData.m_pRecipeInfo->TabCond.nRadiusW)
-							{
-								strError = "LEFT-RecipeInfo의 Tab-Radius 보다 작은 Error";
-							}
-							else if (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW)
-							{
-								strError = "RIGHT-RecipeInfo의 Tab-Radius 보다 작은 Error";
-							}
-
-							nErrorNo = 1;
-
-							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d	Tab nLeft	%d	Tab nRight	%d Radius	%d"),
-								pTabInfo->m_bErrorFlag, nErrorNo, nLeft, nRight, AprData.m_pRecipeInfo->TabCond.nRadiusW);
-
+							strError = "LEFT-RecipeInfo의 Tab-Radius 보다 작은 Error";
 						}
-
-						//에레 체크 : 
-						if ((AprData.m_NowLotData.m_bProcError == TRUE) && (AprData.m_System.m_bFirstTabDoNotProc == TRUE))
+						else if (nRight < AprData.m_pRecipeInfo->TabCond.nRadiusW)
 						{
-							pTabInfo->m_bErrorFlag = TRUE;
-							pTabInfo->m_bNoTab = TRUE;
-
-							CString strError = "NONE";
-							if (AprData.m_NowLotData.m_bProcError == TRUE)
-							{
-								strError = "PROCERROR";
-							}
-							else if (AprData.m_System.m_bFirstTabDoNotProc == TRUE)
-							{
-								strError = "FIRST_TabDonotProc Error";
-							}
-
-							AprData.m_NowLotData.m_bProcError = FALSE;
-							nErrorNo = 2;
-
-							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d"),
-								pTabInfo->m_bErrorFlag, nErrorNo);
-
+							strError = "RIGHT-RecipeInfo의 Tab-Radius 보다 작은 Error";
 						}
 
-						// 21.12.28 Ahn Add Start
-						//Tab 정보 크기, Tab 정보가 없을 때
-						if (bErrorAll == TRUE)
+						nErrorNo = 1;
+
+						AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d	Tab nLeft	%d	Tab nRight	%d Radius	%d"),
+							pTabInfo->m_bErrorFlag, nErrorNo, nLeft, nRight, AprData.m_pRecipeInfo->TabCond.nRadiusW);
+
+					}
+
+					//에레 체크 : 
+					if ((AprData.m_NowLotData.m_bProcError == TRUE) && (AprData.m_System.m_bFirstTabDoNotProc == TRUE))
+					{
+						pTabInfo->m_bErrorFlag = TRUE;
+						pTabInfo->m_bNoTab = TRUE;
+
+						CString strError = "NONE";
+						if (AprData.m_NowLotData.m_bProcError == TRUE)
 						{
-							pTabInfo->m_bErrorFlag = TRUE;
-							pTabInfo->m_bNoTab = TRUE;
-
-							nErrorNo = 3;
-
-							AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d"),
-								pTabInfo->m_bErrorFlag, nErrorNo);
-
+							strError = "PROCERROR";
+						}
+						else if (AprData.m_System.m_bFirstTabDoNotProc == TRUE)
+						{
+							strError = "FIRST_TabDonotProc Error";
 						}
 
+						AprData.m_NowLotData.m_bProcError = FALSE;
+						nErrorNo = 2;
 
-						// Blob 사용 시 nLevel을 못 찾아도 넘어감, 검사 프로세스에서 다시 찾음
-						//if (AprData.m_pRecipeInfo->bUseInspBlob == FALSE)
-						//{
-						//	//Tab부의 흑연 코팅높이 에러
-						//	if (nLevel <= 0)
-						//	{
-						//		pTabInfo->m_bErrorFlag = TRUE;
+						AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROR INFO : m_bErrorFlag	%d	nErrorNo	%d"),
+							pTabInfo->m_bErrorFlag, nErrorNo);
 
-						//		nErrorNo = 4;
+					}
 
-						//		AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d"),
-						//			pTabInfo->m_bErrorFlag, nErrorNo, nLevel);
+					// 21.12.28 Ahn Add Start
+					//Tab 정보 크기, Tab 정보가 없을 때
+					if (bErrorAll == TRUE)
+					{
+						pTabInfo->m_bErrorFlag = TRUE;
+						pTabInfo->m_bNoTab = TRUE;
 
-						//	}
-						//	// 22.06.22 Ahn Add End
+						nErrorNo = 3;
 
-						//	// 22.09.30 Ahn Add Start
+						AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d"),
+							pTabInfo->m_bErrorFlag, nErrorNo);
 
-						//	//Tab부의 흑연 코팅높이 에러
-						//	if (nLevel >= (nWidth - 1))
-						//	{
-						//		pTabInfo->m_bErrorFlag = TRUE;
-
-						//		nErrorNo = 5;
-
-						//		AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d	Width	%d"),
-						//			pTabInfo->m_bErrorFlag, nErrorNo, nLevel, nWidth);
-
-						//	}
-						//	// 22.09.30 Ahn Add End
-
-						//}
+					}
 
 
-						AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab INFO	nVecSize:%d/%d	ImageLength:%d	FrameCount:%d	TabStartPosInFrame:%d	TabLeft:%d	TabRight:%d	nLevel:%d	nBtmLevel:%d"),
-							idxi, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel, nBtmLevel);
+					// Blob 사용 시 nLevel을 못 찾아도 넘어감, 검사 프로세스에서 다시 찾음
+					//if (AprData.m_pRecipeInfo->bUseInspBlob == FALSE)
+					//{
+					//	//Tab부의 흑연 코팅높이 에러
+					//	if (nLevel <= 0)
+					//	{
+					//		pTabInfo->m_bErrorFlag = TRUE;
+
+					//		nErrorNo = 4;
+
+					//		AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d"),
+					//			pTabInfo->m_bErrorFlag, nErrorNo, nLevel);
+
+					//	}
+					//	// 22.06.22 Ahn Add End
+
+					//	// 22.09.30 Ahn Add Start
+
+					//	//Tab부의 흑연 코팅높이 에러
+					//	if (nLevel >= (nWidth - 1))
+					//	{
+					//		pTabInfo->m_bErrorFlag = TRUE;
+
+					//		nErrorNo = 5;
+
+					//		AprData.SaveErrorLog_Format(_T("CtrlThreadImgCuttingTab ERROF INFO : m_bErrorFlag	%d	nErrorNo	%d	nLevel	%d	Width	%d"),
+					//			pTabInfo->m_bErrorFlag, nErrorNo, nLevel, nWidth);
+
+					//	}
+					//	// 22.09.30 Ahn Add End
+
+					//}
 
 
-						//프레임 정보 임시 객체(Top 프레임 정보 처리)
-						CFrameInfo* pInfo;
-						pInfo = new CFrameInfo;
+					AprData.SaveDebugLog_Format(_T("CtrlThreadImgCuttingTab INFO	nVecSize:%d/%d	ImageLength:%d	FrameCount:%d	TabStartPosInFrame:%d	TabLeft:%d	TabRight:%d	nLevel:%d	nBtmLevel:%d"),
+						idxi, nVecSize, pTabInfo->nImageLength, pTabInfo->nFrameCount, pTabInfo->nTabStartPosInFrame, pTabInfo->nTabLeft, pTabInfo->nTabRight, nLevel, nBtmLevel);
 
-						//Tab Pitch 이상 여부
-						pInfo->m_bErrorTabPitch = bErrorTabPitch;
-						pInfo->m_dTabPitch = dTabPitch;
 
-						//Tab Width 이상 여부
-						pInfo->m_bErrorTabWitch = bErrorTabWidth;
-						pInfo->m_dTabWidth = dRrealTabWidth;
+					//프레임 정보 임시 객체(Top 프레임 정보 처리)
+					CFrameInfo* pInfo;
+					pInfo = new CFrameInfo;
 
-						//Cell Pitch(mm)
-						pInfo->m_unCellLength = pTabInfo->nImageLength;
+					//Tab Pitch 이상 여부
+					pInfo->m_bErrorTabPitch = bErrorTabPitch;
+					pInfo->m_dTabPitch = dTabPitch;
 
-						//SPC 객체 소스에서 컴파일 여부 결정
+					//Tab Width 이상 여부
+					pInfo->m_bErrorTabWitch = bErrorTabWidth;
+					pInfo->m_dTabWidth = dRrealTabWidth;
+
+					//Cell Pitch(mm)
+					pInfo->m_unCellLength = pTabInfo->nImageLength;
+
+					//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPc+ 객체를 Top에 추가한다.
 					//Tab 있는 이미지 Frame  정보
-						pInfo->m_SpcInspMgr = insp;
+					pInfo->m_SpcInspMgr = insp;
 #endif //SPCPLUS_CREATE
 
-						//Tab정보에서 Top 이미지 데이터 세팅
-						pInfo->SetImgPtr(pTabInfo->pImgPtr);
+					//Tab정보에서 Top 이미지 데이터 세팅
+					pInfo->SetImgPtr(pTabInfo->pImgPtr);
 
-						//이미지 데이터 높이
-						pInfo->m_nHeight = pTabInfo->nImageLength;
-						//Top 번호
-						pInfo->m_nHeadNo = pFrmInfo_Top->m_nHeadNo;
-						//데이터 넓이
-						pInfo->m_nWidth = nWidth;
+					//이미지 데이터 높이
+					pInfo->m_nHeight = pTabInfo->nImageLength;
+					//Top 번호
+					pInfo->m_nHeadNo = pFrmInfo_Top->m_nHeadNo;
+					//데이터 넓이
+					pInfo->m_nWidth = nWidth;
 
-						// 22.11.18 Ahn Modify Start
-						//pBtmInfo->m_nFrameCount = nFrameCountL;
-						//프레임 번호
-						pInfo->m_nFrameCount = pTabInfo->nFrameCount;
-						// 22.11.18 Ahn Modify End
-						// Tab  번호
-						pInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
-						//Tab 시작위치 프레임
-						pInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
-						pInfo->m_nTabLevel = nLevel;
-						//검사 모드 : TopFrame
-						pInfo->m_nInspMode = CFrameInfo::en_TopFrame;
-						pInfo->m_nTabLeft = pTabInfo->nTabLeft;
-						pInfo->m_nTabRight = pTabInfo->nTabRight;
-						pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
+					// 22.11.18 Ahn Modify Start
+					//pBtmInfo->m_nFrameCount = nFrameCountL;
+					//프레임 번호
+					pInfo->m_nFrameCount = pTabInfo->nFrameCount;
+					// 22.11.18 Ahn Modify End
+					// Tab  번호
+					pInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
+					//Tab 시작위치 프레임
+					pInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
+					pInfo->m_nTabLevel = nLevel;
+					//검사 모드 : TopFrame
+					pInfo->m_nInspMode = CFrameInfo::en_TopFrame;
+					pInfo->m_nTabLeft = pTabInfo->nTabLeft;
+					pInfo->m_nTabRight = pTabInfo->nTabRight;
+					pInfo->m_nTabId_CntBoard = cntInfo.nTabID;
 
-						pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
-						pInfo->m_bNoTab = pTabInfo->m_bNoTab;
-						pInfo->m_nBndElectrode = nBndElectrode;
+					pInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
+					pInfo->m_bNoTab = pTabInfo->m_bNoTab;
+					pInfo->m_nBndElectrode = nBndElectrode;
 
-						pInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
+					pInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
 
-						//디버그 로그 기록(TOP)
-						AprData.SaveDebugLog_Format(_T("TOP Insp Image Info FrameNum	%d	TabNo	%d	BCD ID	%d"), 
-							pInfo->m_nFrameCount, pInfo->nTabNo + 1, pInfo->m_nTabId_CntBoard);
+					//디버그 로그 기록(TOP)
+					AprData.SaveDebugLog_Format(_T("TOP Insp Image Info FrameNum	%d	TabNo	%d	BCD ID	%d"),
+						pInfo->m_nFrameCount, pInfo->nTabNo + 1, pInfo->m_nTabId_CntBoard);
 
 
-						//PET 가 인식 된 시점 부터 카운트 증가한다.
-						if ((pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET))
+					//PET 가 인식 된 시점 부터 카운트 증가한다.
+					if ((pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET))
+					{
+						//PET로 인식된 카운트를 올린다.
+						nPETCount++;
+						bPETBCDIdSet = FALSE;
+
+						//디버그 로그 기록
+						AprData.SaveDebugLog_Format(_T("PET Run Count	%d "), nPETCount);
+					}
+					//PET RUN 이 끝나는 시점이거나 처음부터 PET가 아니거나
+					else
+					{
+						//PET RUN이 1번 이상이고 PET BCD Id 초기화 변수가 FALSE 이면 초기화를 세팅한다.
+						if ((nPETCount > 0) && (bPETBCDIdSet == FALSE))
 						{
-							//PET로 인식된 카운트를 올린다.
-							nPETCount++;
-							bPETBCDIdSet = FALSE;
-
 							//디버그 로그 기록
-							AprData.SaveDebugLog_Format(_T("PET Run Count	%d "), nPETCount);
+							AprData.SaveDebugLog_Format("PET Run Count	%d	BCD ID Set", nPETCount);
+
+							//PET 초기화 카운트 초기화
+							nPETCount = 0;
+							//PET 초기화 변수 설정
+							bPETBCDIdSet = TRUE;
 						}
-						//PET RUN 이 끝나는 시점이거나 처음부터 PET가 아니거나
-						else
-						{
-							//PET RUN이 1번 이상이고 PET BCD Id 초기화 변수가 FALSE 이면 초기화를 세팅한다.
-							if ((nPETCount > 0) && (bPETBCDIdSet == FALSE))
-							{
-								//디버그 로그 기록
-								AprData.SaveDebugLog_Format("PET Run Count	%d	BCD ID Set", nPETCount);
-
-								//PET 초기화 카운트 초기화
-								nPETCount = 0;
-								//PET 초기화 변수 설정
-								bPETBCDIdSet = TRUE;
-							}
-						}
+					}
 
 
 
 
-						//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
-						CFrameInfo* pBtmInfo;
-						pBtmInfo = new CFrameInfo;
+					//프레임 정보 임시 객체(Bottom 프레임 정보 처리)
+					CFrameInfo* pBtmInfo;
+					pBtmInfo = new CFrameInfo;
 
-						//Tab Pitch 이상 여부
-						pBtmInfo->m_bErrorTabPitch = bErrorTabPitch;
-						pBtmInfo->m_dTabPitch = dTabPitch;
+					//Tab Pitch 이상 여부
+					pBtmInfo->m_bErrorTabPitch = bErrorTabPitch;
+					pBtmInfo->m_dTabPitch = dTabPitch;
 
-						//Tab Width 이상 여부
-						pBtmInfo->m_bErrorTabWitch = bErrorTabWidth;
-						pBtmInfo->m_dTabWidth = dRrealTabWidth;
+					//Tab Width 이상 여부
+					pBtmInfo->m_bErrorTabWitch = bErrorTabWidth;
+					pBtmInfo->m_dTabWidth = dRrealTabWidth;
 
-						//SPC 객체 소스에서 컴파일 여부 결정
+					//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 					//SPc+ 객체를 Bottom에 추가한다.
 					//Tab 없는 이미지  Frame 정보
-						pBtmInfo->m_SpcInspMgr = insp;
+					pBtmInfo->m_SpcInspMgr = insp;
 #endif //SPCPLUS_CREATE
 
-						//Tab정보에서 Bottom 이미지 데이터 세팅
-						pBtmInfo->SetImgPtr(pTabInfo->pImgBtmPtr);
-						pBtmInfo->m_nHeight = pTabInfo->nImageLength;
-						pBtmInfo->m_nHeadNo = pFrmInfo_Bottom->m_nHeadNo;
-						pBtmInfo->m_nWidth = nWidth;
+					//Tab정보에서 Bottom 이미지 데이터 세팅
+					pBtmInfo->SetImgPtr(pTabInfo->pImgBtmPtr);
+					pBtmInfo->m_nHeight = pTabInfo->nImageLength;
+					pBtmInfo->m_nHeadNo = pFrmInfo_Bottom->m_nHeadNo;
+					pBtmInfo->m_nWidth = nWidth;
 
-						// 22.11.18 Ahn Modify Start
-						//pBtmInfo->m_nFrameCount = nFrameCountL;
-						//Frame 번호
-						pBtmInfo->m_nFrameCount = pTabInfo->nFrameCount;
+					// 22.11.18 Ahn Modify Start
+					//pBtmInfo->m_nFrameCount = nFrameCountL;
+					//Frame 번호
+					pBtmInfo->m_nFrameCount = pTabInfo->nFrameCount;
 
-						// 22.11.18 Ahn Modify End
-						//Lot Data에서 Tab 번호
-						pBtmInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
-						//Tab  시작위치 프레임
-						pBtmInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
-						pBtmInfo->m_nTabLevel = nBtmLevel;
+					// 22.11.18 Ahn Modify End
+					//Lot Data에서 Tab 번호
+					pBtmInfo->nTabNo = AprData.m_NowLotData.m_nTabCount;
+					//Tab  시작위치 프레임
+					pBtmInfo->nTabStartPosInFrame = pTabInfo->nTabStartPosInFrame;
+					pBtmInfo->m_nTabLevel = nBtmLevel;
 
-						//검사모드  BottomFrame
-						pBtmInfo->m_nInspMode = CFrameInfo::en_BottomFrame;
-						pBtmInfo->m_nTabId_CntBoard = cntInfo.nTabID;
+					//검사모드  BottomFrame
+					pBtmInfo->m_nInspMode = CFrameInfo::en_BottomFrame;
+					pBtmInfo->m_nTabId_CntBoard = cntInfo.nTabID;
 
-						pBtmInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
-						pBtmInfo->m_bNoTab = pTabInfo->m_bNoTab;
+					pBtmInfo->m_bErrorFlag = pTabInfo->m_bErrorFlag;
+					pBtmInfo->m_bNoTab = pTabInfo->m_bNoTab;
 
-						//Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
-						pBtmInfo->m_nBndElectrode = nBneElectrodeBtm;// 22.05.11 Ahn Add 
+					//Bottom 프로젝션 데이터의 바운드리 위치 크기를 가져온다.
+					pBtmInfo->m_nBndElectrode = nBneElectrodeBtm;// 22.05.11 Ahn Add 
 
-						pBtmInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
+					pBtmInfo->m_bIsPET = (pTabInfo->m_bIsPET | pFrmInfo_Bottom->m_bIsPET);
 
-						//디버그 로그 기록(TOP)
-						AprData.SaveDebugLog_Format(_T("BOTTOM Insp Image Info FrameNum	%d	TabNo	%d	BCD ID	%d"), 
-							pBtmInfo->m_nFrameCount, pBtmInfo->nTabNo + 1, pBtmInfo->m_nTabId_CntBoard);
+					//디버그 로그 기록(TOP)
+					AprData.SaveDebugLog_Format(_T("BOTTOM Insp Image Info FrameNum	%d	TabNo	%d	BCD ID	%d"),
+						pBtmInfo->m_nFrameCount, pBtmInfo->nTabNo + 1, pBtmInfo->m_nTabId_CntBoard);
 
 
-						// 22.12.09 Ahn Add Start
-						//프레임 처리 시간 세팅
-						LARGE_INTEGER tmp;
-						LARGE_INTEGER start;
-						QueryPerformanceFrequency(&tmp);
-						double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
-						QueryPerformanceCounter(&start);
+					// 22.12.09 Ahn Add Start
+					//프레임 처리 시간 세팅
+					LARGE_INTEGER tmp;
+					LARGE_INTEGER start;
+					QueryPerformanceFrequency(&tmp);
+					double dFrequency = (double)tmp.LowPart + ((double)tmp.HighPart * (double)0xffffffff);
+					QueryPerformanceCounter(&start);
 
-						double TabFind_TacTime = CGlobalFunc::GetDiffTime(start_TabFind, dFrequency_TabFind);
+					double TabFind_TacTime = CGlobalFunc::GetDiffTime(start_TabFind, dFrequency_TabFind);
 
-						//Tab Counter Log
-						//Total Cell 길이 (누적 Cell 크기)
-						unTotalCellLength += unNowCellLength;
-						LOGDISPLAY_SPEC(11)(
-							logStringEncoderCounter
-							,pInfo->nTabNo + 1
-							,AprData.m_NowLotData.m_strLotNo
-							,unRealLastBCDID
-							,cntInfo.nTabID
-							,pTabInfo->m_GrabCallBCDId
-							,pTabInfo->m_GrabCallTime
-							,cntInfo.nEnCoderCount
-							,unNowCellLength
-							,unTotalCellLength
-							,unNotUseCellLength
+					//Tab Counter Log
+					//Total Cell 길이 (누적 Cell 크기)
+					unTotalCellLength += unNowCellLength;
+					LOGDISPLAY_SPEC(11)(
+						logStringEncoderCounter
+						, pInfo->nTabNo + 1
+						, AprData.m_NowLotData.m_strLotNo
+						, unRealLastBCDID
+						, cntInfo.nTabID
+						, pTabInfo->m_GrabCallBCDId
+						, pTabInfo->m_GrabCallTime
+						, cntInfo.nEnCoderCount
+						, unNowCellLength
+						, unTotalCellLength
+						, unNotUseCellLength
 						);
 
-						if (pThis->m_pFrame)
-						{
-							pThis->m_pFrame->UpdateBCDID();
-							pThis->m_pFrame->UpdateBCDIDData(cntInfo.nTabID, (int)unRealLastBCDID, (int)pTabInfo->m_GrabCallBCDId);
-						}
-
-						//스래드에 처리할 정보를 저장 TOP, BOTTOM
-						CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP)->push(pInfo);
-						CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM)->push(pBtmInfo);
-
-						//Lot Data Tab 번호를 증가 시킨다.
-						AprData.m_NowLotData.m_nTabCount++;
-
+					if (pThis->m_pFrame)
+					{
+						pThis->m_pFrame->UpdateBCDID();
+						pThis->m_pFrame->UpdateBCDIDData(cntInfo.nTabID, (int)unRealLastBCDID, (int)pTabInfo->m_GrabCallBCDId);
 					}
-					//처리한 Tab 정보를 삭제한다.
-					vecTabInfo.clear();
 
-					//이전 Cell 크기 백업한다.
-					unNotUseCellLengthBackup = unNotUseCellLength;
+					//스래드에 처리할 정보를 저장 TOP, BOTTOM
+					CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_TOP)->push(pInfo);
+					CImageProcessCtrl::GetThreadQueuePtr(CAM_POS_BOTTOM)->push(pBtmInfo);
+
+					//Lot Data Tab 번호를 증가 시킨다.
+					AprData.m_NowLotData.m_nTabCount++;
 
 				}
+				//처리한 Tab 정보를 삭제한다.
+				vecTabInfo.clear();
+
+				//이전 Cell 크기 백업한다.
+				unNotUseCellLengthBackup = unNotUseCellLength;
+
 
 				//초기 실행 상태 플래그를 변경한다.
 				//실행 후 한번만 들어오도록 설정
@@ -1020,32 +1010,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
-
-			////Key Id String 로컬 객체 초기 세팅
-			//CString strKeyIdString = _T("");
-			////지멘스 Key Id 읽은 데이터
-			//int KeyIdSize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID);
-			//strKeyIdString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[0], KeyIdSize);
-
-			////초기값 세팅 후 변화가 일어나는지 확인
-			//if (CImageProcThread::gKeyIdString != strKeyIdString)
-			//{
-			//	LOGDISPLAY_SPEC(2)("$$ PLC String KeyId Hex Data<%s>", strKeyIdString);
-			//	//변화된 값을 저장한다.
-			//	CImageProcThread::gKeyIdString = strKeyIdString;
-			//	//키 초기값 세팅
-			//	if ((bReciveKeyId == FALSE) && CImageProcThread::gKeyIdString != _T(""))
-			//	{
-			//		//Key Id를 받았는지 확인
-			//		bReciveKeyId = TRUE;
-			//	}
-
-			//	//지멘스 Dummy 읽은 데이터
-			//	int DummySize = sizeof(AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy);
-			//	CString strDummyString = CStrSuport::byteToHexbyteValue((byte*)&AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID_Dummy[0], DummySize);
-			//	LOGDISPLAY_SPEC(2)("$$ PLC String Dummy Hex Data<%s>", strDummyString);
-			//}
-
 
 			if (pThis == NULL) {
 				break;
@@ -1455,18 +1419,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 							{
-								//							AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID = pTopInfo->m_nTabId_CntBoard;
-								//							AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
-								//							AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode = 1; // 임시, 정의되지 않음
-								//
-								//							int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
-								//							short* pData = (short*)(&AprData.m_NowLotData.m_stCellJudgeSms);
-								//							int nSize = sizeof(_CELL_JUDGE_SMS) / sizeof(WORD);
-								//							pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
-								//
-								//							CString strMsg;
-								//							strMsg.Format(_T("Cell ID:%d, Judge:%d, Code:%d"), AprData.m_NowLotData.m_stCellJudgeSms.wCellTriggerID, AprData.m_NowLotData.m_stCellJudgeSms.wCellJudge, AprData.m_NowLotData.m_stCellJudgeSms.wCellNgCode);
-								//							AprData.SaveDebugLog(strMsg); //pyjtest
 
 							}
 							else
@@ -1475,10 +1427,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								AprData.m_NowLotData.m_stCellJudge.dwCellJudge = (nTopJudge == JUDGE_NG || nBtmJudge == JUDGE_NG) ? 2 : 1; // 2:NG / 1:OK
 								AprData.m_NowLotData.m_stCellJudge.dwCellNgCode = 1; // 임시, 정의되지 않음
 
+#ifndef NEW_PLCTYPE
 								int nAddress = CSigProc::GetWordAddress(CSigProc::en_WordWrite_Cell_Trigger_ID, MODE_WRITE);
 								int* pData = (int*)(&AprData.m_NowLotData.m_stCellJudge);
 								int nSize = sizeof(_CELL_JUDGE) / sizeof(int);
 								theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+#endif //NEW_PLCTYPE
 
 
 							}
@@ -1534,15 +1488,6 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								nKeyId = 64 - nKeyId;
 							}
 							beforeBCDID = pTopInfo->m_nTabId_CntBoard;
-							//if (bReciveKeyId)
-							//{
-							//	//BCD ID 범위 확인
-							//	if (pTopInfo->m_nTabId_CntBoard >= 0 && pTopInfo->m_nTabId_CntBoard <= 63)
-							//	{
-							//		nKeyId = AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[pTopInfo->m_nTabId_CntBoard];
-							//		LOGDISPLAY_SPEC(2)("$$ PLC Key Id<%d> TabNo<%d> BCD Id<%d>", nKeyId, pTopInfo->nTabNo + 1, pTopInfo->m_nTabId_CntBoard);
-							//	}
-							//}
 
 #if 1 // 240212
 							//							pSeqOutData->wFoilExpInTopCount
@@ -1828,7 +1773,12 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								//BCD ID 범위 확인
 								if (pTopInfo->m_nTabId_CntBoard >= 0 && pTopInfo->m_nTabId_CntBoard <= 63)
 								{
+#ifndef NEW_PLCTYPE
 									nKeyId = AprData.m_NowLotData.m_ReadDataSms.wCell_KeyID[pTopInfo->m_nTabId_CntBoard];
+#else
+									nKeyId = theApp.m_pSigProc->GetCellKey(pTopInfo->m_nTabId_CntBoard);
+#endif //NEW_PLCTYPE
+
 									LOGDISPLAY_SPEC(2)("$$ PLC Key Id<%d> TabNo<%d> BCD Id<%d>", nKeyId, pTopInfo->nTabNo + 1, pTopInfo->m_nTabId_CntBoard);
 								}
 							}

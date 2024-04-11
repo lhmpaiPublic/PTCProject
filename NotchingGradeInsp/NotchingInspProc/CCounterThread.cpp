@@ -402,14 +402,14 @@ UINT CCounterThread::CtrlThreadCounter(LPVOID pParam)
 			if (pThis == NULL)
 			{
 				//DIO Input Log
-				LOGDISPLAY_SPECTXT(0)(_T("DIO CCounterThread 객체 NULL"));
+				LOGDISPLAY_SPEC(0)(_T("DIO CCounterThread 객체 NULL"));
 
 				break;
 			}
 			if (pThis->m_bKill == TRUE)
 			{
 				//DIO Input Log
-				LOGDISPLAY_SPECTXT(0)(_T("DIO Kill"));
+				LOGDISPLAY_SPEC(0)(_T("DIO Kill"));
 
 				break;
 			}

@@ -203,6 +203,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
 		{
 			ReadPlcBitDataParser(ReadBitData);
+			LOGDISPLAY_SPEC(2)(CStrSuport::ChangshorttohexTab(ReadBitData, SIENENS_READBIT));
 		}
 
 		//word 읽기 영역 읽기
@@ -211,6 +212,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
 		{
 			ReadPlcWordDataParser(ReadWordData);
+			LOGDISPLAY_SPEC(2)(CStrSuport::ChangshorttohexTab(ReadWordData, SIENENS_READWORD_MAX));
 		}
 
 		//쓰기 데이터 만들기
@@ -219,6 +221,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		int ret = WritePlcDataMake();
 		//쓰기
 		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteData, ret);
+		LOGDISPLAY_SPEC(2)(CStrSuport::ChangshorttohexTab(m_WriteData, ret));
 	}
 }
 
@@ -718,6 +721,28 @@ int CSiemensPlcIo::SigOutAlivePulse(int nInMode)
 }
 int CSiemensPlcIo::SigOutTabZeroReset(int nMode)
 { 
+	setWordOut_DataReportV1_Ea(0);
+	setWordOut_DataReportV2_OK(0);
+	setWordOut_DataReportV3_NG(0);
+	setWordOut_DataReportV4_OkRate(0);
+	setWordOut_DataReportV5_NgRate(0);
+	setWordOut_DataReportV6_RunRate(0);
+
+	setWordOut_Continue_Alarm_Cnt(0);
+	setWordOut_Heavy_Alarm_Cnt(0);
+
+	setWordOut_AlarmCode_Buffer(0, 0);
+	setWordOut_AlarmCode_Buffer(1, 0);
+	setWordOut_AlarmCode_Buffer(2, 0);
+	setWordOut_AlarmCode_Buffer(3, 0);
+	setWordOut_AlarmCode_Buffer(4, 0);
+
+	setWordOut_Top_Defect_Count_Real(0);
+	setWordOut_Btm_Defect_Count_Real(0);
+
+	setWordOut_Top_Defect_Count_LotEnd(0);
+	setWordOut_Btm_Defect_Count_LotEnd(0);
+
 	setBitOut_TabZeroReset(nMode);
 	return 0; 
 }
@@ -742,6 +767,13 @@ int CSiemensPlcIo::WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, 
 	setWordOut_NG_Code(nNgCode);
 	return 0; 
 }
+
+//통합비전 Cell Key Id를 가져온다.
+int CSiemensPlcIo::GetCellKey(int num)
+{
+	return getWordIn_CellKey(num);
+}
+
 //마킹 설정 값 변수
 BOOL CSiemensPlcIo::GetInkMarkActive()
 {
@@ -782,6 +814,11 @@ int CSiemensPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
 	return 0;
 }
 
+//Lot End 처리 함수
+void CSiemensPlcIo::SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt)
+{
+
+}
 
 //In
 int CSiemensPlcIo::SigInReady()
@@ -904,22 +941,6 @@ int CSiemensPlcIo::WriteBlockData(void* pGlobalData)
 	return 0;
 }
 
-int CSiemensPlcIo::WritePLC_Block_device(int address, short* pData, int nNumOfData)
-{ 
-	return 0; 
-}
-int CSiemensPlcIo::WritePLC_Block_device(int address, int* pData, int nNumOfData)
-{ 
-	return 0; 
-}
-int CSiemensPlcIo::ReadPLC_Block_device(int address, short* pData, int nNumOfData)
-{ 
-	return 0;
-}
-int CSiemensPlcIo::WriteBlockAllData(int nMode)
-{
-	return 0;
-}
 int CSiemensPlcIo::ReadAllPort_BitIn(BOOL* pSigBitIn)
 { 
 	for (int i = 0; i < MAX_SMS_BITIO_IN; i++)

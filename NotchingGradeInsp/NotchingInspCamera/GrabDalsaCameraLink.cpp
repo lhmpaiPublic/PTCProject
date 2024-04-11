@@ -26,7 +26,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 	if ((pCbInfo == NULL) || (pView == NULL) || (pQueueCtrl == NULL) || (pWave == NULL))
 	{
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(8)(_T("@@@ Cam Error** CGrabDalsaCameraLink AcqCallback함수 Object Pointer Receive 오류"));
+		LOGDISPLAY_SPEC(8)(_T("@@@ Cam Error** CGrabDalsaCameraLink AcqCallback함수 Object Pointer Receive 오류"));
 		return;
 	}
 
@@ -71,7 +71,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if (pCbInfo->GetMonitoringMode() == TRUE) 
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(8)(_T("@@@vCam Error** CGrabDalsaCameraLink AcqCallback함수 Monitering TRUE 오류"));
+			LOGDISPLAY_SPEC(8)(_T("@@@vCam Error** CGrabDalsaCameraLink AcqCallback함수 Monitering TRUE 오류"));
 
 			//return;
 		}
@@ -79,7 +79,7 @@ static void AcqCallback(SapXferCallbackInfo* pInfo)
 		if (pCbInfo->IsRun() == FALSE) 
 		{
 			//Log Camera Setting
-			LOGDISPLAY_SPECTXT(8)(_T("@@@vCam Error** CGrabDalsaCameraLink AcqCallback함수 Not Run Image Get"));
+			LOGDISPLAY_SPEC(8)(_T("@@@vCam Error** CGrabDalsaCameraLink AcqCallback함수 Not Run Image Get"));
 		}
 
 #ifdef USE_PLCCONNECTZONE
@@ -263,7 +263,7 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_GrabberError, strMsg);
 
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(0)(_T("**Cam Error** CGrabDalsaCameraLink Server Open 실패 "));
+		LOGDISPLAY_SPEC(0)(_T("**Cam Error** CGrabDalsaCameraLink Server Open 실패 "));
 
 		return -2;
 	}
@@ -359,14 +359,14 @@ int CGrabDalsaCameraLink::Open( HWND hWnd, CQueueCtrl *pQueueFrmPtr, int nServer
 		m_bCameraLInkComplet = TRUE;
 
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink CameraLink 성공"));
+		LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink CameraLink 성공"));
 	}
 	//아니면 실패
 	else {
 		m_bCameraLInkComplet = FALSE;
 
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(0)(_T("CGrabDalsaCameraLink CameraLink 실패"));
+		LOGDISPLAY_SPEC(0)(_T("CGrabDalsaCameraLink CameraLink 실패"));
 	}
 	// 22.05.20 Ahn Add End
 
@@ -581,7 +581,7 @@ int CGrabDalsaCameraLink::FreeHandle()
 //	printf("Press any key to terminate\n");
 
 	//Log Camera Setting
-	LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_FreeHandle(메모리 해제)"));
+	LOGDISPLAY_SPEC(0)(_T("GrabDalsaCameraLink_FreeHandle(메모리 해제)"));
 
 	if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Image) == TRUE) {
 
@@ -719,7 +719,7 @@ int CGrabDalsaCameraLink::GetImagePtr(BYTE** pImgPtr, int* pnWidth, int* pnHeigh
 	if (pBuffer == NULL)
 	{
 		//Log Camera Setting
-		LOGDISPLAY_SPECTXT(0)(_T("GrabDalsaCameraLink_GetImage_Error : SapBuffer NULL"));
+		LOGDISPLAY_SPEC(0)(_T("GrabDalsaCameraLink_GetImage_Error : SapBuffer NULL"));
 		return -2;
 	}
 	int nWidth = pBuffer->GetWidth();

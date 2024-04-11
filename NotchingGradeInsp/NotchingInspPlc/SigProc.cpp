@@ -1110,6 +1110,7 @@ BOOL CSigProc::SigOutDataReset()
 {
 	int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
 
+#ifndef NEW_PLCTYPE
 	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV1 = 0;
 	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV2 = 0;
 	AprData.m_NowLotData.m_SeqDataOutSms.wDataReportV3 = 0;
@@ -1138,6 +1139,8 @@ BOOL CSigProc::SigOutDataReset()
 	{
 		AprData.SaveDebugLog(_T("[SigOutDataReset] DATA SEND Error")); 
 	}
+
+#endif //NEW_PLCTYPE
 
 	return 0;
 }
@@ -1210,11 +1213,6 @@ int CSigProc::SigOutAlarmExist(int nMode)
 
 
 	return nRet;
-}
-
-int CSigProc::WriteBlockData(void* pGlobalData)
-{
-	return 0;
 }
 
 int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
@@ -1316,35 +1314,6 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 
 	return 0;
 }
-
-int CSigProc::WriteBlockAllData_Melsec(int nMode )
-{
-
-	//WORD btData[32];
-	//WORD* pData = btData;
-	//int nSize = 1;
-
-	////int nAddress = enWordWrite_DataReportV1_Ea;
-	//int nAddress = enWordWrite_DataReportV1_Ea;
-	//if (nMode == 0) {
-	//	btData[0] = 0x00;
-	//	btData[1] = 0x00;
-	////	memset(btData, 0x32, sizeof(BYTE) * 32);
-	//}
-	//else {
-	////	btData[0] = 0x11;
-	////	btData[1] = 0x11;
-	//	memset(btData, 0x0000, sizeof(WORD) * 32);
-	//	btData[0] = 0x5555 ;
-	//	btData[1] = 0x5555;
-	//}
-
-	//if (WritePLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
-	//}
-
-	return 0;
-}
-
 
 void CSigProc::EnableWorkSet(BOOL bMode)
 {
@@ -1491,17 +1460,6 @@ int CSigProc::ReadBlockAllData(CSequenceData* pSeqData)
 	}
 	return nRet;
 }
-int CSigProc::WriteBlockAllData(int nMode)
-{
-	int nRet = 0;
-	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) {
-		nRet = WriteBlockAllData_Melsec(nMode);
-	}
-	else {
-		nRet = WriteBlockAllData_Siemens(nMode);
-	}
-	return nRet;
-}
 
 int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 {
@@ -1614,13 +1572,7 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	return nRet;
 }
 
-int CSigProc::WriteBlockAllData_Siemens(int nMode)
-{
-	int nRet = 0;
-
-	return nRet;
-}
-
+#ifndef NEW_PLCTYPE
 int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAll)
 {
 	_SEQ_OUT_DATA_SMS* pSeqOutData;
@@ -1759,13 +1711,9 @@ int CSigProc::ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAl
 		pSeqOutData->wAlarmCode[i] = (WORD)btTemp;
 	}
 
-
-
-
-
-
 	return 0;
 }
+#endif //NEW_PLCTYPE
 
 int CSigProc::GetWordAddress(int nAddress, int nMode/*Read or Write*/)
 {

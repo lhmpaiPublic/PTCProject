@@ -57,24 +57,18 @@ CPioCtrl::CPioCtrl(WORD ChnNo, WORD DrvNo, WORD GrpNo)
 	if (AprData.m_System.m_nPlcMode == en_Plc_Melsec) 
 	{
 		//로그 항상출력
-		LOGDISPLAY_SPECTXT(11)("Pio Ctrl : Melsec 생성");
+		LOGDISPLAY_SPECTXT(2)("Pio Ctrl : Melsec 생성");
 
 		pAprPio = (CPlcBase*)new CMelsecDataLink(ChnNo, wMaxPort, wMyStNo, wExStNo, wSeqStNo, wOffsetIn, wOffsetOut);
 	}
 	else 
 	{
 		//로그 항상출력
-		LOGDISPLAY_SPECTXT(11)("Pio Ctrl : Siemens 생성 진입");
+		LOGDISPLAY_SPEC(2)("Pio Ctrl : Siemens 생성 진입");
 
 		CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 		int nPort = AprData.m_System.m_nPLCPort;
 		pAprPio = (CPlcBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);
-		//pAprPio = (CPlcBase*)new CSiemensPlc(strIPAddress, 500, NULL, nPort );
-		if (pAprPio == NULL)
-		{
-			//로그 항상출력
-			LOGDISPLAY_SPECTXT(11)("Pio Ctrl : Siemens NULL ");
-		}
 		PioTheadRun();
 	}
 

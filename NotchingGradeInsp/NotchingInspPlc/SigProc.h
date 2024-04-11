@@ -407,17 +407,15 @@ public :
 
 	// Word
 	virtual int ReadBlockAllData(CSequenceData *pSeqData);
-	virtual int WriteBlockAllData(int nMode);
 
-	virtual int WriteBlockData(void* pGlobalData);
+	int ReadBlockAllData_Melsec(CSequenceData* pSeqData);
+	int ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
 
-	virtual int ReadBlockAllData_Melsec(CSequenceData* pSeqData);
-	virtual int WriteBlockAllData_Melsec(int nMode);
-	virtual int ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll);
+	int ReadBlockAllData_Siemens(CSequenceData* pSeqData);
 
-	virtual int ReadBlockAllData_Siemens(CSequenceData* pSeqData);
-	virtual int WriteBlockAllData_Siemens(int nMode);
+#ifndef NEW_PLCTYPE
 	virtual int ReadBlockWriteDataAll_Siemens(_SEQ_OUT_DATA_ALL_SMS* pSeqOutDataAll);
+#endif //NEW_PLCTYPE
 
 	virtual void EnableWorkSet(BOOL bMode);
 

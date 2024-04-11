@@ -88,19 +88,19 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 
 			if (pThis == NULL)
 			{
-				LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-1 Thread 종료"));
+				LOGDISPLAY_SPEC(0)(_T("CtrlThreadImgSave-1 Thread 종료"));
 				break;
 			}
 
 			if (pThis->m_bKill == TRUE)
 			{
-				LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-2 Thread 종료"));
+				LOGDISPLAY_SPEC(0)(_T("CtrlThreadImgSave-2 Thread 종료"));
 				break;
 			}
 
 			if (pQueuePtr == NULL)
 			{
-				LOGDISPLAY_SPECTXT(0)(_T("CtrlThreadImgSave-3 Thread 종료"));
+				LOGDISPLAY_SPEC(0)(_T("CtrlThreadImgSave-3 Thread 종료"));
 				break;
 			}
 
@@ -117,7 +117,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 				if ((pSaveInfo->m_nWidth <= 0) || (pSaveInfo->m_nHeight <= 0))
 				{
 					//Image Save Log
-					LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave 저장 이미지 정보 : 넓이가 0 또는 높이가 0이다"));
+					LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgSave 저장 이미지 정보 : 넓이가 0 또는 높이가 0이다"));
 					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
 					if (pImgPtr)
 					{
@@ -126,7 +126,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					}
 					else
 					{
-						LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
+						LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
 					}
 
 					if (pSaveInfo)
@@ -176,7 +176,7 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					}
 					else
 					{
-						LOGDISPLAY_SPECTXT(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
+						LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
 					}
 
 				}

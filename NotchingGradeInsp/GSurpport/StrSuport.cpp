@@ -123,6 +123,40 @@ CString CStrSuport::Changbytetohex(BYTE* byt, int len)
 	return "";
 }
 
+CString CStrSuport::ChangbytetohexTab(BYTE* byt, int len, int tablen)
+{
+	CString temp;
+	CString rest = "";
+	for (int i = 0; i < (int)len; i++)
+	{
+		temp.Format("%02X", byt[i]);
+		rest += temp;
+		if ((i != 0) && ((i % tablen) == 0))
+		{
+			rest += "	";
+		}
+	}
+	return rest;
+}
+
+CString CStrSuport::ChangshorttohexTab(short* data, int len, int tablen)
+{
+	CString temp;
+	CString rest = "";
+	for (int i = 0; i < (int)len; i++)
+	{
+		temp.Format("%02X", ((data[i])>>8)&0xff);
+		rest += temp;
+		temp.Format("%02X", (data[i]) & 0xff);
+		rest += temp;
+		if ((i != 0) && ((i % tablen) == 0))
+		{
+			rest += "	";
+		}
+	}
+	return rest;
+}
+
 //--------------------------------------------------------------
 //|
 //|Hex스트링을값을 문자스트링값으로 변환한다(예 "303041413961"=>"00AA9a"

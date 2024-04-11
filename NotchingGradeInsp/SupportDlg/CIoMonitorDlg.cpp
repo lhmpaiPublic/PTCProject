@@ -361,10 +361,6 @@ void CIoMonitorDlg::OnBnClickedBtnDataLoad()
 	m_strLotID = m_SeqData.strCell_ID ;
 	m_strRecipeName = m_SeqData.strRecipeName;
 
-	
-	//m_strAlarm.Format( _T("%x"), AprData.m_NowLotData.m_s)
-
-	//m_SeqData.
 }
 
 

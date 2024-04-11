@@ -572,13 +572,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					delete m_pDeleteThread;
 					m_pDeleteThread = nullptr;
 				}
-				//로그출력
-				LOGDISPLAY_SPECTXT(11)("PLC SigInReady");
-			}
-			else
-			{
-				//로그출력
-				LOGDISPLAY_SPECTXT(11)("PLC Not SigInReady");
 			}
 
 			break;
@@ -593,8 +586,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			else if (theApp.m_pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
-				//로그출력
-				LOGDISPLAY_SPECTXT(11)("PLC SigInRun");
 			}
 
 			break;
@@ -1037,7 +1028,7 @@ int CNotchingGradeInspView::GrabberResetReqest()
 int CNotchingGradeInspView::CameraGrabStart()
 {
 	//Log Camera Setting
-	LOGDISPLAY_SPECTXT(0)(_T("CNotchingGradeInspView::CameraGrabStart"));
+	LOGDISPLAY_SPEC(0)(_T("CNotchingGradeInspView::CameraGrabStart"));
 
 	int nRet = 0;
 	//카메라 Image Processing Start
@@ -1100,8 +1091,6 @@ BOOL CNotchingGradeInspView::IsInspReady()
 BOOL CNotchingGradeInspView::SetInspReady(BOOL bStatus)
 {
 	m_bReady = bStatus;
-
-	theApp.m_pSigProc->WriteBlockAllData(bStatus);
 
 	m_pDefMapDlg->RequestCloseImgDispDlg();
 
@@ -1203,18 +1192,18 @@ int CNotchingGradeInspView::CheckLotEndProcess()
 
 		AprData.LotEndProcess();
 
+#ifndef NEW_PLCTYPE
+		AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;
+		AprData.m_NowLotData.m_SeqDataLotEnd.dwBottomNgLotEndCount = AprData.m_NowLotData.m_nBottomNG;
 
-		{
-			AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;
-			AprData.m_NowLotData.m_SeqDataLotEnd.dwBottomNgLotEndCount = AprData.m_NowLotData.m_nBottomNG;
+		int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
 
-			//int nAddress = CSigProc::enWordWrite_Top_Defect_Count_LotEnd;
-			int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
-
-			int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd); 
-			int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
-			theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
-		}
+		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd);
+		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
+		theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+#else
+		theApp.m_pSigProc->SigOutLotEnd(AprData.m_NowLotData.m_nTopNG, AprData.m_NowLotData.m_nBottomNG);
+#endif //#ifndef NEW_PLCTYPE
 
 		Sleep(100); 
 
@@ -1258,6 +1247,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 //		CameraGrabStop();
 		AprData.LotEndProcess();
 
+#ifndef NEW_PLCTYPE
 		AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;
 		AprData.m_NowLotData.m_SeqDataLotEnd.dwBottomNgLotEndCount = AprData.m_NowLotData.m_nBottomNG;
 
@@ -1266,6 +1256,9 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd);
 		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
 		theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+#else
+		theApp.m_pSigProc->SigOutLotEnd(AprData.m_NowLotData.m_nTopNG, AprData.m_NowLotData.m_nBottomNG);
+#endif //NEW_PLCTYPE
 
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		pFrame->ResetAndRefreshAll();

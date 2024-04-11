@@ -159,12 +159,6 @@ public:
 
 } _SEQ_OUT_DATA_ALL ;
 
-typedef struct stSeqDataOutLotEnd {
-public:
-	DWORD dwTopNgLotEndCount;			// Lot End시 Top NG Count 
-	DWORD dwBottomNgLotEndCount;		// Lot End시 Bottom NG Count  18 개
-} _SEQ_OUT_DATA_LOT_END;
-
 typedef struct stCellJudge
 {
 	DWORD dwCellTriggerID;
@@ -174,6 +168,14 @@ typedef struct stCellJudge
 
 
 //////////////////////////////////////////////////////////////////////////
+#ifndef NEW_PLCTYPE
+
+typedef struct stSeqDataOutLotEnd {
+public:
+	DWORD dwTopNgLotEndCount;			// Lot End시 Top NG Count 
+	DWORD dwBottomNgLotEndCount;		// Lot End시 Bottom NG Count  18 개
+} _SEQ_OUT_DATA_LOT_END;
+
 // Siemens
 typedef struct stSeqDataOutSms {
 public:
@@ -222,13 +224,9 @@ public:
 
 } _SEQ_OUT_DATA_SMS;
 
+
 #define SEQDATASMS_DUMMY 210
 #define SEQDATASMS_KEYID 64
-typedef struct stSeqDataInSms {
-public:
-	WORD wCell_KeyID_Dummy[SEQDATASMS_DUMMY]; //Cell Key까지 더미 데이터
-	WORD wCell_KeyID[SEQDATASMS_KEYID]; //통합비전의 Cell(한번 검사에 필요한 영역)에 대한 부여된 ID
-} _SEQ_In_DATA_SMS;
 
 typedef struct stSeqDataOutAllSms {
 public:
@@ -241,12 +239,13 @@ public:
 
 } _SEQ_OUT_DATA_ALL_SMS;
 
-
-typedef struct stSeqDataOutLotEndSms {
+typedef struct stSeqDataInSms {
 public:
-	WORD dwTopNgLotEndCount;			// Lot End시 Top NG Count 
-	WORD dwBottomNgLotEndCount;			// Lot End시 Bottom NG Count  18 개
-} _SEQ_OUT_DATA_LOT_END_SMS;
+	WORD wCell_KeyID_Dummy[SEQDATASMS_DUMMY]; //Cell Key까지 더미 데이터
+	WORD wCell_KeyID[SEQDATASMS_KEYID]; //통합비전의 Cell(한번 검사에 필요한 영역)에 대한 부여된 ID
+} _SEQ_In_DATA_SMS;
+
+#endif //NEW_PLCTYPE
 
 
 typedef struct stCellJudgeSms
@@ -341,16 +340,18 @@ public:
 	BOOL	m_bProcError;
 
 	_SEQ_OUT_DATA			m_SeqDataOut;
-	_SEQ_OUT_DATA_LOT_END	m_SeqDataLotEnd;
 	_CELL_JUDGE				m_stCellJudge;
 
+#ifndef NEW_PLCTYPE
+	_SEQ_OUT_DATA_LOT_END	m_SeqDataLotEnd;
+
 	_SEQ_OUT_DATA_SMS			m_SeqDataOutSms;
-	_SEQ_OUT_DATA_LOT_END_SMS	m_SeqDataLotEndSms;
-//	_CELL_JUDGE_SMS				m_stCellJudgeSms;
-	_ALARM_CODE_CELL_JUDGE_SMS	m_stAlarmCodeAndCellJudgeSms;
 
 	//지멘스 Read 블럭으로
 	_SEQ_In_DATA_SMS m_ReadDataSms;
+#endif //NEW_PLCTYPE
+
+	_ALARM_CODE_CELL_JUDGE_SMS	m_stAlarmCodeAndCellJudgeSms;
 
 	SYSTEMTIME m_LastDeleteCompletTime;
 
