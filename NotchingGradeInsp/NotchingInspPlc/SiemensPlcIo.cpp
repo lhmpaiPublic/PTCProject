@@ -147,7 +147,6 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 
 CSiemensPlcIo::~CSiemensPlcIo()
 {
-	ClosePlcIo();
 	if (m_pThread_SiemensPlc)
 	{
 		setEvent_SiemensPlc();
@@ -161,10 +160,13 @@ CSiemensPlcIo::~CSiemensPlcIo()
 		CloseHandle(pEvent_SiemensPlc);
 		pEvent_SiemensPlc = NULL;
 	}
+
+	ClosePlcIo();
+	
 }
 
 //스래드 함수
-#define SIEMENSPLC_TIMEOUT 500
+#define SIEMENSPLC_TIMEOUT 300
 UINT CSiemensPlcIo::SiemensPlc_ThreadProc(LPVOID param)
 {
 	CSiemensPlcIo* pMain = (CSiemensPlcIo*)param;
