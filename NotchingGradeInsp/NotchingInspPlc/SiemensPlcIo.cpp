@@ -57,6 +57,10 @@ enum SmsWordRead
 
 	//Cell Key
 	enSmsWordRead_CellKey = 210,
+
+	//Bit + Word 인덱스는 작아야 한다.
+	//같아도 안된다.
+	enSmsWordReadMaxSize = SIENENS_READBITWORD_MAX,
 };
 
 enum SmsWordWrite
@@ -106,17 +110,24 @@ enum SmsWordWrite
 
 	enSmsWordWrite_DuplicateNG_Cell_ID = 85,
 
-	enSmsWordWriteMaxSize = 149,
+	//Bit + Word 인덱스는 작아야 한다.
+	//같아도 안된다.
+	enSmsWordWriteMaxIndex = SIENENS_WRITEBITWORD_MAX
 
 };
 
-CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort)
+CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort, int nSlaveID, int nBitIn, int nBitOut, int nWordIn, int nWordOut)
 	: m_strIPAddress(strIPAddress)
 	, m_nPort(nPort)
 	, m_nReConnetTimeOut(nReConnetTimeOut)
 	, m_pReceiveMsgWnd(pReceiveMsgWnd)
 	, m_pLGIS_Plc(NULL)
 {
+	m_nSlaveID = nSlaveID;
+	m_nBitIn = nBitIn;
+	m_nBitOut = nBitOut;
+	m_nWordIn = nWordIn;
+	m_nWordOut = nWordOut;
 	//Alive 값 연산 변수
 	m_bSmsAlive = FALSE;
 
@@ -645,7 +656,14 @@ int CSiemensPlcIo::OpenPlcIo(void)
 
 	m_pLGIS_Plc = new CLGIS_Plc(m_strIPAddress, m_nPort, m_nReConnetTimeOut, m_pReceiveMsgWnd );
 	//로그출력
-	LOGDISPLAY_SPEC(2)("PLC Info	Address : %s	Port : %d", m_strIPAddress, m_nPort);
+	LOGDISPLAY_SPEC(2)(_T("PLC Info	Address : %s	Port : %d	SlaveID : %d	BitIn : %d	BitOut : %d	WordIn : %d	WordOut : %d"),
+		m_strIPAddress,
+		m_nPort,
+		m_nSlaveID,
+		m_nBitIn,
+		m_nBitOut,
+		m_nWordIn,
+		m_nWordOut);
 
 	if (!m_pLGIS_Plc->CheckConnection())
 	{
@@ -657,10 +675,10 @@ int CSiemensPlcIo::OpenPlcIo(void)
 	else
 	{
 		//로그출력
-		LOGDISPLAY_SPEC(2)("PLC Siemens Open success Slave Id : %s", AprData.m_System.m_nSlaveID);
+		LOGDISPLAY_SPEC(2)("PLC Siemens Open success Slave Id : %s", m_nSlaveID);
 
 		//슬레이브 아이디 
-		SetSlaveId(AprData.m_System.m_nSlaveID);
+		SetSlaveId(m_nSlaveID);
 		//이벤트 객체 생성
 		pEvent_SiemensPlc = CreateEvent(NULL, FALSE, FALSE, NULL);
 		//스래드 생성
@@ -974,12 +992,18 @@ int CSiemensPlcIo::ReadAllPort_BitOut(BOOL* pSigBitOut)
 CString CSiemensPlcIo::GetInWordData(int idx)
 {
 	CString str = _T("");
-	str.Format(_T("%d"), (int)m_ReadWordData[idx]);
+	if (idx < enSmsWordReadMaxSize)
+	{
+		str.Format(_T("%d"), (int)m_ReadWordData[idx]);
+	}
 	return str;
 }
 CString CSiemensPlcIo::GetOutWordData(int idx)
 {
 	CString str = _T("");
-	str.Format(_T("%d"), (int)m_WriteData[SIENENS_WRITEBIT+idx]);
+	if (idx < enSmsWordWriteMaxIndex)
+	{
+		str.Format(_T("%d"), (int)m_WriteData[SIENENS_WRITEBIT + idx]);
+	}
 	return str;
 }

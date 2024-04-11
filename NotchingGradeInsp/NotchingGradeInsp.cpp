@@ -403,7 +403,7 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 #else
 	CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 	int nPort = AprData.m_System.m_nPLCPort;
-	m_pSigProc = new CSiemensPlcIo(strIPAddress, 500, NULL, nPort);
+	m_pSigProc = new CSiemensPlcIo(strIPAddress, 500, NULL, nPort, AprData.m_System.m_nSlaveID, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);
 #endif //NEW_PLCTYPE
 
 	CStdIoCtrl::eIOTYPE ioType = CStdIoCtrl::eIO_AXL;

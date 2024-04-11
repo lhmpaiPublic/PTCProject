@@ -1,37 +1,57 @@
 ﻿#pragma once
 
-//지멘스 BIT 영역 읽기 갯수
+//In Bit 시작 인덱스
+#define READBIT_STARTINDEX 0
+//지멘스 BIT 영역 읽기 맥스 갯수
 #define SIENENS_READBIT (MAX_SMS_BITIO_IN)
+
+//In Word 시작 인덱스
+#define READWORD_STARTINDEX 20
+
+//지멘스 WORD 영역 읽기 맥스 갯수
+#define SIENENS_READWORD_MAX 274 //(MAX_SMS_WORDIO_IN)
+
+//지멘스 읽기 BIT + WORD
+#define SIENENS_READBITWORD_MAX (SIENENS_READBIT+SIENENS_READWORD_MAX)
 
 //지멘스 WORD 영역 읽기 추가 - Cell Key 시작점
 #define SIENENS_CELLKEY_START 210
 //지멘스 WORD 영역 읽기 Cell Key 갯수
 #define SIENENS_CELLKEY_COUNT 64
 
-//지멘스 WORD 영역 읽기 갯수
-#define SIENENS_READWORD_MAX 274 //(MAX_SMS_WORDIO_IN)
+
+//Out Bit 시작 인덱스
+#define WRITEBIT_STARTINDEX 0
+//지멘스 BIT 영역 쓰기 맥스 갯수
+#define SIENENS_WRITEBIT (MAX_SMS_BITIO_OUT)
+
+//Out Word 시작 인덱스
+#define WRITEWORD_STARTINDEX 20
+//지멘스 WORD 영역 쓰기 맥스 갯수
+#define SIENENS_WRITEWORD_MAX 149
 
 //지멘스 쓰기 BIT + WORD
-#define SIENENS_READBITWORD_MAX (SIENENS_READBIT+SIENENS_READWORD_MAX) //(MAX_SMS_WORDIO_OUT)
+#define SIENENS_WRITEBITWORD_MAX (SIENENS_WRITEBIT+SIENENS_WRITEWORD_MAX)
+
 
 //지멘스 Recipe Name 읽기 갯수
 #define SIEMENS_READRECIPENAME 4
 //지멘스 CELL ID 읽기 갯수
 #define SIEMENS_READCELLID 10
 
-//지멘스 BIT 영역 쓰기 갯수
-#define SIENENS_WRITEBIT (MAX_SMS_BITIO_OUT)
-//지멘스 WORD 영역 쓰기 갯수
-#define SIENENS_WRITEWORD_MAX 149 //(MAX_SMS_WORDIO_OUT)
-
-//지멘스 쓰기 BIT + WORD
-#define SIENENS_WRITEBITWORD_MAX (SIENENS_WRITEBIT+SIENENS_WRITEWORD_MAX) //(MAX_SMS_WORDIO_OUT)
 
 
 class CSiemensPlcIo : public CDataPlcImp
 {
+	int m_nSlaveID;
+	int m_nBitIn;
+	int m_nBitOut;
+	int m_nWordIn;
+	int m_nWordOut;
+
 public:
-	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort);
+	//strIPAddress : IP, nPort : Port, nSlaveID : Slave ID, nBitIn : In Bit 시작 인덱스, nBitOut : Out Bit 시작 인덱스, nWordIn : In Word 시작 인덱스, nWordOut : Out Word 시작 인덱스, 
+	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort, int nSlaveID, int nBitIn = READBIT_STARTINDEX, int nBitOut = WRITEBIT_STARTINDEX, int nWordIn = READWORD_STARTINDEX, int nWordOut = WRITEWORD_STARTINDEX);
 	~CSiemensPlcIo();
 
 	//PLC 읽기 Data
