@@ -315,12 +315,13 @@ private:
 	BOOL	m_bSigInkMarkAcrive;
 	BOOL	m_bSigInConnectZone;
 
-
+#ifndef NEW_PLCTYPE
 	WORD	m_wMonitoringReadData_Melsec[enWordReadMaxSize];
 	WORD	m_wMonitoringWriteData_Melsec[enWordWriteMaxSize];
 
 	WORD	m_wMonitoringReadData_Siemens[enWordReadMaxSize];
 	WORD	m_wMonitoringWriteData_Siemens[enWordWriteMaxSize];
+#endif //NEW_PLCTYPE
 
 	static CCriticalSection	m_cs;
 
@@ -365,11 +366,13 @@ public:
 	void SetConnectZone(BOOL bUse) { m_bSigInConnectZone = bUse; }
 	BOOL GetConnectZone() { return m_bSigInConnectZone; }
 
+#ifndef NEW_PLCTYPE
 	WORD GetMonitoringReadData_Melsec(int nPos) { return m_wMonitoringReadData_Melsec[nPos]; }
 	WORD GetMonitoringWriteData_Melsec(int nPos) { return m_wMonitoringWriteData_Melsec[nPos]; }
 
 	WORD GetMonitoringReadData_Siemens(int nPos) { return m_wMonitoringReadData_Siemens[nPos]; }
 	WORD GetMonitoringWriteData_Siemens(int nPos) { return m_wMonitoringWriteData_Siemens[nPos]; }
+#endif //NEW_PLCTYPE
 
 public :
 	// Signal In

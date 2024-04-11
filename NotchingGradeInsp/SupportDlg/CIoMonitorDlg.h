@@ -77,8 +77,10 @@ protected :
 	CString GetInWordAddress(int nRow);
 	CString GetOutWordAddress(int nRow);
 
+#ifndef NEW_PLCTYPE
 	CString GetInWordData(int nRow);
 	CString GetOutWordData(int nRow);
+#endif //NEW_PLCTYPE
 
 	CBmpStatic m_bmpSigIn[en_In_Max][en_mode_max];
 	CBmpStatic m_bmpSigOut[en_Out_Max][en_mode_max];

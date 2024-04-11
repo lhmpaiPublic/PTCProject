@@ -162,5 +162,10 @@ private:
 	virtual int ReadAllPort_BitIn(BOOL* pSigBitIn);
 	virtual int ReadAllPort_BitOut(BOOL* pSigBitOut);
 
+	//In Word 영역의 인덱스의 값을 String 으로 가져온다.
+	virtual CString GetInWordData(int idx);
+	//In Word 영역의 인덱스의 값을 String 으로 가져온다.
+	virtual CString GetOutWordData(int idx);
+
 };
 

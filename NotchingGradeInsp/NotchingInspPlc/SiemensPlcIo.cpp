@@ -203,7 +203,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
 		{
 			ReadPlcBitDataParser(ReadBitData);
-			LOGDISPLAY_SPEC(2)(CStrSuport::ChangshorttohexTab(ReadBitData, SIENENS_READBIT));
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(ReadBitData, SIENENS_READBIT));
 		}
 
 		//word 읽기 영역 읽기
@@ -212,7 +212,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
 		{
 			ReadPlcWordDataParser(ReadWordData);
-			LOGDISPLAY_SPEC(2)(CStrSuport::ChangshorttohexTab(ReadWordData, SIENENS_READWORD_MAX));
+			LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexTab(ReadWordData, SIENENS_READWORD_MAX));
 		}
 
 		//쓰기 데이터 만들기
@@ -221,7 +221,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		int ret = WritePlcDataMake();
 		//쓰기
 		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteData, ret);
-		LOGDISPLAY_SPEC(2)(CStrSuport::ChangshorttohexTab(m_WriteData, ret));
+		LOGDISPLAY_SPEC(2)(_T("Out data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteData, ret));
 	}
 }
 
@@ -266,6 +266,8 @@ CString CSiemensPlcIo::MakeRecipeName(short* data)
 	strBuffer.TrimRight();
 	strBuffer.TrimLeft();
 
+	LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), strBuffer);
+
 	return strBuffer;
 }
 
@@ -292,6 +294,9 @@ CString CSiemensPlcIo::MakeCellId(short* data)
 
 	strBuffer.TrimRight();
 	strBuffer.TrimLeft();
+
+	LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), strBuffer);
+
 	return strBuffer;
 }
 
@@ -966,3 +971,15 @@ int CSiemensPlcIo::ReadAllPort_BitOut(BOOL* pSigBitOut)
 	return 0; 
 }
 
+CString CSiemensPlcIo::GetInWordData(int idx)
+{
+	CString str = _T("");
+	str.Format(_T("%d"), (int)m_ReadWordData[idx]);
+	return str;
+}
+CString CSiemensPlcIo::GetOutWordData(int idx)
+{
+	CString str = _T("");
+	str.Format(_T("%d"), (int)m_WriteData[SIENENS_WRITEBIT+idx]);
+	return str;
+}

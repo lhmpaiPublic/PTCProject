@@ -51,6 +51,11 @@ public:
 	virtual void SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt) = 0;
 
 	virtual int WriteBlockData(void* pGlobalData) = 0;
+
+	//In Word 영역의 인덱스의 값을 String 으로 가져온다.
+	virtual CString GetInWordData(int idx) = 0;
+	//In Word 영역의 인덱스의 값을 String 으로 가져온다.
+	virtual CString GetOutWordData(int idx) = 0;
 #else
 	virtual int WritePLC_Block_device(int address, short* pData, int nNumOfData) = 0;
 	virtual int WritePLC_Block_device(int address, int* pData, int nNumOfData) = 0;

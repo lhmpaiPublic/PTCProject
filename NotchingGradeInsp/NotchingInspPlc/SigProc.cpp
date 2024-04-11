@@ -1232,7 +1232,9 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 		return -1;
 	}
 
+#ifndef NEW_PLCTYPE
 	memcpy(m_wMonitoringReadData_Melsec, btData, sizeof(btData));
+#endif //NEW_PLCTYPE
 
 	// RecipeNo 
 	WORD btTemp = btData[enWordRead_RecipeNo];
@@ -1340,7 +1342,9 @@ int CSigProc::ReadBlockWriteDataAll_Melsec(_SEQ_OUT_DATA_ALL* pSeqOutDataAll)
 		return -1;
 	}
 
+#ifndef NEW_PLCTYPE
 	memcpy(m_wMonitoringWriteData_Melsec, btData, sizeof(btData));
+#endif //NEW_PLCTYPE
 
 
 	WORD btTemp;
@@ -1476,7 +1480,9 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 		return -1;
 	}
 
+#ifndef NEW_PLCTYPE
 	memcpy(m_wMonitoringReadData_Siemens, btData, sizeof(btData));
+#endif //NEW_PLCTYPE
 
 
 	// RecipeNo 

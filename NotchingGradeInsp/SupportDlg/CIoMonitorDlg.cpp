@@ -694,7 +694,11 @@ void CIoMonitorDlg::UpdateGridCtrl()
 			Item.col = en_col_Data ;
 
 			CString strTemp;
+#ifndef NEW_PLCTYPE
 			strTemp = GetInWordData(row);
+#else
+			theApp.m_pSigProc->GetInWordData(row);
+#endif //NEW_PLCTYPE
 
 			Item.strText = strTemp;
 			pGridCtrl->SetItem(&Item);
@@ -716,7 +720,11 @@ void CIoMonitorDlg::UpdateGridCtrl()
 			Item.col = en_col_Data;
 
 			CString strTemp;
+#ifndef NEW_PLCTYPE
 			strTemp = GetOutWordData(row);
+#else
+			theApp.m_pSigProc->GetOutWordData(row);
+#endif //NEW_PLCTYPE
 
 			Item.strText = strTemp;
 			pGridCtrl->SetItem(&Item);
@@ -1504,6 +1512,7 @@ CString CIoMonitorDlg::GetOutWordAddress(int nRow)
 	return strRet;
 }
 
+#ifndef NEW_PLCTYPE
 CString CIoMonitorDlg::GetInWordData(int nRow)
 {
 	CString strRet;
@@ -1535,6 +1544,7 @@ CString CIoMonitorDlg::GetOutWordData(int nRow)
 
 	return strRet;
 }
+#endif //NEW_PLCTYPE
 
 void CIoMonitorDlg::OnBnClickedBtnDummyError()
 {
