@@ -13,10 +13,15 @@ CSigProc::CSigProc()
 
 	m_SigInRun = FALSE;
 
+	
+#ifndef NEW_PLCTYPE
 	if (theApp.m_pPioCtrl != NULL) 
 	{
 		m_pPioCtrl = theApp.m_pPioCtrl;
 	}
+#else
+	m_pPioCtrl = NULL;
+#endif //NEW_PLCTYPE
 
 	m_bSmsAlive = FALSE;
 
@@ -52,12 +57,11 @@ int CSigProc::GetPortBit(int nIntegration, int* piPort, BYTE* pByte)
 
 int CSigProc::SignalPortIn(WORD port, BYTE* data, BOOL bExtSt /*= FALSE*/, BOOL bLocal /*= FALSE*/)
 {
-	CPioCtrl* pPioCtrl = m_pPioCtrl;
-	if ((pPioCtrl == NULL) || (data == NULL)) {
+	if ((m_pPioCtrl == NULL) || (data == NULL)) {
 		//에러로그
 		return (-1);
 	}
-	return (pPioCtrl->InPortByte(port, data, bExtSt));
+	return (m_pPioCtrl->InPortByte(port, data, bExtSt));
 }
 
 int CSigProc::SignalPortCheck(int iInput, BOOL bExtSt /*= FALSE*/, BOOL bLocal /*= FALSE*/)
@@ -103,9 +107,7 @@ int CSigProc::SignalPortCheck(int iInput, BOOL bExtSt /*= FALSE*/, BOOL bLocal /
 
 int CSigProc::SignalBitOut(int nIntegration, int nMode, BOOL bLocal /*= FALSE*/)
 {
-	CPioCtrl* pPioCtrl = m_pPioCtrl;
-
-	if (pPioCtrl == NULL) {
+	if (m_pPioCtrl == NULL) {
 		//에러로그
 		return (-1);
 	}
@@ -128,7 +130,7 @@ int CSigProc::SignalBitOut(int nIntegration, int nMode, BOOL bLocal /*= FALSE*/)
 	}
 	else
 	{
-		nRet = pPioCtrl->Out_Port_Bit(iPort, cByte, nMode);
+		nRet = m_pPioCtrl->Out_Port_Bit(iPort, cByte, nMode);
 	}
 
 
@@ -289,12 +291,20 @@ int CSigProc::ReadAllPort_BitOut( BOOL* pSigBitOut )
 
 int CSigProc::SetAlarmCode(WORD wAlarmCode)
 {
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	m_pPioCtrl->SetAlarmCode(wAlarmCode);
 
 	return 0;
 }
 WORD CSigProc::GetAlarmCode()
 {
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	return m_pPioCtrl->GetAlarmCode();
 }
 
@@ -498,7 +508,10 @@ int CSigProc::SigInAlivePulse()
 	int nRet = 0;
 	int nAddress;
 
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_Alive;
@@ -529,7 +542,10 @@ int CSigProc::SigInReady()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_Ready;
@@ -559,7 +575,10 @@ int CSigProc::SigInRun()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_Run;
@@ -600,7 +619,10 @@ int CSigProc::SigInEncoderZeroReset()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_EncoderReset;
@@ -629,7 +651,10 @@ int CSigProc::SigInTabZeroReset()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_TabZeroReset;
@@ -659,7 +684,10 @@ int CSigProc::SigInInkMarkActive()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_InkMarkingActive;
@@ -690,7 +718,10 @@ int CSigProc::SigInRecipeChange()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_RecipeChange;
@@ -719,7 +750,10 @@ int CSigProc::SigInLotStart()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_LotStartReq;
@@ -748,7 +782,10 @@ int CSigProc::SigInLotEnd()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_LotEndReq;
@@ -778,7 +815,10 @@ int CSigProc::SigInAlarmReset()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_AlarmResetReq;
@@ -807,7 +847,10 @@ int CSigProc::SigInAlarmNgAck()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_AlarmNgAck;
@@ -836,7 +879,10 @@ int CSigProc::SigInConnectZone()
 {
 	int nRet = 0;
 	int nAddress;
-
+	if (m_pPioCtrl == NULL) {
+		//에러로그
+		return (-1);
+	}
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		nAddress = enSmsBitIn_ConnectZone;

@@ -70,7 +70,9 @@ CNotchingGradeInspApp::CNotchingGradeInspApp() noexcept
 
 	m_pImgProcCtrl = NULL;
 
+#ifndef NEW_PLCTYPE
 	m_pPioCtrl = NULL;
+#endif //NEW_PLCTYPE
 
 	m_pSigProc = NULL;
 
@@ -455,11 +457,13 @@ int CNotchingGradeInspApp::DeviceClose(void)
 		m_pSigProc = NULL;
 	}
 
+#ifndef NEW_PLCTYPE
 	if (m_pPioCtrl != NULL)
 	{
 		delete m_pPioCtrl;
 		m_pPioCtrl = NULL;
 	}
+#endif //NEW_PLCTYPE
 
 	if (m_pIoCtrl != NULL) {
 		delete m_pIoCtrl;

@@ -57,7 +57,9 @@ private:
 public :
 	CImageProcessCtrl *m_pImgProcCtrl ;
 
+#ifndef NEW_PLCTYPE
 	CPioCtrl* m_pPioCtrl;
+#endif //NEW_PLCTYPE
 
 	CPlcImp* m_pSigProc; 
 
