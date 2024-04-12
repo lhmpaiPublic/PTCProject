@@ -183,7 +183,7 @@ UINT CSiemensPlcIo::SiemensPlc_ThreadProc(LPVOID param)
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
-			pMain->SiemensPlcProc();
+			pMain->SiemensPlcProc(pMain);
 		}
 		else
 		{
@@ -196,9 +196,9 @@ UINT CSiemensPlcIo::SiemensPlc_ThreadProc(LPVOID param)
 }
 
 //스래드에서 호출하는 함수
-void CSiemensPlcIo::SiemensPlcProc()
+void CSiemensPlcIo::SiemensPlcProc(CSiemensPlcIo* pSiemensPlcIo)
 {
-	if (IsOpened())
+	if (pSiemensPlcIo->IsOpened())
 	{
 		//bit Word 전체 버퍼
 		short	ReadBitWordData[SIENENS_READBITWORD_MAX];
@@ -209,7 +209,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		//Read word 영역 읽기
 		short	ReadWordData[SIENENS_READWORD_MAX];
 		//bit 읽기 영역 읽기
-		ReadDataReg(AprData.m_System.m_nBitIn, ReadBitWordData, SIENENS_READBITWORD_MAX);
+		pSiemensPlcIo->ReadDataReg(m_nBitIn, ReadBitWordData, SIENENS_READBITWORD_MAX);
 
 		//읽은 Bit 데이터 파싱
 		memcpy(ReadBitData, &ReadBitWordData[0], sizeof(short) * SIENENS_READBIT);
@@ -233,7 +233,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		//m_WriteData에 쓰여진 데이터에서 바뀐 영역까지 만 쓰기 : Bit 영역에서 한번에 연속 되는 부분까지 
 		int ret = WritePlcDataMake();
 		//쓰기
-		WriteDataReg(AprData.m_System.m_nBitOut, m_WriteData, ret);
+		pSiemensPlcIo->WriteDataReg(m_nBitOut, m_WriteData, ret);
 		LOGDISPLAY_SPEC(2)(_T("Out data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteData, ret));
 	}
 }
@@ -495,11 +495,13 @@ int CSiemensPlcIo::WritePlcDataMake()
 	if (isWordOut_AlarmCode_Buffer())
 	{
 		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer;
-		for (int i = 0; i < COUNT_ALRAMBUFF; i++)
+		int i = 0;
+		for (; i < COUNT_ALRAMBUFF; i++)
 		{
 			ret += i;
 			m_WriteData[ret] = getWordOut_AlarmCode_Buffer(i);
 		}
+		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer+i;
 	}
 
 	if (isWordOut_Cell_Trigger_ID())
@@ -514,11 +516,13 @@ int CSiemensPlcIo::WritePlcDataMake()
 	if (isWordOut_DuplicateNG_Cell_ID())
 	{
 		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID;
-		for (int i = 0; i < COUNT_DUPLICATENGCELLID; i++)
+		int i = 0;
+		for (; i < COUNT_DUPLICATENGCELLID; i++)
 		{
 			ret += i;
 			m_WriteData[ret] = getWordOut_DuplicateNG_Cell_ID(i);
 		}
+		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID+i;
 	}
 
 	//버퍼 block 위치에 + 1 = 크기(size)
@@ -667,6 +671,9 @@ int CSiemensPlcIo::OpenPlcIo(void)
 		m_nWordIn,
 		m_nWordOut);
 
+	//로그출력
+	LOGDISPLAY_SPEC(2)("PLC Siemens Open success Slave Id : %s", m_nSlaveID);
+
 	if (!m_pLGIS_Plc->CheckConnection())
 	{
 		ClosePlcIo();
@@ -677,7 +684,7 @@ int CSiemensPlcIo::OpenPlcIo(void)
 	else
 	{
 		//로그출력
-		LOGDISPLAY_SPEC(2)("PLC Siemens Open success Slave Id : %s", m_nSlaveID);
+		LOGDISPLAY_SPEC(2)("PLC Siemens Open success Slave Id : %d", m_nSlaveID);
 
 		//슬레이브 아이디 
 		SetSlaveId(m_nSlaveID);
@@ -694,6 +701,8 @@ void CSiemensPlcIo::ClosePlcIo(void)
 {
 	if (m_pLGIS_Plc)
 	{
+		//로그출력
+		LOGDISPLAY_SPEC(2)("PLC Siemens ClosePlcIo");
 		delete m_pLGIS_Plc;
 		m_pLGIS_Plc = NULL;
 	}

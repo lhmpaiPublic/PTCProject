@@ -19,7 +19,7 @@ CSiemensPlc::CSiemensPlc(CString strIPAddress, int nReConnetTimeOut, CWnd* pRece
 
 	OpenPio();
 
-	SetSlaveId(AprData.m_System.m_nSlaveID); // 23.03.02 pyj add
+	SetSlaveId(AprData.m_System.m_nSlaveID);
 }
 
 

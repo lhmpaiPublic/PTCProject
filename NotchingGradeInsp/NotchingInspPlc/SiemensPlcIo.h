@@ -85,7 +85,7 @@ public:
 	static UINT SiemensPlc_ThreadProc(LPVOID param);
 
 	//스래드에서 호출하는 함수
-	void SiemensPlcProc();
+	void SiemensPlcProc(CSiemensPlcIo* pSiemensPlcIo);
 
 	//PLC read Data Parser 함수
 	void ReadPlcBitDataParser(short* data);
