@@ -38,8 +38,8 @@ char* CSpcInspInData::MakeInspInDataText_1 =
 "        \"CELL_COUNT_NO\" : \"%s\",\r\n"
 "        \"VIRTUAL_CELL_ID\" : \"%s\",\r\n"
 "        \"CELL_FINAL_JUDGE\" : \"%s\",\r\n"
-"        \"DetectFallFlact\" : \"%s\",\r\n"
-"        \"DetectFallReasoAll\" : \"%s\",\r\n"
+"        \"DETECT_FALL_FLAG\" : \"%s\",\r\n"
+"        \"DETECT_FALL_REASON_REAL\" : \"%s\",\r\n"
 "        \"IQ_INFO\": [\r\n";
 //+"%s"	 IQ_INFO
 char* CSpcInspInData::MakeInspInDataText_2[2] =
