@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 //In Bit 시작 인덱스
-#define READBIT_STARTINDEX 0
+#define SIENENS_READBIT_STARTINDEX 0
 //지멘스 BIT 영역 읽기 맥스 갯수
 #define SIENENS_READBIT (MAX_SMS_BITIO_IN)
 
 //In Word 시작 인덱스
-#define READWORD_STARTINDEX 20
+#define SIENENS_READWORD_STARTINDEX 20
 
 //지멘스 WORD 영역 읽기 맥스 갯수
 #define SIENENS_READWORD_MAX 274 //(MAX_SMS_WORDIO_IN)
@@ -21,12 +21,12 @@
 
 
 //Out Bit 시작 인덱스
-#define WRITEBIT_STARTINDEX 0
+#define SIENENS_WRITEBIT_STARTINDEX 0
 //지멘스 BIT 영역 쓰기 맥스 갯수
 #define SIENENS_WRITEBIT (MAX_SMS_BITIO_OUT)
 
 //Out Word 시작 인덱스
-#define WRITEWORD_STARTINDEX 20
+#define SIENENS_WRITEWORD_STARTINDEX 20
 //지멘스 WORD 영역 쓰기 맥스 갯수
 #define SIENENS_WRITEWORD_MAX 149
 
@@ -51,7 +51,7 @@ class CSiemensPlcIo : public CDataPlcImp
 
 public:
 	//strIPAddress : IP, nPort : Port, nSlaveID : Slave ID, nBitIn : In Bit 시작 인덱스, nBitOut : Out Bit 시작 인덱스, nWordIn : In Word 시작 인덱스, nWordOut : Out Word 시작 인덱스, 
-	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort, int nSlaveID, int nBitIn = READBIT_STARTINDEX, int nBitOut = WRITEBIT_STARTINDEX, int nWordIn = READWORD_STARTINDEX, int nWordOut = WRITEWORD_STARTINDEX);
+	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort, int nSlaveID, int nBitIn = SIENENS_READBIT_STARTINDEX, int nBitOut = SIENENS_WRITEBIT_STARTINDEX, int nWordIn = SIENENS_READWORD_STARTINDEX, int nWordOut = SIENENS_WRITEWORD_STARTINDEX);
 	~CSiemensPlcIo();
 
 	//PLC 읽기 Data

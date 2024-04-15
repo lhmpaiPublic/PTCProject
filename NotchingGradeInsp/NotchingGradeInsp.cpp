@@ -28,6 +28,7 @@
 
 //PLC New
 #include "SiemensPlcIo.h"
+#include "MelsecPlcIo.h"
 
 #pragma comment( lib, "version.lib")
 
@@ -403,9 +404,11 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 
 	}
 #else
-	CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
+	/*CString strIPAddress = AprData.m_System.m_strPLCIPAddress;
 	int nPort = AprData.m_System.m_nPLCPort;
-	m_pSigProc = new CSiemensPlcIo(strIPAddress, 500, NULL, nPort, AprData.m_System.m_nSlaveID, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);
+	m_pSigProc = new CSiemensPlcIo(strIPAddress, 500, NULL, nPort, AprData.m_System.m_nSlaveID, AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);*/
+
+	m_pSigProc = new CMelsecPlcIo();
 #endif //NEW_PLCTYPE
 
 	CStdIoCtrl::eIOTYPE ioType = CStdIoCtrl::eIO_AXL;
