@@ -207,12 +207,6 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		pEvent_NotchingGradeInspView = NULL;
 	}
 
-	//SPC+ kilTimer
-	if (m_SpcStatus != 0)
-	{
-		KillTimer(m_SpcStatus);
-		m_SpcStatus = 0;
-	}
 }
 
 BOOL CNotchingGradeInspView::PreCreateWindow(CREATESTRUCT& cs)

@@ -78,6 +78,10 @@ private:
 	//num : 읽을 갯수
 	int ReadBitData(short stno, CString device, int startport, int num);
 
+	int ReadWordData(short stno, CString device, int startport, int num);
+
+
+
 	// disconnection network
 	void ClosePlcIo(void);
 

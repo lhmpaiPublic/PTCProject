@@ -174,6 +174,8 @@ void CMelsecPlcIo::MelsecPlcProc()
 {
 	//
 	ReadBitData(0xff, "B", 0, 4);
+
+	ReadWordData(0xff, "W", 0, 4);
 }
 
 int CMelsecPlcIo::OpenPlcIo(void)
@@ -288,13 +290,9 @@ int CMelsecPlcIo::ReadBitData(short stno, CString device, int startport, int num
 	{
 		devtype = MELSEC_DEVICE_X;
 	}
-	else if (device.Compare(_T("W")) == 0)
-	{
-		devtype = MELSEC_DEVICE_X;
-	}
 	else 
 	{
-		devtype = MELSEC_DEVICE_W;
+		devtype = MELSEC_DEVICE_B;
 	}
 
 	buff = new short[num];
@@ -312,8 +310,45 @@ int CMelsecPlcIo::ReadBitData(short stno, CString device, int startport, int num
 		);
 	}
 
-	short localBuff[10] = { 0, };
-	memcpy(localBuff, buff, num);
+	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
+
+	delete[] buff;
+
+	return iRet;
+
+}
+
+int CMelsecPlcIo::ReadWordData(short stno, CString device, int startport, int num)
+{
+	int iRet = 0;
+
+	short	devno, size, size2, * buff, devtype;
+
+	if (device.Compare(_T("W")) == 0)
+	{
+		devtype = MELSEC_DEVICE_W;
+	}
+	else
+	{
+		devtype = MELSEC_DEVICE_W;
+	}
+
+	buff = new short[num];
+
+	devno = (short)(startport * 32);
+	size2 = size = num;
+
+	{
+		iRet = mdReceive(m_pPath
+			, stno
+			, devtype
+			, devno
+			, &size
+			, buff
+		);
+	}
+
+	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
 
 	delete[] buff;
 
