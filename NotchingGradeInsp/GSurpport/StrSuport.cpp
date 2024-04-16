@@ -149,9 +149,13 @@ CString CStrSuport::ChangshorttohexTab(short* data, int len, int tablen)
 		rest += temp;
 		temp.Format("%02X", (data[i]) & 0xff);
 		rest += temp;
-		if ((i != 0) && ((i % tablen) == 0))
+		if (((i+1) % tablen) == 0)
 		{
 			rest += "	";
+		}
+		else
+		{
+			rest += " ";
 		}
 	}
 	return rest;

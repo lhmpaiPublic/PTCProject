@@ -375,6 +375,9 @@ public:
 #endif //NEW_PLCTYPE
 
 public :
+
+	virtual int PlcDataReadWritePorc() { return 0; }
+
 	// Signal In
 	virtual int SigInAlivePulse();
 	virtual int SigInReady();
