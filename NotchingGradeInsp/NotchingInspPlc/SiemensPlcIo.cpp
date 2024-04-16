@@ -515,7 +515,7 @@ int CSiemensPlcIo::WriteDataReg(int offset, short data[], int num)
 	CString strMsg;
 
 	int nRet = 0;
-	int nAdd = offset;// +m_wOffset_Out; //+ m_wOffsetWord_Out;
+	int nAdd = offset;
 	{	
 		if (m_pLGIS_Plc)
 		{
@@ -523,17 +523,10 @@ int CSiemensPlcIo::WriteDataReg(int offset, short data[], int num)
 
 			if (nRet < 0)
 			{
-				//strMsg.Format(_T("Siemens Write Error"));
 
 			}
 
 		}
-		else
-		{
-			//strMsg.Format(_T("Siemens Open Error"));
-
-		}
-
 	}
 
 	return nRet ;
@@ -542,7 +535,7 @@ int CSiemensPlcIo::WriteDataReg(int offset, short data[], int num)
 int CSiemensPlcIo::ReadDataReg(int offset, short data[], int num)
 {
 	int nRet = 0;
-	int nAdd = offset;// +m_wOffsetWord_In;
+	int nAdd = offset;
 	{
 
  		CString strMsg;
@@ -552,12 +545,7 @@ int CSiemensPlcIo::ReadDataReg(int offset, short data[], int num)
 
 			if( nRet < 0)
 			{
-				//strMsg.Format(_T("Siemens Read Error"));
 			}
-		}
-		else
-		{
-			//strMsg.Format(_T("Siemens Open Error"));
 		}
 
 	}

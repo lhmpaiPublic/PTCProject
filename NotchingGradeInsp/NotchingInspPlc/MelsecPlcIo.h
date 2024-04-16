@@ -85,7 +85,7 @@ private:
 
 	int ReadWordDataEx(short netNo, int devtype, int startport, int num, bool bIn);
 
-
+	void chnageEndian(short data[], int size);
 
 	// disconnection network
 	void ClosePlcIo(void);

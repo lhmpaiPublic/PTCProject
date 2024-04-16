@@ -4,6 +4,11 @@
 #include "GlobalData.h"
 #include "LogDisplayDlg.h"
 
+#define uint16_t    unsigned short
+#define uint32_t    unsigned int
+#define SWAP_UINT16(x) ((uint16_t)((((x) & 0xff00) >> 8) | (((x) & 0x00ff) << 8)))
+#define SWAP_UINT32(x) ((uint32_t) ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >> 8) | (((x) & 0x0000ff00) << 8) | (((x) & 0x000000ff) << 24)))
+
 
 // [ Melsec Address Start ]
 // [ BIT IN ]
@@ -287,17 +292,17 @@ int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, int num, b
 	//읽을 번지 세팅
 	//startport : 8비트만큼 이동 번지, 
 	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_BitIn : m_wOffset_BitOut));
-	size = (short)num*sizeof(short);
+	size = (short)num * sizeof(short);
 
-	{
-		iRet = mdReceive(m_pPath
-			, stno
-			, devtype
-			, devno
-			, &size
-			, buff
-		);
-	}
+	iRet = mdReceive(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, buff
+	);
+
+	chnageEndian(buff, size);
 
 	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
 
@@ -318,15 +323,15 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int num, 
 	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
 	size = (short)num * sizeof(short);
 
-	{
-		iRet = mdReceive(m_pPath
-			, stno
-			, devtype
-			, devno
-			, &size
-			, buff
-		);
-	}
+	iRet = mdReceive(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, buff
+	);
+
+	chnageEndian(buff, size);
 
 	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
 
@@ -348,16 +353,16 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int nu
 	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
 	size = (short)num * sizeof(short);
 
-	{
-		iRet = mdReceiveEx(m_pPath
-			, netNo
-			, m_wSeqStNo
-			, devtype
-			, devno
-			, &size
-			, buff
-		);
-	}
+	iRet = mdReceiveEx(m_pPath
+		, netNo
+		, m_wSeqStNo
+		, devtype
+		, devno
+		, &size
+		, buff
+	);
+
+	chnageEndian(buff, size);
 
 	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
 
@@ -366,6 +371,13 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int nu
 	return iRet;
 }
 
+void CMelsecPlcIo::chnageEndian(short data[], int size)
+{
+	for (int idx = 0; idx < size; idx++)
+	{
+		data[idx] = SWAP_UINT16(data[idx]);
+	}
+}
 
 void CMelsecPlcIo::ClosePlcIo(void)
 {
