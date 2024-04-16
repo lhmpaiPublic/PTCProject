@@ -163,6 +163,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		short	ReadWordData[SIENENS_READWORD_MAX];
 		//bit 읽기 영역 읽기
 		ReadDataReg(m_nBitIn, ReadBitWordData, SIENENS_READBITWORD_MAX);
+		LOGDISPLAY_SPEC(2)(_T("In All data :	%s"), CStrSuport::ChangshorttohexTab(ReadBitWordData, SIENENS_READBITWORD_MAX));
 
 		//읽은 Bit 데이터 파싱
 		memcpy(ReadBitData, &ReadBitWordData[0], sizeof(short) * SIENENS_READBIT);
