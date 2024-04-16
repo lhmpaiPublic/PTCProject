@@ -412,7 +412,7 @@ int CNotchingGradeInspApp::DeviceOpen(void)
 	}
 	else
 	{
-		m_pSigProc = new CMelsecPlcIo();
+		m_pSigProc = new CMelsecPlcIo(AprData.m_System.m_nBitIn, AprData.m_System.m_nBitOut, AprData.m_System.m_nWordIn, AprData.m_System.m_nWordOut);
 	}
 #endif //NEW_PLCTYPE
 

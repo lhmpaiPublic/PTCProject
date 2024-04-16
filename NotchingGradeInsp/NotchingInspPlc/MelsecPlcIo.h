@@ -43,8 +43,10 @@ class CMelsecPlcIo : public CDataPlcImp
 	WORD	m_wMyStNo;
 	WORD	m_wExtStNo;
 	WORD	m_wSeqStNo;
-	WORD	m_wOffset_In;
-	WORD	m_wOffset_Out;
+	WORD	m_wOffset_BitIn;
+	WORD	m_wOffset_BitOut;
+	WORD	m_wOffset_WordIn;
+	WORD	m_wOffset_WordOut;
 	long	m_pPath;
 
 	BOOL m_bOpened;
@@ -53,7 +55,7 @@ class CMelsecPlcIo : public CDataPlcImp
 
 public:
 	//
-	CMelsecPlcIo(WORD wChannelNo = MELSEC_CHN_NO_NETG1, WORD wMaxPort = MELSEC_MAX_PORT, WORD wMyStNo = MELSEC_LIO_STATION_NO, WORD wExtStNo = MELSEC_EX_STATION_NO, WORD wSeqStNo = MELSEC_SEQ_STATION_NO, WORD wOffset_In = MELSEC_READBIT_STARTINDEX, WORD wOffset_Out = MELSEC_WRITEBIT_STARTINDEX);
+	CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset_WordIn, WORD wOffset_WordOut, WORD wChannelNo = MELSEC_CHN_NO_NETG1, WORD wMaxPort = MELSEC_MAX_PORT, WORD wMyStNo = MELSEC_LIO_STATION_NO, WORD wExtStNo = MELSEC_EX_STATION_NO, WORD wSeqStNo = MELSEC_SEQ_STATION_NO);
 	~CMelsecPlcIo();
 
 public:
@@ -76,9 +78,12 @@ private:
 	//device : B : 바이너리, X : 헥사 , W : 워드 
 	//startport : 시작 포트
 	//num : 읽을 갯수
-	int ReadBitData(short stno, CString device, int startport, int num);
+	//bIn : Read - true Write - false
+	int ReadBitData(short stno, int devtype, int startport, int num, bool bIn);
 
-	int ReadWordData(short stno, CString device, int startport, int num);
+	int ReadWordData(short stno, int devtype, int startport, int num, bool bIn);
+
+	int ReadWordDataEx(short netNo, int devtype, int startport, int num, bool bIn);
 
 
 

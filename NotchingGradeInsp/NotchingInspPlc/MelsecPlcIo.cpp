@@ -142,7 +142,7 @@ enum MelsWordWrite
 	enWordWriteMaxSize = 160,
 };
 
-CMelsecPlcIo::CMelsecPlcIo(WORD wChannelNo, WORD wMaxPort, WORD wMyStNo, WORD wExtStNo, WORD wSeqStNo, WORD wOffset_In, WORD wOffset_Out)
+CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset_WordIn, WORD wOffset_WordOut, WORD wChannelNo, WORD wMaxPort, WORD wMyStNo, WORD wExtStNo, WORD wSeqStNo)
 {
 	m_wChannelNo = wChannelNo;
 	m_wMaxPort = wMaxPort;
@@ -150,8 +150,10 @@ CMelsecPlcIo::CMelsecPlcIo(WORD wChannelNo, WORD wMaxPort, WORD wMyStNo, WORD wE
 	m_wExtStNo = wExtStNo;
 	m_wSeqStNo = wSeqStNo;
 
-	m_wOffset_In = wOffset_In;
-	m_wOffset_Out = wOffset_Out;
+	m_wOffset_BitIn = wOffset_BitIn;
+	m_wOffset_BitOut = wOffset_BitOut;
+	m_wOffset_WordIn = wOffset_WordIn;
+	m_wOffset_WordOut = wOffset_WordOut;
 
 	m_pPath = 0;
 
@@ -173,9 +175,11 @@ CMelsecPlcIo::~CMelsecPlcIo()
 void CMelsecPlcIo::MelsecPlcProc()
 {
 	//
-	ReadBitData(0xff, "B", 0, 4);
+	//ReadBitData(0xff, MELSEC_DEVICE_B, 1, 4, true);
 
-	ReadWordData(0xff, "W", 0, 4);
+	//ReadWordData(0xff, MELSEC_DEVICE_W, 1, 4, true);
+
+	ReadWordDataEx(0x0, MELSEC_DEVICE_W, 1, 4, true);
 }
 
 int CMelsecPlcIo::OpenPlcIo(void)
@@ -272,33 +276,18 @@ int CMelsecPlcIo::ChangeWorkingSetSize(void)
 	return (nRet);
 }
 
-int CMelsecPlcIo::ReadBitData(short stno, CString device, int startport, int num)
+int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, int num, bool bIn)
 {
 	int iRet = 0;
 
-	short	devno, size, size2, * buff, devtype;
-
-	if (device.Compare(_T("M")) == 0) 
-	{
-		devtype = MELSEC_DEVICE_M;
-	}
-	else if (device.Compare(_T("B")) == 0) 
-	{
-		devtype = MELSEC_DEVICE_B;
-	}
-	else if (device.Compare(_T("X")) == 0) 
-	{
-		devtype = MELSEC_DEVICE_X;
-	}
-	else 
-	{
-		devtype = MELSEC_DEVICE_B;
-	}
+	short	devno, size, * buff;
 
 	buff = new short[num];
 
-	devno = (short)(startport * 8);
-	size2 = size = num;
+	//읽을 번지 세팅
+	//startport : 8비트만큼 이동 번지, 
+	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_BitIn : m_wOffset_BitOut));
+	size = (short)num*sizeof(short);
 
 	{
 		iRet = mdReceive(m_pPath
@@ -318,25 +307,16 @@ int CMelsecPlcIo::ReadBitData(short stno, CString device, int startport, int num
 
 }
 
-int CMelsecPlcIo::ReadWordData(short stno, CString device, int startport, int num)
+int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int num, bool bIn)
 {
 	int iRet = 0;
 
-	short	devno, size, size2, * buff, devtype;
-
-	if (device.Compare(_T("W")) == 0)
-	{
-		devtype = MELSEC_DEVICE_W;
-	}
-	else
-	{
-		devtype = MELSEC_DEVICE_W;
-	}
+	short	devno, size, * buff;
 
 	buff = new short[num];
 
-	devno = (short)(startport * 32);
-	size2 = size = num;
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
+	size = (short)num * sizeof(short);
 
 	{
 		iRet = mdReceive(m_pPath
@@ -355,6 +335,37 @@ int CMelsecPlcIo::ReadWordData(short stno, CString device, int startport, int nu
 	return iRet;
 
 }
+
+int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int num, bool bIn)
+{
+	int iRet = 0;
+
+	long	devno, size;
+	short * buff;
+
+	buff = new short[num];
+
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
+	size = (short)num * sizeof(short);
+
+	{
+		iRet = mdReceiveEx(m_pPath
+			, netNo
+			, m_wSeqStNo
+			, devtype
+			, devno
+			, &size
+			, buff
+		);
+	}
+
+	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
+
+	delete[] buff;
+
+	return iRet;
+}
+
 
 void CMelsecPlcIo::ClosePlcIo(void)
 {
