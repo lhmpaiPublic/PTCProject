@@ -8202,31 +8202,24 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nW
 // 23.02.10 Ahn Add End
 
 // Head부 검사 처리 함수.
-int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, VEC_ROUND_INFO* pvecLeftRndInfoDraw, VEC_ROUND_INFO* pvecRightRndInfoDraw, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-	int nOffset = 50 ;
-
-	// 22.01.05 Ahn Add Start
 	int nLeftOffset;
-	int nRightOffset; // 22.05.09 Ahn Add
+	int nRightOffset;
 	int nTabRoundOffsetR;
-	//22.09.15 Ahn Modify Start
-	//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
-	if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
-	//22.09.15 Ahn Modify End
+	if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+	{
 		nLeftOffset = (int)((double)pRecipeInfo->TabCond.nNegCoatHeight * 1.5);
 		nTabRoundOffsetR = pRecipeInfo->TabCond.nNegCoatHeight;
 	}
-	else {
-		// 22.05.09 Ahn Modify Start
-		//nLeftOffset = pRecipeInfo->TabCond.nCeramicHeight;
+	else
+	{
 		nLeftOffset = (int)((pRecipeInfo->dFoilExpInspWidth[CAM_POS_TOP] * 1000.0) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
 		nRightOffset = (int)((pRecipeInfo->dFoilOutInspWidth[CAM_POS_TOP] * 1000.0) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
-		// 22.05.09 Ahn Modify End
 		nTabRoundOffsetR = pRecipeInfo->TabCond.nRadiusW;
 
 		if (pRecipeInfo->bEnableVGroove == TRUE)
@@ -8235,7 +8228,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth,
 			nRightOffset += pRecipeInfo->TabCond.nNegVGrooveHeight;
 		}
 	}
-	// 22.01.05 Ahn Add End
 
 	CRect rcAll;
 	CRect rcLeft;
@@ -8623,6 +8615,15 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth,
 		pDiffPtr = NULL;
 	}
 
+	if (bSimMode == TRUE)
+	{
+		pvecLeftRndInfoDraw->resize(vecLeftRndInfo.size());
+		copy(vecLeftRndInfo.begin(), vecLeftRndInfo.end(), pvecLeftRndInfoDraw->begin());
+
+		pvecRightRndInfoDraw->resize(vecRightRndInfo.size());
+		copy(vecRightRndInfo.begin(), vecRightRndInfo.end(), pvecRightRndInfoDraw->begin());
+	}
+
 	return 0;
 }
 
@@ -8836,12 +8837,8 @@ int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth,
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-	int nOffset = 50;
-	int nLeftOffset;
-	int nTabRoundOffsetR;
-
-	nLeftOffset = pRecipeInfo->TabCond.nNegVGrooveHeight + pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-	nTabRoundOffsetR = pRecipeInfo->TabCond.nNegCoatHeight;
+	int nLeftOffset = pRecipeInfo->TabCond.nNegVGrooveHeight + pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+	int nTabRoundOffsetR = pRecipeInfo->TabCond.nNegCoatHeight;
 
 	CRect rcAll;
 	CRect rcLeft;

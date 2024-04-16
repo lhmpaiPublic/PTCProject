@@ -414,7 +414,7 @@ public:
 	//// 22.05.13 Ahn Add End
 
 	// 양극 검사 Dross & Foil 노출 구분 검출
-	static int ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecLeftRndInfoDraw = NULL, VEC_ROUND_INFO* pvecRightRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	static int ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 
 	static int ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);

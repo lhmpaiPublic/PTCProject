@@ -2089,8 +2089,10 @@ void CImageProcSimDlg::InspectionAuto()
 				delete[] pnPrjData;
 			}
 
-
-
+			CImageProcess::VEC_ROUND_INFO vecLeftRndInfo;
+			CImageProcess::VEC_ROUND_INFO vecRightRndInfo;
+			vecLeftRndInfo.clear();
+			vecRightRndInfo.clear();
 
 			if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 			{
@@ -2105,8 +2107,12 @@ void CImageProcSimDlg::InspectionAuto()
 			}
 			else
 			{
-				CImageProcess::ImageProcessTopSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
+				CImageProcess::ImageProcessTopSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, &vecLeftRndInfo, &vecRightRndInfo, pImgArr, 4);
 			}
+
+			m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+			m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
+
 
 		}
 
@@ -2195,6 +2201,8 @@ void CImageProcSimDlg::InspectionAuto()
 
 
 	UpdateGrid();
+
+
 }
 
 // 230109
@@ -3290,7 +3298,7 @@ void CImageProcSimDlg::OnBnClickedBtnTest()
 	{
 		m_pImageDispDlg->SetDrawBlobFlag(FALSE);
 
-		DrawLine(); // 라인표출을 위해 실행 //240109
+//		DrawLine(); // 라인표출을 위해 실행 //240109
 	}
 
 	// 23.02.03 Ahn Modify Start
