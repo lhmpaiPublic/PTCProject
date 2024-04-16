@@ -153,7 +153,7 @@ CMelsecPlcIo::CMelsecPlcIo(WORD wChannelNo, WORD wMaxPort, WORD wMyStNo, WORD wE
 	m_wOffset_In = wOffset_In;
 	m_wOffset_Out = wOffset_Out;
 
-	m_pPath = NULL;
+	m_pPath = 0;
 
 	m_bOpened = FALSE;
 
@@ -169,6 +169,13 @@ CMelsecPlcIo::~CMelsecPlcIo()
 	
 }
 
+//PLC 데이터 Read / Write 처리 함수
+void CMelsecPlcIo::MelsecPlcProc()
+{
+	//
+	ReadBitData(0xff, "B", 0, 4);
+}
+
 int CMelsecPlcIo::OpenPlcIo(void)
 {
 	int ret = 0;
@@ -180,8 +187,7 @@ int CMelsecPlcIo::OpenPlcIo(void)
 	}
 	else
 	{
-		//
-		ReadBitData(0xff, "B", 0, 4);
+		
 	}
 
 	return ret;
@@ -264,7 +270,7 @@ int CMelsecPlcIo::ChangeWorkingSetSize(void)
 	return (nRet);
 }
 
-int CMelsecPlcIo::ReadBitData(short stno, CString device, int adrs, int num)
+int CMelsecPlcIo::ReadBitData(short stno, CString device, int startport, int num)
 {
 	int iRet = 0;
 
@@ -282,14 +288,18 @@ int CMelsecPlcIo::ReadBitData(short stno, CString device, int adrs, int num)
 	{
 		devtype = MELSEC_DEVICE_X;
 	}
-	else {
-		AfxMessageBox(_T("디바이스명이 잘못되었습니다."));
-		return (0);
+	else if (device.Compare(_T("W")) == 0)
+	{
+		devtype = MELSEC_DEVICE_X;
+	}
+	else 
+	{
+		devtype = MELSEC_DEVICE_W;
 	}
 
 	buff = new short[num];
 
-	devno = (short)(adrs * 8);
+	devno = (short)(startport * 8);
 	size2 = size = num;
 
 	{
@@ -314,6 +324,26 @@ int CMelsecPlcIo::ReadBitData(short stno, CString device, int adrs, int num)
 void CMelsecPlcIo::ClosePlcIo(void)
 {
 	mdClose(m_pPath);
+}
+
+BOOL CMelsecPlcIo::IsOpened()
+{
+	if (m_pPath != 0 && m_bOpened)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+int CMelsecPlcIo::PlcDataReadWritePorc()
+{
+	//PLC 데이터 Read / Write 처리 함수
+	if (IsOpened())
+	{
+		MelsecPlcProc();
+	}
+	return 0;
 }
 
 //Out

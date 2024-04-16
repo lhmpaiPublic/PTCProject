@@ -8,6 +8,8 @@ public:
 	CPlcImp();
 	virtual ~CPlcImp();
 
+	virtual int PlcDataReadWritePorc() = 0;
+
 	//Out
 	virtual int SigOutEncoderZeroSet(int nMode) = 0;
 	virtual int SigOutRecipeChangeAck(int nMode) = 0;

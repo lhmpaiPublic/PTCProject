@@ -173,6 +173,8 @@ public:
 	CDataPlcImp();
 	virtual ~CDataPlcImp();
 
+	virtual int PlcDataReadWritePorc() { return 0; }
+
 	//In Data
 	//Bit Data In
 	BOOL getBitIn_Alive() { return m_BitIn_Alive; }

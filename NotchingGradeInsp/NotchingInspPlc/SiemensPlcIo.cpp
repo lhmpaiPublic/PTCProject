@@ -131,8 +131,6 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	//Alive 값 연산 변수
 	m_bSmsAlive = FALSE;
 
-	m_pThread_SiemensPlc = NULL;
-	pEvent_SiemensPlc = NULL;
 	//Read Data 버퍼 초기화
 	memset(m_ReadBitData, 0, sizeof(short) * SIENENS_READBIT);
 	memset(m_ReadWordData, 0, sizeof(short) * SIENENS_READWORD_MAX);
@@ -147,58 +145,13 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 
 CSiemensPlcIo::~CSiemensPlcIo()
 {
-	if (m_pThread_SiemensPlc)
-	{
-		setEvent_SiemensPlc();
-		CGlobalFunc::ThreadExit(&m_pThread_SiemensPlc->m_hThread, 5000);
-		m_pThread_SiemensPlc->m_hThread = NULL;
-		m_pThread_SiemensPlc = NULL;
-	}
-
-	if (pEvent_SiemensPlc)
-	{
-		CloseHandle(pEvent_SiemensPlc);
-		pEvent_SiemensPlc = NULL;
-	}
-
-	ClosePlcIo();
-	
-}
-
-//스래드 함수
-#define SIEMENSPLC_TIMEOUT 300
-UINT CSiemensPlcIo::SiemensPlc_ThreadProc(LPVOID param)
-{
-	CSiemensPlcIo* pMain = (CSiemensPlcIo*)param;
-
-	int ret = WAIT_OBJECT_0;
-	while (pMain)
-	{
-		//타임 주기 이벤트
-		ret = WaitForSingleObject(pMain->getEvent_SiemensPlc(), SIEMENSPLC_TIMEOUT);
-
-		if (ret == WAIT_FAILED) //HANDLE이 Invalid 할 경우
-		{
-			break;
-		}
-		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
-		{
-			pMain->SiemensPlcProc(pMain);
-		}
-		else
-		{
-			break;
-		}
-
-	}
-	AfxEndThread(0);
-	return 0;
+	ClosePlcIo();	
 }
 
 //스래드에서 호출하는 함수
-void CSiemensPlcIo::SiemensPlcProc(CSiemensPlcIo* pSiemensPlcIo)
+void CSiemensPlcIo::SiemensPlcProc()
 {
-	if (pSiemensPlcIo->IsOpened())
+	if (IsOpened())
 	{
 		//bit Word 전체 버퍼
 		short	ReadBitWordData[SIENENS_READBITWORD_MAX];
@@ -209,7 +162,7 @@ void CSiemensPlcIo::SiemensPlcProc(CSiemensPlcIo* pSiemensPlcIo)
 		//Read word 영역 읽기
 		short	ReadWordData[SIENENS_READWORD_MAX];
 		//bit 읽기 영역 읽기
-		pSiemensPlcIo->ReadDataReg(m_nBitIn, ReadBitWordData, SIENENS_READBITWORD_MAX);
+		ReadDataReg(m_nBitIn, ReadBitWordData, SIENENS_READBITWORD_MAX);
 
 		//읽은 Bit 데이터 파싱
 		memcpy(ReadBitData, &ReadBitWordData[0], sizeof(short) * SIENENS_READBIT);
@@ -233,7 +186,7 @@ void CSiemensPlcIo::SiemensPlcProc(CSiemensPlcIo* pSiemensPlcIo)
 		//m_WriteData에 쓰여진 데이터에서 바뀐 영역까지 만 쓰기 : Bit 영역에서 한번에 연속 되는 부분까지 
 		int ret = WritePlcDataMake();
 		//쓰기
-		pSiemensPlcIo->WriteDataReg(m_nBitOut, m_WriteData, ret);
+		WriteDataReg(m_nBitOut, m_WriteData, ret);
 		LOGDISPLAY_SPEC(2)(_T("Out data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteData, ret));
 	}
 }
@@ -495,13 +448,12 @@ int CSiemensPlcIo::WritePlcDataMake()
 	if (isWordOut_AlarmCode_Buffer())
 	{
 		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer;
-		int i = 0;
-		for (; i < COUNT_ALRAMBUFF; i++)
+		int idx = 0;
+		for (; idx < COUNT_ALRAMBUFF; idx++)
 		{
-			ret += i;
-			m_WriteData[ret] = getWordOut_AlarmCode_Buffer(i);
+			m_WriteData[ret+idx] = getWordOut_AlarmCode_Buffer(idx);
 		}
-		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer+i;
+		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer+idx;
 	}
 
 	if (isWordOut_Cell_Trigger_ID())
@@ -516,13 +468,12 @@ int CSiemensPlcIo::WritePlcDataMake()
 	if (isWordOut_DuplicateNG_Cell_ID())
 	{
 		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID;
-		int i = 0;
-		for (; i < COUNT_DUPLICATENGCELLID; i++)
+		int idx = 0;
+		for (; idx < COUNT_DUPLICATENGCELLID; idx++)
 		{
-			ret += i;
-			m_WriteData[ret] = getWordOut_DuplicateNG_Cell_ID(i);
+			m_WriteData[ret+ idx] = getWordOut_DuplicateNG_Cell_ID(idx);
 		}
-		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID+i;
+		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID+ idx;
 	}
 
 	//버퍼 block 위치에 + 1 = 크기(size)
@@ -688,10 +639,6 @@ int CSiemensPlcIo::OpenPlcIo(void)
 
 		//슬레이브 아이디 
 		SetSlaveId(m_nSlaveID);
-		//이벤트 객체 생성
-		pEvent_SiemensPlc = CreateEvent(NULL, FALSE, FALSE, NULL);
-		//스래드 생성
-		m_pThread_SiemensPlc = AfxBeginThread(SiemensPlc_ThreadProc, this);
 	}
 
 	return ret;
@@ -706,6 +653,16 @@ void CSiemensPlcIo::ClosePlcIo(void)
 		delete m_pLGIS_Plc;
 		m_pLGIS_Plc = NULL;
 	}
+}
+
+int CSiemensPlcIo::PlcDataReadWritePorc()
+{
+	//PLC 데이터 Read / Write 처리 함수
+	if (IsOpened())
+	{
+		SiemensPlcProc();
+	}
+	return 0;
 }
 
 //Out

@@ -47,10 +47,17 @@
 #define T_ID_IO_ALIVE	102
 #define T_ID_LONG_TERM	103 
 #define T_ID_IO			104
+
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 #define T_SPCSTATUS			105
 #endif //SPCPLUS_CREATE
+
+//PLC read/write 타이머 생성 객체
+#ifdef NEW_PLCTYPE
+#define T_PLCSTATUS			106
+#endif //NEW_PLCTYPE
+
 // CNotchingGradeInspView
 
 IMPLEMENT_DYNCREATE(CNotchingGradeInspView, CView)
@@ -119,10 +126,16 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	m_pThread = NULL;
 
 
-	//SPC 객체 소스에서 컴파일 여부 결정
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	m_SpcStatus = 0; 
 #endif //SPCPLUS_CREATE
+
+//PLC read/write 타이머 생성 객체
+#ifdef NEW_PLCTYPE
+	m_PlcReadWirteTimer = 0;
+#endif //NEW_PLCTYPE
+
 }
 
 CNotchingGradeInspView::~CNotchingGradeInspView()
@@ -192,6 +205,13 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 	{
 		CloseHandle(pEvent_NotchingGradeInspView);
 		pEvent_NotchingGradeInspView = NULL;
+	}
+
+	//SPC+ kilTimer
+	if (m_SpcStatus != 0)
+	{
+		KillTimer(m_SpcStatus);
+		m_SpcStatus = 0;
 	}
 }
 
@@ -304,6 +324,11 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 #ifdef SPCPLUS_CREATE
 	m_SpcStatus = SetTimer(T_SPCSTATUS, 10000, NULL);
 #endif //SPCPLUS_CREATE
+
+//PLC read/write 타이머 생성 객체
+#ifdef NEW_PLCTYPE
+	m_PlcReadWirteTimer = SetTimer(T_PLCSTATUS, 100, NULL);
+#endif //NEW_PLCTYPE
 
 	return 0;
 }
@@ -846,6 +871,18 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		AprData.SpcPluusStatus("1");
 	}
 #endif //SPCPLUS_CREATE
+
+//PLC read/write 타이머 생성 객체
+#ifdef NEW_PLCTYPE
+	if (nIDEvent == m_PlcReadWirteTimer)
+	{
+		if (theApp.m_pSigProc)
+		{
+			theApp.m_pSigProc->PlcDataReadWritePorc();
+		}
+	}
+#endif //NEW_PLCTYPE
+
 
 	if (m_TID_Long_Term == nIDEvent)
 	{

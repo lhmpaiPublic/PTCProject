@@ -58,6 +58,9 @@ public:
 
 public:
 
+	//PLC 데이터 Read / Write 처리 함수
+	void MelsecPlcProc();
+
 private:
 
 	// connection network
@@ -67,10 +70,18 @@ private:
 
 	int ChangeWorkingSetSize(void);
 
-	int ReadBitData(short stno, CString device, int adrs, int num);
+	BOOL IsOpened();
+
+	//stno : 0xff , 또는 0x00
+	//device : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//num : 읽을 갯수
+	int ReadBitData(short stno, CString device, int startport, int num);
 
 	// disconnection network
 	void ClosePlcIo(void);
+
+	virtual int PlcDataReadWritePorc();
 
 	//Out
 	virtual int SigOutEncoderZeroSet(int nMode);

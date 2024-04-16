@@ -81,11 +81,9 @@ public:
 	// get error no
 	int GetErrorNo();
 
-	//스래드 함수
-	static UINT SiemensPlc_ThreadProc(LPVOID param);
 
-	//스래드에서 호출하는 함수
-	void SiemensPlcProc(CSiemensPlcIo* pSiemensPlcIo);
+	//PLC 데이터 Read / Write 처리 함수
+	void SiemensPlcProc();
 
 	//PLC read Data Parser 함수
 	void ReadPlcBitDataParser(short* data);
@@ -99,15 +97,7 @@ public:
 	//PLC write Data Make 함수
 	int WritePlcDataMake();
 
-	// 동기화 이벤트 객체
-	HANDLE getEvent_SiemensPlc() { return pEvent_SiemensPlc; }
-	void setEvent_SiemensPlc() { SetEvent(pEvent_SiemensPlc); }
-
 private:
-	//스래드 생성 인스턴스 객체
-	CWinThread* m_pThread_SiemensPlc;
-	//동기화 이벤트 객체
-	HANDLE pEvent_SiemensPlc;
 
 	CString m_strIPAddress;
 	int m_nPort;
@@ -121,6 +111,8 @@ private:
 	int OpenPlcIo(void);
 	// disconnection network
 	void ClosePlcIo(void);
+
+	virtual int PlcDataReadWritePorc();
 
 	//Out
 	virtual int SigOutEncoderZeroSet(int nMode);
