@@ -622,9 +622,6 @@ int CSiemensPlcIo::OpenPlcIo(void)
 		m_nWordIn,
 		m_nWordOut);
 
-	//로그출력
-	LOGDISPLAY_SPEC(2)("PLC Siemens Open success Slave Id : %s", m_nSlaveID);
-
 	if (!m_pLGIS_Plc->CheckConnection())
 	{
 		ClosePlcIo();
