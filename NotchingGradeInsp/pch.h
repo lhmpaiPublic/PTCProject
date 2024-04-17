@@ -52,7 +52,7 @@ using namespace Gdiplus;
 //#define GMLV_LIGHT_SKIP
 
 //컨넥트 존 컴파일 여부
-//#define USE_PLCCONNECTZONE
+#define USE_PLCCONNECTZONE
 
 //BCD Counter 컴파일 여부
 //#define USE_BCDCOUNTER

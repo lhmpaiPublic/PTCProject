@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++에서 생성한 포함 파일입니다.
-// NotchingGradeInsp.rc에서 사용되고 있습니다.
+// Microsoft Visual C++ generated include file.
+// Used by NotchingGradeInsp.rc
 //
 #define IDCANCEL2                       3
 #define IDOK2                           3
@@ -189,6 +189,7 @@
 #define IDC_RD_OK_CROP                  1016
 #define IDC_BTN_ZOOM_IN                 1017
 #define IDC_RD_OK                       1017
+#define IDC_BTN_ZOOM_IN2                1018
 #define IDC_BTN_ZOOM_OUT                1019
 #define IDC_ED_RATE                     1020
 #define IDC_LIST_CLEAR                  1020
@@ -740,6 +741,8 @@
 #define IDC_SPIN_BCDID_DIFF             1352
 #define IDC_STATIC_BCDID_DIFF           1353
 #define IDC_STATIC_BCDID_NOW            1354
+#define IDC_BUTTON1                     1354
+#define IDC_BUTTON_IPCONFIG             1354
 #define IDC_STATIC_BCDID_LAST           1355
 #define IDC_BCDID_NOWTEXT               1356
 #define IDC_BCDID_LASTTEXT              1357
@@ -771,7 +774,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        422
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1354
+#define _APS_NEXT_CONTROL_VALUE         1355
 #define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

@@ -76,6 +76,7 @@ static int UiText1NameText[] =
 	IDC_ST_LIGHT_STATE,
 };
 
+CModeDlg* pTempLoad = NULL;
 
 IMPLEMENT_DYNAMIC(CModeDlg, CDialogEx)
 
@@ -156,6 +157,7 @@ BEGIN_MESSAGE_MAP(CModeDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_TACT_TIME, &CModeDlg::OnBnClickedBtnTactTime)
 	ON_BN_CLICKED(IDC_CHK_SWITCH_DISP, &CModeDlg::OnBnClickedChkSwitchDisp)
 	ON_MESSAGE(WM_COUNTBORDERROR, OnCountBordError)
+	ON_MESSAGE(WM_TOGGLEIPCONFIG, OnToggleIPConfig)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
@@ -165,6 +167,13 @@ LRESULT CModeDlg::OnCountBordError(WPARAM wParam, LPARAM lParam)
 {
 	OnBnClickedRadStop();
 	ChangeState(enInspStop);
+
+	return 0;
+}
+// CellTrack ToggleIPConfig Dlg
+LRESULT CModeDlg::OnToggleIPConfig(WPARAM wParam, LPARAM lParam)
+{
+	ToggleIPConfig();
 
 	return 0;
 }
@@ -381,6 +390,8 @@ BOOL CModeDlg::OnInitDialog()
 	ChangeState(enInspStop);
 
 	SetTimer(AUTO_START_TIMER, AUTO_START_DELAY, NULL);
+
+	initCelltrack();
 
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -891,4 +902,114 @@ BOOL CModeDlg::DestroyWindow()
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 
 	return CDialogEx::DestroyWindow();
+}
+
+BOOL CModeDlg::initCelltrack()
+{
+	m_CriticalDLL.Lock();
+	
+	CString strDllPathName;
+	::GetCurrentDirectory(MAX_PATH, strDllPathName.GetBuffer(MAX_PATH));
+	strDllPathName.ReleaseBuffer();
+	strDllPathName += _T('\\');
+	// 현재경로
+	//strDllPathName += "SPCTransUtilx64.dll";
+
+	if (m_LoadVTECSDll.DllSocket_Initialize(DllSocket_ConnectStatus, DllSocket_ReceiveDataBuffer, false))
+		//	if (m_LoadVTECSDll.DllSocket_Initialize(strDllPathName, DllSocket_ConnectStatus, DllSocket_ReceiveDataBuffer, false))
+	{
+		m_CurrentDllStatus.bInitialzed = true;
+		//	AfxMessageBox(strDllPathName);
+	}
+	else;;//AfxMessageBox("error!!");
+
+	m_CriticalDLL.Unlock();
+
+	return 0;
+}
+
+void CModeDlg::ToggleIPConfig()
+{
+	m_CriticalDLL.Lock();
+
+	m_LoadVTECSDll.DllSocket_IPConfigToggleShow(false, true);
+
+	m_CriticalDLL.Unlock();
+}
+
+UINT __stdcall CModeDlg::DllSocket_ConnectStatus(char* strEventContents, int nStatus, int nErrorCode)
+{
+	
+	if (NULL != pTempLoad)
+	{
+		pTempLoad->PostConnectStatus(strEventContents, nStatus, nErrorCode);
+	}	
+	
+	return 0;
+}
+
+void CModeDlg::PostConnectStatus(char* strEventContents, int nStatus, int nErrorCode)
+{
+	const bool bConnected = enConnectEvent::OnConnected == nStatus;
+	if (NULL != strEventContents && m_blastOldConnectStatus != bConnected)
+	{
+		m_strSocketEvent = strEventContents;
+		m_blastOldConnectStatus = bConnected;
+		if (::IsWindow(GetSafeHwnd()))
+		{
+	//		PostMessage(WM_CONNECT_STATUS_CHANGED, m_blastOldConnectStatus, (LPARAM)&m_strSocketEvent);
+		}
+	}
+}
+
+UINT __stdcall CModeDlg::DllSocket_ReceiveDataBuffer(unsigned char* pReceiveBuffer, int nReceiveLengthByByte)
+{
+	CString mTemp = "";
+	mTemp.Format(_T("%s"), pReceiveBuffer);
+	mTemp = mTemp.Mid(nReceiveLengthByByte);
+
+	//theApp.m_pMainWnd->SetWindowTextA(mTemp);
+
+	LOGDISPLAY_ALL("[DllSocket_ReceiveDataBuffer] pReceiveBuffer[ %s ]", mTemp);
+	AprData.m_NowLotData.m_nCellID = mTemp;
+
+	return 0;
+}
+
+void CModeDlg::SubDisplayUpdate(void)
+{
+
+
+	m_CurrentDllStatus.bInitialzed = m_LoadVTECSDll.DllSocket_IsIntialized();
+
+	if (m_OldDllStatus != m_CurrentDllStatus)
+	{
+		if (m_CurrentDllStatus.bInitialzed != m_OldDllStatus.bInitialzed)
+		{
+			if (m_CurrentDllStatus.bInitialzed)
+			{
+		//		SetDlgItemText(IDC_STATIC_DLL_INITIALIZED, _T("Yes"));
+				if (m_LoadVTECSDll.DllSocket_IsASCIITypeDll())
+				{
+		//			SetDlgItemText(IDC_STATIC_TYPE, _T("ASCII Type"));
+				}
+				else
+				{
+		//			SetDlgItemText(IDC_STATIC_TYPE, _T("Binary Type"));
+				}
+			}
+			else
+			{
+	//			SetDlgItemText(IDC_STATIC_DLL_INITIALIZED, _T("No"));
+		//		SetDlgItemText(IDC_STATIC_TYPE, _T("---"));
+			}
+
+			if (m_CurrentDllStatus.bInitialzed)
+			{
+
+			}
+		}
+		m_OldDllStatus = m_CurrentDllStatus;
+
+	}
 }

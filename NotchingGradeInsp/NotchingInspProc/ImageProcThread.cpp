@@ -1504,6 +1504,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 
 							dwFoilExpInBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount;
 							dwFoilExpOutBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount;
+
+							CString strCellID = AprData.m_NowLotData.m_nCellID;
 #endif
 							CString strTime;
 							CString strJudge = _T("OK");
@@ -1518,6 +1520,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								strJudge = _T("NG");
 								strBtmJudge = _T("NG");
 							}
+
 							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s,%s,%.2lf,%s,%.2lf,%d,%d,%d,%d,%d\r\n")
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
@@ -1543,6 +1546,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								, dwFoilExpOutTopCount
 								, dwFoilExpInBottomCount
 								, dwFoilExpOutBottomCount
+								, strCellID
 							);
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 

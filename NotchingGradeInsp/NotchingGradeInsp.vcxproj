@@ -327,6 +327,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>$(SAPERADIR)\Lib\Win64\SapClassBasic.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -369,6 +370,8 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Celltrack\DefineDllFunctionPoint.h" />
+    <ClInclude Include="Celltrack\LoadVTECSDll.h" />
     <ClInclude Include="NotchingInspAppDio\AppDIO.h" />
     <ClInclude Include="NotchingInspAppDio\DIOTestDlg.h" />
     <ClInclude Include="AXL\AXA.h" />
@@ -550,6 +553,7 @@
     <ClInclude Include="View\ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Celltrack\LoadVTECSDll.cpp" />
     <ClCompile Include="NotchingInspAppDio\AppDIO.cpp" />
     <ClCompile Include="NotchingInspAppDio\DIOTestDlg.cpp" />
     <ClCompile Include="NotchingInspCamera\CCameraSettingDlg.cpp" />
