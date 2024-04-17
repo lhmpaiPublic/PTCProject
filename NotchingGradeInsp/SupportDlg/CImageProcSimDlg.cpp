@@ -2098,11 +2098,11 @@ void CImageProcSimDlg::InspectionAuto()
 			{
 				if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1)
 				{
-					CImageProcess::ImageProcessTopSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
+					CImageProcess::ImageProcessTopSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, &vecLeftRndInfo, &vecRightRndInfo, pImgArr, 4);
 				}
 				else
 				{
-					CImageProcess::ImageProcessTopSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, pImgArr, 4);
+					CImageProcess::ImageProcessTopSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, &vecLeftRndInfo, &vecRightRndInfo, pImgArr, 4);
 				}
 			}
 			else
@@ -2147,25 +2147,30 @@ void CImageProcSimDlg::InspectionAuto()
 		}
 		else
 		{
+			CImageProcess::VEC_ROUND_INFO vecAllRndInfo;
+			vecAllRndInfo.clear();
+
 			if (AprData.m_System.m_nMachineMode == ANODE_MODE)
 			{
 				if (m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_BOTTOM] == 1) {
 					CImageProcess::FindLevelBottom_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromLeft);
-					CImageProcess::ImageProcessBottomSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
+					CImageProcess::ImageProcessBottomSide_BrightRoll(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, &vecAllRndInfo, pImgArr, 4);
 				}
 				else
 				{
 					//CImageProcess::GetBoundaryOfElectordeBottom(pImgPtr, nWidth, nHeight, &nLevel, AprData.m_pRecipeInfo);
 					CImageProcess::FindLevelBottom_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, &nLevel, CImageProcess::en_FindFromRight);
-					CImageProcess::ImageProcessBottomSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
+					CImageProcess::ImageProcessBottomSide_Negative(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, &vecAllRndInfo, pImgArr, 4);
 				}
 			}
 			else
 			{
 				GetLineLevel(&nLevel);
-				CImageProcess::ImageProcessBottomSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, pImgArr, 4);
+				CImageProcess::ImageProcessBottomSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, &vecAllRndInfo, pImgArr, 4);
 			}
 
+			m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL);
+			m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 		}
 

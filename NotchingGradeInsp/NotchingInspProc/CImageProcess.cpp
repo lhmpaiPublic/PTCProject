@@ -2711,7 +2711,8 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(BYTE* pImgPtr, BYTE* 
 					int nMax = 0;
 					for (x = nXEnd - 1; x >= nXStart; x--) {
 						BYTE btLevel = *(pLinePtr + x);
-						if (btLevel > nThreshold) {
+						if (btLevel > nThreshold)
+						{
 							pnRsltArr[y] = x;
 							nMaxPos[nCnt] = x;
 							break;
@@ -7752,7 +7753,7 @@ int CImageProcess::ImageProcessDetectSurface(const BYTE* pImgPtr, int nWidth, in
 // 22.05.09 Ahn Add End
 
 // 23.02.10 Ahn Add Start
-int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0 */ , BYTE** pImgPtrArr /*= NULL */ , int nArrCnt /*= 0*/)
+int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0 */ , VEC_ROUND_INFO* pvecLeftRndInfoDraw, VEC_ROUND_INFO* pvecRightRndInfoDraw, BYTE** pImgPtrArr /*= NULL */ , int nArrCnt /*= 0*/)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
@@ -8043,9 +8044,18 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidt
 		pDiffPtr = NULL;
 	}
 
+	if (bSimMode == TRUE)
+	{
+		pvecLeftRndInfoDraw->resize(vecLeftRndInfo.size());
+		copy(vecLeftRndInfo.begin(), vecLeftRndInfo.end(), pvecLeftRndInfoDraw->begin());
+
+		pvecRightRndInfoDraw->resize(vecRightRndInfo.size());
+		copy(vecRightRndInfo.begin(), vecRightRndInfo.end(), pvecRightRndInfoDraw->begin());
+	}
+
 	return 0;
 }
-int CImageProcess::ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0*/, BYTE** pImgPtrArr /*= NULL*/, int nArrCnt /*= 0*/)
+int CImageProcess::ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0*/, VEC_ROUND_INFO* pvecAllRndInfoDraw /*= NULL*/, BYTE** pImgPtrArr /*= NULL*/, int nArrCnt /*= 0*/)
 {
 	// 23.02.24 Ahn Add Start
 	ASSERT(pImgPtr);
@@ -8195,6 +8205,12 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nW
 	pTempPtr = NULL;
 	delete[] pDiffPtr;
 	pDiffPtr = NULL;
+
+	if (bSimMode == TRUE)
+	{
+		pvecAllRndInfoDraw->resize(vecAllRndInfo.size());
+		copy(vecAllRndInfo.begin(), vecAllRndInfo.end(), pvecAllRndInfoDraw->begin());
+	}
 
 	return nRet;
 	// 23.02.24 Ahn Add End
@@ -8628,7 +8644,7 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth,
 }
 
 
-int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, VEC_ROUND_INFO* pvecAllRndInfoDraw, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
@@ -8706,7 +8722,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWid
 		int nThresBnd = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM];
 		int nThresMax = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
 
-		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_TopSide, nLineLevel, CImageProcess::en_FindLeft);
+		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
 	}
 
 
@@ -8825,13 +8841,20 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWid
 		pDiffPtr = NULL;
 	}
 
+
+	if (bSimMode == TRUE)
+	{
+		pvecAllRndInfoDraw->resize(vecAllRndInfo.size());
+		copy(vecAllRndInfo.begin(), vecAllRndInfo.end(), pvecAllRndInfoDraw->begin());
+	}
+
 	return nRet;
 
 }
 
 // Head부 검사 처리 함수.
 // 22.02.08 Ahn Add Start
-int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, VEC_ROUND_INFO* pvecLeftRndInfoDraw, VEC_ROUND_INFO* pvecRightRndInfoDraw, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
@@ -9162,12 +9185,20 @@ int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth,
 	delete[]pRsltPtr;
 	pRsltPtr = NULL;
 
+	if (bSimMode == TRUE)
+	{
+		pvecLeftRndInfoDraw->resize(vecLeftRndInfo.size());
+		copy(vecLeftRndInfo.begin(), vecLeftRndInfo.end(), pvecLeftRndInfoDraw->begin());
+
+		pvecRightRndInfoDraw->resize(vecRightRndInfo.size());
+		copy(vecRightRndInfo.begin(), vecRightRndInfo.end(), pvecRightRndInfoDraw->begin());
+	}
 
 	return 0;
 }
 
 
-int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, VEC_ROUND_INFO* pvecAllRndInfoDraw, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
@@ -9377,6 +9408,12 @@ int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWid
 	}
 	//int nFoilExpSize = (int)vecBlockFoilExp.size();
 	//int nDrossSize = (int)vecBlockDross.size();
+
+	if (bSimMode == TRUE)
+	{
+		pvecAllRndInfoDraw->resize(vecAllRndInfo.size());
+		copy(vecAllRndInfo.begin(), vecAllRndInfo.end(), pvecAllRndInfoDraw->begin());
+	}
 
 	return nRet;
 

@@ -415,17 +415,17 @@ public:
 
 	// 양극 검사 Dross & Foil 노출 구분 검출
 	static int ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecLeftRndInfoDraw = NULL, VEC_ROUND_INFO* pvecRightRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecAllRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 
-	static int ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecLeftRndInfoDraw = NULL, VEC_ROUND_INFO* pvecRightRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecAllRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 22.05.09 Ahn Add Start
 	static int ImageProcessDetectSurface(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pDefInfoCtrl, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 22.05.09 Ahn Add End
 
 	// 23.02.10 Ahn Add Start
-	static int ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecLeftRndInfoDraw = NULL, VEC_ROUND_INFO* pvecRightRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecAllRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 23.02.10 Ahn Add End
 
 	static int SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, CRect rcCrop, CString strFilePath, CString strFileName);
