@@ -129,11 +129,21 @@ CString CStrSuport::ChangbytetohexTab(BYTE* byt, int len, int tablen)
 	CString rest = "";
 	for (int i = 0; i < (int)len; i++)
 	{
+		if ((i + 1) % tablen == 1)
+		{
+			temp.Format("%d : ", i);
+			rest += temp;
+		}
 		temp.Format("%02X", byt[i]);
 		rest += temp;
-		if ((i != 0) && ((i % tablen) == 0))
+
+		if ((i + 1) % tablen == 0)
 		{
 			rest += "	";
+		}
+		else
+		{
+			rest += " ";
 		}
 	}
 	return rest;
@@ -145,11 +155,49 @@ CString CStrSuport::ChangshorttohexTab(short* data, int len, int tablen)
 	CString rest = "";
 	for (int i = 0; i < (int)len; i++)
 	{
+		if ((i+1) % tablen == 1)
+		{
+			temp.Format("%d : ", i);
+			rest += temp;
+		}
 		temp.Format("%02X", ((data[i])>>8)&0xff);
 		rest += temp;
 		temp.Format("%02X", (data[i]) & 0xff);
 		rest += temp;
-		if (((i+1) % tablen) == 0)
+
+		if ((i + 1) % tablen == 0)
+		{
+			rest += "	";
+		}
+		else
+		{
+			rest += " ";
+		}
+	}
+	return rest;
+}
+
+CString CStrSuport::ChanginttohexTab(int* data, int len, int tablen)
+{
+	CString temp;
+	CString rest = "";
+	for (int i = 0; i < (int)len; i++)
+	{
+		if ((i + 1) % tablen == 1)
+		{
+			temp.Format("%d : ", i);
+			rest += temp;
+		}
+		temp.Format("%02X", ((data[i]) >> 24) & 0xff);
+		rest += temp;
+		temp.Format("%02X", ((data[i]) >> 16) & 0xff);
+		rest += temp;
+		temp.Format("%02X", ((data[i]) >> 8) & 0xff);
+		rest += temp;
+		temp.Format("%02X", (data[i]) & 0xff);
+		rest += temp;
+
+		if ((i + 1) % tablen == 0)
 		{
 			rest += "	";
 		}

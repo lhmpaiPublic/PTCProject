@@ -34,6 +34,9 @@
 //Out Word 시작 인덱스
 #define MELSEC_WRITEWORD_STARTINDEX 0
 
+//멜섹 Bit Read 영역 크기
+#define	MELSEC_BITINSIZE 4
+
 
 
 class CMelsecPlcIo : public CDataPlcImp
@@ -63,6 +66,7 @@ public:
 	//PLC 데이터 Read / Write 처리 함수
 	void MelsecPlcProc();
 
+	byte m_buffBitIn[MELSEC_BITINSIZE];
 private:
 
 	// connection network
@@ -77,13 +81,15 @@ private:
 	//stno : 0xff , 또는 0x00
 	//device : B : 바이너리, X : 헥사 , W : 워드 
 	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용
 	//num : 읽을 갯수
 	//bIn : Read - true Write - false
-	int ReadBitData(short stno, int devtype, int startport, int num, bool bIn);
+	//return : size
+	int ReadBitData(short stno, int devtype, int startport, byte buff[], int num, bool bIn);
 
-	int ReadWordData(short stno, int devtype, int startport, int num, bool bIn);
+	int ReadWordData(short stno, int devtype, int startport, byte buff[], int num, bool bIn);
 
-	int ReadWordDataEx(short netNo, int devtype, int startport, int num, bool bIn);
+	int ReadWordDataEx(short netNo, int devtype, int startport, byte buff[], int num, bool bIn);
 
 	void chnageEndian(short data[], int size);
 

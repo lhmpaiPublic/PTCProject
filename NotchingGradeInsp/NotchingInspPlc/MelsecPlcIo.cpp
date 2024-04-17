@@ -166,6 +166,8 @@ CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset
 
 	m_bEnableWorkSet = TRUE;
 
+	memset(m_buffBitIn, 0, MELSEC_BITINSIZE);
+
 	//PLC Open
 	OpenPlcIo();
 }
@@ -179,12 +181,15 @@ CMelsecPlcIo::~CMelsecPlcIo()
 //PLC 데이터 Read / Write 처리 함수
 void CMelsecPlcIo::MelsecPlcProc()
 {
-	//
-	//ReadBitData(0xff, MELSEC_DEVICE_B, 1, 4, true);
+	//Bit Read 영역 읽기
+	//4포트
+	//시작번지 : 0, 읽을 갯수 4
+	byte buffIn[MELSEC_BITINSIZE];
+	memset(buffIn, 0, MELSEC_BITINSIZE);
+	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffIn, MELSEC_BITINSIZE, true);
+	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexTab(buffIn, MELSEC_BITINSIZE));
 
-	//ReadWordData(0xff, MELSEC_DEVICE_W, 1, 4, true);
 
-	ReadWordDataEx(0x0, MELSEC_DEVICE_W, 1, 4, true);
 }
 
 int CMelsecPlcIo::OpenPlcIo(void)
@@ -281,44 +286,43 @@ int CMelsecPlcIo::ChangeWorkingSetSize(void)
 	return (nRet);
 }
 
-int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, int num, bool bIn)
+int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[], int num, bool bIn)
 {
 	int iRet = 0;
 
-	short	devno, size, * buff;
-
-	buff = new short[num];
+	short	devno, size;
+	short* localbuff;
+	int buffsize = (num / 2) + 1;
+	localbuff = new short[(num / 2) + 1];
+	memset(localbuff, 0, buffsize * sizeof(short));
 
 	//읽을 번지 세팅
 	//startport : 8비트만큼 이동 번지, 
 	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_BitIn : m_wOffset_BitOut));
-	size = (short)num * sizeof(short);
+	size = (short)num;
 
 	iRet = mdReceive(m_pPath
 		, stno
 		, devtype
 		, devno
 		, &size
-		, buff
+		, localbuff
 	);
 
-	chnageEndian(buff, size);
+	chnageEndian(localbuff, buffsize);
+	memcpy(buff, localbuff, size);
 
-	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
-
-	delete[] buff;
+	delete[] localbuff;
 
 	return iRet;
 
 }
 
-int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int num, bool bIn)
+int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, byte buff[], int num, bool bIn)
 {
 	int iRet = 0;
 
-	short	devno, size, * buff;
-
-	buff = new short[num];
+	short	devno, size;
 
 	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
 	size = (short)num * sizeof(short);
@@ -331,24 +335,15 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int num, 
 		, buff
 	);
 
-	chnageEndian(buff, size);
-
-	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
-
-	delete[] buff;
-
 	return iRet;
 
 }
 
-int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int num, bool bIn)
+int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, byte buff[], int num, bool bIn)
 {
 	int iRet = 0;
 
 	long	devno, size;
-	short * buff;
-
-	buff = new short[num];
 
 	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
 	size = (short)num * sizeof(short);
@@ -361,12 +356,6 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int nu
 		, &size
 		, buff
 	);
-
-	chnageEndian(buff, size);
-
-	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
-
-	delete[] buff;
 
 	return iRet;
 }
