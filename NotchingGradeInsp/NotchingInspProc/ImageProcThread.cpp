@@ -219,6 +219,8 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 	//Grab Call BCD ID 중복 또는 범위 밖의 ID 를 받을 경우
 	//일정 카운트 만큼 증기 시킨다.
 	UINT nBCDIDAddCount = 0;
+	//마지막 Grab BCD ID 찍어진 값 쓴다.
+	UINT nLastNotUseGrabBCDID = -1;
 
 	//Image의 남은 픽셀 수 백업용
 	//전에 남은 이미지 보다 작아 질 때
@@ -510,35 +512,75 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 
 					//레시피 텝 피치에 대한 BCD ID 조정 위치 값 세팅
 					UINT nCompareNotUseCellLength = 3900;
+					UINT nCompareGrabCellLength = 5000;
 					//인도네시아 양극 93.3 4368 : Grab 4500
 					if (nRecipeInfoTabPitch <= 4400)
+					{
 						nCompareNotUseCellLength = 3800;
+						nCompareGrabCellLength = 4500;
+					}
 					//인도네시아 음극 95.8 4485 : Grab 4650
 					else if (nRecipeInfoTabPitch <= 4500)
+					{
 						nCompareNotUseCellLength = 3800;
+						nCompareGrabCellLength = 4650;
+					}
 					//중국 96.8 4532 : Grab 4700
 					else if (nRecipeInfoTabPitch <= 4600)
+					{
 						nCompareNotUseCellLength = 3900;
+						nCompareGrabCellLength = 4700;
+					}
 					//미국 102.4 4794 : Grab 5000
 					else
+					{
 						nCompareNotUseCellLength = 3900;
+						nCompareGrabCellLength = 5000;
+					}
 
 					//남은 이미지 픽셀 크기가 4000이상일 때 
 					//Tab Info에서 얻은 BCD ID와 이전 BCD ID + 1 증가한 값이 같다면
 					//카운트를 증가 시킨다.
-					if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId) && (unNotUseCellLength >= nCompareNotUseCellLength))
+					if ((pTabInfo->m_GrabCallBCDId >= 0) && (pTabInfo->m_GrabCallBCDId < 64) && (unNotUseCellLength >= nCompareNotUseCellLength) && (unNowCellLength > (nCompareGrabCellLength/2)) && (unNowCellLength < nCompareGrabCellLength))
 					{
 						//Grab Call BCD ID가 다음에 사용할 BCD ID와 같다면 카운트 증가
 						//카운트가 10번이상 일 경우 Grab Call BCD ID를 사용한다.
-						nBCDIDAddCount++;
+						if (nGrabCallBCDIdNext == pTabInfo->m_GrabCallBCDId)
+						{
+							nBCDIDAddCount++;
+						}
+
+						//맨 마지막 값에서 BCD ID가 맞지 않는 경우 예외 처리 위한 값이다.
+						nLastNotUseGrabBCDID = (int)pTabInfo->m_GrabCallBCDId + 1;
+						if (nLastNotUseGrabBCDID >= 64)
+						{
+							nLastNotUseGrabBCDID = 0;
+						}
 
 					}
 					else
 					{
 						//카운트 초기화
 						nBCDIDAddCount = 0;
-					}
 
+						//최종 BCD ID Grab 값을 확인하여 예외 처리를 한다.
+						//조건 : Not Use Cell Len 이 설정 값 이하
+						//Now Cell Len이 범위 안에 있다
+						//최종 BCD ID 값이 -1이 아니다
+						if ((unNotUseCellLength < nCompareNotUseCellLength) && (unNowCellLength > (nCompareGrabCellLength / 2)) && (unNowCellLength < nCompareGrabCellLength) && (nLastNotUseGrabBCDID != -1))
+						{
+							//이전 사용했던 BCD ID가 최종 사용한 BCD ID와 다르다면
+							//최종 사용한 BCD ID를 세팅하여 다음에 사용한다.
+							if (AprData.m_NowLotData.m_nUseBCDID != nLastNotUseGrabBCDID)
+							{
+								AprData.m_NowLotData.m_nUseBCDID = nLastNotUseGrabBCDID;
+							}
+
+						}
+						//한번만 사용하고 초기화 한다.
+						//조건이 안되면 바로 초기화 한다.
+						nLastNotUseGrabBCDID = -1;
+					}
 
 					//다음 사용할 BCD ID와 들어온 BCD ID가 같은 경우가 10번이상 나왔을 경우
 					//Grab Call BCD ID를 사용하고 아니면 계속 증가 시킨다.
@@ -580,7 +622,6 @@ UINT CImageProcThread::CtrlThreadImgCuttingTab(LPVOID Param)
 							if (AprData.m_NowLotData.m_nUseBCDID >= 64)
 								AprData.m_NowLotData.m_nUseBCDID = 0;
 							cntInfo.nTabID = AprData.m_NowLotData.m_nUseBCDID;
-
 						}
 					}
 
