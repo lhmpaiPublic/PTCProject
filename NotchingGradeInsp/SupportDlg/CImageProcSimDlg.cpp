@@ -2110,7 +2110,7 @@ void CImageProcSimDlg::InspectionAuto()
 				CImageProcess::ImageProcessTopSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, tabPos.cx, tabPos.cy, &tabRsltInfo, TRUE, &vecLeftRndInfo, &vecRightRndInfo, pImgArr, 4);
 			}
 
-			m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+			m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo, nLevel);
 			m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 
@@ -2169,7 +2169,7 @@ void CImageProcSimDlg::InspectionAuto()
 				CImageProcess::ImageProcessBottomSide_AreaDiff(pImgPtr, nWidth, nHeight, m_pRecipeInfo, nLevel, &tabRsltInfo, TRUE, &vecAllRndInfo, pImgArr, 4);
 			}
 
-			m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL);
+			m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL, nLevel);
 			m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 		}
@@ -2643,7 +2643,7 @@ void CImageProcSimDlg::DrawLine_Top()
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilExpOutMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 }
@@ -2793,7 +2793,7 @@ void CImageProcSimDlg::DrawLine_Bottom()
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilExpOutMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL);
+	m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 }
@@ -3087,7 +3087,7 @@ void CImageProcSimDlg::DrawLine_Top_Negative()
 	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiInfo.GetFifoPtr());
 	CImageProcess::LoopLabeling(&roiInfo, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 }
@@ -3266,7 +3266,7 @@ void CImageProcSimDlg::DrawLine_Bottom_Negative()
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 	//CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilOutMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL);
+	m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 }
@@ -4100,7 +4100,7 @@ int CImageProcSimDlg::ProceTopAll_AreaDiff()
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilExpOutMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
@@ -4345,7 +4345,7 @@ int CImageProcSimDlg::ProceBottomAll_AreaDiff()
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilExpOutMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL);
+	m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 
@@ -4684,7 +4684,7 @@ int CImageProcSimDlg::ProceTopAll_Negative()
 	CImageProcess::GetOrgImageBright(pImgPtr, nWidth, nHeight, roiInfo.GetFifoPtr());
 	CImageProcess::LoopLabeling(&roiInfo, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
@@ -4949,7 +4949,7 @@ int CImageProcSimDlg::ProceBottomAll_Negative()
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 	//CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilOutMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL);
+	m_pImageDispDlg->SetBoundary(&vecAllRndInfo, NULL, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
@@ -6542,7 +6542,7 @@ int CImageProcSimDlg::ProcFoilExpInRect_Cathode()// 양극
 	CImageProcess::LoopLabeling(&roiFoilExp, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilExpOutMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
@@ -6972,7 +6972,7 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 	CImageProcess::DiffProcImage(pPreFltPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcLeftDiff, m_pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, m_pRecipeInfo->bDarkEmpMode);
 	CImageProcess::DiffProcImage(pPreFltPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcRightDiff, m_pRecipeInfo->dMagnification[CAM_POS_TOP], btThreshold, m_pRecipeInfo->bDarkEmpMode);
 
-	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	// Inspect
@@ -6994,7 +6994,7 @@ int CImageProcSimDlg::ProcTopAll_BrightRoll()
 	CImageProcess::LoopLabeling(&roiInfo, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 	//	CImageProcess::LoopLabeling(&roiDross, nWidth, nHeight, &vecBlockDross, CImageProcess::en_Dross_Bit, m_pRecipeInfo->nFoilOutMinSize[CAM_POS_TOP], AprData.m_System.m_dResolX[CAM_POS_TOP], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo);
+	m_pImageDispDlg->SetBoundary(&vecLeftRndInfo, &vecRightRndInfo, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
@@ -7260,7 +7260,7 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 	BYTE btThreshold = (BYTE)m_pRecipeInfo->nFoilExpThresOrigin[CAM_POS_BOTTOM];
 	CImageProcess::DiffProcImage(pPreFltPtr, pStdPtr, pDiffPtr, nWidth, nHeight, rcAll, m_pRecipeInfo->dMagnification[CAM_POS_BOTTOM], btThreshold, m_pRecipeInfo->bDarkEmpMode);
 
-	m_pImageDispDlg->SetBoundary(&vecRndInfo, NULL);
+	m_pImageDispDlg->SetBoundary(&vecRndInfo, NULL, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	// Inspect
@@ -7278,7 +7278,7 @@ int CImageProcSimDlg::ProcBottomAll_BrightRoll()
 
 	CImageProcess::LoopLabeling(&roiInfo, nWidth, nHeight, &vecBlockFoilExp, CImageProcess::en_FoilExp_Bit, m_pRecipeInfo->nFoilExpInMinSize[CAM_POS_BOTTOM], AprData.m_System.m_dResolX[CAM_POS_BOTTOM], AprData.m_System.m_dResolY);
 
-	m_pImageDispDlg->SetBoundary(&vecRndInfo, NULL);
+	m_pImageDispDlg->SetBoundary(&vecRndInfo, NULL, nLevel);
 	m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
 
 	dTime = cta.WhatTimeIsIt_Double();
