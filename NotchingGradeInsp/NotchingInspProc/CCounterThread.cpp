@@ -86,21 +86,6 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 
 }
 
-int CCounterThread::GetInputReadId()
-{
-	int BCDIdVal = -1;
-
-	//받은 id
-	::EnterCriticalSection(&m_csQueueReadId);
-	if (m_inputReadId.size())
-	{
-		BCDIdVal = m_inputReadId[m_inputReadId.size()-1];
-	}
-	::LeaveCriticalSection(&m_csQueueReadId);
-
-	return BCDIdVal;
-}
-
 void CCounterThread::RecivePacket(char* data, int len)
 {
 
@@ -597,6 +582,7 @@ BOOL CCounterThread::MarkingProcess()
 	//보낸 마킹 정보 삭제 하기
 	if (CCounterThread::m_MarkSendInfoData.size())
 	{
+		::EnterCriticalSection(&m_csQueueMarkingData);
 		//지울 최종 포인터
 		MarkSendInfoData_iterator itdelete = CCounterThread::m_MarkSendInfoData.end();
 		//시작 점
@@ -617,12 +603,10 @@ BOOL CCounterThread::MarkingProcess()
 			//DIO Input Log
 			LOGDISPLAY_SPEC(7)(_T("@@지울 데이터가 있다면size<%d> id<%d>까지"), CCounterThread::m_MarkSendInfoData.size(), itdelete->TabId);
 
-			::EnterCriticalSection(&m_csQueueMarkingData);
 			//시작점 부터 true 설정된 데이터까지 지운다.
 			CCounterThread::m_MarkSendInfoData.erase(CCounterThread::m_MarkSendInfoData.begin(), itdelete);
-			::LeaveCriticalSection(&m_csQueueMarkingData);
-
 		}
+		::LeaveCriticalSection(&m_csQueueMarkingData);
 	}
 
 	//마킹을 위한 플로우 추가
@@ -664,6 +648,7 @@ BOOL CCounterThread::MarkingProcess()
 		{
 
 			::EnterCriticalSection(&m_csQueueMarkingData);
+			::EnterCriticalSection(&m_csQueueReadId);
 			for (int idx = 0; idx < (int)CCounterThread::m_MarkSendInfoData.size(); idx++)
 			{
 				//input id와 마킹할 id가 같으면
@@ -711,9 +696,7 @@ BOOL CCounterThread::MarkingProcess()
 						LOGDISPLAY_SPEC(7)(_T("@@지울 데이터가 있다면 id<%d>까지"), (*itdelete));
 
 						//시작점 부터 true 설정된 데이터까지 지운다.
-						::EnterCriticalSection(&m_csQueueReadId);
 						m_inputReadId.erase(m_inputReadId.begin(), itdelete);
-						::LeaveCriticalSection(&m_csQueueReadId);
 						//마킹 정보를 보냈으면 빠져나온다.
 						break;
 					}
@@ -740,6 +723,7 @@ BOOL CCounterThread::MarkingProcess()
 
 				}
 			}
+			::LeaveCriticalSection(&m_csQueueReadId);
 			::LeaveCriticalSection(&m_csQueueMarkingData);
 		}
 	}
