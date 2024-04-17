@@ -66,6 +66,7 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 		{
 			if (CCounterThread::m_MarkSendInfoData.size())
 			{
+				::EnterCriticalSection(&m_csQueueMarkingData);
 				//DIO Input Log
 				LOGDISPLAY_SPEC(7)(_T("@@마킹 데이터 전체 삭제"));
 				//마킹 데이터 전체 삭제
@@ -77,7 +78,6 @@ void CCounterThread::MarkSendInfo_Push_back(int TabId, WORD MarkingOutputData, b
 					it++;
 				}
 				
-				::EnterCriticalSection(&m_csQueueMarkingData);
 				CCounterThread::m_MarkSendInfoData.clear();
 				::LeaveCriticalSection(&m_csQueueMarkingData);
 			}
