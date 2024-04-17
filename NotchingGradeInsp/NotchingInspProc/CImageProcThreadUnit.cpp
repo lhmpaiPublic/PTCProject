@@ -293,7 +293,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								int nCount = 0;
 								int nUpperBright = 0;
 
-								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE, FILTER_GV);
 								BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 								nUpperBright = nCount * ((AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + AprData.m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
 
@@ -308,7 +308,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								rcPrj.left = 0;
 								rcPrj.right = nWidth;
 
-								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE, FILTER_GV);
 								nUpperBright = nCount * ((AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + AprData.m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
 
 								int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);

@@ -561,7 +561,7 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 //}
 
 
-int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum)
+int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum, int nFilteringValue )
 {
 	ASSERT(pImage);
 	ASSERT(pProjection);
@@ -620,7 +620,10 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 			for (x = nStartX; x < nEndX; x += nSampling)
 			{
 				//샘플링으로 선택된 라인의 휘도를 합한 값
-				pProjection[y - nStartY] += *(pLine + x);
+				if (*(pLine + x) < nFilteringValue)
+				{
+					pProjection[y - nStartY] += *(pLine + x);
+				}
 			}
 		}
 		//SUM 을 한 값이나 아니면 평균값이나 선택
@@ -653,7 +656,10 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 			for (x = nStartX; x < nEndX; x++)
 			{
 				//샘플링으로 선택된 라인의 휘도를 합한 값
-				pProjection[x - nStartX] += *(pLine + x);
+				if (*(pLine + x) < nFilteringValue )
+				{
+					pProjection[x - nStartX] += *(pLine + x);
+				}
 			}
 		}
 		//SUM 을 한 값이나 아니면 평균값이나 선택
@@ -5039,7 +5045,7 @@ int CImageProcess::FindLevelBottom_Negative(BYTE* pImgPtr, int nWidth, int nHeig
 	rcPrj.top = nCenterY - 100;
 	rcPrj.bottom = nCenterY + 100;
 
-	CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
+	CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0, FILTER_GV);
 
 	int nPrjArray[2000];
 	// 22.12.30 Ahn Modify Start
@@ -5256,8 +5262,8 @@ int CImageProcess::FindTabLevel(BYTE* pImagePtr, int nWidth, int nHeight, int* p
 		rcRight.top = nHeight - 1 - 1000;
 		rcRight.bottom = nHeight - 1 ;
 
-		GetProjection(pImagePtr, pnLeft, nWidth, nHeight, rcLeft, DIR_VER, 10, FALSE ) ;
-		GetProjection(pImagePtr, pnRight, nWidth, nHeight, rcRight, DIR_VER, 10, FALSE ) ;
+		GetProjection(pImagePtr, pnLeft, nWidth, nHeight, rcLeft, DIR_VER, 10, FALSE, FILTER_GV) ;
+		GetProjection(pImagePtr, pnRight, nWidth, nHeight, rcRight, DIR_VER, 10, FALSE, FILTER_GV) ;
 
 		int nLeftLevel = 0 ;
 		int nRightLevel = 0 ;

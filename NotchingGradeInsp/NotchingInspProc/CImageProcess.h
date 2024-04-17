@@ -147,6 +147,9 @@ public:
 #define EDGE_IMG_HEIGHT 128
 #define EDGE_IMG_WIDTH	128
 
+#define FILTER_GV		200
+
+
 class CDefectDataCtrl;
 class CTabRsltInfo;
 
@@ -265,7 +268,7 @@ public:
 	// 22.07.14 Ahn Add End
 	
 	// Projection 처리 
-	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum = TRUE);
+	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum = TRUE, int nFilteringValue = 255);
 	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, int nStartX, int nEndX, int nStartY, int nEndY, int nDir, int nSampling, BOOL bModeSum = TRUE);
 	//static int GetAverageFromPrjData(int* pPrjData, int* pAveData, int nLength, int nAveRage);
 	static int GetBundary_FromPrjData(int* pnPrjData, int nLength, int nCompWidth, int nMode, int nNegCoatHeight );
