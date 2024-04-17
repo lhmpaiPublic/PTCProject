@@ -588,6 +588,10 @@
     <ClInclude Include="NotchingInspPlc\DataPlcImp.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Celltrack\DefineDllFunctionPoint.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Celltrack\LoadVTECSDll.h">
     <ClInclude Include="NotchingInspPlc\MelsecPlcIo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -1061,6 +1065,7 @@
     <ClCompile Include="NotchingInspPlc\DataPlcImp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Celltrack\LoadVTECSDll.cpp">
     <ClCompile Include="NotchingInspPlc\MelsecPlcIo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

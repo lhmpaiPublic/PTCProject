@@ -3,6 +3,9 @@
 #include "ColorControl.h"
 #include "CUserLoginDlg.h"
 
+#include "Celltrack/LoadVTECSDll.h"
+using namespace LOADVTECSDll_GROUP;
+
 // CModeDlg 대화 상자
 
 #define AUTO_START_TIMER 1111
@@ -12,6 +15,9 @@
 
 //카운터 보드 네트워크 에러 메시지 정의
 #define WM_COUNTBORDERROR WM_USER + 1 
+
+//CellTrack
+#define WM_TOGGLEIPCONFIG WM_USER + 2 
 
 class CNotchingGradeInspDoc;
 class CNotchingGradeInspView;
@@ -83,6 +89,7 @@ public:
 
 	//카운터 보드 네트워크 에러 메시지 함수
 	afx_msg LRESULT OnCountBordError(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnToggleIPConfig(WPARAM wParam, LPARAM lParam);
 
 public :
 	//시작/정지 버튼 상태 변경
@@ -110,4 +117,24 @@ public :
 #endif
 
 	virtual BOOL DestroyWindow();
+
+	BOOL initCelltrack();
+	void ToggleIPConfig();
+
+private : 
+
+	LoadVTECSDll		m_LoadVTECSDll;
+	CCriticalSection	m_CriticalDLL;
+	stDllStatus			m_CurrentDllStatus, m_OldDllStatus;
+	bool				m_bIPConfigShow;
+	bool				m_bToggleDataSendQueue;
+	typeTest			m_stBinaryTest;
+	bool				m_blastOldConnectStatus;
+	CString				m_strSocketEvent;
+
+	static UINT WINAPI DllSocket_ConnectStatus(char* strEventContents, int nStatus, int nErrorCode);
+	void PostConnectStatus(char* strEventContents, int nStatus, int nErrorCode);
+	static UINT WINAPI DllSocket_ReceiveDataBuffer(unsigned char* pReceiveBuffer, int nReceiveLengthByByte);
+
+	void SubDisplayUpdate(void);
 };

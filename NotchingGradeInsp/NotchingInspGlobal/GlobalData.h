@@ -144,8 +144,6 @@ public:
 	DWORD dwAlarmCode[5];
 
 	DWORD dwDummy4[10];
-
-
 } _SEQ_OUT_DATA;
 
 typedef struct stSeqDataOutAll {
@@ -338,6 +336,8 @@ public:
 	SYSTEMTIME m_LotEndTime;
 	CTime	m_ctLastAcqTime;
 	BOOL	m_bProcError;
+
+	CString m_nCellID;
 
 	_SEQ_OUT_DATA			m_SeqDataOut;
 	_CELL_JUDGE				m_stCellJudge;

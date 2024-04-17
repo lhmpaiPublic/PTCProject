@@ -88,4 +88,5 @@ public:
 	afx_msg void OnMouseDblClickReltList(NMHDR* pNMHDR, LRESULT* pResult);	 // 22.06.23 Ahn Add 
 	afx_msg void OnRBottonDownReltList(NMHDR* pNMHDR, LRESULT* pResult);	 // 22.07.01 Ahn Add 
 	afx_msg void OnClose();
+	afx_msg void OnBnClickedButtonIpconfig();
 };

@@ -22,6 +22,8 @@
 #include "CCropImgQueueCtrl.h"
 // 22.07.07 Ahn Add End
 
+#include "ModeDlg.h"
+
 // CResultViewDlg 대화 상자
 
 #define IDC_RESULT_LIST	1001
@@ -111,6 +113,7 @@ BEGIN_MESSAGE_MAP(CResultViewDlg, CDialogEx)
 	ON_NOTIFY(NM_DBLCLK, IDC_RESULT_LIST, OnMouseDblClickReltList)
 	ON_NOTIFY(NM_CLICK, IDC_RESULT_LIST, OnRBottonDownReltList)		// 22.07.01 Ahn Add 
 	ON_WM_CLOSE()
+	ON_BN_CLICKED(IDC_BUTTON_IPCONFIG, &CResultViewDlg::OnBnClickedButtonIpconfig)
 END_MESSAGE_MAP()
 
 
@@ -158,6 +161,14 @@ void CResultViewDlg::OnSize(UINT nType, int cx, int cy)
 		nBtnHeight = btnRect.Height();
 		nBtnWidth = btnRect.Width();
 		pButton->MoveWindow(cx - nBtnWidth-5, cy-nBtnHeight-5, nBtnWidth, nBtnHeight);
+	}
+
+	CButton* pButton2 = (CButton*)GetDlgItem(IDC_BUTTON_IPCONFIG);
+	if (pButton2 != nullptr) {
+		pButton2->GetClientRect(&btnRect);
+		nBtnHeight = btnRect.Height();
+		nBtnWidth = btnRect.Width();
+		pButton2->MoveWindow(cx - nBtnWidth - 120, cy - nBtnHeight - 5, nBtnWidth, nBtnHeight);
 	}
 
 	//컴파일 정보를 출력을 위한 객체
@@ -936,4 +947,10 @@ void CResultViewDlg::LoadLastLotData()
 			UpdateGrid();
 		}
 	}	
+}
+
+void CResultViewDlg::OnBnClickedButtonIpconfig()
+{
+	// TODO: Add your control notification handler code here
+	UIMGR->getModeDlg()->PostMessage(WM_TOGGLEIPCONFIG);
 }

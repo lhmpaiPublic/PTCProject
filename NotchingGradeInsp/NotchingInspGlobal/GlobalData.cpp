@@ -419,7 +419,7 @@ int CGlobalData::LotStartProcess(BOOL bSigInMode, int nDebugMode )
 	}
 
 	CString strLine;
-	strLine.Format(_T("LOT ID,Cell No,Cell ID,Key ID,Time,Judge,Tab,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason,PET Stat,Pitch Stat,Tab Pitch Size,Width Stat,Tab Width Size,Cell Length, FoilExpTap_In, FoilExpTap_Out, FoilExpBtm_In, FoilExpBtm_Out,\r\n"));
+	strLine.Format(_T("LOT ID,Cell No,Cell ID,Key ID,Time,Judge,Tab,Btm,Surface Count,FoilExp Count,Top Max Size,BTM Max Size,Ink Marking,Marking Reason,PET Stat,Pitch Stat,Tab Pitch Size,Width Stat,Tab Width Size,Cell Length, FoilExpTap_In, FoilExpTap_Out, FoilExpBtm_In, FoilExpBtm_Out, CellTrack,\r\n"));
 
 	CString strFileName;
 	strFileName.Format( _T("%s.csv"), AprData.m_NowLotData.m_strLotNo ) ;
