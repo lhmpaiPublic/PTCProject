@@ -371,6 +371,36 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int nu
 	return iRet;
 }
 
+//PLC read Data Parser 함수
+void CMelsecPlcIo::ReadPlcBitDataParser(short* data)
+{
+
+}
+void CMelsecPlcIo::ReadPlcWordDataParser(short* data)
+{
+
+}
+//레시피 명을 만든다.
+CString CMelsecPlcIo::MakeRecipeName(short* data)
+{
+	CString str = _T("");
+	return str;
+}
+//CELL ID를 만든다.
+CString CMelsecPlcIo::MakeCellId(short* data)
+{
+	CString str = _T("");
+	return str;
+}
+
+
+//PLC write Data Make 함수
+int CMelsecPlcIo::WritePlcDataMake()
+{
+	int ret = 0;
+	return ret;
+}
+
 void CMelsecPlcIo::chnageEndian(short data[], int size)
 {
 	for (int idx = 0; idx < size; idx++)

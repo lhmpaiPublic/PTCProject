@@ -90,6 +90,19 @@ private:
 	// disconnection network
 	void ClosePlcIo(void);
 
+	//PLC read Data Parser 함수
+	void ReadPlcBitDataParser(short* data);
+	void ReadPlcWordDataParser(short* data);
+	//레시피 명을 만든다.
+	CString MakeRecipeName(short* data);
+	//CELL ID를 만든다.
+	CString MakeCellId(short* data);
+
+
+	//PLC write Data Make 함수
+	int WritePlcDataMake();
+
+
 	virtual int PlcDataReadWritePorc();
 
 	//Out
