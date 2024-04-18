@@ -146,7 +146,7 @@ private:
 	virtual int SigOutReady(int nMode);
 	//Alive 상태 값을 저장해서 다음 호출 시 
 	//Alive 상태를 변경한다. 0 <-> 1
-	BOOL m_bSmsAlive;
+	BOOL m_bMelsecAlive;
 	virtual int SigOutAlivePulse(int nInMode);
 	virtual int SigOutTabZeroReset(int nMode);
 	virtual int SigOutAlarmResetAck(int nMode);

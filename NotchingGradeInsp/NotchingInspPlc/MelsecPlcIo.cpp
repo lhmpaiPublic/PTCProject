@@ -244,6 +244,8 @@ CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset
 
 	m_bEnableWorkSet = TRUE;
 
+	m_bMelsecAlive = 0x1;
+
 	//PLC 읽기 Data
 	memset(m_ReadBitData, 0, MELSEC_BITINSIZE_MAX);
 	memset(m_ReadWordData, 0, MELSEC_WORDINSIZE_MAX*sizeof(DWORD));
@@ -950,8 +952,8 @@ int CMelsecPlcIo::SigOutReady(int nMode)
 }
 int CMelsecPlcIo::SigOutAlivePulse(int nInMode)
 { 
-	m_bSmsAlive ^= 0x1;
-	setBitOut_Alive(m_bSmsAlive);
+	m_bMelsecAlive ^= 0x1;
+	setBitOut_Alive(m_bMelsecAlive);
 	return 0;
 }
 int CMelsecPlcIo::SigOutTabZeroReset(int nMode)
@@ -1020,8 +1022,8 @@ BOOL CMelsecPlcIo::GetConnectZone()
 }
 int CMelsecPlcIo::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 {
-	m_bSmsAlive ^= 0x1;
-	setBitOut_Alive(m_bSmsAlive);
+	m_bMelsecAlive ^= 0x1;
+	setBitOut_Alive(m_bMelsecAlive);
 	setBitOut_Ready(bIsReady);
 	return 0; 
 }
