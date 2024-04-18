@@ -207,7 +207,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	buffWordOut2[2] = count++;
 	buffWordOut2[3] = count++;
 	LOGDISPLAY_SPEC(2)(_T("Out Word data int :	%s"), CStrSuport::ChanginttohexTab(buffWordOut2, 4, m_wOffset_WordOut));
-	ReadWordData(0xff, MELSEC_DEVICE_W, 0, buffWordOut2, 4, m_wOffset_WordOut);
+	WriteWordData(0xff, MELSEC_DEVICE_W, 0, buffWordOut2, 4, m_wOffset_WordOut);
 
 }
 
@@ -546,7 +546,7 @@ int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, short
 
 	memcpy(localbuff, buff, size);
 
-	iRet = mdReceiveEx(m_pPath
+	iRet = mdSendEx(m_pPath
 		, netNo
 		, m_wSeqStNo
 		, devtype
@@ -576,7 +576,7 @@ int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, int buff
 
 	memcpy(localbuff, buff, size);
 
-	iRet = mdReceive(m_pPath
+	iRet = mdSend(m_pPath
 		, stno
 		, devtype
 		, devno
@@ -606,7 +606,7 @@ int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, int b
 
 	memcpy(localbuff, buff, size);
 
-	iRet = mdReceiveEx(m_pPath
+	iRet = mdSendEx(m_pPath
 		, netNo
 		, m_wSeqStNo
 		, devtype
