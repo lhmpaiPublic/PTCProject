@@ -36,6 +36,8 @@ CDataPlcImp::CDataPlcImp()
 	m_WordIn_PrmSectorNgTabCnt = 0;
 	m_WordIn_PrmSectorBaseCnt = 0;
 
+	m_WordIn_AlarmExistAck = 0;
+
 	//Bit Data Out
 	m_BitOut_Alive = 0;
 	m_BitOut_Ready = 0;

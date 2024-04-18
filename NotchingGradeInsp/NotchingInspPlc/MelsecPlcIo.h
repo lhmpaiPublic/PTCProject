@@ -35,7 +35,16 @@
 #define MELSEC_WRITEWORD_STARTINDEX 0
 
 //멜섹 Bit Read 영역 크기
-#define	MELSEC_BITINSIZE 4
+#define	MELSEC_BITINSIZE_MAX 4
+
+//멜섹 Word Read 영역 크기(int DOWRD 로 갯수 세팅)
+#define	MELSEC_WORDINSIZE_MAX 80 // 160
+
+//멜섹 Bit Write 영역 크기
+#define	MELSEC_BITOUTSIZE_MAX 4
+
+//멜섹 Word Write 영역 크기(int DOWRD 로 갯수 세팅)
+#define	MELSEC_WORDOUTSIZE_MAX 80 // 160
 
 
 
@@ -66,8 +75,11 @@ public:
 	//PLC 데이터 Read / Write 처리 함수
 	void MelsecPlcProc();
 
-	byte m_buffBitIn[MELSEC_BITINSIZE];
 private:
+
+	//PLC 읽기 Data
+	BYTE m_ReadBitData[MELSEC_BITINSIZE_MAX];
+	DWORD m_ReadWordData[MELSEC_WORDINSIZE_MAX];
 
 	// connection network
 	int OpenPlcIo(void);
@@ -111,16 +123,16 @@ private:
 	void ClosePlcIo(void);
 
 	//PLC read Data Parser 함수
-	void ReadPlcBitDataParser(short* data);
-	void ReadPlcWordDataParser(short* data);
+	void ReadPlcBitDataParser(BYTE* data);
+	void ReadPlcWordDataParser(DWORD* data);
 	//레시피 명을 만든다.
-	CString MakeRecipeName(short* data);
+	CString MakeRecipeName(DWORD* data);
 	//CELL ID를 만든다.
-	CString MakeCellId(short* data);
+	CString MakeCellId(DWORD* data);
 
 
-	//PLC write Data Make 함수
-	int WritePlcDataMake();
+	//PLC write Bit Make 함수
+	int WritePlcBitDataMake(BYTE data[]);
 
 
 	virtual int PlcDataReadWritePorc();
