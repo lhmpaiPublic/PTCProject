@@ -121,6 +121,8 @@ public :
 	BOOL initCelltrack();
 	void ToggleIPConfig();
 
+	static CString parse_CellID(CString SourceString);
+
 private : 
 
 	LoadVTECSDll		m_LoadVTECSDll;
