@@ -83,17 +83,27 @@ private:
 	//startport : 시작 포트
 	//buff : 배열 고정 버퍼 사용
 	//num : 읽을 갯수
-	//bIn : Read - true Write - false
+	//bIn : Read - true 
 	//return : size
-	int ReadBitData(short stno, int devtype, int startport, byte buff[], int num, bool bIn);
+	int ReadBitData(short stno, int devtype, int startport, byte buff[], int num, int offset);
 
-	int ReadWordData(short stno, int devtype, int startport, short buff[], int num, bool bIn);
+	int ReadWordData(short stno, int devtype, int startport, short buff[], int num, int offset);
 
-	int ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, bool bIn);
+	int ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset);
 
-	int ReadWordData(short stno, int devtype, int startport, int buff[], int num, bool bIn);
+	int ReadWordData(short stno, int devtype, int startport, int buff[], int num, int offset);
 
-	int ReadWordDataEx(short netNo, int devtype, int startport, int buff[], int num, bool bIn);
+	int ReadWordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset);
+
+	int WriteBitData(short stno, int devtype, int startport, byte buff[], int num, int offset);
+
+	int WriteWordData(short stno, int devtype, int startport, short buff[], int num, int offset);
+
+	int WriteWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset);
+
+	int WriteWordData(short stno, int devtype, int startport, int buff[], int num, int offset);
+
+	int WriteWordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset);
 
 	void chnageEndian(short data[], int size);
 

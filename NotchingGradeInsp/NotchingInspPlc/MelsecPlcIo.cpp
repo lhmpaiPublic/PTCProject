@@ -186,18 +186,28 @@ void CMelsecPlcIo::MelsecPlcProc()
 	//시작번지 : 0, 읽을 갯수 4
 	byte buffBitIn[MELSEC_BITINSIZE];
 	memset(buffBitIn, 0, MELSEC_BITINSIZE);
-	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitIn, MELSEC_BITINSIZE, true);
-	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexTab(buffBitIn, MELSEC_BITINSIZE));
+	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitIn, MELSEC_BITINSIZE, m_wOffset_BitIn);
+	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexTab(buffBitIn, MELSEC_BITINSIZE, m_wOffset_BitIn));
 
 	short buffWordIn[4];
 	memset(buffWordIn, 0, 4*sizeof(short));
-	ReadWordData(0xff, MELSEC_DEVICE_W, 0, buffWordIn, 4, true);
-	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buffWordIn, 4));
+	ReadWordData(0xff, MELSEC_DEVICE_W, 0, buffWordIn, 4, m_wOffset_WordIn);
+	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buffWordIn, 4, m_wOffset_WordIn));
 
 	int buffWordIn2[4];
 	memset(buffWordIn2, 0, 4*sizeof(int));
-	ReadWordData(0xff, MELSEC_DEVICE_W, 0, buffWordIn2, 4, true);
-	LOGDISPLAY_SPEC(2)(_T("In Word data int :	%s"), CStrSuport::ChanginttohexTab(buffWordIn2, 4));
+	ReadWordData(0xff, MELSEC_DEVICE_W, 0, buffWordIn2, 4, m_wOffset_WordIn);
+	LOGDISPLAY_SPEC(2)(_T("In Word data int :	%s"), CStrSuport::ChanginttohexTab(buffWordIn2, 4, m_wOffset_WordIn));
+
+	int buffWordOut2[4];
+	static int count = 0;
+	memset(buffWordOut2, 0, 4 * sizeof(int));
+	buffWordOut2[0] = count++;
+	buffWordOut2[1] = count++;
+	buffWordOut2[2] = count++;
+	buffWordOut2[3] = count++;
+	LOGDISPLAY_SPEC(2)(_T("Out Word data int :	%s"), CStrSuport::ChanginttohexTab(buffWordOut2, 4, m_wOffset_WordOut));
+	ReadWordData(0xff, MELSEC_DEVICE_W, 0, buffWordOut2, 4, m_wOffset_WordOut);
 
 }
 
@@ -306,7 +316,7 @@ int CMelsecPlcIo::ChangeWorkingSetSize(void)
 	return (nRet);
 }
 
-int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[], int num, bool bIn)
+int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -319,7 +329,7 @@ int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[
 
 	//읽을 번지 세팅
 	//startport : 8비트만큼 이동 번지, 
-	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_BitIn : m_wOffset_BitOut));
+	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + offset);
 	size = (short)num;
 
 	iRet = mdReceive(m_pPath
@@ -338,7 +348,7 @@ int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[
 
 }
 
-int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buff[], int num, bool bIn)
+int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -349,7 +359,7 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buf
 	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + offset);
 	size = (short)num * sizeof(short);
 
 	iRet = mdReceive(m_pPath
@@ -368,7 +378,7 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buf
 
 }
 
-int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, bool bIn)
+int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -379,7 +389,7 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short 
 	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + offset);
 	size = (short)num * sizeof(short);
 
 	iRet = mdReceiveEx(m_pPath
@@ -398,7 +408,7 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short 
 	return iRet;
 }
 
-int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int buff[], int num, bool bIn)
+int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -409,7 +419,7 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int buff[
 	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + offset);
 	size = (short)num * sizeof(int);
 
 	iRet = mdReceive(m_pPath
@@ -428,7 +438,7 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int buff[
 
 }
 
-int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int buff[], int num, bool bIn)
+int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -439,7 +449,7 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int bu
 	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + offset);
 	size = (short)num * sizeof(int);
 
 	iRet = mdReceiveEx(m_pPath
@@ -452,6 +462,158 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int bu
 	);
 
 	memcpy(buff, localbuff, size);
+
+	delete[] localbuff;
+
+	return iRet;
+}
+
+int CMelsecPlcIo::WriteBitData(short stno, int devtype, int startport, byte buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	short	devno, size;
+
+	short* localbuff;
+	int buffsize = (num / 2) + 1;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	//읽을 번지 세팅
+	//startport : 8비트만큼 이동 번지, 
+	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + offset);
+	size = (short)num;
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdSend(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+
+	delete[] localbuff;
+
+	return iRet;
+
+}
+
+int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, short buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	short	devno, size;
+
+	short* localbuff;
+	int buffsize = num;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + offset);
+	size = (short)num * sizeof(short);
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdSend(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+
+	delete[] localbuff;
+
+	return iRet;
+
+}
+
+int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	long	devno, size;
+
+	short* localbuff;
+	int buffsize = num;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + offset);
+	size = (short)num * sizeof(short);
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdReceiveEx(m_pPath
+		, netNo
+		, m_wSeqStNo
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+
+	delete[] localbuff;
+
+	return iRet;
+}
+
+int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, int buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	short	devno, size;
+
+	short* localbuff;
+	int buffsize = num * 2;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + offset);
+	size = (short)num * sizeof(int);
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdReceive(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+
+	delete[] localbuff;
+
+	return iRet;
+
+}
+
+int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	long	devno, size;
+
+	short* localbuff;
+	int buffsize = num * 2;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + offset);
+	size = (short)num * sizeof(int);
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdReceiveEx(m_pPath
+		, netNo
+		, m_wSeqStNo
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
 
 	delete[] localbuff;
 
