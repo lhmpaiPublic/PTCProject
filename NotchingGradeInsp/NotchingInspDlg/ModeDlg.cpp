@@ -965,12 +965,12 @@ void CModeDlg::PostConnectStatus(char* strEventContents, int nStatus, int nError
 UINT __stdcall CModeDlg::DllSocket_ReceiveDataBuffer(unsigned char* pReceiveBuffer, int nReceiveLengthByByte)
 {
 	CString mTemp = "";
+	LOGDISPLAY_ALL("[DllSocket_ReceiveDataBuffer] pReceiveBuffer[ %s ], length[%d]", pReceiveBuffer, nReceiveLengthByByte);
+	
 	mTemp.Format(_T("%s"), pReceiveBuffer);
-	mTemp = mTemp.Mid(nReceiveLengthByByte);
-
+//	mTemp = mTemp.Mid(nReceiveLengthByByte);
 	//theApp.m_pMainWnd->SetWindowTextA(mTemp);
-
-	LOGDISPLAY_ALL("[DllSocket_ReceiveDataBuffer] pReceiveBuffer[ %s ]", mTemp);
+	LOGDISPLAY_ALL("[DllSocket_ReceiveDataBuffer] mTemp[ %s ]", mTemp);
 	AprData.m_NowLotData.m_nCellID = mTemp;
 
 	return 0;
