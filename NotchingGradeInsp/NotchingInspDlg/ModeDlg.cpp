@@ -982,7 +982,7 @@ UINT __stdcall CModeDlg::DllSocket_ReceiveDataBuffer(unsigned char* pReceiveBuff
 	mTemp_Dest = parse_CellID(mTemp_Source);
 
 	LOGDISPLAY_ALL("[DllSocket_ReceiveDataBuffer] mTemp_Dest[ %s ]", mTemp_Dest);
-	AprData.m_NowLotData.m_nCellID = mTemp_Dest;
+	AprData.m_NowLotData.m_nCellTrackID = mTemp_Dest;
 
 	return 0;
 }

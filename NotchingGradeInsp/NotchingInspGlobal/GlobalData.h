@@ -337,7 +337,7 @@ public:
 	CTime	m_ctLastAcqTime;
 	BOOL	m_bProcError;
 
-	CString m_nCellID;
+	CString m_nCellTrackID;
 
 	_SEQ_OUT_DATA			m_SeqDataOut;
 	_CELL_JUDGE				m_stCellJudge;
