@@ -184,10 +184,15 @@ void CMelsecPlcIo::MelsecPlcProc()
 	//Bit Read 영역 읽기
 	//4포트
 	//시작번지 : 0, 읽을 갯수 4
-	byte buffIn[MELSEC_BITINSIZE];
-	memset(buffIn, 0, MELSEC_BITINSIZE);
-	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffIn, MELSEC_BITINSIZE, true);
-	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexTab(buffIn, MELSEC_BITINSIZE));
+	byte buffBitIn[MELSEC_BITINSIZE];
+	memset(buffBitIn, 0, MELSEC_BITINSIZE);
+	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitIn, MELSEC_BITINSIZE, true);
+	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexTab(buffBitIn, MELSEC_BITINSIZE));
+
+	short buffWordIn[4];
+	memset(buffWordIn, 0, 4);
+	ReadWordData(0xff, MELSEC_DEVICE_W, 0, buffWordIn, 4, true);
+	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buffWordIn, 4));
 
 
 }
@@ -195,6 +200,15 @@ void CMelsecPlcIo::MelsecPlcProc()
 int CMelsecPlcIo::OpenPlcIo(void)
 {
 	int ret = 0;
+
+	//로그출력
+	LOGDISPLAY_SPEC(2)(_T("PLC Info	ChannelNo : %d	BitIn : %d	BitOut : %d	WordIn : %d	WordOut : %d"),
+		m_wChannelNo,
+		m_wOffset_BitIn,
+		m_wOffset_BitOut,
+		m_wOffset_WordIn,
+		m_wOffset_WordOut);
+
 	ret = LocalPioOpen();
 
 	if (ret != 0)
@@ -219,6 +233,8 @@ int CMelsecPlcIo::LocalPioOpen(BOOL bLockCtrl)
 	if (iRet == 0) 
 	{
 		m_bOpened = TRUE;
+		//로그출력
+		LOGDISPLAY_SPEC(2)("PLC Melsec Open Success");
 
 	}
 
@@ -291,9 +307,10 @@ int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[
 	int iRet = 0;
 
 	short	devno, size;
+
 	short* localbuff;
 	int buffsize = (num / 2) + 1;
-	localbuff = new short[(num / 2) + 1];
+	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
 	//읽을 번지 세팅
@@ -309,7 +326,6 @@ int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[
 		, localbuff
 	);
 
-	chnageEndian(localbuff, buffsize);
 	memcpy(buff, localbuff, size);
 
 	delete[] localbuff;
@@ -318,11 +334,16 @@ int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[
 
 }
 
-int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, byte buff[], int num, bool bIn)
+int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buff[], int num, bool bIn)
 {
 	int iRet = 0;
 
 	short	devno, size;
+
+	short* localbuff;
+	int buffsize = num;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
 
 	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
 	size = (short)num * sizeof(short);
@@ -335,15 +356,24 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, byte buff
 		, buff
 	);
 
+	memcpy(buff, localbuff, size);
+
+	delete[] localbuff;
+
 	return iRet;
 
 }
 
-int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, byte buff[], int num, bool bIn)
+int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, bool bIn)
 {
 	int iRet = 0;
 
 	long	devno, size;
+
+	short* localbuff;
+	int buffsize = (num / 2) + 1;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
 
 	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
 	size = (short)num * sizeof(short);
@@ -356,6 +386,10 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, byte b
 		, &size
 		, buff
 	);
+
+	memcpy(buff, localbuff, size);
+
+	delete[] localbuff;
 
 	return iRet;
 }

@@ -87,9 +87,9 @@ private:
 	//return : size
 	int ReadBitData(short stno, int devtype, int startport, byte buff[], int num, bool bIn);
 
-	int ReadWordData(short stno, int devtype, int startport, byte buff[], int num, bool bIn);
+	int ReadWordData(short stno, int devtype, int startport, short buff[], int num, bool bIn);
 
-	int ReadWordDataEx(short netNo, int devtype, int startport, byte buff[], int num, bool bIn);
+	int ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, bool bIn);
 
 	void chnageEndian(short data[], int size);
 
