@@ -727,19 +727,18 @@ int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, int b
 //PLC read Data Parser 함수
 void CMelsecPlcIo::ReadPlcBitDataParser(BYTE* data)
 {
-	if (m_ReadBitData[(enMelsBitInAlive>>16)&0xff] ^ data[(enMelsBitInAlive >> 16) & 0xff]) setBitIn_Alive((data[(enMelsBitInAlive >> 16) & 0xff]>>(enMelsBitInAlive&0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInReady >> 16) & 0xff] ^ data[(enMelsBitInReady >> 16) & 0xff]) setBitIn_Ready((data[(enMelsBitInReady >> 16) & 0xff] >> (enMelsBitInReady & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInRun >> 16) & 0xff] ^ data[(enMelsBitInRun >> 16) & 0xff]) setBitIn_Run((data[(enMelsBitInRun >> 16) & 0xff] >> (enMelsBitInRun & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInEncoderReset >> 16) & 0xff] ^ data[(enMelsBitInEncoderReset >> 16) & 0xff]) setBitIn_EncoderReset((data[(enMelsBitInEncoderReset >> 16) & 0xff] >> (enMelsBitInEncoderReset & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInTabZeroReset >> 16) & 0xff] ^ data[(enMelsBitInTabZeroReset >> 16) & 0xff]) setBitIn_TabZeroReset((data[(enMelsBitInTabZeroReset >> 16) & 0xff] >> (enMelsBitInTabZeroReset & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInInkMarkingActive >> 16) & 0xff] ^ data[(enMelsBitInInkMarkingActive >> 16) & 0xff]) setBitIn_InkMarkingActive((data[(enMelsBitInInkMarkingActive >> 16) & 0xff] >> (enMelsBitInInkMarkingActive & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInConnectZone >> 16) & 0xff] ^ data[(enMelsBitInConnectZone >> 16) & 0xff]) setBitIn_ConnectZone((data[(enMelsBitInConnectZone >> 16) & 0xff] >> (enMelsBitInConnectZone & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInRecipeChange >> 16) & 0xff] ^ data[(enMelsBitInRecipeChange >> 16) & 0xff]) setBitIn_RecipeChange((data[(enMelsBitInRecipeChange >> 16) & 0xff] >> (enMelsBitInRecipeChange & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInLotStartReq >> 16) & 0xff] ^ data[(enMelsBitInLotStartReq >> 16) & 0xff]) setBitIn_LotStartReq((data[(enMelsBitInLotStartReq >> 16) & 0xff] >> (enMelsBitInLotStartReq & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInLotEndReq >> 16) & 0xff] ^ data[(enMelsBitInLotEndReq >> 16) & 0xff]) setBitIn_LotEndReq((data[(enMelsBitInLotEndReq >> 16) & 0xff] >> (enMelsBitInLotEndReq & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInAlarmResetReq >> 16) & 0xff] ^ data[(enMelsBitInAlarmResetReq >> 16) & 0xff]) setBitIn_AlarmResetReq((data[(enMelsBitInAlarmResetReq >> 16) & 0xff] >> (enMelsBitInAlarmResetReq & 0xff)) & 0x1);
-	if (m_ReadBitData[(enMelsBitInAlarmNgAck >> 16) & 0xff] ^ data[(enMelsBitInAlarmNgAck >> 16) & 0xff]) setBitIn_AlarmNgAck((data[(enMelsBitInAlarmNgAck >> 16) & 0xff] >> (enMelsBitInAlarmNgAck & 0xff)) & 0x1);
-
+	if (m_ReadBitData[(enMelsBitInAlive >> 8)&0xff] ^ data[(enMelsBitInAlive >> 8) & 0xff]) setBitIn_Alive((data[(enMelsBitInAlive >> 8) & 0xff]>>(enMelsBitInAlive&0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInReady >> 8) & 0xff] ^ data[(enMelsBitInReady >> 8) & 0xff]) setBitIn_Ready((data[(enMelsBitInReady >> 8) & 0xff] >> (enMelsBitInReady & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInRun >> 8) & 0xff] ^ data[(enMelsBitInRun >> 8) & 0xff]) setBitIn_Run((data[(enMelsBitInRun >> 8) & 0xff] >> (enMelsBitInRun & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInEncoderReset >> 8) & 0xff] ^ data[(enMelsBitInEncoderReset >> 8) & 0xff]) setBitIn_EncoderReset((data[(enMelsBitInEncoderReset >> 8) & 0xff] >> (enMelsBitInEncoderReset & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInTabZeroReset >> 8) & 0xff] ^ data[(enMelsBitInTabZeroReset >> 8) & 0xff]) setBitIn_TabZeroReset((data[(enMelsBitInTabZeroReset >> 8) & 0xff] >> (enMelsBitInTabZeroReset & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInInkMarkingActive >> 8) & 0xff] ^ data[(enMelsBitInInkMarkingActive >> 8) & 0xff]) setBitIn_InkMarkingActive((data[(enMelsBitInInkMarkingActive >> 8) & 0xff] >> (enMelsBitInInkMarkingActive & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInConnectZone >> 8) & 0xff] ^ data[(enMelsBitInConnectZone >> 8) & 0xff]) setBitIn_ConnectZone((data[(enMelsBitInConnectZone >> 8) & 0xff] >> (enMelsBitInConnectZone & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInRecipeChange >> 8) & 0xff] ^ data[(enMelsBitInRecipeChange >> 8) & 0xff]) setBitIn_RecipeChange((data[(enMelsBitInRecipeChange >> 8) & 0xff] >> (enMelsBitInRecipeChange & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInLotStartReq >> 8) & 0xff] ^ data[(enMelsBitInLotStartReq >> 8) & 0xff]) setBitIn_LotStartReq((data[(enMelsBitInLotStartReq >> 8) & 0xff] >> (enMelsBitInLotStartReq & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInLotEndReq >> 8) & 0xff] ^ data[(enMelsBitInLotEndReq >> 8) & 0xff]) setBitIn_LotEndReq((data[(enMelsBitInLotEndReq >> 8) & 0xff] >> (enMelsBitInLotEndReq & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInAlarmResetReq >> 8) & 0xff] ^ data[(enMelsBitInAlarmResetReq >> 8) & 0xff]) setBitIn_AlarmResetReq((data[(enMelsBitInAlarmResetReq >> 8) & 0xff] >> (enMelsBitInAlarmResetReq & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInAlarmNgAck >> 8) & 0xff] ^ data[(enMelsBitInAlarmNgAck >> 8) & 0xff]) setBitIn_AlarmNgAck((data[(enMelsBitInAlarmNgAck >> 8) & 0xff] >> (enMelsBitInAlarmNgAck & 0xff)) & 0x1);
 	memcpy(m_ReadBitData, data, MELSEC_BITINSIZE_MAX);
 }
 void CMelsecPlcIo::ReadPlcWordDataParser(DWORD* data)
@@ -819,7 +818,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 	int ret = -1;
 	if (isBitOut_Alive())
 	{
-		int port = (enMelsBitOut_Alive >> 16) & 0xff;
+		int port = (enMelsBitOut_Alive >> 8) & 0xff;
 		int shift = enMelsBitOut_Alive & 0xff;
 		byte b = ((getBitOut_Alive() & 0x1) << shift);
 		*(*data + port) |= b;
@@ -828,7 +827,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_Ready())
 	{
-		int port = (enMelsBitOut_Ready >> 16) & 0xff;
+		int port = (enMelsBitOut_Ready >> 8) & 0xff;
 		int shift = enMelsBitOut_Ready & 0xff;
 		*(*data + port) |= ((getBitOut_Ready() & 0x1) << shift);
 		ret = port;
@@ -836,7 +835,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_EncoderSet())
 	{
-		int port = (enMelsBitOut_EncoderSet >> 16) & 0xff;
+		int port = (enMelsBitOut_EncoderSet >> 8) & 0xff;
 		int shift = enMelsBitOut_EncoderSet & 0xff;
 		*(*data + port) |= ((getBitOut_EncoderSet() & 0x1) << shift);
 		ret = port;
@@ -844,7 +843,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_RecipeChangeAck())
 	{
-		int port = (enMelsBitOut_RecipeChangeAck >> 16) & 0xff;
+		int port = (enMelsBitOut_RecipeChangeAck >> 8) & 0xff;
 		int shift = enMelsBitOut_RecipeChangeAck & 0xff;
 		*(*data + port) |= ((getBitOut_RecipeChangeAck() & 0x1) << shift);
 		ret = port;
@@ -852,7 +851,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_LotStartReqAck())
 	{
-		int port = (enMelsBitOut_LotStartReqAck >> 16) & 0xff;
+		int port = (enMelsBitOut_LotStartReqAck >> 8) & 0xff;
 		int shift = enMelsBitOut_LotStartReqAck & 0xff;
 		*(*data + port) |= ((getBitOut_LotStartReqAck() & 0x1) << shift);
 		ret = port;
@@ -860,7 +859,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_LotEndReqAck())
 	{
-		int port = (enMelsBitOut_LotEndReqAck >> 16) & 0xff;
+		int port = (enMelsBitOut_LotEndReqAck >> 8) & 0xff;
 		int shift = enMelsBitOut_LotEndReqAck & 0xff;
 		*(*data + port) |= ((getBitOut_LotEndReqAck() & 0x1) << shift);
 		ret = port;
@@ -868,7 +867,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_TabZeroReset())
 	{
-		int port = (enMelsBitOut_TabZeroReset >> 16) & 0xff;
+		int port = (enMelsBitOut_TabZeroReset >> 8) & 0xff;
 		int shift = enMelsBitOut_TabZeroReset & 0xff;
 		*(*data + port) |= ((getBitOut_TabZeroReset() & 0x1) << shift);
 		ret = port;
@@ -876,7 +875,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_AlarmResetAck())
 	{
-		int port = (enMelsBitOut_AlramResetAck >> 16) & 0xff;
+		int port = (enMelsBitOut_AlramResetAck >> 8) & 0xff;
 		int shift = enMelsBitOut_AlramResetAck & 0xff;
 		*(*data + port) |= ((getBitOut_AlarmResetAck() & 0x1) << shift);
 		ret = port;
@@ -884,7 +883,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_AlarmNgResetAck())
 	{
-		int port = (enMelsBitOut_AlramNgResetAck >> 16) & 0xff;
+		int port = (enMelsBitOut_AlramNgResetAck >> 8) & 0xff;
 		int shift = enMelsBitOut_AlramNgResetAck & 0xff;
 		*(*data + port) |= ((getBitOut_AlarmNgResetAck() & 0x1) << shift);
 		ret = port;
@@ -892,7 +891,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_DiskSpaceWarning())
 	{
-		int port = (enMelsBitOut_DiskSpaceWarning >> 16) & 0xff;
+		int port = (enMelsBitOut_DiskSpaceWarning >> 8) & 0xff;
 		int shift = enMelsBitOut_DiskSpaceWarning & 0xff;
 		*(*data + port) |= ((getBitOut_DiskSpaceWarning() & 0x1) << shift);
 		ret = port;
@@ -900,7 +899,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 
 	if (isBitOut_DiskSpaceAlarm())
 	{
-		int port = (enMelsBitOut_DiskSpaceAlarm >> 16) & 0xff;
+		int port = (enMelsBitOut_DiskSpaceAlarm >> 8) & 0xff;
 		int shift = enMelsBitOut_DiskSpaceAlarm & 0xff;
 		*(*data + port) |= ((getBitOut_DiskSpaceAlarm() & 0x1) << shift);
 		ret = port;
