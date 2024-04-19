@@ -213,58 +213,31 @@ void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 
 CString CSiemensPlcIo::MakeRecipeName(short* data)
 {
-	int i;
-	int Cnt = 0;
-	CString strBuffer;
-	int nMax = SIEMENS_READRECIPENAME;
+	CString str = _T("");
 
-	for (i = 0, Cnt = 0; i < nMax; i++, Cnt += 2)
-	{
-		BYTE btTemp = (BYTE)(*data & 0xff);
-		strBuffer += _T(" ");
-		strBuffer.SetAt(Cnt, (char)btTemp);
+	BYTE byteData[SIEMENS_READRECIPENAME + 1] = { 0, };
+	memcpy(byteData, data, SIEMENS_READRECIPENAME);
+	byteData[SIEMENS_READRECIPENAME] = '\0';
+	str = (char*)byteData;
 
-		btTemp = (BYTE)((*data >> 8) & 0xff);
-		strBuffer += _T(" ");
-		strBuffer.SetAt((Cnt + 1), (char)btTemp);
+	LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), str);
 
-		data++;
-	}
-	strBuffer.TrimRight();
-	strBuffer.TrimLeft();
-
-	LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), strBuffer);
-
-	return strBuffer;
+	return str;
 }
 
 //CELL ID를 만든다.
 CString CSiemensPlcIo::MakeCellId(short* data)
 {
-	int i;
-	int Cnt = 0;
-	CString strBuffer;
-	int nMax = SIEMENS_READCELLID;
+	CString str = _T("");
 
-	for (i = 0, Cnt = 0; i < nMax; i++, Cnt += 2)
-	{
-		BYTE btTemp = (BYTE)(*data & 0xff);
-		strBuffer += _T(" ");
-		strBuffer.SetAt(Cnt, (char)btTemp);
+	BYTE byteData[SIEMENS_READCELLID + 1] = { 0, };
+	memcpy(byteData, data, SIEMENS_READCELLID);
+	byteData[SIEMENS_READCELLID] = '\0';
+	str = (char*)byteData;
 
-		btTemp = (BYTE)((*data >> 8) & 0xff);
-		strBuffer += _T(" ");
-		strBuffer.SetAt((Cnt + 1), (char)btTemp);
+	LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), str);
 
-		data++;
-	}
-
-	strBuffer.TrimRight();
-	strBuffer.TrimLeft();
-
-	LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), strBuffer);
-
-	return strBuffer;
+	return str;
 }
 
 void CSiemensPlcIo::ReadPlcWordDataParser(short* data)

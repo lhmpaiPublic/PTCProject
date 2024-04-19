@@ -46,6 +46,11 @@
 //멜섹 Word Write 영역 크기(int DOWRD 로 갯수 세팅)
 #define	MELSEC_WORDOUTSIZE_MAX 80 // 160
 
+//멜섹 Recipe Name 읽기 갯수
+#define MELSEC_READRECIPENAME 8
+//멜섹 CELL ID 읽기 갯수
+#define MELSEC_READCELLID 20
+
 
 
 class CMelsecPlcIo : public CDataPlcImp

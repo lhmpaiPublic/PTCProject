@@ -35,9 +35,9 @@
 
 
 //지멘스 Recipe Name 읽기 갯수
-#define SIEMENS_READRECIPENAME 4
+#define SIEMENS_READRECIPENAME 8
 //지멘스 CELL ID 읽기 갯수
-#define SIEMENS_READCELLID 10
+#define SIEMENS_READCELLID 20
 
 
 

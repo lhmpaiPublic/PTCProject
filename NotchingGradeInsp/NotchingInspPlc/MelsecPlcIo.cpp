@@ -296,12 +296,6 @@ void CMelsecPlcIo::MelsecPlcProc()
 		LOGDISPLAY_SPEC(2)(_T("Out bit data int :	%s"), CStrSuport::ChangbytetohexTab(buffBitOut, portsize, m_wOffset_BitOut));
 		WriteBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOut, portsize, m_wOffset_BitOut);
 	}
-
-	byte tempbuff[MELSEC_BITOUTSIZE_MAX];
-	memset(tempbuff, 0, MELSEC_BITOUTSIZE_MAX);
-
-	memcpy(tempbuff, buffBitOut, MELSEC_BITOUTSIZE_MAX);
-
 	delete[] buffBitOut;
 
 	DWORD* buffWordOut = new DWORD[MELSEC_WORDOUTSIZE_MAX];
@@ -792,10 +786,13 @@ void CMelsecPlcIo::ReadPlcWordDataParser(DWORD* data)
 CString CMelsecPlcIo::MakeRecipeName(DWORD* data)
 {
 	CString str = _T("");
-	DWORD datatemp[4] = { 0, };
-	BYTE byteData[16] = { 0, };
-	memcpy(datatemp, data, 16);
-	memcpy(byteData, datatemp, 16);
+
+	BYTE byteData[MELSEC_READRECIPENAME +1] = { 0, };
+	memcpy(byteData, data, MELSEC_READRECIPENAME);
+	byteData[MELSEC_READRECIPENAME] = '\0';
+	str = (char*)byteData;
+
+	LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), str);
 
 	return str;
 }
@@ -803,6 +800,14 @@ CString CMelsecPlcIo::MakeRecipeName(DWORD* data)
 CString CMelsecPlcIo::MakeCellId(DWORD* data)
 {
 	CString str = _T("");
+
+	BYTE byteData[MELSEC_READCELLID + 1] = { 0, };
+	memcpy(byteData, data, MELSEC_READCELLID);
+	byteData[MELSEC_READCELLID] = '\0';
+	str = (char*)byteData;
+
+	LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), str);
+
 	return str;
 }
 
