@@ -288,14 +288,25 @@ void CMelsecPlcIo::MelsecPlcProc()
 	}
 
 
-	byte buffBitOut[MELSEC_BITOUTSIZE_MAX];
+	byte* buffBitOut = new byte[MELSEC_BITOUTSIZE_MAX];
 	memset(buffBitOut, 0, MELSEC_BITOUTSIZE_MAX);
-	int portsize = WritePlcBitDataMake(buffBitOut);
+	int portsize = WritePlcBitDataMake(&buffBitOut);
 	if (portsize > 0)
 	{
 		LOGDISPLAY_SPEC(2)(_T("Out bit data int :	%s"), CStrSuport::ChangbytetohexTab(buffBitOut, portsize, m_wOffset_BitOut));
 		WriteBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOut, portsize, m_wOffset_BitOut);
 	}
+	delete[] buffBitOut;
+
+	DWORD* buffWordOut = new DWORD[MELSEC_WORDOUTSIZE_MAX];
+	memset(buffWordOut, 0, MELSEC_WORDOUTSIZE_MAX*sizeof(DWORD));
+	int wordwritesize = WritePlcWordDataMake(&buffWordOut);
+	if (wordwritesize > 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffWordOut, wordwritesize, m_wOffset_WordOut));
+		WriteWordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffWordOut, wordwritesize, m_wOffset_WordOut);
+	}
+	delete[] buffWordOut;
 
 }
 
@@ -310,6 +321,11 @@ int CMelsecPlcIo::OpenPlcIo(void)
 		m_wOffset_BitOut,
 		m_wOffset_WordIn,
 		m_wOffset_WordOut);
+
+	if ((m_wOffset_BitIn % 8) || (m_wOffset_BitOut % 8))
+	{
+		AfxMessageBox("Melsec Bit Offset 값이 잘못 입력되었습니다.");
+	}
 
 	ret = LocalPioOpen();
 
@@ -781,7 +797,7 @@ CString CMelsecPlcIo::MakeCellId(DWORD* data)
 
 
 //PLC write Bit Make 함수
-int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
+int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 {
 	//Write Data Block Num
 	int ret = 0;
@@ -789,7 +805,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_Alive >> 16) & 0xff;
 		int shift = enMelsBitOut_Alive & 0xff;
-		data[port] |= ((getBitOut_Alive()&0x1)<< shift);
+		*data[port] |= ((getBitOut_Alive()&0x1)<< shift);
 		ret = port;
 	}
 
@@ -797,7 +813,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_Ready >> 16) & 0xff;
 		int shift = enMelsBitOut_Ready & 0xff;
-		data[port] |= ((getBitOut_Ready() & 0x1) << shift);
+		*data[port] |= ((getBitOut_Ready() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -805,7 +821,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_EncoderSet >> 16) & 0xff;
 		int shift = enMelsBitOut_EncoderSet & 0xff;
-		data[port] |= ((getBitOut_EncoderSet() & 0x1) << shift);
+		*data[port] |= ((getBitOut_EncoderSet() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -813,7 +829,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_RecipeChangeAck >> 16) & 0xff;
 		int shift = enMelsBitOut_RecipeChangeAck & 0xff;
-		data[port] |= ((getBitOut_RecipeChangeAck() & 0x1) << shift);
+		*data[port] |= ((getBitOut_RecipeChangeAck() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -821,7 +837,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_LotStartReqAck >> 16) & 0xff;
 		int shift = enMelsBitOut_LotStartReqAck & 0xff;
-		data[port] |= ((getBitOut_LotStartReqAck() & 0x1) << shift);
+		*data[port] |= ((getBitOut_LotStartReqAck() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -829,7 +845,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_LotEndReqAck >> 16) & 0xff;
 		int shift = enMelsBitOut_LotEndReqAck & 0xff;
-		data[port] |= ((getBitOut_LotEndReqAck() & 0x1) << shift);
+		*data[port] |= ((getBitOut_LotEndReqAck() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -837,7 +853,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_TabZeroReset >> 16) & 0xff;
 		int shift = enMelsBitOut_TabZeroReset & 0xff;
-		data[port] |= ((getBitOut_TabZeroReset() & 0x1) << shift);
+		*data[port] |= ((getBitOut_TabZeroReset() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -845,7 +861,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_AlramResetAck >> 16) & 0xff;
 		int shift = enMelsBitOut_AlramResetAck & 0xff;
-		data[port] |= ((getBitOut_AlarmResetAck() & 0x1) << shift);
+		*data[port] |= ((getBitOut_AlarmResetAck() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -853,7 +869,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_AlramNgResetAck >> 16) & 0xff;
 		int shift = enMelsBitOut_AlramNgResetAck & 0xff;
-		data[port] |= ((getBitOut_AlarmNgResetAck() & 0x1) << shift);
+		*data[port] |= ((getBitOut_AlarmNgResetAck() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -861,7 +877,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_DiskSpaceWarning >> 16) & 0xff;
 		int shift = enMelsBitOut_DiskSpaceWarning & 0xff;
-		data[port] |= ((getBitOut_DiskSpaceWarning() & 0x1) << shift);
+		*data[port] |= ((getBitOut_DiskSpaceWarning() & 0x1) << shift);
 		ret = port;
 	}
 
@@ -869,8 +885,203 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE data[])
 	{
 		int port = (enMelsBitOut_DiskSpaceAlarm >> 16) & 0xff;
 		int shift = enMelsBitOut_DiskSpaceAlarm & 0xff;
-		data[port] |= ((getBitOut_DiskSpaceAlarm() & 0x1) << shift);
+		*data[port] |= ((getBitOut_DiskSpaceAlarm() & 0x1) << shift);
 		ret = port;
+	}
+
+	//버퍼 block 위치에 + 1 = 크기(size)
+	//쓰기 영역에 쓸 데이터 크기
+	return ret + 1;
+}
+
+//PLC write Bit Make 함수
+int CMelsecPlcIo::WritePlcWordDataMake(DWORD** data)
+{
+	int ret = 0;
+	if (isWordOut_DataReportV1_Ea())
+	{
+		ret = enMelsDwordWrite_DataReportV1_Ea;  *data[ret] = getWordOut_DataReportV1_Ea();
+	}
+
+	if (isWordOut_DataReportV2_OK())
+	{
+		ret = enMelsDwordWrite_DataReportV2_OK;  *data[ret] = getWordOut_DataReportV2_OK();
+	}
+
+	if (isWordOut_DataReportV3_NG())
+	{
+		ret = enMelsDwordWrite_DataReportV3_NG;  *data[ret] = getWordOut_DataReportV3_NG();
+	}
+
+	if (isWordOut_DataReportV4_OkRate())
+	{
+		ret = enMelsDwordWrite_DataReportV4_OkRate;  *data[ret] = getWordOut_DataReportV4_OkRate();
+	}
+
+	if (isWordOut_DataReportV5_NgRate())
+	{
+		ret = enMelsDwordWrite_DataReportV5_NgRate;  *data[ret] = getWordOut_DataReportV5_NgRate();
+	}
+
+	if (isWordOut_DataReportV6_RunRate())
+	{
+		ret = enMelsDwordWrite_DataReportV6_RunRate;  *data[ret] = getWordOut_DataReportV6_RunRate();
+	}
+
+	if (isWordOut_Continue_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_Continue_Alarm_Cnt;  *data[ret] = getWordOut_Continue_Alarm_Cnt();
+	}
+
+	if (isWordOut_Heavy_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_Heavy_Alarm_Cnt;  *data[ret] = getWordOut_Heavy_Alarm_Cnt();
+	}
+
+	if (isWordOut_FoilExpInTop_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_FoilExpInTop_Alarm_Cnt;  *data[ret] = getWordOut_FoilExpInTop_Alarm_Cnt();
+	}
+
+	if (isWordOut_FoilExpInBtm_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_FoilExpInBottom_Alarm_Cnt;  *data[ret] = getWordOut_FoilExpInBtm_Alarm_Cnt();
+	}
+
+	if (isWordOut_FoilExpOutTop_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_FoilExpOutTop_Alarm_Cnt;  *data[ret] = getWordOut_FoilExpOutTop_Alarm_Cnt();
+	}
+
+	if (isWordOut_FoilExpOutBtm_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_FoilExpOutBottom_Alarm_Cnt;  *data[ret] = getWordOut_FoilExpOutBtm_Alarm_Cnt();
+	}
+
+	if (isWordOut_FoilExpBothTop_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_FoilExpBothTop_Alarm_Cnt;  *data[ret] = getWordOut_FoilExpBothTop_Alarm_Cnt();
+	}
+
+	if (isWordOut_FoilExpBothBtm_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_FoilExpBothBottom_Alarm_Cnt;  *data[ret] = getWordOut_FoilExpBothBtm_Alarm_Cnt();
+	}
+
+	if (isWordOut_SpeterTop_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_SpeterTop_Alarm_Cnt;  *data[ret] = getWordOut_SpeterTop_Alarm_Cnt();
+	}
+
+	if (isWordOut_SpeterBtm_Alarm_Cnt())
+	{
+		ret = enMelsDwordWrite_SpeterBtm_Alarm_Cnt;  *data[ret] = getWordOut_SpeterBtm_Alarm_Cnt();
+	}
+
+	if (isWordOut_Top_Defect_Count_Real())
+	{
+		ret = enMelsDwordWrite_Top_Defect_Count_Real;  *data[ret] = getWordOut_Top_Defect_Count_Real();
+	}
+
+	if (isWordOut_Btm_Defect_Count_Real())
+	{
+		ret = enMelsDwordWrite_Btm_Defect_Count_Real;  *data[ret] = getWordOut_Btm_Defect_Count_Real();
+	}
+
+	if (isWordOut_Top_Defect_Count_LotEnd())
+	{
+		ret = enMelsDwordWrite_Top_Defect_Count_LotEnd;  *data[ret] = getWordOut_Top_Defect_Count_LotEnd();
+	}
+
+	if (isWordOut_Btm_Defect_Count_LotEnd())
+	{
+		ret = enMelsDwordWrite_Btm_Defect_Count_LotEnd;  *data[ret] = getWordOut_Btm_Defect_Count_LotEnd();
+	}
+
+	if (isWordOut_FoilExpInTopTarget())
+	{
+		ret = enMelsDwordWrite_FoilExpInTopTarget;  *data[ret] = getWordOut_FoilExpInTopTarget();
+	}
+
+	if (isWordOut_FoilExpInBtmTarget())
+	{
+		ret = enMelsDwordWrite_FoilExpInBottomTarget;  *data[ret] = getWordOut_FoilExpInBtmTarget();
+	}
+
+	if (isWordOut_FoilExpOutTopTarget())
+	{
+		ret = enMelsDworddWrite_FoilExpOutTopTarget;  *data[ret] = getWordOut_FoilExpOutTopTarget();
+	}
+
+	if (isWordOut_FoilExpOutBtmTarget())
+	{
+		ret = enMelsDwordWrite_FoilExpOutBottomTarget;  *data[ret] = getWordOut_FoilExpOutBtmTarget();
+	}
+
+	if (isWordOut_FoilExpBothTopTarget())
+	{
+		ret = enMelsDwordWrite_FoilExpBothTopTarget;  *data[ret] = getWordOut_FoilExpBothTopTarget();
+	}
+
+	if (isWordOut_FoilExpBothBtmTarget())
+	{
+		ret = enMelsDwordWrite_FoilExpBothBottomTarget;  *data[ret] = getWordOut_FoilExpBothBtmTarget();
+	}
+
+	if (isWordOut_SpeterTopTarget())
+	{
+		ret = enMelsDwordWrite_SpeterTopTarget;  *data[ret] = getWordOut_SpeterTopTarget();
+	}
+
+	if (isWordOut_SpeterBtmTarget())
+	{
+		ret = enMelsDwordWrite_SpeterBtmTarget;  *data[ret] = getWordOut_SpeterBtmTarget();
+	}
+
+	if (isWordOut_PrmContinuousCnt())
+	{
+		ret = enMelsDwordWrite_PrmContinuousCnt;  *data[ret] = getWordOut_PrmContinuousCnt();
+	}
+
+	if (isWordOut_PrmSectorNgTabCnt())
+	{
+		ret = enMelsDwordWrite_PrmSectorNgTabCnt;  *data[ret] = getWordOut_PrmSectorNgTabCnt();
+	}
+
+	if (isWordOut_PrmSectorBaseCnt())
+	{
+		ret = enMelsDwordWrite_PrmSectorBaseCnt;  *data[ret] = getWordOut_PrmSectorBaseCnt();
+	}
+
+	if (isWordOut_AlarmExist())
+	{
+		ret = enMelsDwordWrite_AlarmExist;  *data[ret] = getWordOut_AlarmExist();
+	}
+
+	if (isWordOut_AlarmCode_Buffer())
+	{
+		ret = enMelsDwordWrite_AlarmCode_Buffer1;
+		int idx = 0;
+		for (; idx < COUNT_ALRAMBUFF; idx++)
+		{
+			*data[ret] = getWordOut_AlarmCode_Buffer(idx);
+		}
+		ret = enMelsDwordWrite_AlarmCode_Buffer1 + idx;
+	}
+
+	if (isWordOut_Cell_Trigger_ID())
+	{
+		ret = enMelsDwordWrite_Cell_Trigger_ID;  *data[ret] = getWordOut_Cell_Trigger_ID();
+	}
+
+	if (isWordOut_Judge())
+	{
+		ret = enMelsDwordWrite_Judge;  *data[ret] = getWordOut_Judge();
+	}
+
+	if (isWordOut_NG_Code())
+	{
+		ret = enMelsDwordWrite_NG_Code;  *data[ret] = getWordOut_Judge();
 	}
 
 	//버퍼 block 위치에 + 1 = 크기(size)

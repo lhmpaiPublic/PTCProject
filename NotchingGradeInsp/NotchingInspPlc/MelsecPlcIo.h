@@ -132,7 +132,10 @@ private:
 
 
 	//PLC write Bit Make 함수
-	int WritePlcBitDataMake(BYTE data[]);
+	int WritePlcBitDataMake(BYTE** data);
+
+	//PLC write Bit Make 함수
+	int WritePlcWordDataMake(DWORD** data);
 
 
 	virtual int PlcDataReadWritePorc();
