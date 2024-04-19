@@ -303,7 +303,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	int wordwritesize = WritePlcWordDataMake(&buffWordOut);
 	if (wordwritesize > 0)
 	{
-		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffWordOut, wordwritesize, m_wOffset_WordOut));
+		//LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffWordOut, wordwritesize, m_wOffset_WordOut));
 		WriteWordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffWordOut, wordwritesize, m_wOffset_WordOut);
 	}
 	delete[] buffWordOut;
@@ -816,97 +816,73 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 {
 	//Write Data Block Num
 	int ret = -1;
-	if (isBitOut_Alive())
-	{
-		int port = (enMelsBitOut_Alive >> 8) & 0xff;
-		int shift = enMelsBitOut_Alive & 0xff;
-		byte b = ((getBitOut_Alive() & 0x1) << shift);
-		*(*data + port) |= b;
-		ret = port;
-	}
 
-	if (isBitOut_Ready())
-	{
-		int port = (enMelsBitOut_Ready >> 8) & 0xff;
-		int shift = enMelsBitOut_Ready & 0xff;
-		*(*data + port) |= ((getBitOut_Ready() & 0x1) << shift);
-		ret = port;
-	}
+	int port = (enMelsBitOut_Alive >> 8) & 0xff;
+	int shift = enMelsBitOut_Alive & 0xff;
+	if (isBitOut_Alive()) ret = port;
+	*(*data + port) |= ((getBitOut_Alive() & 0x1) << shift);	
 
-	if (isBitOut_EncoderSet())
-	{
-		int port = (enMelsBitOut_EncoderSet >> 8) & 0xff;
-		int shift = enMelsBitOut_EncoderSet & 0xff;
-		*(*data + port) |= ((getBitOut_EncoderSet() & 0x1) << shift);
-		ret = port;
-	}
 
-	if (isBitOut_RecipeChangeAck())
-	{
-		int port = (enMelsBitOut_RecipeChangeAck >> 8) & 0xff;
-		int shift = enMelsBitOut_RecipeChangeAck & 0xff;
-		*(*data + port) |= ((getBitOut_RecipeChangeAck() & 0x1) << shift);
-		ret = port;
-	}
+	port = (enMelsBitOut_Ready >> 8) & 0xff;
+	shift = enMelsBitOut_Ready & 0xff;
+	if (isBitOut_Ready()) ret = port;
+	*(*data + port) |= ((getBitOut_Ready() & 0x1) << shift);
 
-	if (isBitOut_LotStartReqAck())
-	{
-		int port = (enMelsBitOut_LotStartReqAck >> 8) & 0xff;
-		int shift = enMelsBitOut_LotStartReqAck & 0xff;
-		*(*data + port) |= ((getBitOut_LotStartReqAck() & 0x1) << shift);
-		ret = port;
-	}
 
-	if (isBitOut_LotEndReqAck())
-	{
-		int port = (enMelsBitOut_LotEndReqAck >> 8) & 0xff;
-		int shift = enMelsBitOut_LotEndReqAck & 0xff;
-		*(*data + port) |= ((getBitOut_LotEndReqAck() & 0x1) << shift);
-		ret = port;
-	}
+	port = (enMelsBitOut_EncoderSet >> 8) & 0xff;
+	shift = enMelsBitOut_EncoderSet & 0xff;
+	if (isBitOut_EncoderSet()) ret = port;
+	*(*data + port) |= ((getBitOut_EncoderSet() & 0x1) << shift);
 
-	if (isBitOut_TabZeroReset())
-	{
-		int port = (enMelsBitOut_TabZeroReset >> 8) & 0xff;
-		int shift = enMelsBitOut_TabZeroReset & 0xff;
-		*(*data + port) |= ((getBitOut_TabZeroReset() & 0x1) << shift);
-		ret = port;
-	}
+	port = (enMelsBitOut_TabZeroReset >> 8) & 0xff;
+	shift = enMelsBitOut_TabZeroReset & 0xff;
+	if (isBitOut_TabZeroReset()) ret = port;
+	*(*data + port) |= ((getBitOut_TabZeroReset() & 0x1) << shift);
 
-	if (isBitOut_AlarmResetAck())
-	{
-		int port = (enMelsBitOut_AlramResetAck >> 8) & 0xff;
-		int shift = enMelsBitOut_AlramResetAck & 0xff;
-		*(*data + port) |= ((getBitOut_AlarmResetAck() & 0x1) << shift);
-		ret = port;
-	}
+	port = (enMelsBitOut_DiskSpaceWarning >> 8) & 0xff;
+	shift = enMelsBitOut_DiskSpaceWarning & 0xff;
+	if (isBitOut_DiskSpaceWarning()) ret = port;
+	*(*data + port) |= ((getBitOut_DiskSpaceWarning() & 0x1) << shift);
 
-	if (isBitOut_AlarmNgResetAck())
-	{
-		int port = (enMelsBitOut_AlramNgResetAck >> 8) & 0xff;
-		int shift = enMelsBitOut_AlramNgResetAck & 0xff;
-		*(*data + port) |= ((getBitOut_AlarmNgResetAck() & 0x1) << shift);
-		ret = port;
-	}
+	static char b = 0;
+	b ^= 0x1;
+	port = (enMelsBitOut_DiskSpaceAlarm >> 8) & 0xff;
+	shift = enMelsBitOut_DiskSpaceAlarm & 0xff;
+	//if (isBitOut_DiskSpaceAlarm()) ret = port;
+	ret = port;
+	*(*data + port) |= (b << shift);
+	//*(*data + port) |= ((getBitOut_DiskSpaceAlarm() & 0x1) << shift);
 
-	if (isBitOut_DiskSpaceWarning())
-	{
-		int port = (enMelsBitOut_DiskSpaceWarning >> 8) & 0xff;
-		int shift = enMelsBitOut_DiskSpaceWarning & 0xff;
-		*(*data + port) |= ((getBitOut_DiskSpaceWarning() & 0x1) << shift);
-		ret = port;
-	}
+	port = (enMelsBitOut_RecipeChangeAck >> 8) & 0xff;
+	shift = enMelsBitOut_RecipeChangeAck & 0xff;
+	if (isBitOut_RecipeChangeAck()) ret = port;
+	*(*data + port) |= ((getBitOut_RecipeChangeAck() & 0x1) << shift);
 
-	if (isBitOut_DiskSpaceAlarm())
-	{
-		int port = (enMelsBitOut_DiskSpaceAlarm >> 8) & 0xff;
-		int shift = enMelsBitOut_DiskSpaceAlarm & 0xff;
-		*(*data + port) |= ((getBitOut_DiskSpaceAlarm() & 0x1) << shift);
-		ret = port;
-	}
 
-	//버퍼 block 위치에 + 1 = 크기(size)
-	//쓰기 영역에 쓸 데이터 크기
+	port = (enMelsBitOut_LotStartReqAck >> 8) & 0xff;
+	shift = enMelsBitOut_LotStartReqAck & 0xff;
+	if (isBitOut_LotStartReqAck()) ret = port;
+	*(*data + port) |= ((getBitOut_LotStartReqAck() & 0x1) << shift);
+
+
+	port = (enMelsBitOut_LotEndReqAck >> 8) & 0xff;
+	shift = enMelsBitOut_LotEndReqAck & 0xff;
+	if (isBitOut_LotEndReqAck()) ret = port;
+	*(*data + port) |= ((getBitOut_LotEndReqAck() & 0x1) << shift);
+
+	port = (enMelsBitOut_AlramResetAck >> 8) & 0xff;
+	shift = enMelsBitOut_AlramResetAck & 0xff;
+	if (isBitOut_AlarmResetAck()) ret = port;
+	*(*data + port) |= ((getBitOut_AlarmResetAck() & 0x1) << shift);
+
+	port = (enMelsBitOut_AlramNgResetAck >> 8) & 0xff;
+	shift = enMelsBitOut_AlramNgResetAck & 0xff;
+	if (isBitOut_AlarmNgResetAck()) ret = port;
+	*(*data + port) |= ((getBitOut_AlarmNgResetAck() & 0x1) << shift);
+
+
+//버퍼 block 위치에 + 1 = 크기(size)
+//쓰기 영역에 쓸 데이터 크기
 	return ret + 1;
 }
 
@@ -914,191 +890,152 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 int CMelsecPlcIo::WritePlcWordDataMake(DWORD** data)
 {
 	int ret = -1;
-	if (isWordOut_DataReportV1_Ea())
+	int idx = enMelsDwordWrite_DataReportV1_Ea;;
+	if (isWordOut_DataReportV1_Ea()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV1_Ea();
+
+	idx = enMelsDwordWrite_DataReportV2_OK;;
+	if (isWordOut_DataReportV2_OK()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV2_OK();
+
+	idx = enMelsDwordWrite_DataReportV3_NG;;
+	if (isWordOut_DataReportV3_NG()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV3_NG();
+
+	idx = enMelsDwordWrite_DataReportV4_OkRate;;
+	if (isWordOut_DataReportV4_OkRate()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV4_OkRate();
+
+	idx = enMelsDwordWrite_DataReportV5_NgRate;;
+	if (isWordOut_DataReportV5_NgRate()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV5_NgRate();
+
+	idx = enMelsDwordWrite_DataReportV6_RunRate;;
+	if (isWordOut_DataReportV6_RunRate()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV6_RunRate();
+
+	idx = enMelsDwordWrite_Continue_Alarm_Cnt;;
+	if (isWordOut_Continue_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_Continue_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_Heavy_Alarm_Cnt;;
+	if (isWordOut_Heavy_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_Heavy_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpInTop_Alarm_Cnt;;
+	if (isWordOut_FoilExpInTop_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpInTop_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpInBottom_Alarm_Cnt;;
+	if (isWordOut_FoilExpInBtm_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpInBtm_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpOutTop_Alarm_Cnt;
+	if (isWordOut_FoilExpOutTop_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpOutTop_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpOutBottom_Alarm_Cnt;;
+	if (isWordOut_FoilExpOutBtm_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpOutBtm_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpBothTop_Alarm_Cnt;;
+	if (isWordOut_FoilExpBothTop_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpBothTop_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpBothBottom_Alarm_Cnt;;
+	if (isWordOut_FoilExpBothBtm_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpBothBtm_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_SpeterTop_Alarm_Cnt;;
+	if (isWordOut_SpeterTop_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_SpeterTop_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_SpeterBtm_Alarm_Cnt;;
+	if (isWordOut_SpeterBtm_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_SpeterBtm_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_Top_Defect_Count_Real;;
+	if (isWordOut_Top_Defect_Count_Real()) ret = idx;
+	*(*data + idx) = getWordOut_Top_Defect_Count_Real();
+
+	idx = enMelsDwordWrite_Btm_Defect_Count_Real;;
+	if (isWordOut_Btm_Defect_Count_Real()) ret = idx;
+	*(*data + idx) = getWordOut_Btm_Defect_Count_Real();
+
+	idx = enMelsDwordWrite_Top_Defect_Count_LotEnd;;
+	if (isWordOut_Top_Defect_Count_LotEnd()) ret = idx;
+	*(*data + idx) = getWordOut_Top_Defect_Count_LotEnd();
+
+	idx = enMelsDwordWrite_Btm_Defect_Count_LotEnd;;
+	if (isWordOut_Btm_Defect_Count_LotEnd()) ret = idx;
+	*(*data + idx) = getWordOut_Btm_Defect_Count_LotEnd();
+
+	idx = enMelsDwordWrite_FoilExpInTopTarget;;
+	if (isWordOut_FoilExpInTopTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpInTopTarget();
+
+	idx = enMelsDwordWrite_FoilExpInBottomTarget;;
+	if (isWordOut_FoilExpInBtmTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpInBtmTarget();
+
+	idx = enMelsDworddWrite_FoilExpOutTopTarget;;
+	if (isWordOut_FoilExpOutTopTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpOutTopTarget();
+
+	idx = enMelsDwordWrite_FoilExpOutBottomTarget;;
+	if (isWordOut_FoilExpOutBtmTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpOutBtmTarget();
+
+	idx = enMelsDwordWrite_FoilExpBothTopTarget;;
+	if (isWordOut_FoilExpBothTopTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpBothTopTarget();
+
+	idx = enMelsDwordWrite_FoilExpBothBottomTarget;;
+	if (isWordOut_FoilExpBothBtmTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpBothBtmTarget();
+
+	idx = enMelsDwordWrite_SpeterTopTarget;;
+	if (isWordOut_SpeterTopTarget()) ret = idx;
+	*(*data + idx) = getWordOut_SpeterTopTarget();
+
+	idx = enMelsDwordWrite_SpeterBtmTarget;;
+	if (isWordOut_SpeterBtmTarget()) ret = idx;
+	*(*data + idx) = getWordOut_SpeterBtmTarget();
+
+	idx = enMelsDwordWrite_PrmContinuousCnt;;
+	if (isWordOut_PrmContinuousCnt()) ret = idx;
+	*(*data + idx) = getWordOut_PrmContinuousCnt();
+
+	idx = enMelsDwordWrite_PrmSectorNgTabCnt;;
+	if (isWordOut_PrmSectorNgTabCnt()) ret = idx;
+	*(*data + idx) = getWordOut_PrmSectorNgTabCnt();
+
+	idx = enMelsDwordWrite_PrmSectorBaseCnt;;
+	if (isWordOut_PrmSectorBaseCnt()) ret = idx;
+	*(*data + idx) = getWordOut_PrmSectorBaseCnt();
+
+	idx = enMelsDwordWrite_AlarmExist;;
+	if (isWordOut_AlarmExist()) ret = idx;
+	*(*data + idx) = getWordOut_AlarmExist();
+
+	idx = enMelsDwordWrite_AlarmCode_Buffer1 + (MELSEC_COUNT_ALRAMBUFF - 1);
+	if (isWordOut_AlarmCode_Buffer()) ret = idx;
+	for (int num = 0; num < MELSEC_COUNT_ALRAMBUFF; num++)
 	{
-		ret = enMelsDwordWrite_DataReportV1_Ea;  *(*data + ret) = getWordOut_DataReportV1_Ea();
+		*(*data+enMelsDwordWrite_AlarmCode_Buffer1 + num) = getWordOut_AlarmCode_Buffer(num);
 	}
 
-	if (isWordOut_DataReportV2_OK())
-	{
-		ret = enMelsDwordWrite_DataReportV2_OK;  *(*data + ret) = getWordOut_DataReportV2_OK();
-	}
+	idx = enMelsDwordWrite_Cell_Trigger_ID;;
+	if (isWordOut_Cell_Trigger_ID()) ret = idx;
+	*(*data + idx) = getWordOut_Cell_Trigger_ID();
 
-	if (isWordOut_DataReportV3_NG())
-	{
-		ret = enMelsDwordWrite_DataReportV3_NG;  *(*data + ret) = getWordOut_DataReportV3_NG();
-	}
+	idx = enMelsDwordWrite_Judge;;
+	if (isWordOut_Judge()) ret = idx;
+	*(*data + idx) = getWordOut_Judge();
 
-	if (isWordOut_DataReportV4_OkRate())
-	{
-		ret = enMelsDwordWrite_DataReportV4_OkRate;  *(*data + ret) = getWordOut_DataReportV4_OkRate();
-	}
-
-	if (isWordOut_DataReportV5_NgRate())
-	{
-		ret = enMelsDwordWrite_DataReportV5_NgRate;  *(*data + ret) = getWordOut_DataReportV5_NgRate();
-	}
-
-	if (isWordOut_DataReportV6_RunRate())
-	{
-		ret = enMelsDwordWrite_DataReportV6_RunRate;  *(*data + ret) = getWordOut_DataReportV6_RunRate();
-	}
-
-	if (isWordOut_Continue_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_Continue_Alarm_Cnt;  *(*data + ret) = getWordOut_Continue_Alarm_Cnt();
-	}
-
-	if (isWordOut_Heavy_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_Heavy_Alarm_Cnt;  *(*data + ret) = getWordOut_Heavy_Alarm_Cnt();
-	}
-
-	if (isWordOut_FoilExpInTop_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_FoilExpInTop_Alarm_Cnt;  *(*data + ret) = getWordOut_FoilExpInTop_Alarm_Cnt();
-	}
-
-	if (isWordOut_FoilExpInBtm_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_FoilExpInBottom_Alarm_Cnt;  *(*data + ret) = getWordOut_FoilExpInBtm_Alarm_Cnt();
-	}
-
-	if (isWordOut_FoilExpOutTop_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_FoilExpOutTop_Alarm_Cnt;  *(*data + ret) = getWordOut_FoilExpOutTop_Alarm_Cnt();
-	}
-
-	if (isWordOut_FoilExpOutBtm_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_FoilExpOutBottom_Alarm_Cnt;  *(*data + ret) = getWordOut_FoilExpOutBtm_Alarm_Cnt();
-	}
-
-	if (isWordOut_FoilExpBothTop_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_FoilExpBothTop_Alarm_Cnt;  *(*data + ret) = getWordOut_FoilExpBothTop_Alarm_Cnt();
-	}
-
-	if (isWordOut_FoilExpBothBtm_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_FoilExpBothBottom_Alarm_Cnt;  *(*data + ret) = getWordOut_FoilExpBothBtm_Alarm_Cnt();
-	}
-
-	if (isWordOut_SpeterTop_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_SpeterTop_Alarm_Cnt;  *(*data + ret) = getWordOut_SpeterTop_Alarm_Cnt();
-	}
-
-	if (isWordOut_SpeterBtm_Alarm_Cnt())
-	{
-		ret = enMelsDwordWrite_SpeterBtm_Alarm_Cnt;  *(*data + ret) = getWordOut_SpeterBtm_Alarm_Cnt();
-	}
-
-	if (isWordOut_Top_Defect_Count_Real())
-	{
-		ret = enMelsDwordWrite_Top_Defect_Count_Real;  *(*data + ret) = getWordOut_Top_Defect_Count_Real();
-	}
-
-	if (isWordOut_Btm_Defect_Count_Real())
-	{
-		ret = enMelsDwordWrite_Btm_Defect_Count_Real;  *(*data + ret) = getWordOut_Btm_Defect_Count_Real();
-	}
-
-	if (isWordOut_Top_Defect_Count_LotEnd())
-	{
-		ret = enMelsDwordWrite_Top_Defect_Count_LotEnd;  *(*data + ret) = getWordOut_Top_Defect_Count_LotEnd();
-	}
-
-	if (isWordOut_Btm_Defect_Count_LotEnd())
-	{
-		ret = enMelsDwordWrite_Btm_Defect_Count_LotEnd;  *(*data + ret) = getWordOut_Btm_Defect_Count_LotEnd();
-	}
-
-	if (isWordOut_FoilExpInTopTarget())
-	{
-		ret = enMelsDwordWrite_FoilExpInTopTarget;  *(*data + ret) = getWordOut_FoilExpInTopTarget();
-	}
-
-	if (isWordOut_FoilExpInBtmTarget())
-	{
-		ret = enMelsDwordWrite_FoilExpInBottomTarget;  *(*data + ret) = getWordOut_FoilExpInBtmTarget();
-	}
-
-	if (isWordOut_FoilExpOutTopTarget())
-	{
-		ret = enMelsDworddWrite_FoilExpOutTopTarget;  *(*data + ret) = getWordOut_FoilExpOutTopTarget();
-	}
-
-	if (isWordOut_FoilExpOutBtmTarget())
-	{
-		ret = enMelsDwordWrite_FoilExpOutBottomTarget;  *(*data + ret) = getWordOut_FoilExpOutBtmTarget();
-	}
-
-	if (isWordOut_FoilExpBothTopTarget())
-	{
-		ret = enMelsDwordWrite_FoilExpBothTopTarget;  *(*data + ret) = getWordOut_FoilExpBothTopTarget();
-	}
-
-	if (isWordOut_FoilExpBothBtmTarget())
-	{
-		ret = enMelsDwordWrite_FoilExpBothBottomTarget;  *(*data + ret) = getWordOut_FoilExpBothBtmTarget();
-	}
-
-	if (isWordOut_SpeterTopTarget())
-	{
-		ret = enMelsDwordWrite_SpeterTopTarget;  *(*data + ret) = getWordOut_SpeterTopTarget();
-	}
-
-	if (isWordOut_SpeterBtmTarget())
-	{
-		ret = enMelsDwordWrite_SpeterBtmTarget;  *(*data + ret) = getWordOut_SpeterBtmTarget();
-	}
-
-	if (isWordOut_PrmContinuousCnt())
-	{
-		ret = enMelsDwordWrite_PrmContinuousCnt;  *(*data + ret) = getWordOut_PrmContinuousCnt();
-	}
-
-	if (isWordOut_PrmSectorNgTabCnt())
-	{
-		ret = enMelsDwordWrite_PrmSectorNgTabCnt;  *(*data + ret) = getWordOut_PrmSectorNgTabCnt();
-	}
-
-	if (isWordOut_PrmSectorBaseCnt())
-	{
-		ret = enMelsDwordWrite_PrmSectorBaseCnt;  *(*data + ret) = getWordOut_PrmSectorBaseCnt();
-	}
-
-	if (isWordOut_AlarmExist())
-	{
-		ret = enMelsDwordWrite_AlarmExist;  *(*data + ret) = getWordOut_AlarmExist();
-	}
-
-	if (isWordOut_AlarmCode_Buffer())
-	{
-		ret = enMelsDwordWrite_AlarmCode_Buffer1;
-		int idx = 0;
-		for (; idx < COUNT_ALRAMBUFF; idx++)
-		{
-			*(*data + ret + idx) = getWordOut_AlarmCode_Buffer(idx);
-		}
-		ret = enMelsDwordWrite_AlarmCode_Buffer1 + idx;
-	}
-
-	if (isWordOut_Cell_Trigger_ID())
-	{
-		ret = enMelsDwordWrite_Cell_Trigger_ID;  *(*data + ret) = getWordOut_Cell_Trigger_ID();
-	}
-
-	if (isWordOut_Judge())
-	{
-		ret = enMelsDwordWrite_Judge;  *(*data + ret) = getWordOut_Judge();
-	}
-
-	if (isWordOut_NG_Code())
-	{
-		ret = enMelsDwordWrite_NG_Code;  *(*data + ret) = getWordOut_NG_Code();
-	}
+	idx = enMelsDwordWrite_NG_Code;;
+	if (isWordOut_NG_Code()) ret = idx;
+	*(*data + idx) = getWordOut_NG_Code();
 
 	//버퍼 block 위치에 + 1 = 크기(size)
 	//쓰기 영역에 쓸 데이터 크기

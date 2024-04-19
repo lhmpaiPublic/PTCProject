@@ -50,6 +50,8 @@
 #define MELSEC_READRECIPENAME 8
 //멜섹 CELL ID 읽기 갯수
 #define MELSEC_READCELLID 20
+//멜섹 Alram Buff 갯수
+#define MELSEC_COUNT_ALRAMBUFF 5
 
 
 
