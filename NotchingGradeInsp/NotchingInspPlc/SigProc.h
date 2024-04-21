@@ -91,7 +91,7 @@ public:
 		enWordRead_PrmSectorNgTabCnt = 0x0042,		enWordRead_PrmSectorNgTabCnt_Len = 2,
 		enWordRead_PrmSectorBaseCnt = 0x0044,		enWordRead_PrmSectorBaseCnt_Len = 2,
 		enWordRead_AlarmExistAck = 0x0050,		enWordRead_AlarmExistAck_Len = 2,				// 46
-		enWordReadMaxSize = 160,
+		enWordReadMaxSize = 0x00A0,
 
 	};
 

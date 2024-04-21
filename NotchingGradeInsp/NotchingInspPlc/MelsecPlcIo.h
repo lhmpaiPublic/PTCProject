@@ -37,14 +37,8 @@
 //멜섹 Bit Read 영역 크기
 #define	MELSEC_BITINSIZE_MAX 4
 
-//멜섹 Word Read 영역 크기(int DOWRD 로 갯수 세팅)
-#define	MELSEC_WORDINSIZE_MAX 80 // 160
-
 //멜섹 Bit Write 영역 크기
 #define	MELSEC_BITOUTSIZE_MAX 4
-
-//멜섹 Word Write 영역 크기(int DOWRD 로 갯수 세팅)
-#define	MELSEC_WORDOUTSIZE_MAX 80 // 160
 
 //멜섹 Recipe Name 읽기 갯수
 #define MELSEC_READRECIPENAME 8
@@ -52,6 +46,12 @@
 #define MELSEC_READCELLID 20
 //멜섹 Alram Buff 갯수
 #define MELSEC_COUNT_ALRAMBUFF 5
+
+//멜섹 Word Read 영역 크기
+#define	MELSEC_WORDINSIZE_MAX 160
+
+//멜섹 Word Write 영역 크기
+#define	MELSEC_WORDOUTSIZE_MAX 160
 
 
 

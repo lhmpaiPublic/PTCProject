@@ -91,7 +91,7 @@ enum MelsWordRead
 	enMelsWordRead_PrmSectorBaseCnt = 0x0044,
 	enMelsWordRead_AlarmExistAck = 0x0050,
 
-	enMelsWordReadMaxSize = 0xA0 //160,
+	enMelsWordReadMaxSize = MELSEC_WORDINSIZE_MAX //160,
 
 };
 
@@ -145,7 +145,7 @@ enum MelsWordWrite
 	enMelsWordWrite_Judge = 0x0072,
 	enMelsWordWrite_NG_Code = 0x0074,
 
-	enWordWriteMaxSize = 0xA0 //160,
+	enWordWriteMaxSize = MELSEC_WORDOUTSIZE_MAX //160,
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -848,10 +848,8 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 	b ^= 0x1;
 	port = (enMelsBitOut_DiskSpaceAlarm >> 8) & 0xff;
 	shift = enMelsBitOut_DiskSpaceAlarm & 0xff;
-	//if (isBitOut_DiskSpaceAlarm()) ret = port;
-	ret = port;
-	*(*data + port) |= (b << shift);
-	//*(*data + port) |= ((getBitOut_DiskSpaceAlarm() & 0x1) << shift);
+	if (isBitOut_DiskSpaceAlarm()) ret = port;
+	*(*data + port) |= ((getBitOut_DiskSpaceAlarm() & 0x1) << shift);
 
 	port = (enMelsBitOut_RecipeChangeAck >> 8) & 0xff;
 	shift = enMelsBitOut_RecipeChangeAck & 0xff;
