@@ -9,10 +9,7 @@
 #define SIENENS_READWORD_STARTINDEX 20
 
 //지멘스 WORD 영역 읽기 맥스 갯수
-#define SIENENS_READWORD_MAX 274 //(MAX_SMS_WORDIO_IN)
-
-//지멘스 읽기 BIT + WORD
-#define SIENENS_READBITWORD_MAX (SIENENS_READBIT+SIENENS_READWORD_MAX)
+#define SIENENS_READWORD_MAX 274
 
 //지멘스 WORD 영역 읽기 추가 - Cell Key 시작점
 #define SIENENS_CELLKEY_START 210
@@ -29,9 +26,6 @@
 #define SIENENS_WRITEWORD_STARTINDEX 20
 //지멘스 WORD 영역 쓰기 맥스 갯수
 #define SIENENS_WRITEWORD_MAX 149
-
-//지멘스 쓰기 BIT + WORD
-#define SIENENS_WRITEBITWORD_MAX (SIENENS_WRITEBIT+SIENENS_WRITEWORD_MAX)
 
 
 //지멘스 Recipe Name 읽기 갯수
@@ -58,8 +52,10 @@ public:
 	short m_ReadBitData[SIENENS_READBIT];
 	short m_ReadWordData[SIENENS_READWORD_MAX];
 
-	//PLC 쓰기 Data
-	short m_WriteData[SIENENS_WRITEBITWORD_MAX];
+	//PLC 쓰기 Bit Data
+	short m_WriteBitData[SIENENS_WRITEBIT];
+	//PLC 쓰기 Word Data
+	short m_WriteWordData[SIENENS_WRITEWORD_MAX];
 public:
 	// write data
 	int WriteDataReg(int offset, short data[], int num);
@@ -94,8 +90,10 @@ public:
 	CString MakeCellId(short* data);
 
 
-	//PLC write Data Make 함수
-	int WritePlcDataMake();
+	//PLC write Bit Data Make 함수
+	int WritePlcBitDataMake();
+	//PLC write Word Data Make 함수
+	int WritePlcWordDataMake();
 
 private:
 
