@@ -967,6 +967,7 @@ UINT __stdcall CModeDlg::DllSocket_ReceiveDataBuffer(unsigned char* pReceiveBuff
 	CString mTemp_Source = "";
 	CString mTemp_C = "";
 	CString mTemp_Dest = "";
+	int mTemp_Dest_TrigCount = 0;
 	int iStart = 99; // 확인 후 수정할 것
 	int iTemp = 80; // 확인 후 수정할 것
 
@@ -979,10 +980,10 @@ UINT __stdcall CModeDlg::DllSocket_ReceiveDataBuffer(unsigned char* pReceiveBuff
 
 	LOGDISPLAY_ALL("[DllSocket_ReceiveDataBuffer] mTemp_Source[ %s ], length[%d]", mTemp_Source, nReceiveLengthByByte);
 
-	mTemp_Dest = parse_CellID(mTemp_Source);
+	mTemp_Dest = parse_CellID(mTemp_Source, mTemp_Dest_TrigCount);
 
-	LOGDISPLAY_ALL("[DllSocket_ReceiveDataBuffer] mTemp_Dest[ %s ]", mTemp_Dest);
-	AprData.m_NowLotData.m_nCellTrackID = mTemp_Dest;
+	LOGDISPLAY_ALL("[DllSocket_ReceiveDataBuffer] mTemp_Dest[ %s ], mTemp_Dest_TrigCount[ %d ]", mTemp_Dest, mTemp_Dest_TrigCount);
+	AprData.m_NowLotData.m_nCellTrackID[mTemp_Dest_TrigCount] = mTemp_Dest;
 
 	return 0;
 }
@@ -1025,7 +1026,7 @@ void CModeDlg::SubDisplayUpdate(void)
 	}
 }
 
-CString CModeDlg::parse_CellID(CString SourceString)
+CString CModeDlg::parse_CellID(CString SourceString, int trigCount)
 {
 	CString mTemp_Source = SourceString;
 	CString mTemp_Dest = "Check";
@@ -1033,15 +1034,18 @@ CString CModeDlg::parse_CellID(CString SourceString)
 	int iTemp_Start = 0;
 	int iTemp_End = 0;
 
+	int iTemp_trg_Start = 0;
+	int iTemp_trg_End = 0;
+
 	// "CellID_1";
 
 	// CellID_1 의 시작점을 찾는다.
 	iTemp_Start = mTemp_Source.Find("CellID_1", 0);
 
-	// iTemp 에 "CellID_1 = " 만큼 더한다.  
+	// iTemp_Start 에 "CellID_1 = " 만큼 더한다.  
 	iTemp_Start = iTemp_Start + 9;
 
-	// iTemp 부터 첫번째 , 를 찾는다.
+	// iTemp_Start 부터 첫번째 , 를 찾는다.
 	iTemp_End = mTemp_Source.Find(",", iTemp_Start);
 	
 	LOGDISPLAY_ALL("[parse_CellID] iTemp_Start[ %d ], iTemp_End[ %d ]", iTemp_Start, iTemp_End);
@@ -1050,6 +1054,18 @@ CString CModeDlg::parse_CellID(CString SourceString)
 
 	// CellID_1 값과 이후 첫번째 , 의 카운트만큼만 복사함.
 	mTemp_Dest = mTemp_Source.Mid(iTemp_Start, iTemp_End - iTemp_Start);
+
+	// trigCount
+	iTemp_trg_Start = mTemp_Source.Find("TrigCount", 0);
+	// iTemp_trg_Start 에 "TrigCount = " 만큼 더한다.  
+	iTemp_trg_Start = iTemp_trg_Start + 10;
+
+	// iTemp_trg_Start 부터 첫번째 , 를 찾는다.
+	iTemp_trg_End = mTemp_Source.Find(",", iTemp_trg_Start);
+
+	LOGDISPLAY_ALL("[parse_CellID] iTemp_trg_Start[ %d ], iTemp_trg_End[ %d ]", iTemp_trg_Start, iTemp_trg_End);
+
+	trigCount = _ttoi(mTemp_Source.Mid(iTemp_trg_Start, iTemp_trg_End - iTemp_trg_Start));
 
 	return mTemp_Dest;
 }

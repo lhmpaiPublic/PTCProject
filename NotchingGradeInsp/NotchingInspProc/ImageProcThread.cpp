@@ -1505,7 +1505,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							dwFoilExpInBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpInBottomCount;
 							dwFoilExpOutBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount;
 
-							CString strCellTrackID = AprData.m_NowLotData.m_nCellTrackID;
+							CString strCellTrackID = AprData.m_NowLotData.m_nCellTrackID[pTopInfo->m_nTabId_CntBoard];
 #endif
 							CString strTime;
 							CString strJudge = _T("OK");
