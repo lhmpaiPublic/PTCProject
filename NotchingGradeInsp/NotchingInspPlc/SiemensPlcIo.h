@@ -33,8 +33,6 @@
 //지멘스 CELL ID 읽기 갯수
 #define SIEMENS_READCELLID 20
 
-
-
 class CSiemensPlcIo : public CDataPlcImp
 {
 	int m_nSlaveID;
@@ -49,17 +47,29 @@ public:
 	~CSiemensPlcIo();
 
 	//PLC 읽기 Data
+	//short 단위 Bit 영역 데이터
 	short m_ReadBitData[SIENENS_READBIT];
+	//short 단위 Word 영역 데이터
 	short m_ReadWordData[SIENENS_READWORD_MAX];
 
+	//PLC 쓰기 Data
 	//PLC 쓰기 Bit Data
 	short m_WriteBitData[SIENENS_WRITEBIT];
 	//PLC 쓰기 Word Data
 	short m_WriteWordData[SIENENS_WRITEWORD_MAX];
 public:
-	// write data
+	// 데이터를 쓰기위한 함수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//data : 배열 고정 버퍼 사용(short : 2바이트 단위 갯수)
+	//num : short 단위 쓰기 갯수
+	//return : 성공여부 (0 : 성공 0보다 작으면 실패)
 	int WriteDataReg(int offset, short data[], int num);
-	// read data
+
+	// 데이터를 읽기위한 함수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//data : 배열 고정 버퍼 사용(short : 2바이트 단위 갯수)
+	//num : short 단위 읽을 갯수
+	//return : 성공여부 (0 : 성공 0보다 작으면 실패)
 	int ReadDataReg(int offset, short data[], int num);
 
 public:
@@ -71,10 +81,11 @@ public:
 	void SetReConnetTimeOut(int nTimeOut); // nTimeOut: default 2000 ms
 
 	// get network state
+	//Open 상태를 넘긴다.
 	BOOL IsOpened();
-	// get error msg
+	// get error msg 체크 함수
 	CString GetErrorMsg();
-	// get error no
+	// get error 번호
 	int GetErrorNo();
 
 
@@ -82,13 +93,15 @@ public:
 	void SiemensPlcProc();
 
 	//PLC read Data Parser 함수
+	//Bit 영역 short 단위 읽은 데이터를 파싱하여 멤버변수에 세팅한다
 	void ReadPlcBitDataParser(short* data);
+	//Word 영역 short 단위 읽은 데이터를 파싱하여 멤버변수에 세팅한다
 	void ReadPlcWordDataParser(short* data);
+
 	//레시피 명을 만든다.
 	CString MakeRecipeName(short* data);
 	//CELL ID를 만든다.
 	CString MakeCellId(short* data);
-
 
 	//PLC write Bit Data Make 함수
 	int WritePlcBitDataMake();
@@ -96,10 +109,13 @@ public:
 	int WritePlcWordDataMake();
 
 private:
-
+	//접속IP 주소
 	CString m_strIPAddress;
+	//접속 Port 번호
 	int m_nPort;
+	//
 	CWnd* m_pReceiveMsgWnd;
+	//접속 시도 타임아웃 시간 설정
 	int m_nReConnetTimeOut;
 
 	//PLC DLL 객체
@@ -110,6 +126,9 @@ private:
 	// disconnection network
 	void ClosePlcIo(void);
 
+
+	//************* 상위 클래스 오버라이딩 함수 ****************************************
+	//PLC 데이터를 쓰고 읽기를 View 타이머에서 주기적으로 읽기 위해서 오버라이팅 한다.
 	virtual int PlcDataReadWritePorc();
 
 	//Out
@@ -166,16 +185,28 @@ private:
 	//ConnectZone 설정 플래그
 	virtual BOOL GetConnectZone();
 
+	//PLC에서 읽은 데이터를 가져온다.
+	//CSequenceData 클래스 멤버에 세팅하여 가져온다.
 	virtual int ReadBlockAllData(CSequenceData* pSeqData);
-	virtual int WriteBlockData(void* pGlobalData);
 
+	//CGlobalData 클래스에 세팅된 데이터를 PLC 멤버변수에 세팅한다.
+	//검사 데이터들이 전역으로 세팅되어 전체 호출하여 세팅한다.
+	virtual int WriteBlockData(void* pGlobalData);
+	//****************************************************************
+
+	//***************** 모니터링 데이터 가져오기 *********************
+	//기존 사용하는 방식 호환 기능
+	//CDataPlcImp 클래스 멤버를 호출하여 직접 세팅할 수 있다.
+	//Read 영역 Bit 데이터
 	virtual int ReadAllPort_BitIn(BOOL* pSigBitIn);
+	//Write Bit 영역 데이터
 	virtual int ReadAllPort_BitOut(BOOL* pSigBitOut);
 
 	//In Word 영역의 인덱스의 값을 String 으로 가져온다.
 	virtual CString GetInWordData(int idx);
 	//In Word 영역의 인덱스의 값을 String 으로 가져온다.
 	virtual CString GetOutWordData(int idx);
+	//****************************************************************
 
 };
 

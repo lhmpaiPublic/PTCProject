@@ -1371,33 +1371,29 @@ int CMelsecPlcIo::WriteBlockData(void* pGlobalData)
 
 int CMelsecPlcIo::ReadAllPort_BitIn(BOOL* pSigBitIn)
 { 
-	pSigBitIn[((enMelsBitInAlive>>8) & 0xff) + (enMelsBitInAlive & 0xff)] = getBitIn_Alive();
-	pSigBitIn[((enMelsBitInReady >> 8) & 0xff) + (enMelsBitInReady & 0xff)] = getBitIn_Ready();
-	pSigBitIn[((enMelsBitInRun >> 8) & 0xff) + (enMelsBitInRun & 0xff)] = getBitIn_Run();
-	pSigBitIn[((enMelsBitInEncoderReset >> 8) & 0xff) + (enMelsBitInEncoderReset & 0xff)] = getBitIn_EncoderReset();
-	pSigBitIn[((enMelsBitInTabZeroReset >> 8) & 0xff) + (enMelsBitInTabZeroReset & 0xff)] = getBitIn_TabZeroReset();
-	pSigBitIn[((enMelsBitInInkMarkingActive >> 8) & 0xff) + (enMelsBitInInkMarkingActive & 0xff)] = getBitIn_InkMarkingActive();
-	pSigBitIn[((enMelsBitInConnectZone >> 8) & 0xff) + (enMelsBitInConnectZone & 0xff)] = getBitIn_ConnectZone();
-	pSigBitIn[((enMelsBitInRecipeChange >> 8) & 0xff) + (enMelsBitInRecipeChange & 0xff)] = getBitIn_RecipeChange();
-	pSigBitIn[((enMelsBitInLotStartReq >> 8) & 0xff) + (enMelsBitInLotStartReq & 0xff)] = getBitIn_LotStartReq();
-	pSigBitIn[((enMelsBitInLotEndReq >> 8) & 0xff) + (enMelsBitInLotEndReq & 0xff)] = getBitIn_LotEndReq();
-	pSigBitIn[((enMelsBitInAlarmResetReq >> 8) & 0xff) + (enMelsBitInAlarmResetReq & 0xff)] = getBitIn_AlarmResetReq();
-	pSigBitIn[((enMelsBitInAlarmNgAck >> 8) & 0xff) + (enMelsBitInAlarmNgAck & 0xff)] = getBitIn_AlarmNgAck();
+	int nBitPos = 0;
+	for (int port = 0; port < MAX_USE_PORT; port++) {
+		for (int bit = 0; bit < MAX_PORT_BIT; bit++) {
+			if (m_ReadBitData[port] & (0x01 << bit)) {
+				nBitPos = (port * MAX_PORT_BIT) + bit;
+				pSigBitIn[nBitPos] = TRUE;
+			}
+		}
+	}
 	return 0; 
 }
 int CMelsecPlcIo::ReadAllPort_BitOut(BOOL* pSigBitOut)
 { 
-	pSigBitOut[((enMelsBitOut_Alive >> 8) & 0xff) + (enMelsBitOut_Alive & 0xff)] = getBitOut_Alive();
-	pSigBitOut[((enMelsBitOut_Ready >> 8) & 0xff) + (enMelsBitOut_Ready & 0xff)] = getBitOut_Ready();
-	pSigBitOut[((enMelsBitOut_EncoderSet >> 8) & 0xff) + (enMelsBitOut_EncoderSet & 0xff)] = getBitOut_EncoderSet();
-	pSigBitOut[((enMelsBitOut_TabZeroReset >> 8) & 0xff) + (enMelsBitOut_TabZeroReset & 0xff)] = getBitOut_TabZeroReset();
-	pSigBitOut[((enMelsBitOut_DiskSpaceWarning >> 8) & 0xff) + (enMelsBitOut_DiskSpaceWarning & 0xff)] = getBitOut_DiskSpaceWarning();
-	pSigBitOut[((enMelsBitOut_DiskSpaceAlarm >> 8) & 0xff) + (enMelsBitOut_DiskSpaceAlarm & 0xff)] = getBitOut_DiskSpaceAlarm();
-	pSigBitOut[((enMelsBitOut_RecipeChangeAck >> 8) & 0xff) + (enMelsBitOut_RecipeChangeAck & 0xff)] = getBitOut_RecipeChangeAck();
-	pSigBitOut[((enMelsBitOut_LotStartReqAck >> 8) & 0xff) + (enMelsBitOut_LotStartReqAck & 0xff)] = getBitOut_LotStartReqAck();
-	pSigBitOut[((enMelsBitOut_LotEndReqAck >> 8) & 0xff) + (enMelsBitOut_LotEndReqAck & 0xff)] = getBitOut_LotEndReqAck();
-	pSigBitOut[((enMelsBitOut_AlramResetAck >> 8) & 0xff) + (enMelsBitOut_AlramResetAck & 0xff)] = getBitOut_AlarmResetAck();
-	pSigBitOut[((enMelsBitOut_AlramNgResetAck >> 8) & 0xff) + (enMelsBitOut_AlramNgResetAck & 0xff)] = getBitOut_AlarmNgResetAck();
+	int nBitPos = 0;
+	for (int port = 0; port < MAX_USE_PORT; port++) {
+		for (int bit = 0; bit < MAX_PORT_BIT; bit++) {
+			if (m_WriteBitData[port] & (0x01 << bit)) {
+				nBitPos = (port * MAX_PORT_BIT) + bit;
+				pSigBitOut[nBitPos] = TRUE;
+
+			}
+		}
+	}
 	return 0; 
 }
 

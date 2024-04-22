@@ -950,34 +950,26 @@ int CSiemensPlcIo::WriteBlockData(void* pGlobalData)
 
 int CSiemensPlcIo::ReadAllPort_BitIn(BOOL* pSigBitIn)
 { 
-	pSigBitIn[enSmsBitIn_Alive] = getBitIn_Alive();
-	pSigBitIn[enSmsBitIn_Ready] = getBitIn_Ready();
-	pSigBitIn[enSmsBitIn_Run] = getBitIn_Run();
-	pSigBitIn[enSmsBitIn_EncoderReset] = getBitIn_EncoderReset();
-	pSigBitIn[enSmsBitIn_TabZeroReset] = getBitIn_TabZeroReset();
-	pSigBitIn[enSmsBitIn_InkMarkingActive] = getBitIn_InkMarkingActive();
-	pSigBitIn[enSmsBitIn_ConnectZone] = getBitIn_ConnectZone();
-	pSigBitIn[enSmsBitIn_RecipeChange] = getBitIn_RecipeChange();
-	pSigBitIn[enSmsBitIn_LotStartReq] = getBitIn_LotStartReq();
-	pSigBitIn[enSmsBitIn_LotEndReq] = getBitIn_LotEndReq();
-	pSigBitIn[enSmsBitIn_AlarmResetReq] = getBitIn_AlarmResetReq();
-	pSigBitIn[enSmsBitIn_AlarmNgAck] = getBitIn_AlarmNgAck();
+	for (int i = 0; i < MAX_SMS_BITIO_IN; i++)
+	{
+
+		if (m_ReadBitData[i] == 0x01)
+		{
+			pSigBitIn[i] = TRUE;
+		}
+	}
 	return 0; 
 }
 int CSiemensPlcIo::ReadAllPort_BitOut(BOOL* pSigBitOut)
 { 
-	pSigBitOut[enSmsBitOut_Alive] = getBitOut_Alive();
-	pSigBitOut[enSmsBitOut_Ready] = getBitOut_Ready();
-	pSigBitOut[enSmsBitOut_EncoderSet] = getBitOut_EncoderSet();
-	pSigBitOut[enSmsBitOut_RecipeChangeAck] = getBitOut_RecipeChangeAck();
-	pSigBitOut[enSmsBitOut_LotStartReqAck] = getBitOut_LotStartReqAck();
-	pSigBitOut[enSmsBitOut_LotEndReqAck] = getBitOut_LotEndReqAck();
-	pSigBitOut[enSmsBitOut_TabZeroReset] = getBitOut_TabZeroReset();
-	
-	pSigBitOut[enSmsBitOut_AlarmResetAck] = getBitOut_AlarmResetAck();
-	pSigBitOut[enSmsBitOut_AlarmNgResetAck] = getBitOut_AlarmNgResetAck();
-	pSigBitOut[enSmsBitOut_DiskSpaceWarning] = getBitOut_DiskSpaceWarning();
-	pSigBitOut[enSmsBitOut_DiskSpaceAlarm] = getBitOut_DiskSpaceAlarm();
+	for (int i = 0; i < MAX_SMS_BITIO_OUT; i++)
+	{
+		if (m_WriteBitData[i] == 0x01)
+		{
+			pSigBitOut[i] = TRUE;
+		}
+
+	}
 	return 0; 
 }
 
