@@ -280,10 +280,10 @@ void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 	if (m_ReadWordData[enSmsWordRead_PrmSectorNgTabCnt] ^ data[enSmsWordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enSmsWordRead_PrmSectorNgTabCnt]);
 	if (m_ReadWordData[enSmsWordRead_PrmSectorBaseCnt] ^ data[enSmsWordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enSmsWordRead_PrmSectorBaseCnt]);
 
-	for (int i = 0; i < COUNT_CELLKEY; i++)
+	for (int count = 0; count < COUNT_CELLKEY; count++)
 	{
-		int idx = enSmsWordRead_CellKey + i;
-		if (m_ReadWordData[idx] ^ data[idx]) setWordIn_CellKey(i, data[idx]);
+		int idx = enSmsWordRead_CellKey + count;
+		if (m_ReadWordData[idx] ^ data[idx]) setWordIn_CellKey(count, data[idx]);
 	}
 
 	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORD_MAX);
@@ -306,7 +306,7 @@ int CSiemensPlcIo::WritePlcBitDataMake()
 
 	idx = enSmsBitOut_EncoderSet;
 	if (isBitOut_EncoderSet()) ret = idx;
-	m_WriteBitData[ret] = getBitOut_EncoderSet();
+	m_WriteBitData[idx] = getBitOut_EncoderSet();
 
 	idx = enSmsBitOut_RecipeChangeAck;
 	if (isBitOut_RecipeChangeAck()) ret = idx;
