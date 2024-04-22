@@ -88,6 +88,10 @@ private:
 	BYTE m_ReadBitData[MELSEC_BITINSIZE_MAX];
 	DWORD m_ReadWordData[MELSEC_WORDINSIZE_MAX];
 
+	//PLC 쓰기 Data
+	BYTE m_WriteBitData[MELSEC_BITOUTSIZE_MAX];
+	DWORD m_WriteWordData[MELSEC_WORDOUTSIZE_MAX];
+
 	// connection network
 	int OpenPlcIo(void);
 

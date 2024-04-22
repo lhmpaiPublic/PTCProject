@@ -250,6 +250,10 @@ CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset
 	memset(m_ReadBitData, 0, MELSEC_BITINSIZE_MAX);
 	memset(m_ReadWordData, 0, MELSEC_WORDINSIZE_MAX*sizeof(DWORD));
 
+	//PLC 쓰기 Data
+	memset(m_WriteBitData, 0, MELSEC_BITOUTSIZE_MAX);
+	memset(m_WriteWordData, 0, MELSEC_WORDOUTSIZE_MAX * sizeof(DWORD));
+
 	//PLC Open
 	OpenPlcIo();
 }
@@ -293,7 +297,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	int portsize = WritePlcBitDataMake(&buffBitOut);
 	if (portsize > 0)
 	{
-		LOGDISPLAY_SPEC(2)(_T("Out bit data int :	%s"), CStrSuport::ChangbytetohexTab(buffBitOut, portsize, m_wOffset_BitOut));
+		LOGDISPLAY_SPEC(2)(_T("Out bit data :	%s"), CStrSuport::ChangbytetohexTab(buffBitOut, portsize, m_wOffset_BitOut));
 		WriteBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOut, portsize, m_wOffset_BitOut);
 	}
 	delete[] buffBitOut;
@@ -303,11 +307,32 @@ void CMelsecPlcIo::MelsecPlcProc()
 	int wordwritesize = WritePlcWordDataMake(&buffWordOut);
 	if (wordwritesize > 0)
 	{
-		//LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffWordOut, wordwritesize, m_wOffset_WordOut));
+		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffWordOut, wordwritesize, m_wOffset_WordOut));
 		WriteWordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffWordOut, wordwritesize, m_wOffset_WordOut);
 	}
 	delete[] buffWordOut;
 
+	//비트영역 쓰기 데이터 읽기
+	byte buffBitOutRead[MELSEC_BITOUTSIZE_MAX];
+	memset(buffBitOutRead, 0, MELSEC_BITOUTSIZE_MAX);
+	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut);
+	//읽은 Bit 데이터 비교
+	if (std::equal(std::begin(buffBitOutRead), std::end(buffBitOutRead), std::begin(m_WriteBitData)) == false)
+	{
+		memcpy(m_WriteBitData, buffBitOutRead, MELSEC_BITOUTSIZE_MAX);
+		LOGDISPLAY_SPEC(2)(_T("Out bit data Read :	%s"), CStrSuport::ChangbytetohexTab(buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut));
+	}
+
+	//word 읽기 영역 읽기(멜섹은 DWORD 를 사용한다.)
+	DWORD buffWordOutRead[MELSEC_WORDOUTSIZE_MAX];
+	memset(buffWordOutRead, 0, MELSEC_WORDOUTSIZE_MAX * sizeof(int));
+	ReadWordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffWordOutRead, MELSEC_WORDOUTSIZE_MAX, m_wOffset_WordOut);
+	//읽은 Word 데이터 비교
+	if (std::equal(std::begin(buffWordOutRead), std::end(buffWordOutRead), std::begin(m_WriteWordData)) == false)
+	{
+		memcpy(m_WriteWordData, buffWordOutRead, MELSEC_WORDOUTSIZE_MAX);
+		LOGDISPLAY_SPEC(2)(_T("Out Word data int Read :	%s"), CStrSuport::ChanginttohexTab((int*)buffWordOutRead, MELSEC_WORDINSIZE_MAX, m_wOffset_WordOut));
+	}
 }
 
 int CMelsecPlcIo::OpenPlcIo(void)
@@ -888,6 +913,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 int CMelsecPlcIo::WritePlcWordDataMake(DWORD** data)
 {
 	int ret = -1;
+	setWordOut_DataReportV1_Ea(getWordOut_DataReportV1_Ea() + 1);
 	int idx = enMelsDwordWrite_DataReportV1_Ea;;
 	if (isWordOut_DataReportV1_Ea()) ret = idx;
 	*(*data + idx) = getWordOut_DataReportV1_Ea();
