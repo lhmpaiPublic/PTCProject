@@ -50,8 +50,14 @@
 //멜섹 Word Read 영역 크기
 #define	MELSEC_WORDINSIZE_MAX 160
 
-//멜섹 Word Write 영역 크기
+//멜섹 Word Write 영역 DWORD 크기
 #define	MELSEC_WORDOUTSIZE_MAX 160
+
+//멜섹 Word Read 영역 크기
+#define	MELSEC_DWORDINSIZE_MAX MELSEC_WORDINSIZE_MAX/2
+
+//멜섹 Word Write 영역 DWORD 크기
+#define	MELSEC_DWORDOUTSIZE_MAX MELSEC_WORDOUTSIZE_MAX/2
 
 
 
@@ -86,11 +92,11 @@ private:
 
 	//PLC 읽기 Data
 	BYTE m_ReadBitData[MELSEC_BITINSIZE_MAX];
-	DWORD m_ReadWordData[MELSEC_WORDINSIZE_MAX];
+	DWORD m_ReadDwordData[MELSEC_DWORDINSIZE_MAX];
 
 	//PLC 쓰기 Data
 	BYTE m_WriteBitData[MELSEC_BITOUTSIZE_MAX];
-	DWORD m_WriteWordData[MELSEC_WORDOUTSIZE_MAX];
+	DWORD m_WriteDwordData[MELSEC_DWORDOUTSIZE_MAX];
 
 	// connection network
 	int OpenPlcIo(void);
@@ -114,9 +120,9 @@ private:
 
 	int ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset);
 
-	int ReadWordData(short stno, int devtype, int startport, int buff[], int num, int offset);
+	int ReadDwordData(short stno, int devtype, int startport, int buff[], int num, int offset);
 
-	int ReadWordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset);
+	int ReadDwordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset);
 
 	int WriteBitData(short stno, int devtype, int startport, byte buff[], int num, int offset);
 
@@ -124,9 +130,9 @@ private:
 
 	int WriteWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset);
 
-	int WriteWordData(short stno, int devtype, int startport, int buff[], int num, int offset);
+	int WriteDwordData(short stno, int devtype, int startport, int buff[], int num, int offset);
 
-	int WriteWordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset);
+	int WriteDwordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset);
 
 	void chnageEndian(short data[], int size);
 

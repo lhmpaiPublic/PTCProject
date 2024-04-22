@@ -248,11 +248,11 @@ CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset
 
 	//PLC 읽기 Data
 	memset(m_ReadBitData, 0, MELSEC_BITINSIZE_MAX);
-	memset(m_ReadWordData, 0, MELSEC_WORDINSIZE_MAX*sizeof(DWORD));
+	memset(m_ReadDwordData, 0, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
 
 	//PLC 쓰기 Data
 	memset(m_WriteBitData, 0, MELSEC_BITOUTSIZE_MAX);
-	memset(m_WriteWordData, 0, MELSEC_WORDOUTSIZE_MAX * sizeof(DWORD));
+	memset(m_WriteDwordData, 0, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
 
 	//PLC Open
 	OpenPlcIo();
@@ -281,17 +281,18 @@ void CMelsecPlcIo::MelsecPlcProc()
 	}
 
 	//word 읽기 영역 읽기(멜섹은 DWORD 를 사용한다.)
-	DWORD buffDwordIn[MELSEC_WORDINSIZE_MAX];
-	memset(buffDwordIn, 0, MELSEC_WORDINSIZE_MAX *sizeof(int));
-	ReadWordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffDwordIn, MELSEC_WORDINSIZE_MAX, m_wOffset_WordIn);
-	//읽은 Word 데이터 파싱
-	if (std::equal(std::begin(buffDwordIn), std::end(buffDwordIn), std::begin(m_ReadWordData)) == false)
+	DWORD buffDwordIn[MELSEC_DWORDINSIZE_MAX];
+	memset(buffDwordIn, 0, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
+	ReadDwordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn);
+	//읽은 Dword 데이터 파싱
+	if (std::equal(std::begin(buffDwordIn), std::end(buffDwordIn), std::begin(m_ReadDwordData)) == false)
 	{
 		ReadPlcWordDataParser((DWORD*)buffDwordIn);
-		LOGDISPLAY_SPEC(2)(_T("In Word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffDwordIn, MELSEC_WORDINSIZE_MAX, m_wOffset_WordIn));
+		LOGDISPLAY_SPEC(2)(_T("In Dword data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn));
 	}
 
 
+	//비트영역 쓰기 데이터 읽기
 	byte* buffBitOut = new byte[MELSEC_BITOUTSIZE_MAX];
 	memset(buffBitOut, 0, MELSEC_BITOUTSIZE_MAX);
 	int portsize = WritePlcBitDataMake(&buffBitOut);
@@ -302,15 +303,16 @@ void CMelsecPlcIo::MelsecPlcProc()
 	}
 	delete[] buffBitOut;
 
-	DWORD* buffWordOut = new DWORD[MELSEC_WORDOUTSIZE_MAX];
-	memset(buffWordOut, 0, MELSEC_WORDOUTSIZE_MAX*sizeof(DWORD));
-	int wordwritesize = WritePlcWordDataMake(&buffWordOut);
-	if (wordwritesize > 0)
+	//word 쓰기 영역 (멜섹은 DWORD 를 사용한다.)
+	DWORD* buffDwordOut = new DWORD[MELSEC_DWORDOUTSIZE_MAX];
+	memset(buffDwordOut, 0, MELSEC_DWORDOUTSIZE_MAX*sizeof(DWORD));
+	int dwordwritesize = WritePlcWordDataMake(&buffDwordOut);
+	if (dwordwritesize > 0)
 	{
-		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffWordOut, wordwritesize, m_wOffset_WordOut));
-		WriteWordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffWordOut, wordwritesize, m_wOffset_WordOut);
+		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut));
+		WriteDwordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut);
 	}
-	delete[] buffWordOut;
+	delete[] buffDwordOut;
 
 	//비트영역 쓰기 데이터 읽기
 	byte buffBitOutRead[MELSEC_BITOUTSIZE_MAX];
@@ -323,15 +325,15 @@ void CMelsecPlcIo::MelsecPlcProc()
 		LOGDISPLAY_SPEC(2)(_T("Out bit data Read :	%s"), CStrSuport::ChangbytetohexTab(buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut));
 	}
 
-	//word 읽기 영역 읽기(멜섹은 DWORD 를 사용한다.)
-	DWORD buffWordOutRead[MELSEC_WORDOUTSIZE_MAX];
-	memset(buffWordOutRead, 0, MELSEC_WORDOUTSIZE_MAX * sizeof(int));
-	ReadWordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffWordOutRead, MELSEC_WORDOUTSIZE_MAX, m_wOffset_WordOut);
-	//읽은 Word 데이터 비교
-	if (std::equal(std::begin(buffWordOutRead), std::end(buffWordOutRead), std::begin(m_WriteWordData)) == false)
+	//word 쓰기 영역 읽기(멜섹은 DWORD 를 사용한다.)
+	DWORD buffDwordOutRead[MELSEC_DWORDOUTSIZE_MAX];
+	memset(buffDwordOutRead, 0, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
+	ReadDwordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut);
+	//읽은 Dword 데이터 비교
+	if (std::equal(std::begin(buffDwordOutRead), std::end(buffDwordOutRead), std::begin(m_WriteDwordData)) == false)
 	{
-		memcpy(m_WriteWordData, buffWordOutRead, MELSEC_WORDOUTSIZE_MAX);
-		LOGDISPLAY_SPEC(2)(_T("Out Word data int Read :	%s"), CStrSuport::ChanginttohexTab((int*)buffWordOutRead, MELSEC_WORDINSIZE_MAX, m_wOffset_WordOut));
+		memcpy(m_WriteDwordData, buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX);
+		LOGDISPLAY_SPEC(2)(_T("Out Word data int Read :	%s"), CStrSuport::ChanginttohexTab((int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut));
 	}
 }
 
@@ -537,7 +539,7 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short 
 	return iRet;
 }
 
-int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int buff[], int num, int offset)
+int CMelsecPlcIo::ReadDwordData(short stno, int devtype, int startport, int buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -567,7 +569,7 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int buff[
 
 }
 
-int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset)
+int CMelsecPlcIo::ReadDwordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -689,7 +691,7 @@ int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, short
 	return iRet;
 }
 
-int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, int buff[], int num, int offset)
+int CMelsecPlcIo::WriteDwordData(short stno, int devtype, int startport, int buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -719,7 +721,7 @@ int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, int buff
 
 }
 
-int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset)
+int CMelsecPlcIo::WriteDwordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -768,43 +770,43 @@ void CMelsecPlcIo::ReadPlcBitDataParser(BYTE* data)
 }
 void CMelsecPlcIo::ReadPlcWordDataParser(DWORD* data)
 {
-	if (m_ReadWordData[enMelsDwordRead_RecipeNo] ^ data[enMelsDwordRead_RecipeNo]) setWordIn_RecipeNo(data[enMelsDwordRead_RecipeNo]);
-	if ((m_ReadWordData[enMelsDwordRead_RecipeName] ^ data[enMelsDwordRead_RecipeName]) |
-		(m_ReadWordData[enMelsDwordRead_RecipeName + 1] ^ data[enMelsDwordRead_RecipeName + 1]) |
-		(m_ReadWordData[enMelsDwordRead_RecipeName + 2] ^ data[enMelsDwordRead_RecipeName + 2]) |
-		(m_ReadWordData[enMelsDwordRead_RecipeName + 3] ^ data[enMelsDwordRead_RecipeName + 3]))
+	if (m_ReadDwordData[enMelsDwordRead_RecipeNo] ^ data[enMelsDwordRead_RecipeNo]) setWordIn_RecipeNo(data[enMelsDwordRead_RecipeNo]);
+	if ((m_ReadDwordData[enMelsDwordRead_RecipeName] ^ data[enMelsDwordRead_RecipeName]) |
+		(m_ReadDwordData[enMelsDwordRead_RecipeName + 1] ^ data[enMelsDwordRead_RecipeName + 1]) |
+		(m_ReadDwordData[enMelsDwordRead_RecipeName + 2] ^ data[enMelsDwordRead_RecipeName + 2]) |
+		(m_ReadDwordData[enMelsDwordRead_RecipeName + 3] ^ data[enMelsDwordRead_RecipeName + 3]))
 		setWordIn_RecipeName(MakeRecipeName(&data[enMelsDwordRead_RecipeName]));
 
-	if ((m_ReadWordData[enMelsDwordRead_CELL_ID] ^ data[enMelsDwordRead_CELL_ID]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 1] ^ data[enMelsDwordRead_CELL_ID + 1]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 2] ^ data[enMelsDwordRead_CELL_ID + 2]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 3] ^ data[enMelsDwordRead_CELL_ID + 3]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 4] ^ data[enMelsDwordRead_CELL_ID + 4]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 5] ^ data[enMelsDwordRead_CELL_ID + 5]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 6] ^ data[enMelsDwordRead_CELL_ID + 6]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 7] ^ data[enMelsDwordRead_CELL_ID + 7]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 8] ^ data[enMelsDwordRead_CELL_ID + 8]) |
-		(m_ReadWordData[enMelsDwordRead_CELL_ID + 9] ^ data[enMelsDwordRead_CELL_ID + 9]))
+	if ((m_ReadDwordData[enMelsDwordRead_CELL_ID] ^ data[enMelsDwordRead_CELL_ID]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 1] ^ data[enMelsDwordRead_CELL_ID + 1]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 2] ^ data[enMelsDwordRead_CELL_ID + 2]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 3] ^ data[enMelsDwordRead_CELL_ID + 3]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 4] ^ data[enMelsDwordRead_CELL_ID + 4]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 5] ^ data[enMelsDwordRead_CELL_ID + 5]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 6] ^ data[enMelsDwordRead_CELL_ID + 6]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 7] ^ data[enMelsDwordRead_CELL_ID + 7]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 8] ^ data[enMelsDwordRead_CELL_ID + 8]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 9] ^ data[enMelsDwordRead_CELL_ID + 9]))
 		setWordIn_CELL_ID(MakeCellId(&data[enMelsDwordRead_CELL_ID]));
-	if (m_ReadWordData[enMelsDwordRead_FoilExpInTopTarget] ^ data[enMelsDwordRead_FoilExpInTopTarget]) setWordIn_FoilExpInTopTarget(data[enMelsDwordRead_FoilExpInTopTarget]);
-	if (m_ReadWordData[enMelsDwordRead_FoilExpInBtmTarget] ^ data[enMelsDwordRead_FoilExpInBtmTarget]) setWordIn_FoilExpInBtmTarget(data[enMelsDwordRead_FoilExpInBtmTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpInTopTarget] ^ data[enMelsDwordRead_FoilExpInTopTarget]) setWordIn_FoilExpInTopTarget(data[enMelsDwordRead_FoilExpInTopTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpInBtmTarget] ^ data[enMelsDwordRead_FoilExpInBtmTarget]) setWordIn_FoilExpInBtmTarget(data[enMelsDwordRead_FoilExpInBtmTarget]);
 
-	if (m_ReadWordData[enMelsDwordRead_FoilExpOutTopTarget] ^ data[enMelsDwordRead_FoilExpOutTopTarget]) setWordIn_FoilExpOutTopTarget(data[enMelsDwordRead_FoilExpOutTopTarget]);
-	if (m_ReadWordData[enMelsDwordRead_FoilExpOutBtmTarget] ^ data[enMelsDwordRead_FoilExpOutBtmTarget]) setWordIn_FoilExpOutBtmTarget(data[enMelsDwordRead_FoilExpOutBtmTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpOutTopTarget] ^ data[enMelsDwordRead_FoilExpOutTopTarget]) setWordIn_FoilExpOutTopTarget(data[enMelsDwordRead_FoilExpOutTopTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpOutBtmTarget] ^ data[enMelsDwordRead_FoilExpOutBtmTarget]) setWordIn_FoilExpOutBtmTarget(data[enMelsDwordRead_FoilExpOutBtmTarget]);
 
-	if (m_ReadWordData[enMelsDwordRead_FoilExpBothTopTarget] ^ data[enMelsDwordRead_FoilExpBothTopTarget]) setWordIn_FoilExpBothTopTarget(data[enMelsDwordRead_FoilExpBothTopTarget]);
-	if (m_ReadWordData[enMelsDwordRead_FoilExpBothBtmTarget] ^ data[enMelsDwordRead_FoilExpBothBtmTarget]) setWordIn_FoilExpBothBtmTarget(data[enMelsDwordRead_FoilExpBothBtmTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpBothTopTarget] ^ data[enMelsDwordRead_FoilExpBothTopTarget]) setWordIn_FoilExpBothTopTarget(data[enMelsDwordRead_FoilExpBothTopTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpBothBtmTarget] ^ data[enMelsDwordRead_FoilExpBothBtmTarget]) setWordIn_FoilExpBothBtmTarget(data[enMelsDwordRead_FoilExpBothBtmTarget]);
 
-	if (m_ReadWordData[enMelsDwordRead_SpeterTopTarget] ^ data[enMelsDwordRead_SpeterTopTarget]) setWordIn_SpeterTopTarget(data[enMelsDwordRead_SpeterTopTarget]);
-	if (m_ReadWordData[enMelsDwordRead_SpeterBtmTarget] ^ data[enMelsDwordRead_SpeterBtmTarget]) setWordIn_SpeterBtmTarget(data[enMelsDwordRead_SpeterBtmTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_SpeterTopTarget] ^ data[enMelsDwordRead_SpeterTopTarget]) setWordIn_SpeterTopTarget(data[enMelsDwordRead_SpeterTopTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_SpeterBtmTarget] ^ data[enMelsDwordRead_SpeterBtmTarget]) setWordIn_SpeterBtmTarget(data[enMelsDwordRead_SpeterBtmTarget]);
 
-	if (m_ReadWordData[enMelsDwordRead_PrmContinuousCnt] ^ data[enMelsDwordRead_PrmContinuousCnt]) setWordIn_PrmContinuousCnt(data[enMelsDwordRead_PrmContinuousCnt]);
-	if (m_ReadWordData[enMelsDwordRead_PrmSectorNgTabCnt] ^ data[enMelsDwordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enMelsDwordRead_PrmSectorNgTabCnt]);
-	if (m_ReadWordData[enMelsDwordRead_PrmSectorBaseCnt] ^ data[enMelsDwordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enMelsDwordRead_PrmSectorBaseCnt]);
+	if (m_ReadDwordData[enMelsDwordRead_PrmContinuousCnt] ^ data[enMelsDwordRead_PrmContinuousCnt]) setWordIn_PrmContinuousCnt(data[enMelsDwordRead_PrmContinuousCnt]);
+	if (m_ReadDwordData[enMelsDwordRead_PrmSectorNgTabCnt] ^ data[enMelsDwordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enMelsDwordRead_PrmSectorNgTabCnt]);
+	if (m_ReadDwordData[enMelsDwordRead_PrmSectorBaseCnt] ^ data[enMelsDwordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enMelsDwordRead_PrmSectorBaseCnt]);
 
-	if (m_ReadWordData[enMelsDwordRead_AlarmExistAck] ^ data[enMelsDwordRead_AlarmExistAck]) setWordIn_AlarmExistAck(data[enMelsDwordRead_AlarmExistAck]);
+	if (m_ReadDwordData[enMelsDwordRead_AlarmExistAck] ^ data[enMelsDwordRead_AlarmExistAck]) setWordIn_AlarmExistAck(data[enMelsDwordRead_AlarmExistAck]);
 
-	memcpy(m_ReadWordData, data, sizeof(DWORD) * MELSEC_WORDINSIZE_MAX);
+	memcpy(m_ReadDwordData, data, sizeof(DWORD) * MELSEC_WORDINSIZE_MAX);
 }
 //레시피 명을 만든다.
 CString CMelsecPlcIo::MakeRecipeName(DWORD* data)
