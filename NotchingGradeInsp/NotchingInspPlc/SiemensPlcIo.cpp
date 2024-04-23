@@ -224,6 +224,10 @@ CString CSiemensPlcIo::MakeRecipeName(short* data)
 	byteData[SIEMENS_READRECIPENAME] = '\0';
 	str = (char*)byteData;
 
+	str.TrimRight();
+	str.TrimLeft();
+	AprData.m_SeqDataIN.strRecipeName = str;
+
 	LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), str);
 
 	return str;
@@ -238,6 +242,10 @@ CString CSiemensPlcIo::MakeCellId(short* data)
 	memcpy(byteData, data, SIEMENS_READCELLID);
 	byteData[SIEMENS_READCELLID] = '\0';
 	str = (char*)byteData;
+
+	str.TrimRight();
+	str.TrimLeft();
+	AprData.m_SeqDataIN.strCell_ID = str;
 
 	LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), str);
 
