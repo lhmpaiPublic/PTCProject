@@ -332,7 +332,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	//읽은 Dword 데이터 비교
 	if (std::equal(std::begin(buffDwordOutRead), std::end(buffDwordOutRead), std::begin(m_WriteDwordData)) == false)
 	{
-		memcpy(m_WriteDwordData, buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX);
+		memcpy(m_WriteDwordData, buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
 		LOGDISPLAY_SPEC(2)(_T("Out Word data int Read :	%s"), CStrSuport::ChanginttohexTab((int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut));
 	}
 }
@@ -806,7 +806,7 @@ void CMelsecPlcIo::ReadPlcWordDataParser(DWORD* data)
 
 	if (m_ReadDwordData[enMelsDwordRead_AlarmExistAck] ^ data[enMelsDwordRead_AlarmExistAck]) setWordIn_AlarmExistAck(data[enMelsDwordRead_AlarmExistAck]);
 
-	memcpy(m_ReadDwordData, data, sizeof(DWORD) * MELSEC_WORDINSIZE_MAX);
+	memcpy(m_ReadDwordData, data, sizeof(DWORD) * MELSEC_DWORDINSIZE_MAX);
 }
 //레시피 명을 만든다.
 CString CMelsecPlcIo::MakeRecipeName(DWORD* data)

@@ -697,7 +697,7 @@ void CIoMonitorDlg::UpdateGridCtrl()
 #ifndef NEW_PLCTYPE
 			strTemp = GetInWordData(row);
 #else
-			theApp.m_pSigProc->GetInWordData(row);
+			strTemp = theApp.m_pSigProc->GetInWordData(row);
 #endif //NEW_PLCTYPE
 
 			Item.strText = strTemp;
@@ -723,7 +723,7 @@ void CIoMonitorDlg::UpdateGridCtrl()
 #ifndef NEW_PLCTYPE
 			strTemp = GetOutWordData(row);
 #else
-			theApp.m_pSigProc->GetOutWordData(row);
+			strTemp = theApp.m_pSigProc->GetOutWordData(row);
 #endif //NEW_PLCTYPE
 
 			Item.strText = strTemp;
