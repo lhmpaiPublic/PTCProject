@@ -915,7 +915,7 @@ int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
 int CMelsecPlcIo::WritePlcWordDataMake(DWORD** data)
 {
 	int ret = -1;
-	setWordOut_DataReportV1_Ea(getWordOut_DataReportV1_Ea() + 1);
+
 	int idx = enMelsDwordWrite_DataReportV1_Ea;;
 	if (isWordOut_DataReportV1_Ea()) ret = idx;
 	*(*data + idx) = getWordOut_DataReportV1_Ea();

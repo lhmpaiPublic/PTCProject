@@ -203,6 +203,8 @@ int CSigProc::ReadPLC_device(int address, short* data)
 	return (0);
 }
 
+short	m_sSmsSigBItIN_Backup[MAX_SMS_BITIO_IN] = { 0, };
+BYTE	m_btSigBItIN_Backup[MAX_USE_PORT] = { 0, };
 int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 {
 	ASSERT(pSigBitIn);
@@ -215,6 +217,13 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		m_pPioCtrl->ReadAllPort_BitIn( (BYTE*)m_sSmsSigBItIN, MAX_SMS_BITIO_IN);
+		//읽은 Bit 데이터 출력
+		if (std::equal(std::begin(m_sSmsSigBItIN), std::end(m_sSmsSigBItIN), std::begin(m_sSmsSigBItIN_Backup)) == false)
+		{
+			memcpy(m_sSmsSigBItIN_Backup, m_sSmsSigBItIN, MAX_SMS_BITIO_IN * sizeof(short));
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(m_sSmsSigBItIN, MAX_SMS_BITIO_IN, AprData.m_System.m_nBitIn));
+		}
+
 		for (int i = 0; i < MAX_SMS_BITIO_IN; i++)
 		{
 
@@ -232,6 +241,12 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 	else
 	{
 		m_pPioCtrl->ReadAllPort_BitIn(m_btSigBItIN, MAX_USE_PORT);
+		//읽은 Bit 데이터 파싱
+		if (std::equal(std::begin(m_btSigBItIN), std::end(m_btSigBItIN), std::begin(m_btSigBItIN_Backup)) == false)
+		{
+			memcpy(m_btSigBItIN_Backup, m_btSigBItIN, MAX_USE_PORT * sizeof(BYTE));
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexTab(m_btSigBItIN, MAX_USE_PORT, AprData.m_System.m_nBitIn));
+		}
 
 		int nBitPos = 0;
 		for (int port = 0; port < MAX_USE_PORT; port++) {
@@ -1260,7 +1275,7 @@ int CSigProc::SigOutAlarmExist(int nMode)
 
 	return nRet;
 }
-
+DWORD btDataMelsec_Backup[80] = { 0, };
 int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 {
 
@@ -1279,6 +1294,14 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	}
 
 #ifndef NEW_PLCTYPE
+	DWORD btDataMelsec[80] = { 0, };
+	memcpy(btDataMelsec, btData, sizeof(btData));
+	//읽은 Word 데이터 출력
+	if (std::equal(std::begin(btDataMelsec), std::end(btDataMelsec), std::begin(btDataMelsec_Backup)) == false)
+	{
+		memcpy(btDataMelsec_Backup, btDataMelsec, sizeof(btDataMelsec));
+		LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChanginttohexTab((int*)btDataMelsec_Backup, 80, AprData.m_System.m_nWordIn));
+	}
 	memcpy(m_wMonitoringReadData_Melsec, btData, sizeof(btData));
 #endif //NEW_PLCTYPE
 
@@ -1511,6 +1534,7 @@ int CSigProc::ReadBlockAllData(CSequenceData* pSeqData)
 	return nRet;
 }
 
+WORD btData_Backup[33] = { 0, };
 int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 {
 	int nRet = 0;
@@ -1522,11 +1546,18 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	int nSize = enSmsWordReadMaxSize;
 	int nAddress = AprData.m_System.m_nWordIn + enSmsWordRead_RecipeNo;
 
-	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
+	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) 
+	{
 		return -1;
 	}
 
 #ifndef NEW_PLCTYPE
+	//읽은 Word 데이터 출력
+	if (std::equal(std::begin(btData), std::end(btData), std::begin(btData_Backup)) == false)
+	{
+		memcpy(btData_Backup, btData, sizeof(btData));
+		LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexTab((short*)btData_Backup, 33, AprData.m_System.m_nWordIn));
+	}
 	memcpy(m_wMonitoringReadData_Siemens, btData, sizeof(btData));
 #endif //NEW_PLCTYPE
 
