@@ -175,7 +175,10 @@ public:
 	CDataPlcImp();
 	virtual ~CDataPlcImp();
 
+	//PLC data를 읽고 쓰고 처리를 위한 함수
 	virtual int PlcDataReadWritePorc() { return 0; }
+	//PLC Open 상태를 체크을 위한 함수
+	virtual BOOL isPlcOpen() { return FALSE; }
 
 	//In Data
 	//Bit Data In

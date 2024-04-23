@@ -1101,6 +1101,11 @@ int CMelsecPlcIo::PlcDataReadWritePorc()
 	return 0;
 }
 
+BOOL CMelsecPlcIo::isPlcOpen()
+{
+	return IsOpened();
+}
+
 //Out
 int CMelsecPlcIo::SigOutEncoderZeroSet(int nMode)
 { 

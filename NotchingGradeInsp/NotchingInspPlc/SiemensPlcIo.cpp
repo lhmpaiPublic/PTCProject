@@ -681,6 +681,11 @@ int CSiemensPlcIo::PlcDataReadWritePorc()
 	return 0;
 }
 
+BOOL CSiemensPlcIo::isPlcOpen()
+{
+	return IsOpened();
+}
+
 //Out
 int CSiemensPlcIo::SigOutEncoderZeroSet(int nMode)
 { 
