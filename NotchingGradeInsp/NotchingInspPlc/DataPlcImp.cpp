@@ -3,6 +3,11 @@
 
 CDataPlcImp::CDataPlcImp()
 {
+}
+
+//PLC Data 변수 값 초기화
+void CDataPlcImp::initDataPlcImp()
+{
 	//In Data
 	//Bit Data In
 	m_BitIn_Alive = 0;
@@ -114,51 +119,50 @@ CDataPlcImp::CDataPlcImp()
 
 
 	//Word Data Out
-	m_bWordOut_DataReportV1_Ea = FALSE;
-	m_bWordOut_DataReportV2_OK = FALSE;
-	m_bWordOut_DataReportV3_NG = FALSE;
-	m_bWordOut_DataReportV4_OkRate = FALSE;
-	m_bWordOut_DataReportV5_NgRate = FALSE;
-	m_bWordOut_DataReportV6_RunRate = FALSE;
-	m_bWordOut_Continue_Alarm_Cnt = FALSE;
-	m_bWordOut_Heavy_Alarm_Cnt = FALSE;
+	m_bWordOut_DataReportV1_Ea = TRUE;
+	m_bWordOut_DataReportV2_OK = TRUE;
+	m_bWordOut_DataReportV3_NG = TRUE;
+	m_bWordOut_DataReportV4_OkRate = TRUE;
+	m_bWordOut_DataReportV5_NgRate = TRUE;
+	m_bWordOut_DataReportV6_RunRate = TRUE;
+	m_bWordOut_Continue_Alarm_Cnt = TRUE;
+	m_bWordOut_Heavy_Alarm_Cnt = TRUE;
 
-	 m_bWordOut_FoilExpInTop_Alarm_Cnt = FALSE;
-	m_bWordOut_FoilExpInBtm_Alarm_Cnt = FALSE;
-	m_bWordOut_FoilExpOutTop_Alarm_Cnt = FALSE;
-	m_bWordOut_FoilExpOutBtm_Alarm_Cnt = FALSE;
-	m_bWordOut_FoilExpBothTop_Alarm_Cnt = FALSE;
-	m_bWordOut_FoilExpBothBtm_Alarm_Cnt = FALSE;
-	m_bWordOut_SpeterTop_Alarm_Cnt = FALSE;
-	m_bWordOut_SpeterBtm_Alarm_Cnt = FALSE;
+	m_bWordOut_FoilExpInTop_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpInBtm_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpOutTop_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpOutBtm_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpBothTop_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpBothBtm_Alarm_Cnt = TRUE;
+	m_bWordOut_SpeterTop_Alarm_Cnt = TRUE;
+	m_bWordOut_SpeterBtm_Alarm_Cnt = TRUE;
 
-	m_bWordOut_Top_Defect_Count_Real = FALSE;
-	m_bWordOut_Btm_Defect_Count_Real = FALSE;
-	m_bWordOut_Top_Defect_Count_LotEnd = FALSE;
-	m_bWordOut_Btm_Defect_Count_LotEnd = FALSE;
+	m_bWordOut_Top_Defect_Count_Real = TRUE;
+	m_bWordOut_Btm_Defect_Count_Real = TRUE;
+	m_bWordOut_Top_Defect_Count_LotEnd = TRUE;
+	m_bWordOut_Btm_Defect_Count_LotEnd = TRUE;
 
-	m_bWordOut_FoilExpInTopTarget = FALSE;
-	m_bWordOut_FoilExpInBtmTarget = FALSE;
-	m_bWordOut_FoilExpOutTopTarget = FALSE;
-	m_bWordOut_FoilExpOutBtmTarget = FALSE;
-	m_bWordOut_FoilExpBothTopTarget = FALSE;
-	m_bWordOut_FoilExpBothBtmTarget = FALSE;
-	m_bWordOut_SpeterTopTarget = FALSE;
-	m_bWordOut_SpeterBtmTarget = FALSE;
+	m_bWordOut_FoilExpInTopTarget = TRUE;
+	m_bWordOut_FoilExpInBtmTarget = TRUE;
+	m_bWordOut_FoilExpOutTopTarget = TRUE;
+	m_bWordOut_FoilExpOutBtmTarget = TRUE;
+	m_bWordOut_FoilExpBothTopTarget = TRUE;
+	m_bWordOut_FoilExpBothBtmTarget = TRUE;
+	m_bWordOut_SpeterTopTarget = TRUE;
+	m_bWordOut_SpeterBtmTarget = TRUE;
 
-	m_bWordOut_PrmContinuousCnt = FALSE;
-	m_bWordOut_PrmSectorNgTabCnt = FALSE;
-	m_bWordOut_PrmSectorBaseCnt = FALSE;
+	m_bWordOut_PrmContinuousCnt = TRUE;
+	m_bWordOut_PrmSectorNgTabCnt = TRUE;
+	m_bWordOut_PrmSectorBaseCnt = TRUE;
 
-	m_bWordOut_AlarmExist = FALSE;
-	m_bWordOut_AlarmCode_Buffer = FALSE;
+	m_bWordOut_AlarmExist = TRUE;
+	m_bWordOut_AlarmCode_Buffer = TRUE;
 
-	m_bWordOut_Cell_Trigger_ID = FALSE;
-	m_bWordOut_Judge = FALSE;
-	m_bWordOut_NG_Code = FALSE;
+	m_bWordOut_Cell_Trigger_ID = TRUE;
+	m_bWordOut_Judge = TRUE;
+	m_bWordOut_NG_Code = TRUE;
 
-	m_bWordOut_DuplicateNG_Cell_ID = FALSE;
-
+	m_bWordOut_DuplicateNG_Cell_ID = TRUE;
 }
 
 CDataPlcImp::~CDataPlcImp()

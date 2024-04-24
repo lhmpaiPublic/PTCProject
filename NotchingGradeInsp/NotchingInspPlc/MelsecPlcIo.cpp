@@ -247,12 +247,12 @@ CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset
 	m_bMelsecAlive = 0x1;
 
 	//PLC 읽기 Data
-	memset(m_ReadBitData, 0, MELSEC_BITINSIZE_MAX);
-	memset(m_ReadDwordData, 0, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
+	memset(m_ReadBitData, 0xff, MELSEC_BITINSIZE_MAX);
+	memset(m_ReadDwordData, 0xff, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
 
 	//PLC 쓰기 Data
-	memset(m_WriteBitData, 0, MELSEC_BITOUTSIZE_MAX);
-	memset(m_WriteDwordData, 0, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
+	memset(m_WriteBitData, 0xff, MELSEC_BITOUTSIZE_MAX);
+	memset(m_WriteDwordData, 0xff, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
 
 	//PLC Open
 	OpenPlcIo();
@@ -270,7 +270,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	//Bit Read 영역 읽기
 	//4포트
 	//시작번지 : 0, 읽을 갯수 4
-	byte buffBitIn[MELSEC_BITINSIZE_MAX];
+	static byte buffBitIn[MELSEC_BITINSIZE_MAX];
 	memset(buffBitIn, 0, MELSEC_BITINSIZE_MAX);
 	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitIn, MELSEC_BITINSIZE_MAX, m_wOffset_BitIn);
 	//읽은 Bit 데이터 파싱
@@ -281,20 +281,19 @@ void CMelsecPlcIo::MelsecPlcProc()
 	}
 
 	//word 읽기 영역 읽기(멜섹은 DWORD 를 사용한다.)
-	DWORD buffDwordIn[MELSEC_DWORDINSIZE_MAX];
+	static DWORD buffDwordIn[MELSEC_DWORDINSIZE_MAX];
 	memset(buffDwordIn, 0, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
 	ReadDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn);
-	LOGDISPLAY_SPEC(2)(_T("In Dword data int :	%s	offset : %d"), CStrSuport::ChanginttohexTab((int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn), m_wOffset_WordIn);
 	//읽은 Dword 데이터 파싱
 	if (std::equal(std::begin(buffDwordIn), std::end(buffDwordIn), std::begin(m_ReadDwordData)) == false)
 	{
 		ReadPlcWordDataParser((DWORD*)buffDwordIn);
-		//LOGDISPLAY_SPEC(2)(_T("In Dword data int :	%s	offset : %d"), CStrSuport::ChanginttohexTab((int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn), m_wOffset_WordIn);
+		LOGDISPLAY_SPEC(2)(_T("In Dword data int :	%s	offset : %d"), CStrSuport::ChanginttohexTab((int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn), m_wOffset_WordIn);
 	}
 
 
 	//비트영역 쓰기 데이터 읽기
-	byte* buffBitOut = new byte[MELSEC_BITOUTSIZE_MAX];
+	static byte* buffBitOut = new byte[MELSEC_BITOUTSIZE_MAX];
 	memset(buffBitOut, 0, MELSEC_BITOUTSIZE_MAX);
 	int portsize = WritePlcBitDataMake(&buffBitOut);
 	if (portsize > 0)
@@ -305,7 +304,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	delete[] buffBitOut;
 
 	//word 쓰기 영역 (멜섹은 DWORD 를 사용한다.)
-	DWORD* buffDwordOut = new DWORD[MELSEC_DWORDOUTSIZE_MAX];
+	static DWORD* buffDwordOut = new DWORD[MELSEC_DWORDOUTSIZE_MAX];
 	memset(buffDwordOut, 0, MELSEC_DWORDOUTSIZE_MAX*sizeof(DWORD));
 	int dwordwritesize = WritePlcWordDataMake(&buffDwordOut);
 	if (dwordwritesize > 0)
@@ -316,7 +315,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	delete[] buffDwordOut;
 
 	//비트영역 쓰기 데이터 읽기
-	byte buffBitOutRead[MELSEC_BITOUTSIZE_MAX];
+	static byte buffBitOutRead[MELSEC_BITOUTSIZE_MAX];
 	memset(buffBitOutRead, 0, MELSEC_BITOUTSIZE_MAX);
 	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut);
 	//읽은 Bit 데이터 비교
@@ -327,7 +326,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	}
 
 	//word 쓰기 영역 읽기(멜섹은 DWORD 를 사용한다.)
-	DWORD buffDwordOutRead[MELSEC_DWORDOUTSIZE_MAX];
+	static DWORD buffDwordOutRead[MELSEC_DWORDOUTSIZE_MAX];
 	memset(buffDwordOutRead, 0, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
 	ReadDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut);
 	//읽은 Dword 데이터 비교
@@ -341,6 +340,8 @@ void CMelsecPlcIo::MelsecPlcProc()
 int CMelsecPlcIo::OpenPlcIo(void)
 {
 	int ret = 0;
+	//PLC 데이터 변수 값 초기화
+	initDataPlcImp();
 
 	//로그출력
 	LOGDISPLAY_SPEC(2)(_T("PLC Info	ChannelNo : %d	BitIn : %d	BitOut : %d	WordIn : %d	WordOut : %d"),
@@ -355,16 +356,8 @@ int CMelsecPlcIo::OpenPlcIo(void)
 		AfxMessageBox("Melsec Bit Offset 값이 잘못 입력되었습니다.");
 	}
 
+	//멜섹 PLC Open
 	ret = LocalPioOpen();
-
-	if (ret != 0)
-	{
-		//에러로그
-	}
-	else
-	{
-		
-	}
 
 	return ret;
 }
@@ -380,7 +373,7 @@ int CMelsecPlcIo::LocalPioOpen(BOOL bLockCtrl)
 	{
 		m_bOpened = TRUE;
 		//로그출력
-		LOGDISPLAY_SPEC(2)("PLC Melsec Open Success");
+		LOGDISPLAY_SPEC(2)("PLC Melsec Open Success Path : %d", m_pPath);
 
 	}
 

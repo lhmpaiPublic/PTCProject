@@ -7,6 +7,9 @@
 
 CCriticalSection CSigProc::m_cs;
 
+static DWORD btDataMelsec_Backup[80] = { 0, };
+static WORD btData_Backup[33] = { 0, };
+
 CSigProc::CSigProc()
 {
 	m_pPioCtrl = NULL;
@@ -1275,7 +1278,7 @@ int CSigProc::SigOutAlarmExist(int nMode)
 
 	return nRet;
 }
-DWORD btDataMelsec_Backup[80] = { 0, };
+
 int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 {
 
@@ -1534,7 +1537,6 @@ int CSigProc::ReadBlockAllData(CSequenceData* pSeqData)
 	return nRet;
 }
 
-WORD btData_Backup[33] = { 0, };
 int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 {
 	int nRet = 0;

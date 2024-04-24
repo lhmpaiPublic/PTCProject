@@ -175,6 +175,9 @@ public:
 	CDataPlcImp();
 	virtual ~CDataPlcImp();
 
+	//PLC Data 변수 값 초기화
+	void initDataPlcImp();
+
 	//PLC data를 읽고 쓰고 처리를 위한 함수
 	virtual int PlcDataReadWritePorc() { return 0; }
 	//PLC Open 상태를 체크을 위한 함수
