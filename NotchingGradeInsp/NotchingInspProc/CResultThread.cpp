@@ -113,6 +113,25 @@ void CResultThread::DrawString(CDC* pDC, int x, int y, COLORREF color, CString s
 		return;
 	}
 
+	CFont font;
+	VERIFY(font.CreateFont(
+		100,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("Arial")));            // lpszFacename
+
+	pDC->SelectObject(font);
+
 	pDC->SetBkMode(TRANSPARENT);
 	pDC->SetTextColor(color);
 	pDC->TextOut(x, y, strLine);

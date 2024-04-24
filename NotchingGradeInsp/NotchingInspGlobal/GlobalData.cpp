@@ -888,7 +888,7 @@ void CLotInfo::ClearAllCount()
 	m_nBottomNG = 0 ;
 	m_nMarkingCount = 0 ;
 	memset(&m_SeqDataOut, 0x0000, sizeof(_SEQ_OUT_DATA));
-	for (int i = 0; i < 64; i++) m_nCellTrackID[i].Empty();
+	for (int i = 0; i < 65; i++) m_nCellTrackID[i].Empty();
 
 #ifndef NEW_PLCTYPE
 	memset(&m_SeqDataLotEnd, 0x0000, sizeof(_SEQ_OUT_DATA_LOT_END));
