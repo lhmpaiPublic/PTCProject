@@ -472,10 +472,7 @@ int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdReceive Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("ReadBitData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
 
 	memcpy(buff, localbuff, size);
 
@@ -507,10 +504,7 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buf
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdReceive Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("ReadWordData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
 
 	memcpy(buff, localbuff, size);
 
@@ -543,10 +537,7 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short 
 		, localbuff
 	);
 
-	if (iRet != 0) 
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdReceiveEx Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("ReadWordDataEx mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
 
 	memcpy(buff, localbuff, size);
 
@@ -577,10 +568,7 @@ int CMelsecPlcIo::ReadDwordData(short stno, int devtype, int startport, int buff
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdReceive Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("ReadDwordData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
 
 	memcpy(buff, localbuff, size);
 
@@ -613,10 +601,7 @@ int CMelsecPlcIo::ReadDwordDataEx(short netNo, int devtype, int startport, int b
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdReceiveEx Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("ReadDwordDataEx mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
 
 	memcpy(buff, localbuff, size);
 
@@ -651,10 +636,7 @@ int CMelsecPlcIo::WriteBitData(short stno, int devtype, int startport, byte buff
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdSend Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("WriteBitData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
 
 	delete[] localbuff;
 
@@ -686,10 +668,7 @@ int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, short bu
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdSend Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("WriteWordData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
 
 	delete[] localbuff;
 
@@ -722,10 +701,7 @@ int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, short
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdSendEx Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("WriteWordDataEx mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
 
 	delete[] localbuff;
 
@@ -756,10 +732,7 @@ int CMelsecPlcIo::WriteDwordData(short stno, int devtype, int startport, int buf
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdSend Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("WriteDwordData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
 
 	delete[] localbuff;
 
@@ -792,10 +765,7 @@ int CMelsecPlcIo::WriteDwordDataEx(short netNo, int devtype, int startport, int 
 		, localbuff
 	);
 
-	if (iRet != 0)
-	{
-		LOGDISPLAY_SPEC(2)(_T("mdSendEx Error	devno : %d	code : %d	offset : %d"), devno, iRet, offset);
-	}
+	LOGDISPLAY_SPEC(2)(_T("WriteDwordDataEx mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
 
 	delete[] localbuff;
 
