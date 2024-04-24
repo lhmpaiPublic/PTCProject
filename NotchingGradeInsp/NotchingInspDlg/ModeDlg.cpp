@@ -109,7 +109,7 @@ CModeDlg::CModeDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=
 
 	m_pTactGraph = NULL ;
 
-	m_nTimerInterval_DeviceCheck = 2000; // 240108
+	m_nTimerInterval_DeviceCheck = AprData.m_System.m_nLED_Check_Delay;
 }
 
 CModeDlg::~CModeDlg()

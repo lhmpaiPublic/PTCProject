@@ -216,6 +216,10 @@ int CSystemSetting::FileCtrl(int nMode)
 			::GetPrivateProfileString(strSection, strKey, "5", buff, 256, strFileName);
 			m_nCounterBoard_ErrCount = atoi(buff);
 
+			strKey = _T("LED_CHECK_DELAY");
+			::GetPrivateProfileString(strSection, strKey, "2000", buff, 256, strFileName);
+			m_nLED_Check_Delay = atoi(buff);
+
 			strSection = _T("SPCPLUS_INFO");
 			strKey = _T("NON_EXEC_SPCPLUS");
 			::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);

@@ -634,7 +634,7 @@ int CLightControl::SendNRecvRS232(int unit, char* pSendBuff, char* pRecvBuff, in
 
 // 230108
 // LED 상태를 주기적인 ping을 보내서 확인하기 위한 함수
-// m_nTimerInterval_DeviceCheck 2000, 현재 2초로 되어있음.
+// Systemsetting.ini 의 LED_CHECK_DELAY 값을 적용함. 기본 2000(2초)
 // return 0 정상
 // 1 : MainLED 이상
 // 2 : SubLED 이상 

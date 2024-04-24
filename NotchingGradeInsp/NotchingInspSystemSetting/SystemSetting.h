@@ -95,6 +95,7 @@ public:
 #endif
 
 	int m_nCounterBoard_ErrCount;
+	int m_nLED_Check_Delay;
 
 	BOOL m_bNoTabMarkingSkip;
 };
