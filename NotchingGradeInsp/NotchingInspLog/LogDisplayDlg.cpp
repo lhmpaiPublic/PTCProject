@@ -48,7 +48,7 @@ CString strLogNameList =
 "6 UnitThread_6 0,"
 "7 TriggerDIO_7 0,"
 "8 UnitResult_8 0,"
-"11 Tab_Counter 1,"
+"11 Tab_Counter 0,"
 "100 END 0"
 ;
 

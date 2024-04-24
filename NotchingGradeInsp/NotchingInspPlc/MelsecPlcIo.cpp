@@ -270,7 +270,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	//Bit Read 영역 읽기
 	//4포트
 	//시작번지 : 0, 읽을 갯수 4
-	static byte buffBitIn[MELSEC_BITINSIZE_MAX];
+	byte buffBitIn[MELSEC_BITINSIZE_MAX];
 	memset(buffBitIn, 0, MELSEC_BITINSIZE_MAX);
 	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitIn, MELSEC_BITINSIZE_MAX, m_wOffset_BitIn);
 	//읽은 Bit 데이터 파싱
@@ -281,7 +281,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	}
 
 	//word 읽기 영역 읽기(멜섹은 DWORD 를 사용한다.)
-	static DWORD buffDwordIn[MELSEC_DWORDINSIZE_MAX];
+	DWORD buffDwordIn[MELSEC_DWORDINSIZE_MAX];
 	memset(buffDwordIn, 0, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
 	ReadDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn);
 	//읽은 Dword 데이터 파싱
@@ -293,7 +293,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 
 
 	//비트영역 쓰기 데이터 읽기
-	static byte* buffBitOut = new byte[MELSEC_BITOUTSIZE_MAX];
+	byte* buffBitOut = new byte[MELSEC_BITOUTSIZE_MAX];
 	memset(buffBitOut, 0, MELSEC_BITOUTSIZE_MAX);
 	int portsize = WritePlcBitDataMake(&buffBitOut);
 	if (portsize > 0)
@@ -304,7 +304,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	delete[] buffBitOut;
 
 	//word 쓰기 영역 (멜섹은 DWORD 를 사용한다.)
-	static DWORD* buffDwordOut = new DWORD[MELSEC_DWORDOUTSIZE_MAX];
+	DWORD* buffDwordOut = new DWORD[MELSEC_DWORDOUTSIZE_MAX];
 	memset(buffDwordOut, 0, MELSEC_DWORDOUTSIZE_MAX*sizeof(DWORD));
 	int dwordwritesize = WritePlcWordDataMake(&buffDwordOut);
 	if (dwordwritesize > 0)
@@ -315,7 +315,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	delete[] buffDwordOut;
 
 	//비트영역 쓰기 데이터 읽기
-	static byte buffBitOutRead[MELSEC_BITOUTSIZE_MAX];
+	byte buffBitOutRead[MELSEC_BITOUTSIZE_MAX];
 	memset(buffBitOutRead, 0, MELSEC_BITOUTSIZE_MAX);
 	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut);
 	//읽은 Bit 데이터 비교
@@ -326,7 +326,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	}
 
 	//word 쓰기 영역 읽기(멜섹은 DWORD 를 사용한다.)
-	static DWORD buffDwordOutRead[MELSEC_DWORDOUTSIZE_MAX];
+	DWORD buffDwordOutRead[MELSEC_DWORDOUTSIZE_MAX];
 	memset(buffDwordOutRead, 0, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
 	ReadDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut);
 	//읽은 Dword 데이터 비교
