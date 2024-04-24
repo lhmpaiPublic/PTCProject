@@ -310,7 +310,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	if (dwordwritesize > 0)
 	{
 		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s"), CStrSuport::ChanginttohexTab((int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut));
-		WriteDwordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut);
+		WriteDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut);
 	}
 	delete[] buffDwordOut;
 
@@ -328,7 +328,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	//word 쓰기 영역 읽기(멜섹은 DWORD 를 사용한다.)
 	DWORD buffDwordOutRead[MELSEC_DWORDOUTSIZE_MAX];
 	memset(buffDwordOutRead, 0, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
-	ReadDwordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut);
+	ReadDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut);
 	//읽은 Dword 데이터 비교
 	if (std::equal(std::begin(buffDwordOutRead), std::end(buffDwordOutRead), std::begin(m_WriteDwordData)) == false)
 	{
