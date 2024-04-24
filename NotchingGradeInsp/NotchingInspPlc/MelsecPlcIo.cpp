@@ -283,7 +283,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	//word 읽기 영역 읽기(멜섹은 DWORD 를 사용한다.)
 	DWORD buffDwordIn[MELSEC_DWORDINSIZE_MAX];
 	memset(buffDwordIn, 0, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
-	ReadDwordData(0xff, MELSEC_DEVICE_W, 0, (int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn);
+	ReadDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn);
 	//읽은 Dword 데이터 파싱
 	if (std::equal(std::begin(buffDwordIn), std::end(buffDwordIn), std::begin(m_ReadDwordData)) == false)
 	{
