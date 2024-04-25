@@ -55,7 +55,7 @@ using namespace Gdiplus;
 //#define USE_PLCCONNECTZONE
 
 //BCD Counter 컴파일 여부
-//#define USE_BCDCOUNTER
+#define USE_BCDCOUNTER
 
 //PLC data type new
 #define NEW_PLCTYPE

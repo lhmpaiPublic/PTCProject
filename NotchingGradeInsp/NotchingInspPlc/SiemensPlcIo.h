@@ -35,14 +35,26 @@
 
 class CSiemensPlcIo : public CDataPlcImp
 {
+	//PLC Slave ID
 	int m_nSlaveID;
+	//Bit 입력 시작 위치
 	int m_nBitIn;
+	//Bit 출력 시작 위치
 	int m_nBitOut;
+	//Word 입력 시작 위치
 	int m_nWordIn;
+	//Word 출력 시작 위치
 	int m_nWordOut;
 
 public:
-	//strIPAddress : IP, nPort : Port, nSlaveID : Slave ID, nBitIn : In Bit 시작 인덱스, nBitOut : Out Bit 시작 인덱스, nWordIn : In Word 시작 인덱스, nWordOut : Out Word 시작 인덱스, 
+	//생성자
+	//strIPAddress : IP
+	//nPort : Port
+	//nSlaveID : Slave ID
+	//nBitIn : In Bit 시작 인덱스
+	//nBitOut : Out Bit 시작 인덱스
+	//nWordIn : In Word 시작 인덱스
+	//nWordOut : Out Word 시작 인덱스, 
 	CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* pReceiveMsgWnd, int nPort, int nSlaveID, int nBitIn = SIENENS_READBIT_STARTINDEX, int nBitOut = SIENENS_WRITEBIT_STARTINDEX, int nWordIn = SIENENS_READWORD_STARTINDEX, int nWordOut = SIENENS_WRITEWORD_STARTINDEX);
 	~CSiemensPlcIo();
 

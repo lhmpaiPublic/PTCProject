@@ -367,7 +367,7 @@ int CMelsecPlcIo::LocalPioOpen(BOOL bLockCtrl)
 
 	int	iRet = 0;
 
-	iRet = (int)mdOpen(m_wChannelNo, -1, &m_pPath);
+	iRet = (int)mdOpen((short)m_wChannelNo, -1, &m_pPath);
 
 	if (iRet == 0) 
 	{

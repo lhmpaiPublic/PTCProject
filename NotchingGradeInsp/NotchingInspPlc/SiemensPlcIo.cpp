@@ -130,14 +130,14 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	m_bSmsAlive = FALSE;
 
 	//Read Data 버퍼 초기화
-	memset(m_ReadBitData, 0, sizeof(short) * SIENENS_READBIT);
-	memset(m_ReadWordData, 0, sizeof(short) * SIENENS_READWORD_MAX);
+	memset(m_ReadBitData, 0xff, sizeof(short) * SIENENS_READBIT);
+	memset(m_ReadWordData, 0xff, sizeof(short) * SIENENS_READWORD_MAX);
 
 	//Write Bit Data 버퍼 초기화
-	memset(m_WriteBitData, 0, sizeof(short) * SIENENS_WRITEBIT);
+	memset(m_WriteBitData, 0xff, sizeof(short) * SIENENS_WRITEBIT);
 
 	//Write Word Data 버퍼 초기화
-	memset(m_WriteWordData, 0, sizeof(short) * SIENENS_WRITEWORD_MAX);
+	memset(m_WriteWordData, 0xff, sizeof(short) * SIENENS_WRITEWORD_MAX);
 
 	//지멘스 Plc 연결 및 데이터 처리 스래드 객체 생성
 	OpenPlcIo();
@@ -344,7 +344,8 @@ int CSiemensPlcIo::WritePlcBitDataMake()
 	if (isBitOut_DiskSpaceWarning()) ret = idx;
 	m_WriteBitData[idx] = getBitOut_DiskSpaceWarning();
 
-	idx = enSmsBitOut_DiskSpaceAlarm; ret = idx;
+	idx = enSmsBitOut_DiskSpaceAlarm;
+	if (getBitOut_DiskSpaceAlarm()) ret = idx;
 	m_WriteBitData[idx] = getBitOut_DiskSpaceAlarm();
 
 	//버퍼 block 위치에 + 1 = 크기(size)
@@ -550,50 +551,46 @@ void CSiemensPlcIo::SetReConnetTimeOut(int nTimeOut)
 
 int CSiemensPlcIo::WriteDataReg(int offset, short data[], int num)
 {
-	CString strMsg;
+	int nRet = CONNECTION_ERROR;
+	if (IsOpened())
+	{
+		nRet = m_pLGIS_Plc->WriteMultipleRegisters(offset, num, (uint16_t*)data);
 
-	int nRet = 0;
-	int nAdd = offset;
-	{	
-		if (m_pLGIS_Plc)
+		if (nRet < 0)
 		{
-			nRet = m_pLGIS_Plc->WriteMultipleRegisters(nAdd, num, (uint16_t*)data);
-
-			if (nRet < 0)
-			{
-
-			}
-
+			//로그출력
+			LOGDISPLAY_SPEC(2)(" Siemens WriteDataReg Error	code : %d	offset : %d", nRet, offset);
 		}
+
 	}
 
-	return nRet ;
+	return nRet;
 }
 
 int CSiemensPlcIo::ReadDataReg(int offset, short data[], int num)
 {
-	int nRet = 0;
-	int nAdd = offset;
+	int nRet = CONNECTION_ERROR;
+
+	if (IsOpened())
 	{
+		nRet = m_pLGIS_Plc->ReadHoldingRegisters(offset, num, (uint16_t*)data);
 
- 		CString strMsg;
-		if (m_pLGIS_Plc)
+		if (nRet < 0)
 		{
-			nRet = m_pLGIS_Plc->ReadHoldingRegisters(nAdd, num, (uint16_t*)data);
-
-			if( nRet < 0)
-			{
-			}
+			//로그출력
+			LOGDISPLAY_SPEC(2)(" Siemens ReadDataReg Error	code : %d	offset : %d", nRet, offset);
 		}
-
 	}
+
 	return nRet;
 }
 
 BOOL CSiemensPlcIo::IsOpened()
 {
 	if (m_pLGIS_Plc)
+	{
 		return m_pLGIS_Plc->CheckConnection();
+	}
 
 	return false;
 }
@@ -605,7 +602,7 @@ CString CSiemensPlcIo::GetErrorMsg()
 		if (m_pLGIS_Plc->m_bErr)
 			return m_pLGIS_Plc->m_strErrorMsg;
 		else
-			return CString();
+			return CString(_T(""));
 	}
 	else
 	{
@@ -637,6 +634,8 @@ int CSiemensPlcIo::GetErrorNo()
 int CSiemensPlcIo::OpenPlcIo(void)
 {
 	int ret = 0;
+	//PLC 데이터 변수 값 초기화
+	initDataPlcImp();
 
 	m_pLGIS_Plc = new CLGIS_Plc(m_strIPAddress, m_nPort, m_nReConnetTimeOut, m_pReceiveMsgWnd );
 	//로그출력

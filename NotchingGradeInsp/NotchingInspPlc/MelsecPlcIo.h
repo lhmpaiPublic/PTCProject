@@ -91,7 +91,16 @@ class CMelsecPlcIo : public CDataPlcImp
 	BOOL m_bEnableWorkSet;
 
 public:
-	//
+	//생성자
+	//wOffset_BitIn : Bit 입력 시작 위치
+	//wOffset_BitOut : Bit 출력 시작 위치
+	//wOffset_WordIn : Word 입력 시작 위치
+	//wOffset_WordOut : Word 출력 시작 위치
+	//wChannelNo : PLC 채널 번호 : 151번 사용함
+	//wMaxPort : bit 영역 읽기 최대 갯수
+	//wMyStNo : 32bit 단위 위치 세팅
+	//wExtStNo : 32bit 단위 위치 세팅
+	//wSeqStNo : 32bit 단위 위치 세팅
 	CMelsecPlcIo(DWORD wOffset_BitIn, DWORD wOffset_BitOut, DWORD wOffset_WordIn, DWORD wOffset_WordOut, DWORD wChannelNo = MELSEC_CHN_NO_NETG1, DWORD wMaxPort = MELSEC_MAX_PORT, DWORD wMyStNo = MELSEC_LIO_STATION_NO, DWORD wExtStNo = MELSEC_EX_STATION_NO, DWORD wSeqStNo = MELSEC_SEQ_STATION_NO);
 	~CMelsecPlcIo();
 
