@@ -1506,6 +1506,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							dwFoilExpOutBottomCount = AprData.m_NowLotData.m_SeqDataOut.dwFoilExpOutBottomCount;
 
 							CString strCellTrackID = AprData.m_NowLotData.m_nCellTrackID[pTopInfo->m_nTabId_CntBoard];
+							AprData.m_NowLotData.m_nCellTrackID[pTopInfo->m_nTabId_CntBoard].Empty(); //재사용 없도록 한번 사용 후 클리어한다.
 #endif
 							CString strTime;
 							CString strJudge = _T("OK");

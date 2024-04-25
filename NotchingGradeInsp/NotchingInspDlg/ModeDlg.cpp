@@ -1026,10 +1026,11 @@ void CModeDlg::SubDisplayUpdate(void)
 	}
 }
 
-CString CModeDlg::parse_CellID(CString SourceString, int trigCount)
+CString CModeDlg::parse_CellID(CString SourceString, int & trigCount)
 {
 	CString mTemp_Source = SourceString;
 	CString mTemp_Dest = "Check";
+	int iTemp_trg_Dest = 0;
 
 	int iTemp_Start = 0;
 	int iTemp_End = 0;
@@ -1063,9 +1064,12 @@ CString CModeDlg::parse_CellID(CString SourceString, int trigCount)
 	// iTemp_trg_Start 부터 첫번째 , 를 찾는다.
 	iTemp_trg_End = mTemp_Source.Find(",", iTemp_trg_Start);
 
-	LOGDISPLAY_ALL("[parse_CellID] iTemp_trg_Start[ %d ], iTemp_trg_End[ %d ]", iTemp_trg_Start, iTemp_trg_End);
+	// iTemp_trg_Start[ 156 ], iTemp_trg_End[ 158 ]
+	iTemp_trg_Dest = _ttoi(mTemp_Source.Mid(iTemp_trg_Start, iTemp_trg_End - iTemp_trg_Start));
 
-	trigCount = _ttoi(mTemp_Source.Mid(iTemp_trg_Start, iTemp_trg_End - iTemp_trg_Start));
+	LOGDISPLAY_ALL("[parse_CellID] iTemp_trg_Start[ %d ], iTemp_trg_End[ %d ],  iTemp_trg_Dest[ %d ]", iTemp_trg_Start, iTemp_trg_End, iTemp_trg_Dest);
+
+	trigCount = iTemp_trg_Dest;
 
 	return mTemp_Dest;
 }

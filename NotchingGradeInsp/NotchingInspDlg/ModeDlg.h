@@ -121,7 +121,7 @@ public :
 	BOOL initCelltrack();
 	void ToggleIPConfig();
 
-	static CString parse_CellID(CString SourceString, int trigCount);
+	static CString parse_CellID(CString SourceString, int& trigCount);
 
 private : 
 
