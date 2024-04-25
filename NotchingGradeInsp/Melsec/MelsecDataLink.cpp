@@ -202,7 +202,6 @@ int CMelsecDataLink::InPort(WORD port, BYTE* data, BOOL bExtSt /*=FALSE*/)
 				, &size
 				, buff
 			);
-			LOGDISPLAY_SPEC(2)(_T("InPort mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, 0xff, sDevType, devno, m_wOffset_In);
 		}
 
 		if (iRet != 0) {
@@ -278,7 +277,6 @@ int CMelsecDataLink::InPort_AnotherDevice(short stno, CString device, int boffse
 				, &size
 				, buff
 			);
-			LOGDISPLAY_SPEC(2)(_T("InPort mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d"), iRet, 0xff, devtype, devno);
 		}
 
 		if (iRet != 0) {
@@ -436,7 +434,6 @@ int CMelsecDataLink::OutPort(WORD port, BYTE data, BOOL bLockCtrl /*= TRUE*/, BO
 				, &size
 				, &buff
 			);
-			LOGDISPLAY_SPEC(2)(_T("OutPort mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d"), iRet, 0xff, sDevType, devno);
 		}
 
 		if (iRet != 0) {
@@ -522,7 +519,6 @@ int CMelsecDataLink::WriteDataReg(int offset, short data[], int num)
 			, &size
 			, data
 		);
-		LOGDISPLAY_SPEC(2)(_T("WriteDataReg mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, nNetNo, m_wSeqStNo, sDevType, devno, AprData.m_System.m_nWordOut);
 	}
 
 	if (iRet != 0) {
@@ -686,7 +682,6 @@ int CMelsecDataLink::ReadDataReg(int offset, short data[], int num)
 			, &size
 			, data
 		);
-		LOGDISPLAY_SPEC(2)(_T("ReadDataReg mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d"), iRet, netNo, seqStNo, sDevType, devno);
 	}
 
 	if (iRet != 0) {
@@ -1035,7 +1030,6 @@ int CMelsecDataLink::ReadDataReg(int offset, short data[], int num, short device
 			, &size
 			, data
 		);
-		LOGDISPLAY_SPEC(2)(_T("ReadDataReg mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d"), iRet, stno, device, devno);
 	}
 
 	if (iRet != 0) {
@@ -1117,7 +1111,6 @@ int CMelsecDataLink::WriteDataReg(int offset, short data[], int num, short devic
 			, &size
 			, data
 		);
-		LOGDISPLAY_SPEC(2)(_T("WriteDataReg mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d"), iRet, stno, device, devno);
 	}
 
 	if (iRet != 0) {
@@ -1256,7 +1249,6 @@ int CMelsecDataLink::ReadPortAllBitIn( BYTE *data, short size )
 				, &size
 				, data
 			);
-			LOGDISPLAY_SPEC(2)(_T("ReadPortAllBitIn mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d"), iRet, 0xff, sDevType, devno);
 		}
 
 		if (iRet != 0) {
@@ -1375,7 +1367,6 @@ int CMelsecDataLink::ReadPortAllBitOut( BYTE *data, short nSize )
 				, &nSize
 				, data
 			);
-			LOGDISPLAY_SPEC(2)(_T("ReadPortAllBitOut mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, 0xff, sDevType, devno, m_wOffset_Out);
 		}
 
 		if (iRet != 0) {

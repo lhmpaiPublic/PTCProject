@@ -7,9 +7,6 @@
 
 CCriticalSection CSigProc::m_cs;
 
-static DWORD btDataMelsec_Backup[80] = { 0, };
-static WORD btData_Backup[33] = { 0, };
-
 CSigProc::CSigProc()
 {
 	m_pPioCtrl = NULL;
@@ -1297,14 +1294,6 @@ int CSigProc::ReadBlockAllData_Melsec(CSequenceData* pSeqData)
 	}
 
 #ifndef NEW_PLCTYPE
-	DWORD btDataMelsec[80] = { 0, };
-	memcpy(btDataMelsec, btData, sizeof(btData));
-	//읽은 Word 데이터 출력
-	if (std::equal(std::begin(btDataMelsec), std::end(btDataMelsec), std::begin(btDataMelsec_Backup)) == false)
-	{
-		memcpy(btDataMelsec_Backup, btDataMelsec, sizeof(btDataMelsec));
-		LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChanginttohexTab((int*)btDataMelsec_Backup, 80, AprData.m_System.m_nWordIn));
-	}
 	memcpy(m_wMonitoringReadData_Melsec, btData, sizeof(btData));
 #endif //NEW_PLCTYPE
 
@@ -1554,12 +1543,6 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	}
 
 #ifndef NEW_PLCTYPE
-	//읽은 Word 데이터 출력
-	if (std::equal(std::begin(btData), std::end(btData), std::begin(btData_Backup)) == false)
-	{
-		memcpy(btData_Backup, btData, sizeof(btData));
-		LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexTab((short*)btData_Backup, 33, AprData.m_System.m_nWordIn));
-	}
 	memcpy(m_wMonitoringReadData_Siemens, btData, sizeof(btData));
 #endif //NEW_PLCTYPE
 
@@ -1588,11 +1571,6 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 
 		pwData++;
 	}
-
-
-
-
-
 
 	strBuffer.TrimRight();
 	strBuffer.TrimLeft();

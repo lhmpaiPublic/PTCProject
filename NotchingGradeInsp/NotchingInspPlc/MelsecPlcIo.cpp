@@ -225,7 +225,7 @@ enum MelsDwordWrite
 	enDwordWriteMaxSize = (enWordWriteMaxSize / 2),
 };
 
-CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset_WordIn, WORD wOffset_WordOut, WORD wChannelNo, WORD wMaxPort, WORD wMyStNo, WORD wExtStNo, WORD wSeqStNo)
+CMelsecPlcIo::CMelsecPlcIo(DWORD wOffset_BitIn, DWORD wOffset_BitOut, DWORD wOffset_WordIn, DWORD wOffset_WordOut, DWORD wChannelNo, DWORD wMaxPort, DWORD wMyStNo, DWORD wExtStNo, DWORD wSeqStNo)
 {
 	m_wChannelNo = wChannelNo;
 	m_wMaxPort = wMaxPort;
@@ -464,8 +464,11 @@ int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("ReadBitData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadBitData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
 
 	memcpy(buff, localbuff, size);
 
@@ -496,8 +499,11 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buf
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("ReadWordData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadWordData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
 
 	memcpy(buff, localbuff, size);
 
@@ -507,7 +513,7 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buf
 
 }
 
-int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset)
+int CMelsecPlcIo::ReadWordDataEx(long netNo, int devtype, int startport, short buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -518,8 +524,8 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short 
 	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + offset);
-	size = (short)num * sizeof(short);
+	devno = (long)(startport + offset);
+	size = (long)num * sizeof(short);
 
 	iRet = mdReceiveEx(m_pPath
 		, netNo
@@ -529,8 +535,11 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, short 
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("ReadWordDataEx mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadWordDataEx mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	}
 
 	memcpy(buff, localbuff, size);
 
@@ -560,8 +569,11 @@ int CMelsecPlcIo::ReadDwordData(short stno, int devtype, int startport, int buff
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("ReadDwordData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadDwordData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
 
 	memcpy(buff, localbuff, size);
 
@@ -571,7 +583,7 @@ int CMelsecPlcIo::ReadDwordData(short stno, int devtype, int startport, int buff
 
 }
 
-int CMelsecPlcIo::ReadDwordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset)
+int CMelsecPlcIo::ReadDwordDataEx(long netNo, int devtype, int startport, int buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -582,8 +594,8 @@ int CMelsecPlcIo::ReadDwordDataEx(short netNo, int devtype, int startport, int b
 	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + offset);
-	size = (short)num * sizeof(int);
+	devno = (long)(startport + offset);
+	size = (long)num * sizeof(int);
 
 	iRet = mdReceiveEx(m_pPath
 		, netNo
@@ -593,8 +605,11 @@ int CMelsecPlcIo::ReadDwordDataEx(short netNo, int devtype, int startport, int b
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("ReadDwordDataEx mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadDwordDataEx mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	}
 
 	memcpy(buff, localbuff, size);
 
@@ -628,8 +643,11 @@ int CMelsecPlcIo::WriteBitData(short stno, int devtype, int startport, byte buff
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("WriteBitData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteBitData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
 
 	delete[] localbuff;
 
@@ -660,8 +678,11 @@ int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, short bu
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("WriteWordData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteWordData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
 
 	delete[] localbuff;
 
@@ -669,7 +690,7 @@ int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, short bu
 
 }
 
-int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset)
+int CMelsecPlcIo::WriteWordDataEx(long netNo, int devtype, int startport, short buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -680,8 +701,8 @@ int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, short
 	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + offset);
-	size = (short)num * sizeof(short);
+	devno = (long)(startport + offset);
+	size = (long)num * sizeof(short);
 
 	memcpy(localbuff, buff, size);
 
@@ -693,8 +714,11 @@ int CMelsecPlcIo::WriteWordDataEx(short netNo, int devtype, int startport, short
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("WriteWordDataEx mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteWordDataEx mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	}
 
 	delete[] localbuff;
 
@@ -724,8 +748,11 @@ int CMelsecPlcIo::WriteDwordData(short stno, int devtype, int startport, int buf
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("WriteDwordData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteDwordData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
 
 	delete[] localbuff;
 
@@ -733,7 +760,7 @@ int CMelsecPlcIo::WriteDwordData(short stno, int devtype, int startport, int buf
 
 }
 
-int CMelsecPlcIo::WriteDwordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset)
+int CMelsecPlcIo::WriteDwordDataEx(long netNo, int devtype, int startport, int buff[], int num, int offset)
 {
 	int iRet = 0;
 
@@ -744,8 +771,8 @@ int CMelsecPlcIo::WriteDwordDataEx(short netNo, int devtype, int startport, int 
 	localbuff = new short[buffsize];
 	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + offset);
-	size = (short)num * sizeof(int);
+	devno = (long)(startport + offset);
+	size = (long)num * sizeof(int);
 
 	memcpy(localbuff, buff, size);
 
@@ -757,8 +784,11 @@ int CMelsecPlcIo::WriteDwordDataEx(short netNo, int devtype, int startport, int 
 		, &size
 		, localbuff
 	);
-
-	LOGDISPLAY_SPEC(2)(_T("WriteDwordDataEx mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteDwordDataEx mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	}
 
 	delete[] localbuff;
 

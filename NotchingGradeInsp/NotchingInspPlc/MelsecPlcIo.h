@@ -63,24 +63,24 @@
 class CMelsecPlcIo : public CDataPlcImp
 {
 	//채널 번호
-	WORD	m_wChannelNo;
+	DWORD	m_wChannelNo;
 	//BYTE 읽기 갯수
-	WORD	m_wMaxPort;
+	DWORD	m_wMaxPort;
 	//스테이션 번호(My)
-	WORD	m_wMyStNo;
+	DWORD	m_wMyStNo;
 	//스테이션 번호(Ext)
-	WORD	m_wExtStNo;
+	DWORD	m_wExtStNo;
 	//스테이션 번호(Seq)
-	WORD	m_wSeqStNo;
+	DWORD	m_wSeqStNo;
 
 	//Bit 읽기 시작점(8bit 단위 설정해야함)
-	WORD	m_wOffset_BitIn;
+	DWORD	m_wOffset_BitIn;
 	//Bit 쓰기 시작점(8bit 단위 설정해야함)
-	WORD	m_wOffset_BitOut;
+	DWORD	m_wOffset_BitOut;
 	//Word 읽기 시작점
-	WORD	m_wOffset_WordIn;
+	DWORD	m_wOffset_WordIn;
 	//Word 쓰기 시작점
-	WORD	m_wOffset_WordOut;
+	DWORD	m_wOffset_WordOut;
 
 	//멜섹 생성 객체 번호
 	long	m_pPath;
@@ -92,7 +92,7 @@ class CMelsecPlcIo : public CDataPlcImp
 
 public:
 	//
-	CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset_WordIn, WORD wOffset_WordOut, WORD wChannelNo = MELSEC_CHN_NO_NETG1, WORD wMaxPort = MELSEC_MAX_PORT, WORD wMyStNo = MELSEC_LIO_STATION_NO, WORD wExtStNo = MELSEC_EX_STATION_NO, WORD wSeqStNo = MELSEC_SEQ_STATION_NO);
+	CMelsecPlcIo(DWORD wOffset_BitIn, DWORD wOffset_BitOut, DWORD wOffset_WordIn, DWORD wOffset_WordOut, DWORD wChannelNo = MELSEC_CHN_NO_NETG1, DWORD wMaxPort = MELSEC_MAX_PORT, DWORD wMyStNo = MELSEC_LIO_STATION_NO, DWORD wExtStNo = MELSEC_EX_STATION_NO, DWORD wSeqStNo = MELSEC_SEQ_STATION_NO);
 	~CMelsecPlcIo();
 
 public:
@@ -149,7 +149,7 @@ private:
 	//num : 읽을 갯수
 	//offset : 시스템 세팅 읽기 쓰기 시작점
 	//return : 읽기 실패 여부(0 : 성공, 그외 실패)
-	int ReadWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset);
+	int ReadWordDataEx(long netNo, int devtype, int startport, short buff[], int num, int offset);
 	//stno : 0xff , 또는 0x00
 	//devtype : B : 바이너리, X : 헥사 , W : 워드 
 	//startport : 시작 포트
@@ -165,7 +165,7 @@ private:
 	//num : 읽을 갯수
 	//offset : 시스템 세팅 읽기 쓰기 시작점
 	//return : 읽기 실패 여부(0 : 성공, 그외 실패)
-	int ReadDwordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset);
+	int ReadDwordDataEx(long netNo, int devtype, int startport, int buff[], int num, int offset);
 	//stno : 0xff , 또는 0x00
 	//devtype : B : 바이너리, X : 헥사 , W : 워드 
 	//startport : 시작 포트
@@ -189,7 +189,7 @@ private:
 	//num : 쓰기 갯수
 	//offset : 시스템 세팅 읽기 쓰기 시작점
 	//return : 쓰기 실패 여부(0 : 성공, 그외 실패)
-	int WriteWordDataEx(short netNo, int devtype, int startport, short buff[], int num, int offset);
+	int WriteWordDataEx(long netNo, int devtype, int startport, short buff[], int num, int offset);
 	//stno : 0xff , 또는 0x00
 	//devtype : B : 바이너리, X : 헥사 , W : 워드 
 	//startport : 시작 포트
@@ -205,7 +205,7 @@ private:
 	//num : 쓰기 갯수
 	//offset : 시스템 세팅 읽기 쓰기 시작점
 	//return : 쓰기 실패 여부(0 : 성공, 그외 실패)
-	int WriteDwordDataEx(short netNo, int devtype, int startport, int buff[], int num, int offset);
+	int WriteDwordDataEx(long netNo, int devtype, int startport, int buff[], int num, int offset);
 
 	//Endian 전환 함수
 	void chnageEndian(short data[], int size);
