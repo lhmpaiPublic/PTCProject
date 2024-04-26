@@ -255,8 +255,6 @@ CString CSiemensPlcIo::MakeRecipeName(short* data)
 	str.TrimLeft();
 	AprData.m_SeqDataIN.strRecipeName = str;
 
-	//LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), str);
-
 	return str;
 }
 
@@ -273,8 +271,6 @@ CString CSiemensPlcIo::MakeCellId(short* data)
 	str.TrimRight();
 	str.TrimLeft();
 	AprData.m_SeqDataIN.strCell_ID = str;
-
-	//LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), str);
 
 	return str;
 }

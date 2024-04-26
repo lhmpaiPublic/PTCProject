@@ -866,8 +866,6 @@ CString CMelsecPlcIo::MakeRecipeName(DWORD* data)
 	str.TrimLeft();
 	AprData.m_SeqDataIN.strRecipeName = str;
 
-	LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), str);
-
 	return str;
 }
 //CELL ID를 만든다.
@@ -883,8 +881,6 @@ CString CMelsecPlcIo::MakeCellId(DWORD* data)
 	str.TrimRight();
 	str.TrimLeft();
 	AprData.m_SeqDataIN.strCell_ID = str;
-
-	LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), str);
 
 	return str;
 }
