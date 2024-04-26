@@ -269,12 +269,11 @@ private:
 	virtual int SigOutAlarmExist(int nMode);
 	//멜섹만 쓴다.
 	virtual void EnableWorkSet(BOOL bMode);
+	//멜섹만 쓴다.
+	virtual int SignalBitOut(int nIntegration, int nMode, BOOL bLocal = FALSE);
 
 	virtual int SigOutDiskCapacityAlarm(int nMode);
 	virtual int SigOutDiskCapacityWarning(int nMode);
-
-	//멜섹만 쓴다.
-	virtual int SignalBitOut(int nIntegration, int nMode, BOOL bLocal = FALSE);
 
 	//Lot End 처리 함수
 	virtual void SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt);

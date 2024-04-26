@@ -1283,6 +1283,11 @@ void CMelsecPlcIo::EnableWorkSet(BOOL bMode)
 {
 	m_bEnableWorkSet = bMode;
 }
+int CMelsecPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
+{
+	return 0;
+}
+
 int CMelsecPlcIo::SigOutDiskCapacityAlarm(int nMode)
 { 
 	setBitOut_DiskSpaceAlarm(nMode);
@@ -1294,15 +1299,11 @@ int CMelsecPlcIo::SigOutDiskCapacityWarning(int nMode)
 	return 0;
 }
 
-int CMelsecPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
-{
-	return 0;
-}
-
 //Lot End 처리 함수
 void CMelsecPlcIo::SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt)
 {
-
+	setWordOut_Top_Defect_Count_LotEnd(TopDefectCnt);
+	setWordOut_Btm_Defect_Count_LotEnd(BtmDefectCnt);
 }
 
 //In

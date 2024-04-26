@@ -30,6 +30,7 @@ public:
 	virtual void EnableWorkSet(BOOL bMode) = 0;
 	virtual int SigOutDiskCapacityAlarm(int nMode) = 0;
 	virtual int SigOutDiskCapacityWarning(int nMode) = 0;
+
 	virtual int SignalBitOut(int nIntegration, int nMode, BOOL bLocal = FALSE) = 0;
 	
 

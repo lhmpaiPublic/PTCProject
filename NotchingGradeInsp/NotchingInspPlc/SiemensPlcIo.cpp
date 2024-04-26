@@ -817,6 +817,11 @@ int CSiemensPlcIo::SigOutAlarmExist(int nMode)
 void CSiemensPlcIo::EnableWorkSet(BOOL bMode)
 {
 }
+int CSiemensPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
+{
+	return 0;
+}
+
 int CSiemensPlcIo::SigOutDiskCapacityAlarm(int nMode)
 { 
 	setBitOut_DiskSpaceAlarm(nMode);
@@ -828,15 +833,11 @@ int CSiemensPlcIo::SigOutDiskCapacityWarning(int nMode)
 	return 0;
 }
 
-int CSiemensPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
-{
-	return 0;
-}
-
 //Lot End 처리 함수
 void CSiemensPlcIo::SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt)
 {
-
+	setWordOut_Top_Defect_Count_LotEnd(TopDefectCnt);
+	setWordOut_Btm_Defect_Count_LotEnd(BtmDefectCnt);
 }
 
 //In
