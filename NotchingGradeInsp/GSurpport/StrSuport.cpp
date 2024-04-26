@@ -131,7 +131,7 @@ CString CStrSuport::ChangbytetohexTab(BYTE* byt, int len, int offset, int tablen
 	{
 		if ((i + 1) % tablen == 1)
 		{
-			temp.Format("%d : ", (i+ offset));
+			temp.Format("0x%02X : ", (i + offset));
 			rest += temp;
 		}
 		temp.Format("%02X", byt[i]);
@@ -157,7 +157,7 @@ CString CStrSuport::ChangshorttohexTab(short* data, int len, int offset, int tab
 	{
 		if ((i+1) % tablen == 1)
 		{
-			temp.Format("%d : ", (i + offset));
+			temp.Format("0x%02X : ", ((i * sizeof(short)) + offset));
 			rest += temp;
 		}
 		temp.Format("%02X", ((data[i])>>8)&0xff);
@@ -185,7 +185,7 @@ CString CStrSuport::ChanginttohexTab(int* data, int len, int offset, int tablen)
 	{
 		if ((i + 1) % tablen == 1)
 		{
-			temp.Format("%d : ", (i + offset));
+			temp.Format("0x%02X : ", ((i * sizeof(int)) + offset));
 			rest += temp;
 		}
 		temp.Format("%02X", ((data[i]) >> 24) & 0xff);
