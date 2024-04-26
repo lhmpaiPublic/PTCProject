@@ -923,6 +923,8 @@ BOOL CModeDlg::initCelltrack()
 	}
 	else;;//AfxMessageBox("error!!");
 
+	for (int i = 0; i < 65; i++) AprData.m_NowLotData.m_nCellTrackID[i].Empty(); // GlobalData 에서 이쪽으로 이동함.
+
 	m_CriticalDLL.Unlock();
 
 	return 0;
