@@ -1111,6 +1111,17 @@ int CSigProc::SigOutLotEndAck(int nMode)
 	return nRet;
 }
 
+//Lot End 처리 함수
+void CSigProc::SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt)
+{
+	int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
+
+	int DataOutLotEnd[2];
+	DataOutLotEnd[0] = TopDefectCnt;
+	DataOutLotEnd[1] = BtmDefectCnt;
+	WritePLC_Block_device(nAddress, DataOutLotEnd, 2);
+}
+
 int CSigProc::SigOutTabZeroReset(int nMode)
 {
 	AprData.SaveDebugLog_Format(_T("PLC Tab Sero Reset Ack Mode : %d"), nMode);

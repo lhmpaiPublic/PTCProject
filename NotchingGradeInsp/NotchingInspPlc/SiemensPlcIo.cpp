@@ -134,10 +134,15 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	memset(m_ReadWordData, 0xff, sizeof(short) * SIENENS_READWORD_MAX);
 
 	//Write Bit Data 버퍼 초기화
-	memset(m_WriteBitData, 0xff, sizeof(short) * SIENENS_WRITEBIT);
+	memset(m_WriteBitData, 0x00, sizeof(short) * SIENENS_WRITEBIT);
 
 	//Write Word Data 버퍼 초기화
-	memset(m_WriteWordData, 0xff, sizeof(short) * SIENENS_WRITEWORD_MAX);
+	memset(m_WriteWordData, 0x00, sizeof(short) * SIENENS_WRITEWORD_MAX);
+
+	//PLC 쓰기 Bit Data 읽기
+	memset(m_WriteBitDataRead, 0xff, sizeof(short) * SIENENS_WRITEBIT);
+	//PLC 쓰기 Word Data 읽기
+	memset(m_WriteWordDataRead, 0xff, sizeof(short) * SIENENS_WRITEWORD_MAX);
 
 	//지멘스 Plc 연결 및 데이터 처리 스래드 객체 생성
 	OpenPlcIo();
@@ -162,7 +167,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
 		{
 			ReadPlcBitDataParser(ReadBitData);
-			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(ReadBitData, SIENENS_READBIT));
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(ReadBitData, SIENENS_READBIT, m_nBitIn));
 		}
 
 		//Read word 영역 읽기
@@ -173,25 +178,47 @@ void CSiemensPlcIo::SiemensPlcProc()
 		if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
 		{
 			ReadPlcWordDataParser(ReadWordData);
-			LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexTab(ReadWordData, SIENENS_READWORD_MAX));
+			LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexTab(ReadWordData, SIENENS_READWORD_MAX, m_nWordIn));
 		}
 
 		//Bit 쓰기 데이터 만들기
 		int ret = WritePlcBitDataMake();
 		//쓰기
-		if (ret != -1)
+		if (ret > 0)
 		{
 			WriteDataReg(m_nBitOut, m_WriteBitData, ret);
-			LOGDISPLAY_SPEC(2)(_T("Out Bit data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteBitData, ret));
+			LOGDISPLAY_SPEC(2)(_T("Out Bit data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteBitData, ret, m_nBitOut));
 		}
 
 		//Word 쓰기 데이터 만들기
 		ret = WritePlcWordDataMake();
 		//쓰기
-		if (ret != -1)
+		if (ret > 0)
 		{
 			WriteDataReg(m_nWordOut, m_WriteWordData, ret);
-			LOGDISPLAY_SPEC(2)(_T("Out Word data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteWordData, ret));
+			LOGDISPLAY_SPEC(2)(_T("Out Word data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteWordData, ret, m_nWordOut));
+		}
+
+		//Bit 쓰기 데이터 영역 읽기
+		short	WriteBitDataRead[SIENENS_WRITEBIT];
+		//bit 쓰기 영역 읽기
+		ReadDataReg(m_nBitOut, WriteBitDataRead, SIENENS_WRITEBIT);
+		//읽은 Bit 데이터 출력
+		if (std::equal(std::begin(WriteBitDataRead), std::end(WriteBitDataRead), std::begin(m_WriteBitDataRead)) == false)
+		{
+			memcpy(m_WriteBitDataRead, WriteBitDataRead, SIENENS_WRITEBIT);
+			LOGDISPLAY_SPEC(2)(_T("Out Bit data read :	%s"), CStrSuport::ChangshorttohexTab(m_WriteBitDataRead, SIENENS_WRITEBIT, m_nBitOut));
+		}
+
+		//Word 쓰기 데이터 영역 읽기
+		short	WriteWordDataRead[SIENENS_WRITEWORD_MAX];
+		//Word 쓰기 영역 읽기
+		ReadDataReg(m_nWordOut, WriteWordDataRead, SIENENS_WRITEWORD_MAX);
+		//읽은 Word 데이터 출력
+		if (std::equal(std::begin(WriteWordDataRead), std::end(WriteWordDataRead), std::begin(m_WriteWordDataRead)) == false)
+		{
+			memcpy(m_WriteWordDataRead, WriteWordDataRead, SIENENS_WRITEWORD_MAX);
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteWordDataRead, SIENENS_WRITEWORD_MAX, m_nWordOut));
 		}
 	}
 }
@@ -228,7 +255,7 @@ CString CSiemensPlcIo::MakeRecipeName(short* data)
 	str.TrimLeft();
 	AprData.m_SeqDataIN.strRecipeName = str;
 
-	LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), str);
+	//LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), str);
 
 	return str;
 }
@@ -247,7 +274,7 @@ CString CSiemensPlcIo::MakeCellId(short* data)
 	str.TrimLeft();
 	AprData.m_SeqDataIN.strCell_ID = str;
 
-	LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), str);
+	//LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), str);
 
 	return str;
 }
@@ -362,7 +389,7 @@ int CSiemensPlcIo::WritePlcWordDataMake()
 
 	idx = enSmsWordWrite_DataReportV1_Ea;
 	if (isWordOut_DataReportV1_Ea()) ret = idx;
-	m_WriteBitData[idx] = getWordOut_DataReportV1_Ea();
+	m_WriteWordData[idx] = getWordOut_DataReportV1_Ea();
 
 	idx = enSmsWordWrite_DataReportV2_OK;
 	if (isWordOut_DataReportV2_OK()) ret = idx;

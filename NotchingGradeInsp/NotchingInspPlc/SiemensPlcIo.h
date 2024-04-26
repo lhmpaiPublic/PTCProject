@@ -69,6 +69,11 @@ public:
 	short m_WriteBitData[SIENENS_WRITEBIT];
 	//PLC 쓰기 Word Data
 	short m_WriteWordData[SIENENS_WRITEWORD_MAX];
+
+	//PLC 쓰기 Bit Data 읽기
+	short m_WriteBitDataRead[SIENENS_WRITEBIT];
+	//PLC 쓰기 Word Data 읽기
+	short m_WriteWordDataRead[SIENENS_WRITEWORD_MAX];
 public:
 	// 데이터를 쓰기위한 함수
 	//offset : 시스템 세팅 읽기 쓰기 시작점

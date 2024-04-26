@@ -409,6 +409,9 @@ public :
 	virtual int SigOutAlarmExist(int nMode);
 	virtual int SigOutAlarmNgResetAck(int nMode);
 
+	//Lot End 처리 함수
+	virtual void SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt);
+
 	BOOL SigOutDataReset(); 
 
 	// Word
