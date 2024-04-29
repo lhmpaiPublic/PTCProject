@@ -18,7 +18,10 @@ enum SmsBitIn
 	enSmsBitIn_LotStartReq = 8,
 	enSmsBitIn_LotEndReq = 9,
 	enSmsBitIn_AlarmResetReq = 10,
-	enSmsBitIn_AlarmNgAck = 11
+	enSmsBitIn_AlarmNgAck = 11,
+
+	//Read Bit 영역 최대 크기
+	enSmsBitReadMaxSize = SIENENS_READBIT
 };
 enum SmsBitOut
 {
@@ -34,6 +37,9 @@ enum SmsBitOut
 
 	enSmsBitOut_DiskSpaceWarning = 9,
 	enSmsBitOut_DiskSpaceAlarm = 10,
+
+	//Write Word 영역 최대 크기
+	enSmsBitWriteMaxSize = SIENENS_WRITEBIT
 };
 // Siemens Address End
 // Siemens Word Address Start
@@ -55,11 +61,11 @@ enum SmsWordRead
 	enSmsWordRead_PrmSectorNgTabCnt = 31, 
 	enSmsWordRead_PrmSectorBaseCnt = 32, 
 
-	//Cell Key
-	enSmsWordRead_CellKey = 210,
-
 	//Read Word 영역 최대 크기
 	enSmsWordReadMaxSize = SIENENS_READWORD_MAX,
+
+	//Cell Key
+	enSmsWordRead_CellKey = 210,
 };
 
 enum SmsWordWrite
@@ -218,7 +224,7 @@ void CSiemensPlcIo::SiemensPlcProc()
 		if (std::equal(std::begin(WriteWordDataRead), std::end(WriteWordDataRead), std::begin(m_WriteWordDataRead)) == false)
 		{
 			memcpy(m_WriteWordDataRead, WriteWordDataRead, SIENENS_WRITEWORD_MAX);
-			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteWordDataRead, SIENENS_WRITEWORD_MAX, m_nWordOut));
+			LOGDISPLAY_SPEC(2)(_T("Out Word data read :	%s"), CStrSuport::ChangshorttohexTab(m_WriteWordDataRead, SIENENS_WRITEWORD_MAX, m_nWordOut));
 		}
 	}
 }
@@ -368,7 +374,7 @@ int CSiemensPlcIo::WritePlcBitDataMake()
 	m_WriteBitData[idx] = getBitOut_DiskSpaceWarning();
 
 	idx = enSmsBitOut_DiskSpaceAlarm;
-	if (getBitOut_DiskSpaceAlarm()) ret = idx;
+	if (isBitOut_DiskSpaceAlarm()) ret = idx;
 	m_WriteBitData[idx] = getBitOut_DiskSpaceAlarm();
 
 	//버퍼 block 위치에 + 1 = 크기(size)
@@ -530,13 +536,6 @@ int CSiemensPlcIo::WritePlcWordDataMake()
 	idx = enSmsWordWrite_NG_Code;
 	if (isWordOut_NG_Code()) ret = idx;
 	m_WriteWordData[idx] = getWordOut_Judge();
-
-	idx = enSmsWordWrite_DuplicateNG_Cell_ID;
-	if (isWordOut_DuplicateNG_Cell_ID()) ret = idx + COUNT_DUPLICATENGCELLID;
-	for (int count = 0; count < COUNT_DUPLICATENGCELLID; count++)
-	{
-		m_WriteWordData[count + idx] = getWordOut_DuplicateNG_Cell_ID(count);
-	}
 
 
 	//버퍼 block 위치에 + 1 = 크기(size)
