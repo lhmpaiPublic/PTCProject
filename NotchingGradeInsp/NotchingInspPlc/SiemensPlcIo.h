@@ -37,6 +37,8 @@ class CSiemensPlcIo : public CDataPlcImp
 	//Word 출력 시작 위치
 	int m_nWordOut;
 
+	//Alive 신호채크 변수
+	DWORD dwMelsBitInAliveTime;
 public:
 	//생성자
 	//strIPAddress : IP
@@ -181,6 +183,9 @@ private:
 	virtual int SigInRecipeChange();
 	virtual int SigInInkMarkActive();
 	virtual int SigInConnectZone();
+
+	//PLC In Alive 상태를 체크한다.
+	virtual BOOL AliveBitInCheck();
 
 	//지멘스만 쓴다.
 	virtual int WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode);

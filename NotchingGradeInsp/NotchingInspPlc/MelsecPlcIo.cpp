@@ -246,6 +246,9 @@ CMelsecPlcIo::CMelsecPlcIo(DWORD wOffset_BitIn, DWORD wOffset_BitOut, DWORD wOff
 
 	m_bMelsecAlive = 0x1;
 
+	//Alive 신호채크 변수
+	dwMelsBitInAliveTime = 0;
+
 	//PLC 읽기 Data
 	memset(m_ReadBitData, 0xff, MELSEC_BITINSIZE_MAX);
 	memset(m_ReadDwordData, 0xff, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
@@ -798,6 +801,9 @@ int CMelsecPlcIo::WriteDwordDataEx(long netNo, int devtype, int startport, int b
 //PLC read Data Parser 함수
 void CMelsecPlcIo::ReadPlcBitDataParser(BYTE* data)
 {
+	//PLC 통신 상태 체크 Alive 이전 변수 백업
+	BOOL bBitIn_AliveBackup = getBitIn_Alive();
+
 	if (m_ReadBitData[(enMelsBitInAlive >> 8)&0xff] ^ data[(enMelsBitInAlive >> 8) & 0xff]) setBitIn_Alive((data[(enMelsBitInAlive >> 8) & 0xff]>>(enMelsBitInAlive&0xff)) & 0x1);
 	if (m_ReadBitData[(enMelsBitInReady >> 8) & 0xff] ^ data[(enMelsBitInReady >> 8) & 0xff]) setBitIn_Ready((data[(enMelsBitInReady >> 8) & 0xff] >> (enMelsBitInReady & 0xff)) & 0x1);
 	if (m_ReadBitData[(enMelsBitInRun >> 8) & 0xff] ^ data[(enMelsBitInRun >> 8) & 0xff]) setBitIn_Run((data[(enMelsBitInRun >> 8) & 0xff] >> (enMelsBitInRun & 0xff)) & 0x1);
@@ -810,6 +816,15 @@ void CMelsecPlcIo::ReadPlcBitDataParser(BYTE* data)
 	if (m_ReadBitData[(enMelsBitInLotEndReq >> 8) & 0xff] ^ data[(enMelsBitInLotEndReq >> 8) & 0xff]) setBitIn_LotEndReq((data[(enMelsBitInLotEndReq >> 8) & 0xff] >> (enMelsBitInLotEndReq & 0xff)) & 0x1);
 	if (m_ReadBitData[(enMelsBitInAlarmResetReq >> 8) & 0xff] ^ data[(enMelsBitInAlarmResetReq >> 8) & 0xff]) setBitIn_AlarmResetReq((data[(enMelsBitInAlarmResetReq >> 8) & 0xff] >> (enMelsBitInAlarmResetReq & 0xff)) & 0x1);
 	if (m_ReadBitData[(enMelsBitInAlarmNgAck >> 8) & 0xff] ^ data[(enMelsBitInAlarmNgAck >> 8) & 0xff]) setBitIn_AlarmNgAck((data[(enMelsBitInAlarmNgAck >> 8) & 0xff] >> (enMelsBitInAlarmNgAck & 0xff)) & 0x1);
+
+	//PLC 타이머 100ms 주기 : 1000ms 이상에서 PLC 신호 없으면 끊김 확인
+	dwMelsBitInAliveTime = dwMelsBitInAliveTime + 100;
+	//Alive 주기 0.5초 주기로 0/1 반복해서 변함
+	if (getBitIn_Alive() != bBitIn_AliveBackup)
+	{
+		dwMelsBitInAliveTime = 0;
+	}
+
 	memcpy(m_ReadBitData, data, MELSEC_BITINSIZE_MAX);
 }
 void CMelsecPlcIo::ReadPlcWordDataParser(DWORD* data)
@@ -1342,6 +1357,17 @@ int CMelsecPlcIo::SigInInkMarkActive()
 int CMelsecPlcIo::SigInConnectZone()
 {
 	return getBitIn_ConnectZone();
+}
+
+//PLC In Alive 상태를 체크한다.
+BOOL CMelsecPlcIo::AliveBitInCheck()
+{
+	BOOL bAliveBitInCheck = TRUE;
+	if (dwMelsBitInAliveTime > 500)
+	{
+		bAliveBitInCheck = FALSE;
+	}
+	return bAliveBitInCheck;
 }
 
 //임시

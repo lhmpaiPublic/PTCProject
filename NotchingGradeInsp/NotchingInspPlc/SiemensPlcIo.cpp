@@ -135,6 +135,9 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	//Alive 값 연산 변수
 	m_bSmsAlive = FALSE;
 
+	//Alive 신호채크 변수
+	dwMelsBitInAliveTime = 0;
+
 	//Read Data 버퍼 초기화
 	memset(m_ReadBitData, 0xff, sizeof(short) * SIENENS_READBIT);
 	memset(m_ReadWordData, 0xff, sizeof(short) * SIENENS_READWORD_MAX);
@@ -232,6 +235,9 @@ void CSiemensPlcIo::SiemensPlcProc()
 //PLC read Data Parser 함수
 void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 {
+	//PLC 통신 상태 체크 Alive 이전 변수 백업
+	BOOL bBitIn_AliveBackup = getBitIn_Alive();
+
 	if (m_ReadBitData[enSmsBitIn_Alive] ^ data[enSmsBitIn_Alive]) setBitIn_Alive(data[enSmsBitIn_Alive] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_Ready] ^ data[enSmsBitIn_Ready]) setBitIn_Ready(data[enSmsBitIn_Ready] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_Run] ^ data[enSmsBitIn_Run]) setBitIn_Run(data[enSmsBitIn_Run] & 0x1);
@@ -244,6 +250,14 @@ void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 	if (m_ReadBitData[enSmsBitIn_LotEndReq] ^ data[enSmsBitIn_LotEndReq]) setBitIn_LotEndReq(data[enSmsBitIn_LotEndReq] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_AlarmResetReq] ^ data[enSmsBitIn_AlarmResetReq]) setBitIn_AlarmResetReq(data[enSmsBitIn_AlarmResetReq] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_AlarmNgAck] ^ data[enSmsBitIn_AlarmNgAck]) setBitIn_AlarmNgAck(data[enSmsBitIn_AlarmNgAck] & 0x1);
+
+	//PLC 타이머 100ms 주기 : 1000ms 이상에서 PLC 신호 없으면 끊김 확인
+	dwMelsBitInAliveTime = dwMelsBitInAliveTime + 100;
+	//Alive 주기 0.5초 주기로 0/1 반복해서 변함
+	if (getBitIn_Alive() != bBitIn_AliveBackup)
+	{
+		dwMelsBitInAliveTime = 0;
+	}
 
 	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBIT);
 }
@@ -902,6 +916,17 @@ int CSiemensPlcIo::SigInInkMarkActive()
 int CSiemensPlcIo::SigInConnectZone()
 {
 	return getBitIn_ConnectZone();
+}
+
+//PLC In Alive 상태를 체크한다.
+BOOL CSiemensPlcIo::AliveBitInCheck()
+{
+	BOOL bAliveBitInCheck = TRUE;
+	if (dwMelsBitInAliveTime > 500)
+	{
+		bAliveBitInCheck = FALSE;
+	}
+	return bAliveBitInCheck;
 }
 
 //임시

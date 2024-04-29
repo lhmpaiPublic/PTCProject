@@ -90,6 +90,8 @@ class CMelsecPlcIo : public CDataPlcImp
 
 	BOOL m_bEnableWorkSet;
 
+	//Alive 신호채크 변수
+	DWORD dwMelsBitInAliveTime;
 public:
 	//생성자
 	//wOffset_BitIn : Bit 입력 시작 위치
@@ -289,6 +291,9 @@ private:
 	virtual int SigInRecipeChange();
 	virtual int SigInInkMarkActive();
 	virtual int SigInConnectZone();
+
+	//PLC In Alive 상태를 체크한다.
+	virtual BOOL AliveBitInCheck();
 
 	//지멘스만 쓴다.
 	virtual int WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode);

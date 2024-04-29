@@ -392,7 +392,8 @@ public :
 	virtual int SigInConnectZone();
 	virtual int SigInAlarmNgAck();
 
-
+	//PLC In Alive 상태를 체크한다.
+	virtual BOOL AliveBitInCheck();
 
 	// Signal Out
 	virtual int SigOutAlivePulse(int nMode);

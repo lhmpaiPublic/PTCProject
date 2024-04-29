@@ -890,6 +890,12 @@ int CSigProc::SigInAlarmNgAck()
 	return nRet;
 }
 
+//PLC In Alive 상태를 체크한다.
+BOOL CSigProc::AliveBitInCheck()
+{
+	return TRUE;
+}
+
 int CSigProc::SigInConnectZone()
 {
 	int nRet = 0;

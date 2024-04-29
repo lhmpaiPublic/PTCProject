@@ -1651,7 +1651,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									pImgSavePtr = new BYTE[nImgSize + 1];
 									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
 									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
-									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, AprData.m_System.m_nJpegSaveQuality);
 
 									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 									pImgSaveQueueCtrl->PushBack(pSaveInfo);
