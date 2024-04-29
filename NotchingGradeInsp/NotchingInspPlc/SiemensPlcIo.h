@@ -135,7 +135,7 @@ private:
 	int OpenPlcIo(void);
 	// disconnection network
 	void ClosePlcIo(void);
-
+public:
 
 	//************* 상위 클래스 오버라이딩 함수 ****************************************
 	//PLC 데이터를 쓰고 읽기를 View 타이머에서 주기적으로 읽기 위해서 오버라이팅 한다.

@@ -221,7 +221,7 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 		if (std::equal(std::begin(m_sSmsSigBItIN), std::end(m_sSmsSigBItIN), std::begin(m_sSmsSigBItIN_Backup)) == false)
 		{
 			memcpy(m_sSmsSigBItIN_Backup, m_sSmsSigBItIN, MAX_SMS_BITIO_IN * sizeof(short));
-			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(m_sSmsSigBItIN, MAX_SMS_BITIO_IN, AprData.m_System.m_nBitIn));
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexSiemens(m_sSmsSigBItIN, MAX_SMS_BITIO_IN, AprData.m_System.m_nBitIn));
 		}
 
 		for (int i = 0; i < MAX_SMS_BITIO_IN; i++)
@@ -245,7 +245,7 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 		if (std::equal(std::begin(m_btSigBItIN), std::end(m_btSigBItIN), std::begin(m_btSigBItIN_Backup)) == false)
 		{
 			memcpy(m_btSigBItIN_Backup, m_btSigBItIN, MAX_USE_PORT * sizeof(BYTE));
-			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexTab(m_btSigBItIN, MAX_USE_PORT, AprData.m_System.m_nBitIn));
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexMelsec(m_btSigBItIN, MAX_USE_PORT, AprData.m_System.m_nBitIn));
 		}
 
 		int nBitPos = 0;

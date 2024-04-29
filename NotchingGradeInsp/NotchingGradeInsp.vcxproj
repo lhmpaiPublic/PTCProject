@@ -231,6 +231,10 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>copy "$(TargetDir)*$(TargetExt)" "\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp"
+copy "$(TargetDir)*.pdb" "\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_NegativeVersion|x64'">
     <ClCompile>
@@ -338,6 +342,10 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>copy "$(TargetDir)*$(TargetExt)" "\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp"
+copy "$(TargetDir)*.pdb" "\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_NegativeVersion|x64'">
     <ClCompile>

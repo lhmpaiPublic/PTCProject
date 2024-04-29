@@ -297,8 +297,8 @@ int CIoMonitorDlg::RefreshAll()
 {
 	int nRet = 0;
 
-	memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_IN);
-	memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_OUT);
+	memset(m_bSigBitIn, 0x00, sizeof(BOOL) * MAX_ADR_BIT_IN);
+	memset(m_bSigBitOut, 0x00, sizeof(BOOL) * MAX_ADR_BIT_OUT);
 
 #ifndef NEW_PLCTYPE
 	theApp.m_pSigProc->ReadAllPort_BitIn(m_bSigBitIn);

@@ -280,7 +280,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	if (std::equal(std::begin(buffBitIn), std::end(buffBitIn), std::begin(m_ReadBitData)) == false)
 	{
 		ReadPlcBitDataParser(buffBitIn);
-		LOGDISPLAY_SPEC(2)(_T("In bit data : %s	offset : %d"), CStrSuport::ChangbytetohexTab(buffBitIn, MELSEC_BITINSIZE_MAX, m_wOffset_BitIn), m_wOffset_BitIn);
+		LOGDISPLAY_SPEC(2)(_T("In bit data : %s	offset : %d"), CStrSuport::ChangbytetohexMelsec(buffBitIn, MELSEC_BITINSIZE_MAX, m_wOffset_BitIn), m_wOffset_BitIn);
 	}
 
 	//word 읽기 영역 읽기(멜섹은 DWORD 를 사용한다.)
@@ -291,7 +291,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	if (std::equal(std::begin(buffDwordIn), std::end(buffDwordIn), std::begin(m_ReadDwordData)) == false)
 	{
 		ReadPlcWordDataParser((DWORD*)buffDwordIn);
-		LOGDISPLAY_SPEC(2)(_T("In Dword data int :	%s	offset : %d"), CStrSuport::ChanginttohexTab((int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn), m_wOffset_WordIn);
+		LOGDISPLAY_SPEC(2)(_T("In Dword data int :	%s	offset : %d"), CStrSuport::ChanginttohexMelsec((int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn), m_wOffset_WordIn);
 	}
 
 
@@ -301,7 +301,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	int portsize = WritePlcBitDataMake(&buffBitOut);
 	if (portsize > 0)
 	{
-		LOGDISPLAY_SPEC(2)(_T("Out bit data : %s	offset : %d"), CStrSuport::ChangbytetohexTab(buffBitOut, portsize, m_wOffset_BitOut), m_wOffset_BitOut);
+		LOGDISPLAY_SPEC(2)(_T("Out bit data : %s	offset : %d"), CStrSuport::ChangbytetohexMelsec(buffBitOut, portsize, m_wOffset_BitOut), m_wOffset_BitOut);
 		WriteBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOut, portsize, m_wOffset_BitOut);
 	}
 	delete[] buffBitOut;
@@ -312,7 +312,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	int dwordwritesize = WritePlcWordDataMake(&buffDwordOut);
 	if (dwordwritesize > 0)
 	{
-		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s	offset : %d"), CStrSuport::ChanginttohexTab((int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut), m_wOffset_WordOut);
+		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s	offset : %d"), CStrSuport::ChanginttohexMelsec((int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut), m_wOffset_WordOut);
 		WriteDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut);
 	}
 	delete[] buffDwordOut;
@@ -325,7 +325,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	if (std::equal(std::begin(buffBitOutRead), std::end(buffBitOutRead), std::begin(m_WriteBitData)) == false)
 	{
 		memcpy(m_WriteBitData, buffBitOutRead, MELSEC_BITOUTSIZE_MAX);
-		LOGDISPLAY_SPEC(2)(_T("Out bit data Read :	%s	offset : %d"), CStrSuport::ChangbytetohexTab(buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut), m_wOffset_BitOut);
+		LOGDISPLAY_SPEC(2)(_T("Out bit data Read :	%s	offset : %d"), CStrSuport::ChangbytetohexMelsec(buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut), m_wOffset_BitOut);
 	}
 
 	//word 쓰기 영역 읽기(멜섹은 DWORD 를 사용한다.)
@@ -336,7 +336,7 @@ void CMelsecPlcIo::MelsecPlcProc()
 	if (std::equal(std::begin(buffDwordOutRead), std::end(buffDwordOutRead), std::begin(m_WriteDwordData)) == false)
 	{
 		memcpy(m_WriteDwordData, buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
-		LOGDISPLAY_SPEC(2)(_T("Out Word data int Read :	%s	offset : %d"), CStrSuport::ChanginttohexTab((int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut), m_wOffset_WordOut);
+		LOGDISPLAY_SPEC(2)(_T("Out Word data int Read :	%s	offset : %d"), CStrSuport::ChanginttohexMelsec((int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut), m_wOffset_WordOut);
 	}
 }
 

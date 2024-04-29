@@ -242,13 +242,14 @@ private:
 	//Word 쓰기 영역 데이터를 PLC에 쓰기위해서 DWORD 타임으로 멤버변수의 값을 세팅하여 가져온다.
 	int WritePlcWordDataMake(DWORD** data);
 
-
+public:
 	//************* 상위 클래스 오버라이딩 함수 ****************************************
 	//PLC 데이터를 쓰고 읽기를 View 타이머에서 주기적으로 읽기 위해서 오버라이팅 한다.
 	//PLC data를 읽고 쓰고 처리를 위한 함수
 	virtual int PlcDataReadWritePorc();
 	//PLC Open 상태를 체크을 위한 함수
 	virtual BOOL isPlcOpen();
+
 
 	//Out
 	//Zero Set 세팅 함수

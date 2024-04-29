@@ -117,6 +117,19 @@ void CDataPlcImp::initDataPlcImp()
 		m_WordOut_DuplicateNG_Cell_ID[i] = 0;
 	}
 
+	//Bit Data Out
+	m_bBitOut_Alive = TRUE;
+	m_bBitOut_Ready = TRUE;
+	m_bBitOut_EncoderSet = TRUE;
+	m_bBitOut_RecipeChangeAck = TRUE;
+	m_bBitOut_LotStartReqAck = TRUE;
+	m_bBitOut_LotEndReqAck = TRUE;
+	m_bBitOut_TabZeroReset = TRUE;
+	m_bBitOut_AlarmResetAck = TRUE;
+	m_bBitOut_AlarmNgResetAck = TRUE;
+
+	m_bBitOut_DiskSpaceWarning = TRUE;
+	m_bBitOut_DiskSpaceAlarm = TRUE;
 
 	//Word Data Out
 	m_bWordOut_DataReportV1_Ea = TRUE;

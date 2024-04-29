@@ -139,8 +139,8 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	dwMelsBitInAliveTime = 0;
 
 	//Read Data 버퍼 초기화
-	memset(m_ReadBitData, 0xff, sizeof(short) * SIENENS_READBIT);
-	memset(m_ReadWordData, 0xff, sizeof(short) * SIENENS_READWORD_MAX);
+	memset(m_ReadBitData, 0x00, sizeof(short) * SIENENS_READBIT);
+	memset(m_ReadWordData, 0x00, sizeof(short) * SIENENS_READWORD_MAX);
 
 	//Write Bit Data 버퍼 초기화
 	memset(m_WriteBitData, 0x00, sizeof(short) * SIENENS_WRITEBIT);
@@ -166,69 +166,70 @@ CSiemensPlcIo::~CSiemensPlcIo()
 //스래드에서 호출하는 함수
 void CSiemensPlcIo::SiemensPlcProc()
 {
-	if (IsOpened())
+	//Read bit 영역 읽기
+	short	ReadBitData[SIENENS_READBIT];
+	memset(ReadBitData, 0, SIENENS_READBIT*sizeof(short));
+	//bit 읽기 영역 읽기
+	ReadDataReg(m_nBitIn, ReadBitData, SIENENS_READBIT);
+	//읽은 Bit 데이터 파싱
+	if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
 	{
-		//Read bit 영역 읽기
-		short	ReadBitData[SIENENS_READBIT];
-		//bit 읽기 영역 읽기
-		ReadDataReg(m_nBitIn, ReadBitData, SIENENS_READBIT);
-		//읽은 Bit 데이터 파싱
-		if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
-		{
-			ReadPlcBitDataParser(ReadBitData);
-			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(ReadBitData, SIENENS_READBIT, m_nBitIn));
-		}
+		ReadPlcBitDataParser(ReadBitData);
+		LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexSiemens(ReadBitData, SIENENS_READBIT, m_nBitIn));
+	}
 
-		//Read word 영역 읽기
-		short	ReadWordData[SIENENS_READWORD_MAX];
-		//word 읽기 영역 읽기
-		ReadDataReg(m_nWordIn, ReadWordData, SIENENS_READWORD_MAX);
-		//읽은 Word 데이터 파싱
-		if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
-		{
-			ReadPlcWordDataParser(ReadWordData);
-			LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexTab(ReadWordData, SIENENS_READWORD_MAX, m_nWordIn));
-		}
+	//Read word 영역 읽기
+	short	ReadWordData[SIENENS_READWORD_MAX];
+	memset(ReadWordData, 0, SIENENS_READWORD_MAX * sizeof(short));
+	//word 읽기 영역 읽기
+	ReadDataReg(m_nWordIn, ReadWordData, SIENENS_READWORD_MAX);
+	//읽은 Word 데이터 파싱
+	if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
+	{
+		ReadPlcWordDataParser(ReadWordData);
+		LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexSiemens(ReadWordData, SIENENS_READWORD_MAX, m_nWordIn));
+	}
 
-		//Bit 쓰기 데이터 만들기
-		int ret = WritePlcBitDataMake();
-		//쓰기
-		if (ret > 0)
-		{
-			WriteDataReg(m_nBitOut, m_WriteBitData, ret);
-			LOGDISPLAY_SPEC(2)(_T("Out Bit data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteBitData, ret, m_nBitOut));
-		}
+	//Bit 쓰기 데이터 만들기
+	int ret = WritePlcBitDataMake();
+	//쓰기
+	if (ret > 0)
+	{
+		WriteDataReg(m_nBitOut, m_WriteBitData, ret);
+		LOGDISPLAY_SPEC(2)(_T("Out Bit data :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteBitData, ret, m_nBitOut));
+	}
 
-		//Word 쓰기 데이터 만들기
-		ret = WritePlcWordDataMake();
-		//쓰기
-		if (ret > 0)
-		{
-			WriteDataReg(m_nWordOut, m_WriteWordData, ret);
-			LOGDISPLAY_SPEC(2)(_T("Out Word data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteWordData, ret, m_nWordOut));
-		}
+	//Word 쓰기 데이터 만들기
+	ret = WritePlcWordDataMake();
+	//쓰기
+	if (ret > 0)
+	{
+		WriteDataReg(m_nWordOut, m_WriteWordData, ret);
+		LOGDISPLAY_SPEC(2)(_T("Out Word data :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteWordData, ret, m_nWordOut));
+	}
 
-		//Bit 쓰기 데이터 영역 읽기
-		short	WriteBitDataRead[SIENENS_WRITEBIT];
-		//bit 쓰기 영역 읽기
-		ReadDataReg(m_nBitOut, WriteBitDataRead, SIENENS_WRITEBIT);
-		//읽은 Bit 데이터 출력
-		if (std::equal(std::begin(WriteBitDataRead), std::end(WriteBitDataRead), std::begin(m_WriteBitDataRead)) == false)
-		{
-			memcpy(m_WriteBitDataRead, WriteBitDataRead, SIENENS_WRITEBIT);
-			LOGDISPLAY_SPEC(2)(_T("Out Bit data read :	%s"), CStrSuport::ChangshorttohexTab(m_WriteBitDataRead, SIENENS_WRITEBIT, m_nBitOut));
-		}
+	//Bit 쓰기 데이터 영역 읽기
+	short	WriteBitDataRead[SIENENS_WRITEBIT];
+	memset(WriteBitDataRead, 0, SIENENS_WRITEBIT * sizeof(short));
+	//bit 쓰기 영역 읽기
+	ReadDataReg(m_nBitOut, WriteBitDataRead, SIENENS_WRITEBIT);
+	//읽은 Bit 데이터 출력
+	if (std::equal(std::begin(WriteBitDataRead), std::end(WriteBitDataRead), std::begin(m_WriteBitDataRead)) == false)
+	{
+		memcpy(m_WriteBitDataRead, WriteBitDataRead, SIENENS_WRITEBIT * sizeof(short));
+		LOGDISPLAY_SPEC(2)(_T("Out Bit data read :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteBitDataRead, SIENENS_WRITEBIT, m_nBitOut));
+	}
 
-		//Word 쓰기 데이터 영역 읽기
-		short	WriteWordDataRead[SIENENS_WRITEWORD_MAX];
-		//Word 쓰기 영역 읽기
-		ReadDataReg(m_nWordOut, WriteWordDataRead, SIENENS_WRITEWORD_MAX);
-		//읽은 Word 데이터 출력
-		if (std::equal(std::begin(WriteWordDataRead), std::end(WriteWordDataRead), std::begin(m_WriteWordDataRead)) == false)
-		{
-			memcpy(m_WriteWordDataRead, WriteWordDataRead, SIENENS_WRITEWORD_MAX);
-			LOGDISPLAY_SPEC(2)(_T("Out Word data read :	%s"), CStrSuport::ChangshorttohexTab(m_WriteWordDataRead, SIENENS_WRITEWORD_MAX, m_nWordOut));
-		}
+	//Word 쓰기 데이터 영역 읽기
+	short	WriteWordDataRead[SIENENS_WRITEWORD_MAX];
+	memset(WriteWordDataRead, 0, SIENENS_WRITEWORD_MAX * sizeof(short));
+	//Word 쓰기 영역 읽기
+	ReadDataReg(m_nWordOut, WriteWordDataRead, SIENENS_WRITEWORD_MAX);
+	//읽은 Word 데이터 출력
+	if (std::equal(std::begin(WriteWordDataRead), std::end(WriteWordDataRead), std::begin(m_WriteWordDataRead)) == false)
+	{
+		memcpy(m_WriteWordDataRead, WriteWordDataRead, SIENENS_WRITEWORD_MAX * sizeof(short));
+		LOGDISPLAY_SPEC(2)(_T("Out Word data read :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteWordDataRead, SIENENS_WRITEWORD_MAX, m_nWordOut));
 	}
 }
 
@@ -347,6 +348,9 @@ int CSiemensPlcIo::WritePlcBitDataMake()
 	int ret = -1;
 	int idx = 0;
 
+	//Write Bit Data 버퍼 초기화
+	memset(m_WriteBitData, 0x00, sizeof(short) * SIENENS_WRITEBIT);
+
 	idx = enSmsBitOut_Alive;
 	if (isBitOut_Alive()) ret = idx;
 	m_WriteBitData[idx] = getBitOut_Alive();
@@ -402,6 +406,9 @@ int CSiemensPlcIo::WritePlcWordDataMake()
 	//Write Data Block Num
 	int ret = -1;
 	int idx = 0;
+
+	//Write Word Data 버퍼 초기화
+	memset(m_WriteWordData, 0x00, sizeof(short) * SIENENS_WRITEWORD_MAX);
 
 	idx = enSmsWordWrite_DataReportV1_Ea;
 	if (isWordOut_DataReportV1_Ea()) ret = idx;
@@ -549,7 +556,7 @@ int CSiemensPlcIo::WritePlcWordDataMake()
 
 	idx = enSmsWordWrite_NG_Code;
 	if (isWordOut_NG_Code()) ret = idx;
-	m_WriteWordData[idx] = getWordOut_Judge();
+	m_WriteWordData[idx] = getWordOut_NG_Code();
 
 
 	//버퍼 block 위치에 + 1 = 크기(size)
@@ -592,11 +599,8 @@ int CSiemensPlcIo::WriteDataReg(int offset, short data[], int num)
 	{
 		nRet = m_pLGIS_Plc->WriteMultipleRegisters(offset, num, (uint16_t*)data);
 
-		if (nRet < 0)
-		{
-			//로그출력
-			LOGDISPLAY_SPEC(2)(" Siemens WriteDataReg Error	code : %d	offset : %d", nRet, offset);
-		}
+		//로그출력
+		LOGDISPLAY_SPEC(2)(" Siemens WriteDataReg Error	code : %d	offset : %d", nRet, offset);
 
 	}
 
@@ -611,11 +615,8 @@ int CSiemensPlcIo::ReadDataReg(int offset, short data[], int num)
 	{
 		nRet = m_pLGIS_Plc->ReadHoldingRegisters(offset, num, (uint16_t*)data);
 
-		if (nRet < 0)
-		{
-			//로그출력
-			LOGDISPLAY_SPEC(2)(" Siemens ReadDataReg Error	code : %d	offset : %d", nRet, offset);
-		}
+		//로그출력
+		LOGDISPLAY_SPEC(2)(" Siemens ReadDataReg Error	code : %d	offset : %d", nRet, offset);
 	}
 
 	return nRet;
