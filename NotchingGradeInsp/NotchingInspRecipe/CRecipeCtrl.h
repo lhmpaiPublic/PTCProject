@@ -64,12 +64,32 @@ public:
 	// 22.01.05 Ahn Add End
 };
 
+
+class CDimensionParameter {
+public:
+	// SPEC
+	double dOverlayWidth;
+	double dCuttingWidth;
+	double dInsulationWidth;
+
+
+	// Param
+	int nTabWidthBright;
+	int nTabCoatingBright;
+	int nBaseBright;
+	int nOverlayWidthBright_R;
+	int nOverlayWidthBright_L;
+
+};
+
+
 class CRecipeInfo {
 	// Tab Condition
 public:
 	// Tab 분할 및 Tab위치 확인용 Recipe
 	CString m_strRecipeName;
 	CTabCondition TabCond;
+	CDimensionParameter DimParam;
 
 	// Detect Param
 	// Threshold

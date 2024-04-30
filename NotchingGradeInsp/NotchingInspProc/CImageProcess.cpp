@@ -678,7 +678,7 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 
 
 
-int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum)
+int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum, int nFilteringValue)
 {
 	ASSERT(pImage);
 	ASSERT(pProjection);
@@ -725,7 +725,10 @@ int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWid
 			{
 				pLine = (BYTE*)pImage + (nWidth * y);
 
-				pProjection[x - nStartX] += *(pLine + x);
+				if (*(pLine + x) < nFilteringValue)
+				{
+					pProjection[x - nStartX] += *(pLine + x);
+				}
 			}
 		}
 		if (bModeSum == FALSE)
@@ -746,7 +749,10 @@ int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWid
 			{
 				pLine = (BYTE*)pImage + (nWidth * y);
 
-				pProjection[x - nStartX] += *(pLine + x);
+				if (*(pLine + x) < nFilteringValue)
+				{
+					pProjection[x - nStartX] += *(pLine + x);
+				}
 			}
 		}
 		if (bModeSum == FALSE)
@@ -10443,4 +10449,93 @@ int CImageProcess::ImageProcessDetectBlob(const BYTE* pImgPtr, int nWidth, int n
 	pThresPtr = NULL;
 
 	return 0;
+}
+
+
+int CImageProcess::DimTabWidth(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, CPoint* ptTabL, CPoint* ptTabR )
+{
+	ASSERT(pImgPtr);
+	ASSERT(ptTabL);
+	ASSERT(ptTabR);
+
+	CImageProcess::VEC_SECTOR vecSec;
+	vecSec.clear();
+
+	int nResultWidthPx = 0; // px
+	int nStartPos = nTabFindPos;
+	int nEndPos = nStartPos + 100; //px
+
+	if (nEndPos >= nWidth-1 )
+	{
+		nEndPos = nWidth-1;
+	}
+
+	int thMin = pRecipeInfo->DimParam.nTabWidthBright;
+	int thMax = 255;
+
+	if (CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, &vecSec) <= 0)
+	{
+		return -1;
+	}
+
+	if (CImageProcess::CombineTabSector(&vecSec, *pRecipeInfo) < 0)
+	{
+		return -2;
+	}
+
+	int nSize = (int)vecSec.size();
+
+	ST_SECTOR* pstSector = NULL;
+	for (int i = 0; i < nSize; i++)
+	{
+		int nTabWidth = vecSec[i].nEndPos - vecSec[i].nStartPos;
+		if (abs(nTabWidth - pRecipeInfo->TabCond.nTabWidth) < (pRecipeInfo->TabCond.nTabWidth / 3))
+		{
+			pstSector = &vecSec[i];
+			break;
+		}
+	}
+	if (pstSector == NULL)
+	{
+		if (nSize)
+		{
+			pstSector = &vecSec[0];
+		}
+		else
+		{
+			return -3;
+		}
+	}
+
+	ptTabL->x = (nEndPos + nStartPos) / 2;
+	ptTabL->y = pstSector->nStartPos;
+
+	ptTabR->x = (nEndPos + nStartPos) / 2;
+	ptTabR->y = pstSector->nEndPos;
+
+
+	nResultWidthPx = abs(pstSector->nEndPos - pstSector->nStartPos);
+
+	return nResultWidthPx;
+}
+
+
+int CImageProcess::DimFindLevel(const BYTE* pImgPtr, int nImageW, int nImageH, CRect rcRoi, int nBright, int nFindMode, BOOL bFindUpper, int nFilteringValue)
+{
+	ASSERT(pImgPtr);
+
+	int nResultX = 0;
+
+	int* pnPrjData;
+	int nRoiWidth = rcRoi.Width();
+	pnPrjData = new int[nImageW];
+	memset(pnPrjData, 0x00, sizeof(int) * nImageW);
+
+	CImageProcess::GetProjectionX(pImgPtr, pnPrjData, nImageW, nImageH, rcRoi, DIR_LR, 10, FALSE, nFilteringValue);
+	nResultX = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nRoiWidth, nBright, nFindMode, bFindUpper);
+	nResultX += rcRoi.left;
+
+	delete[] pnPrjData;
+
+	return nResultX;
 }

@@ -149,6 +149,10 @@ public:
 
 #define FILTER_GV		200
 
+#define FIND_LOWER		FALSE
+#define FIND_UPPER		TRUE
+
+
 
 class CDefectDataCtrl;
 class CTabRsltInfo;
@@ -515,10 +519,17 @@ public:
 
 
 
-	static int GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum);
+	static int GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum, int nFilteringValue = 255);
 	static int FindCoatingTabLevel_Projection(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel);
 	static int ImageProcessDetectBlob(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pTabRsltInfo, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	static int FindBtmLevel_Projection(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int* pnLevel);
+
+
+
+	//Dimension
+	static int DimFindLevel(const BYTE* pImgPtr, int nImageW, int nImageH, CRect rcRoi, int nBright, int nFindMode, BOOL bFindUpper, int nFilteringValue = 255);
+	static int DimTabWidth(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, CPoint* ptTabL, CPoint* ptTabR);
+
 
 
 };

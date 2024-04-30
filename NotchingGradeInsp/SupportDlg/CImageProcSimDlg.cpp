@@ -1995,11 +1995,13 @@ void CImageProcSimDlg::InspectionAuto()
 
 
 
-		CImageProcess::VEC_SECTOR vecSec;
-		vecSec.clear();
+
 
 		if (m_pRecipeInfo->bUseInspBlob == TRUE)
 		{
+			CImageProcess::VEC_SECTOR vecSec;
+			vecSec.clear();
+
 			int nTabFindPos = (nWidth - 220);
 
 			CImageProcess::FindCoatingTabLevel_Projection(pImgPtr, nWidth, nHeight, nTabFindPos, m_pRecipeInfo, &vecSec, &nLevel);
@@ -2117,8 +2119,96 @@ void CImageProcSimDlg::InspectionAuto()
 		}
 
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 치수 측정
+		{
+		m_pImageDispDlg->ResetDrawCross();
+
+		//Test Param
+		m_pRecipeInfo->DimParam.nTabCoatingBright = 100;
+		m_pRecipeInfo->DimParam.nTabWidthBright = 50;
+		m_pRecipeInfo->DimParam.nBaseBright = 50;
+		m_pRecipeInfo->DimParam.nOverlayWidthBright_R = 50;
+		m_pRecipeInfo->DimParam.nOverlayWidthBright_L = 50;
+
+
+		//Spec
+		int nSpecOverlayWidthPx = m_pRecipeInfo->DimParam.dOverlayWidth / AprData.m_System.m_dResolX[CAM_POS_TOP];
+		int nSpecCuttingWidthPx = m_pRecipeInfo->DimParam.dCuttingWidth / AprData.m_System.m_dResolX[CAM_POS_TOP];
+		int nSpecInsulationWidthPx = m_pRecipeInfo->DimParam.dInsulationWidth / AprData.m_System.m_dResolX[CAM_POS_TOP];
+		int nSpecTabWidthPx = m_pRecipeInfo->TabCond.nTabWidth;
+
+
+		// [ TOP ]
+		// 1. Tab Coating Level
+		CRect rcRoi_TabCoating = CRect(nLevel, tabPos.cx, nWidth-100, tabPos.cy);
+		CImageProcess::CheckRect(&rcRoi_TabCoating, nWidth, nHeight);
+		int nTabCoatingLevelPx = CImageProcess::DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_TabCoating, m_pRecipeInfo->DimParam.nTabCoatingBright, CImageProcess::en_FindFromLeft, FIND_UPPER );
+
+		// 2. Tab Width
+		int nTabWidthStartPosX = nTabCoatingLevelPx - 100;
+		CPoint ptTabL, ptTabR;
+		int nTabWidthPx = CImageProcess::DimTabWidth(pImgPtr, nWidth, nHeight, nTabWidthStartPosX, m_pRecipeInfo, &ptTabL, &ptTabR);
+
+
+		// 3. Base Level
+		CRect rcRoi_Base;
+		rcRoi_Base = CRect(nWidth / 2, 0, nWidth, tabPos.cx);
+		CImageProcess::CheckRect(&rcRoi_Base, nWidth, nHeight);
+		int nBaseL = CImageProcess::DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_Base, m_pRecipeInfo->DimParam.nBaseBright, CImageProcess::en_FindFromRight, FIND_UPPER, FILTER_GV);
+		
+		rcRoi_Base = CRect(nWidth / 2, tabPos.cy, nWidth, nHeight);
+		CImageProcess::CheckRect(&rcRoi_Base, nWidth, nHeight);
+		int nBaseR = CImageProcess::DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_Base, m_pRecipeInfo->DimParam.nBaseBright, CImageProcess::en_FindFromRight, FIND_UPPER, FILTER_GV);
+		
+		int nBaseLevelPx = (nBaseL + nBaseR) / 2;
+
+
+		// 4. Overlay Width - Right Level
+		CRect rcRoi_OverlayWidthR = CRect(nWidth / 2, 0, nBaseLevelPx, nHeight);
+		CImageProcess::CheckRect(&rcRoi_OverlayWidthR, nWidth, nHeight);
+		int nOverlayWidthR = CImageProcess::DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthR, m_pRecipeInfo->DimParam.nOverlayWidthBright_R, CImageProcess::en_FindFromRight, FIND_LOWER, FILTER_GV);
+
+
+		// 5. Overlay Width - Left Level
+		CRect rcRoi_OverlayWidthL = CRect(nWidth / 2, 0, nOverlayWidthR, nHeight);
+		CImageProcess::CheckRect(&rcRoi_OverlayWidthL, nWidth, nHeight);
+		int nOverlayWidthL = CImageProcess::DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthL, m_pRecipeInfo->DimParam.nOverlayWidthBright_L, CImageProcess::en_FindFromRight, FIND_UPPER, FILTER_GV);
+
+
+
+		// Dimension Result - RealSize
+		double dOverlayWidth = fabs((float)nOverlayWidthR - (float)nOverlayWidthL) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dCuttingWidth = fabs((float)nBaseLevelPx - (float)nOverlayWidthR) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dInsulationWidth = fabs((float)nTabCoatingLevelPx - (float)nOverlayWidthR) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dTabWidth = (float)nTabWidthPx * AprData.m_System.m_dResolY / 1000.f;
+
+
+
+
+		//Draw
+		CPoint ptDrawCross;
+		ptDrawCross = CPoint(nTabCoatingLevelPx, nHeight / 2);
+		m_pImageDispDlg->SetDrawCross(ptDrawCross);
+		m_pImageDispDlg->SetDrawCross(ptTabL);
+		m_pImageDispDlg->SetDrawCross(ptTabR);
+		ptDrawCross = CPoint(nBaseLevelPx, nHeight / 2);
+		m_pImageDispDlg->SetDrawCross(ptDrawCross);
+		ptDrawCross = CPoint(nOverlayWidthR, nHeight / 2);
+		m_pImageDispDlg->SetDrawCross(ptDrawCross);
+		ptDrawCross = CPoint(nOverlayWidthL, nHeight / 2);
+		m_pImageDispDlg->SetDrawCross(ptDrawCross);
+		m_pImageDispDlg->SetDrawBoundaryFlag(m_bChkDIspBoundary);
+
+		int a = 0;
+		}
+
+
+
+
+
 	}
-	else
+	else // BTM
 	{
 		tabRsltInfo.m_nHeadNo = CAM_POS_BOTTOM;
 
@@ -2176,6 +2266,21 @@ void CImageProcSimDlg::InspectionAuto()
 
 
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	m_pVecBlockAll->clear();
 	int nSize = (int)tabRsltInfo.m_vecDefInfo.size();
