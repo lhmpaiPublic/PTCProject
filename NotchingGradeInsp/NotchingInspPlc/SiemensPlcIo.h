@@ -16,7 +16,7 @@
 #define SIENENS_WRITEBIT (MAX_SMS_BITIO_OUT)
 
 //지멘스 WORD 영역 쓰기 맥스 갯수
-#define SIENENS_WRITEWORD_MAX 149
+#define SIENENS_WRITEWORD_MAX 83
 
 
 //지멘스 Recipe Name 읽기 갯수
@@ -37,6 +37,9 @@ class CSiemensPlcIo : public CDataPlcImp
 	//Word 출력 시작 위치
 	int m_nWordOut;
 
+	//Cell Key Word 입력 시작 위치
+	int m_nWordInCellkey;
+
 	//Alive 신호채크 변수
 	DWORD dwMelsBitInAliveTime;
 public:
@@ -56,6 +59,8 @@ public:
 	short m_ReadBitData[SIENENS_READBIT];
 	//short 단위 Word 영역 데이터
 	short m_ReadWordData[SIENENS_READWORD_MAX];
+	//short 단위 Word 영역 Cell key 데이터
+	short m_ReadWordCellKeyData[COUNT_CELLKEY];
 
 	//PLC 쓰기 Data
 	//PLC 쓰기 Bit Data
@@ -107,6 +112,9 @@ public:
 	void ReadPlcBitDataParser(short* data);
 	//Word 영역 short 단위 읽은 데이터를 파싱하여 멤버변수에 세팅한다
 	void ReadPlcWordDataParser(short* data);
+
+	//Word 영역 short 단위 읽은 데이터를 파싱하여 멤버변수에 세팅한다(Cell key 영역)
+	void ReadPlcWordCellKeyDataParser(short* data);
 
 	//레시피 명을 만든다.
 	CString MakeRecipeName(short* data);

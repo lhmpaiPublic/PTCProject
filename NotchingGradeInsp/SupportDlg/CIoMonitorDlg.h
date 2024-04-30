@@ -145,11 +145,10 @@ private :
 	CGridCtrl	m_GridWordOut;
 
 	CFont*		m_pFontGrid;
-	
-	CSequenceData m_localSeqDataIn;
-	_SEQ_OUT_DATA_ALL m_localSeqDataOut;
 
 #ifndef NEW_PLCTYPE
+	_SEQ_OUT_DATA_ALL m_localSeqDataOut;
+	CSequenceData m_localSeqDataIn;
 	_SEQ_OUT_DATA_ALL_SMS m_localSeqDataOutSms;
 #endif //NEW_PLCTYPE
 

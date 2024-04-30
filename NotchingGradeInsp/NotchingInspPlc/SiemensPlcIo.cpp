@@ -66,6 +66,8 @@ enum SmsWordRead
 
 	//Cell Key
 	enSmsWordRead_CellKey = 210,
+	enSmsWordRead_CellKeyMaxSize = COUNT_CELLKEY,
+
 };
 
 enum SmsWordWrite
@@ -113,8 +115,6 @@ enum SmsWordWrite
 	enSmsWordWrite_Judge = 81,
 	enSmsWordWrite_NG_Code = 82,
 
-	enSmsWordWrite_DuplicateNG_Cell_ID = 85,
-
 	//Write Word 영역 최대 크기
 	enSmsWordWriteMaxSize = SIENENS_WRITEWORD_MAX
 
@@ -132,6 +132,9 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	m_nBitOut = nBitOut;
 	m_nWordIn = nWordIn;
 	m_nWordOut = nWordOut;
+
+	m_nWordInCellkey = m_nWordIn + enSmsWordRead_CellKey;
+
 	//Alive 값 연산 변수
 	m_bSmsAlive = FALSE;
 
@@ -141,6 +144,9 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	//Read Data 버퍼 초기화
 	memset(m_ReadBitData, 0x00, sizeof(short) * SIENENS_READBIT);
 	memset(m_ReadWordData, 0x00, sizeof(short) * SIENENS_READWORD_MAX);
+
+	//short 단위 Word 영역 Cell key 데이터
+	memset(m_ReadWordCellKeyData, 0x00, sizeof(short) * COUNT_CELLKEY);
 
 	//Write Bit Data 버퍼 초기화
 	memset(m_WriteBitData, 0x00, sizeof(short) * SIENENS_WRITEBIT);
@@ -189,6 +195,18 @@ void CSiemensPlcIo::SiemensPlcProc()
 		ReadPlcWordDataParser(ReadWordData);
 		LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexSiemens(ReadWordData, SIENENS_READWORD_MAX, m_nWordIn));
 	}
+
+	////Read word Cell Key 영역 읽기
+	//short	ReadWordCellKeyData[COUNT_CELLKEY];
+	//memset(ReadWordCellKeyData, 0, COUNT_CELLKEY * sizeof(short));
+	////word 읽기 Cell Key 영역 읽기
+	//ReadDataReg(m_nWordInCellkey, ReadWordCellKeyData, COUNT_CELLKEY);
+	////읽은 Word Cell Key 데이터 파싱
+	//if (std::equal(std::begin(ReadWordCellKeyData), std::end(ReadWordCellKeyData), std::begin(m_ReadWordCellKeyData)) == false)
+	//{
+	//	ReadPlcWordCellKeyDataParser(ReadWordCellKeyData);
+	//	LOGDISPLAY_SPEC(2)(_T("In word Cell key data :	%s"), CStrSuport::ChangshorttohexSiemens(ReadWordCellKeyData, COUNT_CELLKEY, m_nWordInCellkey));
+	//}
 
 	//Bit 쓰기 데이터 만들기
 	int ret = WritePlcBitDataMake();
@@ -332,13 +350,18 @@ void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 	if (m_ReadWordData[enSmsWordRead_PrmSectorNgTabCnt] ^ data[enSmsWordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enSmsWordRead_PrmSectorNgTabCnt]);
 	if (m_ReadWordData[enSmsWordRead_PrmSectorBaseCnt] ^ data[enSmsWordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enSmsWordRead_PrmSectorBaseCnt]);
 
+	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORD_MAX);
+}
+
+//Word 영역 short 단위 읽은 데이터를 파싱하여 멤버변수에 세팅한다(Cell key 영역)
+void CSiemensPlcIo::ReadPlcWordCellKeyDataParser(short* data)
+{
 	for (int count = 0; count < COUNT_CELLKEY; count++)
 	{
-		int idx = enSmsWordRead_CellKey + count;
-		if (m_ReadWordData[idx] ^ data[idx]) setWordIn_CellKey(count, data[idx]);
+		setWordIn_CellKey(count, data[count]);
 	}
 
-	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORD_MAX);
+	memcpy(m_ReadWordCellKeyData, data, sizeof(short) * COUNT_CELLKEY);
 }
 
 //PLC write Bit Data Make 함수

@@ -6,7 +6,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
-    <DebuggerFlavor>WindowsRemoteDebugger</DebuggerFlavor>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <RemoteDebuggerCommand>\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp\NotchingGradeInsp.exe</RemoteDebuggerCommand>
     <RemoteDebuggerWorkingDirectory>\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp\</RemoteDebuggerWorkingDirectory>
     <RemoteDebuggerServerName>PTC-DEMO-NEW:4024</RemoteDebuggerServerName>
