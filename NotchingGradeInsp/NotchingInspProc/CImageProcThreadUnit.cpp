@@ -293,7 +293,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								int nCount = 0;
 								int nUpperBright = 0;
 
-								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE, FILTER_GV);
 								BOOL bUseDarkRoll = (AprData.m_pRecipeInfo->TabCond.nRollBrightMode[CAM_POS_TOP] == 1) ? FALSE : TRUE;
 								nUpperBright = nCount * ((AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + AprData.m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
 
@@ -308,7 +308,7 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 								rcPrj.left = 0;
 								rcPrj.right = nWidth;
 
-								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE);
+								nCount = CImageProcess::GetProjection(pOrgImg, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, 10, TRUE, FILTER_GV);
 								nUpperBright = nCount * ((AprData.m_pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_TOP] + AprData.m_pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_TOP]) / 2);
 
 								int nLevelRight = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nWidth, nUpperBright, CImageProcess::en_FindFromRight, bUseDarkRoll);
@@ -420,6 +420,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							}
 						}
 						// 22.05.10 Ahn Add Start 
+
+
+						//Dimension
+						CSize tabPos = CSize(nTabLeft, nTabRight);
+						CImageProcess::Dimension_Top(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, tabPos );
+
+
 					}
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같지 않다면
 					else
@@ -533,6 +540,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						// 22.05.10 Ahn Add Start 
 					}
 					// 23.02.20 Ahn Add Start
+
+					//Dimension
+					CImageProcess::Dimension_Btm(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo);
+
 				}
 
 				//Tab 정보가 없을 때  ? 또는 Over Flow이면

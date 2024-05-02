@@ -147,6 +147,13 @@ public:
 #define EDGE_IMG_HEIGHT 128
 #define EDGE_IMG_WIDTH	128
 
+#define FILTER_GV		200
+
+#define FIND_LOWER		FALSE
+#define FIND_UPPER		TRUE
+
+
+
 class CDefectDataCtrl;
 class CTabRsltInfo;
 
@@ -189,6 +196,18 @@ public:
 		BOOL bError;
 
 	} _BRIGHT_INFO;
+
+
+	typedef struct
+	{
+		CPoint ptTabCoatingLevel;
+		CPoint ptTabWidthL;
+		CPoint ptTabWidthR;
+		CPoint ptBaseLevel;
+		CPoint ptOverlayWidthR;
+		CPoint ptOverlayWidthL;
+
+	} _DIM_INFO;
 
 
 	// >>>>>>>>>>>>>>>>>>>> 여기부터 제작 필요 >>>>>>>>>>>>>>>>>>>>>>>
@@ -265,7 +284,7 @@ public:
 	// 22.07.14 Ahn Add End
 	
 	// Projection 처리 
-	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum = TRUE);
+	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum = TRUE, int nFilteringValue = 255);
 	static int GetProjection(const BYTE* pImgPtr, int* pProjection, int nWidth, int nHeight, int nStartX, int nEndX, int nStartY, int nEndY, int nDir, int nSampling, BOOL bModeSum = TRUE);
 	//static int GetAverageFromPrjData(int* pPrjData, int* pAveData, int nLength, int nAveRage);
 	static int GetBundary_FromPrjData(int* pnPrjData, int nLength, int nCompWidth, int nMode, int nNegCoatHeight );
@@ -414,18 +433,18 @@ public:
 	//// 22.05.13 Ahn Add End
 
 	// 양극 검사 Dross & Foil 노출 구분 검출
-	static int ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecLeftRndInfoDraw = NULL, VEC_ROUND_INFO* pvecRightRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecAllRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 
-	static int ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecLeftRndInfoDraw = NULL, VEC_ROUND_INFO* pvecRightRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecAllRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 22.05.09 Ahn Add Start
 	static int ImageProcessDetectSurface(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pDefInfoCtrl, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 22.05.09 Ahn Add End
 
 	// 23.02.10 Ahn Add Start
-	static int ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
-	static int ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecLeftRndInfoDraw = NULL, VEC_ROUND_INFO* pvecRightRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
+	static int ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeigth, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pDefInfoCtrl, BOOL bSimMode = 0, VEC_ROUND_INFO* pvecAllRndInfoDraw = NULL, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	// 23.02.10 Ahn Add End
 
 	static int SaveCropImage(const BYTE* pImgPtr, int nWidth, int nHeight, CRect rcCrop, CString strFilePath, CString strFileName);
@@ -512,10 +531,18 @@ public:
 
 
 
-	static int GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum);
+	static int GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum, int nFilteringValue = 255);
 	static int FindCoatingTabLevel_Projection(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, VEC_SECTOR* pVecSector, int* pnLevel);
 	static int ImageProcessDetectBlob(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, CRect rcArea, CTabRsltInfo* pTabRsltInfo, int nCamPos, BOOL bSimMode, BYTE** pImgPtrArr = NULL, int nArrCnt = 0);
 	static int FindBtmLevel_Projection(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int* pnLevel);
+
+
+
+	//Dimension
+	static int DimFindLevel(const BYTE* pImgPtr, int nImageW, int nImageH, CRect rcRoi, int nBright, int nFindMode, BOOL bFindUpper, int nFilteringValue = 255);
+	static int DimTabWidth(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, CPoint* ptTabL, CPoint* ptTabR);
+	static BOOL Dimension_Top(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLevel, CSize tabPos, BOOL bSimMode = FALSE, _DIM_INFO* pstDimInfoDraw = NULL);
+	static BOOL Dimension_Btm(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, BOOL bSimMode = FALSE, _DIM_INFO* pstDimInfoDraw = NULL);
 
 
 };

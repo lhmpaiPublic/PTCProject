@@ -301,9 +301,32 @@ CRecipeSettingDlg::CRecipeSettingDlg(BOOL bRcpSelMode, CRecipeInfo* pRecipeInfo,
 	, m_nEdCheckBrightRangeMin(0)
 	, m_nEdCheckBrightRangeMax(0)
 	, m_nEdCheckBrightOverCnt(0)
-
-
 	, m_bChkUseBlob(FALSE)
+	, m_bChkUseDimension(FALSE)
+	, m_bChkUseDimOverlay_Top(FALSE)
+	, m_bChkUseDimCutting_Top(FALSE)
+	, m_bChkUseDimInsulation_Top(FALSE)
+	, m_bChkUseDimTabWidth_Top(FALSE)
+	, m_bChkUseDimOverlay_Btm(FALSE)
+	, m_bChkUseDimCutting_Btm(FALSE)
+	, m_dEdSpec_OverlayWidth_Top(0)
+	, m_dEdSpec_CuttingWidth_Top(0)
+	, m_dEdSpec_InsulationWidth_Top(0)
+	, m_dEdSpec_TabWidth_Top(0)
+	, m_dEdSpec_OverlayWidth_Btm(0)
+	, m_dEdSpec_CuttingWidth_Btm(0)
+	, m_dEdRange_OverlayWidth_Top(0)
+	, m_dEdRange_CuttingWidth_Top(0)
+	, m_dEdRange_InsulationWidth_Top(0)
+	, m_dEdRange_TabWidth_Top(0)
+	, m_dEdRange_OverlayWidth_Btm(0)
+	, m_dEdRange_CuttingWidth_Btm(0)
+	, m_nEdTabWidthBright_Top(0)
+	, m_nEdTabCoatingBright_Top(0)
+	, m_nEdBaseBright_Top(0)
+	, m_nEdOverlayWidthBright_Top(0)
+	, m_nEdBaseBright_Btm(0)
+	, m_nEdOverlayWidthBright_Btm(0)
 {
 	m_bRcpSelMode = bRcpSelMode ;
 
@@ -466,6 +489,37 @@ void CRecipeSettingDlg::DoDataExchange(CDataExchange* pDX)
 
 
 	DDX_Check(pDX, IDC_CHK_USE_BLOB, m_bChkUseBlob);
+
+
+	DDX_Check(pDX, IDC_CHK_USE_DIMENSION, m_bChkUseDimension);	
+	DDX_Check(pDX, IDC_CHK_USE_DIM_OVERLAY_TOP, m_bChkUseDimOverlay_Top);
+	DDX_Check(pDX, IDC_CHK_USE_DIM_CUTTING_TOP, m_bChkUseDimCutting_Top);
+	DDX_Check(pDX, IDC_CHK_USE_DIM_INSULATION_TOP, m_bChkUseDimInsulation_Top);
+	DDX_Check(pDX, IDC_CHK_USE_DIM_TABWIDTH_TOP, m_bChkUseDimTabWidth_Top);
+	DDX_Check(pDX, IDC_CHK_USE_DIM_OVERLAY_BTM, m_bChkUseDimOverlay_Btm);
+	DDX_Check(pDX, IDC_CHK_USE_DIM_CUTTING_BTM, m_bChkUseDimCutting_Btm);
+
+	DDX_Text(pDX, IDC_ED_SPEC_DIM_OVERLAY_TOP, m_dEdSpec_OverlayWidth_Top);
+	DDX_Text(pDX, IDC_ED_SPEC_DIM_CUTTING_TOP, m_dEdSpec_CuttingWidth_Top);
+	DDX_Text(pDX, IDC_ED_SPEC_DIM_INSULATION_TOP, m_dEdSpec_InsulationWidth_Top);
+	DDX_Text(pDX, IDC_ED_SPEC_DIM_TABWIDTH_TOP, m_dEdSpec_TabWidth_Top);
+	DDX_Text(pDX, IDC_ED_SPEC_DIM_OVERLAY_BTM, m_dEdSpec_OverlayWidth_Btm);
+	DDX_Text(pDX, IDC_ED_SPEC_DIM_CUTTING_BTM, m_dEdSpec_CuttingWidth_Btm);
+
+	DDX_Text(pDX, IDC_ED_RANGE_DIM_OVERLAY_TOP, m_dEdRange_OverlayWidth_Top);
+	DDX_Text(pDX, IDC_ED_RANGE_DIM_CUTTING_TOP, m_dEdRange_CuttingWidth_Top);
+	DDX_Text(pDX, IDC_ED_RANGE_DIM_INSULATION_TOP, m_dEdRange_InsulationWidth_Top);
+	DDX_Text(pDX, IDC_ED_RANGE_DIM_TABWIDTH_TOP, m_dEdRange_TabWidth_Top);
+	DDX_Text(pDX, IDC_ED_RANGE_DIM_OVERLAY_BTM, m_dEdRange_OverlayWidth_Btm);
+	DDX_Text(pDX, IDC_ED_RANGE_DIM_CUTTING_BTM, m_dEdRange_CuttingWidth_Btm);
+
+	DDX_Text(pDX, IDC_ED_BRIGHT_DIM_OVERLAY_TOP, m_nEdOverlayWidthBright_Top);
+	DDX_Text(pDX, IDC_ED_BRIGHT_DIM_CUTTING_TOP, m_nEdBaseBright_Top);
+	DDX_Text(pDX, IDC_ED_BRIGHT_DIM_INSULATION_TOP, m_nEdTabCoatingBright_Top);
+	DDX_Text(pDX, IDC_ED_BRIGHT_DIM_TABWIDTH_TOP, m_nEdTabWidthBright_Top);
+	DDX_Text(pDX, IDC_ED_BRIGHT_DIM_OVERLAY_BTM, m_nEdOverlayWidthBright_Btm);
+	DDX_Text(pDX, IDC_ED_BRIGHT_DIM_CUTTING_BTM, m_nEdBaseBright_Btm);
+
 }
 
 
@@ -560,6 +614,7 @@ BEGIN_MESSAGE_MAP(CRecipeSettingDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_ED_BRIGHT_RANGE_MAX, &CRecipeSettingDlg::OnSetfocusEdBrightRangeMax)
 	ON_EN_SETFOCUS(IDC_ED_BRIGHT_OVER_CNT, &CRecipeSettingDlg::OnSetfocusEdBrightOverCnt)
 	ON_BN_CLICKED(IDC_CHK_USE_BLOB, &CRecipeSettingDlg::OnBnClickedChkUseBlob)
+	ON_BN_CLICKED(IDC_CHK_USE_DIMENSION, &CRecipeSettingDlg::OnBnClickedChkUseDimension)
 END_MESSAGE_MAP()
 
 
@@ -1155,6 +1210,38 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		}
 
 
+		m_bChkUseDimension = pRecipeInfo->DimParam.bUse_Dimension;
+		m_bChkUseDimOverlay_Top = pRecipeInfo->DimParam.bUse_OverlayWidth_Top;
+		m_bChkUseDimCutting_Top = pRecipeInfo->DimParam.bUse_CuttingWidth_Top;
+		m_bChkUseDimInsulation_Top = pRecipeInfo->DimParam.bUse_InsulationWidth_Top;
+		m_bChkUseDimTabWidth_Top = pRecipeInfo->DimParam.bUse_TabWidth_Top;
+		m_bChkUseDimOverlay_Btm = pRecipeInfo->DimParam.bUse_OverlayWidth_Btm;
+		m_bChkUseDimCutting_Btm = pRecipeInfo->DimParam.bUse_CuttingWidth_Btm;
+
+		m_dEdSpec_OverlayWidth_Top = pRecipeInfo->DimParam.dSpec_OverlayWidth_Top;
+		m_dEdSpec_CuttingWidth_Top = pRecipeInfo->DimParam.dSpec_CuttingWidth_Top;
+		m_dEdSpec_InsulationWidth_Top = pRecipeInfo->DimParam.dSpec_InsulationWidth_Top;
+		m_dEdSpec_TabWidth_Top = pRecipeInfo->DimParam.dSpec_TabWidth_Top;
+		m_dEdSpec_OverlayWidth_Btm = pRecipeInfo->DimParam.dSpec_OverlayWidth_Btm;
+		m_dEdSpec_CuttingWidth_Btm = pRecipeInfo->DimParam.dSpec_CuttingWidth_Btm;
+
+		m_dEdRange_OverlayWidth_Top = pRecipeInfo->DimParam.dRange_OverlayWidth_Top;
+		m_dEdRange_CuttingWidth_Top = pRecipeInfo->DimParam.dRange_CuttingWidth_Top;
+		m_dEdRange_InsulationWidth_Top = pRecipeInfo->DimParam.dRange_InsulationWidth_Top;
+		m_dEdRange_TabWidth_Top = pRecipeInfo->DimParam.dRange_TabWidth_Top;
+		m_dEdRange_OverlayWidth_Btm = pRecipeInfo->DimParam.dRange_OverlayWidth_Btm;
+		m_dEdRange_CuttingWidth_Btm = pRecipeInfo->DimParam.dRange_CuttingWidth_Btm;
+
+		m_nEdTabWidthBright_Top = pRecipeInfo->DimParam.nTabWidthBright_Top;
+		m_nEdTabCoatingBright_Top = pRecipeInfo->DimParam.nTabCoatingBright_Top;
+		m_nEdBaseBright_Top = pRecipeInfo->DimParam.nBaseBright_Top;
+		m_nEdOverlayWidthBright_Top = pRecipeInfo->DimParam.nOverlayWidthBright_Top;
+		m_nEdBaseBright_Btm = pRecipeInfo->DimParam.nBaseBright_Btm;
+		m_nEdOverlayWidthBright_Btm = pRecipeInfo->DimParam.nOverlayWidthBright_Btm;
+
+
+
+
 		UpdateData(FALSE);
 	}
 	else 
@@ -1277,6 +1364,36 @@ void CRecipeSettingDlg::DataControl(int nMode, CRecipeInfo* pRecipeInfo)
 		pRecipeInfo->nCheckBrightRangeMax[nCamPos] = m_nEdCheckBrightRangeMax;
 		pRecipeInfo->nCheckBrightOverCnt = m_nEdCheckBrightOverCnt;
 
+
+
+		pRecipeInfo->DimParam.bUse_Dimension = m_bChkUseDimension;
+		pRecipeInfo->DimParam.bUse_OverlayWidth_Top = m_bChkUseDimOverlay_Top;
+		pRecipeInfo->DimParam.bUse_CuttingWidth_Top = m_bChkUseDimCutting_Top;
+		pRecipeInfo->DimParam.bUse_InsulationWidth_Top = m_bChkUseDimInsulation_Top;
+		pRecipeInfo->DimParam.bUse_TabWidth_Top = m_bChkUseDimTabWidth_Top;
+		pRecipeInfo->DimParam.bUse_OverlayWidth_Btm = m_bChkUseDimOverlay_Btm;
+		pRecipeInfo->DimParam.bUse_CuttingWidth_Btm = m_bChkUseDimCutting_Btm;
+
+		pRecipeInfo->DimParam.dSpec_OverlayWidth_Top = m_dEdSpec_OverlayWidth_Top;
+		pRecipeInfo->DimParam.dSpec_CuttingWidth_Top = m_dEdSpec_CuttingWidth_Top;
+		pRecipeInfo->DimParam.dSpec_InsulationWidth_Top = m_dEdSpec_InsulationWidth_Top;
+		pRecipeInfo->DimParam.dSpec_TabWidth_Top = m_dEdSpec_TabWidth_Top;
+		pRecipeInfo->DimParam.dSpec_OverlayWidth_Btm = m_dEdSpec_OverlayWidth_Btm;
+		pRecipeInfo->DimParam.dSpec_CuttingWidth_Btm = m_dEdSpec_CuttingWidth_Btm;
+
+		pRecipeInfo->DimParam.dRange_OverlayWidth_Top = m_dEdRange_OverlayWidth_Top;
+		pRecipeInfo->DimParam.dRange_CuttingWidth_Top = m_dEdRange_CuttingWidth_Top;
+		pRecipeInfo->DimParam.dRange_InsulationWidth_Top = m_dEdRange_InsulationWidth_Top;
+		pRecipeInfo->DimParam.dRange_TabWidth_Top = m_dEdRange_TabWidth_Top;
+		pRecipeInfo->DimParam.dRange_OverlayWidth_Btm = m_dEdRange_OverlayWidth_Btm;
+		pRecipeInfo->DimParam.dRange_CuttingWidth_Btm = m_dEdRange_CuttingWidth_Btm;
+
+		pRecipeInfo->DimParam.nTabWidthBright_Top = m_nEdTabWidthBright_Top;
+		pRecipeInfo->DimParam.nTabCoatingBright_Top = m_nEdTabCoatingBright_Top;
+		pRecipeInfo->DimParam.nBaseBright_Top = m_nEdBaseBright_Top;
+		pRecipeInfo->DimParam.nOverlayWidthBright_Top = m_nEdOverlayWidthBright_Top;
+		pRecipeInfo->DimParam.nBaseBright_Btm = m_nEdBaseBright_Btm;
+		pRecipeInfo->DimParam.nOverlayWidthBright_Btm = m_nEdOverlayWidthBright_Btm;
 
 	}
 	OnRefresh();
@@ -3399,4 +3516,10 @@ void CRecipeSettingDlg::EnableControlUI( BOOL bEnable )
 	}
 		
 		
+}
+
+void CRecipeSettingDlg::OnBnClickedChkUseDimension()
+{
+	UpdateData(TRUE);
+
 }

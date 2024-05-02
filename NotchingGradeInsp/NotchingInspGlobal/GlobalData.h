@@ -279,6 +279,25 @@ public:
 //////////////////////////////////////////////////////////////////////////
 
 
+typedef struct stDimensionResult
+{
+	double dOverlayWidth_Top;
+	double dCuttingWidth_Top;
+	double dInsulationWidth_Top;
+	double dTabWidth_Top;
+	double dOverlayWidth_Btm;
+	double dCuttingWidth_Btm;
+
+	int nJudge_OverlayWidth_Top;
+	int nJudge_CuttingWidth_Top;
+	int nJudge_InsulationWidth_Top;
+	int nJudge_TabWidth_Top;
+	int nJudge_OverlayWidth_Btm;
+	int nJudge_CuttingWidth_Btm;
+
+
+} _DIMENSION_RESULT;
+
 
 class CLotInfo 
 {
@@ -358,6 +377,9 @@ public:
 	CSectorNgJudge	m_secNgJudge;
 	int				m_nContinueCount;
 	// 22.08.09 Ahn Add End
+
+	_DIMENSION_RESULT m_stDimResult;
+
 
 	void ClearAllCount() ;
 };

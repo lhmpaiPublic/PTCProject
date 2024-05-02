@@ -561,7 +561,7 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 //}
 
 
-int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum)
+int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum, int nFilteringValue )
 {
 	ASSERT(pImage);
 	ASSERT(pProjection);
@@ -620,7 +620,10 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 			for (x = nStartX; x < nEndX; x += nSampling)
 			{
 				//샘플링으로 선택된 라인의 휘도를 합한 값
-				pProjection[y - nStartY] += *(pLine + x);
+				if (*(pLine + x) <= nFilteringValue)
+				{
+					pProjection[y - nStartY] += *(pLine + x);
+				}
 			}
 		}
 		//SUM 을 한 값이나 아니면 평균값이나 선택
@@ -653,7 +656,10 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 			for (x = nStartX; x < nEndX; x++)
 			{
 				//샘플링으로 선택된 라인의 휘도를 합한 값
-				pProjection[x - nStartX] += *(pLine + x);
+				if (*(pLine + x) <= nFilteringValue )
+				{
+					pProjection[x - nStartX] += *(pLine + x);
+				}
 			}
 		}
 		//SUM 을 한 값이나 아니면 평균값이나 선택
@@ -672,7 +678,7 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 
 
 
-int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum)
+int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWidth, int nHeight, CRect rectPrj, int nDir, int nSampling, BOOL bModeSum, int nFilteringValue)
 {
 	ASSERT(pImage);
 	ASSERT(pProjection);
@@ -719,7 +725,10 @@ int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWid
 			{
 				pLine = (BYTE*)pImage + (nWidth * y);
 
-				pProjection[x - nStartX] += *(pLine + x);
+				if (*(pLine + x) <= nFilteringValue)
+				{
+					pProjection[x - nStartX] += *(pLine + x);
+				}
 			}
 		}
 		if (bModeSum == FALSE)
@@ -740,7 +749,10 @@ int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWid
 			{
 				pLine = (BYTE*)pImage + (nWidth * y);
 
-				pProjection[x - nStartX] += *(pLine + x);
+				if (*(pLine + x) <= nFilteringValue)
+				{
+					pProjection[x - nStartX] += *(pLine + x);
+				}
 			}
 		}
 		if (bModeSum == FALSE)
@@ -2711,7 +2723,8 @@ int CImageProcess::EdgeDetectImageToBoth_RndInfo_Threshold(BYTE* pImgPtr, BYTE* 
 					int nMax = 0;
 					for (x = nXEnd - 1; x >= nXStart; x--) {
 						BYTE btLevel = *(pLinePtr + x);
-						if (btLevel > nThreshold) {
+						if (btLevel > nThreshold)
+						{
 							pnRsltArr[y] = x;
 							nMaxPos[nCnt] = x;
 							break;
@@ -5038,7 +5051,7 @@ int CImageProcess::FindLevelBottom_Negative(BYTE* pImgPtr, int nWidth, int nHeig
 	rcPrj.top = nCenterY - 100;
 	rcPrj.bottom = nCenterY + 100;
 
-	CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0);
+	CImageProcess::GetProjection(pImgPtr, pnPrjData, nWidth, nHeight, rcPrj, DIR_VER, nSampling, 0, FILTER_GV);
 
 	int nPrjArray[2000];
 	// 22.12.30 Ahn Modify Start
@@ -5255,8 +5268,8 @@ int CImageProcess::FindTabLevel(BYTE* pImagePtr, int nWidth, int nHeight, int* p
 		rcRight.top = nHeight - 1 - 1000;
 		rcRight.bottom = nHeight - 1 ;
 
-		GetProjection(pImagePtr, pnLeft, nWidth, nHeight, rcLeft, DIR_VER, 10, FALSE ) ;
-		GetProjection(pImagePtr, pnRight, nWidth, nHeight, rcRight, DIR_VER, 10, FALSE ) ;
+		GetProjection(pImagePtr, pnLeft, nWidth, nHeight, rcLeft, DIR_VER, 10, FALSE, FILTER_GV) ;
+		GetProjection(pImagePtr, pnRight, nWidth, nHeight, rcRight, DIR_VER, 10, FALSE, FILTER_GV) ;
 
 		int nLeftLevel = 0 ;
 		int nRightLevel = 0 ;
@@ -7752,7 +7765,7 @@ int CImageProcess::ImageProcessDetectSurface(const BYTE* pImgPtr, int nWidth, in
 // 22.05.09 Ahn Add End
 
 // 23.02.10 Ahn Add Start
-int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0 */ , BYTE** pImgPtrArr /*= NULL */ , int nArrCnt /*= 0*/)
+int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0 */ , VEC_ROUND_INFO* pvecLeftRndInfoDraw, VEC_ROUND_INFO* pvecRightRndInfoDraw, BYTE** pImgPtrArr /*= NULL */ , int nArrCnt /*= 0*/)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
@@ -8043,9 +8056,18 @@ int CImageProcess::ImageProcessTopSide_BrightRoll(const BYTE* pImgPtr, int nWidt
 		pDiffPtr = NULL;
 	}
 
+	if (bSimMode == TRUE)
+	{
+		pvecLeftRndInfoDraw->resize(vecLeftRndInfo.size());
+		copy(vecLeftRndInfo.begin(), vecLeftRndInfo.end(), pvecLeftRndInfoDraw->begin());
+
+		pvecRightRndInfoDraw->resize(vecRightRndInfo.size());
+		copy(vecRightRndInfo.begin(), vecRightRndInfo.end(), pvecRightRndInfoDraw->begin());
+	}
+
 	return 0;
 }
-int CImageProcess::ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0*/, BYTE** pImgPtrArr /*= NULL*/, int nArrCnt /*= 0*/)
+int CImageProcess::ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode /*= 0*/, VEC_ROUND_INFO* pvecAllRndInfoDraw /*= NULL*/, BYTE** pImgPtrArr /*= NULL*/, int nArrCnt /*= 0*/)
 {
 	// 23.02.24 Ahn Add Start
 	ASSERT(pImgPtr);
@@ -8196,37 +8218,36 @@ int CImageProcess::ImageProcessBottomSide_BrightRoll(const BYTE* pImgPtr, int nW
 	delete[] pDiffPtr;
 	pDiffPtr = NULL;
 
+	if (bSimMode == TRUE)
+	{
+		pvecAllRndInfoDraw->resize(vecAllRndInfo.size());
+		copy(vecAllRndInfo.begin(), vecAllRndInfo.end(), pvecAllRndInfoDraw->begin());
+	}
+
 	return nRet;
 	// 23.02.24 Ahn Add End
 }
 // 23.02.10 Ahn Add End
 
 // Head부 검사 처리 함수.
-int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, VEC_ROUND_INFO* pvecLeftRndInfoDraw, VEC_ROUND_INFO* pvecRightRndInfoDraw, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-	int nOffset = 50 ;
-
-	// 22.01.05 Ahn Add Start
 	int nLeftOffset;
-	int nRightOffset; // 22.05.09 Ahn Add
+	int nRightOffset;
 	int nTabRoundOffsetR;
-	//22.09.15 Ahn Modify Start
-	//if (AprData.m_System.m_nMachineMode == CATHODE_MODE) {
-	if (AprData.m_System.m_nMachineMode == ANODE_MODE) {
-	//22.09.15 Ahn Modify End
+	if (AprData.m_System.m_nMachineMode == ANODE_MODE)
+	{
 		nLeftOffset = (int)((double)pRecipeInfo->TabCond.nNegCoatHeight * 1.5);
 		nTabRoundOffsetR = pRecipeInfo->TabCond.nNegCoatHeight;
 	}
-	else {
-		// 22.05.09 Ahn Modify Start
-		//nLeftOffset = pRecipeInfo->TabCond.nCeramicHeight;
+	else
+	{
 		nLeftOffset = (int)((pRecipeInfo->dFoilExpInspWidth[CAM_POS_TOP] * 1000.0) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
 		nRightOffset = (int)((pRecipeInfo->dFoilOutInspWidth[CAM_POS_TOP] * 1000.0) / AprData.m_System.m_dResolX[CAM_POS_TOP]);
-		// 22.05.09 Ahn Modify End
 		nTabRoundOffsetR = pRecipeInfo->TabCond.nRadiusW;
 
 		if (pRecipeInfo->bEnableVGroove == TRUE)
@@ -8235,7 +8256,6 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth,
 			nRightOffset += pRecipeInfo->TabCond.nNegVGrooveHeight;
 		}
 	}
-	// 22.01.05 Ahn Add End
 
 	CRect rcAll;
 	CRect rcLeft;
@@ -8623,11 +8643,20 @@ int CImageProcess::ImageProcessTopSide_AreaDiff(const BYTE* pImgPtr, int nWidth,
 		pDiffPtr = NULL;
 	}
 
+	if (bSimMode == TRUE)
+	{
+		pvecLeftRndInfoDraw->resize(vecLeftRndInfo.size());
+		copy(vecLeftRndInfo.begin(), vecLeftRndInfo.end(), pvecLeftRndInfoDraw->begin());
+
+		pvecRightRndInfoDraw->resize(vecRightRndInfo.size());
+		copy(vecRightRndInfo.begin(), vecRightRndInfo.end(), pvecRightRndInfoDraw->begin());
+	}
+
 	return 0;
 }
 
 
-int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, VEC_ROUND_INFO* pvecAllRndInfoDraw, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
@@ -8705,7 +8734,7 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWid
 		int nThresBnd = pRecipeInfo->TabCond.nCeramicBrightLow[CAM_POS_BOTTOM];
 		int nThresMax = pRecipeInfo->TabCond.nRollBrightHigh[CAM_POS_BOTTOM];
 
-		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_TopSide, nLineLevel, CImageProcess::en_FindLeft);
+		CImageProcess::EdgeDetectByRndInfo_Negative(pEdgePtr, NULL, &vecAllRndInfo, nWidth, nHeight, rcAll, nThresBnd, nThresMax, CImageProcess::en_BottomSide, nLineLevel, CImageProcess::en_FindLeft);
 	}
 
 
@@ -8824,24 +8853,27 @@ int CImageProcess::ImageProcessBottomSide_AreaDiff(const BYTE* pImgPtr, int nWid
 		pDiffPtr = NULL;
 	}
 
+
+	if (bSimMode == TRUE)
+	{
+		pvecAllRndInfoDraw->resize(vecAllRndInfo.size());
+		copy(vecAllRndInfo.begin(), vecAllRndInfo.end(), pvecAllRndInfoDraw->begin());
+	}
+
 	return nRet;
 
 }
 
 // Head부 검사 처리 함수.
 // 22.02.08 Ahn Add Start
-int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, int nTabLeft, int nTabRight, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, VEC_ROUND_INFO* pvecLeftRndInfoDraw, VEC_ROUND_INFO* pvecRightRndInfoDraw, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
 	ASSERT(pTabRsltInfo);
 
-	int nOffset = 50;
-	int nLeftOffset;
-	int nTabRoundOffsetR;
-
-	nLeftOffset = pRecipeInfo->TabCond.nNegVGrooveHeight + pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
-	nTabRoundOffsetR = pRecipeInfo->TabCond.nNegCoatHeight;
+	int nLeftOffset = pRecipeInfo->TabCond.nNegVGrooveHeight + pRecipeInfo->nFoilExpInspWidth[CAM_POS_TOP];
+	int nTabRoundOffsetR = pRecipeInfo->TabCond.nNegCoatHeight;
 
 	CRect rcAll;
 	CRect rcLeft;
@@ -9165,12 +9197,20 @@ int CImageProcess::ImageProcessTopSide_Negative(const BYTE* pImgPtr, int nWidth,
 	delete[]pRsltPtr;
 	pRsltPtr = NULL;
 
+	if (bSimMode == TRUE)
+	{
+		pvecLeftRndInfoDraw->resize(vecLeftRndInfo.size());
+		copy(vecLeftRndInfo.begin(), vecLeftRndInfo.end(), pvecLeftRndInfoDraw->begin());
+
+		pvecRightRndInfoDraw->resize(vecRightRndInfo.size());
+		copy(vecRightRndInfo.begin(), vecRightRndInfo.end(), pvecRightRndInfoDraw->begin());
+	}
 
 	return 0;
 }
 
 
-int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, BYTE** pImgPtrArr, int nArrCnt)
+int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLineLevel, CTabRsltInfo* pTabRsltInfo, BOOL bSimMode, VEC_ROUND_INFO* pvecAllRndInfoDraw, BYTE** pImgPtrArr, int nArrCnt)
 {
 	ASSERT(pImgPtr);
 	ASSERT(pRecipeInfo);
@@ -9380,6 +9420,12 @@ int CImageProcess::ImageProcessBottomSide_Negative(const BYTE* pImgPtr, int nWid
 	}
 	//int nFoilExpSize = (int)vecBlockFoilExp.size();
 	//int nDrossSize = (int)vecBlockDross.size();
+
+	if (bSimMode == TRUE)
+	{
+		pvecAllRndInfoDraw->resize(vecAllRndInfo.size());
+		copy(vecAllRndInfo.begin(), vecAllRndInfo.end(), pvecAllRndInfoDraw->begin());
+	}
 
 	return nRet;
 
@@ -10403,4 +10449,313 @@ int CImageProcess::ImageProcessDetectBlob(const BYTE* pImgPtr, int nWidth, int n
 	pThresPtr = NULL;
 
 	return 0;
+}
+
+
+int CImageProcess::DimTabWidth(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, CPoint* ptTabL, CPoint* ptTabR )
+{
+	ASSERT(pImgPtr);
+	ASSERT(ptTabL);
+	ASSERT(ptTabR);
+
+	CImageProcess::VEC_SECTOR vecSec;
+	vecSec.clear();
+
+	int nResultWidthPx = 0; // px
+	int nStartPos = nTabFindPos;
+	int nEndPos = nStartPos + 100; //px
+
+	if (nEndPos >= nWidth-1 )
+	{
+		nEndPos = nWidth-1;
+	}
+
+	int thMin = pRecipeInfo->DimParam.nTabWidthBright_Top;
+	int thMax = 255;
+
+	if (CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, &vecSec) <= 0)
+	{
+		return -1;
+	}
+
+	if (CImageProcess::CombineTabSector(&vecSec, *pRecipeInfo) < 0)
+	{
+		return -2;
+	}
+
+	int nSize = (int)vecSec.size();
+
+	ST_SECTOR* pstSector = NULL;
+	for (int i = 0; i < nSize; i++)
+	{
+		int nTabWidth = vecSec[i].nEndPos - vecSec[i].nStartPos;
+		if (abs(nTabWidth - pRecipeInfo->TabCond.nTabWidth) < (pRecipeInfo->TabCond.nTabWidth / 3))
+		{
+			pstSector = &vecSec[i];
+			break;
+		}
+	}
+	if (pstSector == NULL)
+	{
+		if (nSize)
+		{
+			pstSector = &vecSec[0];
+		}
+		else
+		{
+			return -3;
+		}
+	}
+
+	ptTabL->x = (nEndPos + nStartPos) / 2;
+	ptTabL->y = pstSector->nStartPos;
+
+	ptTabR->x = (nEndPos + nStartPos) / 2;
+	ptTabR->y = pstSector->nEndPos;
+
+
+	nResultWidthPx = abs(pstSector->nEndPos - pstSector->nStartPos);
+
+	return nResultWidthPx;
+}
+
+
+int CImageProcess::DimFindLevel(const BYTE* pImgPtr, int nImageW, int nImageH, CRect rcRoi, int nBright, int nFindMode, BOOL bFindUpper, int nFilteringValue)
+{
+	ASSERT(pImgPtr);
+
+	int nResultX = 0;
+
+	int* pnPrjData;
+	int nRoiWidth = rcRoi.Width();
+	pnPrjData = new int[nImageW];
+	memset(pnPrjData, 0x00, sizeof(int) * nImageW);
+
+	CImageProcess::GetProjectionX(pImgPtr, pnPrjData, nImageW, nImageH, rcRoi, DIR_LR, 10, FALSE, nFilteringValue);
+	nResultX = CImageProcess::FindBoundary_FromPrjData(pnPrjData, nRoiWidth, nBright, nFindMode, bFindUpper);
+	nResultX += rcRoi.left;
+
+	delete[] pnPrjData;
+
+	return nResultX;
+}
+
+
+BOOL CImageProcess::Dimension_Top( const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLevel, CSize tabPos, BOOL bSimMode, _DIM_INFO* pstDimInfoDraw)
+{
+	BOOL bUseDimension = pRecipeInfo->DimParam.bUse_Dimension;
+	BOOL bUseOverlay = pRecipeInfo->DimParam.bUse_OverlayWidth_Top;
+	BOOL bUseCutting = pRecipeInfo->DimParam.bUse_CuttingWidth_Top;
+	BOOL bUseInsulation = pRecipeInfo->DimParam.bUse_InsulationWidth_Top;
+	BOOL bUseTabWidth = pRecipeInfo->DimParam.bUse_TabWidth_Top;
+	//Spec
+	double dSpecOverlayWidth = pRecipeInfo->DimParam.dSpec_OverlayWidth_Top;
+	double dSpecCuttingWidth = pRecipeInfo->DimParam.dSpec_CuttingWidth_Top;
+	double dSpecInsulationWidth = pRecipeInfo->DimParam.dSpec_InsulationWidth_Top;
+	double dSpecTabWidth = pRecipeInfo->DimParam.dSpec_TabWidth_Top;
+	//Range
+	double dRangeOverlayWidth = pRecipeInfo->DimParam.dRange_OverlayWidth_Top;
+	double dRangeCuttingWidth = pRecipeInfo->DimParam.dRange_CuttingWidth_Top;
+	double dRangeInsulationWidth = pRecipeInfo->DimParam.dRange_InsulationWidth_Top;
+	double dRangeTabWidth = pRecipeInfo->DimParam.dRange_TabWidth_Top;
+
+
+
+	if (bUseDimension == TRUE)
+	{
+		// 1. Tab Coating Level
+		CRect rcRoi_TabCoating = CRect(nLevel, tabPos.cx, nWidth - 100, tabPos.cy);
+		CheckRect(&rcRoi_TabCoating, nWidth, nHeight);
+		int nTabCoatingLevelPx = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_TabCoating, pRecipeInfo->DimParam.nTabCoatingBright_Top, en_FindFromLeft, FIND_UPPER);
+
+		// 2. Tab Width
+		int nTabWidthStartPosX = nTabCoatingLevelPx - 100;
+		CPoint ptTabL, ptTabR;
+		int nTabWidthPx = DimTabWidth(pImgPtr, nWidth, nHeight, nTabWidthStartPosX, pRecipeInfo, &ptTabL, &ptTabR);
+
+
+		// 3. Base Level
+		CRect rcRoi_Base;
+		rcRoi_Base = CRect(nWidth / 2, 0, nWidth, tabPos.cx);
+		CheckRect(&rcRoi_Base, nWidth, nHeight);
+		int nBaseL = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_Base, pRecipeInfo->DimParam.nBaseBright_Top, en_FindFromRight, FIND_UPPER, FILTER_GV);
+
+		rcRoi_Base = CRect(nWidth / 2, tabPos.cy, nWidth, nHeight);
+		CheckRect(&rcRoi_Base, nWidth, nHeight);
+		int nBaseR = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_Base, pRecipeInfo->DimParam.nBaseBright_Top, en_FindFromRight, FIND_UPPER, FILTER_GV);
+
+		int nBaseLevelPx = (nBaseL + nBaseR) / 2;
+
+
+		// 4. Overlay Width - Right Level
+		CRect rcRoi_OverlayWidthR = CRect(nWidth / 2, 0, nBaseLevelPx, nHeight);
+		CheckRect(&rcRoi_OverlayWidthR, nWidth, nHeight);
+		int nOverlayWidthR = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthR, pRecipeInfo->DimParam.nOverlayWidthBright_Top, en_FindFromRight, FIND_LOWER, FILTER_GV);
+
+
+		// 5. Overlay Width - Left Level
+		CRect rcRoi_OverlayWidthL = CRect(nWidth / 2, 0, nOverlayWidthR - 20, nHeight);
+		CheckRect(&rcRoi_OverlayWidthL, nWidth, nHeight);
+		int nOverlayWidthL = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthL, pRecipeInfo->DimParam.nOverlayWidthBright_Top, en_FindFromRight, FIND_UPPER, FILTER_GV);
+
+
+
+		// Dimension Result - RealSize
+		double dOverlayWidth = fabs((float)nOverlayWidthR - (float)nOverlayWidthL) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dCuttingWidth = fabs((float)nBaseLevelPx - (float)nOverlayWidthR) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dInsulationWidth = fabs((float)nTabCoatingLevelPx - (float)nOverlayWidthR) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dTabWidth = (float)nTabWidthPx * AprData.m_System.m_dResolY / 1000.f;
+
+
+		AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Top = dOverlayWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Top = (fabs(dSpecOverlayWidth - dOverlayWidth) > dRangeOverlayWidth) ? JUDGE_NG : JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Top = dCuttingWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Top = (fabs(dSpecCuttingWidth - dCuttingWidth) > dRangeCuttingWidth) ? JUDGE_NG : JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dInsulationWidth_Top = dInsulationWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_InsulationWidth_Top = (fabs(dSpecInsulationWidth - dInsulationWidth) > dRangeInsulationWidth) ? JUDGE_NG : JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dTabWidth_Top = dTabWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_TabWidth_Top = (fabs(dSpecTabWidth - dTabWidth) > dRangeTabWidth) ? JUDGE_NG : JUDGE_OK;
+
+		// Skip
+		if (bUseOverlay == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Top = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Top = JUDGE_OK;
+		}
+
+		if (bUseCutting == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Top = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Top = JUDGE_OK;
+		}
+
+		if (bUseInsulation == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dInsulationWidth_Top = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_InsulationWidth_Top = JUDGE_OK;
+		}
+
+		if (bUseTabWidth == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dTabWidth_Top = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_TabWidth_Top = JUDGE_OK;
+		}
+
+
+		//Draw
+		if (bSimMode == TRUE && (pstDimInfoDraw != NULL))
+		{
+			pstDimInfoDraw->ptTabCoatingLevel = CPoint(nTabCoatingLevelPx, nHeight / 2);
+			pstDimInfoDraw->ptTabWidthL = ptTabL;
+			pstDimInfoDraw->ptTabWidthR = ptTabR;
+			pstDimInfoDraw->ptBaseLevel = CPoint(nBaseLevelPx, nHeight / 2);
+			pstDimInfoDraw->ptOverlayWidthR = CPoint(nOverlayWidthR, nHeight / 2);
+			pstDimInfoDraw->ptOverlayWidthL = CPoint(nOverlayWidthL, nHeight / 2);
+		}
+	}
+	else
+	{
+		AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Top = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Top = JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Top = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Top = JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dInsulationWidth_Top = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_InsulationWidth_Top = JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dTabWidth_Top = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_TabWidth_Top = JUDGE_OK;
+
+	}
+
+
+	return TRUE;
+}
+
+
+BOOL CImageProcess::Dimension_Btm(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, BOOL bSimMode, _DIM_INFO* pstDimInfoDraw)
+{
+	BOOL bUseDimension = pRecipeInfo->DimParam.bUse_Dimension;
+	BOOL bUseOverlay = pRecipeInfo->DimParam.bUse_OverlayWidth_Btm;
+	BOOL bUseCutting = pRecipeInfo->DimParam.bUse_CuttingWidth_Btm;
+
+	//Spec
+	double dSpecOverlayWidth = pRecipeInfo->DimParam.dSpec_OverlayWidth_Btm;
+	double dSpecCuttingWidth = pRecipeInfo->DimParam.dSpec_CuttingWidth_Btm;
+	//Range
+	double dRangeOverlayWidth = pRecipeInfo->DimParam.dRange_OverlayWidth_Btm;
+	double dRangeCuttingWidth = pRecipeInfo->DimParam.dRange_CuttingWidth_Btm;
+
+
+	if (bUseDimension == TRUE)
+	{
+		// 1. Base Level
+		CRect rcRoi_Base;
+		rcRoi_Base = CRect(0, 0, nWidth, nHeight);
+		CheckRect(&rcRoi_Base, nWidth, nHeight);
+		int nBaseLevelPx = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_Base, pRecipeInfo->DimParam.nBaseBright_Btm, en_FindFromLeft, FIND_UPPER, FILTER_GV);
+
+
+		// 2. Overlay Width - Left Level
+		CRect rcRoi_OverlayWidthL = CRect(nBaseLevelPx + 20, 0, nWidth, nHeight);
+		CheckRect(&rcRoi_OverlayWidthL, nWidth, nHeight);
+		int nOverlayWidthL = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthL, pRecipeInfo->DimParam.nOverlayWidthBright_Btm, en_FindFromLeft, FIND_LOWER, FILTER_GV);
+
+
+		// 3. Overlay Width - Right Level
+		CRect rcRoi_OverlayWidthR = CRect(nOverlayWidthL + 20, 0, nWidth, nHeight);
+		CheckRect(&rcRoi_OverlayWidthR, nWidth, nHeight);
+		int nOverlayWidthR = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthR, pRecipeInfo->DimParam.nOverlayWidthBright_Btm, en_FindFromLeft, FIND_UPPER, FILTER_GV);
+
+
+		// Dimension Result - RealSize
+		double dOverlayWidth = fabs((float)nOverlayWidthR - (float)nOverlayWidthL) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dCuttingWidth = fabs((float)nOverlayWidthL - (float)nBaseLevelPx) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+
+		// Result
+		AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Btm = dOverlayWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Btm = (fabs(dSpecOverlayWidth - dOverlayWidth) > dRangeOverlayWidth) ? JUDGE_NG : JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Btm = dCuttingWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Btm = (fabs(dSpecCuttingWidth - dCuttingWidth) > dRangeCuttingWidth) ? JUDGE_NG : JUDGE_OK;
+
+
+		// Skip
+		if (bUseOverlay == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Btm = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Btm = JUDGE_OK;
+		}
+
+		if (bUseCutting == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Btm = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Btm = JUDGE_OK;
+		}
+
+
+		//Draw
+		if (bSimMode == TRUE && (pstDimInfoDraw != NULL))
+		{
+			pstDimInfoDraw->ptBaseLevel = CPoint(nBaseLevelPx, nHeight / 2);
+			pstDimInfoDraw->ptOverlayWidthR = CPoint(nOverlayWidthR, nHeight / 2);
+			pstDimInfoDraw->ptOverlayWidthL = CPoint(nOverlayWidthL, nHeight / 2);
+		}
+	}
+	else
+	{
+		// Result
+		AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Btm = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Btm = JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Btm = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Btm = JUDGE_OK;
+	}
+
+
+	return TRUE;
 }

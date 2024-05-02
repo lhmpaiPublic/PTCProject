@@ -78,6 +78,7 @@ CImageDispDlg::CImageDispDlg(CWnd* pParent /*=nullptr*/)
 //	m_pVecRightRound = NULL;
 	m_bDispMeasureLine = TRUE;
 
+	m_nDrawLevel = 0;
 }
 
 CImageDispDlg::~CImageDispDlg()
@@ -290,6 +291,8 @@ void CImageDispDlg::OnPaint()
 
 	DrawBlobArea(&mdc, m_pParent->m_rcLineInspEdge);
 	DrawBlobArea(&mdc, m_pParent->m_rcInspArea);
+
+	DrawCross(&mdc);
 
 	dc.BitBlt(0, 0, rcWnd.Width(), rcWnd.Height(), &mdc, 0, 0, SRCCOPY);
 	mdc.SelectObject(pOldBm);
@@ -989,27 +992,70 @@ void CImageDispDlg::DrawBoundaryLine(CDC* pDC)
 	int	nRet = 0;
 	CRect	rc;
 	CPen	hpen, * hpenold = NULL;
+	CPen	hpen2;
 	int	nBitCount = pBmpDest->GetBitCount();
-	if (nBitCount == 24) {
+	if (nBitCount == 24)
+	{
 		pDC->SetROP2(R2_COPYPEN);
 		hpen.CreatePen(PS_SOLID, 3, RGB(0, 0, 0));
+		hpen2.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
 	}
-	else {
-		//	pDC->SetROP2(R2_XORPEN);
-		hpen.CreatePen(PS_SOLID, 3
-			, RGB(255, 50, 50));
+	else
+	{
+		hpen.CreatePen(PS_SOLID, 3, RGB(255, 50, 50));
+		hpen2.CreatePen(PS_SOLID, 1, RGB(50, 255, 50));
 	}
-	hpenold = pDC->SelectObject(&hpen);
-	GetClientRect(&rc);
 
 	CSize size = pBmpDest->GetImgSize();
 
+	//Level Line
+	if(m_nDrawLevel > 0 )
+	{
+		hpenold = pDC->SelectObject(&hpen2);
+
+		CPoint ptOrg[2];
+		CPoint ptLine[2];
+		CPoint ptDraw[2];
+		ptOrg[0].x = m_nDrawLevel;
+		ptOrg[0].y = 0;
+		ptOrg[1].x = m_nDrawLevel;
+		ptOrg[1].y = 5000;
+
+		ptLine[0].x = ptOrg[0].x / m_nZoomOutH;
+		ptLine[0].y = ptOrg[0].y / m_nZoomOutV;
+		ptLine[0].x -= m_rcCur.left;
+		ptLine[0].y -= m_rcCur.top;
+
+		ptLine[1].x = ptOrg[1].x / m_nZoomOutH;
+		ptLine[1].y = ptOrg[1].y / m_nZoomOutV;
+		ptLine[1].x -= m_rcCur.left;
+		ptLine[1].y -= m_rcCur.top;
+
+		double rate = (double)m_nDrawRate / (double)m_nScopeRate;
+
+		ptDraw[0].x = (long)(ptLine[0].x * rate);
+		ptDraw[0].y = (long)(ptLine[0].y * rate);
+		ptDraw[1].x = (long)(ptLine[1].x * rate);
+		ptDraw[1].y = (long)(ptLine[1].y * rate);
+
+		pDC->MoveTo(ptDraw[0].x, ptDraw[0].y);
+		pDC->LineTo(ptDraw[1].x, ptDraw[1].y);
+
+
+	}
+
+
+	hpenold = pDC->SelectObject(&hpen);
+
 	CImageProcess::VEC_ROUND_INFO* pRoundInfo;
-	for (int i = 0; i < 2; i++) {
-		if (i == 0) {
+	for (int i = 0; i < 2; i++)
+	{
+		if (i == 0)
+		{
 			pRoundInfo = &m_VecLeftRound;
 		}
-		else {
+		else
+		{
 			pRoundInfo = &m_VecRightRound;
 		}
 		int size = (int)pRoundInfo->size();
@@ -1034,7 +1080,8 @@ void CImageDispDlg::DrawBoundaryLine(CDC* pDC)
 		pnt0.y = (long)(dispPnt.y * rate);
 		pDC->MoveTo(pnt0.x, pnt0.y);
 
-		for (int j = 1; j < size; j++) {
+		for (int j = 1; j < size; j++)
+		{
 			CPoint pnt = (*pRoundInfo)[j];
 
 			dispPnt.x = pnt.x / m_nZoomOutH;
@@ -1054,10 +1101,112 @@ void CImageDispDlg::DrawBoundaryLine(CDC* pDC)
 	}
 	pDC->SelectObject(hpenold);
 	hpen.DeleteObject();
+	hpen2.DeleteObject();
 }
 
 
-void CImageDispDlg::SetBoundary(CImageProcess::VEC_ROUND_INFO* pVecLeft, CImageProcess::VEC_ROUND_INFO* pVecRight)
+void CImageDispDlg::DrawCross(CDC* pDC)
+{
+	if (m_bDispBoundary == FALSE) return;
+
+	if (pDC == NULL) {
+		return;
+	}
+
+	if (m_pBmpDraw == NULL) {
+		return;
+	}
+	CBitmapStd* pBmpDest = m_pBmpDraw->GetBitmap();
+	if (pBmpDest == NULL) {
+		return;
+	}
+	int	nRet = 0;
+	CRect	rc;
+	CPen	hpen, * hpenold = NULL;
+	int	nBitCount = pBmpDest->GetBitCount();
+	if (nBitCount == 24)
+	{
+		pDC->SetROP2(R2_COPYPEN);
+		hpen.CreatePen(PS_SOLID, 3, RGB(0, 0, 0));
+	}
+	else
+	{
+		hpen.CreatePen(PS_SOLID, 3, RGB(50, 50, 255));
+	}
+
+	CSize size = pBmpDest->GetImgSize();
+
+	int nSize = m_vptDrawCross.size();
+	int nCrossSize = 100;
+
+	for( int i=0; i<nSize; i++ )
+	{
+		hpenold = pDC->SelectObject(&hpen);
+
+		CPoint ptOrg[2];
+		CPoint ptLine[2];
+		CPoint ptDraw[2];
+		ptOrg[0].x = m_vptDrawCross[i].x - (nCrossSize / 2);
+		ptOrg[0].y = m_vptDrawCross[i].y;
+		ptOrg[1].x = m_vptDrawCross[i].x + (nCrossSize / 2);
+		ptOrg[1].y = m_vptDrawCross[i].y;
+
+		ptLine[0].x = ptOrg[0].x / m_nZoomOutH;
+		ptLine[0].y = ptOrg[0].y / m_nZoomOutV;
+		ptLine[0].x -= m_rcCur.left;
+		ptLine[0].y -= m_rcCur.top;
+
+		ptLine[1].x = ptOrg[1].x / m_nZoomOutH;
+		ptLine[1].y = ptOrg[1].y / m_nZoomOutV;
+		ptLine[1].x -= m_rcCur.left;
+		ptLine[1].y -= m_rcCur.top;
+
+		double rate = (double)m_nDrawRate / (double)m_nScopeRate;
+
+		ptDraw[0].x = (long)(ptLine[0].x * rate);
+		ptDraw[0].y = (long)(ptLine[0].y * rate);
+		ptDraw[1].x = (long)(ptLine[1].x * rate);
+		ptDraw[1].y = (long)(ptLine[1].y * rate);
+
+		pDC->MoveTo(ptDraw[0].x, ptDraw[0].y);
+		pDC->LineTo(ptDraw[1].x, ptDraw[1].y);
+
+
+
+
+		ptOrg[0].x = m_vptDrawCross[i].x;
+		ptOrg[0].y = m_vptDrawCross[i].y - (nCrossSize / 2);
+		ptOrg[1].x = m_vptDrawCross[i].x;
+		ptOrg[1].y = m_vptDrawCross[i].y + (nCrossSize / 2);
+
+		ptLine[0].x = ptOrg[0].x / m_nZoomOutH;
+		ptLine[0].y = ptOrg[0].y / m_nZoomOutV;
+		ptLine[0].x -= m_rcCur.left;
+		ptLine[0].y -= m_rcCur.top;
+
+		ptLine[1].x = ptOrg[1].x / m_nZoomOutH;
+		ptLine[1].y = ptOrg[1].y / m_nZoomOutV;
+		ptLine[1].x -= m_rcCur.left;
+		ptLine[1].y -= m_rcCur.top;
+
+		ptDraw[0].x = (long)(ptLine[0].x * rate);
+		ptDraw[0].y = (long)(ptLine[0].y * rate);
+		ptDraw[1].x = (long)(ptLine[1].x * rate);
+		ptDraw[1].y = (long)(ptLine[1].y * rate);
+
+		pDC->MoveTo(ptDraw[0].x, ptDraw[0].y);
+		pDC->LineTo(ptDraw[1].x, ptDraw[1].y);
+	}
+
+
+	hpenold = pDC->SelectObject(&hpen);
+	pDC->SelectObject(hpenold);
+	hpen.DeleteObject();
+}
+
+
+
+void CImageDispDlg::SetBoundary(CImageProcess::VEC_ROUND_INFO* pVecLeft, CImageProcess::VEC_ROUND_INFO* pVecRight, int nLevel)
 {
 	ASSERT(pVecLeft);
 //	ASSERT(pVecRight);
@@ -1070,9 +1219,25 @@ void CImageDispDlg::SetBoundary(CImageProcess::VEC_ROUND_INFO* pVecLeft, CImageP
 
 	m_VecLeftRound = *pVecLeft;
 
+	m_nDrawLevel = nLevel;
+
 	Invalidate(FALSE);
 }
 
+
+void CImageDispDlg::SetDrawCross(CPoint ptCross)
+{
+	m_vptDrawCross.push_back(ptCross);
+
+	Invalidate(FALSE);
+}
+
+void CImageDispDlg::ResetDrawCross()
+{
+	m_vptDrawCross.clear();
+
+	Invalidate(FALSE);
+}
 
 
 void CImageDispDlg::SetDrawBoundaryFlag(BOOL bFlag)

@@ -317,6 +317,114 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 				strData.Format(_T("%d"), pRcpInfo->nCheckBrightOverCnt);
 				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
 
+				
+
+
+
+				// Dimension
+				strKey.Format(_T("USE_DIMENSION"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.bUse_Dimension);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("USE_DIM_OVERLAY_TOP"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.bUse_OverlayWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("USE_DIM_CUTTING_TOP"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.bUse_CuttingWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("USE_DIM_INSULATION_TOP"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.bUse_InsulationWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("USE_DIM_TABWIDTH_TOP"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.bUse_TabWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("USE_DIM_OVERLAY_BTM"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.bUse_OverlayWidth_Btm);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("USE_DIM_CUTTING_BTM"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.bUse_CuttingWidth_Btm);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+
+				strKey.Format(_T("SPEC_DIM_OVERLAY_TOP"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dSpec_OverlayWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("SPEC_DIM_CUTTING_TOP"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dSpec_CuttingWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("SPEC_DIM_INSULATION_TOP"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dSpec_InsulationWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("SPEC_DIM_TABWIDTH_TOP"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dSpec_TabWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("SPEC_DIM_OVERLAY_BTM"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dSpec_OverlayWidth_Btm);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("SPEC_DIM_CUTTING_BTM"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dSpec_CuttingWidth_Btm);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+
+				strKey.Format(_T("RANGE_DIM_OVERLAY_TOP"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dRange_OverlayWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("RANGE_DIM_CUTTING_TOP"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dRange_CuttingWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("RANGE_DIM_INSULATION_TOP"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dRange_InsulationWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("RANGE_DIM_TABWIDTH_TOP"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dRange_TabWidth_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("RANGE_DIM_OVERLAY_BTM"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dRange_OverlayWidth_Btm);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("RANGE_DIM_CUTTING_BTM"));
+				strData.Format(_T("%.2lf"), pRcpInfo->DimParam.dRange_CuttingWidth_Btm);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+
+				strKey.Format(_T("BRIGHT_TABWIDTH_TOP"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.nTabWidthBright_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("BRIGHT_TABCOATING_TOP"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.nTabCoatingBright_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("BRIGHT_BASE_TOP"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.nBaseBright_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("BRIGHT_OVERLAY_TOP"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.nOverlayWidthBright_Top);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("BRIGHT_BASE_BTM"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.nBaseBright_Btm);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
+				strKey.Format(_T("BRIGHT_OVERLAY_BTM"));
+				strData.Format(_T("%d"), pRcpInfo->DimParam.nOverlayWidthBright_Btm);
+				SaveRecipePrameter(strRecipeName, strSection, strKey, strData, strFileName);
+
 			}
 
 			strKey = _T("BMP_SAVE_INTERVAL");
@@ -731,6 +839,110 @@ int CRecipeCtrl::FileCtrl(CString strRecipeName, int nMode, CRecipeInfo* pRecipe
 				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
 				pRcpInfo->nCheckBrightOverCnt = atoi(buff);
 
+
+				// Dimension
+				strKey.Format(_T("USE_DIMENSION"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.bUse_Dimension = atoi(buff);
+
+				strKey.Format(_T("USE_DIM_OVERLAY_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.bUse_OverlayWidth_Top = atoi(buff);
+
+				strKey.Format(_T("USE_DIM_CUTTING_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.bUse_CuttingWidth_Top = atoi(buff);
+
+				strKey.Format(_T("USE_DIM_INSULATION_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.bUse_InsulationWidth_Top = atoi(buff);
+
+				strKey.Format(_T("USE_DIM_TABWIDTH_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.bUse_TabWidth_Top = atoi(buff);
+
+				strKey.Format(_T("USE_DIM_OVERLAY_BTM"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.bUse_OverlayWidth_Btm = atoi(buff);
+
+				strKey.Format(_T("USE_DIM_CUTTING_BTM"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.bUse_CuttingWidth_Btm = atoi(buff);
+
+
+				strKey.Format(_T("SPEC_DIM_OVERLAY_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dSpec_OverlayWidth_Top = atof(buff);
+
+				strKey.Format(_T("SPEC_DIM_CUTTING_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dSpec_CuttingWidth_Top = atof(buff);
+
+				strKey.Format(_T("SPEC_DIM_INSULATION_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dSpec_InsulationWidth_Top = atof(buff);
+
+				strKey.Format(_T("SPEC_DIM_TABWIDTH_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dSpec_TabWidth_Top = atof(buff);
+
+				strKey.Format(_T("SPEC_DIM_OVERLAY_BTM"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dSpec_OverlayWidth_Btm = atof(buff);
+
+				strKey.Format(_T("SPEC_DIM_CUTTING_BTM"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dSpec_CuttingWidth_Btm = atof(buff);
+
+
+				strKey.Format(_T("RANGE_DIM_OVERLAY_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dRange_OverlayWidth_Top = atof(buff);
+
+				strKey.Format(_T("RANGE_DIM_CUTTING_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dRange_CuttingWidth_Top = atof(buff);
+
+				strKey.Format(_T("RANGE_DIM_INSULATION_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dRange_InsulationWidth_Top = atof(buff);
+
+				strKey.Format(_T("RANGE_DIM_TABWIDTH_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dRange_TabWidth_Top = atof(buff);
+
+				strKey.Format(_T("RANGE_DIM_OVERLAY_BTM"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dRange_OverlayWidth_Btm = atof(buff);
+
+				strKey.Format(_T("RANGE_DIM_CUTTING_BTM"));
+				::GetPrivateProfileString(strSection, strKey, "0.0", buff, 256, strFileName);
+				pRcpInfo->DimParam.dRange_CuttingWidth_Btm = atof(buff);
+
+
+				strKey.Format(_T("BRIGHT_TABWIDTH_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.nTabWidthBright_Top = atoi(buff);
+
+				strKey.Format(_T("BRIGHT_TABCOATING_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.nTabCoatingBright_Top = atoi(buff);
+
+				strKey.Format(_T("BRIGHT_BASE_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.nBaseBright_Top = atoi(buff);
+
+				strKey.Format(_T("BRIGHT_OVERLAY_TOP"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.nOverlayWidthBright_Top = atoi(buff);
+
+				strKey.Format(_T("BRIGHT_BASE_BTM"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.nBaseBright_Btm = atoi(buff);
+
+				strKey.Format(_T("BRIGHT_OVERLAY_BTM"));
+				::GetPrivateProfileString(strSection, strKey, "0", buff, 256, strFileName);
+				pRcpInfo->DimParam.nOverlayWidthBright_Btm = atoi(buff);
 
 			}
 

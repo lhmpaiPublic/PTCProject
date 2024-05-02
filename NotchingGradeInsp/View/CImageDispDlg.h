@@ -85,6 +85,10 @@ private:
 	void DrawBoundaryLine(CDC* pDC);
 	CImageProcess::VEC_ROUND_INFO m_VecLeftRound;
 	CImageProcess::VEC_ROUND_INFO m_VecRightRound;
+	int m_nDrawLevel;
+
+	std::vector<CPoint> m_vptDrawCross;
+	void DrawCross(CDC* pDC);
 
 	BOOL	m_bDispSelectedRect;
 	int		m_nSelectDefNo;
@@ -108,7 +112,7 @@ private:
 
 
 public:
-	void SetBoundary(CImageProcess::VEC_ROUND_INFO* pVecLeft, CImageProcess::VEC_ROUND_INFO* pVecRight);
+	void SetBoundary(CImageProcess::VEC_ROUND_INFO* pVecLeft, CImageProcess::VEC_ROUND_INFO* pVecRight, int nLevel);
 	void SetDrawBoundaryFlag(BOOL bFlag);
 	void PointMove(int nPosX, int nPosY);
 	void SetSelectDefRect(CRect rcDefect);
@@ -117,6 +121,8 @@ public:
 	void SetMeasureMode(BOOL bFlag);
 	CRect GetMaskRect();
 	void SetDrawBlobFlag(BOOL bFlag);
+	void SetDrawCross(CPoint ptCross);
+	void ResetDrawCross();
 
 
 public:

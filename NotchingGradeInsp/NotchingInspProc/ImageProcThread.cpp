@@ -1521,8 +1521,8 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								strJudge = _T("NG");
 								strBtmJudge = _T("NG");
 							}
-
-							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s,%s,%.2lf,%s,%.2lf,%d,%d,%d,%d,%d,%s\r\n")
+							
+							strResult.Format(_T("%s,%d,%d,%d,%s,%s,%s,%s,%d,%d,%.2lf,%.2lf,%s,%s,%s,%s,%.2lf,%s,%.2lf,%d,%d,%d,%d,%d,%s,%.2lf,%s,%.2lf,%s,%.2lf,%s,%.2lf,%s,%.2lf,%s,%.2lf,%s\r\n")
 								, AprData.m_NowLotData.m_strLotNo
 								, pTopInfo->nTabNo + 1
 								, pTopInfo->m_nTabId_CntBoard
@@ -1548,6 +1548,18 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								, dwFoilExpInBottomCount
 								, dwFoilExpOutBottomCount
 								, strCellTrackID
+								, AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Top
+								, (AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Top == JUDGE_OK) ? _T("OK") : _T("NG")
+								, AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Top
+								, (AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Top == JUDGE_OK) ? _T("OK") : _T("NG")
+								, AprData.m_NowLotData.m_stDimResult.dInsulationWidth_Top
+								, (AprData.m_NowLotData.m_stDimResult.nJudge_InsulationWidth_Top == JUDGE_OK) ? _T("OK") : _T("NG")
+								, AprData.m_NowLotData.m_stDimResult.dTabWidth_Top
+								, (AprData.m_NowLotData.m_stDimResult.nJudge_TabWidth_Top == JUDGE_OK) ? _T("OK") : _T("NG")
+								, AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Btm
+								, (AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Btm == JUDGE_OK) ? _T("OK") : _T("NG")
+								, AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Btm
+								, (AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Btm == JUDGE_OK) ? _T("OK") : _T("NG")
 							);
 							int nRet = CWin32File::TextSave1Line(strFilePath, strCsvFileName, strResult, _T("at"), FALSE);
 
