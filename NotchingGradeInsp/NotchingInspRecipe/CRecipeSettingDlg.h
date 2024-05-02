@@ -328,6 +328,35 @@ public:
 	afx_msg void OnSetfocusEdBrightOverCnt();
 	BOOL m_bChkUseBlob;
 	afx_msg void OnBnClickedChkUseBlob();
+	afx_msg void OnBnClickedChkUseDimension();
+
+
+
+	BOOL m_bChkUseDimension;
+	BOOL m_bChkUseDimOverlay_Top;
+	BOOL m_bChkUseDimCutting_Top;
+	BOOL m_bChkUseDimInsulation_Top;
+	BOOL m_bChkUseDimTabWidth_Top;
+	BOOL m_bChkUseDimOverlay_Btm;
+	BOOL m_bChkUseDimCutting_Btm;
+	double m_dEdSpec_OverlayWidth_Top;
+	double m_dEdSpec_CuttingWidth_Top;
+	double m_dEdSpec_InsulationWidth_Top;
+	double m_dEdSpec_TabWidth_Top;
+	double m_dEdSpec_OverlayWidth_Btm;
+	double m_dEdSpec_CuttingWidth_Btm;
+	double m_dEdRange_OverlayWidth_Top;
+	double m_dEdRange_CuttingWidth_Top;
+	double m_dEdRange_InsulationWidth_Top;
+	double m_dEdRange_TabWidth_Top;
+	double m_dEdRange_OverlayWidth_Btm;
+	double m_dEdRange_CuttingWidth_Btm;
+	int m_nEdTabWidthBright_Top;
+	int m_nEdTabCoatingBright_Top;
+	int m_nEdBaseBright_Top;
+	int m_nEdOverlayWidthBright_Top;
+	int m_nEdBaseBright_Btm;
+	int m_nEdOverlayWidthBright_Btm;
 };
 
 

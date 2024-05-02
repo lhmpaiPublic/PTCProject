@@ -67,19 +67,61 @@ public:
 
 class CDimensionParameter {
 public:
-	// SPEC
-	double dOverlayWidth;
-	double dCuttingWidth;
-	double dInsulationWidth;
+	////////////////////////////////////////////
+	// [ CHECK ]
+	BOOL bUse_Dimension;
+	
+	// Top
+	BOOL bUse_OverlayWidth_Top;
+	BOOL bUse_CuttingWidth_Top;
+	BOOL bUse_InsulationWidth_Top;
+	BOOL bUse_TabWidth_Top;
+
+	// Btm
+	BOOL bUse_OverlayWidth_Btm;
+	BOOL bUse_CuttingWidth_Btm;
 
 
-	// Param
-	int nTabWidthBright;
-	int nTabCoatingBright;
-	int nBaseBright;
-	int nOverlayWidthBright_R;
-	int nOverlayWidthBright_L;
 
+	////////////////////////////////////////////
+	// [ SPEC ]
+	// Top
+	double dSpec_OverlayWidth_Top;
+	double dSpec_CuttingWidth_Top;
+	double dSpec_InsulationWidth_Top;
+	double dSpec_TabWidth_Top;
+
+	// Btm
+	double dSpec_OverlayWidth_Btm;
+	double dSpec_CuttingWidth_Btm;
+
+
+	////////////////////////////////////////////
+	// [ RANGE ]
+	// Top
+	double dRange_OverlayWidth_Top;
+	double dRange_CuttingWidth_Top;
+	double dRange_InsulationWidth_Top;
+	double dRange_TabWidth_Top;
+
+	// Btm
+	double dRange_OverlayWidth_Btm;
+	double dRange_CuttingWidth_Btm;
+
+
+
+
+	////////////////////////////////////////////
+	// [ Param ]
+	// Top
+	int nTabWidthBright_Top;
+	int nTabCoatingBright_Top;
+	int nBaseBright_Top;
+	int nOverlayWidthBright_Top;
+
+	// Btm
+	int nBaseBright_Btm;
+	int nOverlayWidthBright_Btm;
 };
 
 
@@ -184,6 +226,7 @@ public:
 
 
 	BOOL bUseInspBlob;
+
 
 
 	enum {

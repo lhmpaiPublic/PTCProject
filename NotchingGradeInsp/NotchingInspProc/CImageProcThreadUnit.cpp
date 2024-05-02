@@ -420,6 +420,13 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 							}
 						}
 						// 22.05.10 Ahn Add Start 
+
+
+						//Dimension
+						CSize tabPos = CSize(nTabLeft, nTabRight);
+						CImageProcess::Dimension_Top(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo, nTabLevel, tabPos );
+
+
 					}
 					//프레임의 헤더 번호가 CAM_POS_TOP과 같지 않다면
 					else
@@ -533,6 +540,10 @@ UINT CImageProcThreadUnit::CtrlImageProcThread(LPVOID pParam)
 						// 22.05.10 Ahn Add Start 
 					}
 					// 23.02.20 Ahn Add Start
+
+					//Dimension
+					CImageProcess::Dimension_Btm(pOrgImg, nWidth, nHeight, AprData.m_pRecipeInfo);
+
 				}
 
 				//Tab 정보가 없을 때  ? 또는 Over Flow이면

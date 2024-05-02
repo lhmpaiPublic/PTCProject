@@ -620,7 +620,7 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 			for (x = nStartX; x < nEndX; x += nSampling)
 			{
 				//샘플링으로 선택된 라인의 휘도를 합한 값
-				if (*(pLine + x) < nFilteringValue)
+				if (*(pLine + x) <= nFilteringValue)
 				{
 					pProjection[y - nStartY] += *(pLine + x);
 				}
@@ -656,7 +656,7 @@ int CImageProcess::GetProjection(const BYTE* pImage, int* pProjection, int nWidt
 			for (x = nStartX; x < nEndX; x++)
 			{
 				//샘플링으로 선택된 라인의 휘도를 합한 값
-				if (*(pLine + x) < nFilteringValue )
+				if (*(pLine + x) <= nFilteringValue )
 				{
 					pProjection[x - nStartX] += *(pLine + x);
 				}
@@ -725,7 +725,7 @@ int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWid
 			{
 				pLine = (BYTE*)pImage + (nWidth * y);
 
-				if (*(pLine + x) < nFilteringValue)
+				if (*(pLine + x) <= nFilteringValue)
 				{
 					pProjection[x - nStartX] += *(pLine + x);
 				}
@@ -749,7 +749,7 @@ int CImageProcess::GetProjectionX(const BYTE* pImage, int* pProjection, int nWid
 			{
 				pLine = (BYTE*)pImage + (nWidth * y);
 
-				if (*(pLine + x) < nFilteringValue)
+				if (*(pLine + x) <= nFilteringValue)
 				{
 					pProjection[x - nStartX] += *(pLine + x);
 				}
@@ -10470,7 +10470,7 @@ int CImageProcess::DimTabWidth(const BYTE* pImgPtr, int nWidth, int nHeight, int
 		nEndPos = nWidth-1;
 	}
 
-	int thMin = pRecipeInfo->DimParam.nTabWidthBright;
+	int thMin = pRecipeInfo->DimParam.nTabWidthBright_Top;
 	int thMax = 255;
 
 	if (CImageProcess::FindTabPos(pImgPtr, nWidth, nHeight, nStartPos, nEndPos, thMin, thMax, &vecSec) <= 0)
@@ -10538,4 +10538,224 @@ int CImageProcess::DimFindLevel(const BYTE* pImgPtr, int nImageW, int nImageH, C
 	delete[] pnPrjData;
 
 	return nResultX;
+}
+
+
+BOOL CImageProcess::Dimension_Top( const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLevel, CSize tabPos, BOOL bSimMode, _DIM_INFO* pstDimInfoDraw)
+{
+	BOOL bUseDimension = pRecipeInfo->DimParam.bUse_Dimension;
+	BOOL bUseOverlay = pRecipeInfo->DimParam.bUse_OverlayWidth_Top;
+	BOOL bUseCutting = pRecipeInfo->DimParam.bUse_CuttingWidth_Top;
+	BOOL bUseInsulation = pRecipeInfo->DimParam.bUse_InsulationWidth_Top;
+	BOOL bUseTabWidth = pRecipeInfo->DimParam.bUse_TabWidth_Top;
+	//Spec
+	double dSpecOverlayWidth = pRecipeInfo->DimParam.dSpec_OverlayWidth_Top;
+	double dSpecCuttingWidth = pRecipeInfo->DimParam.dSpec_CuttingWidth_Top;
+	double dSpecInsulationWidth = pRecipeInfo->DimParam.dSpec_InsulationWidth_Top;
+	double dSpecTabWidth = pRecipeInfo->DimParam.dSpec_TabWidth_Top;
+	//Range
+	double dRangeOverlayWidth = pRecipeInfo->DimParam.dRange_OverlayWidth_Top;
+	double dRangeCuttingWidth = pRecipeInfo->DimParam.dRange_CuttingWidth_Top;
+	double dRangeInsulationWidth = pRecipeInfo->DimParam.dRange_InsulationWidth_Top;
+	double dRangeTabWidth = pRecipeInfo->DimParam.dRange_TabWidth_Top;
+
+
+
+	if (bUseDimension == TRUE)
+	{
+		// 1. Tab Coating Level
+		CRect rcRoi_TabCoating = CRect(nLevel, tabPos.cx, nWidth - 100, tabPos.cy);
+		CheckRect(&rcRoi_TabCoating, nWidth, nHeight);
+		int nTabCoatingLevelPx = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_TabCoating, pRecipeInfo->DimParam.nTabCoatingBright_Top, en_FindFromLeft, FIND_UPPER);
+
+		// 2. Tab Width
+		int nTabWidthStartPosX = nTabCoatingLevelPx - 100;
+		CPoint ptTabL, ptTabR;
+		int nTabWidthPx = DimTabWidth(pImgPtr, nWidth, nHeight, nTabWidthStartPosX, pRecipeInfo, &ptTabL, &ptTabR);
+
+
+		// 3. Base Level
+		CRect rcRoi_Base;
+		rcRoi_Base = CRect(nWidth / 2, 0, nWidth, tabPos.cx);
+		CheckRect(&rcRoi_Base, nWidth, nHeight);
+		int nBaseL = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_Base, pRecipeInfo->DimParam.nBaseBright_Top, en_FindFromRight, FIND_UPPER, FILTER_GV);
+
+		rcRoi_Base = CRect(nWidth / 2, tabPos.cy, nWidth, nHeight);
+		CheckRect(&rcRoi_Base, nWidth, nHeight);
+		int nBaseR = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_Base, pRecipeInfo->DimParam.nBaseBright_Top, en_FindFromRight, FIND_UPPER, FILTER_GV);
+
+		int nBaseLevelPx = (nBaseL + nBaseR) / 2;
+
+
+		// 4. Overlay Width - Right Level
+		CRect rcRoi_OverlayWidthR = CRect(nWidth / 2, 0, nBaseLevelPx, nHeight);
+		CheckRect(&rcRoi_OverlayWidthR, nWidth, nHeight);
+		int nOverlayWidthR = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthR, pRecipeInfo->DimParam.nOverlayWidthBright_Top, en_FindFromRight, FIND_LOWER, FILTER_GV);
+
+
+		// 5. Overlay Width - Left Level
+		CRect rcRoi_OverlayWidthL = CRect(nWidth / 2, 0, nOverlayWidthR - 20, nHeight);
+		CheckRect(&rcRoi_OverlayWidthL, nWidth, nHeight);
+		int nOverlayWidthL = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthL, pRecipeInfo->DimParam.nOverlayWidthBright_Top, en_FindFromRight, FIND_UPPER, FILTER_GV);
+
+
+
+		// Dimension Result - RealSize
+		double dOverlayWidth = fabs((float)nOverlayWidthR - (float)nOverlayWidthL) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dCuttingWidth = fabs((float)nBaseLevelPx - (float)nOverlayWidthR) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dInsulationWidth = fabs((float)nTabCoatingLevelPx - (float)nOverlayWidthR) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dTabWidth = (float)nTabWidthPx * AprData.m_System.m_dResolY / 1000.f;
+
+
+		AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Top = dOverlayWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Top = (fabs(dSpecOverlayWidth - dOverlayWidth) > dRangeOverlayWidth) ? JUDGE_NG : JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Top = dCuttingWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Top = (fabs(dSpecCuttingWidth - dCuttingWidth) > dRangeCuttingWidth) ? JUDGE_NG : JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dInsulationWidth_Top = dInsulationWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_InsulationWidth_Top = (fabs(dSpecInsulationWidth - dInsulationWidth) > dRangeInsulationWidth) ? JUDGE_NG : JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dTabWidth_Top = dTabWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_TabWidth_Top = (fabs(dSpecTabWidth - dTabWidth) > dRangeTabWidth) ? JUDGE_NG : JUDGE_OK;
+
+		// Skip
+		if (bUseOverlay == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Top = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Top = JUDGE_OK;
+		}
+
+		if (bUseCutting == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Top = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Top = JUDGE_OK;
+		}
+
+		if (bUseInsulation == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dInsulationWidth_Top = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_InsulationWidth_Top = JUDGE_OK;
+		}
+
+		if (bUseTabWidth == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dTabWidth_Top = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_TabWidth_Top = JUDGE_OK;
+		}
+
+
+		//Draw
+		if (bSimMode == TRUE && (pstDimInfoDraw != NULL))
+		{
+			pstDimInfoDraw->ptTabCoatingLevel = CPoint(nTabCoatingLevelPx, nHeight / 2);
+			pstDimInfoDraw->ptTabWidthL = ptTabL;
+			pstDimInfoDraw->ptTabWidthR = ptTabR;
+			pstDimInfoDraw->ptBaseLevel = CPoint(nBaseLevelPx, nHeight / 2);
+			pstDimInfoDraw->ptOverlayWidthR = CPoint(nOverlayWidthR, nHeight / 2);
+			pstDimInfoDraw->ptOverlayWidthL = CPoint(nOverlayWidthL, nHeight / 2);
+		}
+	}
+	else
+	{
+		AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Top = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Top = JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Top = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Top = JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dInsulationWidth_Top = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_InsulationWidth_Top = JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dTabWidth_Top = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_TabWidth_Top = JUDGE_OK;
+
+	}
+
+
+	return TRUE;
+}
+
+
+BOOL CImageProcess::Dimension_Btm(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, BOOL bSimMode, _DIM_INFO* pstDimInfoDraw)
+{
+	BOOL bUseDimension = pRecipeInfo->DimParam.bUse_Dimension;
+	BOOL bUseOverlay = pRecipeInfo->DimParam.bUse_OverlayWidth_Btm;
+	BOOL bUseCutting = pRecipeInfo->DimParam.bUse_CuttingWidth_Btm;
+
+	//Spec
+	double dSpecOverlayWidth = pRecipeInfo->DimParam.dSpec_OverlayWidth_Btm;
+	double dSpecCuttingWidth = pRecipeInfo->DimParam.dSpec_CuttingWidth_Btm;
+	//Range
+	double dRangeOverlayWidth = pRecipeInfo->DimParam.dRange_OverlayWidth_Btm;
+	double dRangeCuttingWidth = pRecipeInfo->DimParam.dRange_CuttingWidth_Btm;
+
+
+	if (bUseDimension == TRUE)
+	{
+		// 1. Base Level
+		CRect rcRoi_Base;
+		rcRoi_Base = CRect(0, 0, nWidth, nHeight);
+		CheckRect(&rcRoi_Base, nWidth, nHeight);
+		int nBaseLevelPx = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_Base, pRecipeInfo->DimParam.nBaseBright_Btm, en_FindFromLeft, FIND_UPPER, FILTER_GV);
+
+
+		// 2. Overlay Width - Left Level
+		CRect rcRoi_OverlayWidthL = CRect(nBaseLevelPx + 20, 0, nWidth, nHeight);
+		CheckRect(&rcRoi_OverlayWidthL, nWidth, nHeight);
+		int nOverlayWidthL = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthL, pRecipeInfo->DimParam.nOverlayWidthBright_Btm, en_FindFromLeft, FIND_LOWER, FILTER_GV);
+
+
+		// 3. Overlay Width - Right Level
+		CRect rcRoi_OverlayWidthR = CRect(nOverlayWidthL + 20, 0, nWidth, nHeight);
+		CheckRect(&rcRoi_OverlayWidthR, nWidth, nHeight);
+		int nOverlayWidthR = DimFindLevel(pImgPtr, nWidth, nHeight, rcRoi_OverlayWidthR, pRecipeInfo->DimParam.nOverlayWidthBright_Btm, en_FindFromLeft, FIND_UPPER, FILTER_GV);
+
+
+		// Dimension Result - RealSize
+		double dOverlayWidth = fabs((float)nOverlayWidthR - (float)nOverlayWidthL) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+		double dCuttingWidth = fabs((float)nOverlayWidthL - (float)nBaseLevelPx) * AprData.m_System.m_dResolX[CAM_POS_TOP] / 1000.f;
+
+		// Result
+		AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Btm = dOverlayWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Btm = (fabs(dSpecOverlayWidth - dOverlayWidth) > dRangeOverlayWidth) ? JUDGE_NG : JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Btm = dCuttingWidth;
+		AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Btm = (fabs(dSpecCuttingWidth - dCuttingWidth) > dRangeCuttingWidth) ? JUDGE_NG : JUDGE_OK;
+
+
+		// Skip
+		if (bUseOverlay == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Btm = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Btm = JUDGE_OK;
+		}
+
+		if (bUseCutting == FALSE)
+		{
+			AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Btm = 0.f;
+			AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Btm = JUDGE_OK;
+		}
+
+
+		//Draw
+		if (bSimMode == TRUE && (pstDimInfoDraw != NULL))
+		{
+			pstDimInfoDraw->ptBaseLevel = CPoint(nBaseLevelPx, nHeight / 2);
+			pstDimInfoDraw->ptOverlayWidthR = CPoint(nOverlayWidthR, nHeight / 2);
+			pstDimInfoDraw->ptOverlayWidthL = CPoint(nOverlayWidthL, nHeight / 2);
+		}
+	}
+	else
+	{
+		// Result
+		AprData.m_NowLotData.m_stDimResult.dOverlayWidth_Btm = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_OverlayWidth_Btm = JUDGE_OK;
+
+		AprData.m_NowLotData.m_stDimResult.dCuttingWidth_Btm = 0.f;
+		AprData.m_NowLotData.m_stDimResult.nJudge_CuttingWidth_Btm = JUDGE_OK;
+	}
+
+
+	return TRUE;
 }

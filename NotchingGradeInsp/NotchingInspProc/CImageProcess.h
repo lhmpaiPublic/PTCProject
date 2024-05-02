@@ -198,6 +198,18 @@ public:
 	} _BRIGHT_INFO;
 
 
+	typedef struct
+	{
+		CPoint ptTabCoatingLevel;
+		CPoint ptTabWidthL;
+		CPoint ptTabWidthR;
+		CPoint ptBaseLevel;
+		CPoint ptOverlayWidthR;
+		CPoint ptOverlayWidthL;
+
+	} _DIM_INFO;
+
+
 	// >>>>>>>>>>>>>>>>>>>> 여기부터 제작 필요 >>>>>>>>>>>>>>>>>>>>>>>
 	//Filter 처리
 	static int FilterProc(BYTE* pImgae, BYTE* pResultPtr, int nFilterNo) { return 0; };
@@ -529,7 +541,8 @@ public:
 	//Dimension
 	static int DimFindLevel(const BYTE* pImgPtr, int nImageW, int nImageH, CRect rcRoi, int nBright, int nFindMode, BOOL bFindUpper, int nFilteringValue = 255);
 	static int DimTabWidth(const BYTE* pImgPtr, int nWidth, int nHeight, int nTabFindPos, CRecipeInfo* pRecipeInfo, CPoint* ptTabL, CPoint* ptTabR);
-
+	static BOOL Dimension_Top(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, int nLevel, CSize tabPos, BOOL bSimMode = FALSE, _DIM_INFO* pstDimInfoDraw = NULL);
+	static BOOL Dimension_Btm(const BYTE* pImgPtr, int nWidth, int nHeight, CRecipeInfo* pRecipeInfo, BOOL bSimMode = FALSE, _DIM_INFO* pstDimInfoDraw = NULL);
 
 
 };
