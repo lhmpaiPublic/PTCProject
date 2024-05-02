@@ -693,7 +693,7 @@ void CIoMonitorDlg::UpdateGridCtrl()
 			Item.row = nRow;
 			Item.col = en_col_Data ;
 
-			CString strTemp;
+			CString strTemp = _T("");
 #ifndef NEW_PLCTYPE
 			strTemp = GetInWordData(row);
 #else
@@ -719,7 +719,7 @@ void CIoMonitorDlg::UpdateGridCtrl()
 			Item.row = nRow;
 			Item.col = en_col_Data;
 
-			CString strTemp;
+			CString strTemp = _T("");
 #ifndef NEW_PLCTYPE
 			strTemp = GetOutWordData(row);
 #else

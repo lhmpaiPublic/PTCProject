@@ -1086,7 +1086,7 @@ CString CSiemensPlcIo::GetOutWordData(int idx)
 	CString str = _T("");
 	if (idx < enSmsWordWriteMaxSize)
 	{
-		str.Format(_T("%d"), (int)m_WriteWordData[idx]);
+		str.Format(_T("%d"), (int)m_WriteWordDataRead[idx]);
 	}
 	return str;
 }
