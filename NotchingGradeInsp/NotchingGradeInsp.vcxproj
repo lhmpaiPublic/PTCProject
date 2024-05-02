@@ -483,6 +483,7 @@ copy "$(TargetDir)*.pdb" "\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp"</C
     <ClInclude Include="SetValue\SetValueEdit.h" />
     <ClInclude Include="SetValue\SetValueFunc.h" />
     <ClInclude Include="SetValue\SetValueRes.h" />
+    <ClInclude Include="Socket\PtcAsyncSocket.h" />
     <ClInclude Include="Socket\TriggerSocket.h" />
     <ClInclude Include="SpcPlus\ISpcIf.h" />
     <ClInclude Include="SpcPlus\SpcAlarmInData.h" />
@@ -655,6 +656,7 @@ copy "$(TargetDir)*.pdb" "\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp"</C
     <ClCompile Include="SetValue\SetValueDlg.cpp" />
     <ClCompile Include="SetValue\SetValueEdit.cpp" />
     <ClCompile Include="SetValue\SetValueFunc.cpp" />
+    <ClCompile Include="Socket\PtcAsyncSocket.cpp" />
     <ClCompile Include="Socket\TriggerSocket.cpp" />
     <ClCompile Include="SpcPlus\SpcAlarmInData.cpp" />
     <ClCompile Include="SpcPlus\SpcAlarmManager.cpp" />

@@ -172,6 +172,15 @@ CSiemensPlcIo::~CSiemensPlcIo()
 //스래드에서 호출하는 함수
 void CSiemensPlcIo::SiemensPlcProc()
 {
+	//Bit 쓰기 데이터 만들기 - Bit Write 를 2번한다. - 첫번재 만들기
+	int ret = WritePlcBitDataMake();
+	//쓰기
+	if (ret > 0)
+	{
+		WriteDataReg(m_nBitOut, m_WriteBitData, ret);
+		LOGDISPLAY_SPEC(2)(_T("Out Bit data <1> :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteBitData, ret, m_nBitOut));
+	}
+
 	//Read bit 영역 읽기
 	short	ReadBitData[SIENENS_READBIT];
 	memset(ReadBitData, 0, SIENENS_READBIT*sizeof(short));
@@ -208,15 +217,6 @@ void CSiemensPlcIo::SiemensPlcProc()
 	//	LOGDISPLAY_SPEC(2)(_T("In word Cell key data :	%s"), CStrSuport::ChangshorttohexSiemens(ReadWordCellKeyData, COUNT_CELLKEY, m_nWordInCellkey));
 	//}
 
-	//Bit 쓰기 데이터 만들기
-	int ret = WritePlcBitDataMake();
-	//쓰기
-	if (ret > 0)
-	{
-		WriteDataReg(m_nBitOut, m_WriteBitData, ret);
-		LOGDISPLAY_SPEC(2)(_T("Out Bit data :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteBitData, ret, m_nBitOut));
-	}
-
 	//Word 쓰기 데이터 만들기
 	ret = WritePlcWordDataMake();
 	//쓰기
@@ -224,6 +224,15 @@ void CSiemensPlcIo::SiemensPlcProc()
 	{
 		WriteDataReg(m_nWordOut, m_WriteWordData, ret);
 		LOGDISPLAY_SPEC(2)(_T("Out Word data :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteWordData, ret, m_nWordOut));
+	}
+
+	//Bit 쓰기 데이터 만들기 - Bit Write 를 2번한다. - 두번재 만들기
+	ret = WritePlcBitDataMake();
+	//쓰기
+	if (ret > 0)
+	{
+		WriteDataReg(m_nBitOut, m_WriteBitData, ret);
+		LOGDISPLAY_SPEC(2)(_T("Out Bit data <2> :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteBitData, ret, m_nBitOut));
 	}
 
 	//Bit 쓰기 데이터 영역 읽기
@@ -622,8 +631,11 @@ int CSiemensPlcIo::WriteDataReg(int offset, short data[], int num)
 	{
 		nRet = m_pLGIS_Plc->WriteMultipleRegisters(offset, num, (uint16_t*)data);
 
-		//로그출력
-		LOGDISPLAY_SPEC(2)(" Siemens WriteDataReg Error	code : %d	offset : %d", nRet, offset);
+		if (nRet != PLC_OK)
+		{
+			//로그출력
+			LOGDISPLAY_SPEC(2)(" Siemens WriteDataReg Error	code : %d	offset : %d", nRet, offset);
+		}
 
 	}
 
@@ -638,8 +650,11 @@ int CSiemensPlcIo::ReadDataReg(int offset, short data[], int num)
 	{
 		nRet = m_pLGIS_Plc->ReadHoldingRegisters(offset, num, (uint16_t*)data);
 
-		//로그출력
-		LOGDISPLAY_SPEC(2)(" Siemens ReadDataReg Error	code : %d	offset : %d", nRet, offset);
+		if (nRet != PLC_OK)
+		{
+			//로그출력
+			LOGDISPLAY_SPEC(2)(" Siemens ReadDataReg Error	code : %d	offset : %d", nRet, offset);
+		}
 	}
 
 	return nRet;

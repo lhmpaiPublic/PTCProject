@@ -89,5 +89,7 @@ using namespace std;
 #include "SpcInData.h"
 
 #include "TriggerSocket.h"
+//AsyncSocket 재정의
+#include "PtcAsyncSocket.h"
 
 #endif //PCH_H
