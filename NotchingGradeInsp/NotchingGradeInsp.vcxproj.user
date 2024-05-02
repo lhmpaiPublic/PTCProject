@@ -7,5 +7,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <RemoteDebuggerCommand>\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp\NotchingGradeInsp.exe</RemoteDebuggerCommand>
+    <RemoteDebuggerWorkingDirectory>\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp\</RemoteDebuggerWorkingDirectory>
+    <RemoteDebuggerServerName>PTC-DEMO-NEW:4024</RemoteDebuggerServerName>
+    <RemoteDebuggerConnection>RemoteWithoutAuthentication</RemoteDebuggerConnection>
+    <DeploymentDirectory>\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp\</DeploymentDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <RemoteDebuggerCommand>\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp\NotchingGradeInsp.exe</RemoteDebuggerCommand>
+    <RemoteDebuggerWorkingDirectory>\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp\</RemoteDebuggerWorkingDirectory>
+    <RemoteDebuggerServerName>PTC-DEMO-NEW:4024</RemoteDebuggerServerName>
+    <RemoteDebuggerConnection>RemoteWithoutAuthentication</RemoteDebuggerConnection>
+    <DeploymentDirectory>\\192.168.0.160\d\_RemoteProject\NotchingGradeInsp\</DeploymentDirectory>
   </PropertyGroup>
 </Project>

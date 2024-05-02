@@ -3,6 +3,11 @@
 
 CDataPlcImp::CDataPlcImp()
 {
+}
+
+//PLC Data 변수 값 초기화
+void CDataPlcImp::initDataPlcImp()
+{
 	//In Data
 	//Bit Data In
 	m_BitIn_Alive = 0;
@@ -35,6 +40,8 @@ CDataPlcImp::CDataPlcImp()
 	m_WordIn_PrmContinuousCnt = 0;
 	m_WordIn_PrmSectorNgTabCnt = 0;
 	m_WordIn_PrmSectorBaseCnt = 0;
+
+	m_WordIn_AlarmExistAck = 0;
 
 	//Bit Data Out
 	m_BitOut_Alive = 0;
@@ -110,7 +117,65 @@ CDataPlcImp::CDataPlcImp()
 		m_WordOut_DuplicateNG_Cell_ID[i] = 0;
 	}
 
+	//Bit Data Out
+	m_bBitOut_Alive = TRUE;
+	m_bBitOut_Ready = TRUE;
+	m_bBitOut_EncoderSet = TRUE;
+	m_bBitOut_RecipeChangeAck = TRUE;
+	m_bBitOut_LotStartReqAck = TRUE;
+	m_bBitOut_LotEndReqAck = TRUE;
+	m_bBitOut_TabZeroReset = TRUE;
+	m_bBitOut_AlarmResetAck = TRUE;
+	m_bBitOut_AlarmNgResetAck = TRUE;
 
+	m_bBitOut_DiskSpaceWarning = TRUE;
+	m_bBitOut_DiskSpaceAlarm = TRUE;
+
+	//Word Data Out
+	m_bWordOut_DataReportV1_Ea = TRUE;
+	m_bWordOut_DataReportV2_OK = TRUE;
+	m_bWordOut_DataReportV3_NG = TRUE;
+	m_bWordOut_DataReportV4_OkRate = TRUE;
+	m_bWordOut_DataReportV5_NgRate = TRUE;
+	m_bWordOut_DataReportV6_RunRate = TRUE;
+	m_bWordOut_Continue_Alarm_Cnt = TRUE;
+	m_bWordOut_Heavy_Alarm_Cnt = TRUE;
+
+	m_bWordOut_FoilExpInTop_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpInBtm_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpOutTop_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpOutBtm_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpBothTop_Alarm_Cnt = TRUE;
+	m_bWordOut_FoilExpBothBtm_Alarm_Cnt = TRUE;
+	m_bWordOut_SpeterTop_Alarm_Cnt = TRUE;
+	m_bWordOut_SpeterBtm_Alarm_Cnt = TRUE;
+
+	m_bWordOut_Top_Defect_Count_Real = TRUE;
+	m_bWordOut_Btm_Defect_Count_Real = TRUE;
+	m_bWordOut_Top_Defect_Count_LotEnd = TRUE;
+	m_bWordOut_Btm_Defect_Count_LotEnd = TRUE;
+
+	m_bWordOut_FoilExpInTopTarget = TRUE;
+	m_bWordOut_FoilExpInBtmTarget = TRUE;
+	m_bWordOut_FoilExpOutTopTarget = TRUE;
+	m_bWordOut_FoilExpOutBtmTarget = TRUE;
+	m_bWordOut_FoilExpBothTopTarget = TRUE;
+	m_bWordOut_FoilExpBothBtmTarget = TRUE;
+	m_bWordOut_SpeterTopTarget = TRUE;
+	m_bWordOut_SpeterBtmTarget = TRUE;
+
+	m_bWordOut_PrmContinuousCnt = TRUE;
+	m_bWordOut_PrmSectorNgTabCnt = TRUE;
+	m_bWordOut_PrmSectorBaseCnt = TRUE;
+
+	m_bWordOut_AlarmExist = TRUE;
+	m_bWordOut_AlarmCode_Buffer = TRUE;
+
+	m_bWordOut_Cell_Trigger_ID = TRUE;
+	m_bWordOut_Judge = TRUE;
+	m_bWordOut_NG_Code = TRUE;
+
+	m_bWordOut_DuplicateNG_Cell_ID = TRUE;
 }
 
 CDataPlcImp::~CDataPlcImp()

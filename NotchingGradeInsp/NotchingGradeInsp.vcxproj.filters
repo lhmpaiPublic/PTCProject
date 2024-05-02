@@ -595,6 +595,9 @@
     <ClInclude Include="NotchingInspPlc\MelsecPlcIo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Socket\PtcAsyncSocket.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NotchingGradeInsp.cpp">
@@ -1067,6 +1070,9 @@
     </ClCompile>
     <ClCompile Include="Celltrack\LoadVTECSDll.cpp">
     <ClCompile Include="NotchingInspPlc\MelsecPlcIo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Socket\PtcAsyncSocket.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

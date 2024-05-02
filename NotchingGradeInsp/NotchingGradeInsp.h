@@ -59,9 +59,10 @@ public :
 
 #ifndef NEW_PLCTYPE
 	CPioCtrl* m_pPioCtrl;
+	CPlcImp* m_pSigProc;
+#else
+	CDataPlcImp* m_pSigProc;
 #endif //NEW_PLCTYPE
-
-	CPlcImp* m_pSigProc; 
 
 	CStdIoCtrl* m_pIoCtrl;
 	CImageProcSimDlg * m_pImageSimDlg ;

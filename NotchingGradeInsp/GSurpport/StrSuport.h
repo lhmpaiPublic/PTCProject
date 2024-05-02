@@ -42,8 +42,9 @@ public:
 	static CString Changcharbyhex(CString pass);
 	//byte를 hex string 로 변환
 	static CString Changbytetohex(BYTE* byt, int len);
-	static CString ChangbytetohexTab(BYTE* byt, int len, int tablen = 10);
-	static CString ChangshorttohexTab(short* data, int len, int tablen = 10);
+	static CString ChangbytetohexMelsec(BYTE* byt, int len, int offset = 0, int tablen = 10);
+	static CString ChangshorttohexSiemens(short* data, int len, int offset = 0, int tablen = 10);
+	static CString ChanginttohexMelsec(int* data, int len, int offset = 0, int tablen = 10);
 	//1Byte문자를 Hex2Byte로
 	static CString Chang1Byteby2Hex(CString pass);
 	//핵사 스트링값을 문자 스트링값으로 변환

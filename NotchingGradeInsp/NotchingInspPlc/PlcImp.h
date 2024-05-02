@@ -30,8 +30,8 @@ public:
 	virtual void EnableWorkSet(BOOL bMode) = 0;
 	virtual int SigOutDiskCapacityAlarm(int nMode) = 0;
 	virtual int SigOutDiskCapacityWarning(int nMode) = 0;
+
 	virtual int SignalBitOut(int nIntegration, int nMode, BOOL bLocal = FALSE) = 0;
-	
 
 	//In
 	virtual int SigInReady() = 0;
@@ -44,6 +44,9 @@ public:
 	virtual int SigInRecipeChange() = 0;
 	virtual int SigInInkMarkActive() = 0;
 	virtual int SigInConnectZone() = 0;
+
+	//PLC In Alive 상태를 체크한다.
+	virtual BOOL AliveBitInCheck() = 0;
 
 #ifdef NEW_PLCTYPE
 	//통합비전 Cell Key Id를 가져온다.

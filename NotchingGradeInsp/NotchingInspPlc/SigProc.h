@@ -91,7 +91,7 @@ public:
 		enWordRead_PrmSectorNgTabCnt = 0x0042,		enWordRead_PrmSectorNgTabCnt_Len = 2,
 		enWordRead_PrmSectorBaseCnt = 0x0044,		enWordRead_PrmSectorBaseCnt_Len = 2,
 		enWordRead_AlarmExistAck = 0x0050,		enWordRead_AlarmExistAck_Len = 2,				// 46
-		enWordReadMaxSize = 160,
+		enWordReadMaxSize = 0x00A0,
 
 	};
 
@@ -392,7 +392,8 @@ public :
 	virtual int SigInConnectZone();
 	virtual int SigInAlarmNgAck();
 
-
+	//PLC In Alive 상태를 체크한다.
+	virtual BOOL AliveBitInCheck();
 
 	// Signal Out
 	virtual int SigOutAlivePulse(int nMode);
@@ -408,6 +409,9 @@ public :
 	virtual int SigOutDiskCapacityWarning(int nMode);
 	virtual int SigOutAlarmExist(int nMode);
 	virtual int SigOutAlarmNgResetAck(int nMode);
+
+	//Lot End 처리 함수
+	virtual void SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt);
 
 	BOOL SigOutDataReset(); 
 

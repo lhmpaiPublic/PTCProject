@@ -297,8 +297,8 @@ int CIoMonitorDlg::RefreshAll()
 {
 	int nRet = 0;
 
-	memset(m_bSigBitIn, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_IN);
-	memset(m_bSigBitOut, 0x0000, sizeof(BOOL) * MAX_ADR_BIT_OUT);
+	memset(m_bSigBitIn, 0x00, sizeof(BOOL) * MAX_ADR_BIT_IN);
+	memset(m_bSigBitOut, 0x00, sizeof(BOOL) * MAX_ADR_BIT_OUT);
 
 #ifndef NEW_PLCTYPE
 	theApp.m_pSigProc->ReadAllPort_BitIn(m_bSigBitIn);
@@ -693,11 +693,11 @@ void CIoMonitorDlg::UpdateGridCtrl()
 			Item.row = nRow;
 			Item.col = en_col_Data ;
 
-			CString strTemp;
+			CString strTemp = _T("");
 #ifndef NEW_PLCTYPE
 			strTemp = GetInWordData(row);
 #else
-			theApp.m_pSigProc->GetInWordData(row);
+			strTemp = theApp.m_pSigProc->GetInWordData(row);
 #endif //NEW_PLCTYPE
 
 			Item.strText = strTemp;
@@ -719,11 +719,11 @@ void CIoMonitorDlg::UpdateGridCtrl()
 			Item.row = nRow;
 			Item.col = en_col_Data;
 
-			CString strTemp;
+			CString strTemp = _T("");
 #ifndef NEW_PLCTYPE
 			strTemp = GetOutWordData(row);
 #else
-			theApp.m_pSigProc->GetOutWordData(row);
+			strTemp = theApp.m_pSigProc->GetOutWordData(row);
 #endif //NEW_PLCTYPE
 
 			Item.strText = strTemp;

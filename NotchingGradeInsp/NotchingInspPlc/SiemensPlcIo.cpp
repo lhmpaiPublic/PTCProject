@@ -18,7 +18,10 @@ enum SmsBitIn
 	enSmsBitIn_LotStartReq = 8,
 	enSmsBitIn_LotEndReq = 9,
 	enSmsBitIn_AlarmResetReq = 10,
-	enSmsBitIn_AlarmNgAck = 11
+	enSmsBitIn_AlarmNgAck = 11,
+
+	//Read Bit 영역 최대 크기
+	enSmsBitReadMaxSize = SIENENS_READBIT
 };
 enum SmsBitOut
 {
@@ -34,6 +37,9 @@ enum SmsBitOut
 
 	enSmsBitOut_DiskSpaceWarning = 9,
 	enSmsBitOut_DiskSpaceAlarm = 10,
+
+	//Write Word 영역 최대 크기
+	enSmsBitWriteMaxSize = SIENENS_WRITEBIT
 };
 // Siemens Address End
 // Siemens Word Address Start
@@ -55,12 +61,13 @@ enum SmsWordRead
 	enSmsWordRead_PrmSectorNgTabCnt = 31, 
 	enSmsWordRead_PrmSectorBaseCnt = 32, 
 
+	//Read Word 영역 최대 크기
+	enSmsWordReadMaxSize = SIENENS_READWORD_MAX,
+
 	//Cell Key
 	enSmsWordRead_CellKey = 210,
+	enSmsWordRead_CellKeyMaxSize = COUNT_CELLKEY,
 
-	//Bit + Word 인덱스는 작아야 한다.
-	//같아도 안된다.
-	enSmsWordReadMaxSize = SIENENS_READBITWORD_MAX,
 };
 
 enum SmsWordWrite
@@ -108,11 +115,8 @@ enum SmsWordWrite
 	enSmsWordWrite_Judge = 81,
 	enSmsWordWrite_NG_Code = 82,
 
-	enSmsWordWrite_DuplicateNG_Cell_ID = 85,
-
-	//Bit + Word 인덱스는 작아야 한다.
-	//같아도 안된다.
-	enSmsWordWriteMaxIndex = SIENENS_WRITEBITWORD_MAX
+	//Write Word 영역 최대 크기
+	enSmsWordWriteMaxSize = SIENENS_WRITEWORD_MAX
 
 };
 
@@ -128,15 +132,32 @@ CSiemensPlcIo::CSiemensPlcIo(CString strIPAddress, int nReConnetTimeOut, CWnd* p
 	m_nBitOut = nBitOut;
 	m_nWordIn = nWordIn;
 	m_nWordOut = nWordOut;
+
+	m_nWordInCellkey = m_nWordIn + enSmsWordRead_CellKey;
+
 	//Alive 값 연산 변수
 	m_bSmsAlive = FALSE;
 
-	//Read Data 버퍼 초기화
-	memset(m_ReadBitData, 0, sizeof(short) * SIENENS_READBIT);
-	memset(m_ReadWordData, 0, sizeof(short) * SIENENS_READWORD_MAX);
+	//Alive 신호채크 변수
+	dwMelsBitInAliveTime = 0;
 
-	//Write Data 버퍼 초기화
-	memset(m_WriteData, 0, sizeof(short) * SIENENS_WRITEBITWORD_MAX);
+	//Read Data 버퍼 초기화
+	memset(m_ReadBitData, 0x00, sizeof(short) * SIENENS_READBIT);
+	memset(m_ReadWordData, 0x00, sizeof(short) * SIENENS_READWORD_MAX);
+
+	//short 단위 Word 영역 Cell key 데이터
+	memset(m_ReadWordCellKeyData, 0x00, sizeof(short) * COUNT_CELLKEY);
+
+	//Write Bit Data 버퍼 초기화
+	memset(m_WriteBitData, 0x00, sizeof(short) * SIENENS_WRITEBIT);
+
+	//Write Word Data 버퍼 초기화
+	memset(m_WriteWordData, 0x00, sizeof(short) * SIENENS_WRITEWORD_MAX);
+
+	//PLC 쓰기 Bit Data 읽기
+	memset(m_WriteBitDataRead, 0xff, sizeof(short) * SIENENS_WRITEBIT);
+	//PLC 쓰기 Word Data 읽기
+	memset(m_WriteWordDataRead, 0xff, sizeof(short) * SIENENS_WRITEWORD_MAX);
 
 	//지멘스 Plc 연결 및 데이터 처리 스래드 객체 생성
 	OpenPlcIo();
@@ -151,50 +172,100 @@ CSiemensPlcIo::~CSiemensPlcIo()
 //스래드에서 호출하는 함수
 void CSiemensPlcIo::SiemensPlcProc()
 {
-	if (IsOpened())
+	//Bit 쓰기 데이터 만들기 - Bit Write 를 2번한다. - 첫번재 만들기
+	int ret = WritePlcBitDataMake();
+	//쓰기
+	if (ret > 0)
 	{
-		//bit Word 전체 버퍼
-		short	ReadBitWordData[SIENENS_READBITWORD_MAX];
-		memset(ReadBitWordData, 0, SIENENS_READBITWORD_MAX);
+		WriteDataReg(m_nBitOut, m_WriteBitData, ret);
+		LOGDISPLAY_SPEC(2)(_T("Out Bit data <1> :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteBitData, ret, m_nBitOut));
+	}
 
-		//Read bit 영역 읽기
-		short	ReadBitData[SIENENS_READBIT];
-		//Read word 영역 읽기
-		short	ReadWordData[SIENENS_READWORD_MAX];
-		//bit 읽기 영역 읽기
-		ReadDataReg(m_nBitIn, ReadBitWordData, SIENENS_READBITWORD_MAX);
-		LOGDISPLAY_SPEC(2)(_T("In All data :	%s"), CStrSuport::ChangshorttohexTab(ReadBitWordData, SIENENS_READBITWORD_MAX));
+	//Read bit 영역 읽기
+	short	ReadBitData[SIENENS_READBIT];
+	memset(ReadBitData, 0, SIENENS_READBIT*sizeof(short));
+	//bit 읽기 영역 읽기
+	ReadDataReg(m_nBitIn, ReadBitData, SIENENS_READBIT);
+	//읽은 Bit 데이터 파싱
+	if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
+	{
+		ReadPlcBitDataParser(ReadBitData);
+		LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexSiemens(ReadBitData, SIENENS_READBIT, m_nBitIn));
+	}
 
-		//읽은 Bit 데이터 파싱
-		memcpy(ReadBitData, &ReadBitWordData[0], sizeof(short) * SIENENS_READBIT);
-		if (std::equal(std::begin(ReadBitData), std::end(ReadBitData), std::begin(m_ReadBitData)) == false)
-		{
-			ReadPlcBitDataParser(ReadBitData);
-			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(ReadBitData, SIENENS_READBIT));
-		}
+	//Read word 영역 읽기
+	short	ReadWordData[SIENENS_READWORD_MAX];
+	memset(ReadWordData, 0, SIENENS_READWORD_MAX * sizeof(short));
+	//word 읽기 영역 읽기
+	ReadDataReg(m_nWordIn, ReadWordData, SIENENS_READWORD_MAX);
+	//읽은 Word 데이터 파싱
+	if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
+	{
+		ReadPlcWordDataParser(ReadWordData);
+		LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexSiemens(ReadWordData, SIENENS_READWORD_MAX, m_nWordIn));
+	}
 
-		//word 읽기 영역 읽기
-		memcpy(ReadWordData, &ReadBitWordData[SIENENS_READBIT], sizeof(short) * SIENENS_READWORD_MAX);
-		//읽은 Word 데이터 파싱
-		if (std::equal(std::begin(ReadWordData), std::end(ReadWordData), std::begin(m_ReadWordData)) == false)
-		{
-			ReadPlcWordDataParser(ReadWordData);
-			LOGDISPLAY_SPEC(2)(_T("In word data :	%s"), CStrSuport::ChangshorttohexTab(ReadWordData, SIENENS_READWORD_MAX));
-		}
+	////Read word Cell Key 영역 읽기
+	//short	ReadWordCellKeyData[COUNT_CELLKEY];
+	//memset(ReadWordCellKeyData, 0, COUNT_CELLKEY * sizeof(short));
+	////word 읽기 Cell Key 영역 읽기
+	//ReadDataReg(m_nWordInCellkey, ReadWordCellKeyData, COUNT_CELLKEY);
+	////읽은 Word Cell Key 데이터 파싱
+	//if (std::equal(std::begin(ReadWordCellKeyData), std::end(ReadWordCellKeyData), std::begin(m_ReadWordCellKeyData)) == false)
+	//{
+	//	ReadPlcWordCellKeyDataParser(ReadWordCellKeyData);
+	//	LOGDISPLAY_SPEC(2)(_T("In word Cell key data :	%s"), CStrSuport::ChangshorttohexSiemens(ReadWordCellKeyData, COUNT_CELLKEY, m_nWordInCellkey));
+	//}
 
-		//쓰기 데이터 만들기
-		//ret : 쓰기 영역에 어디까지 데이터가 바뀌었는가 값 
-		//m_WriteData에 쓰여진 데이터에서 바뀐 영역까지 만 쓰기 : Bit 영역에서 한번에 연속 되는 부분까지 
-		int ret = WritePlcDataMake();
-		//쓰기
-		WriteDataReg(m_nBitOut, m_WriteData, ret);
-		LOGDISPLAY_SPEC(2)(_T("Out data :	%s"), CStrSuport::ChangshorttohexTab(m_WriteData, ret));
+	//Word 쓰기 데이터 만들기
+	ret = WritePlcWordDataMake();
+	//쓰기
+	if (ret > 0)
+	{
+		WriteDataReg(m_nWordOut, m_WriteWordData, ret);
+		LOGDISPLAY_SPEC(2)(_T("Out Word data :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteWordData, ret, m_nWordOut));
+	}
+
+	//Bit 쓰기 데이터 만들기 - Bit Write 를 2번한다. - 두번재 만들기
+	ret = WritePlcBitDataMake();
+	//쓰기
+	if (ret > 0)
+	{
+		WriteDataReg(m_nBitOut, m_WriteBitData, ret);
+		LOGDISPLAY_SPEC(2)(_T("Out Bit data <2> :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteBitData, ret, m_nBitOut));
+	}
+
+	//Bit 쓰기 데이터 영역 읽기
+	short	WriteBitDataRead[SIENENS_WRITEBIT];
+	memset(WriteBitDataRead, 0, SIENENS_WRITEBIT * sizeof(short));
+	//bit 쓰기 영역 읽기
+	ReadDataReg(m_nBitOut, WriteBitDataRead, SIENENS_WRITEBIT);
+	//읽은 Bit 데이터 출력
+	if (std::equal(std::begin(WriteBitDataRead), std::end(WriteBitDataRead), std::begin(m_WriteBitDataRead)) == false)
+	{
+		memcpy(m_WriteBitDataRead, WriteBitDataRead, SIENENS_WRITEBIT * sizeof(short));
+		LOGDISPLAY_SPEC(2)(_T("Out Bit data read :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteBitDataRead, SIENENS_WRITEBIT, m_nBitOut));
+	}
+
+	//Word 쓰기 데이터 영역 읽기
+	short	WriteWordDataRead[SIENENS_WRITEWORD_MAX];
+	memset(WriteWordDataRead, 0, SIENENS_WRITEWORD_MAX * sizeof(short));
+	//Word 쓰기 영역 읽기
+	ReadDataReg(m_nWordOut, WriteWordDataRead, SIENENS_WRITEWORD_MAX);
+	//읽은 Word 데이터 출력
+	if (std::equal(std::begin(WriteWordDataRead), std::end(WriteWordDataRead), std::begin(m_WriteWordDataRead)) == false)
+	{
+		memcpy(m_WriteWordDataRead, WriteWordDataRead, SIENENS_WRITEWORD_MAX * sizeof(short));
+		LOGDISPLAY_SPEC(2)(_T("Out Word data read :	%s"), CStrSuport::ChangshorttohexSiemens(m_WriteWordDataRead, SIENENS_WRITEWORD_MAX, m_nWordOut));
 	}
 }
 
 //PLC read Data Parser 함수
 void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 {
+	//PLC 통신 상태 체크 Alive 이전 변수 백업
+	BOOL bBitIn_AliveBackup = getBitIn_Alive();
+
 	if (m_ReadBitData[enSmsBitIn_Alive] ^ data[enSmsBitIn_Alive]) setBitIn_Alive(data[enSmsBitIn_Alive] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_Ready] ^ data[enSmsBitIn_Ready]) setBitIn_Ready(data[enSmsBitIn_Ready] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_Run] ^ data[enSmsBitIn_Run]) setBitIn_Run(data[enSmsBitIn_Run] & 0x1);
@@ -208,63 +279,48 @@ void CSiemensPlcIo::ReadPlcBitDataParser(short* data)
 	if (m_ReadBitData[enSmsBitIn_AlarmResetReq] ^ data[enSmsBitIn_AlarmResetReq]) setBitIn_AlarmResetReq(data[enSmsBitIn_AlarmResetReq] & 0x1);
 	if (m_ReadBitData[enSmsBitIn_AlarmNgAck] ^ data[enSmsBitIn_AlarmNgAck]) setBitIn_AlarmNgAck(data[enSmsBitIn_AlarmNgAck] & 0x1);
 
+	//PLC 타이머 100ms 주기 : 1000ms 이상에서 PLC 신호 없으면 끊김 확인
+	dwMelsBitInAliveTime = dwMelsBitInAliveTime + 100;
+	//Alive 주기 0.5초 주기로 0/1 반복해서 변함
+	if (getBitIn_Alive() != bBitIn_AliveBackup)
+	{
+		dwMelsBitInAliveTime = 0;
+	}
+
 	memcpy(m_ReadBitData, data, sizeof(short) * SIENENS_READBIT);
 }
 
 CString CSiemensPlcIo::MakeRecipeName(short* data)
 {
-	int i;
-	int Cnt = 0;
-	CString strBuffer;
-	int nMax = SIEMENS_READRECIPENAME;
+	CString str = _T("");
 
-	for (i = 0, Cnt = 0; i < nMax; i++, Cnt += 2)
-	{
-		BYTE btTemp = (BYTE)(*data & 0xff);
-		strBuffer += _T(" ");
-		strBuffer.SetAt(Cnt, (char)btTemp);
+	BYTE byteData[SIEMENS_READRECIPENAME + 1] = { 0, };
+	memcpy(byteData, data, SIEMENS_READRECIPENAME);
+	byteData[SIEMENS_READRECIPENAME] = '\0';
+	str = (char*)byteData;
 
-		btTemp = (BYTE)((*data >> 8) & 0xff);
-		strBuffer += _T(" ");
-		strBuffer.SetAt((Cnt + 1), (char)btTemp);
+	str.TrimRight();
+	str.TrimLeft();
+	AprData.m_SeqDataIN.strRecipeName = str;
 
-		data++;
-	}
-	strBuffer.TrimRight();
-	strBuffer.TrimLeft();
-
-	LOGDISPLAY_SPEC(2)(_T("RecipeName :	%s"), strBuffer);
-
-	return strBuffer;
+	return str;
 }
 
 //CELL ID를 만든다.
 CString CSiemensPlcIo::MakeCellId(short* data)
 {
-	int i;
-	int Cnt = 0;
-	CString strBuffer;
-	int nMax = SIEMENS_READCELLID;
+	CString str = _T("");
 
-	for (i = 0, Cnt = 0; i < nMax; i++, Cnt += 2)
-	{
-		BYTE btTemp = (BYTE)(*data & 0xff);
-		strBuffer += _T(" ");
-		strBuffer.SetAt(Cnt, (char)btTemp);
+	BYTE byteData[SIEMENS_READCELLID + 1] = { 0, };
+	memcpy(byteData, data, SIEMENS_READCELLID);
+	byteData[SIEMENS_READCELLID] = '\0';
+	str = (char*)byteData;
 
-		btTemp = (BYTE)((*data >> 8) & 0xff);
-		strBuffer += _T(" ");
-		strBuffer.SetAt((Cnt + 1), (char)btTemp);
+	str.TrimRight();
+	str.TrimLeft();
+	AprData.m_SeqDataIN.strCell_ID = str;
 
-		data++;
-	}
-
-	strBuffer.TrimRight();
-	strBuffer.TrimLeft();
-
-	LOGDISPLAY_SPEC(2)(_T("Cell Id :	%s"), strBuffer);
-
-	return strBuffer;
+	return str;
 }
 
 void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
@@ -303,183 +359,241 @@ void CSiemensPlcIo::ReadPlcWordDataParser(short* data)
 	if (m_ReadWordData[enSmsWordRead_PrmSectorNgTabCnt] ^ data[enSmsWordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enSmsWordRead_PrmSectorNgTabCnt]);
 	if (m_ReadWordData[enSmsWordRead_PrmSectorBaseCnt] ^ data[enSmsWordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enSmsWordRead_PrmSectorBaseCnt]);
 
-	for (int i = 0; i < COUNT_CELLKEY; i++)
-	{
-		int idx = enSmsWordRead_CellKey + i;
-		if (m_ReadWordData[idx] ^ data[idx]) setWordIn_CellKey(i, data[idx]);
-	}
-
 	memcpy(m_ReadWordData, data, sizeof(short) * SIENENS_READWORD_MAX);
 }
 
-//PLC write Data Make 함수
-int CSiemensPlcIo::WritePlcDataMake()
+//Word 영역 short 단위 읽은 데이터를 파싱하여 멤버변수에 세팅한다(Cell key 영역)
+void CSiemensPlcIo::ReadPlcWordCellKeyDataParser(short* data)
+{
+	for (int count = 0; count < COUNT_CELLKEY; count++)
+	{
+		setWordIn_CellKey(count, data[count]);
+	}
+
+	memcpy(m_ReadWordCellKeyData, data, sizeof(short) * COUNT_CELLKEY);
+}
+
+//PLC write Bit Data Make 함수
+int CSiemensPlcIo::WritePlcBitDataMake()
 {
 	//Write Data Block Num
-	int ret = 0;
-	if (isBitOut_Alive())
-	{ret = enSmsBitOut_Alive; m_WriteData[ret] = getBitOut_Alive(); }
+	int ret = -1;
+	int idx = 0;
 
-	if (isBitOut_Ready())
-	{ret = enSmsBitOut_Ready; m_WriteData[ret] = getBitOut_Ready(); }
+	//Write Bit Data 버퍼 초기화
+	memset(m_WriteBitData, 0x00, sizeof(short) * SIENENS_WRITEBIT);
 
-	if (isBitOut_EncoderSet())
-	{ret = enSmsBitOut_EncoderSet; m_WriteData[ret] = getBitOut_EncoderSet(); }
+	idx = enSmsBitOut_Alive;
+	if (isBitOut_Alive()) ret = idx;
+	m_WriteBitData[idx] = getBitOut_Alive();
 
-	if (isBitOut_RecipeChangeAck())
-	{ret = enSmsBitOut_RecipeChangeAck; m_WriteData[ret] = getBitOut_RecipeChangeAck(); }
+	idx = enSmsBitOut_Ready;
+	if (isBitOut_Ready()) ret = idx;
+	m_WriteBitData[idx] = getBitOut_Ready();
 
-	if (isBitOut_LotStartReqAck())
-	{ret = enSmsBitOut_LotStartReqAck; m_WriteData[ret] = getBitOut_LotStartReqAck(); }
+	idx = enSmsBitOut_EncoderSet;
+	if (isBitOut_EncoderSet()) ret = idx;
+	m_WriteBitData[idx] = getBitOut_EncoderSet();
 
-	if (isBitOut_LotEndReqAck())
-	{ret = enSmsBitOut_LotEndReqAck; m_WriteData[ret] = getBitOut_LotEndReqAck(); }
+	idx = enSmsBitOut_RecipeChangeAck;
+	if (isBitOut_RecipeChangeAck()) ret = idx;
+	m_WriteBitData[idx] = getBitOut_RecipeChangeAck();
 
-	if (isBitOut_TabZeroReset())
-	{ret = enSmsBitOut_TabZeroReset; m_WriteData[ret] = getBitOut_TabZeroReset(); }
+	idx = enSmsBitOut_LotStartReqAck;
+	if (isBitOut_LotStartReqAck())ret = idx;
+	m_WriteBitData[idx] = getBitOut_LotStartReqAck();
 
-	if (isBitOut_AlarmResetAck())
-	{ret = enSmsBitOut_AlarmResetAck; m_WriteData[ret] = getBitOut_AlarmResetAck(); }
+	idx = enSmsBitOut_LotEndReqAck;
+	if (isBitOut_LotEndReqAck())ret = idx;
+	m_WriteBitData[idx] = getBitOut_LotEndReqAck();
 
-	if (isBitOut_AlarmNgResetAck())
-	{ret = enSmsBitOut_AlarmNgResetAck; m_WriteData[ret] = getBitOut_AlarmNgResetAck(); }
+	idx = enSmsBitOut_TabZeroReset;
+	if (isBitOut_TabZeroReset())ret = idx;
+	m_WriteBitData[idx] = getBitOut_TabZeroReset();
 
-	if (isBitOut_DiskSpaceWarning())
-	{ret = enSmsBitOut_DiskSpaceWarning; m_WriteData[ret] = getBitOut_DiskSpaceWarning(); }
+	idx = enSmsBitOut_AlarmResetAck;
+	if (isBitOut_AlarmResetAck())ret = idx;
+	m_WriteBitData[idx] = getBitOut_AlarmResetAck();
 
-	if (isBitOut_DiskSpaceAlarm())
-	{ret = enSmsBitOut_DiskSpaceAlarm; m_WriteData[ret] = getBitOut_DiskSpaceAlarm(); }
+	idx = enSmsBitOut_AlarmNgResetAck;
+	if (isBitOut_AlarmNgResetAck()) ret = idx;
+	m_WriteBitData[idx] = getBitOut_AlarmNgResetAck();
 
-	if (isWordOut_DataReportV1_Ea())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV1_Ea;  m_WriteData[ret] = getWordOut_DataReportV1_Ea(); }
+	idx = enSmsBitOut_DiskSpaceWarning;
+	if (isBitOut_DiskSpaceWarning()) ret = idx;
+	m_WriteBitData[idx] = getBitOut_DiskSpaceWarning();
 
-	if (isWordOut_DataReportV2_OK())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV2_OK; m_WriteData[ret] = getWordOut_DataReportV2_OK(); }
-
-	if (isWordOut_DataReportV3_NG())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV3_NG; m_WriteData[ret] = getWordOut_DataReportV3_NG(); }
-
-	if (isWordOut_DataReportV4_OkRate())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV4_OkRate; m_WriteData[ret] = getWordOut_DataReportV4_OkRate(); }
-
-	if (isWordOut_DataReportV5_NgRate())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV5_NgRate; m_WriteData[ret] = getWordOut_DataReportV5_NgRate(); }
-
-	if (isWordOut_DataReportV6_RunRate())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_DataReportV6_RunRate; m_WriteData[ret] = getWordOut_DataReportV6_RunRate(); }
-
-	if (isWordOut_Continue_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Continue_Alarm_Cnt; m_WriteData[ret] = getWordOut_Continue_Alarm_Cnt(); }
-
-	if (isWordOut_Heavy_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Heavy_Alarm_Cnt; m_WriteData[ret] = getWordOut_Heavy_Alarm_Cnt(); }
-
-	if (isWordOut_FoilExpInTop_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpInTop_Alarm_Cnt;m_WriteData[ret] = getWordOut_FoilExpInTop_Alarm_Cnt();  }
-
-	if (isWordOut_FoilExpInBtm_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpInBtm_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpInBtm_Alarm_Cnt(); }
-
-	if (isWordOut_FoilExpOutTop_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpOutTop_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpOutTop_Alarm_Cnt(); }
-
-	if (isWordOut_FoilExpOutBtm_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpOutBtm_Alarm_Cnt(); }
-
-	if (isWordOut_FoilExpBothTop_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpBothTop_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpBothTop_Alarm_Cnt(); }
-
-	if (isWordOut_FoilExpBothBtm_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt; m_WriteData[ret] = getWordOut_FoilExpBothBtm_Alarm_Cnt(); }
-
-	if (isWordOut_SpeterTop_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_SpeterTop_Alarm_Cnt; m_WriteData[ret] = getWordOut_SpeterTop_Alarm_Cnt(); }
-
-	if (isWordOut_SpeterBtm_Alarm_Cnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_SpeterBtm_Alarm_Cnt; m_WriteData[ret] = getWordOut_SpeterBtm_Alarm_Cnt(); }
-
-	if (isWordOut_Top_Defect_Count_Real())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Top_Defect_Count_Real; m_WriteData[ret] = getWordOut_Top_Defect_Count_Real(); }
-
-	if (isWordOut_Btm_Defect_Count_Real())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Btm_Defect_Count_Real; m_WriteData[ret] = getWordOut_Btm_Defect_Count_Real(); }
-
-	if (isWordOut_Top_Defect_Count_LotEnd())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Top_Defect_Count_LotEnd; m_WriteData[ret] = getWordOut_Top_Defect_Count_LotEnd(); }
-
-	if (isWordOut_Btm_Defect_Count_LotEnd())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Btm_Defect_Count_LotEnd; m_WriteData[ret] = getWordOut_Btm_Defect_Count_LotEnd(); }
-
-	if (isWordOut_FoilExpInTopTarget())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpInTopTarget; m_WriteData[ret] = getWordOut_FoilExpInTopTarget(); }
-
-	if (isWordOut_FoilExpInBtmTarget())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpInBtmTarget; m_WriteData[ret] = getWordOut_FoilExpInBtmTarget(); }
-
-	if (isWordOut_FoilExpOutTopTarget())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpOutTopTarget; m_WriteData[ret] = getWordOut_FoilExpOutTopTarget(); }
-
-	if (isWordOut_FoilExpOutBtmTarget())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpOutBtmTarget; m_WriteData[ret] = getWordOut_FoilExpOutBtmTarget(); }
-
-	if (isWordOut_FoilExpBothTopTarget())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpBothTopTarget; m_WriteData[ret] = getWordOut_FoilExpBothTopTarget(); }
-
-	if (isWordOut_FoilExpBothBtmTarget())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_FoilExpBothBtmTarget; m_WriteData[ret] = getWordOut_FoilExpBothBtmTarget(); }
-
-	if (isWordOut_SpeterTopTarget())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_SpeterTopTarget; m_WriteData[ret] = getWordOut_SpeterTopTarget(); }
-
-	if (isWordOut_SpeterBtmTarget())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_SpeterBtmTarget; m_WriteData[ret] = getWordOut_SpeterBtmTarget(); }
-
-	if (isWordOut_PrmContinuousCnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_PrmContinuousCnt; m_WriteData[ret] = getWordOut_PrmContinuousCnt(); }
-
-	if (isWordOut_PrmSectorNgTabCnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_PrmSectorNgTabCnt; m_WriteData[ret] = getWordOut_PrmSectorNgTabCnt(); }
-
-	if (isWordOut_PrmSectorBaseCnt())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_PrmSectorBaseCnt; m_WriteData[ret] = getWordOut_PrmSectorBaseCnt(); }
-
-	if (isWordOut_AlarmExist())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmExist; m_WriteData[ret] = getWordOut_AlarmExist(); }
-
-	if (isWordOut_AlarmCode_Buffer())
-	{
-		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer;
-		int idx = 0;
-		for (; idx < COUNT_ALRAMBUFF; idx++)
-		{
-			m_WriteData[ret+idx] = getWordOut_AlarmCode_Buffer(idx);
-		}
-		ret = SIENENS_WRITEBIT + enSmsWordWrite_AlarmCode_Buffer+idx;
-	}
-
-	if (isWordOut_Cell_Trigger_ID())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Cell_Trigger_ID; m_WriteData[ret] = getWordOut_Cell_Trigger_ID(); }
-
-	if (isWordOut_Judge())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_Judge; m_WriteData[ret] = getWordOut_Judge(); }
-
-	if (isWordOut_NG_Code())
-	{ret = SIENENS_WRITEBIT + enSmsWordWrite_NG_Code; m_WriteData[ret] = getWordOut_Judge(); }
-
-	if (isWordOut_DuplicateNG_Cell_ID())
-	{
-		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID;
-		int idx = 0;
-		for (; idx < COUNT_DUPLICATENGCELLID; idx++)
-		{
-			m_WriteData[ret+ idx] = getWordOut_DuplicateNG_Cell_ID(idx);
-		}
-		ret = SIENENS_WRITEBIT + enSmsWordWrite_DuplicateNG_Cell_ID+ idx;
-	}
+	idx = enSmsBitOut_DiskSpaceAlarm;
+	if (isBitOut_DiskSpaceAlarm()) ret = idx;
+	m_WriteBitData[idx] = getBitOut_DiskSpaceAlarm();
 
 	//버퍼 block 위치에 + 1 = 크기(size)
 	//쓰기 영역에 쓸 데이터 크기
-	return ret+1;
+	return ret + 1;
+}
+
+//PLC write Word Data Make 함수
+int CSiemensPlcIo::WritePlcWordDataMake()
+{
+	//Write Data Block Num
+	int ret = -1;
+	int idx = 0;
+
+	//Write Word Data 버퍼 초기화
+	memset(m_WriteWordData, 0x00, sizeof(short) * SIENENS_WRITEWORD_MAX);
+
+	idx = enSmsWordWrite_DataReportV1_Ea;
+	if (isWordOut_DataReportV1_Ea()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_DataReportV1_Ea();
+
+	idx = enSmsWordWrite_DataReportV2_OK;
+	if (isWordOut_DataReportV2_OK()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_DataReportV2_OK();
+
+	idx = enSmsWordWrite_DataReportV3_NG;
+	if (isWordOut_DataReportV3_NG()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_DataReportV3_NG();
+
+	idx = enSmsWordWrite_DataReportV4_OkRate;
+	if (isWordOut_DataReportV4_OkRate()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_DataReportV4_OkRate();
+
+	idx = enSmsWordWrite_DataReportV5_NgRate;
+	if (isWordOut_DataReportV5_NgRate()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_DataReportV5_NgRate();
+
+	idx = enSmsWordWrite_DataReportV6_RunRate;
+	if (isWordOut_DataReportV6_RunRate()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_DataReportV6_RunRate();
+
+	idx = enSmsWordWrite_Continue_Alarm_Cnt;
+	if (isWordOut_Continue_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_Continue_Alarm_Cnt();
+
+	idx = enSmsWordWrite_Heavy_Alarm_Cnt;
+	if (isWordOut_Heavy_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_Heavy_Alarm_Cnt();
+
+	idx = enSmsWordWrite_FoilExpInTop_Alarm_Cnt;
+	if (isWordOut_FoilExpInTop_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpInTop_Alarm_Cnt();
+
+	idx = enSmsWordWrite_FoilExpInBtm_Alarm_Cnt;
+	if (isWordOut_FoilExpInBtm_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpInBtm_Alarm_Cnt();
+
+	idx = enSmsWordWrite_FoilExpOutTop_Alarm_Cnt;
+	if (isWordOut_FoilExpOutTop_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpOutTop_Alarm_Cnt();
+
+	idx = enSmsWordWrite_FoilExpOutBtm_Alarm_Cnt;
+	if (isWordOut_FoilExpOutBtm_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpOutBtm_Alarm_Cnt();
+
+	idx = enSmsWordWrite_FoilExpBothTop_Alarm_Cnt;
+	if (isWordOut_FoilExpBothTop_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpBothTop_Alarm_Cnt();
+
+	idx = enSmsWordWrite_FoilExpBothBtm_Alarm_Cnt;
+	if (isWordOut_FoilExpBothBtm_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpBothBtm_Alarm_Cnt();
+
+	idx = enSmsWordWrite_SpeterTop_Alarm_Cnt;
+	if (isWordOut_SpeterTop_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_SpeterTop_Alarm_Cnt();
+
+	idx = enSmsWordWrite_SpeterBtm_Alarm_Cnt;
+	if (isWordOut_SpeterBtm_Alarm_Cnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_SpeterBtm_Alarm_Cnt();
+
+	idx = enSmsWordWrite_Top_Defect_Count_Real;
+	if (isWordOut_Top_Defect_Count_Real()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_Top_Defect_Count_Real();
+
+	idx = enSmsWordWrite_Btm_Defect_Count_Real;
+	if (isWordOut_Btm_Defect_Count_Real()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_Btm_Defect_Count_Real();
+
+	idx = enSmsWordWrite_Top_Defect_Count_LotEnd;
+	if (isWordOut_Top_Defect_Count_LotEnd()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_Top_Defect_Count_LotEnd();
+
+	idx = enSmsWordWrite_Btm_Defect_Count_LotEnd;
+	if (isWordOut_Btm_Defect_Count_LotEnd()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_Btm_Defect_Count_LotEnd();
+
+	idx = enSmsWordWrite_FoilExpInTopTarget;
+	if (isWordOut_FoilExpInTopTarget()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpInTopTarget();
+
+	idx = enSmsWordWrite_FoilExpInBtmTarget;
+	if (isWordOut_FoilExpInBtmTarget()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpInBtmTarget();
+
+	idx = enSmsWordWrite_FoilExpOutTopTarget;
+	if (isWordOut_FoilExpOutTopTarget()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpOutTopTarget();
+
+	idx = enSmsWordWrite_FoilExpOutBtmTarget;
+	if (isWordOut_FoilExpOutBtmTarget()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpOutBtmTarget();
+
+	idx = enSmsWordWrite_FoilExpBothTopTarget;
+	if (isWordOut_FoilExpBothTopTarget()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpBothTopTarget();
+
+	idx = enSmsWordWrite_FoilExpBothBtmTarget;
+	if (isWordOut_FoilExpBothBtmTarget()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_FoilExpBothBtmTarget();
+
+	idx = enSmsWordWrite_SpeterTopTarget;
+	if (isWordOut_SpeterTopTarget()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_SpeterTopTarget();
+
+	idx = enSmsWordWrite_SpeterBtmTarget;
+	if (isWordOut_SpeterBtmTarget()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_SpeterBtmTarget();
+
+	idx = enSmsWordWrite_PrmContinuousCnt;
+	if (isWordOut_PrmContinuousCnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_PrmContinuousCnt();
+
+	idx = enSmsWordWrite_PrmSectorNgTabCnt;
+	if (isWordOut_PrmSectorNgTabCnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_PrmSectorNgTabCnt();
+
+	idx = enSmsWordWrite_PrmSectorBaseCnt;
+	if (isWordOut_PrmSectorBaseCnt()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_PrmSectorBaseCnt();
+
+	idx = enSmsWordWrite_AlarmExist;
+	if (isWordOut_AlarmExist()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_AlarmExist();
+
+	idx = enSmsWordWrite_AlarmCode_Buffer;
+	if (isWordOut_AlarmCode_Buffer()) ret = idx + COUNT_ALRAMBUFF;
+	for (int count = 0; count < COUNT_ALRAMBUFF; count++)
+	{
+		m_WriteWordData[count + idx] = getWordOut_AlarmCode_Buffer(count);
+	}
+
+
+	idx = enSmsWordWrite_Cell_Trigger_ID;
+	if (isWordOut_Cell_Trigger_ID()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_Cell_Trigger_ID();
+
+	idx = enSmsWordWrite_Judge;
+	if (isWordOut_Judge()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_Judge();
+
+	idx = enSmsWordWrite_NG_Code;
+	if (isWordOut_NG_Code()) ret = idx;
+	m_WriteWordData[idx] = getWordOut_NG_Code();
+
+
+	//버퍼 block 위치에 + 1 = 크기(size)
+	//쓰기 영역에 쓸 데이터 크기
+	return ret + 1;
 }
 
 void CSiemensPlcIo::SetSlaveId(int nId)
@@ -512,50 +626,46 @@ void CSiemensPlcIo::SetReConnetTimeOut(int nTimeOut)
 
 int CSiemensPlcIo::WriteDataReg(int offset, short data[], int num)
 {
-	CString strMsg;
+	int nRet = CONNECTION_ERROR;
+	if (IsOpened())
+	{
+		nRet = m_pLGIS_Plc->WriteMultipleRegisters(offset, num, (uint16_t*)data);
 
-	int nRet = 0;
-	int nAdd = offset;
-	{	
-		if (m_pLGIS_Plc)
+		if (nRet != PLC_OK)
 		{
-			nRet = m_pLGIS_Plc->WriteMultipleRegisters(nAdd, num, (uint16_t*)data);
-
-			if (nRet < 0)
-			{
-
-			}
-
+			//로그출력
+			LOGDISPLAY_SPEC(2)(" Siemens WriteDataReg Error	code : %d	offset : %d", nRet, offset);
 		}
+
 	}
 
-	return nRet ;
+	return nRet;
 }
 
 int CSiemensPlcIo::ReadDataReg(int offset, short data[], int num)
 {
-	int nRet = 0;
-	int nAdd = offset;
+	int nRet = CONNECTION_ERROR;
+
+	if (IsOpened())
 	{
+		nRet = m_pLGIS_Plc->ReadHoldingRegisters(offset, num, (uint16_t*)data);
 
- 		CString strMsg;
-		if (m_pLGIS_Plc)
+		if (nRet != PLC_OK)
 		{
-			nRet = m_pLGIS_Plc->ReadHoldingRegisters(nAdd, num, (uint16_t*)data);
-
-			if( nRet < 0)
-			{
-			}
+			//로그출력
+			LOGDISPLAY_SPEC(2)(" Siemens ReadDataReg Error	code : %d	offset : %d", nRet, offset);
 		}
-
 	}
+
 	return nRet;
 }
 
 BOOL CSiemensPlcIo::IsOpened()
 {
 	if (m_pLGIS_Plc)
+	{
 		return m_pLGIS_Plc->CheckConnection();
+	}
 
 	return false;
 }
@@ -567,7 +677,7 @@ CString CSiemensPlcIo::GetErrorMsg()
 		if (m_pLGIS_Plc->m_bErr)
 			return m_pLGIS_Plc->m_strErrorMsg;
 		else
-			return CString();
+			return CString(_T(""));
 	}
 	else
 	{
@@ -599,6 +709,8 @@ int CSiemensPlcIo::GetErrorNo()
 int CSiemensPlcIo::OpenPlcIo(void)
 {
 	int ret = 0;
+	//PLC 데이터 변수 값 초기화
+	initDataPlcImp();
 
 	m_pLGIS_Plc = new CLGIS_Plc(m_strIPAddress, m_nPort, m_nReConnetTimeOut, m_pReceiveMsgWnd );
 	//로그출력
@@ -649,6 +761,11 @@ int CSiemensPlcIo::PlcDataReadWritePorc()
 		SiemensPlcProc();
 	}
 	return 0;
+}
+
+BOOL CSiemensPlcIo::isPlcOpen()
+{
+	return IsOpened();
 }
 
 //Out
@@ -775,6 +892,11 @@ int CSiemensPlcIo::SigOutAlarmExist(int nMode)
 void CSiemensPlcIo::EnableWorkSet(BOOL bMode)
 {
 }
+int CSiemensPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
+{
+	return 0;
+}
+
 int CSiemensPlcIo::SigOutDiskCapacityAlarm(int nMode)
 { 
 	setBitOut_DiskSpaceAlarm(nMode);
@@ -786,15 +908,11 @@ int CSiemensPlcIo::SigOutDiskCapacityWarning(int nMode)
 	return 0;
 }
 
-int CSiemensPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
-{
-	return 0;
-}
-
 //Lot End 처리 함수
 void CSiemensPlcIo::SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt)
 {
-
+	setWordOut_Top_Defect_Count_LotEnd(TopDefectCnt);
+	setWordOut_Btm_Defect_Count_LotEnd(BtmDefectCnt);
 }
 
 //In
@@ -837,6 +955,17 @@ int CSiemensPlcIo::SigInInkMarkActive()
 int CSiemensPlcIo::SigInConnectZone()
 {
 	return getBitIn_ConnectZone();
+}
+
+//PLC In Alive 상태를 체크한다.
+BOOL CSiemensPlcIo::AliveBitInCheck()
+{
+	BOOL bAliveBitInCheck = TRUE;
+	if (dwMelsBitInAliveTime > 500)
+	{
+		bAliveBitInCheck = FALSE;
+	}
+	return bAliveBitInCheck;
 }
 
 //임시
@@ -934,7 +1063,7 @@ int CSiemensPlcIo::ReadAllPort_BitOut(BOOL* pSigBitOut)
 { 
 	for (int i = 0; i < MAX_SMS_BITIO_OUT; i++)
 	{
-		if (m_WriteData[i] == 0x01)
+		if (m_WriteBitData[i] == 0x01)
 		{
 			pSigBitOut[i] = TRUE;
 		}
@@ -955,9 +1084,9 @@ CString CSiemensPlcIo::GetInWordData(int idx)
 CString CSiemensPlcIo::GetOutWordData(int idx)
 {
 	CString str = _T("");
-	if (idx < enSmsWordWriteMaxIndex)
+	if (idx < enSmsWordWriteMaxSize)
 	{
-		str.Format(_T("%d"), (int)m_WriteData[SIENENS_WRITEBIT + idx]);
+		str.Format(_T("%d"), (int)m_WriteWordDataRead[idx]);
 	}
 	return str;
 }

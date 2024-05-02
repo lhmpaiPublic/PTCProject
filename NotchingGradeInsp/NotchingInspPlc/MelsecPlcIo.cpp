@@ -14,60 +14,61 @@
 // [ BIT IN ]
 enum MelsBitIn
 {
-	enMelsBitIn_Alive = 0x00000001,
-	enMelsBitIn_Ready = 0x00000002,
-	enMelsBitIn_Run = 0x00000004,
-	enMelsBitIn_Dummy4 = 0x00000008,
-	enMelsBitIn_Dummy5 = 0x00000010,
-	enMelsBitIn_EncoderReset = 0x00000020,
-	enMelsBitIn_TabZeroReset = 0x00000040,
-	enMelsBitIn_Dummy8 = 0x00000080,
+	enMelsBitInAlive = 0x00000000,
+	enMelsBitInReady = 0x00000001,
+	enMelsBitInRun = 0x00000002,
+	enMelsBitInDummy4 = 0x00000003,
+	enMelsBitInDummy5 = 0x00000004,
+	enMelsBitInEncoderReset = 0x00000005,
+	enMelsBitInTabZeroReset = 0x00000006,
+	enMelsBitInDummy8 = 0x00000007,
 
-	enMelsBitIn_Dummy9 = 0x00000101,
-	enMelsBitIn_InkMarkingActive = 0x00000102,
-	enMelsBitIn_ConnectZone = 0x00000104,
-	enMelsBitIn_Dummy12 = 0x00000108,
-	enMelsBitIn_Dummy13 = 0x00000110,
-	enMelsBitIn_Dummy14 = 0x00000120,
-	enMelsBitIn_Dummy15 = 0x00000140,
-	enMelsBitIn_Dummy16 = 0x00000180,
+	enMelsBitInDummy9 = 0x00000100,
+	enMelsBitInInkMarkingActive = 0x00000101,
+	enMelsBitInConnectZone = 0x00000102,
+	enMelsBitInDummy12 = 0x00000103,
+	enMelsBitInDummy13 = 0x00000104,
+	enMelsBitInDummy14 = 0x00000105,
+	enMelsBitInDummy15 = 0x00000106,
+	enMelsBitInDummy16 = 0x00000107,
 
-	enMelsBitIn_Dummy17 = 0x00000201,
-	enMelsBitIn_Dummy18 = 0x00000202,
-	enMelsBitIn_RecipeChange = 0x00000204,
-	enMelsBitIn_LotStartReq = 0x00000208,
-	enMelsBitIn_LotEndReq = 0x00000210,
-
-	enMelsBitIn_AlarmResetReq = 0x00000220,
-	enMelsBitIn_AlarmNgAck = 0x00000240
+	enMelsBitInDummy17 = 0x00000200,
+	enMelsBitInDummy18 = 0x00000201,
+	enMelsBitInRecipeChange = 0x00000202,
+	enMelsBitInLotStartReq = 0x00000203,
+	enMelsBitInLotEndReq = 0x00000204,
+	enMelsBitInAlarmResetReq = 0x00000205,
+	enMelsBitInAlarmNgAck = 0x00000206
 };
 
 // [ BIT OUT ]
 enum MelsBitOut
 {
-	enMelsBitOut_Alive = 0x00000001,
-	enMelsBitOut_Ready = 0x00000002,
-	enMelsBitOut_Dummy3 = 0x00000004,
-	enMelsBitOut_Dummy4 = 0x00000008,
-	enMelsBitOut_Dummy5 = 0x00000010,
-	enMelsBitOut_EncoderSet = 0x00000020,
-	enMelsBitOut_TabZeroReset = 0x00000040,
-	enMelsBitOut_Dummy8 = 0x00000080,
-	enMelsBitOut_DiskSpaceWarning = 0x00000101,
-	enMelsBitOut_DiskSpaceAlarm = 0x00000102,
-	enMelsBitOut_Dummy11 = 0x00000104,
-	enMelsBitOut_Dummy12 = 0x00000108,
-	enMelsBitOut_Dummy13 = 0x00000110,
-	enMelsBitOut_Dummy14 = 0x00000120,
-	enMelsBitOut_Dummy15 = 0x00000140,
-	enMelsBitOut_Dummy16 = 0x00000180,
-	enMelsBitOut_Dummy17 = 0x00000201,
-	enMelsBitOut_Dummy18 = 0x00000202,
-	enMelsBitOut_RecipeChangeAck = 0x00000204,
-	enMelsBitOut_LotStartReqAck = 0x00000208,
-	enMelsBitOut_LotEndReqAck = 0x00000210,
-	enMelsBitOut_AlramResetAck = 0x00000220,
-	enMelsBitOut_AlramNgResetAck = 0x00000240
+	enMelsBitOut_Alive = 0x00000000,
+	enMelsBitOut_Ready = 0x00000001,
+	enMelsBitOut_Dummy3 = 0x00000002,
+	enMelsBitOut_Dummy4 = 0x00000003,
+	enMelsBitOut_Dummy5 = 0x00000004,
+	enMelsBitOut_EncoderSet = 0x00000005,
+	enMelsBitOut_TabZeroReset = 0x00000006,
+	enMelsBitOut_Dummy8 = 0x00000007,
+
+	enMelsBitOut_DiskSpaceWarning = 0x00000100,
+	enMelsBitOut_DiskSpaceAlarm = 0x00000101,
+	enMelsBitOut_Dummy11 = 0x00000102,
+	enMelsBitOut_Dummy12 = 0x00000103,
+	enMelsBitOut_Dummy13 = 0x00000104,
+	enMelsBitOut_Dummy14 = 0x00000105,
+	enMelsBitOut_Dummy15 = 0x00000106,
+	enMelsBitOut_Dummy16 = 0x00000107,
+
+	enMelsBitOut_Dummy17 = 0x00000200,
+	enMelsBitOut_Dummy18 = 0x00000201,
+	enMelsBitOut_RecipeChangeAck = 0x00000202,
+	enMelsBitOut_LotStartReqAck = 0x00000203,
+	enMelsBitOut_LotEndReqAck = 0x00000204,
+	enMelsBitOut_AlramResetAck = 0x00000205,
+	enMelsBitOut_AlramNgResetAck = 0x00000206
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -90,7 +91,7 @@ enum MelsWordRead
 	enMelsWordRead_PrmSectorBaseCnt = 0x0044,
 	enMelsWordRead_AlarmExistAck = 0x0050,
 
-	enMelsWordReadMaxSize = 160,
+	enMelsWordReadMaxSize = MELSEC_WORDINSIZE_MAX //160,
 
 };
 
@@ -144,10 +145,87 @@ enum MelsWordWrite
 	enMelsWordWrite_Judge = 0x0072,
 	enMelsWordWrite_NG_Code = 0x0074,
 
-	enWordWriteMaxSize = 160,
+	enWordWriteMaxSize = MELSEC_WORDOUTSIZE_MAX //160,
 };
 
-CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset_WordIn, WORD wOffset_WordOut, WORD wChannelNo, WORD wMaxPort, WORD wMyStNo, WORD wExtStNo, WORD wSeqStNo)
+//////////////////////////////////////////////////////////////////////////
+// [ DATA READ ]
+enum MelsDwordRead
+{
+	enMelsDwordRead_RecipeNo = (enMelsWordRead_RecipeNo / 2),
+	enMelsDwordRead_RecipeName = (enMelsWordRead_RecipeName / 2),
+	enMelsDwordRead_CELL_ID = (enMelsWordRead_CELL_ID / 2),
+	enMelsDwordRead_FoilExpInTopTarget = (enMelsWordRead_FoilExpInTopTarget / 2),
+	enMelsDwordRead_FoilExpInBtmTarget = (enMelsWordRead_FoilExpInBtmTarget / 2),
+	enMelsDwordRead_FoilExpOutTopTarget = (enMelsWordRead_FoilExpOutTopTarget / 2),
+	enMelsDwordRead_FoilExpOutBtmTarget = (enMelsWordRead_FoilExpOutBtmTarget / 2),
+	enMelsDwordRead_FoilExpBothTopTarget = (enMelsWordRead_FoilExpBothTopTarget / 2),
+	enMelsDwordRead_FoilExpBothBtmTarget = (enMelsWordRead_FoilExpBothBtmTarget / 2),
+	enMelsDwordRead_SpeterTopTarget = (enMelsWordRead_SpeterTopTarget / 2),
+	enMelsDwordRead_SpeterBtmTarget = (enMelsWordRead_SpeterBtmTarget / 2),
+	enMelsDwordRead_PrmContinuousCnt = (enMelsWordRead_PrmContinuousCnt / 2),
+	enMelsDwordRead_PrmSectorNgTabCnt = (enMelsWordRead_PrmSectorNgTabCnt / 2),
+	enMelsDwordRead_PrmSectorBaseCnt = (enMelsWordRead_PrmSectorBaseCnt / 2),
+	enMelsDwordRead_AlarmExistAck = (enMelsWordRead_AlarmExistAck / 2),
+
+	enMelsDwordReadMaxSize = (enMelsWordReadMaxSize / 2),
+
+};
+
+// [ DATA WRITE ]
+enum MelsDwordWrite
+{
+	enMelsDwordWrite_DataReportV1_Ea = (enMelsWordWrite_DataReportV1_Ea / 2),
+	enMelsDwordWrite_DataReportV2_OK = (enMelsWordWrite_DataReportV2_OK / 2),
+	enMelsDwordWrite_DataReportV3_NG = (enMelsWordWrite_DataReportV3_NG / 2),
+	enMelsDwordWrite_DataReportV4_OkRate = (enMelsWordWrite_DataReportV4_OkRate / 2),
+	enMelsDwordWrite_DataReportV5_NgRate = (enMelsWordWrite_DataReportV5_NgRate / 2),
+	enMelsDwordWrite_DataReportV6_RunRate = (enMelsWordWrite_DataReportV6_RunRate / 2),
+	enMelsDwordWrite_Continue_Alarm_Cnt = (enMelsWordWrite_Continue_Alarm_Cnt / 2),
+	enMelsDwordWrite_Heavy_Alarm_Cnt = (enMelsWordWrite_Heavy_Alarm_Cnt / 2),
+
+	enMelsDwordWrite_FoilExpInTop_Alarm_Cnt = (enMelsWordWrite_FoilExpInTop_Alarm_Cnt / 2),
+	enMelsDwordWrite_FoilExpInBottom_Alarm_Cnt = (enMelsWordWrite_FoilExpInBottom_Alarm_Cnt / 2),
+	enMelsDwordWrite_FoilExpOutTop_Alarm_Cnt = (enMelsWordWrite_FoilExpOutTop_Alarm_Cnt / 2),
+	enMelsDwordWrite_FoilExpOutBottom_Alarm_Cnt = (enMelsWordWrite_FoilExpOutBottom_Alarm_Cnt / 2),
+	enMelsDwordWrite_FoilExpBothTop_Alarm_Cnt = (enMelsWordWrite_FoilExpBothTop_Alarm_Cnt / 2),
+	enMelsDwordWrite_FoilExpBothBottom_Alarm_Cnt = (enMelsWordWrite_FoilExpBothBottom_Alarm_Cnt / 2),
+	enMelsDwordWrite_SpeterTop_Alarm_Cnt = (enMelsWordWrite_SpeterTop_Alarm_Cnt / 2),
+	enMelsDwordWrite_SpeterBtm_Alarm_Cnt = (enMelsWordWrite_SpeterBtm_Alarm_Cnt / 2),
+	enMelsDwordWrite_Top_Defect_Count_Real = (enMelsWordWrite_Top_Defect_Count_Real / 2),
+	enMelsDwordWrite_Btm_Defect_Count_Real = (enMelsWordWrite_Btm_Defect_Count_Real / 2),
+	enMelsDwordWrite_Top_Defect_Count_LotEnd = (enMelsWordWrite_Top_Defect_Count_LotEnd / 2),
+	enMelsDwordWrite_Btm_Defect_Count_LotEnd = (enMelsWordWrite_Btm_Defect_Count_LotEnd / 2),
+
+	enMelsDwordWrite_FoilExpInTopTarget = (enMelsWordWrite_FoilExpInTopTarget / 2),
+	enMelsDwordWrite_FoilExpInBottomTarget = (enMelsWordWrite_FoilExpInBottomTarget / 2),
+	enMelsDworddWrite_FoilExpOutTopTarget = (enMelsWordWrite_FoilExpOutTopTarget / 2),
+	enMelsDwordWrite_FoilExpOutBottomTarget = (enMelsWordWrite_FoilExpOutBottomTarget / 2),
+	enMelsDwordWrite_FoilExpBothTopTarget = (enMelsWordWrite_FoilExpBothTopTarget / 2),
+	enMelsDwordWrite_FoilExpBothBottomTarget = (enMelsWordWrite_FoilExpBothBottomTarget / 2),
+	enMelsDwordWrite_SpeterTopTarget = (enMelsWordWrite_SpeterTopTarget / 2),
+	enMelsDwordWrite_SpeterBtmTarget = (enMelsWordWrite_SpeterBtmTarget / 2),
+
+	enMelsDwordWrite_PrmContinuousCnt = (enMelsWordWrite_PrmContinuousCnt / 2),
+	enMelsDwordWrite_PrmSectorNgTabCnt = (enMelsWordWrite_PrmSectorNgTabCnt / 2),
+	enMelsDwordWrite_PrmSectorBaseCnt = (enMelsWordWrite_PrmSectorBaseCnt / 2),
+
+
+	enMelsDwordWrite_AlarmExist = (enMelsWordWrite_AlarmExist / 2),
+	enMelsDwordWrite_AlarmCode_Buffer1 = (enMelsWordWrite_AlarmCode_Buffer1 / 2),
+	enMelsDwordWrite_AlarmCode_Buffer2 = (enMelsWordWrite_AlarmCode_Buffer2 / 2),
+	enMelsDwordWrite_AlarmCode_Buffer3 = (enMelsWordWrite_AlarmCode_Buffer3 / 2),
+	enMelsDwordWrite_AlarmCode_Buffer4 = (enMelsWordWrite_AlarmCode_Buffer4 / 2),
+	enMelsDwordWrite_AlarmCode_Buffer5 = (enMelsWordWrite_AlarmCode_Buffer5 / 2),
+
+	enMelsDwordWrite_Cell_Trigger_ID = (enMelsWordWrite_Cell_Trigger_ID / 2),
+	enMelsDwordWrite_Judge = (enMelsWordWrite_Judge / 2),
+	enMelsDwordWrite_NG_Code = (enMelsWordWrite_NG_Code / 2),
+
+	enDwordWriteMaxSize = (enWordWriteMaxSize / 2),
+};
+
+CMelsecPlcIo::CMelsecPlcIo(DWORD wOffset_BitIn, DWORD wOffset_BitOut, DWORD wOffset_WordIn, DWORD wOffset_WordOut, DWORD wChannelNo, DWORD wMaxPort, DWORD wMyStNo, DWORD wExtStNo, DWORD wSeqStNo)
 {
 	m_wChannelNo = wChannelNo;
 	m_wMaxPort = wMaxPort;
@@ -166,6 +244,19 @@ CMelsecPlcIo::CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset
 
 	m_bEnableWorkSet = TRUE;
 
+	m_bMelsecAlive = 0x1;
+
+	//Alive 신호채크 변수
+	dwMelsBitInAliveTime = 0;
+
+	//PLC 읽기 Data
+	memset(m_ReadBitData, 0xff, MELSEC_BITINSIZE_MAX);
+	memset(m_ReadDwordData, 0xff, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
+
+	//PLC 쓰기 Data
+	memset(m_WriteBitData, 0xff, MELSEC_BITOUTSIZE_MAX);
+	memset(m_WriteDwordData, 0xff, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
+
 	//PLC Open
 	OpenPlcIo();
 }
@@ -179,27 +270,97 @@ CMelsecPlcIo::~CMelsecPlcIo()
 //PLC 데이터 Read / Write 처리 함수
 void CMelsecPlcIo::MelsecPlcProc()
 {
-	//
-	//ReadBitData(0xff, MELSEC_DEVICE_B, 1, 4, true);
+	//Bit Read 영역 읽기
+	//4포트
+	//시작번지 : 0, 읽을 갯수 4
+	byte buffBitIn[MELSEC_BITINSIZE_MAX];
+	memset(buffBitIn, 0, MELSEC_BITINSIZE_MAX);
+	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitIn, MELSEC_BITINSIZE_MAX, m_wOffset_BitIn);
+	//읽은 Bit 데이터 파싱
+	if (std::equal(std::begin(buffBitIn), std::end(buffBitIn), std::begin(m_ReadBitData)) == false)
+	{
+		ReadPlcBitDataParser(buffBitIn);
+		LOGDISPLAY_SPEC(2)(_T("In bit data : %s	offset : %d"), CStrSuport::ChangbytetohexMelsec(buffBitIn, MELSEC_BITINSIZE_MAX, m_wOffset_BitIn), m_wOffset_BitIn);
+	}
 
-	//ReadWordData(0xff, MELSEC_DEVICE_W, 1, 4, true);
+	//word 읽기 영역 읽기(멜섹은 DWORD 를 사용한다.)
+	DWORD buffDwordIn[MELSEC_DWORDINSIZE_MAX];
+	memset(buffDwordIn, 0, MELSEC_DWORDINSIZE_MAX *sizeof(DWORD));
+	ReadDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn);
+	//읽은 Dword 데이터 파싱
+	if (std::equal(std::begin(buffDwordIn), std::end(buffDwordIn), std::begin(m_ReadDwordData)) == false)
+	{
+		ReadPlcWordDataParser((DWORD*)buffDwordIn);
+		LOGDISPLAY_SPEC(2)(_T("In Dword data int :	%s	offset : %d"), CStrSuport::ChanginttohexMelsec((int*)buffDwordIn, MELSEC_DWORDINSIZE_MAX, m_wOffset_WordIn), m_wOffset_WordIn);
+	}
 
-	ReadWordDataEx(0x0, MELSEC_DEVICE_W, 1, 4, true);
+
+	//비트영역 쓰기 데이터 읽기
+	byte* buffBitOut = new byte[MELSEC_BITOUTSIZE_MAX];
+	memset(buffBitOut, 0, MELSEC_BITOUTSIZE_MAX);
+	int portsize = WritePlcBitDataMake(&buffBitOut);
+	if (portsize > 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("Out bit data : %s	offset : %d"), CStrSuport::ChangbytetohexMelsec(buffBitOut, portsize, m_wOffset_BitOut), m_wOffset_BitOut);
+		WriteBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOut, portsize, m_wOffset_BitOut);
+	}
+	delete[] buffBitOut;
+
+	//word 쓰기 영역 (멜섹은 DWORD 를 사용한다.)
+	DWORD* buffDwordOut = new DWORD[MELSEC_DWORDOUTSIZE_MAX];
+	memset(buffDwordOut, 0, MELSEC_DWORDOUTSIZE_MAX*sizeof(DWORD));
+	int dwordwritesize = WritePlcWordDataMake(&buffDwordOut);
+	if (dwordwritesize > 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("Out word data int :	%s	offset : %d"), CStrSuport::ChanginttohexMelsec((int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut), m_wOffset_WordOut);
+		WriteDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordOut, dwordwritesize, m_wOffset_WordOut);
+	}
+	delete[] buffDwordOut;
+
+	//비트영역 쓰기 데이터 읽기
+	byte buffBitOutRead[MELSEC_BITOUTSIZE_MAX];
+	memset(buffBitOutRead, 0, MELSEC_BITOUTSIZE_MAX);
+	ReadBitData(0xff, MELSEC_DEVICE_B, 0, buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut);
+	//읽은 Bit 데이터 비교
+	if (std::equal(std::begin(buffBitOutRead), std::end(buffBitOutRead), std::begin(m_WriteBitData)) == false)
+	{
+		memcpy(m_WriteBitData, buffBitOutRead, MELSEC_BITOUTSIZE_MAX);
+		LOGDISPLAY_SPEC(2)(_T("Out bit data Read :	%s	offset : %d"), CStrSuport::ChangbytetohexMelsec(buffBitOutRead, MELSEC_BITOUTSIZE_MAX, m_wOffset_BitOut), m_wOffset_BitOut);
+	}
+
+	//word 쓰기 영역 읽기(멜섹은 DWORD 를 사용한다.)
+	DWORD buffDwordOutRead[MELSEC_DWORDOUTSIZE_MAX];
+	memset(buffDwordOutRead, 0, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
+	ReadDwordDataEx(0x00, MELSEC_DEVICE_W, 0, (int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut);
+	//읽은 Dword 데이터 비교
+	if (std::equal(std::begin(buffDwordOutRead), std::end(buffDwordOutRead), std::begin(m_WriteDwordData)) == false)
+	{
+		memcpy(m_WriteDwordData, buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX * sizeof(DWORD));
+		LOGDISPLAY_SPEC(2)(_T("Out Word data int Read :	%s	offset : %d"), CStrSuport::ChanginttohexMelsec((int*)buffDwordOutRead, MELSEC_DWORDOUTSIZE_MAX, m_wOffset_WordOut), m_wOffset_WordOut);
+	}
 }
 
 int CMelsecPlcIo::OpenPlcIo(void)
 {
 	int ret = 0;
-	ret = LocalPioOpen();
+	//PLC 데이터 변수 값 초기화
+	initDataPlcImp();
 
-	if (ret != 0)
+	//로그출력
+	LOGDISPLAY_SPEC(2)(_T("PLC Info	ChannelNo : %d	BitIn : %d	BitOut : %d	WordIn : %d	WordOut : %d"),
+		m_wChannelNo,
+		m_wOffset_BitIn,
+		m_wOffset_BitOut,
+		m_wOffset_WordIn,
+		m_wOffset_WordOut);
+
+	if ((m_wOffset_BitIn % 8) || (m_wOffset_BitOut % 8))
 	{
-		//에러로그
+		AfxMessageBox("Melsec Bit Offset 값이 잘못 입력되었습니다.");
 	}
-	else
-	{
-		
-	}
+
+	//멜섹 PLC Open
+	ret = LocalPioOpen();
 
 	return ret;
 }
@@ -209,11 +370,13 @@ int CMelsecPlcIo::LocalPioOpen(BOOL bLockCtrl)
 
 	int	iRet = 0;
 
-	iRet = (int)mdOpen(m_wChannelNo, -1, &m_pPath);
+	iRet = (int)mdOpen((short)m_wChannelNo, -1, &m_pPath);
 
 	if (iRet == 0) 
 	{
 		m_bOpened = TRUE;
+		//로그출력
+		LOGDISPLAY_SPEC(2)("PLC Melsec Open Success Path : %d", m_pPath);
 
 	}
 
@@ -281,46 +444,55 @@ int CMelsecPlcIo::ChangeWorkingSetSize(void)
 	return (nRet);
 }
 
-int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, int num, bool bIn)
+int CMelsecPlcIo::ReadBitData(short stno, int devtype, int startport, byte buff[], int num, int offset)
 {
 	int iRet = 0;
 
-	short	devno, size, * buff;
+	short	devno, size;
 
-	buff = new short[num];
+	short* localbuff;
+	int buffsize = (num / 2) + 1;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
 
 	//읽을 번지 세팅
 	//startport : 8비트만큼 이동 번지, 
-	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_BitIn : m_wOffset_BitOut));
-	size = (short)num * sizeof(short);
+	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + offset);
+	size = (short)num;
 
 	iRet = mdReceive(m_pPath
 		, stno
 		, devtype
 		, devno
 		, &size
-		, buff
+		, localbuff
 	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadBitData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
 
-	chnageEndian(buff, size);
+	memcpy(buff, localbuff, size);
 
-	LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
-
-	delete[] buff;
+	delete[] localbuff;
 
 	return iRet;
 
 }
 
-int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int num, bool bIn)
+int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, short buff[], int num, int offset)
 {
 	int iRet = 0;
 
-	short	devno, size, * buff;
+	short	devno, size;
 
-	buff = new short[num];
+	short* localbuff;
+	int buffsize = num;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
+	devno = (short)(startport + offset);
 	size = (short)num * sizeof(short);
 
 	iRet = mdReceive(m_pPath
@@ -328,30 +500,35 @@ int CMelsecPlcIo::ReadWordData(short stno, int devtype, int startport, int num, 
 		, devtype
 		, devno
 		, &size
-		, buff
+		, localbuff
 	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadWordData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
 
-	chnageEndian(buff, size);
+	memcpy(buff, localbuff, size);
 
-	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
-
-	delete[] buff;
+	delete[] localbuff;
 
 	return iRet;
 
 }
 
-int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int num, bool bIn)
+int CMelsecPlcIo::ReadWordDataEx(long netNo, int devtype, int startport, short buff[], int num, int offset)
 {
 	int iRet = 0;
 
 	long	devno, size;
-	short * buff;
 
-	buff = new short[num];
+	short* localbuff;
+	int buffsize = num;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
 
-	devno = (short)(startport + (m_wMyStNo - 1) * 4 * 8 + (bIn ? m_wOffset_WordIn : m_wOffset_WordOut));
-	size = (short)num * sizeof(short);
+	devno = (long)(startport + offset);
+	size = (long)num * sizeof(short);
 
 	iRet = mdReceiveEx(m_pPath
 		, netNo
@@ -359,16 +536,599 @@ int CMelsecPlcIo::ReadWordDataEx(short netNo, int devtype, int startport, int nu
 		, devtype
 		, devno
 		, &size
-		, buff
+		, localbuff
 	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadWordDataEx mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	}
 
-	chnageEndian(buff, size);
+	memcpy(buff, localbuff, size);
 
-	LOGDISPLAY_SPEC(2)(_T("In Word data :	%s"), CStrSuport::ChangshorttohexTab(buff, num));
-
-	delete[] buff;
+	delete[] localbuff;
 
 	return iRet;
+}
+
+int CMelsecPlcIo::ReadDwordData(short stno, int devtype, int startport, int buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	short	devno, size;
+
+	short* localbuff;
+	int buffsize = num*2;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (short)(startport + offset);
+	size = (short)num * sizeof(int);
+
+	iRet = mdReceive(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadDwordData mdReceive Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
+
+	memcpy(buff, localbuff, size);
+
+	delete[] localbuff;
+
+	return iRet;
+
+}
+
+int CMelsecPlcIo::ReadDwordDataEx(long netNo, int devtype, int startport, int buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	long	devno, size;
+
+	short* localbuff;
+	int buffsize = num*2;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (long)(startport + offset);
+	size = (long)num * sizeof(int);
+
+	iRet = mdReceiveEx(m_pPath
+		, netNo
+		, m_wSeqStNo
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("ReadDwordDataEx mdReceiveEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	}
+
+	memcpy(buff, localbuff, size);
+
+	delete[] localbuff;
+
+	return iRet;
+}
+
+int CMelsecPlcIo::WriteBitData(short stno, int devtype, int startport, byte buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	short	devno, size;
+
+	short* localbuff;
+	int buffsize = (num / 2) + 1;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	//읽을 번지 세팅
+	//startport : 8비트만큼 이동 번지, 
+	devno = (short)(startport * 8 + (m_wMyStNo - 1) * 4 * 8 + offset);
+	size = (short)num;
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdSend(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteBitData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
+
+	delete[] localbuff;
+
+	return iRet;
+
+}
+
+int CMelsecPlcIo::WriteWordData(short stno, int devtype, int startport, short buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	short	devno, size;
+
+	short* localbuff;
+	int buffsize = num;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (short)(startport + offset);
+	size = (short)num * sizeof(short);
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdSend(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteWordData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
+
+	delete[] localbuff;
+
+	return iRet;
+
+}
+
+int CMelsecPlcIo::WriteWordDataEx(long netNo, int devtype, int startport, short buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	long	devno, size;
+
+	short* localbuff;
+	int buffsize = num;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (long)(startport + offset);
+	size = (long)num * sizeof(short);
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdSendEx(m_pPath
+		, netNo
+		, m_wSeqStNo
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteWordDataEx mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	}
+
+	delete[] localbuff;
+
+	return iRet;
+}
+
+int CMelsecPlcIo::WriteDwordData(short stno, int devtype, int startport, int buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	short	devno, size;
+
+	short* localbuff;
+	int buffsize = num * 2;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (short)(startport + offset);
+	size = (short)num * sizeof(int);
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdSend(m_pPath
+		, stno
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteDwordData mdSend Error	code : %d	stno : %d	devtype : %d	devno : %d	offset : %d"), iRet, stno, devtype, devno, offset);
+	}
+
+	delete[] localbuff;
+
+	return iRet;
+
+}
+
+int CMelsecPlcIo::WriteDwordDataEx(long netNo, int devtype, int startport, int buff[], int num, int offset)
+{
+	int iRet = 0;
+
+	long	devno, size;
+
+	short* localbuff;
+	int buffsize = num * 2;
+	localbuff = new short[buffsize];
+	memset(localbuff, 0, buffsize * sizeof(short));
+
+	devno = (long)(startport + offset);
+	size = (long)num * sizeof(int);
+
+	memcpy(localbuff, buff, size);
+
+	iRet = mdSendEx(m_pPath
+		, netNo
+		, m_wSeqStNo
+		, devtype
+		, devno
+		, &size
+		, localbuff
+	);
+	//에러 시 로그 출력
+	if (iRet != 0)
+	{
+		LOGDISPLAY_SPEC(2)(_T("WriteDwordDataEx mdSendEx Error	code : %d	netNo : %d	SeqStNo : %d	devtype : %d	devno : %d	offset : %d"), iRet, netNo, m_wSeqStNo, devtype, devno, offset);
+	}
+
+	delete[] localbuff;
+
+	return iRet;
+}
+
+//PLC read Data Parser 함수
+void CMelsecPlcIo::ReadPlcBitDataParser(BYTE* data)
+{
+	//PLC 통신 상태 체크 Alive 이전 변수 백업
+	BOOL bBitIn_AliveBackup = getBitIn_Alive();
+
+	if (m_ReadBitData[(enMelsBitInAlive >> 8)&0xff] ^ data[(enMelsBitInAlive >> 8) & 0xff]) setBitIn_Alive((data[(enMelsBitInAlive >> 8) & 0xff]>>(enMelsBitInAlive&0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInReady >> 8) & 0xff] ^ data[(enMelsBitInReady >> 8) & 0xff]) setBitIn_Ready((data[(enMelsBitInReady >> 8) & 0xff] >> (enMelsBitInReady & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInRun >> 8) & 0xff] ^ data[(enMelsBitInRun >> 8) & 0xff]) setBitIn_Run((data[(enMelsBitInRun >> 8) & 0xff] >> (enMelsBitInRun & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInEncoderReset >> 8) & 0xff] ^ data[(enMelsBitInEncoderReset >> 8) & 0xff]) setBitIn_EncoderReset((data[(enMelsBitInEncoderReset >> 8) & 0xff] >> (enMelsBitInEncoderReset & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInTabZeroReset >> 8) & 0xff] ^ data[(enMelsBitInTabZeroReset >> 8) & 0xff]) setBitIn_TabZeroReset((data[(enMelsBitInTabZeroReset >> 8) & 0xff] >> (enMelsBitInTabZeroReset & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInInkMarkingActive >> 8) & 0xff] ^ data[(enMelsBitInInkMarkingActive >> 8) & 0xff]) setBitIn_InkMarkingActive((data[(enMelsBitInInkMarkingActive >> 8) & 0xff] >> (enMelsBitInInkMarkingActive & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInConnectZone >> 8) & 0xff] ^ data[(enMelsBitInConnectZone >> 8) & 0xff]) setBitIn_ConnectZone((data[(enMelsBitInConnectZone >> 8) & 0xff] >> (enMelsBitInConnectZone & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInRecipeChange >> 8) & 0xff] ^ data[(enMelsBitInRecipeChange >> 8) & 0xff]) setBitIn_RecipeChange((data[(enMelsBitInRecipeChange >> 8) & 0xff] >> (enMelsBitInRecipeChange & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInLotStartReq >> 8) & 0xff] ^ data[(enMelsBitInLotStartReq >> 8) & 0xff]) setBitIn_LotStartReq((data[(enMelsBitInLotStartReq >> 8) & 0xff] >> (enMelsBitInLotStartReq & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInLotEndReq >> 8) & 0xff] ^ data[(enMelsBitInLotEndReq >> 8) & 0xff]) setBitIn_LotEndReq((data[(enMelsBitInLotEndReq >> 8) & 0xff] >> (enMelsBitInLotEndReq & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInAlarmResetReq >> 8) & 0xff] ^ data[(enMelsBitInAlarmResetReq >> 8) & 0xff]) setBitIn_AlarmResetReq((data[(enMelsBitInAlarmResetReq >> 8) & 0xff] >> (enMelsBitInAlarmResetReq & 0xff)) & 0x1);
+	if (m_ReadBitData[(enMelsBitInAlarmNgAck >> 8) & 0xff] ^ data[(enMelsBitInAlarmNgAck >> 8) & 0xff]) setBitIn_AlarmNgAck((data[(enMelsBitInAlarmNgAck >> 8) & 0xff] >> (enMelsBitInAlarmNgAck & 0xff)) & 0x1);
+
+	//PLC 타이머 100ms 주기 : 1000ms 이상에서 PLC 신호 없으면 끊김 확인
+	dwMelsBitInAliveTime = dwMelsBitInAliveTime + 100;
+	//Alive 주기 0.5초 주기로 0/1 반복해서 변함
+	if (getBitIn_Alive() != bBitIn_AliveBackup)
+	{
+		dwMelsBitInAliveTime = 0;
+	}
+
+	memcpy(m_ReadBitData, data, MELSEC_BITINSIZE_MAX);
+}
+void CMelsecPlcIo::ReadPlcWordDataParser(DWORD* data)
+{
+	if (m_ReadDwordData[enMelsDwordRead_RecipeNo] ^ data[enMelsDwordRead_RecipeNo]) setWordIn_RecipeNo(data[enMelsDwordRead_RecipeNo]);
+	if ((m_ReadDwordData[enMelsDwordRead_RecipeName] ^ data[enMelsDwordRead_RecipeName]) |
+		(m_ReadDwordData[enMelsDwordRead_RecipeName + 1] ^ data[enMelsDwordRead_RecipeName + 1]) |
+		(m_ReadDwordData[enMelsDwordRead_RecipeName + 2] ^ data[enMelsDwordRead_RecipeName + 2]) |
+		(m_ReadDwordData[enMelsDwordRead_RecipeName + 3] ^ data[enMelsDwordRead_RecipeName + 3]))
+		setWordIn_RecipeName(MakeRecipeName(&data[enMelsDwordRead_RecipeName]));
+
+	if ((m_ReadDwordData[enMelsDwordRead_CELL_ID] ^ data[enMelsDwordRead_CELL_ID]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 1] ^ data[enMelsDwordRead_CELL_ID + 1]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 2] ^ data[enMelsDwordRead_CELL_ID + 2]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 3] ^ data[enMelsDwordRead_CELL_ID + 3]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 4] ^ data[enMelsDwordRead_CELL_ID + 4]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 5] ^ data[enMelsDwordRead_CELL_ID + 5]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 6] ^ data[enMelsDwordRead_CELL_ID + 6]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 7] ^ data[enMelsDwordRead_CELL_ID + 7]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 8] ^ data[enMelsDwordRead_CELL_ID + 8]) |
+		(m_ReadDwordData[enMelsDwordRead_CELL_ID + 9] ^ data[enMelsDwordRead_CELL_ID + 9]))
+		setWordIn_CELL_ID(MakeCellId(&data[enMelsDwordRead_CELL_ID]));
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpInTopTarget] ^ data[enMelsDwordRead_FoilExpInTopTarget]) setWordIn_FoilExpInTopTarget(data[enMelsDwordRead_FoilExpInTopTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpInBtmTarget] ^ data[enMelsDwordRead_FoilExpInBtmTarget]) setWordIn_FoilExpInBtmTarget(data[enMelsDwordRead_FoilExpInBtmTarget]);
+
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpOutTopTarget] ^ data[enMelsDwordRead_FoilExpOutTopTarget]) setWordIn_FoilExpOutTopTarget(data[enMelsDwordRead_FoilExpOutTopTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpOutBtmTarget] ^ data[enMelsDwordRead_FoilExpOutBtmTarget]) setWordIn_FoilExpOutBtmTarget(data[enMelsDwordRead_FoilExpOutBtmTarget]);
+
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpBothTopTarget] ^ data[enMelsDwordRead_FoilExpBothTopTarget]) setWordIn_FoilExpBothTopTarget(data[enMelsDwordRead_FoilExpBothTopTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_FoilExpBothBtmTarget] ^ data[enMelsDwordRead_FoilExpBothBtmTarget]) setWordIn_FoilExpBothBtmTarget(data[enMelsDwordRead_FoilExpBothBtmTarget]);
+
+	if (m_ReadDwordData[enMelsDwordRead_SpeterTopTarget] ^ data[enMelsDwordRead_SpeterTopTarget]) setWordIn_SpeterTopTarget(data[enMelsDwordRead_SpeterTopTarget]);
+	if (m_ReadDwordData[enMelsDwordRead_SpeterBtmTarget] ^ data[enMelsDwordRead_SpeterBtmTarget]) setWordIn_SpeterBtmTarget(data[enMelsDwordRead_SpeterBtmTarget]);
+
+	if (m_ReadDwordData[enMelsDwordRead_PrmContinuousCnt] ^ data[enMelsDwordRead_PrmContinuousCnt]) setWordIn_PrmContinuousCnt(data[enMelsDwordRead_PrmContinuousCnt]);
+	if (m_ReadDwordData[enMelsDwordRead_PrmSectorNgTabCnt] ^ data[enMelsDwordRead_PrmSectorNgTabCnt]) setWordIn_PrmSectorNgTabCnt(data[enMelsDwordRead_PrmSectorNgTabCnt]);
+	if (m_ReadDwordData[enMelsDwordRead_PrmSectorBaseCnt] ^ data[enMelsDwordRead_PrmSectorBaseCnt]) setWordIn_PrmSectorBaseCnt(data[enMelsDwordRead_PrmSectorBaseCnt]);
+
+	if (m_ReadDwordData[enMelsDwordRead_AlarmExistAck] ^ data[enMelsDwordRead_AlarmExistAck]) setWordIn_AlarmExistAck(data[enMelsDwordRead_AlarmExistAck]);
+
+	memcpy(m_ReadDwordData, data, sizeof(DWORD) * MELSEC_DWORDINSIZE_MAX);
+}
+//레시피 명을 만든다.
+CString CMelsecPlcIo::MakeRecipeName(DWORD* data)
+{
+	CString str = _T("");
+
+	BYTE byteData[MELSEC_READRECIPENAME +1] = { 0, };
+	memcpy(byteData, data, MELSEC_READRECIPENAME);
+	byteData[MELSEC_READRECIPENAME] = '\0';
+	str = (char*)byteData;
+
+	str.TrimRight();
+	str.TrimLeft();
+	AprData.m_SeqDataIN.strRecipeName = str;
+
+	return str;
+}
+//CELL ID를 만든다.
+CString CMelsecPlcIo::MakeCellId(DWORD* data)
+{
+	CString str = _T("");
+
+	BYTE byteData[MELSEC_READCELLID + 1] = { 0, };
+	memcpy(byteData, data, MELSEC_READCELLID);
+	byteData[MELSEC_READCELLID] = '\0';
+	str = (char*)byteData;
+
+	str.TrimRight();
+	str.TrimLeft();
+	AprData.m_SeqDataIN.strCell_ID = str;
+
+	return str;
+}
+
+
+//PLC write Bit Make 함수
+int CMelsecPlcIo::WritePlcBitDataMake(BYTE** data)
+{
+	//Write Data Block Num
+	int ret = -1;
+
+	int port = (enMelsBitOut_Alive >> 8) & 0xff;
+	int shift = enMelsBitOut_Alive & 0xff;
+	if (isBitOut_Alive()) ret = port;
+	*(*data + port) |= ((getBitOut_Alive() & 0x1) << shift);	
+
+
+	port = (enMelsBitOut_Ready >> 8) & 0xff;
+	shift = enMelsBitOut_Ready & 0xff;
+	if (isBitOut_Ready()) ret = port;
+	*(*data + port) |= ((getBitOut_Ready() & 0x1) << shift);
+
+
+	port = (enMelsBitOut_EncoderSet >> 8) & 0xff;
+	shift = enMelsBitOut_EncoderSet & 0xff;
+	if (isBitOut_EncoderSet()) ret = port;
+	*(*data + port) |= ((getBitOut_EncoderSet() & 0x1) << shift);
+
+	port = (enMelsBitOut_TabZeroReset >> 8) & 0xff;
+	shift = enMelsBitOut_TabZeroReset & 0xff;
+	if (isBitOut_TabZeroReset()) ret = port;
+	*(*data + port) |= ((getBitOut_TabZeroReset() & 0x1) << shift);
+
+	port = (enMelsBitOut_DiskSpaceWarning >> 8) & 0xff;
+	shift = enMelsBitOut_DiskSpaceWarning & 0xff;
+	if (isBitOut_DiskSpaceWarning()) ret = port;
+	*(*data + port) |= ((getBitOut_DiskSpaceWarning() & 0x1) << shift);
+
+	static char b = 0;
+	b ^= 0x1;
+	port = (enMelsBitOut_DiskSpaceAlarm >> 8) & 0xff;
+	shift = enMelsBitOut_DiskSpaceAlarm & 0xff;
+	if (isBitOut_DiskSpaceAlarm()) ret = port;
+	*(*data + port) |= ((getBitOut_DiskSpaceAlarm() & 0x1) << shift);
+
+	port = (enMelsBitOut_RecipeChangeAck >> 8) & 0xff;
+	shift = enMelsBitOut_RecipeChangeAck & 0xff;
+	if (isBitOut_RecipeChangeAck()) ret = port;
+	*(*data + port) |= ((getBitOut_RecipeChangeAck() & 0x1) << shift);
+
+
+	port = (enMelsBitOut_LotStartReqAck >> 8) & 0xff;
+	shift = enMelsBitOut_LotStartReqAck & 0xff;
+	if (isBitOut_LotStartReqAck()) ret = port;
+	*(*data + port) |= ((getBitOut_LotStartReqAck() & 0x1) << shift);
+
+
+	port = (enMelsBitOut_LotEndReqAck >> 8) & 0xff;
+	shift = enMelsBitOut_LotEndReqAck & 0xff;
+	if (isBitOut_LotEndReqAck()) ret = port;
+	*(*data + port) |= ((getBitOut_LotEndReqAck() & 0x1) << shift);
+
+	port = (enMelsBitOut_AlramResetAck >> 8) & 0xff;
+	shift = enMelsBitOut_AlramResetAck & 0xff;
+	if (isBitOut_AlarmResetAck()) ret = port;
+	*(*data + port) |= ((getBitOut_AlarmResetAck() & 0x1) << shift);
+
+	port = (enMelsBitOut_AlramNgResetAck >> 8) & 0xff;
+	shift = enMelsBitOut_AlramNgResetAck & 0xff;
+	if (isBitOut_AlarmNgResetAck()) ret = port;
+	*(*data + port) |= ((getBitOut_AlarmNgResetAck() & 0x1) << shift);
+
+
+//버퍼 block 위치에 + 1 = 크기(size)
+//쓰기 영역에 쓸 데이터 크기
+	return ret + 1;
+}
+
+//PLC write Bit Make 함수
+int CMelsecPlcIo::WritePlcWordDataMake(DWORD** data)
+{
+	int ret = -1;
+
+	int idx = enMelsDwordWrite_DataReportV1_Ea;;
+	if (isWordOut_DataReportV1_Ea()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV1_Ea();
+
+	idx = enMelsDwordWrite_DataReportV2_OK;;
+	if (isWordOut_DataReportV2_OK()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV2_OK();
+
+	idx = enMelsDwordWrite_DataReportV3_NG;;
+	if (isWordOut_DataReportV3_NG()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV3_NG();
+
+	idx = enMelsDwordWrite_DataReportV4_OkRate;;
+	if (isWordOut_DataReportV4_OkRate()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV4_OkRate();
+
+	idx = enMelsDwordWrite_DataReportV5_NgRate;;
+	if (isWordOut_DataReportV5_NgRate()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV5_NgRate();
+
+	idx = enMelsDwordWrite_DataReportV6_RunRate;;
+	if (isWordOut_DataReportV6_RunRate()) ret = idx;
+	*(*data + idx) = getWordOut_DataReportV6_RunRate();
+
+	idx = enMelsDwordWrite_Continue_Alarm_Cnt;;
+	if (isWordOut_Continue_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_Continue_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_Heavy_Alarm_Cnt;;
+	if (isWordOut_Heavy_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_Heavy_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpInTop_Alarm_Cnt;;
+	if (isWordOut_FoilExpInTop_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpInTop_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpInBottom_Alarm_Cnt;;
+	if (isWordOut_FoilExpInBtm_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpInBtm_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpOutTop_Alarm_Cnt;
+	if (isWordOut_FoilExpOutTop_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpOutTop_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpOutBottom_Alarm_Cnt;;
+	if (isWordOut_FoilExpOutBtm_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpOutBtm_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpBothTop_Alarm_Cnt;;
+	if (isWordOut_FoilExpBothTop_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpBothTop_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_FoilExpBothBottom_Alarm_Cnt;;
+	if (isWordOut_FoilExpBothBtm_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpBothBtm_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_SpeterTop_Alarm_Cnt;;
+	if (isWordOut_SpeterTop_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_SpeterTop_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_SpeterBtm_Alarm_Cnt;;
+	if (isWordOut_SpeterBtm_Alarm_Cnt()) ret = idx;
+	*(*data + idx) = getWordOut_SpeterBtm_Alarm_Cnt();
+
+	idx = enMelsDwordWrite_Top_Defect_Count_Real;;
+	if (isWordOut_Top_Defect_Count_Real()) ret = idx;
+	*(*data + idx) = getWordOut_Top_Defect_Count_Real();
+
+	idx = enMelsDwordWrite_Btm_Defect_Count_Real;;
+	if (isWordOut_Btm_Defect_Count_Real()) ret = idx;
+	*(*data + idx) = getWordOut_Btm_Defect_Count_Real();
+
+	idx = enMelsDwordWrite_Top_Defect_Count_LotEnd;;
+	if (isWordOut_Top_Defect_Count_LotEnd()) ret = idx;
+	*(*data + idx) = getWordOut_Top_Defect_Count_LotEnd();
+
+	idx = enMelsDwordWrite_Btm_Defect_Count_LotEnd;;
+	if (isWordOut_Btm_Defect_Count_LotEnd()) ret = idx;
+	*(*data + idx) = getWordOut_Btm_Defect_Count_LotEnd();
+
+	idx = enMelsDwordWrite_FoilExpInTopTarget;;
+	if (isWordOut_FoilExpInTopTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpInTopTarget();
+
+	idx = enMelsDwordWrite_FoilExpInBottomTarget;;
+	if (isWordOut_FoilExpInBtmTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpInBtmTarget();
+
+	idx = enMelsDworddWrite_FoilExpOutTopTarget;;
+	if (isWordOut_FoilExpOutTopTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpOutTopTarget();
+
+	idx = enMelsDwordWrite_FoilExpOutBottomTarget;;
+	if (isWordOut_FoilExpOutBtmTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpOutBtmTarget();
+
+	idx = enMelsDwordWrite_FoilExpBothTopTarget;;
+	if (isWordOut_FoilExpBothTopTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpBothTopTarget();
+
+	idx = enMelsDwordWrite_FoilExpBothBottomTarget;;
+	if (isWordOut_FoilExpBothBtmTarget()) ret = idx;
+	*(*data + idx) = getWordOut_FoilExpBothBtmTarget();
+
+	idx = enMelsDwordWrite_SpeterTopTarget;;
+	if (isWordOut_SpeterTopTarget()) ret = idx;
+	*(*data + idx) = getWordOut_SpeterTopTarget();
+
+	idx = enMelsDwordWrite_SpeterBtmTarget;;
+	if (isWordOut_SpeterBtmTarget()) ret = idx;
+	*(*data + idx) = getWordOut_SpeterBtmTarget();
+
+	idx = enMelsDwordWrite_PrmContinuousCnt;;
+	if (isWordOut_PrmContinuousCnt()) ret = idx;
+	*(*data + idx) = getWordOut_PrmContinuousCnt();
+
+	idx = enMelsDwordWrite_PrmSectorNgTabCnt;;
+	if (isWordOut_PrmSectorNgTabCnt()) ret = idx;
+	*(*data + idx) = getWordOut_PrmSectorNgTabCnt();
+
+	idx = enMelsDwordWrite_PrmSectorBaseCnt;;
+	if (isWordOut_PrmSectorBaseCnt()) ret = idx;
+	*(*data + idx) = getWordOut_PrmSectorBaseCnt();
+
+	idx = enMelsDwordWrite_AlarmExist;;
+	if (isWordOut_AlarmExist()) ret = idx;
+	*(*data + idx) = getWordOut_AlarmExist();
+
+	idx = enMelsDwordWrite_AlarmCode_Buffer1 + (MELSEC_COUNT_ALRAMBUFF - 1);
+	if (isWordOut_AlarmCode_Buffer()) ret = idx;
+	for (int num = 0; num < MELSEC_COUNT_ALRAMBUFF; num++)
+	{
+		*(*data+enMelsDwordWrite_AlarmCode_Buffer1 + num) = getWordOut_AlarmCode_Buffer(num);
+	}
+
+	idx = enMelsDwordWrite_Cell_Trigger_ID;;
+	if (isWordOut_Cell_Trigger_ID()) ret = idx;
+	*(*data + idx) = getWordOut_Cell_Trigger_ID();
+
+	idx = enMelsDwordWrite_Judge;;
+	if (isWordOut_Judge()) ret = idx;
+	*(*data + idx) = getWordOut_Judge();
+
+	idx = enMelsDwordWrite_NG_Code;;
+	if (isWordOut_NG_Code()) ret = idx;
+	*(*data + idx) = getWordOut_NG_Code();
+
+	//버퍼 block 위치에 + 1 = 크기(size)
+	//쓰기 영역에 쓸 데이터 크기
+	return ret + 1;
 }
 
 void CMelsecPlcIo::chnageEndian(short data[], int size)
@@ -402,6 +1162,11 @@ int CMelsecPlcIo::PlcDataReadWritePorc()
 		MelsecPlcProc();
 	}
 	return 0;
+}
+
+BOOL CMelsecPlcIo::isPlcOpen()
+{
+	return IsOpened();
 }
 
 //Out
@@ -445,8 +1210,8 @@ int CMelsecPlcIo::SigOutReady(int nMode)
 }
 int CMelsecPlcIo::SigOutAlivePulse(int nInMode)
 { 
-	m_bSmsAlive ^= 0x1;
-	setBitOut_Alive(m_bSmsAlive);
+	m_bMelsecAlive ^= 0x1;
+	setBitOut_Alive(m_bMelsecAlive);
 	return 0;
 }
 int CMelsecPlcIo::SigOutTabZeroReset(int nMode)
@@ -515,8 +1280,8 @@ BOOL CMelsecPlcIo::GetConnectZone()
 }
 int CMelsecPlcIo::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 {
-	m_bSmsAlive ^= 0x1;
-	setBitOut_Alive(m_bSmsAlive);
+	m_bMelsecAlive ^= 0x1;
+	setBitOut_Alive(m_bMelsecAlive);
 	setBitOut_Ready(bIsReady);
 	return 0; 
 }
@@ -529,6 +1294,11 @@ void CMelsecPlcIo::EnableWorkSet(BOOL bMode)
 {
 	m_bEnableWorkSet = bMode;
 }
+int CMelsecPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
+{
+	return 0;
+}
+
 int CMelsecPlcIo::SigOutDiskCapacityAlarm(int nMode)
 { 
 	setBitOut_DiskSpaceAlarm(nMode);
@@ -540,15 +1310,11 @@ int CMelsecPlcIo::SigOutDiskCapacityWarning(int nMode)
 	return 0;
 }
 
-int CMelsecPlcIo::SignalBitOut(int nIntegration, int nMode, BOOL bLocal)
-{
-	return 0;
-}
-
 //Lot End 처리 함수
 void CMelsecPlcIo::SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt)
 {
-
+	setWordOut_Top_Defect_Count_LotEnd(TopDefectCnt);
+	setWordOut_Btm_Defect_Count_LotEnd(BtmDefectCnt);
 }
 
 //In
@@ -591,6 +1357,17 @@ int CMelsecPlcIo::SigInInkMarkActive()
 int CMelsecPlcIo::SigInConnectZone()
 {
 	return getBitIn_ConnectZone();
+}
+
+//PLC In Alive 상태를 체크한다.
+BOOL CMelsecPlcIo::AliveBitInCheck()
+{
+	BOOL bAliveBitInCheck = TRUE;
+	if (dwMelsBitInAliveTime > 500)
+	{
+		bAliveBitInCheck = FALSE;
+	}
+	return bAliveBitInCheck;
 }
 
 //임시
@@ -674,24 +1451,47 @@ int CMelsecPlcIo::WriteBlockData(void* pGlobalData)
 
 int CMelsecPlcIo::ReadAllPort_BitIn(BOOL* pSigBitIn)
 { 
-
+	int nBitPos = 0;
+	for (int port = 0; port < MAX_USE_PORT; port++) {
+		for (int bit = 0; bit < MAX_PORT_BIT; bit++) {
+			if (m_ReadBitData[port] & (0x01 << bit)) {
+				nBitPos = (port * MAX_PORT_BIT) + bit;
+				pSigBitIn[nBitPos] = TRUE;
+			}
+		}
+	}
 	return 0; 
 }
 int CMelsecPlcIo::ReadAllPort_BitOut(BOOL* pSigBitOut)
 { 
+	int nBitPos = 0;
+	for (int port = 0; port < MAX_USE_PORT; port++) {
+		for (int bit = 0; bit < MAX_PORT_BIT; bit++) {
+			if (m_WriteBitData[port] & (0x01 << bit)) {
+				nBitPos = (port * MAX_PORT_BIT) + bit;
+				pSigBitOut[nBitPos] = TRUE;
 
+			}
+		}
+	}
 	return 0; 
 }
 
 CString CMelsecPlcIo::GetInWordData(int idx)
 {
 	CString str = _T("");
-
+	if (idx < MELSEC_DWORDINSIZE_MAX)
+	{
+		str.Format(_T("%d"), (int)m_ReadDwordData[idx]);
+	}
 	return str;
 }
 CString CMelsecPlcIo::GetOutWordData(int idx)
 {
 	CString str = _T("");
-
+	if (idx < MELSEC_DWORDOUTSIZE_MAX)
+	{
+		str.Format(_T("%d"), (int)m_WriteDwordData[idx]);
+	}
 	return str;
 }

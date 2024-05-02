@@ -55,9 +55,6 @@ public :
 	//Trigger, Marking 스래드 함수
 	static UINT CtrlThreadCounter(LPVOID pParam);
 
-	//input ID를 가져온다.
-	static int GetInputReadId();
-
 	//카운터 보드 Socket 생성 및 접속 함수
 	int ConnectTrigger(const CString& ip, int port, int mode = CTriggerSocket::TCP_MODE);
 

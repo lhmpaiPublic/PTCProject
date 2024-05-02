@@ -506,7 +506,9 @@ void CModeDlg::Refresh()
 
 	// 검사중/정지, 각 Device 연결상태 Display
 
+	//PLC Open 체크, PLC Alive 체크
 	BOOL bPlc = FALSE ;
+
 	BOOL bIo = FALSE;
 	BOOL bLamp = FALSE;
 	BOOL bGrabber = TRUE;
@@ -516,6 +518,12 @@ void CModeDlg::Refresh()
 	if (theApp.m_pPioCtrl != NULL) 
 	{
 		bPlc = theApp.m_pPioCtrl->IsOpened();
+	}
+#else
+	if(theApp.m_pSigProc)
+	{
+		//PLC Open 상태 체크
+		bPlc = (theApp.m_pSigProc->isPlcOpen() & theApp.m_pSigProc->AliveBitInCheck());
 	}
 #endif //NEW_PLCTYPE
 
@@ -557,15 +565,22 @@ void CModeDlg::Refresh()
 		m_stState.SetWindowText(strState);
 
 	}
-	if (m_bPlcLastFlag != bPlc) {
-		if (bPlc == TRUE) {
+
+	if (m_bPlcLastFlag != bPlc)
+	{
+		if (bPlc == TRUE)
+		{
+			m_bPlcLastFlag = bPlc;
 			clrBk = RGB(100, 255, 100);
 		}
-		else {
+		else
+		{
+			m_bPlcLastFlag = bPlc;
 			clrBk = RGB(255, 100, 100);
 		}
 		m_stPlcState.SetBackgroundColor(clrBk);
 	}
+
 	if (m_bIoLastFlag != bIo) {
 		if (bIo == TRUE) {
 			clrBk = RGB(100, 255, 100);

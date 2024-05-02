@@ -203,6 +203,8 @@ int CSigProc::ReadPLC_device(int address, short* data)
 	return (0);
 }
 
+short	m_sSmsSigBItIN_Backup[MAX_SMS_BITIO_IN] = { 0, };
+BYTE	m_btSigBItIN_Backup[MAX_USE_PORT] = { 0, };
 int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 {
 	ASSERT(pSigBitIn);
@@ -215,6 +217,13 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 	if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
 	{
 		m_pPioCtrl->ReadAllPort_BitIn( (BYTE*)m_sSmsSigBItIN, MAX_SMS_BITIO_IN);
+		//읽은 Bit 데이터 출력
+		if (std::equal(std::begin(m_sSmsSigBItIN), std::end(m_sSmsSigBItIN), std::begin(m_sSmsSigBItIN_Backup)) == false)
+		{
+			memcpy(m_sSmsSigBItIN_Backup, m_sSmsSigBItIN, MAX_SMS_BITIO_IN * sizeof(short));
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangshorttohexSiemens(m_sSmsSigBItIN, MAX_SMS_BITIO_IN, AprData.m_System.m_nBitIn));
+		}
+
 		for (int i = 0; i < MAX_SMS_BITIO_IN; i++)
 		{
 
@@ -232,6 +241,12 @@ int CSigProc::ReadAllPort_BitIn( BOOL* pSigBitIn )
 	else
 	{
 		m_pPioCtrl->ReadAllPort_BitIn(m_btSigBItIN, MAX_USE_PORT);
+		//읽은 Bit 데이터 파싱
+		if (std::equal(std::begin(m_btSigBItIN), std::end(m_btSigBItIN), std::begin(m_btSigBItIN_Backup)) == false)
+		{
+			memcpy(m_btSigBItIN_Backup, m_btSigBItIN, MAX_USE_PORT * sizeof(BYTE));
+			LOGDISPLAY_SPEC(2)(_T("In bit data :	%s"), CStrSuport::ChangbytetohexMelsec(m_btSigBItIN, MAX_USE_PORT, AprData.m_System.m_nBitIn));
+		}
 
 		int nBitPos = 0;
 		for (int port = 0; port < MAX_USE_PORT; port++) {
@@ -875,6 +890,12 @@ int CSigProc::SigInAlarmNgAck()
 	return nRet;
 }
 
+//PLC In Alive 상태를 체크한다.
+BOOL CSigProc::AliveBitInCheck()
+{
+	return TRUE;
+}
+
 int CSigProc::SigInConnectZone()
 {
 	int nRet = 0;
@@ -1094,6 +1115,17 @@ int CSigProc::SigOutLotEndAck(int nMode)
 
 	nRet = SignalBitOut(nAddress, nMode);
 	return nRet;
+}
+
+//Lot End 처리 함수
+void CSigProc::SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt)
+{
+	int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
+
+	int DataOutLotEnd[2];
+	DataOutLotEnd[0] = TopDefectCnt;
+	DataOutLotEnd[1] = BtmDefectCnt;
+	WritePLC_Block_device(nAddress, DataOutLotEnd, 2);
 }
 
 int CSigProc::SigOutTabZeroReset(int nMode)
@@ -1522,7 +1554,8 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 	int nSize = enSmsWordReadMaxSize;
 	int nAddress = AprData.m_System.m_nWordIn + enSmsWordRead_RecipeNo;
 
-	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) {
+	if (ReadPLC_Block_device(nAddress, (short*)pData, nSize) != 0) 
+	{
 		return -1;
 	}
 
@@ -1555,11 +1588,6 @@ int CSigProc::ReadBlockAllData_Siemens(CSequenceData* pSeqData)
 
 		pwData++;
 	}
-
-
-
-
-
 
 	strBuffer.TrimRight();
 	strBuffer.TrimLeft();

@@ -34,28 +34,76 @@
 //Out Word 시작 인덱스
 #define MELSEC_WRITEWORD_STARTINDEX 0
 
+//멜섹 Bit Read 영역 크기
+#define	MELSEC_BITINSIZE_MAX 4
+
+//멜섹 Bit Write 영역 크기
+#define	MELSEC_BITOUTSIZE_MAX 4
+
+//멜섹 Recipe Name 읽기 갯수
+#define MELSEC_READRECIPENAME 8
+//멜섹 CELL ID 읽기 갯수
+#define MELSEC_READCELLID 20
+//멜섹 Alram Buff 갯수
+#define MELSEC_COUNT_ALRAMBUFF 5
+
+//멜섹 Word Read 영역 크기
+#define	MELSEC_WORDINSIZE_MAX 160
+
+//멜섹 Word Write 영역 DWORD 크기
+#define	MELSEC_WORDOUTSIZE_MAX 160
+
+//멜섹 Word Read 영역 크기
+#define	MELSEC_DWORDINSIZE_MAX MELSEC_WORDINSIZE_MAX/2
+
+//멜섹 Word Write 영역 DWORD 크기
+#define	MELSEC_DWORDOUTSIZE_MAX MELSEC_WORDOUTSIZE_MAX/2
 
 
 class CMelsecPlcIo : public CDataPlcImp
 {
-	WORD	m_wChannelNo;
-	WORD	m_wMaxPort;
-	WORD	m_wMyStNo;
-	WORD	m_wExtStNo;
-	WORD	m_wSeqStNo;
-	WORD	m_wOffset_BitIn;
-	WORD	m_wOffset_BitOut;
-	WORD	m_wOffset_WordIn;
-	WORD	m_wOffset_WordOut;
+	//채널 번호
+	DWORD	m_wChannelNo;
+	//BYTE 읽기 갯수
+	DWORD	m_wMaxPort;
+	//스테이션 번호(My)
+	DWORD	m_wMyStNo;
+	//스테이션 번호(Ext)
+	DWORD	m_wExtStNo;
+	//스테이션 번호(Seq)
+	DWORD	m_wSeqStNo;
+
+	//Bit 읽기 시작점(8bit 단위 설정해야함)
+	DWORD	m_wOffset_BitIn;
+	//Bit 쓰기 시작점(8bit 단위 설정해야함)
+	DWORD	m_wOffset_BitOut;
+	//Word 읽기 시작점
+	DWORD	m_wOffset_WordIn;
+	//Word 쓰기 시작점
+	DWORD	m_wOffset_WordOut;
+
+	//멜섹 생성 객체 번호
 	long	m_pPath;
 
+	//멜섹 Open 상태 체크
 	BOOL m_bOpened;
 
 	BOOL m_bEnableWorkSet;
 
+	//Alive 신호채크 변수
+	DWORD dwMelsBitInAliveTime;
 public:
-	//
-	CMelsecPlcIo(WORD wOffset_BitIn, WORD wOffset_BitOut, WORD wOffset_WordIn, WORD wOffset_WordOut, WORD wChannelNo = MELSEC_CHN_NO_NETG1, WORD wMaxPort = MELSEC_MAX_PORT, WORD wMyStNo = MELSEC_LIO_STATION_NO, WORD wExtStNo = MELSEC_EX_STATION_NO, WORD wSeqStNo = MELSEC_SEQ_STATION_NO);
+	//생성자
+	//wOffset_BitIn : Bit 입력 시작 위치
+	//wOffset_BitOut : Bit 출력 시작 위치
+	//wOffset_WordIn : Word 입력 시작 위치
+	//wOffset_WordOut : Word 출력 시작 위치
+	//wChannelNo : PLC 채널 번호 : 151번 사용함
+	//wMaxPort : bit 영역 읽기 최대 갯수
+	//wMyStNo : 32bit 단위 위치 세팅
+	//wExtStNo : 32bit 단위 위치 세팅
+	//wSeqStNo : 32bit 단위 위치 세팅
+	CMelsecPlcIo(DWORD wOffset_BitIn, DWORD wOffset_BitOut, DWORD wOffset_WordIn, DWORD wOffset_WordOut, DWORD wChannelNo = MELSEC_CHN_NO_NETG1, DWORD wMaxPort = MELSEC_MAX_PORT, DWORD wMyStNo = MELSEC_LIO_STATION_NO, DWORD wExtStNo = MELSEC_EX_STATION_NO, DWORD wSeqStNo = MELSEC_SEQ_STATION_NO);
 	~CMelsecPlcIo();
 
 public:
@@ -65,34 +113,146 @@ public:
 
 private:
 
+	//PLC 읽기 Data
+	//BYTE 단위 Bit 영역 데이터
+	BYTE m_ReadBitData[MELSEC_BITINSIZE_MAX];
+	//DWORD 단위 Word 영역 데이터
+	DWORD m_ReadDwordData[MELSEC_DWORDINSIZE_MAX];
+
+	//PLC 쓰기 Data
+	//BYTE 단위 Bit 영역 데이터
+	BYTE m_WriteBitData[MELSEC_BITOUTSIZE_MAX];
+	//DWORD 단위 Word 영역 데이터
+	DWORD m_WriteDwordData[MELSEC_DWORDOUTSIZE_MAX];
+
 	// connection network
 	int OpenPlcIo(void);
 
+	//멜섹 Open
 	int LocalPioOpen(BOOL bLockCtrl = TRUE);
 
+	//Work Set 설정
 	int ChangeWorkingSetSize(void);
 
+	//멜섹 오프상태 확인 함수
 	BOOL IsOpened();
 
 	//stno : 0xff , 또는 0x00
-	//device : B : 바이너리, X : 헥사 , W : 워드 
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
 	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(byte : 1바이트 단위 갯수)
 	//num : 읽을 갯수
-	//bIn : Read - true Write - false
-	int ReadBitData(short stno, int devtype, int startport, int num, bool bIn);
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 읽기 실패 여부(0 : 성공, 그외 실패)
+	int ReadBitData(short stno, int devtype, int startport, byte buff[], int num, int offset);
+	//stno : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(short : 2바이트 단위 갯수)
+	//num : 읽을 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 읽기 실패 여부(0 : 성공, 그외 실패)
+	int ReadWordData(short stno, int devtype, int startport, short buff[], int num, int offset);
+	//netNo : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(short : 2바이트 단위 갯수)
+	//num : 읽을 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 읽기 실패 여부(0 : 성공, 그외 실패)
+	int ReadWordDataEx(long netNo, int devtype, int startport, short buff[], int num, int offset);
+	//stno : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(int : 4바이트 단위 갯수)
+	//num : 읽을 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 읽기 실패 여부(0 : 성공, 그외 실패)
+	int ReadDwordData(short stno, int devtype, int startport, int buff[], int num, int offset);
+	//netNo : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(int : 4바이트 단위 갯수)
+	//num : 읽을 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 읽기 실패 여부(0 : 성공, 그외 실패)
+	int ReadDwordDataEx(long netNo, int devtype, int startport, int buff[], int num, int offset);
+	//stno : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(byte : 1바이트 단위 갯수)
+	//num : 쓰기 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 쓰기 실패 여부(0 : 성공, 그외 실패)
+	int WriteBitData(short stno, int devtype, int startport, byte buff[], int num, int offset);
+	//stno : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(short : 2바이트 단위 갯수)
+	//num : 쓰기 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 쓰기 실패 여부(0 : 성공, 그외 실패)
+	int WriteWordData(short stno, int devtype, int startport, short buff[], int num, int offset);
+	//netNo : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(short : 2바이트 단위 갯수)
+	//num : 쓰기 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 쓰기 실패 여부(0 : 성공, 그외 실패)
+	int WriteWordDataEx(long netNo, int devtype, int startport, short buff[], int num, int offset);
+	//stno : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(int : 4바이트 단위 갯수)
+	//num : 쓰기 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 쓰기 실패 여부(0 : 성공, 그외 실패)
+	int WriteDwordData(short stno, int devtype, int startport, int buff[], int num, int offset);
+	//netNo : 0xff , 또는 0x00
+	//devtype : B : 바이너리, X : 헥사 , W : 워드 
+	//startport : 시작 포트
+	//buff : 배열 고정 버퍼 사용(int : 4바이트 단위 갯수)
+	//num : 쓰기 갯수
+	//offset : 시스템 세팅 읽기 쓰기 시작점
+	//return : 쓰기 실패 여부(0 : 성공, 그외 실패)
+	int WriteDwordDataEx(long netNo, int devtype, int startport, int buff[], int num, int offset);
 
-	int ReadWordData(short stno, int devtype, int startport, int num, bool bIn);
-
-	int ReadWordDataEx(short netNo, int devtype, int startport, int num, bool bIn);
-
+	//Endian 전환 함수
 	void chnageEndian(short data[], int size);
 
 	// disconnection network
 	void ClosePlcIo(void);
 
+	//PLC read Data Parser 함수
+	//Bit 영역 BYTE 단위 읽은 데이터를 파싱하여 멤버변수에 세팅한다
+	void ReadPlcBitDataParser(BYTE* data);
+	//Word 영역 DWORD 단위 읽은 데이터를 파싱하여 멤버변수에 세팅한다
+	void ReadPlcWordDataParser(DWORD* data);
+	//레시피 명을 만든다.
+	CString MakeRecipeName(DWORD* data);
+	//CELL ID를 만든다.
+	CString MakeCellId(DWORD* data);
+
+	//PLC write Bit Make 함수
+	//Bit 쓰기 영역 데이터를 PLC에 쓰기위해서 BYTE 타임으로 멤버변수의 값을 세팅하여 가져온다.
+	int WritePlcBitDataMake(BYTE** data);
+
+	//PLC write Bit Make 함수
+	//Word 쓰기 영역 데이터를 PLC에 쓰기위해서 DWORD 타임으로 멤버변수의 값을 세팅하여 가져온다.
+	int WritePlcWordDataMake(DWORD** data);
+
+public:
+	//************* 상위 클래스 오버라이딩 함수 ****************************************
+	//PLC 데이터를 쓰고 읽기를 View 타이머에서 주기적으로 읽기 위해서 오버라이팅 한다.
+	//PLC data를 읽고 쓰고 처리를 위한 함수
 	virtual int PlcDataReadWritePorc();
+	//PLC Open 상태를 체크을 위한 함수
+	virtual BOOL isPlcOpen();
+
 
 	//Out
+	//Zero Set 세팅 함수
 	virtual int SigOutEncoderZeroSet(int nMode);
 	virtual int SigOutRecipeChangeAck(int nMode);
 	virtual int SigOutLotEndAck(int nMode);
@@ -101,7 +261,7 @@ private:
 	virtual int SigOutReady(int nMode);
 	//Alive 상태 값을 저장해서 다음 호출 시 
 	//Alive 상태를 변경한다. 0 <-> 1
-	BOOL m_bSmsAlive;
+	BOOL m_bMelsecAlive;
 	virtual int SigOutAlivePulse(int nInMode);
 	virtual int SigOutTabZeroReset(int nMode);
 	virtual int SigOutAlarmResetAck(int nMode);
@@ -112,12 +272,11 @@ private:
 	virtual int SigOutAlarmExist(int nMode);
 	//멜섹만 쓴다.
 	virtual void EnableWorkSet(BOOL bMode);
+	//멜섹만 쓴다.
+	virtual int SignalBitOut(int nIntegration, int nMode, BOOL bLocal = FALSE);
 
 	virtual int SigOutDiskCapacityAlarm(int nMode);
 	virtual int SigOutDiskCapacityWarning(int nMode);
-
-	//멜섹만 쓴다.
-	virtual int SignalBitOut(int nIntegration, int nMode, BOOL bLocal = FALSE);
 
 	//Lot End 처리 함수
 	virtual void SigOutLotEnd(int TopDefectCnt, int BtmDefectCnt);
@@ -134,6 +293,9 @@ private:
 	virtual int SigInInkMarkActive();
 	virtual int SigInConnectZone();
 
+	//PLC In Alive 상태를 체크한다.
+	virtual BOOL AliveBitInCheck();
+
 	//지멘스만 쓴다.
 	virtual int WriteAlarmCodeAndJudge(WORD nAlarmCode, int nID, int nJudge, int nNgCode);
 
@@ -146,16 +308,28 @@ private:
 	//ConnectZone 설정 플래그
 	virtual BOOL GetConnectZone();
 
+	//PLC에서 읽은 데이터를 가져온다.
+	//CSequenceData 클래스 멤버에 세팅하여 가져온다.
 	virtual int ReadBlockAllData(CSequenceData* pSeqData);
-	virtual int WriteBlockData(void* pGlobalData);
 
+	//CGlobalData 클래스에 세팅된 데이터를 PLC 멤버변수에 세팅한다.
+	//검사 데이터들이 전역으로 세팅되어 전체 호출하여 세팅한다.
+	virtual int WriteBlockData(void* pGlobalData);
+	//****************************************************************
+
+	//***************** 모니터링 데이터 가져오기 *********************
+	//기존 사용하는 방식 호환 기능
+	//CDataPlcImp 클래스 멤버를 호출하여 직접 세팅할 수 있다.
+	//Read 영역 Bit 데이터
 	virtual int ReadAllPort_BitIn(BOOL* pSigBitIn);
+	//Write Bit 영역 데이터
 	virtual int ReadAllPort_BitOut(BOOL* pSigBitOut);
 
 	//In Word 영역의 인덱스의 값을 String 으로 가져온다.
 	virtual CString GetInWordData(int idx);
 	//In Word 영역의 인덱스의 값을 String 으로 가져온다.
 	virtual CString GetOutWordData(int idx);
+	//****************************************************************
 
 };
 
