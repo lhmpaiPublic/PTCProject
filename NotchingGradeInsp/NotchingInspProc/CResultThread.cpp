@@ -137,6 +137,36 @@ void CResultThread::DrawString(CDC* pDC, int x, int y, COLORREF color, CString s
 	pDC->TextOut(x, y, strLine);
 }
 
+void CResultThread::DrawString(CDC* pDC, int x, int y, COLORREF color, CString strLine, BOOL bOverLay)
+{
+	if (pDC == NULL) {
+		return;
+	}
+
+	CFont font;
+	VERIFY(font.CreateFont(
+		30,                       // nHeight
+		0,                        // nWidth
+		0,                        // nEscapement
+		0,                        // nOrientation
+		FW_NORMAL,                // nWeight
+		FALSE,                    // bItalic
+		FALSE,                    // bUnderline
+		0,                        // cStrikeOut
+		ANSI_CHARSET,             // nCharSet
+		OUT_DEFAULT_PRECIS,       // nOutPrecision
+		CLIP_DEFAULT_PRECIS,      // nClipPrecision
+		DEFAULT_QUALITY,          // nQuality
+		DEFAULT_PITCH | FF_SWISS, // nPitchAndFamily
+		_T("Arial")));            // lpszFacename
+
+	pDC->SelectObject(font);
+
+	pDC->SetBkMode(TRANSPARENT);
+	pDC->SetTextColor(color);
+	pDC->TextOut(x, y + 90, strLine);
+}
+
 void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPtr, int nWidth, int nHeight, int nMagnif)
 {
 	ASSERT(HWnd);
@@ -222,7 +252,7 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 			col = RGB(50, 230, 50);
 		}
 		strLine.Format(_T("Size_F %d:%.1lf x %.1lf um"), nDispCnt +1, pDefInfo->dJudgeSize, pDefInfo->dSizeY);
-		DrawString( pDC, x, y + ((nDispCnt +1) * yPitch), col, strLine);
+		DrawString( pDC, x, y + ((nDispCnt +1) * yPitch), col, strLine, TRUE);
 
 		CRect defRect;
 		defRect.top = (int)(pDefInfo->rcPos.top * dRateY);
@@ -257,7 +287,7 @@ void CResultThread::DrawImage(HWND HWnd, CFrameRsltInfo* pRsltInfo, BYTE* pImgPt
 		// Spetter 결함 사이즈 표시
 		if (nIdx < MAX_DISP_DEF_COUNT) {
 			strLine.Format(_T("Size_S %d:%.1lf x %.1lf um um"), (nIdx + nDispCnt  ), pDefInfo->dJudgeSize, pDefInfo->dSizeY);
-			DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt ) * yPitch), col, strLine);
+			DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt ) * yPitch), col, strLine, TRUE);
 		}
 		nIdx++;
 
@@ -377,7 +407,7 @@ void CResultThread::DrawImage_Test(CDC* pDC, CFrameRsltInfo* pRsltInfo, int nWid
 
 		//텍스트를 출력한다.
 		//pDC x, y : 카운트 * 텍스트 pitch, col : 색, strLine : 텍스트 내용
-		DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine);
+		DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine, TRUE);
 
 		//defect 위치 값에 축소율 곱하여 위치를 잡는다.
 		CRect defRect;

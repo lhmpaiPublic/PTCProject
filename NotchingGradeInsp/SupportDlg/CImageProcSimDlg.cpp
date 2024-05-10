@@ -3485,7 +3485,7 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 			col = RGB(50, 230, 50);
 		}
 		strLine.Format(_T("Size_F %d:%.1lf x %.1lf um"), nDispCnt + 1, iter->dJudgeSize, iter->dHeight );
-		CResultThread::DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine);
+		CResultThread::DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine, TRUE);
 
 		CRect defRect;
 		defRect.top = (int)(iter->rcRect.top * dRateY);
@@ -3520,7 +3520,7 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 		// Spetter 결함 사이즈 표시
 		if (nIdx < MAX_DISP_DEF_COUNT) {
 			strLine.Format(_T("Size_S %d:%.1lf x %.1lf um"), (nIdx + nDispCnt), iter->dJudgeSize, iter->dHeight);
-			CResultThread::DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine);
+			CResultThread::DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine, TRUE);
 		}
 		nIdx++;
 
