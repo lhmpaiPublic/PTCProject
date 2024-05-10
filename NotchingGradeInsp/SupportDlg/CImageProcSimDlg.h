@@ -47,7 +47,7 @@ protected :
 	CFont* m_pFontGrid;
 
 	int MakeGridData();
-	int UpdateGrid();
+	int UpdateGrid( int nHeadNo = 0 );
 	// 22.09.16 Ahn Add Start
 	int UpdateRecipeGrid();
 	// 22.09.16 Ahn Add End
