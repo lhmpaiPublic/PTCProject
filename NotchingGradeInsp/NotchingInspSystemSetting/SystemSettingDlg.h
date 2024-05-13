@@ -96,6 +96,7 @@ public:
 	int m_nJpgSaveQulaity;
 	int m_nEdOverflowCountMax;
 	int m_nErrcount_CntBoard;
+	int m_ErrorMemory;
 	afx_msg void OnEnSetfocusEdJpegSaveQuality();
 	afx_msg void OnBnClickedChkFirstTabDonotProc();
 	BOOL m_bChkFirstTabDoNotProc;
@@ -173,6 +174,7 @@ public:
 	//SPC+ 출력여부 플래그
 	BOOL m_bChkDisableSpcPlus;
 	afx_msg void OnEnSetfocusEdErrcountCntboard();
+	afx_msg void OnEnSetfocusEdMemoryerror();
 	BOOL m_bChkUseNoTabMarkingSkip;
 	afx_msg void OnBnClickedChkUseNoTabMarkingSkip();
 };

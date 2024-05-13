@@ -195,6 +195,7 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ED_MISS_TAB_ID_MAX, m_nEdMissTabIdMax);
 	DDX_Check(pDX, IDC_CHK_DISABLE_SPCPLUS, m_bChkDisableSpcPlus);
 	DDX_Text(pDX, IDC_ED_ERRCOUNT_CNTBOARD, m_nErrcount_CntBoard);
+	DDX_Text(pDX, IDC_ED_MEMORYERROR, m_ErrorMemory);
 	DDX_Check(pDX, IDC_CHK_USE_NO_TAB_MARKING_SKIP, m_bChkUseNoTabMarkingSkip);
 }
 
@@ -240,6 +241,7 @@ BEGIN_MESSAGE_MAP(CSystemSettingDlg, CDialogEx)
 ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabIdMax)
 ON_BN_CLICKED(IDC_CHK_DISABLE_SPCPLUS, &CSystemSettingDlg::OnBnClickedChkDisableSpcplus)
 ON_EN_SETFOCUS(IDC_ED_ERRCOUNT_CNTBOARD, &CSystemSettingDlg::OnEnSetfocusEdErrcountCntboard)
+ON_EN_SETFOCUS(IDC_ED_MEMORYERROR, &CSystemSettingDlg::OnEnSetfocusEdMemoryerror)
 ON_BN_CLICKED(IDC_CHK_USE_NO_TAB_MARKING_SKIP, &CSystemSettingDlg::OnBnClickedChkUseNoTabMarkingSkip)
 END_MESSAGE_MAP()
 
@@ -904,7 +906,8 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_SysSetting.m_strMachineID = m_EdMachineID;
 		m_SysSetting.m_nResultSavePeriod = m_nEdSavePeriod;
 		m_SysSetting.m_nDiskCapacity = m_nDiskCapacityAlarm;
-		m_SysSetting.m_nCounterBoard_ErrCount = m_nErrcount_CntBoard; 
+		m_SysSetting.m_nCounterBoard_ErrCount = m_nErrcount_CntBoard;
+		m_SysSetting.m_MemorydError = m_ErrorMemory;
 		m_SysSetting.m_bNoTabMarkingSkip = m_bChkUseNoTabMarkingSkip;
 
 
@@ -961,6 +964,7 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_nEdSavePeriod = m_SysSetting.m_nResultSavePeriod ;
 		m_nDiskCapacityAlarm = m_SysSetting.m_nDiskCapacity ;
 		m_nErrcount_CntBoard = m_SysSetting.m_nCounterBoard_ErrCount; 
+		m_ErrorMemory = m_SysSetting.m_MemorydError;
 		m_bChkUseNoTabMarkingSkip = m_SysSetting.m_bNoTabMarkingSkip;
 
 
@@ -1516,6 +1520,22 @@ void CSystemSettingDlg::OnEnSetfocusEdErrcountCntboard()
 	int nMax = 99;
 	int nMin = 5;
 	setValue.SetValue(strMsg, m_nErrcount_CntBoard, nMax, nMin);
+	DataControl(MODE_WRITE);
+
+	UpdateData(FALSE);
+}
+
+void CSystemSettingDlg::OnEnSetfocusEdMemoryerror()
+{
+	// TODO: Add your control notification handler code here
+	m_EdDummy.SetFocus();
+
+	CSetValue setValue(this);
+	CString strMsg;
+
+	int nMax = 99;
+	int nMin = 5;
+	setValue.SetValue(strMsg, m_ErrorMemory, nMax, nMin);
 	DataControl(MODE_WRITE);
 
 	UpdateData(FALSE);
