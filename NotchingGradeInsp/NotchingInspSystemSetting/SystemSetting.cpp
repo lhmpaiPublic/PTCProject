@@ -216,6 +216,10 @@ int CSystemSetting::FileCtrl(int nMode)
 			::GetPrivateProfileString(strSection, strKey, "5", buff, 256, strFileName);
 			m_nCounterBoard_ErrCount = atoi(buff);
 
+			strKey = _T("MEMORYERROR");
+			::GetPrivateProfileString(strSection, strKey, "0", buff, 90, strFileName);
+			m_MemorydError = atoi(buff);
+			
 			strKey = _T("LED_CHECK_DELAY");
 			::GetPrivateProfileString(strSection, strKey, "2000", buff, 256, strFileName);
 			m_nLED_Check_Delay = atoi(buff);
@@ -450,6 +454,10 @@ int CSystemSetting::FileCtrl(int nMode)
 
 			strKey = _T("COUNTERBOARD_ERRCOUNT");
 			strData.Format(_T("%d"), m_nCounterBoard_ErrCount);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("MEMORYERROR");
+			strData.Format(_T("%d"), m_MemorydError);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
 
 			strSection = _T("SPCPLUS_INFO");

@@ -883,6 +883,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		KillLongTermTimer();
 
 		CheckDiskSpace();
+		checkMemoryUsage();
 
 		SetLogTermTimer();
 	}
@@ -904,6 +905,30 @@ void CNotchingGradeInspView::ReDrawMap( BOOL bModeRect, CRect rcRange )
 			}
 			m_pDefMapDlg->UpdateWindow();
 		}
+	}
+}
+
+
+void CNotchingGradeInspView::checkMemoryUsage() {
+	MEMORYSTATUSEX memInfo;
+	memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+
+	// 메모리 정보를 가져옴
+	GlobalMemoryStatusEx(&memInfo);
+
+	// 현재 메모리 사용량 계산
+	DWORDLONG totalPhysMem = memInfo.ullTotalPhys;
+	DWORDLONG physMemUsed = totalPhysMem - memInfo.ullAvailPhys;
+	double physMemUsedPercent = ((double)physMemUsed / (double)totalPhysMem) * 100.0;
+
+
+	
+	if (physMemUsedPercent > AprData.m_System.m_MemorydError) {
+		CString strMsg;
+		strMsg.Format(_T("Warning : Memory Usage [ %1.lf%% ]"), physMemUsedPercent);
+		AprData.m_ErrStatus.SetError(CErrorStatus::en_MemorydError, strMsg);
+
+		AprData.SaveErrorLog(strMsg);
 	}
 }
 

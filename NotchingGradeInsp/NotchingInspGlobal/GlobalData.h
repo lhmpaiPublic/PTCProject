@@ -30,6 +30,7 @@ public :
 		en_MissTabID		= 0x000012,
 		en_BrightError		= 0x000013,
 		en_CountBordError	= 0x000014,
+		en_MemorydError   = 0x000015,
 
 		en_DiskCapacityAlarm	= 0x100001,
 		en_DiskCapacityWarning  = 0x100002,

@@ -96,6 +96,7 @@ public:
 
 	int m_nCounterBoard_ErrCount;
 	int m_nLED_Check_Delay;
+	int m_MemorydError;
 
 	BOOL m_bNoTabMarkingSkip;
 };
