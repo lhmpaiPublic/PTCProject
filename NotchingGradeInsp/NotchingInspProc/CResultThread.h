@@ -47,6 +47,7 @@ public :
 	static void DrawImage(HWND hwnd, CFrameRsltInfo* pFrameInfo, BYTE* pImgPtr, int nWidth, int nHeight, int nMagnif);
 	static void DrawDefectRect(CDC* pDC, CRect rcDef, COLORREF color);
 	static void DrawString(CDC* pDC, int x, int y, COLORREF color, CString strLine);
+	static void DrawString(CDC* pDC, int x, int y, COLORREF color, CString strLine, BOOL bOverLay); 
 	static void CaptureImage(HWND hWnd, CString strPath);
 	
 //SPC 객체 소스에서 컴파일 여부 결정

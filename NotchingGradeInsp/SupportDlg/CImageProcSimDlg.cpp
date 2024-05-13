@@ -1519,10 +1519,12 @@ int CImageProcSimDlg::MakeGridData()
 }
 
 
-int CImageProcSimDlg::UpdateGrid()
+int CImageProcSimDlg::UpdateGrid( int nHeadNo )
 {
 	// TODO: 여기에 구현 코드 추가.
 	int m_nRows;
+	int nDimCnt = 0;
+
 	ASSERT(m_pVecBlockAll);
 	if (m_pVecBlockAll == NULL) {
 		return -1;
@@ -1539,7 +1541,12 @@ int CImageProcSimDlg::UpdateGrid()
 	int nOldNumRows = m_GridCtrlDef.GetRowCount();
 
 	TRY{
-		m_GridCtrlDef.SetRowCount(m_nRows);
+		if (m_pRecipeInfo->DimParam.bUse_Dimension == TRUE)
+		{
+			nDimCnt = (nHeadNo == CAM_POS_TOP) ? 4 : 2;
+		}
+
+		m_GridCtrlDef.SetRowCount(m_nRows + nDimCnt);
 	}
 		CATCH(CMemoryException, e)
 	{
@@ -1582,7 +1589,8 @@ int CImageProcSimDlg::UpdateGrid()
 	COLORREF clrBkOK = RGB(60, 200, 60);
 	COLORREF clrBkNG = RGB(200, 10, 10);
 
-	for (int nRow = 1; nRow < m_nRows; nRow++) {
+	for (int nRow = 1; nRow < m_nRows; nRow++) 
+	{
 		pData = &(*m_pVecBlockAll)[nRow - 1];
 		for (int nCol = 0; nCol < m_GridCtrlDef.GetColumnCount(); nCol++)
 		{
@@ -1692,6 +1700,173 @@ int CImageProcSimDlg::UpdateGrid()
 			m_GridCtrlDef.SetItem(&Item);
 		}
 	}
+
+
+	//Dimension
+	if (m_pRecipeInfo->DimParam.bUse_Dimension == TRUE)
+	{
+		for (int nRow = m_nRows; nRow < m_nRows + nDimCnt; nRow++)
+		{
+			_DIMENSION_RESULT stDimResult = AprData.m_NowLotData.m_stDimResult;
+
+			for (int nCol = 0; nCol < m_GridCtrlDef.GetColumnCount(); nCol++)
+			{
+				CString strText;
+				GV_ITEM Item;
+				Item.mask = GVIF_TEXT;
+				Item.row = nRow;
+				Item.col = nCol;
+
+				switch (nCol)
+				{
+				case	en_CimDef_Index:
+					strText.Format(_T("%d"), nRow);
+					break;
+
+				case	en_CimDef_Type:
+				{					
+					if (nHeadNo == CAM_POS_TOP)
+					{
+						switch (nRow - m_nRows)
+						{
+						case 0:		strText = _T("Overlay");		break;
+						case 1:		strText = _T("Cutting");		break;
+						case 2:		strText = _T("Insulation");	break;
+						case 3:		strText = _T("Tab");			break;
+						}
+					}
+					else
+					{
+						switch (nRow - m_nRows)
+						{
+						case 0:		strText = _T("Overlay");		break;
+						case 1:		strText = _T("Cutting");		break;
+						}
+					}
+
+
+
+					Item.crBkClr = clrBkFoil;
+					Item.crFgClr = RGB(0, 0, 0);
+					Item.mask |= (GVIF_BKCLR | GVIF_FGCLR);
+
+					break;
+				}
+
+
+				case	en_CimDef_Judge:
+				{
+					int nJudge = JUDGE_OK;
+					if (nHeadNo == CAM_POS_TOP)
+					{
+						switch (nRow - m_nRows)
+						{
+						case 0:		nJudge = stDimResult.nJudge_OverlayWidth_Top;		break;
+						case 1:		nJudge = stDimResult.nJudge_CuttingWidth_Top;		break;
+						case 2:		nJudge = stDimResult.nJudge_InsulationWidth_Top;	break;
+						case 3:		nJudge = stDimResult.nJudge_TabWidth_Top;			break;
+						}
+					}
+					else
+					{
+						switch (nRow - m_nRows)
+						{
+						case 0:		nJudge = stDimResult.nJudge_OverlayWidth_Btm;		break;
+						case 1:		nJudge = stDimResult.nJudge_CuttingWidth_Btm;		break;
+						}
+					}
+					strText.Format(_T("%s"), (nJudge == JUDGE_OK) ? _T("OK") : _T("NG"));
+
+					{
+						switch (nJudge) {
+						case	JUDGE_OK:
+							Item.crBkClr = clrBkOK;
+							break;
+						case	JUDGE_NG:
+							Item.crBkClr = clrBkNG;
+							break;
+						default:
+							Item.crBkClr = clrBkOK;
+							break;
+						}
+						Item.crFgClr = RGB(0, 0, 0);    // or - m_Grid.SetItemFgColour(row, col, RGB(255,0,0));				    
+						Item.mask |= (GVIF_BKCLR | GVIF_FGCLR);
+					}
+					break;
+				}
+				case	en_CimDef_Count:
+					strText = _T("");
+					break;
+				case en_CimDef_PosX:
+					strText = _T("");
+					break;
+				case en_CimDef_PosY:
+					strText = _T("");
+					break;
+				case en_CimDef_JuegeSize:
+				{
+					double dDimResult = 0.f;
+					if (nHeadNo == CAM_POS_TOP)
+					{
+						switch (nRow - m_nRows)
+						{
+						case 0:		dDimResult = stDimResult.dOverlayWidth_Top;		break;
+						case 1:		dDimResult = stDimResult.dCuttingWidth_Top;		break;
+						case 2:		dDimResult = stDimResult.dInsulationWidth_Top;	break;
+						case 3:		dDimResult = stDimResult.dTabWidth_Top;			break;
+						}
+					}
+					else
+					{
+						switch (nRow - m_nRows)
+						{
+						case 0:		dDimResult = stDimResult.dOverlayWidth_Btm;		break;
+						case 1:		dDimResult = stDimResult.dCuttingWidth_Btm;		break;
+						}
+					}
+					strText.Format(_T("%.2lf"), dDimResult);
+					break;
+				}
+				// 22.04.15 Ahn Add Start
+				case en_CimDef_Distance:
+					strText = _T("");
+					break;
+					// 22.04.15 Ahn Add End
+				case	en_CimDef_Width:
+					strText = _T("");
+					break;
+				case	en_CimDef_Height:
+					strText = _T("");
+					break;
+				case	en_CimDef_BriAve:
+					strText = _T("");
+					break;
+				case	en_CimDef_BriMax:
+					strText = _T("");
+					break;
+				case	en_CimDef_BriMin:
+					strText = _T("");
+					break;
+				case en_CimDef_OrgAve:
+					strText = _T("");
+					break;
+				case en_CimDef_OrgMax:
+					strText = _T("");
+					break;
+				case en_CimDef_OrgMin:
+					strText = _T("");
+					break;
+				default:
+					break;
+				}
+
+				Item.strText = strText;
+				m_GridCtrlDef.SetItem(&Item);
+			}
+		}
+	}
+
+
 	m_GridCtrlDef.EnsureVisible(m_nRows - 1, 0);
 	m_GridCtrlDef.Refresh();	
 
@@ -1712,7 +1887,7 @@ void CImageProcSimDlg::OnClickGridCtrlDef(NMHDR* pNMHDR, LRESULT* pResult)
 
 	int nSize = (int) m_pVecBlockAll->size();
 	if (iMouseRow > nSize) {
-		MessageBox("범위 밖의 값이 입력되었습니다.");
+//		MessageBox("범위 밖의 값이 입력되었습니다.");
 		return;
 	}
 	int nIndex = iMouseRow - 1;
@@ -2275,7 +2450,7 @@ void CImageProcSimDlg::InspectionAuto()
 	}
 
 
-	UpdateGrid();
+	UpdateGrid(tabRsltInfo.m_nHeadNo);
 
 
 }
@@ -3485,7 +3660,7 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 			col = RGB(50, 230, 50);
 		}
 		strLine.Format(_T("Size_F %d:%.1lf x %.1lf um"), nDispCnt + 1, iter->dJudgeSize, iter->dHeight );
-		CResultThread::DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine);
+		CResultThread::DrawString(pDC, x, y + ((nDispCnt + 1) * yPitch), col, strLine, TRUE);
 
 		CRect defRect;
 		defRect.top = (int)(iter->rcRect.top * dRateY);
@@ -3520,7 +3695,7 @@ void CImageProcSimDlg::DrawImage(CDC *pDC, int nWidth, int nHeight, int nMagnif)
 		// Spetter 결함 사이즈 표시
 		if (nIdx < MAX_DISP_DEF_COUNT) {
 			strLine.Format(_T("Size_S %d:%.1lf x %.1lf um"), (nIdx + nDispCnt), iter->dJudgeSize, iter->dHeight);
-			CResultThread::DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine);
+			CResultThread::DrawString(pDC, x, nLastPosY + ((nIdx + nDispCnt) * yPitch), col, strLine, TRUE);
 		}
 		nIdx++;
 

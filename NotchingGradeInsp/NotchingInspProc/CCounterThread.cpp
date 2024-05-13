@@ -241,6 +241,7 @@ void CCounterThread::RecivePacket(char* data, int len)
 				CString strMessage;
 				strMessage.Format(_T("CounterBoard BCD ID, EnCoder Count Error Locking"));
 				AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
+				AprData.SaveErrorLog(_T("CounterBoard BCD ID, EnCoder Count Error Locking"));
 			}
 
 		}
@@ -433,6 +434,7 @@ void CCounterThread::isConnectTrigger()
 		CString strMessage;
 		strMessage.Format(_T("CounterBoard Socket Disconnection Locking"));
 		AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
+		AprData.SaveErrorLog(_T("CounterBoard Socket Disconnection Locking"));
 
 		m_bCountBordConnection = 2;
 
