@@ -1298,7 +1298,6 @@ int CThumbnailCtrl::AddImageBufferMode(CString strFileName, CString strDispName)
 {
 	int nRet = 0;
 
-	// 22.06.15 Ahn Add Start
 	int nSize = (int) m_vecThumbData.size();
 
 	VEC_THUMB_DATA::iterator iter;
@@ -1310,9 +1309,7 @@ int CThumbnailCtrl::AddImageBufferMode(CString strFileName, CString strDispName)
 	data.strFileName = strFileName;
 	data.strDispName = strDispName;
 	m_vecThumbData.push_back(data);
-	// 22.06.15 Ahn Add End
 
-	// 22.06.15 Ahn Delete Start
 	//int nSize = (int)m_strFileList.GetCount();
 	//if ( 0 > (nSize - MAX_CROP_IMAGE_QUEUE_SIZE) ){
 	//	POSITION  pos = m_strFileList.GetHeadPosition();
@@ -1341,7 +1338,7 @@ int CThumbnailCtrl::AddImageBufferMode(CString strFileName, CString strDispName)
 	//	m_strNameList.RemoveHead();
 	//}
 	//m_strNameList.AddTail(strFileName);
-	// 22.06.15 Ahn Delete End
+
 	return nRet;
 }
 // 22.06.10 Ahn Add End

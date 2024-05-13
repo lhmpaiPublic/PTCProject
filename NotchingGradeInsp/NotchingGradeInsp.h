@@ -8,9 +8,7 @@
 #endif
 
 #include "resource.h"       // 주 기호입니다.
-//KANG 22.01.07 Add Start
 #include "ResultView.h"
-//KANG 22.01.07 Add End
 
 
 //#import "PLCServer.tlb" no_namespace 
@@ -24,7 +22,7 @@ class CPioCtrl;
 class CStdIoCtrl;
 class CLightControl;
 class CSigProc;
-class CDispErrorDlg;	// 22.06.29 Son Add
+class CDispErrorDlg;
 
 class CSpcInfo;
 class CNotchingGradeInspApp : public CWinAppEx
@@ -33,9 +31,6 @@ class CNotchingGradeInspApp : public CWinAppEx
 	CSpcInfo* objSpcInfo;
 public:
 	CNotchingGradeInspApp() noexcept;
-	// 22.02.15 Ahn Add Start
-	//CComPtr<IPLCManager> m_pPlcManager;
-	// 22.02.15 Ahn Add End
 
 
 // 재정의입니다.
@@ -62,44 +57,24 @@ private:
 public :
 	CImageProcessCtrl *m_pImgProcCtrl ;
 
+#ifndef NEW_PLCTYPE
 	CPioCtrl* m_pPioCtrl;
-	// 22.04.01 Ahn Add Start
-	CSigProc* m_pSigProc; 
-	// 22.04.01 Ahn Add End
+	CPlcImp* m_pSigProc;
+#else
+	CDataPlcImp* m_pSigProc;
+#endif //NEW_PLCTYPE
+
 	CStdIoCtrl* m_pIoCtrl;
 	CImageProcSimDlg * m_pImageSimDlg ;
 	CLightControl* m_pLightCtrl;
 
-	// 22.06.29 Son Add Start
 	CDispErrorDlg* m_pDispErrorDlg;
-	// 22.06.29 Son Add End
 
-	static int GetFileVersion(CString& strVersion);
-	static CString& GetAppBuildInfo(void);	
-
-	/**
-	Get File Time Info
-	@param        strPath          File Path
-	@param        outCreate        Create Time
-	@param        outAccess        Access Time
-	@param        outWrite         Write Time
-	@return
-	*/
-	static void GetFileTimes(CString strPath, SYSTEMTIME* outCreate, SYSTEMTIME* outAccess, SYSTEMTIME* outWrite);
-
-////KANG 22.01.07 Add Start
-//	CResultView* GetResultViewPrt();
-////KANG 22.01.07 Add End
-	// 22.06.29 Son Add Start
 	int ErrOutput(LPCTSTR ptstr, int nErrorType );
 	int DispCapacityAlarm(int nMode);
 	CCriticalSection m_csError;
-	// 22.06.29 Son Add End
-	// 22.11.25 Ahn Add Start
 	int LoadLastDefList();
-	// 22.11.25 Ahn Add End
 
-	void ProgramVersionInfo();
 };
 
 extern CNotchingGradeInspApp theApp;

@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++에서 생성한 포함 파일입니다.
-// NotchingGradeInsp.rc에서 사용되고 있습니다.
+// Microsoft Visual C++ generated include file.
+// Used by NotchingGradeInsp.rc
 //
 #define IDCANCEL2                       3
 #define IDOK2                           3
@@ -148,6 +148,8 @@
 #define IDD_DLG_RECIPEIMPORT            418
 #define IDD_DLG_RS232                   420
 #define IDD_DIALOG1                     420
+#define IDD_DLG_USER_CHANGE1            421
+#define IDD_DLG_USER_LOGIN              421
 #define IDC_BTN_LOG                     1000
 #define IDC_COMBO                       1000
 #define IDC_CHECK_HIGH_00               1001
@@ -187,6 +189,7 @@
 #define IDC_RD_OK_CROP                  1016
 #define IDC_BTN_ZOOM_IN                 1017
 #define IDC_RD_OK                       1017
+#define IDC_BTN_ZOOM_IN2                1018
 #define IDC_BTN_ZOOM_OUT                1019
 #define IDC_ED_RATE                     1020
 #define IDC_LIST_CLEAR                  1020
@@ -251,6 +254,7 @@
 #define IDC_ED_IMAGE_1                  1033
 #define IDC_ED_ALARM_OUT                1033
 #define IDC_EDIT_MACHINE_MODE           1033
+#define IDC_EDIT_BCDID_DIFF             1033
 #define IDC_EDIT2                       1034
 #define IDC_ED_TAB_WIDTH_MM             1034
 #define IDC_CHECK_LOW_09                1034
@@ -366,6 +370,7 @@
 #define IDC_ED_MISS_TAB_ID_MAX          1051
 #define IDC_EDIT_GAIN_CAM_NO_01         1052
 #define IDC_ED_BRIGHT_AREA_L            1052
+#define IDC_ED_ERRCOUNT_CNTBOARD        1052
 #define IDC_ED_BRIGHT_AREA_T            1053
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_00 1054
 #define IDC_ED_BRIGHT_AREA_R            1054
@@ -378,31 +383,45 @@
 #define IDC_EDIT_VIEW_WIDTH_CAM_NO      1058
 #define IDC_ED_BRIGHT_OVER_CNT          1058
 #define IDC_EDIT_VIEW_HEIGHT_CAM_NO     1059
+#define IDC_ED_SPEC_DIM_OVERLAY_TOP     1059
 #define IDC_BTN_FILE_OPEN               1060
 #define IDC_EDIT_CAMERA_IMAGE_FLIP_00   1060
+#define IDC_ED_RANGE_DIM_OVERLAY_TOP    1060
 #define IDC_BTN_PROC_ALL                1061
 #define IDC_EDIT_CAMERA_IMAGE_FLIP_01   1061
+#define IDC_ED_BRIGHT_DIM_OVERLAY_TOP   1061
 #define IDC_BTN_IMG_ORG                 1062
 #define IDC_EDIT_GRID_FONT_SIZE         1062
+#define IDC_ED_SPEC_DIM_CUTTING_TOP     1062
 #define IDC_BTN_IMG_PROC1               1063
 #define IDC_EDIT_ENABLE_MARKER          1063
+#define IDC_ED_SPEC_DIM_OVERLAY_BTM     1063
 #define IDC_BTN_IMG_PROC2               1064
 #define IDC_EDIT_JPEG_SAVE_QUALITY      1064
+#define IDC_ED_BRIGHT_DIM_CUTTING_TOP   1064
 #define IDC_BTN_IMG_PROC3               1065
 #define IDC_EDIT_ENABLE_NG_STOP         1065
+#define IDC_ED_SPEC_DIM_INSULATION_TOP  1065
 #define IDC_BTN_IMG_PROC4               1066
 #define IDC_EDIT_ENABLE_MARKING_ALL_TAB 1066
+#define IDC_ED_BRIGHT_DIM_INSULATION_TOP 1066
 #define IDC_BTN_IMG_PROC5               1067
 #define IDC_EDIT_FIRST_TAB_DONOT_PROCESS 1067
+#define IDC_ED_SPEC_DIM_TABWIDTH_TOP    1067
 #define IDC_BTN_IMG_PROC6               1068
 #define IDC_EDIT_RESULT_SAVE_PERIOD     1068
+#define IDC_ED_BRIGHT_DIM_TABWIDTH_TOP  1068
 #define IDC_BTN_IMG_PROC7               1069
 #define IDC_EDIT_DISK_CAPACITY_ALARM    1069
+#define IDC_ED_RANGE_DIM_OVERLAY_BTM    1069
 #define IDC_ST_IMG_SEL_GROUP            1070
+#define IDC_ED_BRIGHT_DIM_OVERLAY_BTM   1070
 #define IDC_BTN_INSP_SIM                1071
 #define IDC_EDIT_BIT_IN                 1071
+#define IDC_ED_SPEC_DIM_CUTTING_BTM     1071
 #define IDC_ST_TAC_INFO                 1072
 #define IDC_EDIT_BIT_OUT                1072
+#define IDC_ED_BRIGHT_DIM_CUTTING_BTM   1072
 #define IDC_BTN_DETECT_LINE             1073
 #define IDC_EDIT_WORD_IN                1073
 #define IDC_CHK_DISP_LINE               1074
@@ -504,22 +523,29 @@
 #define IDC_CB_USERLIST                 1153
 #define IDC_CHK_ENABLE_MARKER3          1153
 #define IDC_CHK_ENABLE_NON_NG_STOP      1153
+#define IDC_CHK_USE_BLOB                1153
 #define IDC_ST_USERMODE                 1154
+#define IDC_CHK_USE_DIMENSION           1154
 #define IDC_ST_PASSWORD                 1155
+#define IDC_CHK_USE_DIM_OVERLAY_TOP     1155
 #define IDC_CHK_DARK_EMP_MODE           1156
 #define IDC_ST_PASSWORD2                1156
 #define IDC_BTN_OK                      1157
+#define IDC_CHK_USE_DIM_CUTTING_TOP     1157
 #define IDC_BTN_CANCEL                  1158
+#define IDC_CHK_USE_DIM_INSULATION_TOP  1158
 #define IDC_GRID_CTRL_CAMERA_PARAM      1159
+#define IDC_CHK_USE_DIM_TABWIDTH_TOP    1159
 #define IDC_GRID_RECIPE_TABLE           1160
+#define IDC_CHK_USE_DIM_OVERLAY_BTM     1161
 #define IDC_ED_RECIPE_NO                1162
 #define IDC_BTN_REGIST                  1163
 #define IDC_BTN_DELETE                  1164
 #define IDC_BTN_RECIPE_SELECT           1165
+#define IDC_CHK_USE_DIM_CUTTING_BTM     1165
 #define IDC_EDIT_RECIPE_NAME            1166
 #define IDC_BTN_LOAD                    1167
 #define IDC_LIST_LOG                    1168
-#define IDC_BTN_PROGRAMINFO             1168
 #define IDC_EDIT_RECIPE_MEMO            1169
 #define IDC_LIST_CHECK_DEBUG            1172
 #define IDC_ST_MESSAGE                  1173
@@ -533,6 +559,7 @@
 #define IDC_ED_SAVE_DEF_SIZE            1181
 #define IDC_CHK_FIRST_TAB_DONOT_PROC    1182
 #define IDC_CHK_ENABLE_NG_STOP          1183
+#define IDC_CHK_USE_NO_TAB_MARKING_SKIP 1184
 #define IDC_STATIC_GROOVE_HEIGHT        1185
 #define IDC_ED_NEGA_TAB_COAT_HEIGHT     1186
 #define IDC_ED_NEGA_TAB_COAT_HEIGHT_PIX 1187
@@ -649,6 +676,8 @@
 #define IDC_ST_GROUP_TAB_INFO           1279
 #define IDC_ST_MISS_TAB_ID_MAX          1279
 #define IDC_ST_INPUT_MM                 1280
+#define IDC_ST_MISS_TAB_ID_MAX2         1280
+#define IDC_ST_ERRCOUNT_CNTBOARD        1280
 #define IDC_ST_INPUT_PIX                1281
 #define IDC_ST_TAB_WIDTH                1282
 #define IDC_ST_TAB_PITCH                1283
@@ -706,6 +735,7 @@
 #define IDC_ST_BRIGHT_RANGE             1324
 #define IDC_GRID_DEFECT_INFO            1325
 #define IDC_ST_BRIGHT_OVER_CNT          1325
+#define IDC_ST_GROUP_JUDGE2             1326
 #define IDC_ED_TAB_MIN_BRIGHT           1327
 #define IDC_RAD_DARK_ROLL               1328
 #define IDC_RAD_LOGO1                   1329
@@ -730,6 +760,21 @@
 #define IDC_STATIC_NG_SAVE_PATH         1347
 #define IDC_STATIC_OK_SAVE_PATH         1348
 #define IDC_STATIC_LOWEST               1349
+#define IDC_SPIN_BCDID_DIFF             1352
+#define IDC_STATIC_BCDID_DIFF           1353
+#define IDC_STATIC_BCDID_NOW            1354
+#define IDC_BUTTON1                     1354
+#define IDC_BUTTON_IPCONFIG             1354
+#define IDC_ED_RANGE_DIM_CUTTING_TOP    1354
+#define IDC_STATIC_BCDID_LAST           1355
+#define IDC_ED_RANGE_DIM_INSULATION_TOP 1355
+#define IDC_BCDID_NOWTEXT               1356
+#define IDC_ED_RANGE_DIM_TABWIDTH_TOP   1356
+#define IDC_BCDID_LASTTEXT              1357
+#define IDC_ED_RANGE_DIM_CUTTING_BTM    1357
+#define IDC_STATIC_BCDID_GRAB           1358
+#define IDC_BCDID_LASTTEXT2             1359
+#define IDC_BCDID_GRABTEXT              1359
 #define IDS_VIEW_RESULT                 32773
 #define ID_INSP_INFO_VIEW               32775
 #define ID_TREND_VIEW                   32777
@@ -755,7 +800,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        422
 #define _APS_NEXT_COMMAND_VALUE         32799
-#define _APS_NEXT_CONTROL_VALUE         1350
+#define _APS_NEXT_CONTROL_VALUE         1355
 #define _APS_NEXT_SYMED_VALUE           316
 #endif
 #endif

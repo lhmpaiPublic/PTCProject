@@ -265,7 +265,7 @@ public:
 	CString JsonFileName(CString& JsonFileName);
 
 	//INSP 이미지 저장경로를 넘긴다.
-	CString ImageFilePath(CString& ImageFilePath);
+	CString ImageFilePath(CString& ImageFilePath, BOOL JudgeTypeOk);
 
 };
 

@@ -22,6 +22,7 @@ CUiManager::CUiManager()
 	//class 인스턴스 객체
 	m_pNotchingGradeInspView = NULL;
 	m_pMainFrame = NULL;
+	m_pModeDlg = NULL;
 }
 
 //소멸자

@@ -16,7 +16,6 @@
 #define new DEBUG_NEW
 #endif
 
-// 22.05.25 Son Add Start
 enum {
 	en_MENU_FILE = 0,
 	en_MENU_VIEW,
@@ -24,7 +23,6 @@ enum {
 	en_MENU_SETTING,
 	en_MENU_DEBUG
 };
-// 22.05.25 Son Add End
 
 // CMainFrame
 
@@ -37,20 +35,6 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 	ON_WM_SETTINGCHANGE()
-	// 22.07.21 Ahn Delete Start
-	//// 22.06.24 Ahn Add Start
-	////ON_COMMAND(IDS_RESULT_VIEW, &CMainFrame::OnResultView)
-	////ON_UPDATE_COMMAND_UI(IDS_RESULT_VIEW, &CMainFrame::OnUpdateResultView)
-	//ON_COMMAND(IDS_HISTORY_LOT_VIEW, &CMainFrame::OnHistoryLotView)
-	//ON_UPDATE_COMMAND_UI(IDS_HISTORY_LOT_VIEW, &CMainFrame::OnUpdateHistoryLotView)
-	//// 22.06.24 Ahn Add End
-	//ON_COMMAND(ID_INSP_INFO_VIEW, &CMainFrame::OnInspInfoView)
-	//ON_UPDATE_COMMAND_UI(ID_INSP_INFO_VIEW, &CMainFrame::OnUpdateInspInfoView)
-	//ON_COMMAND(ID_TREND_VIEW, &CMainFrame::OnTrendView)
-	//ON_UPDATE_COMMAND_UI(ID_TREND_VIEW, &CMainFrame::OnUpdateTrendView)
-	//ON_COMMAND(IDS_CROP_IMAGE_VIEW, &CMainFrame::OnCropImageView)
-	//ON_UPDATE_COMMAND_UI(IDS_CROP_IMAGE_VIEW, &CMainFrame::OnUpdateCropImageView)
-	// 22.07.21 Ahn Delete End
 	ON_WM_SIZE()
 	ON_WM_SYSCOMMAND()
 END_MESSAGE_MAP()
@@ -78,26 +62,14 @@ CMainFrame::CMainFrame() noexcept
 	m_nTopPanelHeight = 100;
 
 	m_pWndTopPanel = NULL;
-	// 22.07.21 Ahn Delete Start
-	//// 22.06.24 Ahn Modify Start
-	//m_pWndResultView = NULL;
-	//m_pWndHistoryLotView = NULL;
-	// 22.06.24 Ahn Modify End
-	//m_pWndLeftPanel = NULL;
-	//m_pWndRightPanel = NULL;
-	//m_pWndCropImgView = NULL;// 22.06.09 Ahn Add
-	// 22.07.21 Ahn Delete End
 	m_pWndBottomPanel = NULL;
 
-	// 22.07.21 Ahn Add Start
 	m_pCropDlg = NULL ;
 	m_pHistoryDlg = NULL ;
 	m_pInspInfoDlg = NULL ;
 	m_pResultDlg = NULL ;
-	// 22.07.21 Ahn Add End
-	// 22.11.09 Ahn Add Start
+
 	m_pView = NULL;
-	// 22.11.09 Ahn Add End
 }
 
 CMainFrame::~CMainFrame()
@@ -109,13 +81,7 @@ CMainFrame::~CMainFrame()
 		delete m_pWndTopPanel;
 		m_pWndTopPanel = NULL;
 	}
-	// 22.06.24 Ahn Modify Start
-	//if (m_pWndResultView != nullptr) {
-	//	delete m_pWndResultView;
-	//	m_pWndResultView = NULL;
-	//}
 
-	// 22.07.21 Ahn Add Start
 	if (m_pCropDlg != nullptr) {
 		delete m_pCropDlg;
 		m_pCropDlg = NULL;
@@ -132,29 +98,6 @@ CMainFrame::~CMainFrame()
 		delete m_pResultDlg;
 		m_pResultDlg = NULL;
 	}
-	// 22.07.21 Ahn Add End
-
-	// 22.07.21 Ahn Delete Start
-	//if (m_pWndHistoryLotView != nullptr) {
-	//	delete m_pWndHistoryLotView;
-	//	m_pWndHistoryLotView = NULL;
-	//}
-	//// 22.06.24 Ahn Modify End
-	//if (m_pWndLeftPanel != nullptr) {
-	//	delete m_pWndLeftPanel;
-	//	m_pWndLeftPanel = NULL;
-	//}
-	//if (m_pWndRightPanel != nullptr) {
-	//	delete m_pWndRightPanel;
-	//	m_pWndRightPanel = NULL;
-	//}
-	//// 22.06.09 Ahn Add Start
-	//if (m_pWndCropImgView != nullptr) {
-	//	delete m_pWndCropImgView;
-	//	m_pWndCropImgView = NULL;
-	//}
-	//// 22.06.09 Ahn Add End
-	// 22.07.21 Ahn Delete End
 
 	if (m_pWndBottomPanel != nullptr) {
 		delete m_pWndBottomPanel;
@@ -218,116 +161,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	dwStyle &= ~(AFX_CBRS_CLOSE | AFX_CBRS_FLOAT | AFX_CBRS_RESIZE);
 	m_pWndTopPanel->SetControlBarStyle(dwStyle);
 	DockPane(m_pWndTopPanel);
-	// 22.07.21 Ahn Delete Start
-	//// 22.07.21 Ahn Modify Start
-	////m_pWndRightPanel->EnableDocking(CBRS_ALIGN_ANY);
-	//// 22.07.21 Ahn Modify End
-	//dwStyle = m_pWndRightPanel->GetControlBarStyle();
-	//dwStyle &= ~(AFX_CBRS_CLOSE | AFX_CBRS_RESIZE);
-	//m_pWndRightPanel->SetControlBarStyle(dwStyle);
-	////(CPane*)m_pWndRightPanel->SetDrageMode(FALSE);
-
-	//// 22.06.24 Ahn Modify Start
-	////m_pWndResultView->EnableDocking(CBRS_ALIGN_ANY);
-	////dwStyle = m_pWndResultView->GetControlBarStyle();
-	////dwStyle &= ~(AFX_CBRS_CLOSE | AFX_CBRS_RESIZE);
-	////m_pWndResultView->SetControlBarStyle(dwStyle);
-	//// 22.07.21 Ahn Modify Start
-	////m_pWndHistoryLotView->EnableDocking(CBRS_ALIGN_ANY);
-	//// 22.07.21 Ahn Modify End
-	//dwStyle = m_pWndHistoryLotView->GetControlBarStyle();
-	//dwStyle &= ~(AFX_CBRS_CLOSE | AFX_CBRS_RESIZE);
-	//m_pWndHistoryLotView->SetControlBarStyle(dwStyle);
-	//// 22.06.24 Ahn Modify End
-
-	//// 22.07.21 Ahn Modify Start
-	////m_pWndLeftPanel->EnableDocking(CBRS_ALIGN_ANY);
-	//// 22.07.21 Ahn Modify End
-	//dwStyle = m_pWndLeftPanel->GetControlBarStyle();
-	//dwStyle &= ~(AFX_CBRS_CLOSE | AFX_CBRS_RESIZE);
-	//m_pWndLeftPanel->SetControlBarStyle(dwStyle);
-	//
-	//DockPane(m_pWndRightPanel);
-	//// 22.06.24 Ahn Modify Start
-	////DockPane(m_pWndResultView);
-	////m_pWndResultView->DockToWindow(m_pWndRightPanel, CBRS_BOTTOM);
-	//DockPane(m_pWndCropImgView);
-	//m_pWndCropImgView->DockToWindow(m_pWndRightPanel, CBRS_BOTTOM);
-	//// 22.06.24 Ahn Modify End
-
-	//// 22.06.09 Ahn Add Start
-	//// 22.07.21 Ahn Modify Start
-	////m_pWndCropImgView->EnableDocking(CBRS_ALIGN_ANY);
-	//// 22.07.21 Ahn Modify End
-	//dwStyle = m_pWndCropImgView->GetControlBarStyle();
-	//dwStyle &= ~(AFX_CBRS_CLOSE | AFX_CBRS_RESIZE);
-	//m_pWndCropImgView->SetControlBarStyle(dwStyle);
-	//// 22.06.09 Ahn Add End
-
-	//DockPane(m_pWndLeftPanel);
-	//// 22.06.24 Ahn Modify Start
-	//DockPane(m_pWndHistoryLotView);
-	//m_pWndHistoryLotView->DockToWindow(m_pWndLeftPanel, CBRS_BOTTOM);
-	//// 22.06.24 Ahn Modify End
-	// 22.07.21 Ahn Delete End
 
 	// 보관된 값에 따라 비주얼 관리자 및 스타일을 설정합니다.
 	OnApplicationLook(theApp.m_nAppLook);
 
-//	// 도구 모음 및 도킹 창 메뉴 바꾸기를 활성화합니다.
-//	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, strCustomize, ID_VIEW_TOOLBAR);
 
 	// 빠른(<Alt> 키를 누른 채 끌기) 도구 모음 사용자 지정을 활성화합니다.
 	CMFCToolBar::EnableQuickCustomization();
 
 	ShowWindow(SW_MAXIMIZE);
-
-	// 22.07.21 Ahn Delete Start
-	/*int nLeftPanelOffset, nResultViewOffset;
-	int nScreenResolutionW = GetSystemMetrics(SM_CXSCREEN);
-	int nLeftPanelOffsetV;
-	if (nScreenResolutionW == 1920) {
-		nLeftPanelOffset = 420;
-		nLeftPanelOffsetV = 580;
-		nResultViewOffset = 770;
-	}
-	else if (nScreenResolutionW == 1680) {
-		nLeftPanelOffset = 420;
-		nLeftPanelOffsetV = 580;
-		nResultViewOffset = 580;
-	}
-	else if (nScreenResolutionW > 1920) {
-		nLeftPanelOffset = 660;
-		nLeftPanelOffsetV = 700;
-		nResultViewOffset = 860;
-	}
-	else {
-		nLeftPanelOffset = 420;
-		nLeftPanelOffsetV = 580;
-		nResultViewOffset = 580;
-	}
-
-	CRect rect;
-	int nWidth;
-	m_pWndLeftPanel->GetWindowRect(&rect);
-	nWidth = rect.right - rect.left;
-	rect.right += nLeftPanelOffset - nWidth;
-	int nHeight = rect.bottom - rect.top;
-	rect.bottom = nLeftPanelOffsetV - rect.top ;
-	m_pWndLeftPanel->MoveWindow(rect);
-
-	nWidth = rect.right - rect.left;
-	m_pWndHistoryLotView->GetWindowRect(&rect);
-	rect.left -= nLeftPanelOffset - nWidth;
-	m_pWndHistoryLotView->MoveWindow(rect);
-
-	m_pWndCropImgView->GetWindowRect(&rect);
-	nWidth = rect.right - rect.left;
-	rect.right += nResultViewOffset - nWidth;
-	m_pWndCropImgView->MoveWindow(rect);*/
-
-	//GetSystemMenu(NULL)->EnableMenuItem(SC_CLOSE, MF_DISABLED);
-	// 22.07.21 Ahn Delete End
 
 	return 0;
 }
@@ -383,7 +225,6 @@ BOOL CMainFrame::CreateDockingWindows()
 		}
 	}
 
-	// 22.07.21 Ahn Add Start
 	if (m_pCropDlg == NULL) {
 		m_pCropDlg = new CCropImageViewDlg(this, pView);
 		m_pCropDlg->Create(IDD_DLG_CROP_IMAGE_VIEW, this);
@@ -401,59 +242,6 @@ BOOL CMainFrame::CreateDockingWindows()
 		m_pResultDlg->Create(IDD_DLG_RESULT, this);
 	}
 	ShowResultPanel(TRUE);
-	// 22.07.21 Ahn Add End
-
-	// 22.07.22 Ahn Delete Start
-	//if (m_pWndRightPanel == NULL) {
-	//	m_pWndRightPanel = new CRightPanel(this, pView);
-	//	CString strTrendView;
-	//	bNameValid = strTrendView.LoadString(IDS_RESULT_VIEW); // 22.06.30 Ahn Modify
-	//	if (!m_pWndRightPanel->Create(strTrendView, this, CRect(0, 0, 0, 0), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	//	{
-	//		TRACE0("출력 창을 만들지 못했습니다.\n");
-	//		return FALSE; // 만들지 못했습니다.
-	//	}
-	//}
-
-	//if (m_pWndLeftPanel == NULL) {
-	//	m_pWndLeftPanel = new CLeftPanel(this, pView);
-	//	CString strInspInfoView;
-	//	bNameValid = strInspInfoView.LoadString(IDS_INSP_INFO_VIEW);
-	//	ASSERT(bNameValid);
-	//	if (!m_pWndLeftPanel->Create(strInspInfoView, this, CRect(0, 0, 0, 0), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
-	//	{
-	//		TRACE0("출력 창을 만들지 못했습니다.\n");
-	//		return FALSE; // 만들지 못했습니다.
-	//	}
-	//}
-
-	//if (m_pWndHistoryLotView == NULL) {
-	//	m_pWndHistoryLotView = new CHistoryLotView(this, pView);
-	//	CString strResultView;
-	//	bNameValid = strResultView.LoadString(IDS_LOT_RESULT_VIEW);
-	//	ASSERT(bNameValid);
-	//	if (!m_pWndHistoryLotView->Create(strResultView, this, CRect(0, 0, 0, 0), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	//	{
-	//		TRACE0("출력 창을 만들지 못했습니다.\n");
-	//		return FALSE; // 만들지 못했습니다.
-	//	}
-	//}
-	//// 22.06.24 Ahn Modify End
-
-	//// 22.06.09 Ahn Add Start
-	//if (m_pWndCropImgView == NULL) {
-	//	m_pWndCropImgView = new CCropImageView(this, pView);
-	//	CString strCropImageView;
-	//	bNameValid = strCropImageView.LoadString(IDS_CROP_IMAGE_VIEW);
-	//	ASSERT(bNameValid);
-	//	if (!m_pWndCropImgView->Create(strCropImageView, this, CRect(0, 0, 0, 0), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
-	//	{
-	//		TRACE0("출력 창을 만들지 못했습니다.\n");
-	//		return FALSE; // 만들지 못했습니다.
-	//	}
-	//}
-	//// 22.06.09 Ahn Add End
-	// 22.07.22 Ahn Delete End
 
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
 
@@ -614,83 +402,47 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 	CFrameWndEx::OnSettingChange(uFlags, lpszSection);
 }
 
-// 22.07.21 Ahn Delete Start
-//void CMainFrame::OnInspInfoView()
-//{
-//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-//	m_pWndLeftPanel->ShowPane(TRUE, TRUE, TRUE);
-//}
-//
-//
-//void CMainFrame::OnUpdateInspInfoView(CCmdUI* pCmdUI)
-//{
-//	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-////	pCmdUI->SetCheck(m_pWndLeftPanel->IsVisible());
-//}
-//
-//
-//void CMainFrame::OnTrendView()
-//{
-//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-////	m_pWndRightPanel->ShowPane(TRUE, TRUE, TRUE);
-//}
-//
-//
-//void CMainFrame::OnUpdateTrendView(CCmdUI* pCmdUI)
-//{
-//	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-////	pCmdUI->SetCheck(m_pWndRightPanel->IsVisible());
-//}
-//
-//void CMainFrame::OnHistoryLotView()
-//{
-//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-//	m_pWndHistoryLotView->ShowPane(TRUE, TRUE, TRUE);
-//}
-//
-//void CMainFrame::OnUpdateHistoryLotView(CCmdUI* pCmdUI)
-//{
-//	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-//	pCmdUI->SetCheck(m_pWndHistoryLotView->IsVisible());
-//}
-
 int CMainFrame::OnRefresh_HistoryLotView()
 {
 	// TODO: 여기에 구현 코드 추가.
-	// 22.07.21 Ahn Modify Start
-	//return (m_pWndHistoryLotView->OnRefresh());
 	if (m_pHistoryDlg != nullptr) {
 		m_pHistoryDlg->RefreshAll();
 	}
-	// 22.07.21 Ahn Modify End
 	return 0;
 }
-// 22.06.24 Ahn Modify End
 
 void CMainFrame::ReflashAll()
 {
-	// 22.07.21 Ahn Modify Start
-	// 	m_pWndLeftPanel->RefreshAll();
-	//	m_pWndRightPanel->RefreshAll();
+
 	OnRefresh_HistoryLotView();
-	// 22.07.21 Ahn Modify End
-	// 22.05.25 Son Add Start
+
 	m_pWndTopPanel->RefreshAll();
-	// 22.05.25 Son Add End
-	// 22.07.27 Ahn Add Start
+
 	m_pInspInfoDlg->ReflashAll();
-	// 22.07.27 Ahn Add End
+}
+
+//마킹 BCD ID를 갱신한다.
+void CMainFrame::UpdateBCDID()
+{
+	if (CHistoryLotDlg::gsHistoryLotDlg && CHistoryLotDlg::gsHistoryLotDlg->m_hWnd)
+	{
+		CHistoryLotDlg::gsHistoryLotDlg->UpdateBCDID();
+	}
+}
+
+//마킹 BCD ID를 출럭한다.
+void CMainFrame::UpdateBCDIDData(int nowBCDID, int lastBCDID, int grabBCDID)
+{
+	if (CHistoryLotDlg::gsHistoryLotDlg && CHistoryLotDlg::gsHistoryLotDlg->m_hWnd)
+	{
+		CHistoryLotDlg::gsHistoryLotDlg->UpdateBCDIDData(nowBCDID, lastBCDID, grabBCDID);
+	}
 }
 
 void CMainFrame::ResetAndRefreshAll()
 {
-	// 22.07.21 Ahn Modify Start
-	//m_pWndRightPanel->ResetAll();
-	//m_pWndHistoryLotView->RefrashAll();
-	//m_pWndCropImgView->ClearAllData();
 	m_pHistoryDlg->RefreshAll();
 	m_pCropDlg->ClearAllCropImage();
-	// 22.07.21 Ahn Modify End
 }
 
 void CMainFrame::ResetResultViewDlg()
@@ -722,7 +474,6 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 		nBottomOfTop = nHeight;
 	}
 
-	// 22.07.21 Ahn Add Start
 	int nTop = nBottomOfTop;
 
 	int nLeftHeight = 380;
@@ -731,46 +482,6 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 	if (m_wndStatusBar.m_hWnd != nullptr) {
 		m_wndStatusBar.GetWindowRect(rcStatusBar);
 	}
-
-	// 22.12.02 Ahn Modify Start
-	//int nLeftWidth = 450;
-	//int nRightWidth = 750;
-
-	//if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Layout) == TRUE) {
-	//	nLeftWidth = 400;
-	//	nRightWidth = 550;
-	//}
-
-	//int nOffset = 3 ; 
-	//int nTopPos = nBottomOfTop + nOffset;
-	//int nStatusBarHeight = rcStatusBar.Height();
-	//int nHistoryStartY = nTopPos + nLeftHeight;
-	//int nHistoryHeight = ( cy - nHistoryStartY - nStatusBarHeight ) ;
-	//int nRightHeight = (cy - nTopPos - nStatusBarHeight ) / 2;
-	//int nRightStartX = cx - nRightWidth - nOffset  ;
-	//int nCropStartY = nTopPos + nRightHeight;
-
-	//m_cpInspDispPos.x = nLeftWidth ;
-	//m_cpInspDispPos.y = 0 ;
-	//// 22.11.09 Ahn Add Start
-	//m_cpMapSize.y = cy - nBottomOfTop - 20 ;
-	//m_cpMapSize.x = cx - nLeftWidth - nRightWidth - 20 ; // 30은 Scroll 폭
-	//// 22.11.09 Ahn Add End
-
-	//// 22.07.21 Ahn Add Start
-	//if (m_pHistoryDlg != NULL) {
-	//	m_pHistoryDlg->SetWindowPos(this, nOffset, nHistoryStartY, nLeftWidth, nHistoryHeight, SWP_NOZORDER);
-	//}
-	//if (m_pInspInfoDlg != NULL) {
-	//	m_pInspInfoDlg->SetWindowPos(this, nOffset, nTopPos, nLeftWidth, nLeftHeight, SWP_NOZORDER);
-	//}
-
-	//if (m_pCropDlg != NULL) {
-	//	m_pCropDlg->SetWindowPos(this, nRightStartX, nCropStartY, nRightWidth, nRightHeight, SWP_NOZORDER);
-	//}
-	//if (m_pResultDlg != NULL) {
-	//	m_pResultDlg->SetWindowPos(this, nRightStartX, nTopPos, nRightWidth, nRightHeight, SWP_NOZORDER);
-	//}
 
 	int nOffset = 3 ; 
 	int nTopPos = nBottomOfTop + nOffset;
@@ -809,9 +520,7 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 	if (m_pHistoryDlg != NULL) {
 		m_pHistoryDlg->SetWindowPos(this, nMapRight, nDefListBottom, nDefListWidth, nHistHeight, SWP_NOZORDER);
 	}
-	// 22.12.02 Ahn Modify End
 
-	// 22.11.15 Ahn Add Start
 	if (m_pView != NULL) {
 		CRect rcMapSize;
 		rcMapSize.left = 0;
@@ -820,49 +529,9 @@ void CMainFrame::OnSize(UINT nType, int cx, int cy)
 		rcMapSize.bottom = m_cpMapSize.y;
 		m_pView->SetMapDlgSize(rcMapSize);
 	}
-	// 22.11.15 Ahn Add End
-
 
 }
 
-// 22.07.21 Ahn Delete Start
-//int CMainFrame::ShowResultViewPanel(BOOL bShow)
-//{
-//	// TODO: 여기에 구현 코드 추가.
-//
-//	if (m_pWndHistoryLotView == NULL) {
-//		return -1;
-//	}
-//
-//	m_pWndHistoryLotView->ShowPane(bShow, FALSE, TRUE);
-//
-//	return 0;
-//}
-//
-//
-//int CMainFrame::ShowLeftPanel(BOOL bShow)
-//{
-//	// TODO: 여기에 구현 코드 추가.
-//	m_pWndLeftPanel->ShowPane(bShow, FALSE, TRUE);
-//	return 0;
-//}
-//
-//
-//int CMainFrame::ShowRightPanel(BOOL bShow)
-//{
-//	// TODO: 여기에 구현 코드 추가.
-//	m_pWndRightPanel->ShowPane(bShow, FALSE, TRUE);
-//	return 0;
-//}
-//
-//void CMainFrame::OnCropImageView()
-//{
-//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-//
-//	m_pWndCropImgView->ShowPane(TRUE, TRUE, TRUE);
-//}
-// 22.07.21 Ahn Delete End
-// 22.07.21 Ahn Start End
 int CMainFrame::ShowResultPanel(BOOL bShow)
 {
 	if (m_pInspInfoDlg != nullptr) {
@@ -882,43 +551,15 @@ int CMainFrame::ShowResultPanel(BOOL bShow)
 
 	return 0;
 }
-// 22.07.21 Ahn Start End
 
-
-
-// 22.06.09 Ahn Add Start
 int CMainFrame::OnRefresh_CropImageView()
 {
 	// TODO: 여기에 구현 코드 추가.
-	// 22.07.21 Ahn Modify Start 
-	//return (m_pWndCropImgView->OnRefresh());
 	return 0;
-	// 22.07.21 Ahn Modify End
 }
 
 void CMainFrame::LoadHistoryData()
 {
-//	m_pWndResultView->LoadHistoryData();
 	m_pDoc->LoadHistory();
 }
 
-// 22.07.21 Ahn Delete Start
-//void CMainFrame::OnUpdateCropImageView(CCmdUI* pCmdUI)
-//{
-//	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-//	pCmdUI->SetCheck(m_pWndCropImgView->IsVisible());
-//}
-//
-//int CMainFrame::ShowCropImagePanel(BOOL bShow)
-//{
-//	if (m_pWndCropImgView == NULL) {
-//		return -1;
-//	}
-//	m_pWndCropImgView->ShowPane(bShow, FALSE, TRUE);
-//	CRect rc;
-//	m_pWndCropImgView->GetClientRect(&rc);
-//	m_pWndCropImgView->SendMessage(WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rc.Width(), rc.Height()));
-//	return 0;
-//}
-//// 22.06.09 Ahn Add End
-// 22.07.21 Ahn Delete End

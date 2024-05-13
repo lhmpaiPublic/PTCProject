@@ -52,24 +52,44 @@ using namespace Gdiplus;
 //#define GMLV_LIGHT_SKIP
 
 //컨넥트 존 컴파일 여부
-//#define USE_PLCCONNECTZONE
+#define USE_PLCCONNECTZONE
+
+//BCD Counter 컴파일 여부
+//#define USE_BCDCOUNTER
+
+//PLC data type new
+//#define NEW_PLCTYPE
 
 //글로벌 버전 정보 로컬 세팅
 //Notching.Release.Version_년(4).월(2).일(2).(배포 횟수 : r01 ~ r99)
-static CString GlobalVersion = _T("Notching.Release.Version_2024.01.25.r02");
+static CString GlobalVersion = _T("Notching.Release.Version_2024.05.02.r01");
+
 
 //Glabal Surpport 클래스
 #include "StrSuport.h"
+//다이얼로그 클래스 Sub Class
+#include "SubDialogEx.h"
 //UI를 관리하기 위한 클래스
 #include "UiManager.h"
 
-//FrameInfo 이미지 저장 메모리 풀
-#include "FrameImagePtr.h"
+//Simens
+#include "LGIS\LGIS_Plc.h"
+//PLC Imp 클래스
+#include "PlcImp.h"
+#include "DataPlcImp.h"
+
+#include <string>
+#include <vector>
+using namespace std;
 
 #include "GlobalFunc.h"
 #include "LogDisplayDlg.h"
 
 #include "SpcPlusManager.h"
 #include "SpcInData.h"
+
+#include "TriggerSocket.h"
+//AsyncSocket 재정의
+#include "PtcAsyncSocket.h"
 
 #endif //PCH_H

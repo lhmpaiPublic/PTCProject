@@ -38,8 +38,8 @@ char* CSpcInspInData::MakeInspInDataText_1 =
 "        \"CELL_COUNT_NO\" : \"%s\",\r\n"
 "        \"VIRTUAL_CELL_ID\" : \"%s\",\r\n"
 "        \"CELL_FINAL_JUDGE\" : \"%s\",\r\n"
-"        \"DetectFallFlact\" : \"%s\",\r\n"
-"        \"DetectFallReasoAll\" : \"%s\",\r\n"
+"        \"DETECT_FALL_FLAG\" : \"%s\",\r\n"
+"        \"DETECT_FALL_REASON_REAL\" : \"%s\",\r\n"
 "        \"IQ_INFO\": [\r\n";
 //+"%s"	 IQ_INFO
 char* CSpcInspInData::MakeInspInDataText_2[2] =
@@ -222,10 +222,11 @@ CString CSpcInspInData::JsonFileName(CString& JsonFileName)
 }
 
 //INSP 이미지 저장경로를 넘긴다.
-CString CSpcInspInData::ImageFilePath(CString& ImageFilePath)
+CString CSpcInspInData::ImageFilePath(CString& ImageFilePath, BOOL JudgeTypeOk)
 {
+
 	ImageFilePath = SPCINFO->getInspOkImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
-	if (m_CellFinalJudge == "NG")
+	if (JudgeTypeOk == FALSE)
 	{
 		ImageFilePath = SPCINFO->getInspNgImagePath() + m_CreateTime.Mid(0, 6) + CString("\\") + m_CreateTime.Mid(6, 2) + CString("\\") + m_CreateTime.Mid(8, 2) + CString("\\") + m_LotId;
 	}

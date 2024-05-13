@@ -123,6 +123,92 @@ CString CStrSuport::Changbytetohex(BYTE* byt, int len)
 	return "";
 }
 
+CString CStrSuport::ChangbytetohexMelsec(BYTE* byt, int len, int offset, int tablen)
+{
+	CString temp;
+	CString rest = "";
+	for (int i = 0; i < (int)len; i++)
+	{
+		if ((i + 1) % tablen == 1)
+		{
+			temp.Format("0x%02X : ", (i + offset));
+			rest += temp;
+		}
+		temp.Format("%02X", byt[i]);
+		rest += temp;
+
+		if ((i + 1) % tablen == 0)
+		{
+			rest += "	";
+		}
+		else
+		{
+			rest += " ";
+		}
+	}
+	return rest;
+}
+
+CString CStrSuport::ChangshorttohexSiemens(short* data, int len, int offset, int tablen)
+{
+	CString temp;
+	CString rest = "";
+	for (int i = 0; i < (int)len; i++)
+	{
+		if ((i+1) % tablen == 1)
+		{
+			temp.Format("0x%02X : ", (i + offset));
+			rest += temp;
+		}
+		temp.Format("%02X", ((data[i])>>8)&0xff);
+		rest += temp;
+		temp.Format("%02X", (data[i]) & 0xff);
+		rest += temp;
+
+		if ((i + 1) % tablen == 0)
+		{
+			rest += "	";
+		}
+		else
+		{
+			rest += " ";
+		}
+	}
+	return rest;
+}
+
+CString CStrSuport::ChanginttohexMelsec(int* data, int len, int offset, int tablen)
+{
+	CString temp;
+	CString rest = "";
+	for (int i = 0; i < (int)len; i++)
+	{
+		if ((i + 1) % tablen == 1)
+		{
+			temp.Format("0x%02X : ", ((i * sizeof(int)) + offset));
+			rest += temp;
+		}
+		temp.Format("%02X", ((data[i]) >> 24) & 0xff);
+		rest += temp;
+		temp.Format("%02X", ((data[i]) >> 16) & 0xff);
+		rest += temp;
+		temp.Format("%02X", ((data[i]) >> 8) & 0xff);
+		rest += temp;
+		temp.Format("%02X", (data[i]) & 0xff);
+		rest += temp;
+
+		if ((i + 1) % tablen == 0)
+		{
+			rest += "	";
+		}
+		else
+		{
+			rest += " ";
+		}
+	}
+	return rest;
+}
+
 //--------------------------------------------------------------
 //|
 //|Hex스트링을값을 문자스트링값으로 변환한다(예 "303041413961"=>"00AA9a"

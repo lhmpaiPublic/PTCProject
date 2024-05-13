@@ -18,7 +18,6 @@
 #include "NotchingGradeInspView.h"
 #include "SigProc.h"
 #include "CCameraSettingDlg.h"
-//#include "CCameraViewDlg.h"
 #include "CCameraWaveDlg.h"
 #include "ImageProcessCtrl.h"
 #include "GlobalData.h"
@@ -30,12 +29,12 @@
 #include "SystemSettingDlg.h"
 #include "CStartDlg.h"
 #include "CDeleteSettingDlg.h"
-#include "CCounterQueueCtrl.h" // 22.03.28 Ahn Add
-#include "CResultFileManager.h" // 22.04.21 Ahn Add 
-#include "ModeDlg.h" // 22.06.13 Ahn Add
-#include "CDebugLotCtrlDlg.h" // 22.06.27 Ahn Add
+#include "CCounterQueueCtrl.h" 
+#include "CResultFileManager.h" 
+#include "ModeDlg.h"
+#include "CDebugLotCtrlDlg.h"
 
-#include "CDeleteResultFileThread.h" // 22.07.04 Ahn Add
+#include "CDeleteResultFileThread.h" 
 #include "SpcStatusManager.h"
 #include "SpcStatusInData.h"
 
@@ -48,22 +47,27 @@
 #define T_ID_IO_ALIVE	102
 #define T_ID_LONG_TERM	103 
 #define T_ID_IO			104
+
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 #define T_SPCSTATUS			105
 #endif //SPCPLUS_CREATE
+
+//PLC read/write 타이머 생성 객체
+#ifdef NEW_PLCTYPE
+#define T_PLCSTATUS			106
+#endif //NEW_PLCTYPE
+
 // CNotchingGradeInspView
 
 IMPLEMENT_DYNCREATE(CNotchingGradeInspView, CView)
 
 BEGIN_MESSAGE_MAP(CNotchingGradeInspView, CView)
-//	ON_WM_CONTEXTMENU()	//KANG 22.01.07 Delete
 	ON_WM_RBUTTONUP()
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
-//	ON_COMMAND(ID_CAMERA_SETTING, &CNotchingGradeInspView::OnCameraSetting)
 	ON_COMMAND(ID_CAMERA_VIEW, &CNotchingGradeInspView::OnCameraView)
 	ON_COMMAND(ID_CAMERA_WAVE, &CNotchingGradeInspView::OnCameraWave)
 	ON_COMMAND(ID_DEBUG_START, &CNotchingGradeInspView::OnDebugImageAcqStart)
@@ -82,20 +86,17 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 
 	// TODO: 여기에 생성 코드를 추가합니다.
 	m_pInspDlg = NULL;
-	m_pDefMapDlg = NULL; // 22.11.09 Ahn Add
+	m_pDefMapDlg = NULL; 
 	m_pHistoryDlg = NULL;
 	m_pCondDlg = NULL;
-//	m_pCamViewDlg = NULL;
 	m_pCamWaveDlg = NULL;
 	m_nStatus = en_InspStop ;
 	m_bReady = FALSE;
 	pImgAcqDlg = NULL;
 	m_bLotChangeReq = FALSE;
 	m_nRunCheckCounter = 0;
-	// 22.03.24 Ahn Add Start
 	m_bLoadGlsInfoReq = TRUE; 
 	m_bLastAlarmCode = 0xFFFF; 
-	// 22.03.24 Ahn Add End
 
 	m_bLotStartFlag = FALSE;
 	m_bLotEndFlag = FALSE;
@@ -109,22 +110,15 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 
 	m_nCamErrorResetCnt = 0;
 
-	// 22.06.27 Ahn Add Start
 	m_bDebugLotStartReq = FALSE ;
 	m_bDebugLotEndReq = FALSE ;
 	m_bDebug_counterResetReq = FALSE;
-	// 22.06.27 Ahn Add End
 
-	// 22.07.04 Ahn Add Start
 	m_pDeleteThread = NULL;
-	// 22.07.04 Ahn Add End
 
-	// 22.11.09 Ahn Add Start
 	m_bDispMap = TRUE ;
-	// 22.11.09 Ahn Add End
-	// 22.12.07 Ahn Add Start
+
 	m_nRedrawCnt = 0;
-	// 22.12.07 Ahn Add End
 
 	//로그 출력창 활성화 키(Ctrl 눌림 확인용)
 	logControlKeyDown = false;
@@ -132,10 +126,16 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	m_pThread = NULL;
 
 
-	//SPC 객체 소스에서 컴파일 여부 결정
+//SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	m_SpcStatus = 0; 
 #endif //SPCPLUS_CREATE
+
+//PLC read/write 타이머 생성 객체
+#ifdef NEW_PLCTYPE
+	m_PlcReadWirteTimer = 0;
+#endif //NEW_PLCTYPE
+
 }
 
 CNotchingGradeInspView::~CNotchingGradeInspView()
@@ -150,7 +150,6 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		delete m_pInspDlg;
 		m_pInspDlg = NULL;
 	}
-	// 22.11.09 Ahn Add Start
 	if (m_pDefMapDlg == nullptr) {
 		if (m_pDefMapDlg->m_hWnd != nullptr) {
 			m_pDefMapDlg->DestroyWindow();
@@ -158,7 +157,6 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		delete m_pDefMapDlg;
 		m_pDefMapDlg = nullptr;
 	}
-	// 22.11.09 Ahn Add End
 
 	if (m_pHistoryDlg != nullptr) {
 		if (m_pHistoryDlg->m_hWnd != nullptr) {
@@ -174,13 +172,6 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		delete m_pCondDlg;
 		m_pCondDlg = NULL;
 	}
-	//if (m_pCamViewDlg != nullptr) {
-	//	if (m_pCamViewDlg->m_hWnd != nullptr) {
-	//		m_pCamViewDlg->DestroyWindow();
-	//	}
-	//	delete m_pCamViewDlg;
-	//	m_pCamViewDlg = NULL;
-	//}
 
 	if (m_pCamWaveDlg != nullptr) {
 		if (m_pCamWaveDlg->m_hWnd != nullptr) {
@@ -190,26 +181,15 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		m_pCamWaveDlg = NULL;
 	}
 
-	//// 22.04.21 Ahn Add Start
-	//if (m_pFileManager != NULL) {
-	//	delete m_pFileManager;
-	//	m_pFileManager = NULL;
-	//}
-	//// 22.04.21 Ahn Add End
-
-	// 22.07.04 Ahn Add Start
 	if (m_pDeleteThread != NULL) {
 		delete m_pDeleteThread ;
 		m_pDeleteThread = NULL ;
 	}
-	// 22.07.04 Ahn Add End
 
-	// 22.11.24 Ahn Add Start
 	if (m_pDefMapDlg != NULL) {
 		delete m_pDefMapDlg ;
 		m_pDefMapDlg = NULL ;
 	}
-	// 22.11.24 Ahn Add End
 
 	CloseDebugImgAcqDlg();
 
@@ -218,17 +198,15 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 		setEvent_NotchingGradeInspView();
 		CGlobalFunc::ThreadExit(&pThread->m_hThread, 5000);
 		pThread->m_hThread = NULL;
+		pThread = NULL;
 	}
 
+	if (pEvent_NotchingGradeInspView)
+	{
+		CloseHandle(pEvent_NotchingGradeInspView);
+		pEvent_NotchingGradeInspView = NULL;
+	}
 
-
-////SPC 객체 소스에서 컴파일 여부 결정
-//#ifdef SPCPLUS_CREATE
-//	if (m_SpcStatus != 0) {
-//		KillTimer(m_SpcStatus);
-//		m_SpcStatus = 0;
-//	}
-//#endif //SPCPLUS_CREATE
 }
 
 BOOL CNotchingGradeInspView::PreCreateWindow(CREATESTRUCT& cs)
@@ -253,20 +231,8 @@ void CNotchingGradeInspView::OnDraw(CDC* /*pDC*/)
 
 void CNotchingGradeInspView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 {
-//KNAG 22.01.07 Delete Start
-//	ClientToScreen(&point);
-//	OnContextMenu(this, point);
-//KANG 22.01.07 Delete End
-}
 
-//KANG 22.01.07 Delete Start
-//void CNotchingGradeInspView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
-//{
-//#ifndef SHARED_HANDLERS
-//	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
-//#endif
-//}
-//KANG 22.01.07 Delete End
+}
 
 
 // CNotchingGradeInspView 진단
@@ -311,7 +277,6 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		}
 	}
 
-	// 22.11.09 Ahn Add Start
 	m_pDefMapDlg = new CDefectMapDlg(this, this);
 	if (m_pDefMapDlg != nullptr) {
 		if (m_pDefMapDlg->Create(IDD_DEFECT_MAP_DLG, this) == 0) {
@@ -322,7 +287,6 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 			m_pDefMapDlg->ShowWindow(SW_HIDE);
 		}
 	}
-	// 22.11.09 Ahn Add End
 
 
 	m_pHistoryDlg = new CHistoryDlg(this, this);
@@ -337,15 +301,10 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		}
 	}
 
-	// 22.07.21 Ahn Modify Start
-	//m_pCondDlg = new CCondDlg(this, this);
-	//if (m_pCondDlg != nullptr) {
-	//	if (m_pCondDlg->Create(IDD_DLG_COND, this) == 0) {
 	m_pCondDlg = new CRecipeSettingDlg(FALSE, AprData.m_pRecipeInfo, this);
 	if (m_pCondDlg != nullptr) {
 		if (m_pCondDlg->Create(IDD_DLG_RECIPE_SETTING, this) == 0) {
 
-	// 22.07.21 Ahn Modify Start
 			delete m_pCondDlg;
 			m_pCondDlg = NULL;
 			return -1;
@@ -360,6 +319,11 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_SpcStatus = SetTimer(T_SPCSTATUS, 10000, NULL);
 #endif //SPCPLUS_CREATE
 
+//PLC read/write 타이머 생성 객체
+#ifdef NEW_PLCTYPE
+	m_PlcReadWirteTimer = SetTimer(T_PLCSTATUS, 100, NULL);
+#endif //NEW_PLCTYPE
+
 	return 0;
 }
 
@@ -370,38 +334,22 @@ void CNotchingGradeInspView::OnSize(UINT nType, int cx, int cy)
 
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 	m_pInspDlg->SetWindowPos(NULL, 5, 0, cx - 10, cy , SWP_NOZORDER);
-	//m_pDefMapDlg->SetWindowPos(NULL, 5, 0, cx - 10, cy, SWP_NOZORDER);// 22.11.09 Ahn Add 
 	m_pHistoryDlg->SetWindowPos(NULL, 5, 0, cx - 10, cy, SWP_NOZORDER);
 	m_pCondDlg->SetWindowPos(NULL, 5, 0, cx - 10, cy, SWP_NOZORDER);
 }
 
-// 22.11.15 Ahn Add Start
 void CNotchingGradeInspView::SetMapDlgSize(CRect rcMapSize)
 {
 	m_pDefMapDlg->SetWindowPos(NULL, rcMapSize.left, 0, rcMapSize.Width(), rcMapSize.Height(), SWP_NOZORDER);// 22.11.09 Ahn Add 
 }
-// 22.11.15 Ahn Add End
 
 int CNotchingGradeInspView::ChangeViewMode(int nMode)
 {
 	// TODO: 여기에 구현 코드 추가.
 	switch (nMode) {
 	case enInspMode:
-					// 23.02.09 Ahn Modify Start
-					//// 22.11.09 Ahn Add Start
-					//if (m_bDispMap == TRUE) {
-					//	if (m_pDefMapDlg != nullptr) {
-					//		m_pDefMapDlg->ShowWindow(SW_SHOW);
-					//	}
-					//}
-					//else {
-					//	if (m_pInspDlg != nullptr) {
-					//		m_pInspDlg->ShowWindow(SW_SHOW);
-					//	}
-					//}
-					//// 22.11.09 Ahn Add End
+
 					SwitchDisplay(m_bDispMap) ;
-					// 23.02.09 Ahn Modify End 
 
 					if (m_pHistoryDlg != nullptr) {
 						m_pHistoryDlg->ShowWindow(SW_HIDE);
@@ -414,14 +362,14 @@ int CNotchingGradeInspView::ChangeViewMode(int nMode)
 					if (m_pInspDlg != nullptr) {
 						m_pInspDlg->ShowWindow(SW_HIDE);
 					}
-					// 22.11.09 Ahn Add Start
+
 					if (m_pDefMapDlg != nullptr) {
 						m_pDefMapDlg->ShowWindow(SW_HIDE);
-						// 23.01.03 Ahh Add Start
+
 						m_pDefMapDlg->RequestCloseImgDispDlg();
-						// 23.01.03 Ahh Add End
+
 					}
-					// 22.11.09 Ahn Add End
+
 					if (m_pHistoryDlg != nullptr) {
 						m_pHistoryDlg->ShowWindow(SW_SHOW);
 					}
@@ -433,14 +381,13 @@ int CNotchingGradeInspView::ChangeViewMode(int nMode)
 					if (m_pInspDlg != nullptr) {
 						m_pInspDlg->ShowWindow(SW_HIDE);
 					}
-					// 22.11.09 Ahn Add Start
+
 					if (m_pDefMapDlg != nullptr) {
 						m_pDefMapDlg->ShowWindow(SW_HIDE);
-						// 23.01.03 Ahh Add Start
+
 						m_pDefMapDlg->RequestCloseImgDispDlg();
-						// 23.01.03 Ahh Add End
+
 					}
-					// 22.11.09 Ahn Add End
 					if (m_pHistoryDlg != nullptr) {
 						m_pHistoryDlg->ShowWindow(SW_HIDE);
 					}
@@ -464,7 +411,7 @@ void CNotchingGradeInspView::OnInitialUpdate()
 
 	StartThreadAliveSiginal();
 	SetLogTermTimer();
-	Set_I0Timer();	// 22.03.24 Ahn Add 
+	Set_I0Timer();
 
 	SigInitialize();
 
@@ -487,31 +434,27 @@ int CNotchingGradeInspView::OnRefresh()
 
 void CNotchingGradeInspView::SigInitialize()
 {
-	CSigProc *pSigProc = theApp.m_pSigProc ;
-
-	pSigProc->SigOutEncoderZeroSet(FALSE);
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->SigOutLotEndAck(FALSE);
-	pSigProc->SigOutLotStartAck(FALSE);
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->WriteAlarmCode(0x0000);
+	theApp.m_pSigProc->SigOutEncoderZeroSet(FALSE);
+	theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+	theApp.m_pSigProc->SigOutLotEndAck(FALSE);
+	theApp.m_pSigProc->SigOutLotStartAck(FALSE);
+	theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+	theApp.m_pSigProc->WriteAlarmCode(0x0000);
 }
 
 void CNotchingGradeInspView::ResetSignal()
 {
-	CSigProc* pSigProc = theApp.m_pSigProc;
-
 	KillSignalCheckTimer();
 	KillAlivePulseTimer();
 	KillLongTermTimer();
 
-	pSigProc->SigOutReady(FALSE);
-	pSigProc->SigOutEncoderZeroSet(FALSE);
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->SigOutLotEndAck(FALSE);
-	pSigProc->SigOutLotStartAck(FALSE);
-	pSigProc->SigOutRecipeChangeAck(FALSE);
-	pSigProc->SigOutAlivePulse(FALSE);
+	theApp.m_pSigProc->SigOutReady(FALSE);
+	theApp.m_pSigProc->SigOutEncoderZeroSet(FALSE);
+	theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+	theApp.m_pSigProc->SigOutLotEndAck(FALSE);
+	theApp.m_pSigProc->SigOutLotStartAck(FALSE);
+	theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+	theApp.m_pSigProc->SigOutAlivePulse(FALSE);
 }
 
 
@@ -521,10 +464,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 	if (nIDEvent == m_TID_IO_Check)
 	{
-		CSigProc* pSigProc = theApp.m_pSigProc;
-
-		//KillSignalCheckTimer();
-
 		//////////////////////////////////////////////////////////////////////////
 		//  Lot Start, Lot End, Tab Count Reset 감시 ]
 		CheckLotEndProcess2();
@@ -547,7 +486,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		switch (m_nStatus)
 		{
 		case	en_CameraReset:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_CameraReset"));
 			m_nCamErrorResetCnt++;
 			if (GrabberResetReqest() == 0)
 			{
@@ -576,18 +514,15 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 
-			// 22.05.19 Ahn Add End
 		case	en_Initialize:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_Initialize"));
 
-			pSigProc->SigOutEncoderZeroSet(FALSE);
-			pSigProc->SigOutLotEndAck(FALSE);
-			pSigProc->SigOutLotStartAck(FALSE);
-			pSigProc->SigOutRecipeChangeAck(FALSE);
-			pSigProc->WriteAlarmCode(0x0000);
+			theApp.m_pSigProc->SigOutEncoderZeroSet(FALSE);
+			theApp.m_pSigProc->SigOutLotEndAck(FALSE);
+			theApp.m_pSigProc->SigOutLotStartAck(FALSE);
+			theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
+			theApp.m_pSigProc->WriteAlarmCode(0x0000);
 			m_nStatus = en_InspStop;
 			AprData.m_NowLotData.m_bProcError = TRUE;
-			AprData.m_NowLotData.m_ReadCount = 6;
 
 			break;
 
@@ -596,12 +531,11 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_InspStop:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_InspStop"));
 
 			if (IsInspReady() == TRUE )
 			{
 				m_nStatus = en_WaitReady;
-				pSigProc->SigOutReady(TRUE);
+				theApp.m_pSigProc->SigOutReady(TRUE);
 			}
 			else
 			{
@@ -620,7 +554,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 						pFrame->ResetAndRefreshAll();
 					}
 				}
-				CameraGrabStop(); // 22.07.07 Ahn Add - Stop Button이 Click 되어 있는 상태.
+				CameraGrabStop(); 
 			}
 			break;
 
@@ -629,7 +563,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_WaitReady:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_WaitReady"));
 
 			if (IsInspReady() == FALSE)
 			{
@@ -649,7 +582,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				}
 			}
 
-			if (pSigProc->SigInReady() == TRUE)
+			if (theApp.m_pSigProc->SigInReady() == TRUE)
 			{
 				m_nStatus = en_Ready;
 				if (m_pDeleteThread != nullptr)
@@ -660,63 +593,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				}
 			}
 
-
-
-
-
-			/* Log 자동 삭제 - 임시 막음 20230727 pyj
-			else
-			{
-				SYSTEMTIME sysTime;
-				SYSTEMTIME* pLastTIme = &AprData.m_NowLotData.m_LastDeleteCompletTime;
-				::GetSystemTime(&sysTime);
-				long lNowTime;
-				lNowTime = (sysTime.wYear * 100000000) + (sysTime.wMonth * 1000000) + (sysTime.wDay * 10000) + (sysTime.wHour + 100) + sysTime.wMinute;
-				long lLastDelCompletTime = (pLastTIme->wYear * 100000000) + (pLastTIme->wMonth * 1000000) + (pLastTIme->wDay * 10000) + (pLastTIme->wHour * 100) + pLastTIme->wMinute;
-
-				double dDiskUse = AprData.m_dDiskTotal - AprData.m_dDiskFree;
-				double dPercent = (dDiskUse / AprData.m_dDiskTotal) * 100.0;
-				BOOL bDeleteStart = FALSE;
-				BOOL bDeleteCapa = FALSE;
-
-				if ((lNowTime - lLastDelCompletTime) > 60)
-				{
-					bDeleteStart = TRUE;
-				}
-
-				if (dPercent > 80.0)
-				{
-					bDeleteCapa = TRUE;
-				}
-
-				if ((bDeleteStart == TRUE) || (bDeleteCapa == TRUE))
-				{
-					if (m_pDeleteThread == nullptr)
-					{
-						m_pDeleteThread = new CDeleteResultFileThread();
-						m_pDeleteThread->Begin();
-					}
-					else
-					{
-						if (m_pDeleteThread->IsComplet() == TRUE)
-						{
-							// 마지막 저장 완료 일시를 저장함.
-							::GetLocalTime(&AprData.m_NowLotData.m_LotEndTime);
-							AprData.FileCtrl_LotInfo(CGlobalData::en_mode_Write_LastDelTime);
-							delete m_pDeleteThread;
-							m_pDeleteThread = NULL;
-						}
-					}
-				}
-			}
-			*/
-
-
 			break;
-
-
-
-
 
 
 		case	en_Ready:
@@ -725,10 +602,9 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			{
 				m_nStatus = en_PrepareRun;
 			}
-			else if (pSigProc->SigInRun() == TRUE)
+			else if (theApp.m_pSigProc->SigInRun() == TRUE)
 			{
 				m_nStatus = en_PrepareRun;
-//				AprData.SaveDebugLog_Format(_T("<OnTimer> en_Ready, Run ON"));
 			}
 
 			break;
@@ -738,7 +614,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 
 		case	en_PrepareRun:
-//			AprData.SaveDebugLog_Format(_T("<OnTimer> en_PrepareRun"));
 
 			if (m_pDeleteThread != nullptr)
 			{
@@ -768,10 +643,8 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				}
 
 				CString strOldLotID;
-				CString strOldRecipeName;
 				strOldLotID.Format(_T("%s"), AprData.m_SeqDataIN.strCell_ID);
-				strOldRecipeName.Format(_T("%s"), AprData.m_SeqDataIN.strRecipeName);
-				pSigProc->ReadBlockAllData(&AprData.m_SeqDataIN);
+				theApp.m_pSigProc->ReadBlockAllData(&AprData.m_SeqDataIN);
 				CString strNewLotID;
 				strNewLotID = AprData.m_SeqDataIN.strCell_ID;
 				strNewLotID.TrimRight();
@@ -784,33 +657,16 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			}
 
-			{
-// 				int nRecipeNo = 0;
-// 				AprData.m_NowLotData.m_strRecipeName = AprData.m_NowLotData.m_strNextRecipeName;
-// 				CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
-// 				if( pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName) >= 0 )
-// 				{
-// 
-// 				}
-
-			}
-
-
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == TRUE) {
 				CString strNextRcp;
 				strNextRcp = AprData.m_NowLotData.m_strNextRecipeName;
 				int nRecipeNo = 0;
 				CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 				pDoc->RecipeChange(nRecipeNo, strNextRcp);
-				CString strLog;
-				strLog.Format(_T("5.Recipe Change : RcipeNo[%d], RecipeName[%s]"), nRecipeNo, AprData.m_SeqDataIN.strRecipeName);
-				AprData.SaveLotLog(strLog);
+
+				AprData.SaveDebugLog_Format(_T("5.Recipe Change : RcipeNo[%d], RecipeName[%s]"), nRecipeNo, AprData.m_SeqDataIN.strRecipeName);
 			}
 
-
-			// 			pSigProc->SigOutLotStartAck(FALSE);
-			// 			pSigProc->SigOutLotEndAck(FALSE);
-			// 			pSigProc->SigOutTabZeroReset(FALSE);
 
 			m_bEncoderReset = FALSE;
 			m_nStatus = en_Run;
@@ -834,10 +690,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 			if (AprData.m_ErrStatus.IsHeavyError() == TRUE)
 			{
 				InspectionEnd();
-//				CameraGrabStop();
-
-//				m_nStatus = en_CameraReset;
-	
 				SetInspReady(FALSE);
 
 				m_nStatus = en_InspStop;
@@ -848,7 +700,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 
 			if (AprData.m_DebugSet.GetDebug(CDebugSet::en_Debug_Melsec) == FALSE)
 			{
-				if (pSigProc->SigInRun() == FALSE)
+				if (theApp.m_pSigProc->SigInRun() == FALSE)
 				{
 					// POC에서 Run 신호가 OFF된 경우.
 					// 검사 정지 처리
@@ -893,6 +745,7 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 				AprData.m_NowLotData.m_SeqDataOut.dwPrmSectorBaseCnt = (DWORD)AprData.m_nSectorBaseCount; //AprData.m_pRecipeInfo->nSectorCount;
 
 
+#ifndef NEW_PLCTYPE
 				int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_DataReportV1_Ea, MODE_WRITE);
 
 				if (AprData.m_System.m_nPlcMode == en_Plc_Siemens)
@@ -936,56 +789,31 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 					AprData.m_NowLotData.m_SeqDataOutSms.wPrmSectorBaseCnt = (WORD)AprData.m_nSectorBaseCount;
 
 
-
+					//PLC 블럭 Write
 					short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
 					int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
-					if (pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
+					if (theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
 					{
 						AprData.SaveDebugLog(_T("[DATA SEND] Error")); //pyjtest
 					}
-
-					//PLC 블럭 Read Time 체크(50 * 6  = 300ms 주기)
-					AprData.m_NowLotData.m_ReadCount--;
-					if (AprData.m_NowLotData.m_ReadCount <= 0)
+					Sleep(1);
+					//PLC 블럭 Read
+					pData = (short*)(&AprData.m_NowLotData.m_ReadDataSms);
+					nSize = sizeof(_SEQ_In_DATA_SMS) / sizeof(WORD);
+					if (theApp.m_pSigProc->ReadPLC_Block_device(0, pData, nSize) != 0)
 					{
-						short* pData = (short*)(&AprData.m_NowLotData.m_ReadDataSms);
-						int nSize = sizeof(_SEQ_In_DATA_SMS) / sizeof(WORD);
-						if (pSigProc->ReadPLC_Block_device(0, pData, nSize) != 0)
-						{
-							AprData.SaveDebugLog(_T("[DATA Read] Error"));
-						}
-						else
-						{
-							AprData.m_NowLotData.m_ReadCount = 6;
-						}
+						AprData.SaveDebugLog(_T("[DATA Read] Error"));
 					}
-					//Read Time이 아닐 경우 Write 한다.
-					else
-					{
-						short* pData = (short*)(&AprData.m_NowLotData.m_SeqDataOutSms);
-						int nSize = sizeof(_SEQ_OUT_DATA_SMS) / sizeof(WORD);
-						if (pSigProc->WritePLC_Block_device(nAddress, pData, nSize) != 0)
-						{
-							AprData.SaveDebugLog(_T("[DATA SEND] Error")); //pyjtest
-						}
-					}
-
-//					else
-//					{
-//						CString strMsg;
-//						strMsg.Format(_T("[DATA SEND] OK Tab Count=%d"), AprData.m_NowLotData.m_nTabCount);
-//						AprData.SaveDebugLog(strMsg); //pyjtest
-//					}
-
-
-
 				}
 				else
 				{
 					int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataOut);
 					int nSize = sizeof(_SEQ_OUT_DATA) / sizeof(int);
-					pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+					theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
 				}
+#else
+				theApp.m_pSigProc->WriteBlockData(&AprData);
+#endif //NEW_PLCTYPE
 
 			}
 
@@ -1038,16 +866,16 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 	}
 #endif //SPCPLUS_CREATE
 
-	//////////////////////////////////////////////////////////////////////////
-	// [ Alive ]
-//	if (nIDEvent == m_TID_Alive_Pulse)
-//	{
-//		KillAlivePulseTimer();
-//		CSigProc* pSigProc = theApp.m_pSigProc;
-//		pSigProc->SigOutAlivePulse(TRUE);
-//		SetAlivePulseTimer();
-//
-//	}
+//PLC read/write 타이머 생성 객체
+#ifdef NEW_PLCTYPE
+	if (nIDEvent == m_PlcReadWirteTimer)
+	{
+		if (theApp.m_pSigProc)
+		{
+			theApp.m_pSigProc->PlcDataReadWritePorc();
+		}
+	}
+#endif //NEW_PLCTYPE
 
 
 	if (m_TID_Long_Term == nIDEvent)
@@ -1062,7 +890,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 	CView::OnTimer(nIDEvent);
 }
 
-// 22.12.01 Ahn Add Start
 void CNotchingGradeInspView::ReDrawMap( BOOL bModeRect, CRect rcRange )
 {
 	if(m_pDefMapDlg != nullptr){
@@ -1079,9 +906,7 @@ void CNotchingGradeInspView::ReDrawMap( BOOL bModeRect, CRect rcRange )
 		}
 	}
 }
-// 22.12.01 Ahn Add End
 
-// 22.07.01 Ahn Add Start
 void CNotchingGradeInspView::CheckDiskSpace()
 {
 #if defined(_DEBUG)
@@ -1093,11 +918,9 @@ void CNotchingGradeInspView::CheckDiskSpace()
 	double dFreeSpace, dTotalSize, dPercent;
 
 	double ret = file.GetDiskSpace(AprData.m_strResultPath, &dTotalSize, &dFreeSpace, &dPercent);
-	// 22.07.04 Ahn Add Start
 	AprData.m_dDiskTotal = dTotalSize ;
 	AprData.m_dDiskFree = dFreeSpace ;
 	AprData.m_dDiskPercent = dPercent ;
-	// 22.07.04 Ahn Add End
 
 	double dAlarmSize = DISK_SPACE_ALARM_HEAVY;
 	double dWarningSize = DISK_SPACE_ALARM_LIGHT;
@@ -1119,8 +942,6 @@ void CNotchingGradeInspView::CheckDiskSpace()
 	}
 
 }
-// 22.07.01 Ahn Add End
-
 
 BOOL CNotchingGradeInspView::SetSignalCheckTimer()
 {
@@ -1201,11 +1022,6 @@ void CNotchingGradeInspView::OnCameraView()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 
-	//if (m_pCamViewDlg == NULL) {
-	//	m_pCamViewDlg = new CCameraViewDlg(this);
-	//	m_pCamViewDlg->Create(IDD_DLG_CAM_VIEW, this);
-	//}
-	//m_pCamViewDlg->ShowWindow(SW_SHOW);	
 }
 
 void CNotchingGradeInspView::OnCameraWave()
@@ -1220,7 +1036,6 @@ void CNotchingGradeInspView::OnCameraWave()
 
 }
 
-// 22.05.19 Ahn Add Start
 int CNotchingGradeInspView::GrabberResetReqest()
 {
 	int nRet = 0;
@@ -1239,27 +1054,23 @@ int CNotchingGradeInspView::GrabberResetReqest()
 
 	return nRet ;
 }
-// 22.05.19 Ahn Add End
 
-// 22.07.06 Ahn Add Start
 // Lot Start 시점에 Call
 int CNotchingGradeInspView::CameraGrabStart()
 {
 	//Log Camera Setting
-	LOGDISPLAY_SPECTXT(0)(_T("CNotchingGradeInspView::CameraGrabStart"));
+	LOGDISPLAY_SPEC(0)(_T("CNotchingGradeInspView::CameraGrabStart"));
 
 	int nRet = 0;
 	//카메라 Image Processing Start
 	if (theApp.m_pImgProcCtrl != nullptr) {
 		nRet = theApp.m_pImgProcCtrl->GrabStart();
 	}
-	// 22.07.07 Ahn Add Test Start
+
 	CString strLog;
 	strLog.Format(_T("Camera Grab Start"));
 	AprData.SaveErrorLog(strLog);
-//	AprData.SaveDebugLog(strLog);
 
-	// 22.07.07 Ahn Add Test End
 	return nRet;
 }
 // Lot End
@@ -1271,19 +1082,15 @@ int CNotchingGradeInspView::CameraGrabStop()
 		if (theApp.m_pImgProcCtrl->IsGrabberRun() == TRUE) {
 			nRet = theApp.m_pImgProcCtrl->GrabStop();
 
-			// 22.07.07 Ahn Add Test Start
 			CString strLog;
 			strLog.Format(_T("Camera Grab Stop"));
 			AprData.SaveErrorLog(strLog);
-//			AprData.SaveDebugLog(strLog);
-			// 22.07.07 Ahn Add Test End
+			AprData.SaveDebugLog(strLog);
 		}
 	}
 
 	return nRet;
 }
-// 22.07.06 Ahn Add End
-
 
 int CNotchingGradeInspView::InspectionStart()
 {
@@ -1300,9 +1107,7 @@ int CNotchingGradeInspView::InspectionEnd()
 	int nRet = 0;
 	CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 
-	// 22.02.23 Ahn Delete End
 	theApp.m_pImgProcCtrl->InspectionEnd();
-	// 21.12.23 Ahn Modify End
 	AprData.SaveDebugLog(_T("----검사 종료 ( Inspection End )----"));
 
 	return nRet;
@@ -1318,14 +1123,11 @@ BOOL CNotchingGradeInspView::SetInspReady(BOOL bStatus)
 {
 	m_bReady = bStatus;
 
-	CSigProc *pSigProc = theApp.m_pSigProc ;
-	pSigProc->WriteBlockAllData(bStatus);	
-
 	m_pDefMapDlg->RequestCloseImgDispDlg();
 
 	m_pDefMapDlg->EnableWindow(!bStatus);
 
-	pSigProc->SigOutReady(bStatus);
+	theApp.m_pSigProc->SigOutReady(bStatus);
 
 	return m_bReady;
 }
@@ -1361,13 +1163,7 @@ void CNotchingGradeInspView::CloseDebugImgAcqDlg()
 
 void CNotchingGradeInspView::OnRecipeSetting()
 {
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 
-	//CRecipeInfo recipeInfo = *AprData.m_pRecipeInfo;
-	//CRecipeSettingDlg dlg(FALSE, &recipeInfo, this ) ;
-	//if (dlg.DoModal() == IDOK) {
-
-	//}	 
 }
 
 
@@ -1415,69 +1211,62 @@ void CNotchingGradeInspView::OnDebugControl()
 	}
 }
 
-
-
-// 22.07.26 Ahn Add Start
 int CNotchingGradeInspView::CheckLotEndProcess()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	if ((pSigProc->SigInLotEnd() == TRUE) && (pSigProc->SigOutLotEndAck(-1) == FALSE))
+	if ((theApp.m_pSigProc->SigInLotEnd() == TRUE) && (theApp.m_pSigProc->SigOutLotEndAck(-1) == FALSE))
 	{
-		pSigProc->SigOutLotEndAck(TRUE);
+		theApp.m_pSigProc->SigOutLotEndAck(TRUE);
 
 		CameraGrabStop();
 
 		AprData.LotEndProcess();
 
+#ifndef NEW_PLCTYPE
+		AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;
+		AprData.m_NowLotData.m_SeqDataLotEnd.dwBottomNgLotEndCount = AprData.m_NowLotData.m_nBottomNG;
 
+		int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
+
+		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd);
+		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
+		theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+#else
+		theApp.m_pSigProc->SigOutLotEnd(AprData.m_NowLotData.m_nTopNG, AprData.m_NowLotData.m_nBottomNG);
+#endif //#ifndef NEW_PLCTYPE
+
+		Sleep(100); 
+
+		if (theApp.m_pSigProc->SigInTabZeroReset() == TRUE)
 		{
-			AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;
-			AprData.m_NowLotData.m_SeqDataLotEnd.dwBottomNgLotEndCount = AprData.m_NowLotData.m_nBottomNG;
-
-			//int nAddress = CSigProc::enWordWrite_Top_Defect_Count_LotEnd;
-			int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
-
-			int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd); // 22.07.13 Ahn Modify m_SeqDataLot -> LotEnd
-			int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
-			pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
-		}
-
-		Sleep(100); // 22.03.29 Ahn Modify 10 -> 100 
-
-		if (pSigProc->SigInTabZeroReset() == TRUE)
-		{
-			AprData.SaveLotLog(_T("Tab Zero Reset 신호 ON"));
-			pSigProc->SigOutTabZeroReset(TRUE);
+			AprData.SaveDebugLog(_T("Tab Zero Reset 신호 ON"));
+			theApp.m_pSigProc->SigOutTabZeroReset(TRUE);
 
 			theApp.m_pImgProcCtrl->TabCountReset();
-			AprData.SaveLotLog(_T("Tab No And Queue Reset"));
+			AprData.SaveDebugLog(_T("Tab No And Queue Reset"));
 
 			AprData.m_NowLotData.ClearAllCount();
 			AprData.FileCtrl_LotInfo(CGlobalData::en_mode_LotEnd);
 
 			CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 			pDoc->SetReqCounterReset(TRUE);
-			pSigProc->SigOutEncoderZeroSet(FALSE);
+			theApp.m_pSigProc->SigOutEncoderZeroSet(FALSE);
 		}
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		pFrame->ResetAndRefreshAll();
 
-		pSigProc->SigOutLotEndAck(FALSE);
+		theApp.m_pSigProc->SigOutLotEndAck(FALSE);
 
 	}
 	return nRet;
 }
-// 22.07.26 Ahn Add End
-
 
 int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInLotEnd() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInLotEnd() == 1) ? TRUE : FALSE;
 
 	if ( (bSigIn == TRUE) && (m_bLotEndFlag == FALSE) )
 	{
@@ -1485,18 +1274,22 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 ON"));
 
-		pSigProc->SigOutLotEndAck(TRUE);
+		theApp.m_pSigProc->SigOutLotEndAck(TRUE);
 //		CameraGrabStop();
 		AprData.LotEndProcess();
 
+#ifndef NEW_PLCTYPE
 		AprData.m_NowLotData.m_SeqDataLotEnd.dwTopNgLotEndCount = AprData.m_NowLotData.m_nTopNG;
 		AprData.m_NowLotData.m_SeqDataLotEnd.dwBottomNgLotEndCount = AprData.m_NowLotData.m_nBottomNG;
 
 		int nAddress = CSigProc::GetWordAddress(CSigProc::enWordWrite_Top_Defect_Count_LotEnd, MODE_WRITE);
 
-		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd); // 22.07.13 Ahn Modify m_SeqDataLot -> LotEnd
+		int* pData = (int*)(&AprData.m_NowLotData.m_SeqDataLotEnd);
 		int nSize = sizeof(_SEQ_OUT_DATA_LOT_END) / sizeof(int);
-		pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+		theApp.m_pSigProc->WritePLC_Block_device(nAddress, pData, nSize);
+#else
+		theApp.m_pSigProc->SigOutLotEnd(AprData.m_NowLotData.m_nTopNG, AprData.m_NowLotData.m_nBottomNG);
+#endif //NEW_PLCTYPE
 
 		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 		pFrame->ResetAndRefreshAll();
@@ -1506,7 +1299,7 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 		m_bLotEndFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckLotEndProcess2 OFF"));
 
-		pSigProc->SigOutLotEndAck(FALSE);
+		theApp.m_pSigProc->SigOutLotEndAck(FALSE);
 	}
 
 
@@ -1518,23 +1311,20 @@ int CNotchingGradeInspView::CheckLotEndProcess2() //조건 없이 Lot End Check
 int CNotchingGradeInspView::CheckTabZeroReset()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInTabZeroReset() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInTabZeroReset() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bTabCountResetFlag == FALSE) )
 	{
 		m_bTabCountResetFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckTabZeroReset ON"));
 
-		AprData.SaveLotLog(_T("Tab Zero Reset 신호 ON"));
-		pSigProc->SigOutTabZeroReset(TRUE);
+		AprData.SaveDebugLog(_T("Tab Zero Reset 신호 ON"));
+		theApp.m_pSigProc->SigOutTabZeroReset(TRUE);
 
 		theApp.m_pImgProcCtrl->TabCountReset();
-		AprData.SaveLotLog(_T("!! Tab No And Queue Reset !!"));
-		AprData.SaveDebugLog_Format(_T("!! Tab No And Queue Reset !!"));
+		AprData.SaveDebugLog(_T("!! Tab No And Queue Reset !!"));
 
 		AprData.m_NowLotData.ClearAllCount();
-		AprData.SaveDebugLog_Format(_T("!! ClearAllCount !!"));
 
 		AprData.FileCtrl_LotInfo(CGlobalData::en_mode_LotEnd);
 
@@ -1546,6 +1336,7 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 		pFrame->ReflashAll();
 		pFrame->ResetResultViewDlg();
 
+		AprData.SaveDebugLog_Format(_T("SEND PLC ZERO RESET ON AND CLEAR ALL COUNT"));
 
 	}
 	if ((bSigIn == FALSE) && (m_bTabCountResetFlag == TRUE))
@@ -1553,7 +1344,7 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 		m_bTabCountResetFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckTabZeroReset OFF"));
 
-		pSigProc->SigOutTabZeroReset(FALSE);
+		theApp.m_pSigProc->SigOutTabZeroReset(FALSE);
 
 	}
 
@@ -1564,29 +1355,25 @@ int CNotchingGradeInspView::CheckTabZeroReset()
 int CNotchingGradeInspView::CheckLotStartProcess()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bLotStartSigIn = (pSigProc->SigInLotStart()==1) ? TRUE : FALSE;
+	BOOL bLotStartSigIn = (theApp.m_pSigProc->SigInLotStart()==1) ? TRUE : FALSE;
 	if ((bLotStartSigIn == TRUE) && (m_bLotStartFlag == FALSE))
 	{
 		m_bLotStartFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckLotStartProcess ON"));
-		AprData.SaveLotLog(_T("1.Lot Start Signal ON "));
+		AprData.SaveDebugLog(_T("1.Lot Start Signal ON "));
 
 		if (AprData.LotStartProcess(bLotStartSigIn) < 0)
 		{
 			m_nStatus = en_Initialize;
 		}
-
-//		CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd(); //pyjtest
-//		pFrame->ReflashAll();  //pyjtest
 	}
 	if ((bLotStartSigIn == FALSE) && (m_bLotStartFlag == TRUE))
 	{
 		m_bLotStartFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckLotStartProcess OFF"));
 
-		pSigProc->SigOutLotStartAck(FALSE);
+		theApp.m_pSigProc->SigOutLotStartAck(FALSE);
 	}
 
 	return nRet;
@@ -1596,17 +1383,17 @@ int CNotchingGradeInspView::CheckLotStartProcess()
 int CNotchingGradeInspView::CheckAlarmReset()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInAlarmReset() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInAlarmReset() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bAlarmResetFlag == FALSE))
 	{
 		m_bAlarmResetFlag = TRUE;
 		AprData.SaveDebugLog(_T("CheckAlarmReset ON"));
 
-		pSigProc->SigOutAlarmResetAck(TRUE);
-//		pSigProc->WriteAlarmCode(0x0000);
-//		pSigProc->SigOutAlarmExist(FALSE);
+		//Log
+		LOGDISPLAY_SPEC(11)(_T("CheckAlarmReset ON"));
+
+		theApp.m_pSigProc->SigOutAlarmResetAck(TRUE);
 
 	}
 	if ((bSigIn == FALSE) && (m_bAlarmResetFlag == TRUE))
@@ -1614,7 +1401,10 @@ int CNotchingGradeInspView::CheckAlarmReset()
 		m_bAlarmResetFlag = FALSE;
 		AprData.SaveDebugLog(_T("CheckAlarmReset OFF"));
 
-		pSigProc->SigOutAlarmResetAck(FALSE);
+		//Log
+		LOGDISPLAY_SPEC(11)(_T("CheckAlarmReset OFF"));
+
+		theApp.m_pSigProc->SigOutAlarmResetAck(FALSE);
 
 	}
 
@@ -1624,29 +1414,21 @@ int CNotchingGradeInspView::CheckAlarmReset()
 int CNotchingGradeInspView::CheckAlarmNgAck()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInAlarmNgAck() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInAlarmNgAck() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bAlarmNgAck == FALSE))
 	{
 		m_bAlarmNgAck = TRUE;
 		AprData.SaveDebugLog(_T("CheckAlarmNgAck ON"));
 
-//		pSigProc->SigOutAlarmNgResetAck(TRUE);
-
-//		pSigProc->WriteAlarmCode(0x0000);
-//		pSigProc->SigOutAlarmExist(FALSE);
-
 		memset(&AprData.m_NowLotData.m_stAlarmCodeAndCellJudgeSms, 0x0000, sizeof(_ALARM_CODE_CELL_JUDGE_SMS));
-		pSigProc->WriteAlarmCodeAndJudge(0x0000, 0, 0, 0);
+		theApp.m_pSigProc->WriteAlarmCodeAndJudge(0x0000, 0, 0, 0);
 
 	}
 	if ((bSigIn == FALSE) && (m_bAlarmNgAck == TRUE))
 	{
 		m_bAlarmNgAck = FALSE;
 		AprData.SaveDebugLog(_T("CheckAlarmNgAck OFF"));
-
-//		pSigProc->SigOutAlarmNgResetAck(FALSE);
 
 	}
 
@@ -1656,9 +1438,8 @@ int CNotchingGradeInspView::CheckAlarmNgAck()
 int CNotchingGradeInspView::CheckRecipeChange()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInRecipeChange() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInRecipeChange() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bRecipeChagneFlag == FALSE))
 	{
 		m_bRecipeChagneFlag = TRUE;
@@ -1670,7 +1451,7 @@ int CNotchingGradeInspView::CheckRecipeChange()
 		CNotchingGradeInspDoc* pDoc = (CNotchingGradeInspDoc*)m_pDocument;
 		if (pDoc->RecipeChange(nRecipeNo, AprData.m_NowLotData.m_strRecipeName) >= 0)
 		{
-			pSigProc->SigOutRecipeChangeAck(TRUE);
+			theApp.m_pSigProc->SigOutRecipeChangeAck(TRUE);
 		}
 
 	}
@@ -1679,7 +1460,7 @@ int CNotchingGradeInspView::CheckRecipeChange()
 		m_bRecipeChagneFlag = FALSE;
 		AprData.SaveDebugLog(_T("RecipeChange OFF"));
 
-		pSigProc->SigOutRecipeChangeAck(FALSE);
+		theApp.m_pSigProc->SigOutRecipeChangeAck(FALSE);
 
 	}
 
@@ -1690,22 +1471,21 @@ int CNotchingGradeInspView::CheckRecipeChange()
 int CNotchingGradeInspView::CheckInkMarkActive()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInInkMarkActive() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInInkMarkActive() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bInkMarkActiveFlag == FALSE))
 	{
 		m_bInkMarkActiveFlag = TRUE;
 		AprData.SaveDebugLog(_T("Ink Marking Active ON"));
 
-		pSigProc->SetInkMarkAcktive(TRUE);
+		theApp.m_pSigProc->SetInkMarkAcktive(TRUE);
 	}
 	if ((bSigIn == FALSE) && (m_bInkMarkActiveFlag == TRUE))
 	{
 		m_bInkMarkActiveFlag = FALSE;
 		AprData.SaveDebugLog(_T("Ink Marking Active OFF"));
 
-		pSigProc->SetInkMarkAcktive(FALSE);
+		theApp.m_pSigProc->SetInkMarkAcktive(FALSE);
 	}
 
 	return nRet;
@@ -1715,29 +1495,26 @@ int CNotchingGradeInspView::CheckInkMarkActive()
 int CNotchingGradeInspView::CheckConnectZone()
 {
 	int nRet = 0;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
-	BOOL bSigIn = (pSigProc->SigInConnectZone() == 1) ? TRUE : FALSE;
+	BOOL bSigIn = (theApp.m_pSigProc->SigInConnectZone() == 1) ? TRUE : FALSE;
 	if ((bSigIn == TRUE) && (m_bConnectZoneFlag == FALSE))
 	{
 		m_bConnectZoneFlag = TRUE;
 		AprData.SaveDebugLog(_T("Connect Zone ON"));
 
-		pSigProc->SetConnectZone(TRUE);
+		theApp.m_pSigProc->SetConnectZone(TRUE);
 	}
 	if ((bSigIn == FALSE) && (m_bConnectZoneFlag == TRUE))
 	{
 		m_bConnectZoneFlag = FALSE;
 		AprData.SaveDebugLog(_T("Connect Zone OFF"));
 
-		pSigProc->SetConnectZone(FALSE);
+		theApp.m_pSigProc->SetConnectZone(FALSE);
 	}
 
 	return nRet;
 }
 
-
-// 23.02.09 Ahn Add Start
 void CNotchingGradeInspView::SwitchDisplay(BOOL bModeMap)
 {
 	m_bDispMap = bModeMap;
@@ -1755,7 +1532,6 @@ void CNotchingGradeInspView::SwitchDisplay(BOOL bModeMap)
 		}
 	}
 }
-// 23.02.09 Ahn Add End
 
 
 BOOL CNotchingGradeInspView::PreTranslateMessage(MSG* pMsg)
@@ -1810,7 +1586,6 @@ void CNotchingGradeInspView::StartThreadAliveSiginal()
 UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
 {
 	CNotchingGradeInspView* pThis = (CNotchingGradeInspView*)lpParm;
-	CSigProc* pSigProc = theApp.m_pSigProc;
 
 	UINT ret = 0;
 	while (true)
@@ -1823,8 +1598,7 @@ UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
-			//pSigProc->SigOutAlivePulse(TRUE);
-			pSigProc->SigOutAlivePulseReady(TRUE, pThis->IsInspReady());
+			theApp.m_pSigProc->SigOutAlivePulseReady(TRUE, pThis->IsInspReady());
 		}
 		else
 		{
