@@ -97,6 +97,9 @@ public:
 	int m_nEdOverflowCountMax;
 	int m_nErrcount_CntBoard;
 	int m_ErrorMemory;
+	int m_WaringDisk;
+	int m_AlarmDisk;
+
 	afx_msg void OnEnSetfocusEdJpegSaveQuality();
 	afx_msg void OnBnClickedChkFirstTabDonotProc();
 	BOOL m_bChkFirstTabDoNotProc;
@@ -175,6 +178,8 @@ public:
 	BOOL m_bChkDisableSpcPlus;
 	afx_msg void OnEnSetfocusEdErrcountCntboard();
 	afx_msg void OnEnSetfocusEdMemoryerror();
+	afx_msg void OnEnSetfocusEdDiskWarnig();
+	afx_msg void OnEnSetfocusEdDiskAlarm();
 	BOOL m_bChkUseNoTabMarkingSkip;
 	afx_msg void OnBnClickedChkUseNoTabMarkingSkip();
 };

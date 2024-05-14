@@ -947,8 +947,8 @@ void CNotchingGradeInspView::CheckDiskSpace()
 	AprData.m_dDiskFree = dFreeSpace ;
 	AprData.m_dDiskPercent = dPercent ;
 
-	double dAlarmSize = DISK_SPACE_ALARM_HEAVY;
-	double dWarningSize = DISK_SPACE_ALARM_LIGHT;
+	double dAlarmSize = AprData.m_System.m_AlarmDisk;
+	double dWarningSize = AprData.m_System.m_WaringDisk;
 	if (dAlarmSize < dPercent)
 	{
 		CString strMsg;

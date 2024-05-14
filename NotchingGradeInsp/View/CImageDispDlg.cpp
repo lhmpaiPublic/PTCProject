@@ -1136,7 +1136,7 @@ void CImageDispDlg::DrawCross(CDC* pDC)
 
 	CSize size = pBmpDest->GetImgSize();
 
-	int nSize = m_vptDrawCross.size();
+	int nSize = (int)m_vptDrawCross.size();
 	int nCrossSize = 100;
 
 	for( int i=0; i<nSize; i++ )

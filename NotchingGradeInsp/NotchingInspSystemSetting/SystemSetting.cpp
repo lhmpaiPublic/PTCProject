@@ -217,9 +217,17 @@ int CSystemSetting::FileCtrl(int nMode)
 			m_nCounterBoard_ErrCount = atoi(buff);
 
 			strKey = _T("MEMORYERROR");
-			::GetPrivateProfileString(strSection, strKey, "0", buff, 90, strFileName);
+			::GetPrivateProfileString(strSection, strKey, "80", buff, 256, strFileName);
 			m_MemorydError = atoi(buff);
 			
+			strKey = _T("WARINGDISK");
+			::GetPrivateProfileString(strSection, strKey, "100", buff, 256, strFileName);
+			m_WaringDisk = atoi(buff);
+
+			strKey = _T("ALARMDISK");
+			::GetPrivateProfileString(strSection, strKey, "100", buff, 256, strFileName);
+			m_AlarmDisk = atoi(buff);
+
 			strKey = _T("LED_CHECK_DELAY");
 			::GetPrivateProfileString(strSection, strKey, "2000", buff, 256, strFileName);
 			m_nLED_Check_Delay = atoi(buff);
@@ -459,6 +467,15 @@ int CSystemSetting::FileCtrl(int nMode)
 			strKey = _T("MEMORYERROR");
 			strData.Format(_T("%d"), m_MemorydError);
 			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("WARINGDISK");
+			strData.Format(_T("%d"), m_WaringDisk);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
+			strKey = _T("ALARMDISK");
+			strData.Format(_T("%d"), m_AlarmDisk);
+			::WritePrivateProfileString(strSection, strKey, strData, strFileName);
+
 
 			strSection = _T("SPCPLUS_INFO");
 			strKey = _T("NON_EXEC_SPCPLUS");
