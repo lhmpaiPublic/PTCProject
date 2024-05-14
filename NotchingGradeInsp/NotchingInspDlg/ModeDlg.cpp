@@ -551,7 +551,8 @@ void CModeDlg::Refresh()
 
 	COLORREF clrBk;
 
-	if (m_bRunLastFlag != bRunFlag) {
+	if (m_bRunLastFlag != bRunFlag) 
+	{
 		CString strState;
 		if (bRunFlag == TRUE) {
 			clrBk = RGB(192, 255, 192);
@@ -563,6 +564,8 @@ void CModeDlg::Refresh()
 		}
 		m_stState.SetBackgroundColor(clrBk);
 		m_stState.SetWindowText(strState);
+
+		m_bRunLastFlag = bRunFlag;
 
 	}
 
