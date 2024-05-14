@@ -11,7 +11,12 @@ using namespace LOADVTECSDll_GROUP;
 #define AUTO_START_TIMER 1111
 #define AUTO_START_DELAY 1000
 
-#define T_CHECK_DEVICE 8858 //240108
+#define T_CHECK_DEVICE 8858
+
+//
+#define TIMERID_GRABBERCHECK 1201
+#define TIMER_GRABBERCHECK 1000
+#define GRABBERCHECK_MAX 2000
 
 //카운터 보드 네트워크 에러 메시지 정의
 #define WM_COUNTBORDERROR WM_USER + 1 
@@ -60,6 +65,10 @@ protected:
 
 	CTactTimeGraphDlg* m_pTactGraph;
 
+	//Refresh 시 Run 진행 상태 이면서 Grabber Image 취득이 일정 시간 없을 경우 인터락
+	UINT64 m_RunTime;
+	long m_nFramdCntTop;
+	long m_nFrameCntBottom;
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DLG_MODE };

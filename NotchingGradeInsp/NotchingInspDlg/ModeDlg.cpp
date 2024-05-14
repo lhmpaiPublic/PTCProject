@@ -110,6 +110,11 @@ CModeDlg::CModeDlg(CWnd* pParent /*=nullptr*/, CNotchingGradeInspView* pView /*=
 	m_pTactGraph = NULL ;
 
 	m_nTimerInterval_DeviceCheck = AprData.m_System.m_nLED_Check_Delay;
+
+	//Refresh 시 Run 진행 상태 이면서 Grabber Image 취득이 일정 시간 없을 경우 인터락
+	m_RunTime = GetTickCount64();
+	m_nFramdCntTop = 0;
+	m_nFrameCntBottom = 0;
 }
 
 CModeDlg::~CModeDlg()
@@ -121,6 +126,8 @@ CModeDlg::~CModeDlg()
 		delete m_pTactGraph ;
 		m_pTactGraph = NULL;
 	}
+
+	KillTimer(TIMERID_GRABBERCHECK);
 }
 
 void CModeDlg::DoDataExchange(CDataExchange* pDX)
@@ -390,6 +397,8 @@ BOOL CModeDlg::OnInitDialog()
 	ChangeState(enInspStop);
 
 	SetTimer(AUTO_START_TIMER, AUTO_START_DELAY, NULL);
+
+	SetTimer(TIMERID_GRABBERCHECK, TIMER_GRABBERCHECK, NULL);
 
 	initCelltrack();
 
@@ -861,10 +870,6 @@ void CModeDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		KillTimer(AUTO_START_TIMER);
 
-#if defined(_DEBUG)
-		return;
-#endif
-
 		m_bDispSwitch = TRUE;
 		m_pView->SwitchDisplay(!m_bDispSwitch);
 
@@ -874,8 +879,9 @@ void CModeDlg::OnTimer(UINT_PTR nIDEvent)
 		UpdateData(FALSE);
 
 	}
-#if 1 //240108
-	else if (nIDEvent == T_CHECK_DEVICE) {
+
+	if (nIDEvent == T_CHECK_DEVICE) 
+	{
 		KillTimer(T_CHECK_DEVICE);
 
 		if(CheckDevice() == TRUE) return;
@@ -883,8 +889,40 @@ void CModeDlg::OnTimer(UINT_PTR nIDEvent)
 		if(((CButton*)GetDlgItem(IDC_RAD_STOP))->GetCheck() == FALSE) SetTimer(T_CHECK_DEVICE, m_nTimerInterval_DeviceCheck, NULL);
 
 	}
-	else;
-#endif
+
+	//Grabber Image : Frame Counter 증가 확인
+	//2초 동안 Run 후 2초 지나도 Image 가 들어오지 않을 경우 인터락
+	if (nIDEvent == TIMERID_GRABBERCHECK)
+	{
+		UINT64 RunTime = GetTickCount64();
+		if (m_bRunLastFlag)
+		{
+			if ((RunTime - m_RunTime) > GRABBERCHECK_MAX)
+			{
+				long nFramdCntTop = AprData.GetFrameCounter(0);
+				long nFrameCntBottom = AprData.GetFrameCounter(1);
+				if (nFramdCntTop != m_nFramdCntTop && nFrameCntBottom != m_nFrameCntBottom)
+				{
+					m_nFramdCntTop = nFramdCntTop;
+					m_nFrameCntBottom = nFrameCntBottom;
+				}
+				else
+				{
+					CString strMessage;
+					strMessage.Format(_T("Run Grabber Image Error Locking"));
+					AprData.m_ErrStatus.SetError(CErrorStatus::en_RunGrabberCheck, strMessage);
+					AprData.SaveErrorLog(_T("Run Grabber Image Error Locking"));
+				}
+				//기존 타임 갱신
+				m_RunTime = RunTime;
+			}
+		}
+		else
+		{
+			m_RunTime = RunTime;
+		}
+	}
+	
 
 	CDialogEx::OnTimer(nIDEvent);
 }

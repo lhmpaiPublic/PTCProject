@@ -30,7 +30,8 @@ public :
 		en_MissTabID		= 0x000012,
 		en_BrightError		= 0x000013,
 		en_CountBordError	= 0x000014,
-		en_MemorydError   = 0x000015,
+		en_MemorydError		= 0x000015,
+		en_RunGrabberCheck	= 0x000016,
 
 		en_DiskCapacityAlarm	= 0x100001,
 		en_DiskCapacityWarning  = 0x100002,
@@ -48,6 +49,8 @@ public :
 		case	en_DiskCapacityAlarm:
 		//CountBord Error
 		case	en_CountBordError:
+		//Run 시 GrabberImage 체크
+		case en_RunGrabberCheck:
 			m_bInitialReq = TRUE;
 			break;
 
