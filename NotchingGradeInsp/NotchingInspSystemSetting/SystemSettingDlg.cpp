@@ -196,6 +196,9 @@ void CSystemSettingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHK_DISABLE_SPCPLUS, m_bChkDisableSpcPlus);
 	DDX_Text(pDX, IDC_ED_ERRCOUNT_CNTBOARD, m_nErrcount_CntBoard);
 	DDX_Text(pDX, IDC_ED_MEMORYERROR, m_ErrorMemory);
+	DDX_Text(pDX, IDC_ED_DISKWARNING, m_WaringDisk);
+	DDX_Text(pDX, IDC_ED_DISKALARM, m_AlarmDisk);
+
 	DDX_Check(pDX, IDC_CHK_USE_NO_TAB_MARKING_SKIP, m_bChkUseNoTabMarkingSkip);
 }
 
@@ -242,6 +245,10 @@ ON_EN_SETFOCUS(IDC_ED_MISS_TAB_ID_MAX, &CSystemSettingDlg::OnSetfocusEdMissTabId
 ON_BN_CLICKED(IDC_CHK_DISABLE_SPCPLUS, &CSystemSettingDlg::OnBnClickedChkDisableSpcplus)
 ON_EN_SETFOCUS(IDC_ED_ERRCOUNT_CNTBOARD, &CSystemSettingDlg::OnEnSetfocusEdErrcountCntboard)
 ON_EN_SETFOCUS(IDC_ED_MEMORYERROR, &CSystemSettingDlg::OnEnSetfocusEdMemoryerror)
+ON_EN_SETFOCUS(IDC_ED_DISKWARNING, &CSystemSettingDlg::OnEnSetfocusEdDiskWarnig)
+ON_EN_SETFOCUS(IDC_ED_DISKALARM, &CSystemSettingDlg::OnEnSetfocusEdDiskAlarm)
+
+
 ON_BN_CLICKED(IDC_CHK_USE_NO_TAB_MARKING_SKIP, &CSystemSettingDlg::OnBnClickedChkUseNoTabMarkingSkip)
 END_MESSAGE_MAP()
 
@@ -908,6 +915,8 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_SysSetting.m_nDiskCapacity = m_nDiskCapacityAlarm;
 		m_SysSetting.m_nCounterBoard_ErrCount = m_nErrcount_CntBoard;
 		m_SysSetting.m_MemorydError = m_ErrorMemory;
+		m_SysSetting.m_WaringDisk = m_WaringDisk;
+		m_SysSetting.m_AlarmDisk = m_AlarmDisk;
 		m_SysSetting.m_bNoTabMarkingSkip = m_bChkUseNoTabMarkingSkip;
 
 
@@ -965,6 +974,8 @@ int CSystemSettingDlg::DataControl(int nMode)
 		m_nDiskCapacityAlarm = m_SysSetting.m_nDiskCapacity ;
 		m_nErrcount_CntBoard = m_SysSetting.m_nCounterBoard_ErrCount; 
 		m_ErrorMemory = m_SysSetting.m_MemorydError;
+		m_WaringDisk = m_SysSetting.m_WaringDisk;
+		m_AlarmDisk = m_SysSetting.m_AlarmDisk;
 		m_bChkUseNoTabMarkingSkip = m_SysSetting.m_bNoTabMarkingSkip;
 
 
@@ -1540,6 +1551,39 @@ void CSystemSettingDlg::OnEnSetfocusEdMemoryerror()
 
 	UpdateData(FALSE);
 }
+
+void CSystemSettingDlg::OnEnSetfocusEdDiskWarnig()
+{
+	// TODO: Add your control notification handler code here
+	m_EdDummy.SetFocus();
+
+	CSetValue setValue(this);
+	CString strMsg;
+
+	int nMax = 100;
+	int nMin = 0;
+	setValue.SetValue(strMsg, m_WaringDisk, nMax, nMin);
+	DataControl(MODE_WRITE);
+
+	UpdateData(FALSE);
+}
+
+void CSystemSettingDlg::OnEnSetfocusEdDiskAlarm()
+{
+	// TODO: Add your control notification handler code here
+	m_EdDummy.SetFocus();
+
+	CSetValue setValue(this);
+	CString strMsg;
+
+	int nMax = 100;
+	int nMin = 0;
+	setValue.SetValue(strMsg, m_AlarmDisk, nMax, nMin);
+	DataControl(MODE_WRITE);
+
+	UpdateData(FALSE);
+}
+
 
 
 void CSystemSettingDlg::OnBnClickedChkUseNoTabMarkingSkip()

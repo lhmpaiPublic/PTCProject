@@ -376,8 +376,11 @@
 #define IDC_ED_ERRCOUNT_CNTBOARD2       1053
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_00 1054
 #define IDC_ED_BRIGHT_AREA_R            1054
+#define IDC_ED_DISKiWARNING             1054
+#define IDC_ED_DISKWARNING              1054
 #define IDC_EDIT_EXPOSURE_TIME_CAM_NO_01 1055
 #define IDC_ED_BRIGHT_AREA_B            1055
+#define IDC_ED_DISKALARM                1055
 #define IDC_EDIT_VIEW_OFFSET_HOR_CAM_NO_00 1056
 #define IDC_ED_BRIGHT_RANGE_MIN         1056
 #define IDC_EDIT_VIEW_OFFSET_HOR_CAM_NO_01 1057
@@ -684,7 +687,9 @@
 #define IDC_ST_ERRCOUNT_CNTBOARD3       1281
 #define IDC_ST_MemoryError              1281
 #define IDC_ST_TAB_WIDTH                1282
+#define IDC_ST_DISKALARM                1282
 #define IDC_ST_TAB_PITCH                1283
+#define IDC_ST_DISKWARNING             1283
 #define IDC_ST_ROUND_RADIUS             1284
 #define IDC_ST_RECIPE_NO                1285
 #define IDC_BTN_CLEAR                   1286

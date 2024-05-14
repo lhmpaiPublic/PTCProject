@@ -97,6 +97,8 @@ public:
 	int m_nCounterBoard_ErrCount;
 	int m_nLED_Check_Delay;
 	int m_MemorydError;
+	int m_WaringDisk;
+	int m_AlarmDisk;
 
 	BOOL m_bNoTabMarkingSkip;
 };

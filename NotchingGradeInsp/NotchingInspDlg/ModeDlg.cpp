@@ -626,12 +626,12 @@ void CModeDlg::Refresh()
 	double dDiskUse = AprData.m_dDiskTotal - AprData.m_dDiskFree ; 
 	double dPercent = (dDiskUse / AprData.m_dDiskTotal) * 100.0;
 	strDiskSpace.Format(_T("%.1lf/%.1lf(GB)[%.1lf%%]"), dDiskUse, AprData.m_dDiskTotal, dPercent );
-	if (dPercent > DISK_SPACE_ALARM_HEAVY)
+	if (dPercent > AprData.m_System.m_AlarmDisk)
 	{
 		// 중알람
 		clrBk = RGB(255, 100, 100);
 	}
-	else if (dPercent > DISK_SPACE_ALARM_LIGHT)
+	else if (dPercent > AprData.m_System.m_MemorydError)
 	{
 		// 경알람
 		clrBk = RGB(255, 127, 0);
