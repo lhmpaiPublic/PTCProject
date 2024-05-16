@@ -53,11 +53,6 @@
 #define T_SPCSTATUS			105
 #endif //SPCPLUS_CREATE
 
-//PLC read/write 타이머 생성 객체
-#ifdef NEW_PLCTYPE
-#define T_PLCSTATUS			106
-#endif //NEW_PLCTYPE
-
 // CNotchingGradeInspView
 
 IMPLEMENT_DYNCREATE(CNotchingGradeInspView, CView)
@@ -123,18 +118,15 @@ CNotchingGradeInspView::CNotchingGradeInspView() noexcept
 	//로그 출력창 활성화 키(Ctrl 눌림 확인용)
 	logControlKeyDown = false;
 
-	m_pThread = NULL;
+	m_pPlcThread = NULL;
+	//PLC Tread Run 체크 함수
+	m_bPlcThreadRun = FALSE;
 
 
 //SPC 객체 소스에서 컴파일 여부 결정
 #ifdef SPCPLUS_CREATE
 	m_SpcStatus = 0; 
 #endif //SPCPLUS_CREATE
-
-//PLC read/write 타이머 생성 객체
-#ifdef NEW_PLCTYPE
-	m_PlcReadWirteTimer = 0;
-#endif //NEW_PLCTYPE
 
 }
 
@@ -193,12 +185,13 @@ CNotchingGradeInspView::~CNotchingGradeInspView()
 
 	CloseDebugImgAcqDlg();
 
-	if (pThread)
+	if (m_pPlcThread)
 	{
 		setEvent_NotchingGradeInspView();
-		CGlobalFunc::ThreadExit(&pThread->m_hThread, 5000);
-		pThread->m_hThread = NULL;
-		pThread = NULL;
+		CGlobalFunc::ThreadExit(&m_pPlcThread->m_hThread, 5000);
+		m_bPlcThreadRun = FALSE;
+		m_pPlcThread->m_hThread = NULL;
+		m_pPlcThread = NULL;
 	}
 
 	if (pEvent_NotchingGradeInspView)
@@ -319,11 +312,6 @@ int CNotchingGradeInspView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_SpcStatus = SetTimer(T_SPCSTATUS, 10000, NULL);
 #endif //SPCPLUS_CREATE
 
-//PLC read/write 타이머 생성 객체
-#ifdef NEW_PLCTYPE
-	m_PlcReadWirteTimer = SetTimer(T_PLCSTATUS, 100, NULL);
-#endif //NEW_PLCTYPE
-
 	return 0;
 }
 
@@ -409,7 +397,7 @@ void CNotchingGradeInspView::OnInitialUpdate()
 	SetSignalCheckTimer();
 
 
-	StartThreadAliveSiginal();
+	StartPlcThread();
 	SetLogTermTimer();
 	Set_I0Timer();
 
@@ -865,18 +853,6 @@ void CNotchingGradeInspView::OnTimer(UINT_PTR nIDEvent)
 		AprData.SpcPluusStatus("1");
 	}
 #endif //SPCPLUS_CREATE
-
-//PLC read/write 타이머 생성 객체
-#ifdef NEW_PLCTYPE
-	if (nIDEvent == m_PlcReadWirteTimer)
-	{
-		if (theApp.m_pSigProc)
-		{
-			theApp.m_pSigProc->PlcDataReadWritePorc();
-		}
-	}
-#endif //NEW_PLCTYPE
-
 
 	if (m_TID_Long_Term == nIDEvent)
 	{
@@ -1582,33 +1558,48 @@ BOOL CNotchingGradeInspView::PreTranslateMessage(MSG* pMsg)
 }
 
 
-void CNotchingGradeInspView::StartThreadAliveSiginal()
+void CNotchingGradeInspView::StartPlcThread()
 {
-	pThread = NULL;
-	if (pThread == NULL)
+	m_pPlcThread = NULL;
+	m_bPlcThreadRun = TRUE;
+	if (m_pPlcThread == NULL)
 	{
 		//이벤트 객체 생성
 		pEvent_NotchingGradeInspView = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-		pThread = AfxBeginThread(AliveThread, this);
+		m_pPlcThread = AfxBeginThread(PlcThread, this);
 
-		if (pThread == NULL)
+		if (m_pPlcThread == NULL)
 		{
-
+			m_bPlcThreadRun = FALSE;
 		}
-
-		pThread->m_bAutoDelete = TRUE;
+		
+		m_pPlcThread->m_bAutoDelete = TRUE;
 	}
-	else
+}
+
+//PLC 처리 함수
+BOOL CNotchingGradeInspView::PlcThreadProc()
+{
+	if (theApp.m_pSigProc)
 	{
-
+#ifndef NEW_PLCTYPE
+		theApp.m_pSigProc->SigOutAlivePulseReady(TRUE, IsInspReady());
+#else
+		theApp.m_pSigProc->SigOutAlivePulseReady(TRUE, IsInspReady());
+		theApp.m_pSigProc->PlcDataReadWritePorc();
+#endif //NEW_PLCTYPE
 	}
-
+	return (m_bPlcThreadRun == FALSE);
 }
 
 //스래드 타임아웃 시간
+#ifndef NEW_PLCTYPE
 #define NOTCHINGGRADEINSPVIEW_THREADTIMEOUT 500
-UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
+#else
+#define NOTCHINGGRADEINSPVIEW_THREADTIMEOUT 100
+#endif //NEW_PLCTYPE
+UINT CNotchingGradeInspView::PlcThread(LPVOID lpParm)
 {
 	CNotchingGradeInspView* pThis = (CNotchingGradeInspView*)lpParm;
 
@@ -1623,7 +1614,10 @@ UINT CNotchingGradeInspView::AliveThread(LPVOID lpParm)
 		}
 		else if (ret == WAIT_TIMEOUT) //TIMEOUT시 명령
 		{
-			theApp.m_pSigProc->SigOutAlivePulseReady(TRUE, pThis->IsInspReady());
+			if (pThis->PlcThreadProc())
+			{
+				break;
+			}
 		}
 		else
 		{

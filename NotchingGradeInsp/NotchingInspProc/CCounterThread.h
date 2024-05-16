@@ -38,7 +38,7 @@ public:
 protected:
 	BOOL	m_bKill;
 	int		m_nThreadId;
-	CWinThread* m_pThread;				//!< 긚깒긞긤(CWinThread *)x1
+	CWinThread* m_pThread;
 	BOOL	m_bFreeRunn;
 	BOOL	m_bRunFlag;
 

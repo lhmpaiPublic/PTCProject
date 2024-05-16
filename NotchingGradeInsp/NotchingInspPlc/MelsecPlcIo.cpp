@@ -1280,7 +1280,7 @@ BOOL CMelsecPlcIo::GetConnectZone()
 }
 int CMelsecPlcIo::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 {
-	m_bMelsecAlive ^= 0x1;
+	m_bMelsecAlive = getBitIn_Alive();
 	setBitOut_Alive(m_bMelsecAlive);
 	setBitOut_Ready(bIsReady);
 	return 0; 

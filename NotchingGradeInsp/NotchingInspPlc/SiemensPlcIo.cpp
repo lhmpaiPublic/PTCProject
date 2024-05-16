@@ -879,7 +879,7 @@ BOOL CSiemensPlcIo::GetConnectZone()
 }
 int CSiemensPlcIo::SigOutAlivePulseReady(int nInMode, BOOL bIsReady)
 {
-	m_bSmsAlive ^= 0x1;
+	m_bSmsAlive = getBitIn_Alive();
 	setBitOut_Alive(m_bSmsAlive);
 	setBitOut_Ready(bIsReady);
 	return 0; 

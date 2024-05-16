@@ -23,7 +23,9 @@ protected: // serialization에서만 만들어집니다.
 
 	//동기화 이벤트 객체
 	HANDLE pEvent_NotchingGradeInspView;
-	CWinThread* pThread;
+	CWinThread* m_pPlcThread;
+	//PLC Tread Run 체크 함수
+	BOOL m_bPlcThreadRun;
 // 특성입니다.
 public:
 	CNotchingGradeInspDoc* GetDocument() const;
@@ -80,12 +82,6 @@ protected:
 #ifdef SPCPLUS_CREATE
 	UINT_PTR m_SpcStatus;
 #endif //SPCPLUS_CREATE
-
-//PLC read/write 타이머 생성 객체
-#ifdef NEW_PLCTYPE
-	UINT_PTR m_PlcReadWirteTimer;
-#endif //NEW_PLCTYPE
-
 
 	BOOL SetSignalCheckTimer();
 	BOOL KillSignalCheckTimer();
@@ -166,13 +162,14 @@ private :
 	int CheckConnectZone();
 	int CheckAlarmNgAck();
 
-	void StartThreadAliveSiginal();
-	static UINT AliveThread(LPVOID lpParm);
+	//PLC Thread 함수
+	//PLC Thread 생성을 하기 위한 함수
+	void StartPlcThread();
+	//스래스 함수
+	static UINT PlcThread(LPVOID lpParm);
+	//PLC 처리 함수
+	BOOL PlcThreadProc();
 
-
-private:
-	static CCriticalSection	m_csMelsecThread;
-	CWinThread* m_pThread;
 public :
 	BOOL m_bDebugLotStartReq ;
 	BOOL m_bDebugLotEndReq ;
