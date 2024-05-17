@@ -44,19 +44,6 @@ public :
 
 		return *this;
 	}
-
-	// 복사 대입 연산자(copy assignment operator)    
-	CImgSaveInfo* operator=(const CImgSaveInfo* info)
-	{
-		m_pImagePtr = info->m_pImagePtr;
-		m_nWidth = info->m_nWidth;
-		m_nHeight = info->m_nHeight;
-		m_nBitCnt = info->m_nBitCnt;
-		m_strSavePath = info->m_strSavePath;
-		m_nJpgQuality = info->m_nJpgQuality;
-
-		return this;
-	}
 	BYTE* GetImgPtr() { return m_pImagePtr; };
 	void SetImgPtr(BYTE* pImgPtr, int nWidth, int nHeight, int nJpgQuality = 100) { m_pImagePtr = pImgPtr; m_nWidth = nWidth; m_nHeight = nHeight; };
 };
