@@ -1662,7 +1662,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									{
 										CString strSaveSPCPlusPath;
 										strSaveSPCPlusPath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
+										//경로 저장
 										pSaveInfo->m_strSavePath.push_back(strSaveSPCPlusPath);
+										//퀄리티 저장
 										pSaveInfo->m_nJpgQuality.push_back(SPCImageQuality);
 
 										AprData.SaveDebugLog_Format(_T("SPC+ Image Save : TabNo	%d	BCD ID	%d	Path	%s"),
@@ -1676,9 +1678,10 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									if ((pFrmRsltInfo->m_bSaveFlag) && (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE))
 									{
 										CString strSaveOrgPath;
-										//strSaveOrgPath.Format(_T("%s\\%s"), _T("E:\\FOIL"), pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
 										strSaveOrgPath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+										//경로 저장
 										pSaveInfo->m_strSavePath.push_back(strSaveOrgPath);
+										//퀄리티 저장
 										pSaveInfo->m_nJpgQuality.push_back(AprData.m_System.m_nJpegSaveQuality);
 
 										AprData.SaveDebugLog_Format(_T("Origin Image Save : TabNo	%d	BCD ID	%d	Path	%s"),

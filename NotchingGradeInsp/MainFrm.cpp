@@ -77,31 +77,43 @@ CMainFrame::~CMainFrame()
 	//소멸 시 인스턴스 객체 삭제
 	UIMGR->delMainFrame();
 
-	if (m_pWndTopPanel != nullptr) {
+	if (m_pWndTopPanel != nullptr && m_pWndTopPanel->m_hWnd != nullptr)
+	{
 		delete m_pWndTopPanel;
 		m_pWndTopPanel = NULL;
+		m_pWndTopPanel->m_hWnd = NULL;
 	}
 
-	if (m_pCropDlg != nullptr) {
+	if (m_pCropDlg != nullptr && m_pCropDlg->m_hWnd != nullptr)
+	{
 		delete m_pCropDlg;
 		m_pCropDlg = NULL;
+		m_pCropDlg->m_hWnd = NULL;
 	}
-	if (m_pHistoryDlg != nullptr) {
+	if (m_pHistoryDlg != nullptr && m_pHistoryDlg->m_hWnd != nullptr)
+	{
 		delete m_pHistoryDlg;
 		m_pHistoryDlg = NULL;
+		m_pHistoryDlg->m_hWnd = NULL;
 	}
-	if (m_pInspInfoDlg != nullptr) {
+	if (m_pInspInfoDlg != nullptr && m_pInspInfoDlg->m_hWnd != nullptr)
+	{
 		delete m_pInspInfoDlg;
 		m_pInspInfoDlg = NULL;
+		m_pInspInfoDlg->m_hWnd = NULL;
 	}
-	if (m_pResultDlg != nullptr) {
+	if (m_pResultDlg != nullptr && m_pResultDlg->m_hWnd != nullptr)
+	{
 		delete m_pResultDlg;
 		m_pResultDlg = NULL;
+		m_pResultDlg->m_hWnd = NULL;
 	}
 
-	if (m_pWndBottomPanel != nullptr) {
+	if (m_pWndBottomPanel != nullptr && m_pWndBottomPanel->m_hWnd != nullptr)
+	{
 		delete m_pWndBottomPanel;
 		m_pWndBottomPanel = NULL;
+		m_pWndBottomPanel->m_hWnd = NULL;
 	}
 
 	//Log Dlg  메모리해제
