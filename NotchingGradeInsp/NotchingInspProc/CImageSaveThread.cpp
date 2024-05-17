@@ -137,49 +137,39 @@ UINT CImageSaveThread::CtrlThreadImgSave(LPVOID pParam)
 					break;
 				}
 
-				if (pSaveInfo->m_strSavePath.GetLength() > 0)
+
+
+				BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
+
+				if (pImgPtr)
 				{
+					CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
+					bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr());
+					// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
 
-					BYTE* pImgPtr = pSaveInfo->m_pImagePtr;
-
-					if (pImgPtr)
+					for (int idx = 0; idx < pSaveInfo->m_strSavePath.size(); idx++)
 					{
-						CBitmapStd bmp(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, 8);
-						bmp.SetImage(pSaveInfo->m_nWidth, pSaveInfo->m_nHeight, pSaveInfo->GetImgPtr());
-						// Debug시에 이미지 퀄리티가 계속 저하 되는 것을 방지.
-
-						int nJpgQuality;
-
-						//SPC 객체 소스에서 컴파일 여부 결정
-#ifdef SPCPLUS_CREATE
-						nJpgQuality = pSaveInfo->m_nJpgQuality;
-#else
-						if (pQueuePtr->GetSize() > 2)
+						if (pSaveInfo->m_strSavePath[idx].GetLength() > 0)
 						{
-							nJpgQuality = AprData.m_System.m_nJpegSaveQuality - 10;
+							AprData.SaveDebugLog_Format(_T("Image Save Path : %s"),
+								pSaveInfo->m_strSavePath[idx]);
+
+							bmp.SetJpegQuality(pSaveInfo->m_nJpgQuality[idx]);
+
+							bmp.SaveBitmap(pSaveInfo->m_strSavePath[idx]);
 						}
-						else
-						{
-							nJpgQuality = AprData.m_System.m_nJpegSaveQuality;
-						}
-#endif //SPCPLUS_CREATE
-
-						AprData.SaveDebugLog_Format(_T("Image Save Path : %s"),
-							pSaveInfo->m_strSavePath);
-
-						bmp.SetJpegQuality(nJpgQuality);
-
-						bmp.SaveBitmap(pSaveInfo->m_strSavePath);
-
-						delete[]pImgPtr;
-						pImgPtr = NULL;
-					}
-					else
-					{
-						LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
 					}
 
+					delete[]pImgPtr;
+					pImgPtr = NULL;
 				}
+				else
+				{
+					LOGDISPLAY_SPEC(8)(_T("CtrlThreadImgSave pImgPtr NULL"));
+				}
+
+
+
 				if (pSaveInfo)
 				{
 					delete pSaveInfo;

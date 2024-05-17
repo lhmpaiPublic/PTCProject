@@ -783,6 +783,17 @@ BOOL CCounterThread::readTriggerBCDID()
 				//초기값 세팅 상태에서 만 검사한다.
 				else
 				{
+					//CountBrod 이상 체크 카운트 증가
+					if (m_nextTabID != wTempID)
+					{
+						nCountBordErrorCount++;
+					}
+					//아니면
+					else
+					{
+						nCountBordErrorCount = 0;
+					}
+
 					//다음 들어올 ID와 받은 ID가 다르다면
 					//누락 로그 출력한다.
 					if (m_nextTabID != wTempID)
@@ -876,6 +887,18 @@ BOOL CCounterThread::readTriggerBCDID()
 
 				//이전 id 갱신
 				m_wLastTabId = wTempID;
+
+				//카운트 보드 인터락 : 
+				//ID가 다음 들어올 ID와 다른 경우  및 Counter 100 이하가 5번 이상 
+				//인터락 발생한다.
+				if (nCountBordErrorCount >= AprData.m_System.m_nCounterBoard_ErrCount)
+				{
+					nCountBordErrorCount = 0;
+					CString strMessage;
+					strMessage.Format(_T("CounterBoard BCD ID, EnCoder Count Error Locking"));
+					AprData.m_ErrStatus.SetError(CErrorStatus::en_CountBordError, strMessage);
+					AprData.SaveErrorLog(_T("CounterBoard BCD ID, EnCoder Count Error Locking"));
+				}
 
 			}
 			b = TRUE;

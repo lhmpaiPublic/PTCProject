@@ -1,19 +1,20 @@
 ﻿#pragma once
 
 #include <queue>
+#include <vector>
 class CImgSaveInfo {
 public :
-	CString m_strSavePath;
+	std::vector<CString> m_strSavePath;
 	BYTE* m_pImagePtr;
 	int m_nWidth; 
 	int m_nHeight;
 	int m_nBitCnt;
 
 	//이미지 저장 퀄리티 정보
-	int m_nJpgQuality;
+	std::vector<int> m_nJpgQuality;
 
 	BYTE* GetImgPtr() { return m_pImagePtr; };
-	void SetImgPtr(BYTE* pImgPtr, int nWidth, int nHeight, int nJpgQuality = 100) { m_pImagePtr = pImgPtr; m_nWidth = nWidth; m_nHeight = nHeight; m_nJpgQuality = nJpgQuality; };
+	void SetImgPtr(BYTE* pImgPtr, int nWidth, int nHeight, int nJpgQuality = 100) { m_pImagePtr = pImgPtr; m_nWidth = nWidth; m_nHeight = nHeight; };
 };
 
 class CImageSaveQueueCtrl

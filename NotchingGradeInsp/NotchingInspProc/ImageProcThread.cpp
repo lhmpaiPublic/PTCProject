@@ -1647,7 +1647,7 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 							if (nImgSize > 0)
 							{
 								//SPC+ 전송용 이미지 파일 저장 정보
-								if (CSpcInfo::Inst()->getSPCStartFlag())
+								if (CSpcInfo::Inst()->getSPCStartFlag() || ((pFrmRsltInfo->m_bSaveFlag) && (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE)))
 								{
 									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
 									BYTE* pImgSavePtr;
@@ -1655,32 +1655,42 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
 									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
 									//퀄리티 정보를  세팅한다.
-									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, SPCImageQuality);
-									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
+									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
+
+									//SPC+ 이미지 저장 경로
+									if (CSpcInfo::Inst()->getSPCStartFlag())
+									{
+										CString strSaveSPCPlusPath;
+										strSaveSPCPlusPath.Format(_T("%s\\%s"), strSPCFilePath, SPCImageFileName);
+										pSaveInfo->m_strSavePath.push_back(strSaveSPCPlusPath);
+										pSaveInfo->m_nJpgQuality.push_back(SPCImageQuality);
+
+										AprData.SaveDebugLog_Format(_T("SPC+ Image Save : TabNo	%d	BCD ID	%d	Path	%s"),
+											pFrmRsltInfo->nTabNo + 1,
+											pFrmRsltInfo->m_nTabId_CntBoard
+											, strSaveSPCPlusPath
+										);
+									}
+
+									//원본 이미지 저장 경로(기존 이미지 저장정보)
+									if ((pFrmRsltInfo->m_bSaveFlag) && (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE))
+									{
+										CString strSaveOrgPath;
+										//strSaveOrgPath.Format(_T("%s\\%s"), _T("E:\\FOIL"), pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+										strSaveOrgPath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+										pSaveInfo->m_strSavePath.push_back(strSaveOrgPath);
+										pSaveInfo->m_nJpgQuality.push_back(AprData.m_System.m_nJpegSaveQuality);
+
+										AprData.SaveDebugLog_Format(_T("Origin Image Save : TabNo	%d	BCD ID	%d	Path	%s"),
+											pFrmRsltInfo->nTabNo + 1,
+											pFrmRsltInfo->m_nTabId_CntBoard
+											, strSaveOrgPath
+										);
+									}
+
 									pImgSaveQueueCtrl->PushBack(pSaveInfo);
 								}
 
-								//기존 이미지 저장정보
-								if ((pFrmRsltInfo->m_bSaveFlag) && (pFrmRsltInfo->m_pTabRsltInfo->m_bImageFlag == TRUE))
-								{
-									CImgSaveInfo* pSaveInfo = new CImgSaveInfo;
-									BYTE* pImgSavePtr;
-									pImgSavePtr = new BYTE[nImgSize + 1];
-									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
-									memcpy(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
-									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight, AprData.m_System.m_nJpegSaveQuality);
-
-									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
-									pImgSaveQueueCtrl->PushBack(pSaveInfo);
-
-									AprData.SaveDebugLog_Format(_T("Image Save : TabNo	%d	BCD ID	%d	Path	%s	File Name	%s"),
-										pTopInfo->nTabNo + 1,
-										pTopInfo->m_nTabId_CntBoard
-										, pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath
-										, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile
-									);
-
-								}
 							}
 						}
 #else
@@ -1710,7 +1720,9 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 									memset(pImgSavePtr, 0x00, sizeof(BYTE) * nImgSize + 1);
 									CopyMemory(pImgSavePtr, pFrmRsltInfo->GetImagePtr(), sizeof(BYTE) * nImgSize);
 									pSaveInfo->SetImgPtr(pImgSavePtr, pFrmRsltInfo->m_nWidth, pFrmRsltInfo->m_nHeight);
-									pSaveInfo->m_strSavePath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+									CString strSaveOrgPath;
+									strSaveOrgPath.Format(_T("%s\\%s"), pFrmRsltInfo->m_pTabRsltInfo->m_chImagePath, pFrmRsltInfo->m_pTabRsltInfo->m_chImageFile);
+									pSaveInfo->m_strSavePath.push_back(strSaveOrgPath);
 									pImgSaveQueueCtrl->PushBack(pSaveInfo);
 
 									AprData.SaveDebugLog_Format(_T("Image Save : TabNo	%d	BCD ID	%d	Path	%s	File Name	%s"),
@@ -1892,8 +1904,16 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								memset(pImgSavePtrTop, 0x00, sizeof(BYTE) * nImgSizeTop + 1);
 								memcpy(pImgSavePtrTop, pTopInfo->GetImagePtr(), sizeof(BYTE) * nImgSizeTop);
 								pSaveInfoTop->SetImgPtr(pImgSavePtrTop, pTopInfo->m_nWidth, pTopInfo->m_nHeight);
-								pSaveInfoTop->m_strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameTop);
+								CString strSavePath;
+								strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameTop);
+								pSaveInfoTop->m_strSavePath.push_back(strSavePath);
 								pImgSaveQueueCtrl->PushBack(pSaveInfoTop);
+
+								AprData.SaveDebugLog_Format(_T("Over Top Image Save : TabNo	%d	BCD ID	%d	Path	%s"),
+									pTopInfo->nTabNo + 1,
+									pTopInfo->m_nTabId_CntBoard
+									, strSavePath
+								);
 							}
 
 							//Bottom Image 저장
@@ -1919,8 +1939,16 @@ UINT CImageProcThread::CtrlThreadImgProc(LPVOID Param)
 								memset(pImgSavePtrBottom, 0x00, sizeof(BYTE) * nImgSizeBottom + 1);
 								memcpy(pImgSavePtrBottom, pBtmInfo->GetImagePtr(), sizeof(BYTE) * nImgSizeBottom);
 								pSaveInfoBottom->SetImgPtr(pImgSavePtrBottom, pBtmInfo->m_nWidth, pBtmInfo->m_nHeight);
-								pSaveInfoBottom->m_strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameBottom);
+								CString strSavePath;
+								strSavePath.Format(_T("%s\\%s"), AprData.m_strNowOkPath, strFileNameBottom);
+								pSaveInfoBottom->m_strSavePath.push_back(strSavePath);
 								pImgSaveQueueCtrl->PushBack(pSaveInfoBottom);
+
+								AprData.SaveDebugLog_Format(_T("Over Bottom Image Save : TabNo	%d	BCD ID	%d	Path	%s"),
+									pTopInfo->nTabNo + 1,
+									pTopInfo->m_nTabId_CntBoard
+									, strSavePath
+								);
 							}
 
 							LOGDISPLAY_SPEC(8)("## === UNIT LOOPPING ERROR === Info Print End ==  ");
